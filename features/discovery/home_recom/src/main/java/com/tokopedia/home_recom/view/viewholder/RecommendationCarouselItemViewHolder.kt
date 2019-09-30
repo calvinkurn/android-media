@@ -16,6 +16,11 @@ import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A class for holder view Recommendation Carousel Item
+ */
 class RecommendationCarouselItemViewHolder (
         private val view: View
 ) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view){

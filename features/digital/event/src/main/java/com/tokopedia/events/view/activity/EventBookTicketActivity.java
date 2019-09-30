@@ -83,7 +83,6 @@ public class EventBookTicketActivity
 
     @Override
     void setupVariables() {
-        toolbar = findViewById(R.id.toolbar_book_ticket);
         buttonPayTickets = findViewById(R.id.pay_tickets);
         buttonTextview = findViewById(R.id.button_textview);
         progressBarLayout = findViewById(R.id.progress_bar_layout);

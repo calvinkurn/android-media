@@ -41,6 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
+    private boolean pauseFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
         unregisterShake();
@@ -67,6 +69,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+
+        // this is to make sure the context of dynamic feature is updated when activity is onBackpressed
+        // hacky way of dynamic feature module, when activity is resumed after pausing.
+        // SplitCompat.install initiates on onAttachBaseContext by default.
+        if (pauseFlag) {
+            SplitCompat.installActivity(this);
+            pauseFlag = false;
+        }
 
         sendScreenAnalytics();
         setLogCrash();
@@ -201,7 +211,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
-        SplitCompat.install(this);
+        SplitCompat.installActivity(this);
     }
 
     public void setLogCrash() {

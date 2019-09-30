@@ -28,6 +28,9 @@ import com.tokopedia.unifycomponents.Toaster;
 
 public abstract class BaseViewModelActivity<T extends BaseViewModel> extends BaseSimpleActivity {
 
+    protected boolean isTncShowing = false;
+    protected T bVM;
+
     protected void initView() {
 
     }
@@ -44,11 +47,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected boolean doNeedReattach();
 
-    abstract protected ViewModelProvider.NewInstanceFactory getVMFactory();
-
-    protected boolean isTncShowing = false;
-
-    protected T bVM;
+    abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +58,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
         bVM.getProgBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
                 if (visibility)
@@ -86,12 +79,37 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 }
             }
         });
+        bVM.getErrorMessage().observe(this, (message) -> {
+            hideProgressBar();
+            if (!TextUtils.isEmpty(message)) {
+                try {
+                    Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                            message,
+                            Snackbar.LENGTH_LONG, getButtonStringOnError(), (v) -> retryOnError());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void setViewModel() {
         bVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType());
         setViewModel(bVM);
         getLifecycle().addObserver(getLifeCycleObserver(bVM));
+    }
+
+    protected void retryOnError() {
+
+    }
+
+    protected String getButtonStringOnError() {
+        return getString(R.string.close);
     }
 
     protected BaseLifeCycleObserver getLifeCycleObserver(BaseViewModel viewModel) {
@@ -221,8 +239,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        if (resId != 0)
-            accessDialog.setLayoutResId(resId);
+        accessDialog.setLayoutResId(resId);
         accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);

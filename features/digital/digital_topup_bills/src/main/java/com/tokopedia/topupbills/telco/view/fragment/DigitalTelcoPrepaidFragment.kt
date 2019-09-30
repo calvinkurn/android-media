@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.view.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -12,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
@@ -34,10 +35,9 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
 import java.util.*
@@ -50,7 +50,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
-    private lateinit var buyWidget: DigitalTelcoBuyWidget
+    private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -156,7 +156,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetailPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_telco_catalog_menu_detail),
+                R.raw.query_menu_detail),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
@@ -166,7 +166,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         var clientNumber = ""
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 selectedProductId = digitalTelcoExtraParam.productId
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -369,15 +369,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
 
-    override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+    override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
-        selectedProductId = telcoRecommendation.productId.toString()
-        selectedCategoryId = telcoRecommendation.categoryId
-        telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        selectedProductId = topupBillsRecommendation.productId.toString()
+        selectedCategoryId = topupBillsRecommendation.categoryId
+        telcoClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
 
         if (selectedOperatorName.isNotEmpty()) {
-            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
-                    telcoRecommendation.position)
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(topupBillsRecommendation, selectedOperatorName,
+                    topupBillsRecommendation.position)
         }
     }
 
@@ -386,7 +386,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun renderBuyProduct() {
-        buyWidget.setListener(object : DigitalTelcoBuyWidget.ActionListener {
+        buyWidget.setListener(object : TopupBillsCheckoutWidget.ActionListener {
             override fun onClickNextBuyButton() {
                 processToCart()
             }
@@ -412,12 +412,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun generateShowcaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .finishStringRes(R.string.finish)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .finishStringRes(com.tokopedia.showcase.R.string.finish)
                 .clickable(true)
                 .useArrow(true)
                 .build()
@@ -444,7 +444,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         private const val EXTRA_PARAM = "extra_param"
 
-        fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)

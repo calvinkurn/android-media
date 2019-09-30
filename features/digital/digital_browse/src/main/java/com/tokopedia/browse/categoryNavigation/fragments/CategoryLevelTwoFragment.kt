@@ -157,7 +157,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
         })
 
-        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<List<ListItem>> {
+        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<MutableList<ListItem>> {
             categoryHotlist.clear()
             categoryHotlist.addAll(it as List<ListItem>)
             hotlist.adapter?.notifyDataSetChanged()

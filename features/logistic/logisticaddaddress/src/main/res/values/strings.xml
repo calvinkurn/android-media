@@ -19,6 +19,7 @@
     <string name="title_delivery_location_pickup">Lokasi Pickup (Opsional)</string>
     <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
+    <string name="choose_this_incomplete_location">Lengkapi Alamat</string>
     <string name="error_min_phone_numer">Nomor telepon minimal 6 angka</string>
     <string name="error_max_phone_numer">Nomor telepon maksimum 20 angka</string>
     <string name="error_min_5_address">Alamat minimum 5 karakter</string>
@@ -89,12 +90,13 @@
     <string name="et_no_ponsel_hint">No Ponsel</string>
     <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
+    <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
-    <string name="invalid_title">Oops, lokasimu tidak dikenal</string>
-    <string name="invalid_desc">Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail alamat secara jelas.</string>
+    <string name="invalid_title">Alamatmu di peta kurang lengkap</string>
+    <string name="invalid_desc">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
     <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
     <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
-    <string name="undetected_title">Lokasi Anda belum terisi</string>
+    <string name="undetected_title">Alamatmu di peta kurang lengkap</string>
     <string name="undetected_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_img_description">alamat tidak mendukung</string>
@@ -128,6 +130,7 @@
     <string name="validate_label_alamat">Label Alamat harus diisi</string>
     <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
     <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
+    <string name="validate_no_ponsel_less_char">Nomor Telepon Penerima terlalu pendek, minimum 8 angka.</string>
     <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
     <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
@@ -136,6 +139,7 @@
     <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
     <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
+    <string name="something_wrong_happened">Terjadi Kesalahan</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

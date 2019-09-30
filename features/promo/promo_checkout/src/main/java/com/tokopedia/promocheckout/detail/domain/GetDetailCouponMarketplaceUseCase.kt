@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.domain
+package com.tokopedia.promocheckout.detail.domain
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -6,14 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
-import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import rx.Subscriber
-import rx.functions.Func2
 import java.util.*
 
 class GetDetailCouponMarketplaceUseCase(val resources: Resources)

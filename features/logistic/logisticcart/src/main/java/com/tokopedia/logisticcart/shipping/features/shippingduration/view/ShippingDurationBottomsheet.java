@@ -52,6 +52,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
     public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
     public static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
+    public static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
+    public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -80,7 +82,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           int selectedServiceId,
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
-                                                          int cartPosition, int codHistory) {
+                                                          int cartPosition, int codHistory,
+                                                          boolean isLeasing, String pslCode) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -89,6 +92,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
         bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
+        bundle.putBoolean(ARGUMENT_IS_LEASING, isLeasing);
+        bundle.putString(ARGUMENT_PSL_CODE, pslCode);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -164,10 +169,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
+            boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
+            String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner);
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing, pslCode);
             } else if (shippingParam != null) {
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner);
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
             }
         }
     }
@@ -224,8 +231,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
                             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
+                            boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
+                            String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner);
+                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing, pslCode);
                             }
                         }
                     }

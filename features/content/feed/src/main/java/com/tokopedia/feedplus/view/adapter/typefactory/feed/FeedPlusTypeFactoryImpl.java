@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -19,6 +21,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.Recomm
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
@@ -69,6 +72,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
+    private final HighlightAdapter.HighlightListener highlightListener;
     private final FeedAnalytics analytics;
     private final UserSessionInterface userSession;
 
@@ -88,6 +92,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.videoViewListener = context;
         this.feedMultipleImageViewListener = context;
         this.analytics = analytics;
+        this.highlightListener = context;
         this.userSession = userSession;
     }
 
@@ -155,6 +160,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
         return TopadsShopViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull HighlightViewModel highlightViewModel) {
+        return HighlightViewHolder.Companion.getLAYOUT();
     }
 
     @Override

@@ -14,7 +14,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
+import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.MembershipStampProgressViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopMerchantVoucherViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseHighlightViewHolder;
@@ -25,6 +27,7 @@ import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListene
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
+import com.tokopedia.shop.product.view.model.MembershipStampProgressViewModel;
 import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
@@ -41,14 +44,17 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener onMerchantVoucherListWidgetListener;
+    private MembershipStampAdapter.MembershipStampAdapterListener membershipStampAdapterListener;
 
     // gridLayout is for main product
     private final boolean isGridSquareLayout;
-    private final @ShopTrackProductTypeDef int shopTrackType;
+    private final @ShopTrackProductTypeDef
+    int shopTrackType;
     private final int deviceWidth;
     private ShopProductAdapter shopProductAdapter;
 
-    public ShopProductAdapterTypeFactory(ShopProductClickedListener shopProductClickedListener,
+    public ShopProductAdapterTypeFactory(MembershipStampAdapter.MembershipStampAdapterListener membershipStampAdapterListener,
+                                         ShopProductClickedListener shopProductClickedListener,
                                          ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener,
                                          EmptyResultViewHolder.Callback emptyProductOnClickListener,
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
@@ -57,6 +63,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                          boolean isGridSquareLayout,
                                          int deviceWidth,
                                          @ShopTrackProductTypeDef int shopTrackType) {
+        this.membershipStampAdapterListener = membershipStampAdapterListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.shopCarouselSeeAllClickedListener = shopCarouselSeeAllClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
@@ -67,7 +74,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.deviceWidth = deviceWidth;
     }
 
-    public void attachAdapter(ShopProductAdapter shopProductAdapter){
+    public void attachAdapter(ShopProductAdapter shopProductAdapter) {
         this.shopProductAdapter = shopProductAdapter;
     }
 
@@ -92,7 +99,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         if (etalaseHighlightCarouselViewModel.getShopProductViewModelList().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
-            if (etalaseHighlightCarouselViewModel.getShopProductViewModelList().size() <= SMALL_DATA_LIMIT){
+            if (etalaseHighlightCarouselViewModel.getShopProductViewModelList().size() <= SMALL_DATA_LIMIT) {
                 return ShopProductCarouselViewHolder.VERTICAL_LAYOUT;
             } else {
                 return ShopProductCarouselViewHolder.LAYOUT;
@@ -100,11 +107,20 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         }
     }
 
+    public int type(MembershipStampProgressViewModel membershipStampProgressViewModel) {
+        if (membershipStampProgressViewModel.getListOfData().size() == 0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return MembershipStampProgressViewHolder.getLAYOUT();
+        }
+
+    }
+
     public int type(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
         if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
-            if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() <= SMALL_DATA_LIMIT){
+            if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() <= SMALL_DATA_LIMIT) {
                 return ShopProductCarouselViewHolder.VERTICAL_LAYOUT;
             } else {
                 return ShopProductCarouselViewHolder.LAYOUT;
@@ -113,7 +129,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
-        if (shopMerchantVoucherViewModel.getShopMerchantVoucherViewModelArrayList().size() ==0) {
+        if (shopMerchantVoucherViewModel.getShopMerchantVoucherViewModelArrayList().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
             return ShopMerchantVoucherViewHolder.LAYOUT;
@@ -180,18 +196,22 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductEtalaseTitleViewHolder(parent);
         } else if (type == ShopProductEtalaseListViewHolder.LAYOUT) {
             return new ShopProductEtalaseListViewHolder(parent, onShopProductEtalaseListViewHolderListener);
-        } if (type == ShopMerchantVoucherViewHolder.LAYOUT) {
+        }
+        if (type == ShopMerchantVoucherViewHolder.LAYOUT) {
             return new ShopMerchantVoucherViewHolder(parent, onMerchantVoucherListWidgetListener);
         } else if (type == ShopProductCarouselViewHolder.LAYOUT ||
                 type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
                     type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT,
-                    parent.getContext().getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED,null);
-        } if (type == ShopProductEtalaseHighlightViewHolder.LAYOUT) {
+                    parent.getContext().getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null);
+        }
+        if (type == ShopProductEtalaseHighlightViewHolder.LAYOUT) {
             return new ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopCarouselSeeAllClickedListener);
         } else if (type == ShopProductViewHolder.GRID_LAYOUT ||
                 type == ShopProductViewHolder.LIST_LAYOUT) {
             return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type);
+        } else if (type == MembershipStampProgressViewHolder.getLAYOUT()) {
+            return new MembershipStampProgressViewHolder(parent, membershipStampAdapterListener);
         }
         if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);

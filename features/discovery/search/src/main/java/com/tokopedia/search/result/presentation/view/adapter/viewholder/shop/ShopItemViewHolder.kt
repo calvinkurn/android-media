@@ -43,6 +43,7 @@ class ShopItemViewHolder(
         initShopName(shopViewItem)
         initImageShopReputation(shopViewItem)
         initShopLocation(shopViewItem)
+        initButtonSeeShop(shopViewItem)
         initProductPreview(shopViewItem)
         initShopVoucherLabel(shopViewItem)
         initShopStatus(shopViewItem)
@@ -90,6 +91,12 @@ class ShopItemViewHolder(
 
     private fun getShopLocation(shopViewItem: ShopViewModel.ShopItem): Spanned {
         return MethodChecker.fromHtml(shopViewItem.location + " ")
+    }
+
+    private fun initButtonSeeShop(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.buttonSeeShop?.setOnClickListener {
+            shopListener.onItemClicked(shopViewItem)
+        }
     }
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {

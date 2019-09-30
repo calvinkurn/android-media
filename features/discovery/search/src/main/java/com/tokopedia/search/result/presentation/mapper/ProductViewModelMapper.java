@@ -45,6 +45,7 @@ public class ProductViewModelMapper {
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
         productViewModel.setResponseCode(searchProduct.getResponseCode());
+        productViewModel.setErrorMessage(searchProduct.getErrorMessage());
         productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
@@ -53,6 +54,8 @@ public class ProductViewModelMapper {
             productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
+        productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
+        productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
     }

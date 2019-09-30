@@ -2,7 +2,6 @@ package com.tokopedia.flight.orderlist.domain.model.mapper
 
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus
-import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationDetailsAttribute
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerAmentityEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerEntity
@@ -31,34 +30,19 @@ constructor() {
         }
     }
 
-    fun transform(entities: List<PassengerEntity>, cancellations: List<CancellationEntity>): List<FlightOrderPassengerViewModel> {
+    fun transform(entities: List<PassengerEntity>): List<FlightOrderPassengerViewModel> {
         return entities.map {
             return@map FlightOrderPassengerViewModel(
                     it.type,
-                    getPassengerStatus(it.id, cancellations),
+                    if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].status else 0,
+                    if (it.cancelStatus.size > 1) it.cancelStatus[1].status else 0,
                     it.title,
                     it.firstName,
                     it.lastName,
-                    transformAmenities(it.amenities))
+                    transformAmenities(it.amenities),
+                    if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].statusStr else "",
+                    if (it.cancelStatus.size > 1) it.cancelStatus[1].statusStr else "")
         }
-    }
-
-    private fun getPassengerStatus(passengerId: String, cancellations: List<CancellationEntity>): Int {
-        var status = 0
-        val passenger = CancellationDetailsAttribute(passengerId = passengerId)
-        cancellations.map {
-            if (it.details.contains(passenger)) {
-                if (it.status == FlightCancellationStatus.PENDING ||
-                        it.status == FlightCancellationStatus.REFUNDED ||
-                        it.status == FlightCancellationStatus.REQUESTED) {
-                    status = it.status
-                    return@map
-                } else if (it.status == FlightCancellationStatus.ABORTED) {
-                    status = it.status
-                }
-            }
-        }
-        return status
     }
 
     fun getCancelledPassengerCount(cancellations: List<CancellationEntity>): Int {

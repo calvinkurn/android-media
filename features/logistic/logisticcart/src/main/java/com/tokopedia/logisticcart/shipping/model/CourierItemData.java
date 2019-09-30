@@ -47,6 +47,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String priorityWarningboxMessage;
     private String priorityFeeMessage;
     private String priorityPdpMessage;
+    private OntimeDelivery ontimeDelivery;
 
     public CourierItemData() {
     }
@@ -359,6 +360,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityPdpMessage = priorityPdpMessage;
     }
 
+    public OntimeDelivery getOntimeDelivery() {
+        return ontimeDelivery;
+    }
+
+    public void setOntimeDelivery(OntimeDelivery ontimeDelivery) {
+        this.ontimeDelivery = ontimeDelivery;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -399,11 +408,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeInt(this.priorityPrice);
         dest.writeString(this.priorityInnactiveMessage);
         dest.writeString(this.priorityFormattedPrice);
+        dest.writeString(this.priorityInactiveMessage);
         dest.writeString(this.priorityDurationMessage);
         dest.writeString(this.priorityCheckboxMessage);
         dest.writeString(this.priorityWarningboxMessage);
         dest.writeString(this.priorityFeeMessage);
         dest.writeString(this.priorityPdpMessage);
+        dest.writeParcelable(this.ontimeDelivery, flags);
     }
 
     protected CourierItemData(Parcel in) {
@@ -440,11 +451,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityPrice = in.readInt();
         this.priorityInnactiveMessage = in.readString();
         this.priorityFormattedPrice = in.readString();
+        this.priorityInactiveMessage = in.readString();
         this.priorityDurationMessage = in.readString();
         this.priorityCheckboxMessage = in.readString();
         this.priorityWarningboxMessage = in.readString();
         this.priorityFeeMessage = in.readString();
         this.priorityPdpMessage = in.readString();
+        this.ontimeDelivery = in.readParcelable(OntimeDelivery.class.getClassLoader());
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.discovery.common.Mapper;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;

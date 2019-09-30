@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_campaign"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_campaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_10"
+        tools:text="Rp 160.180" />
+
+    <ImageView
+        android:id="@+id/iv_discount"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_4"
+        app:srcCompat="@drawable/ic_arrow_down_green" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Green_G500"
+        android:textSize="@dimen/sp_10"
+        tools:text="50%" />
+
+</LinearLayout>

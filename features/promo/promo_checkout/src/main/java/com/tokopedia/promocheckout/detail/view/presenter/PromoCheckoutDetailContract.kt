@@ -11,14 +11,14 @@ interface PromoCheckoutDetailContract {
     interface View : CustomerView{
         fun onErroGetDetail(e: Throwable)
         fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel)
-        fun onSuccessValidatePromoStacking(data: DataUiModel)
+        fun onSuccessCheckPromo(data: DataUiModel)
         fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel)
-        fun onErrorValidatePromo(e: Throwable)
-        fun onErrorValidatePromoStacking(e: Throwable)
+        fun onErrorCheckPromo(e: Throwable)
+        fun onErrorCheckPromoStacking(e: Throwable)
         fun showLoading()
         fun hideLoading()
         fun onErrorCancelPromo(e: Throwable)
-        fun onSuccessCancelPromoStacking()
+        fun onSuccessCancelPromo()
         fun showProgressLoading()
         fun hideProgressLoading()
     }

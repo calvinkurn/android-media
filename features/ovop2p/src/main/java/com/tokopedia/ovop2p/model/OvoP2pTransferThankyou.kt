@@ -19,7 +19,9 @@ class OvoP2pTransferThankyou() : Parcelable{
     @SerializedName("transfer_date")
     var trnsfrDate: String = ""
     @SerializedName("source")
-    lateinit var source: OvoP2pTransferSource
+    var source: OvoP2pTransferSource = OvoP2pTransferSource()
+    @SerializedName("destination")
+    var destination: OvoP2pTransferSource = OvoP2pTransferSource()
     @SerializedName("message")
     var msg: String = ""
     @SerializedName("reference_number")
@@ -35,6 +37,7 @@ class OvoP2pTransferThankyou() : Parcelable{
         srcFnd = parcel.readString()
         trnsfrDate = parcel.readString()
         source = parcel.readParcelable(OvoP2pTransferSource::class.java.classLoader)
+        destination = parcel.readParcelable(OvoP2pTransferSource::class.java.classLoader)
         msg = parcel.readString()
         refNum = parcel.readInt()
     }
@@ -47,6 +50,7 @@ class OvoP2pTransferThankyou() : Parcelable{
         parcel.writeString(srcFnd)
         parcel.writeString(trnsfrDate)
         parcel.writeParcelable(source, flags)
+        parcel.writeParcelable(destination, flags)
         parcel.writeString(msg)
         parcel.writeInt(refNum)
     }

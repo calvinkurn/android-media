@@ -21,8 +21,8 @@ public class EditTemplateRepositoryImpl implements EditTemplateRepository {
 
     @Override
     public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object>
-            parameters) {
-        return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(index, parameters);
+            parameters, boolean isSeller) {
+        return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(index, parameters, isSeller);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EditTemplateRepositoryImpl implements EditTemplateRepository {
     }
 
     @Override
-    public Observable<EditTemplateViewModel> deleteTemplate(int index) {
-        return templateChatFactory.createCloudEditTemplateDataSource().deleteTemplate(index);
+    public Observable<EditTemplateViewModel> deleteTemplate(int index, boolean isSeller) {
+        return templateChatFactory.createCloudEditTemplateDataSource().deleteTemplate(index, isSeller);
     }
 }

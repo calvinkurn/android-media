@@ -8,14 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -23,6 +22,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author anggaprasetiyo on 7/20/17.
@@ -72,7 +72,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.WEBVIEW})
+    @DeepLink({ApplinkConst.WEBVIEW})
     public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, WEB_URL
@@ -110,11 +110,9 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.WEBVIEW_PARENT_HOME})
+    @DeepLink({ApplinkConst.WEBVIEW_PARENT_HOME})
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, WEB_URL
-        );
+        String webUrl = extras.getString(KEY_APP_LINK_QUERY_URL, WEB_URL);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         if (context.getApplicationContext() instanceof TkpdCoreRouter) {

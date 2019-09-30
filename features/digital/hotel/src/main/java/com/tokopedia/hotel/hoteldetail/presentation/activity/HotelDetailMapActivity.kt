@@ -12,6 +12,10 @@ import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailMapFragm
  */
 class HotelDetailMapActivity: HotelBaseActivity() {
 
+    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         updateTitle(intent.getStringExtra(EXTRA_NAME))

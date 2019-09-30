@@ -36,7 +36,8 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
     override fun bind(element: CommissionDetailHeaderViewModel) {
         productImage.loadImage(element.productImg)
         productName.text = element.productName
-        productPrice.text = element.priceFmt
+        val priceText = getString(R.string.af_price_title) + " " +  element.priceFmt
+        productPrice.text = priceText
         productShop.text = element.shopName
         commission.text = element.commissionFmt
         clickNumber.text = element.totalClick.toString()

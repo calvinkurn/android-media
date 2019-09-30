@@ -7,8 +7,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,8 +24,8 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
@@ -62,9 +60,6 @@ class ShopSettingsEtalaseListFragment :
     private var shopEtalaseIdToDelete: String? = null
     private var shopEtalaseNameToDelete: String? = null
     private var needReload: Boolean = false
-    private var recyclerView: RecyclerView? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
-
 
     private var onShopSettingsEtalaseFragmentListener: OnShopSettingsEtalaseFragmentListener? = null
 
@@ -118,12 +113,12 @@ class ShopSettingsEtalaseListFragment :
     }
 
     override fun getSearchInputView(view: View): SearchInputView {
-        return view.findViewById<View>(R.id.search_input_view) as SearchInputView
+        return view.findViewById(R.id.search_input_view)
     }
 
-    override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
-    }
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun hasCustomEtalaseAtLeast2(shopEtalaseViewModelList: List<ShopEtalaseViewModel>): Boolean {
         var count = 0
@@ -164,15 +159,6 @@ class ShopSettingsEtalaseListFragment :
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        swipeRefreshLayout = super.getSwipeRefreshLayout(view)
-        return swipeRefreshLayout
-    }
-
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
     }
 
     private fun onAddEtalaseButtonClicked() {

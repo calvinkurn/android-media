@@ -9,12 +9,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class RecommendationProductAdapter(private var product: RecommendationWidget,
                                    private val userActiveListener: UserActiveListener,
                                    private var pageName: String,
-                                   private var trackingQueue: TrackingQueue) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
+                                   private val productDetailTracking: ProductDetailTracking) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
@@ -29,7 +28,6 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
     }
 
     inner class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
-        private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {
@@ -38,11 +36,11 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title, trackingQueue)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title, trackingQueue)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
         }
 
         override fun onClickTopAds(item: RecommendationItem) {

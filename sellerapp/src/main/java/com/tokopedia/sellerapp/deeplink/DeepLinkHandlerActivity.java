@@ -17,6 +17,9 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
@@ -73,6 +76,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -213,7 +218,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        Intent intent = RouteManager.getIntent(context,OPEN_SHOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
@@ -18,7 +17,11 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalHome;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -27,12 +30,10 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
@@ -46,7 +47,6 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
-import com.tokopedia.home_recom.HomeRecommendationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
@@ -54,6 +54,7 @@ import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
@@ -64,7 +65,10 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
+import rx.Subscriber;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,11 +76,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import rx.Subscriber;
 
 
 /**
@@ -208,6 +207,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomeRecommendation(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
+                case DeepLinkChecker.SIMILAR_PRODUCT:
+                    openSimilarProduct(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
+                    break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -215,6 +218,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.INVOICE:
                     openInvoice(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
+                    break;
+                case DeepLinkChecker.HOTEL:
+                    openHotel();
+                    screenName = "";
                     break;
                 /*
                 case RECHARGE:
@@ -325,6 +332,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
 
         context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openHotel() {
+        RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
     }
 
@@ -549,9 +561,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
         String source = uriData.getQueryParameter("ref");
-        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
-                linkSegment.size() > 1 ? linkSegment.get(1) : "",
-                source == null ? "" : source);
+        String productId = linkSegment.size() > 1 ? linkSegment.get(1) : "";
+        Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openSimilarProduct(final List<String> linkSegment, final Uri uriData) {
+        String source = uriData.getQueryParameter("ref");
+        String productId = linkSegment.size() > 2 ? linkSegment.get(1) : "";
+        Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_SIMILAR_PRODUCT);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
         context.startActivity(intent);
         context.finish();
     }
@@ -577,8 +602,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                            linkSegment.get(0), linkSegment.get(1)));
+                    //Add Affiliate string for tracking
+                    String affiliateString = "";
+                    if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
+                        affiliateString = uriData.getQueryParameter("aff");
+                    }
+
+                    context.startActivity(RouteManager.getIntent(context,
+                            ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
+                            linkSegment.get(0),
+                            linkSegment.get(1),
+                            affiliateString));
                 } else {
                     if (!GlobalConfig.DEBUG) {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
@@ -690,7 +724,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String q = uriData.getQueryParameter("q");
         
         String applink = TextUtils.isEmpty(q) ?
-                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
         return applink + "?" + uriData.getQuery();

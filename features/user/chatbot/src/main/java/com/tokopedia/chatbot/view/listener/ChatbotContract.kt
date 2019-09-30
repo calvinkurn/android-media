@@ -1,12 +1,13 @@
 package com.tokopedia.chatbot.view.listener
 
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -25,6 +26,16 @@ interface ChatbotContract {
         fun clearChatText()
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
+
+        fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel)
+
+        fun isBackAllowed(isBackAllowed: Boolean)
+
+        fun onClickLeaveQueue()
+
+        fun showErrorToast(it: Throwable)
+
+        fun updateToolbar(profileName: String?, profileImage: String?)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

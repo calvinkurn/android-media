@@ -9,6 +9,8 @@ public class DeviceDiagParams {
     private String deviceId;
     @SerializedName("NewPrice")
     private int newPrice;
+    @SerializedName("TradeInType")
+    private int tradeInType;
 
     public int getProductId() {
         return productId;
@@ -32,5 +34,13 @@ public class DeviceDiagParams {
 
     public void setNewPrice(int newPrice) {
         this.newPrice = newPrice;
+    }
+
+    public int getTradeInType() {
+        return tradeInType;
+    }
+
+    public void setTradeInType(int tradeInType) {
+        this.tradeInType = tradeInType;
     }
 }

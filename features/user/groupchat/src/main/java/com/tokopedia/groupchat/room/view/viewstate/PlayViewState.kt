@@ -11,6 +11,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 
 /**
  * @author : Steven 13/02/19
@@ -50,7 +51,7 @@ interface PlayViewState {
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)
     fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton)
     fun setBottomView()
-    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
+    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentsViewModel)
     fun onErrorGetStickyComponent()
     fun errorViewShown(): Boolean
     fun autoAddSprintSale()

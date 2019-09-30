@@ -9,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
-import com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.shop.open.view.listener.ShopOpenCheckDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
@@ -51,11 +48,11 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_open_routing, container, false);
-        loadingLayout = view.findViewById(R.id.layout_loading);
-        errorLayout = view.findViewById(R.id.layout_error);
-        tvMessageRetry = view.findViewById(R.id.message_retry);
-        View retryButton = view.findViewById(R.id.button_retry);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_open_routing, container, false);
+        loadingLayout = view.findViewById(com.tokopedia.seller.R.id.layout_loading);
+        errorLayout = view.findViewById(com.tokopedia.core2.R.id.layout_error);
+        tvMessageRetry = view.findViewById(com.tokopedia.abstraction.R.id.message_retry);
+        View retryButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,11 +68,11 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Override
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
         boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
-        if (isReservingDomain) {
-            goToShopOpenMandatory(responseIsReserveDomain);
-        } else {
+//        if (isReservingDomain) {
+//            goToShopOpenMandatory(responseIsReserveDomain);
+//        } else {
             goToShopOpenDomain();
-        }
+//        }
     }
 
     @Override
@@ -98,11 +95,11 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
         getActivity().finish();
     }
 
-    private void goToShopOpenMandatory(ResponseIsReserveDomain responseIsReserveDomain) {
-        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), responseIsReserveDomain);
-        startActivity(intent);
-        getActivity().finish();
-    }
+//    private void goToShopOpenMandatory(ResponseIsReserveDomain responseIsReserveDomain) {
+//        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), responseIsReserveDomain);
+//        startActivity(intent);
+//        getActivity().finish();
+//    }
 
     @Override
     protected String getScreenName() {

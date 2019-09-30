@@ -1,18 +1,20 @@
 package com.tokopedia.merchantvoucher.common.widget
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import android.content.ClipData
 import android.content.ClipboardManager
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
 
 
 /*
@@ -51,14 +53,6 @@ class MerchantVoucherView : CustomVoucherView {
 
     private fun init() {
         clipToPadding = false
-        val dp2 = dpToPx(2f);
-        cornerRadius = 2 * dp2
-        mScallopRadius = 4 * dp2
-        mScallopRelativePosition = 0.59f
-        mShadowRadius = dp2
-        mDashWidth = dp2
-        mDashGap = 2 * dp2
-        mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
         btnUseVoucher.visibility = View.GONE
@@ -66,9 +60,13 @@ class MerchantVoucherView : CustomVoucherView {
         //btnUseVoucher.text = context.getString(R.string.use_voucher)
         //TOGGLE_MVC_OFF
         btnUseVoucher.text = context.getString(R.string.copy_to_clipboard)
-        btnUseVoucher.setTextColor(ContextCompat.getColor(this.context, R.color.font_black_secondary_54))
-        btnUseVoucher.setBackgroundResource(R.drawable.bg_button_white_border)
-
+        MethodChecker.setBackground(
+                btnUseVoucher,
+                MethodChecker.getDrawable(context, R.drawable.bg_voucher_button)
+        )
+        btnUseVoucher.setTextColor(
+                context.resources.getColorStateList(R.color.text_color_voucher_button)
+        )
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {
                 //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
@@ -86,14 +84,34 @@ class MerchantVoucherView : CustomVoucherView {
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
-            val draw = when (merchantVoucherViewModel.ownerId) {
-                MerchantVoucherOwnerTypeDef.TYPE_TOKOPEDIA -> R.drawable.ic_big_notif_customerapp
-                else -> R.drawable.ic_store_logo}
-            ivVoucherLogo.setImageDrawable( MethodChecker.getDrawable(getContext(),  draw))
-            tvVoucherTitle.text = context.getString(R.string.voucher_title_x_x,
+            var voucherImageUrl = ""
+            when (merchantVoucherViewModel.merchantVoucherType) {
+                TYPE_DISCOUNT, TYPE_CASHBACK -> {
+                    voucherImageUrl = DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
+                }
+                TYPE_FREE_ONGKIR -> {
+                    voucherImageUrl = DELIVERY_VOUCHER_IMAGE_URL
+                }
+            }
+            ImageHandler.loadImage(
+                    context,
+                    iv_voucher_type,
+                    voucherImageUrl,
+                    R.drawable.ic_loading_image
+            )
+            val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
-            tvVoucherDesc.text = merchantVoucherViewModel.getMinSpendLongString(context)
+            val spannedVoucherTitle = SpanText(
+                    voucherTitle,
+                    merchantVoucherViewModel.getAmountShortString()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
+            tvVoucherTitle.text = spannedVoucherTitle
+            val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
+            tvVoucherDesc.text = SpanText(
+                    voucherDesc,
+                    merchantVoucherViewModel.getMinSpendAmountShortString()
+            ).addBoldSpanWithFontFamily("").getCharSequence()
             tvCode.text = merchantVoucherViewModel.voucherCode
             var isOwner = false
             onMerchantVoucherViewListener?.run {
@@ -101,17 +119,16 @@ class MerchantVoucherView : CustomVoucherView {
             }
             when {
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && !isOwner) -> {
+                    btnUseVoucher.isEnabled = true
                     btnUseVoucher.visibility = View.VISIBLE
-                    tvVoucherStatus.visibility = View.GONE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && isOwner) -> {
                     btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.visibility = View.GONE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_RUN_OUT) -> {
-                    btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.text = context.getString(R.string.run_out)
-                    tvVoucherStatus.visibility = View.VISIBLE
+                    btnUseVoucher.text = context.getString(R.string.run_out)
+                    btnUseVoucher.visibility = View.VISIBLE
+                    btnUseVoucher.isEnabled = false
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
                     //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
@@ -120,8 +137,16 @@ class MerchantVoucherView : CustomVoucherView {
                     tvVoucherStatus.visibility = View.VISIBLE*/
 
                     //TOGGLE_MVC_OFF
+                    MethodChecker.setBackground(
+                            btnUseVoucher,
+                            MethodChecker.getDrawable(context, R.drawable.bg_voucher_button_in_use)
+                    )
+                    btnUseVoucher.setTextColor(
+                            MethodChecker.getColor(context, R.color.white)
+                    )
                     btnUseVoucher.visibility = View.VISIBLE
-                    tvVoucherStatus.visibility = View.GONE
+                    btnUseVoucher.isEnabled = false
+                    btnUseVoucher.text = context.getString(R.string.in_use)
                 }
             }
         }

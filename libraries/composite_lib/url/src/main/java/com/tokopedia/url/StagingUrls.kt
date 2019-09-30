@@ -40,6 +40,6 @@ internal val staging = Url(
         BOOKING = "https://booking-staging.tokopedia.com/",
         TIKET = "https://tiket-staging.tokopedia.com/",
         IMT = "https://imt-staging.tokopedia.com/",
-        LAKU6 = "https://wst.laku6.com",
+        LAKU6 = "http://wst.laku6.com",
         SELLER = "https://seller-staging.tokopedia.com/"
 )

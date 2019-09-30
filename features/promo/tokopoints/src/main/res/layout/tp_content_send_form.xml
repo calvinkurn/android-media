@@ -1,82 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="@dimen/tp_padding_medium">
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapper_email"
-        style="@style/HintTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/tp_label_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_tp_custom_dialog"
+        android:padding="@dimen/dp_16">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/edit_email"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/iv_cancel"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:tint="@color/tp_cancel_image_tint_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_action_x" />
+
+        <ProgressBar
+            android:id="@+id/progress_send"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/font_large" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/button_send"
+            app:layout_constraintLeft_toLeftOf="@+id/button_send"
+            app:layout_constraintRight_toRightOf="@+id/button_send"
+            app:layout_constraintTop_toTopOf="@+id/button_send" />
 
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapper_text_count"
-        style="@style/HintTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:hint="@string/tp_label_notes"
-        app:counterEnabled="true"
-        app:counterMaxLength="50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wrapper_email">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/edit_notes"
-            android:layout_width="match_parent"
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/wrapper_text_count"
+            style="@style/HintTextInputLayout"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:maxLength="50"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/font_large" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            android:layout_marginTop="@dimen/dp_16"
+            android:hint="@string/tp_label_notes"
+            app:counterEnabled="true"
+            app:counterMaxLength="160"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wrapper_email">
 
-    <Button
-        android:id="@+id/button_send"
-        android:layout_width="0dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_32"
-        android:layout_weight="1"
-        android:background="@drawable/bg_button_green"
-        android:gravity="center"
-        android:text="@string/tp_label_send"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/tp_text_size_small"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wrapper_text_count" />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_notes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:maxLength="160"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_large" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-    <ProgressBar
-        android:id="@+id/progress_send"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/button_send"
-        app:layout_constraintLeft_toLeftOf="@+id/button_send"
-        app:layout_constraintRight_toRightOf="@+id/button_send"
-        app:layout_constraintTop_toTopOf="@+id/button_send" />
 
-</android.support.constraint.ConstraintLayout>
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/wrapper_email"
+            style="@style/HintTextInputLayout"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:hint="@string/tp_label_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cancel">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_large" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/button_send"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginTop="@dimen/dp_32"
+            android:background="@drawable/bg_button_orange_dynamic"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/tp_label_send"
+            android:textAllCaps="false"
+            android:textColor="@color/tp_btn_sent_gift_color"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wrapper_text_count"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/tp_title_kirim_coupon"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
+            app:layout_constraintStart_toEndOf="@id/iv_cancel"
+            app:layout_constraintTop_toTopOf="@id/iv_cancel"
+            app:typographyType="heading_3" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
+

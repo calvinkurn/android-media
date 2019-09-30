@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
@@ -71,7 +72,6 @@ public class ShopListFragment
 
     public static ShopListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
-
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
 
         ShopListFragment shopListFragment = new ShopListFragment();
@@ -110,12 +110,11 @@ public class ShopListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
 
-        return inflater.inflate(R.layout.fragment_shop_list_search, null);
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         initListener();
         bindView(view);
         if (getUserVisibleHint()) {
@@ -130,7 +129,7 @@ public class ShopListFragment
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
 
-        recyclerView = rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerViewSearchShop);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
@@ -171,6 +170,11 @@ public class ShopListFragment
                 && isNextPageAvailable;
     }
 
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.SHOP);
+    }
+
     private void loadShopFirstTime() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
 
@@ -206,8 +210,8 @@ public class ShopListFragment
         if(userSession == null) return "";
 
         return userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId());
+                AuthHelperJava.md5(userSession.getUserId()) :
+                AuthHelperJava.md5(getRegistrationId());
     }
 
     private void loadDataFromPresenter() {
@@ -343,14 +347,7 @@ public class ShopListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
         loadShopFirstTime();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onFirstTimeLaunch();
     }
 
     @Override
@@ -479,11 +476,6 @@ public class ShopListFragment
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onChangeList() {
     }
 
@@ -514,5 +506,10 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void removeLoading() {
+        removeSearchPageLoading();
     }
 }

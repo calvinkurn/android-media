@@ -28,9 +28,9 @@ public class CartDetail {
     @SerializedName("checkbox_state")
     @Expose
     private boolean checkboxState;
-    @SerializedName("similar_product_url")
+    @SerializedName("similar_product")
     @Expose
-    private String similarProductUrl;
+    private SimilarProduct similarProduct;
 
     public int getCartId() {
         return cartId;
@@ -52,7 +52,7 @@ public class CartDetail {
         return checkboxState;
     }
 
-    public String getSimilarProductUrl() {
-        return similarProductUrl;
+    public SimilarProduct getSimilarProduct() {
+        return similarProduct;
     }
 }

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartlist.SimilarProduct;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
@@ -275,7 +276,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            if (!data.getCartItemData().isDisableAllProducts()) {
+            if (!data.getCartItemData().isDisableAllProducts() || (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
                 setWarningAndErrorVisibility(data);
@@ -631,8 +632,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
 
-            String similarProductUrl = data.getCartItemData().getSimilarProductUrl();
-            if (!TextUtils.isEmpty(similarProductUrl)) {
+            SimilarProduct similarProduct = data.getCartItemData().getSimilarProduct();
+            if (similarProduct != null) {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
                 tickerError.setDescriptionClickEvent(new TickerCallback() {
                     @Override
@@ -645,9 +646,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
                     }
                 });
-                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_link, similarProduct.getUrl(), similarProduct.getText()));
                 actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
-            } else {
+            } else if (!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle())) {
                 String errorDescription = data.getCartItemData().getErrorMessageDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
                     tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
@@ -661,7 +662,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
-            tickerError.requestLayout();
+            tickerError.post(() -> {
+                tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerError.requestLayout();
+            });
             layoutError.setVisibility(View.VISIBLE);
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
@@ -684,7 +689,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            tickerWarning.requestLayout();
+            tickerWarning.post(() -> {
+                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerWarning.requestLayout();
+            });
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);

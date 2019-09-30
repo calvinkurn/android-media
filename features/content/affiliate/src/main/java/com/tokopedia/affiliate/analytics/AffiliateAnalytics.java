@@ -424,6 +424,18 @@ public class AffiliateAnalytics {
         );
     }
 
+    public void onAfterClickContentDetail(String contentId) {
+        getAnalyticTracker().sendEnhanceEcommerceEvent(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CONTENT_DETAIL,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_AFFILIATE_CDP_EXTERNAL,
+                        AffiliateEventTracking.Action.CLICK_AFFILIATE_CDP_EXTERNAL,
+                        contentId
+                )
+        );
+    }
+
     public void onAfterClickSaldo() {
         getAnalyticTracker().sendEnhanceEcommerceEvent(
                 setDefaultDataWithUserId(

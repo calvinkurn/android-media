@@ -3,20 +3,19 @@ package com.tokopedia.loginregister.common.analytics
 import android.app.Activity
 import android.content.Context
 import android.util.Patterns
-
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
+import com.tokopedia.analytics.cashshield.CashShield
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-
-import java.util.HashMap
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -26,6 +25,7 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInterface) {
+    private var cashShield: CashShield? = null
 
     companion object {
 
@@ -543,7 +543,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventSuccessRegisterEmail(applicationContext: Context, userId: Int, name: String, email: String) {
+    fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -592,7 +592,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
 
-    fun eventSuccessLogin(actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+    fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithFacebook()
@@ -759,6 +760,31 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     }
 
+    fun initCashShield(context: Context?) {
+        context?.let {
+            getCashShield(it).refreshSession()
+        }
+    }
+
+    fun sendCashShield(context: Context?) {
+        context?.let {
+            getCashShield(it).send()
+        }
+    }
+
+    private fun getCashShield(context: Context): CashShield {
+        if(cashShield == null) {
+            cashShield = CashShield(context)
+        }
+
+        return cashShield!!
+    }
+
+    fun onDestroy() {
+        cashShield?.cancel()
+        cashShield = null
+    }
+
     fun getLoginMethodMoengage(loginMethod: String?): String? {
         return when (loginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> "Email"
@@ -769,5 +795,4 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
             else -> loginMethod
         }
     }
-
 }

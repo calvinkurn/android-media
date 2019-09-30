@@ -16,15 +16,16 @@ class ConfirmationDialogActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme_NoActionBar_ActivityDialog)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         }
         setContentView(R.layout.layout_dialog_autoads_confirmation)
-        findViewById<View>(R.id.negative_button).setOnClickListener {
+        findViewById<View>(com.tokopedia.abstraction.R.id.negative_button).setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
-        findViewById<View>(R.id.positive_button).setOnClickListener {
+        findViewById<View>(com.tokopedia.abstraction.R.id.positive_button).setOnClickListener {
             setResult(Activity.RESULT_OK)
             finish()
         }

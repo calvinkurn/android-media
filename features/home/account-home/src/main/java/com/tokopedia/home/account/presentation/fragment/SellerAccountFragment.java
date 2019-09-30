@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -28,6 +27,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
-//    private RemoteConfig remoteConfig;
 
     public static SellerAccountFragment newInstance() {
         SellerAccountFragment fragment = new SellerAccountFragment();
@@ -164,26 +163,28 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void showError(String message) {
-        if (getView() != null) {
+        if (getView() != null && getUserVisibleHint()) {
             ToasterError.make(getView(), message)
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+
         fpmSeller.stopTrace();
     }
 
     @Override
     public void showError(Throwable e) {
-        if (getView() != null && getContext() != null) {
+        if (getView() != null && getContext() != null && getUserVisibleHint()) {
             ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+
         fpmSeller.stopTrace();
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         showError(getString(R.string.error_no_internet_connection));
     }
 

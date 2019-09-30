@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
@@ -28,11 +30,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.ViewHolder> {
+public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<CouponValueEntity> mItems;
-    private CatalogPurchaseRedemptionPresenter mPresenter;
-    private boolean mIsLimitEnable;
+    private static final int VIEW_HEADER = 0;
+    private static final int VIEW_DATA = 1;
+
+    // Define a ViewHolder for Footer view
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(v -> {
+                // Do whatever you want on clicking the item
+                RouteManager.route(v.getContext(), ApplinkConstant.COUPON_LISTING);
+            });
+        }
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
@@ -55,118 +68,130 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         }
     }
 
-    public CouponListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CouponValueEntity> items) {
+    public CouponListAdapter(List<CouponValueEntity> items) {
         this.mItems = items;
-        this.mPresenter = presenter;
-    }
 
-    public CouponListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CouponValueEntity> items, boolean isLimitEnable) {
-        this.mItems = items;
-        this.mPresenter = presenter;
-        this.mIsLimitEnable = isLimitEnable;
-
+        if (mItems != null) {
+            mItems.add(0, new CouponValueEntity());
+        }
     }
 
     @Override
-    public CouponListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tp_item_my_coupon, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView;
+
+        if (viewType == VIEW_HEADER) {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.tp_item_my_coupon_section_header, parent, false);
+            ;
+            HeaderViewHolder vh = new HeaderViewHolder(itemView);
+            return vh;
+        }
+
+        itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tp_item_my_coupon_section, parent, false);
 
         return new CouponListAdapter.ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder pHolder, int position) {
         final CouponValueEntity item = mItems.get(position);
-        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner,
-                TextUtils.isEmpty(item.getThumbnailUrlMobile()) ? item.getImageUrlMobile() : item.getThumbnailUrlMobile());
 
-        if (item.getUsage() != null) {
-            holder.label.setVisibility(View.VISIBLE);
-            holder.value.setVisibility(View.VISIBLE);
-            holder.imgLabel.setVisibility(View.VISIBLE);
-            holder.value.setText(item.getUsage().getUsageStr().trim());
-            holder.label.setText(item.getUsage().getText());
-        }
+        if (pHolder instanceof CouponListAdapter.ViewHolder) {
+            CouponListAdapter.ViewHolder holder = (CouponListAdapter.ViewHolder) pHolder;
+            ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner,
+                    TextUtils.isEmpty(item.getThumbnailUrlMobile()) ? item.getImageUrlMobile() : item.getThumbnailUrlMobile());
 
-        if (TextUtils.isEmpty(item.getMinimumUsageLabel())) {
-            holder.tvMinTxnLabel.setVisibility(View.GONE);
-            holder.ivMinTxn.setVisibility(View.GONE);
-        } else {
-            holder.ivMinTxn.setVisibility(View.VISIBLE);
-            holder.tvMinTxnLabel.setVisibility(View.VISIBLE);
-            holder.tvMinTxnLabel.setText(item.getMinimumUsageLabel());
-        }
+            if (item.getUsage() != null) {
+                holder.label.setVisibility(View.VISIBLE);
+                holder.value.setVisibility(View.VISIBLE);
+                holder.imgLabel.setVisibility(View.VISIBLE);
+                holder.value.setText(item.getUsage().getUsageStr().trim());
+                holder.label.setText(item.getUsage().getText());
+            }
 
-        if (TextUtils.isEmpty(item.getMinimumUsage())) {
-            holder.tvMinTxnValue.setVisibility(View.GONE);
-        } else {
-            holder.tvMinTxnValue.setVisibility(View.VISIBLE);
-            holder.tvMinTxnValue.setText(item.getMinimumUsage());
-        }
+            if (TextUtils.isEmpty(item.getMinimumUsageLabel())) {
+                holder.tvMinTxnLabel.setVisibility(View.GONE);
+                holder.ivMinTxn.setVisibility(View.GONE);
+            } else {
+                holder.ivMinTxn.setVisibility(View.VISIBLE);
+                holder.tvMinTxnLabel.setVisibility(View.VISIBLE);
+                holder.tvMinTxnLabel.setText(item.getMinimumUsageLabel());
+            }
 
-        holder.imgBanner.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
-            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+            if (TextUtils.isEmpty(item.getMinimumUsage())) {
+                holder.tvMinTxnValue.setVisibility(View.GONE);
+            } else {
+                holder.tvMinTxnValue.setVisibility(View.VISIBLE);
+                holder.tvMinTxnValue.setText(item.getMinimumUsage());
+            }
 
-            sendClickEvent(holder.imgBanner.getContext(), item, position);
-        });
+            holder.imgBanner.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
+                holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+            });
 
 
-        /*This section is exclusively for handling flash-sale timer*/
-        if (holder.timer != null) {
-            holder.timer.cancel();
-        }
+            /*This section is exclusively for handling flash-sale timer*/
+            if (holder.timer != null) {
+                holder.timer.cancel();
+            }
 
-        if (item.getUsage().getActiveCountDown() < 1) {
-            if (item.getUsage().getExpiredCountDown() > 0
-                    && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
-                holder.progressTimer.setVisibility(View.VISIBLE);
-                holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
-                    @Override
-                    public void onTick(long l) {
-                        item.getUsage().setExpiredCountDown(l / 1000);
-                        int seconds = (int) (l / 1000) % 60;
-                        int minutes = (int) ((l / (1000 * 60)) % 60);
-                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
-                        holder.progressTimer.setProgress((int) l / 1000);
-                        holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
-                    }
+            if (item.getUsage().getActiveCountDown() < 1) {
+                if (item.getUsage().getExpiredCountDown() > 0
+                        && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                    holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                    holder.progressTimer.setVisibility(View.VISIBLE);
+                    holder.value.setVisibility(View.VISIBLE);
+                    holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
+                        @Override
+                        public void onTick(long l) {
+                            item.getUsage().setExpiredCountDown(l / 1000);
+                            int seconds = (int) (l / 1000) % 60;
+                            int minutes = (int) ((l / (1000 * 60)) % 60);
+                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.progressTimer.setProgress((int) l / 1000);
+                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                        }
 
-                    @Override
-                    public void onFinish() {
-                        holder.value.setText("00 : 00 : 00");
-                    }
-                }.start();
+                        @Override
+                        public void onFinish() {
+                            holder.value.setText("00 : 00 : 00");
+                        }
+                    }.start();
+                } else {
+                    holder.progressTimer.setVisibility(View.GONE);
+                    holder.value.setPadding(0, 0, 0, 0);
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+
+                }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setPadding(0, 0, 0, 0);
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
-
             }
-        } else {
-            holder.progressTimer.setVisibility(View.GONE);
-            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+
+            enableOrDisableImages(holder, item);
+        } else if (pHolder instanceof HeaderViewHolder) {
         }
-        enableOrDisableImages(holder, item);
+
     }
 
     private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
-        if(item.getUsage()!=null) {
+        if (item.getUsage() != null) {
             if (item.getUsage().getActiveCountDown() > 0
                     || item.getUsage().getExpiredCountDown() <= 0) {
                 disableImages(holder);
             } else {
                 enableImages(holder);
             }
-        }else{
+        } else {
             disableImages(holder);
         }
     }
@@ -183,66 +208,20 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        if (mIsLimitEnable) {
-            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
-        } else {
-            return mItems.size();
-        }
+        return mItems.size();
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-
-        CouponValueEntity data = mItems.get(holder.getAdapterPosition());
-        if (data == null) {
-            return;
+    public int getItemViewType(int position) {
+        if (mItems == null) {
+            return super.getItemViewType(position);
         }
 
-        if (!holder.isVisited) {
-            Map<String, String> item = new HashMap<>();
-            item.put("id", String.valueOf(data.getCatalogId()));
-            item.put("name", data.getTitle());
-            item.put("position", String.valueOf(holder.getAdapterPosition()));
-            item.put("creative", data.getTitle());
-            item.put("creative_url", data.getImageUrlMobile());
-            item.put("promo_code", data.getCode());
-
-            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-            promotions.put("promotions", Arrays.asList(item));
-
-            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
-            promoView.put("promoView", promotions);
-
-            AnalyticsTrackerUtil.sendECommerceEvent(holder.value.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                    data.getTitle(), promoView);
-
-            holder.isVisited = true;
+        if (position == 0) {
+            // This is where we'll add footer.
+            return VIEW_HEADER;
         }
-    }
 
-    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
-        Map<String, String> item = new HashMap<>();
-        item.put("id", String.valueOf(data.getCatalogId()));
-        item.put("name", data.getTitle());
-        item.put("position", String.valueOf(position));
-        item.put("creative", data.getTitle());
-        item.put("creative_url", data.getImageUrlMobile());
-        item.put("promo_code", data.getCode());
-
-        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-        promotions.put("promotions", Arrays.asList(item));
-
-        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoView", promotions);
-
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.getTitle(), promoClick);
+        return VIEW_DATA;
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_10">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_atc_done_pattern"
+            />
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:padding="@dimen/dp_8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4">
+
+            <ImageView
+                android:id="@+id/image_view_added_product"
+                android:layout_width="@dimen/dp_40"
+                android:src="@drawable/ic_logistic_som_tokocabang_normal"
+                android:layout_height="@dimen/dp_40"
+                android:layout_margin="@dimen/dp_8"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="@color/Neutral_N700"
+                    android:id="@+id/text_view_added_product"
+                    android:text="@string/atc_done_add_product_success"
+                    app:typographyType="heading_4" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_view_product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    app:typographyType="body_2"
+                    android:textColor="@color/Neutral_N700"
+                    tools:text="Blus Lengan pendek Wanita gaya" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_go_to_cart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/atc_done_see_cart"
+            android:textAllCaps="false"
+            android:gravity="center"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary"
+            />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -14,16 +14,22 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
+import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
+import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.annotation.RegEx
-
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A activity class for default activity when opening recommendation page from deeplink
+ */
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
-        private const val REF = "ref"
+        private const val REF = "REF"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -39,73 +45,85 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
-    object DeeplinkIntents{
-        @JvmStatic
-        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
-        fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", "")
-        }
-
-        @JvmStatic
-        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, uri.lastPathSegment, "") ?: Intent()
-        }
-        @JvmStatic
-        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE_WITH_REF)
-        fun getDefaultCallingIntentWithRef(context: Context, extras: Bundle): Intent{
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
-        }
-
-        @JvmStatic
-        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE_WITH_REF)
-        fun getCallingIntentWithRef(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
-                    uri.lastPathSegment,
-                    uri.getQueryParameter(REF) ?: "") ?: Intent()
-        }
-    }
-
+    /**
+     * [getNewFragment] is override from [BaseSimpleActivity]
+     * @return default fragment it will shown at activity
+     */
     override fun getNewFragment(): Fragment {
-        return if(intent.data != null && intent?.data?.pathSegments?.isNotEmpty() == true){
-            val isNumber = intent?.data?.lastPathSegment?.matches("-?\\d+(\\.\\d+)?".toRegex()) ?: false
-            RecommendationFragment.newInstance(if(isNumber) intent?.data?.lastPathSegment ?: "" else "", intent?.data?.getQueryParameter(REF) ?: "")
-        } else if (intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
-            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID), intent.getStringExtra(REF))
-        } else {
-            RecommendationFragment.newInstance()
+        return when{
+            intent.data != null -> {
+                val ref = intent.data?.getQueryParameter("ref") ?: ""
+                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
+                        if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
+                        else "", ref)
+                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", ref)
+            }
+            else -> {
+                RecommendationFragment.newInstance()
+            }
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        TrackingQueue(this).sendAll()
+    /**
+     * Function [isSimilarProduct]
+     * This function will checking this is from deeplink similar or
+     * deeplink home recom landing page
+     * @param url is string variable for checking this is number or not
+     * @return boolean
+     */
+    private fun isSimilarProduct(url: String): Boolean{
+        return url.contains("/d/")
     }
 
+    /**
+     * Function [isNumber]
+     * This function will checking input is number or not
+     * @param text is string variable for checking this is number or not
+     * @return boolean
+     */
+    private fun isNumber(text: String): Boolean{
+        return (text.toIntOrNull() != null)
+    }
+
+    /**
+     * [getComponent] is override from [BaseSimpleActivity]
+     * this function will handle dependency injection with return dagger component
+     * for a whole fragment it will show at this activity
+     */
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
 
+    /**
+     * [onOptionsItemSelected] is override from [BaseSimpleActivity]
+     * this function will handle options item selected
+     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId){
             android.R.id.home -> {
-                RecommendationPageTracking.eventUserClickBack()
-                RouteManager.route(this, ApplinkConst.HOME)
-                this.finish()
+                onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    /**
+     * [onBackPressed] is override from [BaseSimpleActivity]
+     * this function will handle user press back with back button at device
+     * and send tracking also routing to home
+     */
     override fun onBackPressed() {
-        RecommendationPageTracking.eventUserClickBack()
-        RouteManager.route(this, ApplinkConst.HOME)
+        if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
+            if(isNumber(intent.data?.pathSegments?.get(1) ?: "")){
+                RecommendationPageTracking.eventUserClickBackWithProductId()
+            }else{
+                RecommendationPageTracking.eventUserClickBack()
+            }
+        } else {
+            SimilarProductRecommendationTracking.eventClickBackButton()
+        }
+        if(isTaskRoot) RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
     }
 }

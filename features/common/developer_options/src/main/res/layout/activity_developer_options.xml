@@ -1,4 +1,6 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,6 +14,18 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/access_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Access Token"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/reset_onboarding"
@@ -82,6 +96,16 @@
             android:text="View Network Log"
             android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/device_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Device ID: 1213124" />
+
         <CheckBox
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
@@ -112,68 +136,30 @@
             android:padding="@dimen/margin_small"
             android:text="Enable ANR Debugger" />
 
-
-        <LinearLayout
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/remote_config_prefix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="@string/remote_config_prefix_placeholder"
+            app:backgroundTint="@color/Green_G500" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/line_divider" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:gravity="center"
-                android:text="Remote Config"
-                android:layout_marginTop="@dimen/dp_4"
-                style="@style/TextView.Title.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_remote_config_key"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:layout_marginTop="@dimen/dp_4"
-                android:hint="Remote Config Key" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_remote_config_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:hint="Remote Config Value" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_remote_config_check"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_4"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_share"
-                    android:text="Check"
-                    android:textColor="@color/white" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_remote_config_save"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_share"
-                    android:text="Save"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-        </LinearLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/remote_config_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/remote_config_start_button"
+            android:textColor="@color/Neutral_N0" />
 
         <TableLayout
             android:stretchColumns="1"

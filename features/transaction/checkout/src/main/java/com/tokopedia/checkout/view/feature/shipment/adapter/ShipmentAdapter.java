@@ -569,9 +569,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         if (availableCheckout) {
-            shipmentAdapterActionListener.onCartDataEnableToCheckout();
+            shipmentAdapterActionListener.onDataEnableToCheckout();
         } else {
-            shipmentAdapterActionListener.onCartDataDisableToCheckout(null);
+            shipmentAdapterActionListener.onDataDisableToCheckout(null);
         }
     }
 
@@ -803,7 +803,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee -
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
                 shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalDiscWithoutCashback();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);

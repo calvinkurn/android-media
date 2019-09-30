@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
@@ -126,6 +127,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         return inflater.inflate(R.layout.fragment_hotel_search_result, container, false)
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,7 +138,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val recyclerView = getRecyclerView(view)
         recyclerView.removeItemDecorationAt(0)
         context?.let {
-            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.dp_12),
+            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
                     LinearLayoutManager.VERTICAL))
         }
         bottom_action_view.setButton1OnClickListener {
@@ -147,7 +152,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
                 val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
-                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
+                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
+                        ?: ParamFilter()
 
                 trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
                 searchResultviewModel.addFilter(paramFilter)
@@ -171,7 +177,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
         bottom_action_view.visible()
-        super.renderList(searchProperties, searchProperties.size > 0)
+        super.renderList(searchProperties, searchProperties.isNotEmpty())
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
     }
@@ -189,8 +195,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
         bottom_action_view.setButton2OnClickListener(onFilterClick)
 
-        val filterTextView1: TextView = bottom_action_view.findViewById(R.id.text_view_label_1)
-        val filterTextView2: TextView = bottom_action_view.findViewById(R.id.text_view_label_2)
+        val filterTextView1: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_1)
+        val filterTextView2: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_2)
         filterTextView1.typeface = Typeface.DEFAULT
         filterTextView2.typeface = Typeface.DEFAULT
     }
@@ -233,7 +239,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_search_result
+        emptyModel.urlRes = getString(R.string.hotel_url_empty_search_result)
         emptyModel.title = getString(R.string.hotel_search_empty_title)
 
         if (!searchResultviewModel.isFilter) {
@@ -279,6 +285,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun loadData(page: Int) {
-        searchResultviewModel.searchProperty(page)
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        searchResultviewModel.searchProperty(page, searchQuery)
     }
+
+    override fun isAutoLoadEnabled(): Boolean = true
 }

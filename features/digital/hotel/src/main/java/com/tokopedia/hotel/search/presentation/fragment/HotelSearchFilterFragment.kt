@@ -90,7 +90,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val filterAccomodation = accomodation.map {
             HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
         filter_accomodation_type.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
+        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_accomodation_type.adapter = propertyTypeAdapter
         propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
@@ -136,7 +136,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             base_rating_step.addView(stepView)
             if (index < ratingStep.size - 1){
                 val separator = View(context)
-                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.dp_0),
+                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_0),
                         ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                 separator.layoutParams = lp
                 base_rating_step.addView(separator)
@@ -158,8 +158,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val filterStars
                 = filterStar.stars.map { HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), true) }
         filter_star.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                false, resources.getDimensionPixelSize(R.dimen.dp_8))
-        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
+                false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
+        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
         starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())

@@ -12,7 +12,8 @@ import rx.Subscriber
  * @author by milhamj on 9/26/18.
  */
 class GetContentFormSubscriber(private val view: CreatePostContract.View?,
-                               private val type: String)
+                               private val type: String,
+                               private val templateToken: String?)
     : Subscriber<GetContentFormDomain>() {
 
     override fun onCompleted() {
@@ -43,7 +44,7 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View?,
             view?.onErrorGetContentForm(data.feedContentForm.error)
             return
         }
-        view?.onSuccessGetContentForm(data.feedContentForm)
+        view?.onSuccessGetContentForm(data.feedContentForm, !templateToken.isNullOrEmpty())
     }
 
     private fun handleCheckQuota(domain: GetContentFormDomain) {

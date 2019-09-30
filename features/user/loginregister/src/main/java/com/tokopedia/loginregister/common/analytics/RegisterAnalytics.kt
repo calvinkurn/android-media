@@ -1,16 +1,13 @@
 package com.tokopedia.loginregister.common.analytics
 
 import android.content.Context
-
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.HashMap
-
+import java.util.*
 import javax.inject.Inject
 
 /**

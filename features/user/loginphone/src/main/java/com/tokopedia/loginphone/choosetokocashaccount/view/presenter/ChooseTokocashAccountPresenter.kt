@@ -72,8 +72,6 @@ constructor(private val getAccountsListUseCase: GetAccountsListUseCase,
     override fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
                 view.onSuccessGetUserInfo(),
-                view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                false))
+                view.onErrorGetUserInfo()))
     }
 }

@@ -12,4 +12,8 @@
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="NavigationMenuItemTextAppearance">
+        <item name="android:ellipsize">end</item>
+    </style>
 </resources>

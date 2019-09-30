@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.sessioncommon.data.GetProfileApi;
-import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -36,18 +34,8 @@ public interface SessionComponent {
     @Named(SessionModule.TOKEN)
     OkHttpClient provideTokenOkHttpClient();
 
-    @Named(SessionModule.PROFILE)
-    Retrofit provideGetProfileRetrofit();
-
-    @Named(SessionModule.WS)
-    Retrofit provideMakeLoginRetrofit();
-
     @Named(SessionModule.TOKEN)
     Retrofit provideTokenRetrofit();
-
-    MakeLoginApi provideMakeLoginApi();
-
-    GetProfileApi provideLoginRegisterApi();
 
     TokenApi provideTokenApi();
 }

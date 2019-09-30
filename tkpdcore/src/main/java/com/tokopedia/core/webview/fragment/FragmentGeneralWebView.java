@@ -73,6 +73,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
+    private static final int PICTURE_QUALITY = 60;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -340,6 +341,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 case DeepLinkChecker.CONTENT:
                     DeepLinkChecker.openContent(getActivity(), url);
                     return false;
+                case DeepLinkChecker.HOTEL:
+                    DeepLinkChecker.openHotel(getActivity(), url);
+                    return true;
                 default:
                     return false;
             }
@@ -438,7 +442,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = data.getStringExtra(HCI_KTP_IMAGE_PATH);
-            String base64 = encodeToBase64(imagePath);
+            String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
@@ -539,6 +543,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
 
+            String registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
+
             if (url.contains(HCI_CAMERA_KTP)) {
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                 startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
@@ -586,6 +592,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;
+            } else if (!TextUtils.isEmpty(registeredNavigation)
+                    && RouteManager.isSupportApplink(getActivity(), registeredNavigation)) {
+                Activity activity = getActivity();
+                if (activity != null) {
+                    RouteManager.route(getActivity(), registeredNavigation);
+                    return true;
+                }
             } else if (getActivity() != null &&
                     Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
                 if (getActivity().getApplication() instanceof TkpdCoreRouter &&
@@ -594,15 +607,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     ((TkpdCoreRouter) getActivity().getApplication())
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
-                }
-            } else {
-                Activity activity = getActivity();
-                if (activity != null) {
-                    String applink = DeeplinkMapper.getRegisteredNavigation(activity, url);
-                    if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(activity, applink)) {
-                        RouteManager.route(getActivity(), applink);
-                        return true;
-                    }
                 }
             }
             return overrideUrl(url);

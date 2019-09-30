@@ -2,6 +2,9 @@ package com.tokopedia.merchantvoucher.voucherDetail
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -115,6 +118,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             }*/
             //TOGGLE_MVC_OFF
             activity?.run {
+                copyVoucherCodeToClipboard()
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
                 snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
@@ -122,6 +126,13 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 snackbar.show()
             }
         }
+    }
+
+    private fun copyVoucherCodeToClipboard() {
+        val voucherCode = merchantVoucherViewModel?.voucherCode
+        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(voucherCode, voucherCode)
+        clipboard.primaryClip = clip
     }
 
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
@@ -176,8 +187,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             ImageHandler.loadImageAndCache(ivVoucherBanner, merchantVoucherViewModel.bannerUrl)
             ivVoucherBanner.visibility = View.VISIBLE
         }
-        val voucherString = merchantVoucherViewModel.voucherName + " " +
-                merchantVoucherViewModel.getTypeString(context!!) + " " +
+        val voucherString = merchantVoucherViewModel.getTypeString(context!!) + " " +
                 merchantVoucherViewModel.getAmountString()
         tvVoucherTitle.text = voucherString
         if (merchantVoucherViewModel.minimumSpend <= 0) {

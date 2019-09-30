@@ -272,6 +272,72 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             source
           }
         }
+        cardhighlight {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+          }
+          items {
+            header {
+              avatar
+              avatarTitle
+              avatarWeblink
+              avatarApplink
+              avatarBadgeImage
+            }
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              videos {
+                url
+                durationFmt
+                durationVal
+              }
+            }
+            footer {
+              like {
+                fmt
+                value
+                checked
+              }
+              comment {
+                fmt
+                value
+              }
+              buttonCta {
+                text
+                textDisabled
+                isDisabled
+                badge
+                appLink
+                webLink
+              }
+              share {
+                text
+                url
+                title
+                imageURL
+                description
+              }
+            }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+            }
+          }
+        }
       }
       tracking {
         id
@@ -456,6 +522,24 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               share
               ctaLink
             }
+          }
+          cardhighlight {
+              title {
+                  text
+                  ctaLink
+              }
+              header {
+                  avatar
+                  avatarTitle
+                  avatarBadge
+              }
+              body {
+                  media
+              }
+              footer {
+                  like
+                  comment
+              }
           }
         }
       }

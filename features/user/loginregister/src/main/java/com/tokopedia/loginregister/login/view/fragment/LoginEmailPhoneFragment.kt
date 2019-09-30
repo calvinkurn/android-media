@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -30,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -71,6 +73,8 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -185,6 +189,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -443,6 +449,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
             tv.setText(it.name)
+            if(userSession.name.isNotEmpty()){
+                var name = userSession.name
+                if(name.split("\\s".toRegex()).size > 1)
+                    name = name.substring(0, name.indexOf(" "))
+                if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
+                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(GPLUS, ignoreCase = true) &&
+                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
+                }
+            }
             if (!TextUtils.isEmpty(it.image)) {
                 tv.setImage(it.image)
             } else if (it.imageResource != 0) {
@@ -467,7 +484,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -477,6 +493,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onLoginFacebookClick() {
+
         if (activity != null) {
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
@@ -564,10 +581,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
+
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
     }
 
     private fun setFCM() {
@@ -942,7 +961,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onGoToWelcomeNewUserPage()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
                 dismissLoadingLogin()
@@ -958,7 +977,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 showLoading(true)
-                presenter.getUserInfo(false)
+                presenter.getUserInfo()
                 onGoToWelcomeNewUserPage()
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
@@ -1043,6 +1062,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -1068,9 +1088,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -1086,9 +1106,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {

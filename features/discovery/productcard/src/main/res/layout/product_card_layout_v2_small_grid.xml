@@ -59,7 +59,7 @@
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
             tools:visibility="visible"
             tools:text="Promo Label" />
-            
+
         <ImageView
             android:id="@+id/imageShop"
             android:layout_width="@dimen/dp_32"
@@ -129,7 +129,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewSlashedPrice"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
@@ -137,29 +137,37 @@
             android:textColor="@color/product_card_slashed_price_text_color"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
             app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:typographyType="small"
-            tools:text="95000"
+            tools:text="9502834723847548950984923842-398748932748932759732989084327480327490849032749000"
+            android:ellipsize="end"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:maxLines="1"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
-            android:visibility="gone"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_2"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/product_card_price_text_color"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/labelDiscount"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:visibility="visible"
-            tools:text="Harga" />
+            tools:text="Rp 192389384938493849123121233244324236546456786447996"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/linearLayoutShopBadges"
@@ -305,9 +313,30 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:scaleType="fitXY"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/labelOffers"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_v2_ic_topads"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewAddToCart"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/productcard_module_bg_button_atc"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:padding="@dimen/dp_8"
+            android:text="@string/product_card_module_label_add_to_card"
+            android:textAllCaps="false"
+            android:textColor="@color/orange_red"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelOffers"
+            app:typographyType="heading_6"
             tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>

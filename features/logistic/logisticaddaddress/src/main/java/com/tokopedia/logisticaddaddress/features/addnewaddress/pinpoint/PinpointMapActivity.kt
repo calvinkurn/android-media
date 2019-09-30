@@ -3,20 +3,13 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
-import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.domain.model.Token
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
 
 /**
  * Created by fwidjaja on 2019-05-07.
@@ -51,12 +44,8 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): PinpointMapFragment? {
         var bundle = Bundle()
-        if (intent.extras != null) {
-            bundle = intent.extras
-        } else {
-            bundle.putDouble(EXTRA_LAT, MONAS_LAT)
-            bundle.putDouble(EXTRA_LONG, MONAS_LONG)
-            bundle.putBoolean(EXTRA_SHOW_AUTOCOMPLETE, true)
+        intent.extras?.let {
+            bundle = it
         }
         return PinpointMapFragment.newInstance(bundle)
     }

@@ -2,10 +2,14 @@
 <resources>
 
     <string name="host_discovery" translatable="false">discovery</string>
+    <string name="autocomplete_global_applink" translatable="false">search-autocomplete</string>
 
     <string name="path_filter" translatable="false">/filter</string>
     <string name="path_sort" translatable="false">/sort</string>
     <string name="path_catalog" translatable="false">/catalog</string>
     <string name="path_search_result" translatable="false">/search-result</string>
+    <string name="path_image_search_result" translatable="false">/image-search-result</string>
+    <string name="path_similar_search_result" translatable="false">/similar-search-result/.*\\/</string>
+    <string name="path_autocomplete" translatable="false">/autocomplete</string>
 
 </resources>

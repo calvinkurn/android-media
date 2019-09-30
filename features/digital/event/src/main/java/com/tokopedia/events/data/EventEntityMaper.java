@@ -86,6 +86,7 @@ public class EventEntityMaper {
         eventDetailsDomain.setMinStartDate(eventsDetailsEntity.getMinStartDate());
         eventDetailsDomain.setMaxEndDate(eventsDetailsEntity.getMaxEndDate());
         eventDetailsDomain.setUrl(eventsDetailsEntity.getUrl());
+        eventDetailsDomain.setSeoUrl(eventsDetailsEntity.getSeoUrl());
         eventDetailsDomain.setThumbnailApp(eventsDetailsEntity.getThumbnailApp());
         eventDetailsDomain.setOfferText(eventsDetailsEntity.getOfferText());
         eventDetailsDomain.setDisplayTags(eventsDetailsEntity.getDisplayTags());

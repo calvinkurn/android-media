@@ -11,8 +11,9 @@
         <activity
             android:name=".result.presentation.view.activity.SearchActivity"
             android:screenOrientation="portrait"
-            android:label="@string/image_search_title"
-            android:windowSoftInputMode="adjustNothing">
+            android:label="@string/search_result_page"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -22,14 +23,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_discovery"
                     android:path="@string/path_search_result"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/jpeg" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpg" />
             </intent-filter>
 
         </activity>

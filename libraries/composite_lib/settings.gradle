@@ -2,7 +2,7 @@ ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
     local {
-        enabled = !isCiServer
+        enabled = false
     }
     remote(HttpBuildCache) {
         url = "${ci_url}"
@@ -21,3 +21,5 @@ include ":user_session"
 include ":global_config"
 include ":network"
 include ":graphql"
+include ":authentication"
+include ":akamai_bot_lib"

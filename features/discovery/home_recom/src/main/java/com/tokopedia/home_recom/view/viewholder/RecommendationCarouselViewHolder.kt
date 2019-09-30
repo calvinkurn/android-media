@@ -7,22 +7,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A class for holder view Recommendation Carousel
+ */
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
+    private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
+        seeMore.setOnClickListener { RouteManager.route(itemView.context, element.appLinkSeeMore) }
         setupRecyclerView(element)
     }
 
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
+        list.clear()
         list.addAll(dataModel.products)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = object : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>() {

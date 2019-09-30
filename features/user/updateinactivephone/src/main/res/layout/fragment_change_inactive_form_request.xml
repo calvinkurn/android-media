@@ -56,9 +56,11 @@
                     android:layout_width="210dp"
                     android:layout_height="210dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp_24"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:src="@drawable/ic_add_photo"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:padding="@dimen/dp_5"
+                    android:src="@drawable/ic_add_photo_change_inactive_form"
+                    android:background="@drawable/bg_white_border_grey_rounded_upload_photo_button"
                     android:visibility="visible" />
 
                 <RelativeLayout
@@ -124,7 +126,9 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/dp_30"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:src="@drawable/ic_add_photo"
+                    android:padding="@dimen/dp_5"
+                    android:src="@drawable/ic_add_photo_change_inactive_form"
+                    android:background="@drawable/bg_white_border_grey_rounded_upload_photo_button"
                     android:visibility="visible" />
 
                 <RelativeLayout

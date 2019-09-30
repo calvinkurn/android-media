@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 
 /**
@@ -16,6 +15,7 @@ public class EmptyModel implements Visitable<AdapterTypeFactory> {
 
     @DrawableRes
     private int iconRes;
+    private String urlRes;
     private String title;
     @StringRes
     private int contentRes;
@@ -96,5 +96,13 @@ public class EmptyModel implements Visitable<AdapterTypeFactory> {
 
     public void setButtonTitleRes(@StringRes int buttonTitleRes) {
         this.buttonTitleRes = buttonTitleRes;
+    }
+
+    public String getUrlRes() {
+        return urlRes;
+    }
+
+    public void setUrlRes(String urlRes) {
+        this.urlRes = urlRes;
     }
 }

@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -19,7 +20,9 @@ import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.util.AddProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.base.di.component.DaggerAddProductServiceComponent;
@@ -32,6 +35,7 @@ import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEd
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -46,6 +50,9 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Inject
     AddProductServicePresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -127,6 +134,8 @@ public class UploadProductService extends BaseService implements AddProductServi
         result.putExtras(bundle);
         sendBroadcast(result);
 
+        logException(t);
+
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
     }
@@ -137,6 +146,20 @@ public class UploadProductService extends BaseService implements AddProductServi
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
                 label);
+    }
+
+    private void logException(Throwable t) {
+        try {
+            if (!BuildConfig.DEBUG) {
+                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s",
+                        userSession.getUserId(),
+                        userSession.getEmail());
+                AddProductException exception = new AddProductException(errorMessage, t);
+                Crashlytics.logException(exception);
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void removeNotificationFromList(int notificationId) {

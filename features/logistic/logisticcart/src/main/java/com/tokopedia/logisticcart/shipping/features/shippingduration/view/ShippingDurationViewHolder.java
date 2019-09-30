@@ -21,6 +21,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import java.util.ArrayList;
 
@@ -38,7 +39,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvCod;
     private TextView tvTextDesc;
     private ImageView imgCheck;
-    private TextView tvDurationHeaderInfo;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
@@ -58,7 +58,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvPrice = itemView.findViewById(R.id.tv_price);
         tvTextDesc = itemView.findViewById(R.id.tv_text_desc);
         imgCheck = itemView.findViewById(R.id.img_check);
-        tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvCod = itemView.findViewById(R.id.tv_cod_availability);
@@ -121,12 +120,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-
-        if (getAdapterPosition() == 0) {
-            tvDurationHeaderInfo.setVisibility(View.VISIBLE);
-        } else {
-            tvDurationHeaderInfo.setVisibility(View.GONE);
-        }
     }
 
     private void setShowCase(ShippingDurationAdapterListener shippingDurationAdapterListener) {

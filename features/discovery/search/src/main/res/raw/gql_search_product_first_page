@@ -13,6 +13,9 @@ query SearchProduct(
         count_text
         additional_params
         isQuerySafe
+        autocomplete_applink
+        errorMessage
+        default_view
         redirection {
             redirect_applink
         }
@@ -104,7 +107,7 @@ query SearchProduct(
         }
     }
 
-    quick_filter(query: $query) {
+    quick_filter(query: $query, extraParams: $params) {
         filter {
             options {
                 name

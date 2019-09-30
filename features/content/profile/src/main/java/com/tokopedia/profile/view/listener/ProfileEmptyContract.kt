@@ -19,6 +19,8 @@ interface ProfileEmptyContract {
         fun onChangeAvatarClicked()
 
         fun goToFollowing()
+
+        fun goToFollower()
     }
     interface Presenter : CustomerPresenter<View> {
         fun getProfileHeader(userId: Int)

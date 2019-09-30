@@ -24,6 +24,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
@@ -95,7 +96,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
     fun onSearchClicked() {
         digitalBrowseAnalytics.eventClickOnSearchTopNav(screenName)
-        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE, autocompleteParam)
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}", autocompleteParam)
     }
 
     private fun setupToolbar() {

@@ -30,36 +30,28 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'core'
-    groupId = 'com.tokopedia.core'
-    versionName = "2.23"
-    artifactName ="tkpdcore-release"
-}
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.iris)
 
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.playServicesDependencies.plus
-    implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.firebase.appIndexing
-    implementation rootProject.ext.firebase.core
-    implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.playServicesDependencies.location
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
-    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation rootProject.ext.analyticsDependencies.moengageFirebase
@@ -69,16 +61,18 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-
-    implementation project(rootProject.ext.libraries.analytics)
-
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.performance
+    implementation rootProject.ext.playServicesDependencies.plus
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.playServicesDependencies.places
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
@@ -97,6 +91,13 @@ dependencies {
     implementation "com.moengage:moe-location-lib:5.2.02"
     implementation "com.moengage:addon-realtime-trigger:2.2.00"
     implementation "com.moengage:integration-verifier:1.0.00"
+}
+
+project.ext {
+    artifactId = 'core'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "core_legacy-release"
 }
 
 apply from: '../../publish_local.gradle'

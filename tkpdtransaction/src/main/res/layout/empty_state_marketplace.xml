@@ -18,6 +18,7 @@
         app:srcCompat="@drawable/ic_emptycart" />
 
     <TextView
+        android:id="@+id/empty_state_marketplace_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -27,6 +28,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/empty_state_marketplace_sub_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

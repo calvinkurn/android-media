@@ -181,7 +181,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
@@ -195,11 +195,11 @@ class HotelDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = data.property.name
-                    navIcon?.setColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
 

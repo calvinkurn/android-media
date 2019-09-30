@@ -1,11 +1,11 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
@@ -48,12 +49,15 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.track.TrackApp;
@@ -66,7 +70,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import kotlin.jvm.functions.Function1;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -75,8 +83,7 @@ import java.util.concurrent.TimeUnit;
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface
-{
+        CharacterPerMinuteInterface {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -112,6 +119,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
 
         TokopediaUrl.Companion.init(this); // generate base url
 
@@ -141,21 +149,34 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
 
-        if (!GlobalConfig.DEBUG) {
-            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        if (!com.tokopedia.config.GlobalConfig.DEBUG) {
+            // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
+            new ANRWatchDog().setANRListener(new ANRWatchDog.ANRListener() {
+                @Override
+                public void onAppNotResponding(ANRError anrError) {
+                    Crashlytics.logException(anrError);
+                }
+            }).start();
         }
 
-        if(callback == null) {
+        if (callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
 
         LogWrapper.init(this);
+        if (LogWrapper.instance != null) {
+            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        }
         TimberWrapper.init(this);
+
+        initializeAbTestVariant();
+
     }
 
     @Override
     public void onTerminate() {
+        // this function is not reliable and will never be called in production
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
@@ -194,6 +215,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             e.printStackTrace();
         }
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
@@ -379,11 +413,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return md5StrBuff.toString();
     }
 
-
-    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
-
-    }
-
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
@@ -406,7 +435,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(), this::openNewBelanja, this::openOldBelanja);
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
+                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openNewBelanja(context);
+                    }
+                },
+                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openOldBelanja(context);
+                    }
+                });
     }
 
     Intent openNewBelanja(Context context) {

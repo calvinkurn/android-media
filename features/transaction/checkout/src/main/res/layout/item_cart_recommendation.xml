@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.productcard.v2.ProductCardViewSmallGrid xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

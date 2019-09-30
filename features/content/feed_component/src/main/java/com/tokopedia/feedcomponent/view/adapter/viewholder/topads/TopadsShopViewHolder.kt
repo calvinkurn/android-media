@@ -42,7 +42,7 @@ class TopadsShopViewHolder(v: View,
 
         if (element.title.text.isNotEmpty()) {
             itemView.cardTitle.visibility = View.VISIBLE
-            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+            itemView.cardTitle.bind(element.title, element.template.cardrecom.title, adapterPosition)
             itemView.cardTitle.listener = cardTitleListener
         } else{
             itemView.cardTitle.visibility = View.GONE

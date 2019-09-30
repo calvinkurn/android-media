@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -15,12 +17,14 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderLevel;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentType;
+import com.tokopedia.tkpd.thankyou.data.source.MonthlyNewBuyerSource;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -31,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
@@ -47,6 +52,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private List<String> shopTypes;
     private PaymentData paymentData;
     private boolean newBuyerFlag;
+    private boolean monthlyNewBuyerFlag;
     private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     private static final String TYPE_GLOBAL_VOUCHER = "global";
     private static final String TYPE_PAYMENT_VOUCHER = "payment";
@@ -64,30 +70,71 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         if (isResponseValid(response)) {
             paymentData = response.body().getData().getPayment();
             newBuyerFlag = response.body().getData().isNewBuyerFlag();
-            String paymentType = generatePaymentType(paymentData.getPaymentType());
-
-            if (paymentData.getOrders() != null) {
-                int indexOrdersData = 0;
-                for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(
-                            MainApplication.getAppContext(),
-                            getTrackignData(
-                                    orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()
-                                    ), getTax(paymentData), paymentType
-                            )
-                    );
-                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
-                            getTrackignBranchIOData(orderData)));
-                    indexOrdersData++;
-                }
-
-                PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()), "MarketPlace");
-
+            String orderId = getOrderId(response);
+            if(!TextUtils.isEmpty(orderId)) {
+                new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
+                        orderId);
+            }
+            else{
+                executeSendPaymentTracking(false);
             }
             return true;
         }
-
         return false;
+    }
+
+    private String getOrderId(Response<GraphqlResponse<PaymentGraphql>> response){
+        if(response != null && response.body() != null && response.body().getData() != null &&
+        response.body().getData().getPayment() != null && response.body().getData().getPayment().getOrders() != null &&
+                response.body().getData().getPayment().getOrders().size() > 0){
+            return String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId());
+        }
+        else {
+            return "";
+        }
+    }
+
+    private void executeSendPaymentTracking(boolean monthlyNewbuyer){
+        this.monthlyNewBuyerFlag = monthlyNewbuyer;
+        String paymentType = generatePaymentType(paymentData.getPaymentType());
+        if (paymentData.getOrders() != null) {
+            int indexOrdersData = 0;
+            for (OrderData orderData : paymentData.getOrders()) {
+                PurchaseTracking.marketplace(
+                        MainApplication.getAppContext(),
+                        getTrackignData(
+                                orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()
+                                ), getTax(paymentData), paymentType
+                        )
+                );
+                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
+                        getTrackignBranchIOData(orderData)));
+                indexOrdersData++;
+            }
+
+            PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()), "MarketPlace");
+
+        }
+    }
+
+    private Subscriber getMonthlyNewBuyerSubscriber(){
+        return new Subscriber<com.tokopedia.graphql.data.model.GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                executeSendPaymentTracking(false);
+            }
+
+            @Override
+            public void onNext(com.tokopedia.graphql.data.model.GraphqlResponse graphqlResponse) {
+                MonthlyBuyerBase monthlyNewBuyer = graphqlResponse.getData(MonthlyBuyerBase.class);
+                executeSendPaymentTracking("1".equalsIgnoreCase(monthlyNewBuyer.getMonthlyNewBuyer().getIsMonthlyFirstTransaction()));
+            }
+        };
     }
 
     private String generatePaymentType(PaymentType paymentType) {
@@ -350,6 +397,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
         branchIOPayment.setNewBuyer(newBuyerFlag);
+        branchIOPayment.setMonthlyNewBuyer(monthlyNewBuyerFlag);
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
