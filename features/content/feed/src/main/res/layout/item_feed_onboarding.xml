@@ -54,6 +54,7 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:ellipsize="end"
                 android:gravity="center"
+                android:lineSpacingExtra="0dp"
                 android:maxLines="2"
                 app:typographyType="heading_5"
                 tools:text="Olahraga" />
