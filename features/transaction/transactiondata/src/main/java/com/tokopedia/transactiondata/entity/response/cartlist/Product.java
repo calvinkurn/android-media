@@ -2,6 +2,7 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ProductInvenageTotal;
 
 import java.util.ArrayList;
@@ -151,6 +152,8 @@ public class Product {
     @SerializedName("product_tracker_data")
     @Expose
     private ProductTrackerData productTrackerData = new ProductTrackerData();
+    @SerializedName("free_shipping")
+    private FreeShipping freeShipping = new FreeShipping();
 
     public ProductTrackerData getProductTrackerData() {
         return productTrackerData;
@@ -336,5 +339,9 @@ public class Product {
 
     public void setCod(boolean cod) {
         isCod = cod;
+    }
+
+    public FreeShipping getFreeShipping() {
+        return freeShipping;
     }
 }
