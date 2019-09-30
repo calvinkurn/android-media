@@ -285,11 +285,6 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void replyToUser(MentionableUserViewModel user) {
         CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
-        String currentText = kolComment.getText().toString();
-        if (
-                !TextUtils.isEmpty(currentText) &&
-                        currentText.charAt(currentText.length() - 1) != ' ') userToMention = " " + userToMention;
-
         kolComment.append(userToMention);
     }
 
