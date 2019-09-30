@@ -83,6 +83,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
                     position,
                     data.shop?.id ?: -1,
                     "",
@@ -101,5 +102,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
 
         }
 
+        private fun isLabelDiscountVisible(productItem: RecomendationEntity.Recommendation): Boolean {
+            return productItem.discountPercentage > 0
+        }
     }
 }

@@ -36,6 +36,7 @@ object SingleProductRecommendationMapper {
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    "",
                     index,
                     data.shop?.id ?: -1,
                     "",
