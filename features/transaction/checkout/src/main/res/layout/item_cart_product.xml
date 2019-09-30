@@ -134,7 +134,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toRightOf="@+id/tv_item_count_and_weight"
-            tools:background="@color/unify_N75" />
+            tools:src="@drawable/checkout_module_ic_close_corner_red" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_original_price"

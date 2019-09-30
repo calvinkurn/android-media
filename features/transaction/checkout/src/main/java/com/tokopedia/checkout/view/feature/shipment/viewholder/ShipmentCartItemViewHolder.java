@@ -55,6 +55,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
+    private ImageView imgFreeShipping;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -82,7 +83,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
-
+        imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -157,6 +158,19 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             mllProductPoliciesLayout.setVisibility(View.VISIBLE);
         } else {
             mllProductPoliciesLayout.setVisibility(View.GONE);
+        }
+
+        renderProductPropertiesFreeShipping(cartItem);
+    }
+
+    private void renderProductPropertiesFreeShipping(CartItemModel cartItemModel) {
+        if (cartItemModel.isFreeShipping() && !TextUtils.isEmpty(cartItemModel.getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholder(
+                    imgFreeShipping, cartItemModel.getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
         }
     }
 
