@@ -197,6 +197,8 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
+    String SALDO = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 

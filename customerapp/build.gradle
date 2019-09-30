@@ -248,6 +248,8 @@ android {
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
     generateAssetFile(project, dynamicFeatures)
+
+
 }
 
 dependencies {
