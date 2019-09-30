@@ -73,7 +73,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
     private static final int DEFAULT_TAB_ID = 1;
-    private static final String BUY_AGAIN_OPTION_ORDER = "order";
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -249,7 +248,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-
     public void onBuyAgainAllItems(String eventActionLabel) {
         onBuyAgainItems(orderDetails.getItems(), eventActionLabel);
     }
@@ -257,7 +255,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-
     public void onBuyAgainItems(List<Items> items, String eventActionLabel) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
@@ -295,7 +292,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-
                     orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel);
                 }
 

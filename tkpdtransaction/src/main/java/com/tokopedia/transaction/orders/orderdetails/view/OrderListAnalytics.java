@@ -439,4 +439,16 @@ public class OrderListAnalytics {
 
         ));
     }
+
+    public void sendPageClickEvent(String page) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("event", "OpenScreen");
+        map.put("EventName", "OpenScreen");
+        map.put("Screen Name", page);
+        map.put("is Login", "YES");
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+
+    }
+
+
 }
