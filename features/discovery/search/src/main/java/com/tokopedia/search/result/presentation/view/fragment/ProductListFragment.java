@@ -987,7 +987,6 @@ public class ProductListFragment
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .customView(R.layout.item_top_ads_show_case)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
