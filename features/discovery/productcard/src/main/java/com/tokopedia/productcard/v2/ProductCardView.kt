@@ -380,7 +380,17 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     private fun initLabelDiscount(discountPercentage: String) {
-        labelDiscount.setTextWithBlankSpaceConfig(discountPercentage, blankSpaceConfig.discountPercentage)
+        val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
+
+        labelDiscount.configureVisibilityWithBlankSpaceConfig(
+                isLabelDiscountVisible, blankSpaceConfig.discountPercentage) {
+            it.text = MethodChecker.fromHtml(discountPercentage)
+        }
+    }
+
+    private fun getIsLabelDiscountVisible(discountPercentage: String): Boolean {
+        return discountPercentage.isEmpty()
+                || discountPercentage.trim() == "0"
     }
 
     private fun initSlashedPrice(slashedPrice: String) {
