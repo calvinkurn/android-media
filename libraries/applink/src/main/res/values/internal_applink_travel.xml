@@ -24,4 +24,6 @@
     <string name="title_hotel">Hotel</string>
     <string name="title_travel_homepage">Travel &amp; Entertainment</string>
 
+    <string name="path_flight_search" translatable="false">/search</string>
+
 </resources>
