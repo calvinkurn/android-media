@@ -1,9 +1,5 @@
 package com.tokopedia.common.travel.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.data.TravelCalendarHolidayRepository
 import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
