@@ -5,12 +5,4 @@
         <attr name="spsd_title" format="string" />
         <attr name="spsd_content_layout" format="reference" />
     </declare-styleable>
-    
-    <declare-styleable name="StickyTextView">
-        <attr name="sticky_left_icon" format="reference" />
-        <attr name="sticky_text" format="string|reference" />
-        <attr name="sticky_text_highlight" format="string|reference" />
-        <attr name="sticky_highlight_color" format="reference|color" />
-    </declare-styleable>
-
 </resources>

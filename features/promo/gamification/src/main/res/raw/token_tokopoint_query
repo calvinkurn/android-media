@@ -60,6 +60,18 @@
           tokenSourceUrl
         }
       }
+      homeActionButton{
+          backgroundColor
+          text
+          appLink
+          url
+          type
+      }
+      homeSmallButton{
+          imageURL
+          appLink
+          url
+      }
     }
   }
 }

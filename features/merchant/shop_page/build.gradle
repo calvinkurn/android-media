@@ -16,19 +16,11 @@ buildscript {
     }
 }
 
-
-project.ext {
-    artifactId = 'shop-page'
-    groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
-    artifactName ="shop_page-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.applink)
@@ -61,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.stickyLogin)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -83,6 +76,13 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     
     implementation project(rootProject.ext.libraries.track)
+}
+
+project.ext {
+    artifactId = 'shop-page'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchanshop_page-release"
 }
 
 apply from: '../../../publish_local.gradle'

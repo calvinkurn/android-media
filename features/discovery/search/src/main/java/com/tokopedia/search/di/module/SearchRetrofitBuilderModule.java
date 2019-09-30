@@ -2,7 +2,7 @@ package com.tokopedia.search.di.module;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.search.di.qualifier.SearchQualifier;
 import com.tokopedia.search.result.network.converterfactory.GeneratedHostConverter;

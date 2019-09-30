@@ -57,4 +57,7 @@ class FlightEntity(
         val cancellations: List<CancellationEntity>,
         @SerializedName("contact_us_url")
         @Expose
-        val contactUsUrl: String = "")
+        val contactUsUrl: String = "",
+        @SerializedName("conditional_info")
+        @Expose
+        val cancellationInfo: List<CancellationInfoEntity> = arrayListOf())

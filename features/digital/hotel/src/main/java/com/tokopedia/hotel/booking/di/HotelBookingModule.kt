@@ -9,4 +9,10 @@ import dagger.Provides
  * @author by resakemal on 13/05/19
  */
 @Module
-class HotelBookingModule
+class HotelBookingModule {
+
+    @HotelBookingScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
+            MultiRequestGraphqlUseCase(graphqlRepository)
+}

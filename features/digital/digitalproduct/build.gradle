@@ -18,13 +18,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'digital'
-    groupId = 'com.tokopedia.digital'
-    versionName = "${tkpdDigitalVersion}"
-    artifactName = "tkpddigital-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     
@@ -42,12 +35,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.commonDigital)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -92,6 +86,13 @@ dependencies {
     }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+}
+
+project.ext {
+    artifactId = 'product'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName = "digitalproduct-release"
 }
 
 apply from: '../../../publish_local.gradle'

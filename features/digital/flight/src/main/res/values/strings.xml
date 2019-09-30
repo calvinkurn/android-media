@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">flight</string>
 
     <string name="flight_search_one_way">Sekali Jalan</string>
@@ -100,8 +100,9 @@
     <string name="flight_label_normal_price">Harga Normal</string>
     <string name="flight_label_saving_price">Hemat</string>
     <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
-    <string name="flight_booking_contact_information">Informasi Kontak</string>
-    <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_contact_information">Data Pemesan</string>
+    <string name="flight_booking_contact_information_subtitle">E-tiket dan informasi mengenai pemesanan akan dikitim ke kontak ini</string>
+    <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_contact_email_hint">Email</string>
     <string name="flight_booking_departure_trip_card_title">Penerbangan Pergi</string>
     <string name="flight_booking_return_trip_card_title">Penerbangan Pulang</string>
@@ -109,6 +110,7 @@
     <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
     <string name="flight_booking_price_detail">Rincian Harga</string>
     <string name="flight_booking_passenger_data_label">Data Penumpang</string>
+    <string name="flight_booking_passenger_data_subtitle">E-tiket dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
     <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
@@ -144,7 +146,7 @@
     <string name="flight_label_detail_price">Rincian Harga</string>
     <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
     <string name="flight_label_return_flight">Penerbangan Pulang</string>
-    <string name="flight_booking_toolbar_title">Isi Data Pemesan</string>
+    <string name="flight_booking_toolbar_title">Isi Data Penumpang</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
     <string name="flight_duration_hh">%1$d Jm</string>
@@ -167,6 +169,9 @@
     <string name="flight_label_see_detail">Lihat Detail</string>
     <string name="flight_label_transit">Transit di %1$s • %2$s</string>
     <string name="flight_label_currency">Rp%1$s</string>
+    <string name="flight_booking_passenger_adult_title">Penumpang Dewasa</string>
+    <string name="flight_booking_passenger_child_title">Penumpang Anak</string>
+    <string name="flight_booking_passenger_infant_title">Penumpang Bayi</string>
     <string name="flight_booking_passenger_adult_subtitle">Usia diatas 12 tahun</string>
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
@@ -193,12 +198,13 @@
     <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
     <string name="reset_filter">Reset Filter</string>
-    <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
-    <string name="flight_booking_passenger_last_name_hint">Nama Belakang (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_passenger_last_name_hint">Nama Belakang (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_last_name_secondary_hint">Isi Nama Belakang</string>
     <string name="flight_booking_passenger_birthdate_hint">Tanggal Lahir</string>
     <string name="flight_booking_passenger_birthdate_secondary_hint">Pilih Tanggal Lahir</string>
+    <string name="flight_booking_passenger_title_hint">Sapaan</string>
     <string name="flight_booking_passenger_luggage_label">Bagasi</string>
     <string name="flight_booking_passenger_meal_label">Makanan</string>
     <string name="flight_booking_passenger_submit_button">Simpan</string>
@@ -337,14 +343,14 @@
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
-    <string name="flight_passenger_data_diri_label">DATA DIRI</string>
+    <string name="flight_passenger_data_diri_label">Identitas Penumpang</string>
     <string name="flight_passenger_tipe_penumpang_hint">Tipe Penumpang</string>
-    <string name="flight_passenger_data_passport_label">DATA PASSPORT</string>
-    <string name="flight_passenger_data_passport_description">Data passport diperlukan untuk penerbangan internasional</string>
-    <string name="flight_passenger_passport_number_hint">Nomor Passport</string>
-    <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Passport</string>
+    <string name="flight_passenger_data_passport_label">Data Paspor</string>
+    <string name="flight_passenger_data_passport_description">Data paspor diperlukan untuk penerbangan internasional</string>
+    <string name="flight_passenger_passport_number_hint">Nomor Paspor</string>
+    <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Paspor</string>
     <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
-    <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Passport</string>
+    <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Paspor</string>
     <string name="flight_passenger_update_success">Data penumpang berhasil diubah.</string>
     <string name="flight_passenger_delete_success">Data penumpang berhasil dihapus.</string>
     <string name="flight_passenger_delete_dialog_title">Hapus Data Penumpang</string>
@@ -409,20 +415,10 @@
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
-    <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
+    <string name="flight_cancellation_detail_refund_information_label">Detail Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
-    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
-    <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
-    <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
-    <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
-    <string name="flight_cancellation_status_failed">Pembatalan Gagal</string>
-    <string name="flight_cancellation_status_on_progress">Pembatalan Sedang Diproses</string>
-    <string name="flight_cancellation_list_status_requested">DALAM PENGAJUAN</string>
-    <string name="flight_cancellation_list_status_pending">MENUNGGU PERSETUJUAN</string>
-    <string name="flight_cancellation_list_status_refunded">BERHASIL</string>
-    <string name="flight_cancellation_list_status_aborted">GAGAL</string>
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
@@ -432,18 +428,18 @@
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_passenger_choose_salutation_title">Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
-    <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
+    <string name="flight_passenger_passport_number_secondary_hint">Isi nomor paspor</string>
     <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
     <string name="flight_passenger_nationality_secondary_hint">Pilih kewarganegaraan</string>
     <string name="flight_passenger_passport_issuer_country_secondary_hint">Pilih negara</string>
-    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Passport harus valid setidaknya sampai %s.</string>
-    <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku passport tidak boleh lebih dari %s.</string>
-    <string name="flight_booking_passport_number_empty_error">Nomor Passport harus diisi</string>
-    <string name="flight_booking_passport_number_alphanumeric_error">Nomor Passport hanya boleh terdiri dari huruf dan angka</string>
+    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Paspor harus valid setidaknya sampai %s.</string>
+    <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku paspor tidak boleh lebih dari %s.</string>
+    <string name="flight_booking_passport_number_empty_error">Nomor Paspor harus diisi</string>
+    <string name="flight_booking_passport_number_alphanumeric_error">Nomor Paspor hanya boleh terdiri dari huruf dan angka</string>
     <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
-    <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Passport harus diisi</string>
-    <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Passport harus diisi</string>
-    <string name="flight_passport_search_hint">Cari Negara Penerbit Passport</string>
+    <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Paspor harus diisi</string>
+    <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Paspor harus diisi</string>
+    <string name="flight_passport_search_hint">Cari Negara Penerbit Paspor</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
     <string name="flight_detail_order_protection_label">Terproteksi</string>
     <string name="flight_order_detail_insurance_description">Untuk melihat polis asuransi, cek email Anda.</string>

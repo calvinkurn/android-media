@@ -115,4 +115,27 @@
     <string name="af_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
     <string name="af_title_edit_post">Edit Post</string>
 
+    <string name="af_share_title">Share dan dapatkan komisi</string>
+    <string name="af_share_subtitle">Makin banyak yang beli, makin untung!</string>
+
+    <string name="af_merchant_share_title">Share, yuk biar cepat untung!</string>
+    <string name="af_merchant_share_subtitle">Makin banyak yang lihat, makin hits</string>
+
+    <string name="af_share_tokopedia">Follower</string>
+    <string name="af_share_facebook">Facebook</string>
+    <string name="af_share_twitter">Twitter</string>
+
+    <string name="af_share_tokopedia_option">Share ke Follower</string>
+    <string name="af_share_facebook_option">Post ke Facebook</string>
+    <string name="af_share_twitter_option">Share di Twitter</string>
+
+    <string name="af_share_tokopedia_hint">%s orang akan melihat post ini</string>
+
+    <string name="af_share_post">Share Post</string>
+    <string name="af_product_suggestion_title">Rekomendasi Barang Buatmu</string>
+    <string name="af_suggestion_shop_cm_title">Buat post &amp; promosikan tokomu</string>
+    <string name="af_suggestion_shop_cm_desc">Pilih salah satu barang untuk ditampilkan di Feed. Makin banyak yang lihat, makin laris!</string>
+    <string name="af_suggestion_aff_cm_title">Mari post barang kesukaanmu!</string>
+    <string name="af_suggestion_aff_cm_desc">Pilih barangnya, buat post-nya, dan dapatkan komisi kalau terjual.</string>
+
 </resources>

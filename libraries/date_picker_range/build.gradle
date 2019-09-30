@@ -15,8 +15,8 @@ buildscript {
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -25,3 +25,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
+
+project.ext {
+    artifactId = 'date-picker-range'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarydatepickerrange-release"
+}
+
+apply from: '../../publish_local.gradle'

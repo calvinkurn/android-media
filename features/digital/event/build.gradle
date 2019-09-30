@@ -21,22 +21,15 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'events'
-    groupId = 'com.tokopedia.events'
-    versionName = "2.22"
-    artifactName ="tkpdevents-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.omsApi)
+    implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.features.loyalty)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -75,6 +68,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'events'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="digitalevents-release"
 }
 
 apply from: '../../../publish_local.gradle'

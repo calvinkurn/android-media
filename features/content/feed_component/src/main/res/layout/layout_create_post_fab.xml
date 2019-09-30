@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="@dimen/dp_2">
+
+    <FrameLayout
+        android:id="@+id/layout_grey_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_54">
+
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="gone"
+        app:backgroundTint="@color/tkpd_main_green"
+        app:srcCompat="@drawable/ic_feed_post_plus"
+        tools:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed_byme"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_above="@id/fab_feed"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_feed_post_byme" />
+
+
+    <TextView
+        android:id="@+id/text_fab_byme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/fab_feed_byme"
+        android:layout_alignBottom="@id/fab_feed_byme"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_toStartOf="@id/fab_feed_byme"
+        android:layout_toLeftOf="@id/fab_feed_byme"
+        android:gravity="center"
+        android:text="@string/feed_create_post_byme"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed_shop"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_above="@id/fab_feed_byme"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_feed_post_shop" />
+
+    <TextView
+        android:id="@+id/text_fab_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/fab_feed_shop"
+        android:layout_alignBottom="@id/fab_feed_shop"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_toStartOf="@id/fab_feed_shop"
+        android:layout_toLeftOf="@id/fab_feed_shop"
+        android:gravity="center"
+        android:text="@string/feed_create_post_shop"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold" />
+</RelativeLayout>

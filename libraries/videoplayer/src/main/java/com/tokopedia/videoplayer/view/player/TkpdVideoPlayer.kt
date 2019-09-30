@@ -133,12 +133,17 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
     }
 
     private fun playVideo(source: String) {
-        if (File(source).exists()) {
-            val file = Uri.fromFile(File(source))
-            initPlayer(file, VideoSourceProtocol.File)
-        } else {
-            val url = Uri.parse(source)
-            initPlayer(url, VideoSourceProtocol.protocol(context, source))
+        try {
+            if (File(source).exists()) {
+                val file = Uri.fromFile(File(source))
+                initPlayer(file, VideoSourceProtocol.File)
+            } else {
+                val url = Uri.parse(source)
+                initPlayer(url, VideoSourceProtocol.protocol(source))
+            }
+        } catch (e: Exception) {
+            showToast(R.string.videoplayer_invalid_player)
+            callback?.onPlayerError(PlayerException.PlayerInitialize)
         }
 
         //player listener
@@ -199,19 +204,19 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
     private fun buildMediaSource(source: Uri, protocol: VideoSourceProtocol): MediaSource {
         return when (protocol) {
             //protocol supported: http, https
-            VideoSourceProtocol.Http -> {
+            is VideoSourceProtocol.Http -> {
                 ExtractorMediaSource.Factory(
                         DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
                         .createMediaSource(source)
             }
             //live streaming approach
-            VideoSourceProtocol.Rtmp -> {
+            is VideoSourceProtocol.Rtmp -> {
                 ExtractorMediaSource.Factory(
                         RtmpDataSourceFactory())
                         .createMediaSource(source)
             }
             //file in local storage
-            VideoSourceProtocol.File -> {
+            is VideoSourceProtocol.File -> {
                 val dataSpec = DataSpec(source)
                 val fileDataSource = FileDataSource()
                 fileDataSource.open(dataSpec)
@@ -219,6 +224,10 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
                 ExtractorMediaSource.Factory(dataFactory)
                         .setExtractorsFactory(DefaultExtractorsFactory())
                         .createMediaSource(source)
+            }
+            //invalid
+            is VideoSourceProtocol.InvalidFormat -> {
+                throw Exception(getString(protocol.message))
             }
         }
     }

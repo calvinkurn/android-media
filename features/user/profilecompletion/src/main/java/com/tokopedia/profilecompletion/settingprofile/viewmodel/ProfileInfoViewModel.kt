@@ -1,13 +1,13 @@
 package com.tokopedia.profilecompletion.settingprofile.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
@@ -32,15 +32,14 @@ class ProfileInfoViewModel @Inject constructor(
         private val uploadProfilePictureUseCase: UploadProfilePictureUseCase,
         private val submitProfilePictureUseCase: GraphqlUseCase<SubmitProfilePictureData>,
         private val userSession: UserSessionInterface,
-        private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     val userProfileInfo = MutableLiveData<Result<ProfileCompletionData>>()
     val uploadProfilePictureResponse = MutableLiveData<Result<UploadProfilePictureResult>>()
 
-    fun getUserProfileInfo() {
-        val rawQuery = rawQueries[ProfileCompletionQueriesConstant.QUERY_PROFILE_COMPLETION]
+    fun getUserProfileInfo(context: Context) {
+        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
         if (!rawQuery.isNullOrEmpty()) {
             userProfileInfoUseCase.run {
                 setGraphqlQuery(rawQuery)
@@ -58,7 +57,7 @@ class ProfileInfoViewModel @Inject constructor(
         }
     }
 
-    fun uploadProfilePicture(imagePath: String) {
+    fun uploadProfilePicture(context: Context, imagePath: String) {
 
         uploadProfilePictureUseCase.execute(
                 UploadProfilePictureUseCase.createRequestParams(imagePath),
@@ -75,9 +74,9 @@ class ProfileInfoViewModel @Inject constructor(
                     override fun onNext(result: UploadProfileImageModel) {
 
                         if (result.data.picObj.isNotBlank()) {
-                            rawQueries[ProfileCompletionQueriesConstant.MUTATION_CHANGE_PICTURE]?.let { query ->
+                            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_picture)?.let { query ->
 
-                                val params = mapOf(ProfileCompletionQueriesConstant.PARAM_PIC_OBJ to result.data.picObj)
+                                val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIC_OBJ to result.data.picObj)
 
                                 submitProfilePictureUseCase.setTypeClass(SubmitProfilePictureData::class.java)
                                 submitProfilePictureUseCase.setRequestParams(params)

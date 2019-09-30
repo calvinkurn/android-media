@@ -70,6 +70,7 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
     override fun type(viewModel: LoadingModel?): Int {
         return LoadingShimmeringGridViewHolder.LAYOUT
     }
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder

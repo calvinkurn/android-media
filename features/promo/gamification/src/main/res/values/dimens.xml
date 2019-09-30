@@ -13,7 +13,7 @@
 
     <dimen name="floating_shadow_margin">1dp</dimen>
     <dimen name="image_width_hand_circle">60dp</dimen>
-    <dimen name="floating_counter_width">28dp</dimen>
+    <dimen name="floating_counter_width">20dp</dimen>
 
     <dimen name="text_size_cta_button">16sp</dimen>
 

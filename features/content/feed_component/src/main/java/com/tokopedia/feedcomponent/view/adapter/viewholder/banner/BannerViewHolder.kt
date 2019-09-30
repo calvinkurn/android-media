@@ -20,7 +20,7 @@ class BannerViewHolder(v: View,
     override fun bind(element: BannerViewModel) {
         itemView.bannerRv.adapter = BannerAdapter(element.itemViewModels, adapterPosition, listener)
 
-        itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
+        itemView.cardTitle.bind(element.title, element.template.cardbanner.title, adapterPosition)
         itemView.cardTitle.listener = cardTitleListener
     }
 

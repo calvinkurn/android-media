@@ -14,9 +14,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
+import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
+import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.annotation.RegEx
 /**
@@ -48,22 +50,39 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @return default fragment it will shown at activity
      */
     override fun getNewFragment(): Fragment {
-        return if(intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
-            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID), intent.getStringExtra(REF))
-        } else if(intent.data != null && intent.data?.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME){
-            RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.getQueryParameter("ref") ?: "")
-        } else {
-            RecommendationFragment.newInstance()
+        return when{
+            intent.data != null -> {
+                val ref = intent.data?.getQueryParameter("ref") ?: ""
+                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
+                        if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
+                        else "", ref)
+                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", ref)
+            }
+            else -> {
+                RecommendationFragment.newInstance()
+            }
         }
     }
 
     /**
-     * [onPause] is override from [BaseSimpleActivity]
-     * this void override with added extra sendAllTracking
+     * Function [isSimilarProduct]
+     * This function will checking this is from deeplink similar or
+     * deeplink home recom landing page
+     * @param url is string variable for checking this is number or not
+     * @return boolean
      */
-    override fun onPause() {
-        super.onPause()
-        TrackingQueue(this).sendAll()
+    private fun isSimilarProduct(url: String): Boolean{
+        return url.contains("/d/")
+    }
+
+    /**
+     * Function [isNumber]
+     * This function will checking input is number or not
+     * @param text is string variable for checking this is number or not
+     * @return boolean
+     */
+    private fun isNumber(text: String): Boolean{
+        return (text.toIntOrNull() != null)
     }
 
     /**
@@ -82,9 +101,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when(item?.itemId){
             android.R.id.home -> {
-                RecommendationPageTracking.eventUserClickBack()
-                RouteManager.route(this, ApplinkConst.HOME)
-                this.finish()
+                onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -97,8 +114,16 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * and send tracking also routing to home
      */
     override fun onBackPressed() {
-        RecommendationPageTracking.eventUserClickBack()
-        RouteManager.route(this, ApplinkConst.HOME)
+        if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
+            if(isNumber(intent.data?.pathSegments?.get(1) ?: "")){
+                RecommendationPageTracking.eventUserClickBackWithProductId()
+            }else{
+                RecommendationPageTracking.eventUserClickBack()
+            }
+        } else {
+            SimilarProductRecommendationTracking.eventClickBackButton()
+        }
+        if(isTaskRoot) RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
     }
 }

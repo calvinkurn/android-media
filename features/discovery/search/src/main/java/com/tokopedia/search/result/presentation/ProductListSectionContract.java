@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -97,6 +97,12 @@ public interface ProductListSectionContract {
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+
+        void setDefaultLayoutType(int defaultView);
+
+        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
+
+        void hideErrorMessage();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

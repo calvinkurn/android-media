@@ -23,7 +23,7 @@ buildscript {
 project.ext {
     artifactId = 'discovery'
     groupId = 'com.tokopedia.discovery'
-    versionName = "${tkpdDiscoveryVersion}"
+    versionName = "1.0.0"
     artifactName ="tkpddiscovery-release"
 }
 
@@ -34,7 +34,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.core_legacy)
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -45,7 +45,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -56,7 +57,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.productCard)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -90,6 +92,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(rootProject.ext.features.filter)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation project(rootProject.ext.libraries.trackingOptimizer)
@@ -97,7 +100,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.chips
-    
+
     implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
@@ -108,6 +111,11 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.tkpdtransaction)
 }
 
 apply from: '../publish_local.gradle'

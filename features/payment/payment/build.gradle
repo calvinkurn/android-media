@@ -16,10 +16,11 @@ buildscript {
 }
 
 project.ext {
-    artifactId = "${artifactIdPayment}"
-    groupId = "${groupIdPayment}"
-    versionName = "${paymentGroupVersion}"
-    artifactName = "${groupIdPayment}-release"
+    artifactId = "payment"
+    groupId = "com.tokopedia.payment"
+    versionName = "1.0.0"
+    artifactName = "paymentpayment-release"
+
 }
 
 dependencies {
@@ -27,10 +28,11 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

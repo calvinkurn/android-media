@@ -460,6 +460,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             currentTime = timeRemainingSeconds;
             countDownTimer = Observable.interval(0, 1, TimeUnit.SECONDS, Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .onBackpressureBuffer()
                     .takeUntil(new Func1<Object, Boolean>() {
                         @Override
                         public Boolean call(Object aLong) {

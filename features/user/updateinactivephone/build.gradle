@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'updateinactivephone'
-    groupId = 'com.tokopedia.updateinactivephone'
-    versionName = "${tkpdUpdateInactivePhoneVersion}"
-    artifactName ="updateinactivephone-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -25,8 +18,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -34,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -43,6 +36,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'update-inactive-phone'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="userupdateinactivephone-release"
 }
 
 apply from: '../../../publish_local.gradle'

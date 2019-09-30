@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.data.source.dynamicfilter;
 
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.network.service.BrowseApi;
 
 import java.util.Map;

@@ -16,12 +16,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -42,19 +43,20 @@ dependencies {
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.expressCheckout)
     implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.features.transactiondata)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.playServicesDependencies.tagManager
 
@@ -66,6 +68,12 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    //video player
+    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.analytics
@@ -85,6 +93,16 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.linker)
 
+    implementation project(rootProject.ext.features.atc_common)
 
     testImplementation rootProject.ext.testDependencies.assertJ
 }
+
+project.ext {
+    artifactId = 'product-detail'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName = "merchantproductdetail-release"
+}
+
+apply from: '../../../publish_local.gradle'

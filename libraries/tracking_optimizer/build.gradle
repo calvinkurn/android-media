@@ -17,10 +17,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'trackingoptimizer'
-    groupId = 'com.tokopedia.trackingoptimizer'
-    versionName = "${tkpdTrackingOptimizerVersion}"
-    artifactName = "trackingoptimizer-release"
+    artifactId = 'tracking-optimizer'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarytrackingoptimizer-release"
 }
 
 dependencies {

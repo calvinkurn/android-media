@@ -1,8 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Travel & Hotel-->
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+    <string name="title_digital_topup">Digital Topup</string>
+    <string name="title_activity_developer_options">DeveloperOptions</string>
+
+    <!--Profile completion-->
+    <string name="title_module_setting_profile">Data Diri Module</string>
+    <string name="title_setting_profile">Data Diri</string>
+    <string name="title_profile_completion">Lengkapi Profil</string>
+    <string name="title_change_gender">Tambah Jenis Kelamin</string>
+    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="create_pin">Buat PIN Tokopedia</string>
+
+    <!-- Dynamic feature for Open Shop-->
+    <string name="title_open_shop">Buka Toko Gratis</string>
+    <string name="title_shop_postal_code">Kode Pos</string>
+    <string name="title_shop_is_active">Toko Sudah Aktif</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="setting_bank_app_name">Rekening Bank</string>
+    <string name="title_setting_bank">Rekening Bank</string>
+    <string name="title_choose_bank">Pilih Bank</string>
+
+    <!-- Dynamic feature for Travel Subhomepage-->
+    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
+    <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
+
+    <!-- Dynamic feature for Digital Subhomepage -->
+    <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
+
+    <!-- Dynamic feature for Discovery-->
+    <string name="title_image_search" >Pencarian Gambar</string>
+    <string name="title_image_search_module_name" >Pencarian Gambar</string>
+    <string name="image_search_app_name">imagesearch</string>
+    <string name="choose_image">Pilih Gambar</string>
+
+    <!--TopAds Dashboard-->
+    <string name="title_module_top_ads_dashboard">TopAds Module</string>
+    <string name="top_ads_title_dashboard">TopAds</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
+    <string name="topads_menu_seller_centre">Seller Center</string>
+
+    <!--Auto Ads-->
+    <string name="title_module_auto_ads">AutoAds Module</string>
+    <string name="auto_ads_app_name">AutoTopAds</string>
+    <string name="autoads_topads">TopAds</string>
+    <string name="autoads_pengaturan_iklan">Pengaturan Iklan</string>
+    <string name="autoads_iklan_otomatis">Iklan Otomatis</string>
+    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
+
+    <!--Report-->
+    <string name="title_module_report">Report Module</string>
+    <string name="product_report">Laporkan Produk</string>
+    <string name="title_similar_search" >Pencarian Serupa</string>
+    <string name="title_similar_search_module_name" >Pencarian Serupa</string>
+    <string name="similar_search_app_name">similarsearch</string>
+    <string name="detail_report">Detail Laporan</string>
+
+    <!--Age Restriction-->
+    <string name="title_module_age_restriction">Konten Dewasa</string>
+    <string name="label_dob">Tanggal Lahir</string>
 </resources>

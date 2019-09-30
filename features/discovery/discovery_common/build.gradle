@@ -6,11 +6,16 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.miscDependencies.gson
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation rootProject.ext.miscDependencies.dagger
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoverycommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

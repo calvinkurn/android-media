@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'phoneverification'
     groupId = 'com.tokopedia.phoneverification'
-    versionName = "${tkpdPhoneVerificationVersion}"
+    versionName = "1.0.0"
     artifactName ="phone_verification-release"
 }
 
@@ -23,11 +23,12 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.applink)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -45,3 +46,12 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'phone-verification'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "userphoneverification-release"
+}
+
+apply from: '../../../publish_local.gradle'

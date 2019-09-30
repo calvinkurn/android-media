@@ -34,7 +34,11 @@ interface ActionListener {
 
     fun onAddToWishlist(productId: String)
 
+    fun onAddRecommendationToWishlist(productId: String)
+
     fun onRemoveFromWishlist(productId: String)
+
+    fun onRemoveRecommendationFromWishlist(productId: String)
 
     fun onWishlistProductClicked(productId: String)
 

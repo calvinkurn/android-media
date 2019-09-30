@@ -12,23 +12,19 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'challenges'
-    groupId = 'com.tokopedia.challenges'
-    versionName = "${tkpdChallengesVersion}"
-    artifactName = "challenges-release"
-}
+
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -42,6 +38,13 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
+}
+
+project.ext {
+    artifactId = 'challenges'
+    groupId = 'com.tokopedia.im'
+    versionName = "1.0.0"
+    artifactName = "imchallenges-release"
 }
 
 apply from: '../../../publish_local.gradle'

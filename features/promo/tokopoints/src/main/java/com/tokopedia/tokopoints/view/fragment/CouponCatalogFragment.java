@@ -8,7 +8,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -32,9 +31,8 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
-import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
@@ -50,11 +48,10 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.tokopoints.ApplinkConstant.CATALOG_LISTING2;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -67,6 +64,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private static final String LIST_TAG_END = "</li>";
     private static final int MAX_POINTS_TO_SHOW = 4;
     private ViewFlipper mContainerMain;
+    private ServerErrorView serverErrorView;
     private Subscription mSubscriptionCouponTimer;
     private Subscription mSubscriptionCatalogTimer;
     private int mRefreshRepeatCount = 0;
@@ -174,8 +172,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void showError() {
+    public void showError(boolean hasInternet) {
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        serverErrorView.showErrorUi(hasInternet);
     }
 
     @Override
@@ -222,6 +221,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
+        serverErrorView = view.findViewById(R.id.server_error_view);
+
     }
 
     private void initListener() {
@@ -655,7 +656,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
                 giftButton.setText(R.string.tp_label_send);
-                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
+                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(), data.getImageUrlMobile()));
             }
         } else {
             giftSectionMainLayout.setVisibility(View.GONE);
@@ -678,9 +679,22 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong ->
-                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
-                );
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()));
+                    }
+                });
 
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),

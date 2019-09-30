@@ -19,6 +19,7 @@ import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.core.analytics.AppScreen;
@@ -206,6 +207,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomeRecommendation(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
+                case DeepLinkChecker.SIMILAR_PRODUCT:
+                    openSimilarProduct(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
+                    break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -215,7 +220,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
-                    RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
+                    openHotel();
                     screenName = "";
                     break;
                 /*
@@ -327,6 +332,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
 
         context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openHotel() {
+        RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
     }
 
@@ -555,6 +565,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openSimilarProduct(final List<String> linkSegment, final Uri uriData) {
+        String source = uriData.getQueryParameter("ref");
+        String productId = linkSegment.size() > 2 ? linkSegment.get(1) : "";
+        Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_SIMILAR_PRODUCT);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
         context.startActivity(intent);
         context.finish();
     }
@@ -702,7 +724,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String q = uriData.getQueryParameter("q");
         
         String applink = TextUtils.isEmpty(q) ?
-                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
         return applink + "?" + uriData.getQuery();

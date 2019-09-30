@@ -24,10 +24,10 @@ android {
 }
 
 project.ext {
-    artifactId = 'graph_view'
+    artifactId = 'graph-view'
     groupId = 'com.tokopedia.library'
-    versionName = "${tkpdGraphViewVersion}"
-    artifactName = "graph_view-release"
+    versionName = "1.0.0"
+    artifactName = "librarygraphview-release"
 }
 
 apply from: '../../publish_local.gradle'

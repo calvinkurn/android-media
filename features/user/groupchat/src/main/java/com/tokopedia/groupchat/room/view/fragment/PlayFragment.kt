@@ -17,14 +17,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -49,6 +47,8 @@ import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -222,16 +222,21 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 userId = userSession.userId
             }
 
-            (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
-                    it,
-                    channelInfoViewModel.channelId,
-                    channelInfoViewModel.title,
-                    description,
-                    channelInfoViewModel.bannerUrl,
-                    channelInfoViewModel.channelUrl,
-                    userId,
-                    "sharing"
-            )
+            val shareData = LinkerData.Builder.getLinkerBuilder()
+                    .setId(channelInfoViewModel.channelId)
+                    .setName(channelInfoViewModel.title)
+                    .setTextContent(description)
+                    .setDescription(description)
+                    .setImgUri(channelInfoViewModel.bannerUrl)
+                    .setOgImageUrl(channelInfoViewModel.bannerUrl)
+                    .setOgTitle(channelInfoViewModel.title)
+                    .setUri(channelInfoViewModel.channelUrl)
+                    .setSource(userId) // just using existing variable
+                    .setPrice("sharing") // here too
+                    .setType(LinkerData.GROUPCHAT_TYPE)
+                    .build()
+
+            DefaultShareData(activity, shareData).show()
         }
 
     }
@@ -474,11 +479,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         if (generateLink.isBlank())
             return
 
-        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, generateLink)
+        if(RouteManager.isSupportApplink(activity, generateLink)) {
+            RouteManager.route(activity, generateLink)
+        } else {
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        }
     }
 
     private fun getInboxChannelsIntent(): Intent? {
-        return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
+        return RouteManager.getIntent(activity, ApplinkConst.GROUPCHAT_LIST)
     }
 
     override fun onOpenWebSocket(needRefreshInfo: Boolean) {
@@ -617,8 +626,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-        startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
-                .getLoginIntent(activity), REQUEST_LOGIN)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_LOGIN)
     }
 
     private fun loadFirstTime() {

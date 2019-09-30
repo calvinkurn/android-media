@@ -8,4 +8,7 @@
     -->
     <string name="path_promo_list_digital" translatable="false">/list/digital</string>
     <string name="path_promo_detail_digital" translatable="false">/detail/digital</string>
+
+    <string name="path_promo_list_flight" translatable="false">/list/flight</string>
+    <string name="path_promo_detail_flight" translatable="false">/detail/flight</string>
 </resources>

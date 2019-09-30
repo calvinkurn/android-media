@@ -352,5 +352,9 @@ Anda di sini.</string>
     <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
     <string name="purchase_detail">Detail Pembelian</string>
     <string name="tkpdtransaction_cancellation_with_time">Pembatalan tidak bisa dilakukan saat ini. Kamu bisa batalkan pesanan pada %s</string>
+    <string name="order_list_title_recommendation">Rekomendasi untuk Anda</string>
     <string name="bom_check_cart">Lihat</string>
+    <string name="tkpdtransaction_lets_hunt_fav_stuff">Cari barang impianmu dulu, yuk!</string>
+    <string name="tkpdtransaction_buy_dream_items">Setelah belanja, kamu bisa pantau transaksimu di sini.</string>
+    <string name="tkpdtransaction_widget_title">Top-up &amp; Tagihanmu</string>
 </resources>

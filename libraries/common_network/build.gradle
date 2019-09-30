@@ -22,15 +22,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'common_network'
-    groupId = 'com.tokopedia.common.network'
-    versionName = "${tkpdCommonNetworkVersion}"
-    artifactName = "common_network-release"
-}
-
-
-
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -51,6 +42,13 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+}
+
+project.ext {
+    artifactId = 'common-network'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarycommonnetwork-release"
 }
 
 apply from: '../../publish_local.gradle'

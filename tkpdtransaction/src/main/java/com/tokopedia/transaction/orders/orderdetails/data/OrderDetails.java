@@ -37,6 +37,9 @@ public class OrderDetails {
     @SerializedName("additionalInfo")
     @Expose
     private List<AdditionalInfo> additionalInfo;
+    @SerializedName("additionalTickerInfo")
+    @Expose
+    private List<AdditionalTickerInfo> additionalTickerInfos;
     @SerializedName("pricing")
     @Expose
     private List<Pricing> pricing;
@@ -135,6 +138,10 @@ public class OrderDetails {
         return additionalInfo;
     }
 
+    public List<AdditionalTickerInfo> getAdditionalTickerInfos() {
+        return additionalTickerInfos;
+    }
+
     public List<Pricing> pricing() {
         return pricing;
     }
@@ -201,6 +208,7 @@ public class OrderDetails {
                 + "orderToken="+orderToken +","
                 + "detail="+detail +","
                 + "additionalInfo="+additionalInfo +","
+                + "additionalTickerInfo="+additionalTickerInfos +","
                 + "pricing="+pricing +","
                 + "paymentMethod="+paymentMethod +","
                 + "paymethods="+payMethods +","

@@ -11,7 +11,6 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRODUCT_VIEW
@@ -285,11 +284,11 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageTitle: String) {
+    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean,pageName: String, pageTitle: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
-        val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
+        val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val actionValuePostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
@@ -384,7 +383,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
-        val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
+        val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val valueActionPostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
@@ -829,34 +828,48 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         }
     }
 
-    fun eventClickOnStickyLogin(isOnSticky: Boolean) {
-        val tracker = TrackApp.getInstance().gtm
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.CLICK
-                )
-            } else {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.EMPTY_LABEL
-                )
-            }
-        }
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_APPLY_LEASING,
+                "$productId - $isVariant"
+        )
     }
-
-    fun eventViewLoginStickyWidget() {
-        val tracker = TrackApp.getInstance().gtm
-        tracker.sendGeneralEvent(
+    
+    fun eventViewHelpPopUpWhenAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
                 ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
+                ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickReportOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickCloseOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickSearchBar() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
+                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
+                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
+                ""
         )
     }
 
@@ -889,7 +902,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CATEGORY = "category"
         private const val LIST_DEFAULT = "/product - "
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc - "
+        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc"
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }

@@ -18,21 +18,22 @@ buildscript {
 }
 
 project.ext {
-    artifactId = "${artifactIdLogisticAddAddress}"
-    groupId = "${groupIdLogistic}"
-    versionName = "${logisticGroupVersion}"
-    artifactName = "${artifactIdLogisticAddAddress}-release"
+    artifactId = "add-address"
+    groupId = "com.tokopedia.logistic"
+    versionName = "1.0.0"
+    artifactName = "logisticaddaddress-release"
 }
 
 
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.locationmanager)
@@ -55,3 +56,5 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
 }
+
+apply from: '../../../publish_local.gradle'

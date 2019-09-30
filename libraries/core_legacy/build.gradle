@@ -30,19 +30,12 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'core'
-    groupId = 'com.tokopedia.core'
-    versionName = "2.23"
-    artifactName ="tkpdcore-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.iris)
 
@@ -99,6 +92,13 @@ dependencies {
     implementation "com.moengage:moe-location-lib:5.2.02"
     implementation "com.moengage:addon-realtime-trigger:2.2.00"
     implementation "com.moengage:integration-verifier:1.0.00"
+}
+
+project.ext {
+    artifactId = 'core'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarycore-release"
 }
 
 apply from: '../../publish_local.gradle'

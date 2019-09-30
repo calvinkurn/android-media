@@ -34,6 +34,8 @@ interface ChatbotContract {
         fun onClickLeaveQueue()
 
         fun showErrorToast(it: Throwable)
+
+        fun updateToolbar(profileName: String?, profileImage: String?)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

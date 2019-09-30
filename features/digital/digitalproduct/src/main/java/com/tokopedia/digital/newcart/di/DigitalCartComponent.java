@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.di;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
@@ -31,8 +30,6 @@ public interface DigitalCartComponent {
     void inject(DigitalCartDefaultFragment digitalCartDefaultFragment);
 
     void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
-
-    DigitalPostPaidLocalCache digitalPostPaidLocalCache();
 
     void inject(@NotNull DigitalCartMyBillsFragment digitalCartMyBillsFragment);
 }

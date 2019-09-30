@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.floating.view.fragment;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
@@ -71,6 +72,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private View vgRoot;
     private View vgFloatingEgg;
+    private View eggCounterTimer;
     private ImageView ivFloatingEgg;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
@@ -89,6 +91,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
+    private ImageView minimizeButtonLeft;
+    private float newAngleOfMinimizeBtn = 180;
+    private float oldAngleOfMinimizeBtn = 0;
+    private boolean isMinimized;
+    volatile boolean isRight = true;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -100,11 +107,44 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         View view = inflater.inflate(R.layout.fragment_floating_egg, container, false);
         vgRoot = view.findViewById(R.id.vg_root);
         vgFloatingEgg = view.findViewById(R.id.vg_floating_egg);
+        eggCounterTimer = view.findViewById(R.id.egg_counter_timer);
         ivFloatingEgg = view.findViewById(R.id.iv_floating_egg);
         tvFloatingCounter = view.findViewById(R.id.tv_floating_counter);
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
+        minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
         return view;
+    }
+
+    private void hideShowClickListener() {
+
+        if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
+            shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
+                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth() );
+            if (isRight)
+                isMinimized = false;
+            else
+                isMinimized = true;
+        } else {
+            shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
+                    vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
+            if (isRight)
+                isMinimized = true;
+            else
+                isMinimized = false;
+        }
+    }
+
+    private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
+        AnimatorSet rotateRight = new AnimatorSet();
+        final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, oldAngle, newAngle);
+        final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.X, oldX, newX);
+        ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
+        ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhTranslateEggX);
+        rotateRight.setDuration(SHORT_ANIMATION_DURATION);
+        rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
+        rotateRight.start();
+        saveCoordPreference((int)newX, (int)vgFloatingEgg.getY());
     }
 
     @Override
@@ -251,10 +291,12 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 return;
             }
             if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth / 2)) {
+                isRight = true;
                 int targetX = rootWidth - vgFloatingEgg.getWidth();
                 setCoordFloatingEgg(targetX, yEgg);
                 saveCoordPreference(targetX, yEgg);
             } else {
+                isRight = false;
                 setCoordFloatingEgg(0, yEgg);
                 saveCoordPreference(0, yEgg);
             }
@@ -266,6 +308,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             int coordPref[] = getCoordPreference();
             setCoordFloatingEgg(coordPref[0], coordPref[1]);
         } else {
+            isRight = true;
             if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
                 layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
@@ -445,7 +488,31 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
+    private void setMinimizeBehaviourHyperParameters(boolean isCurrentlyMinimized, boolean wasOnRightEarlier, float startXPos, float startAngle) {
+        isMinimized = isCurrentlyMinimized;
+        isRight = wasOnRightEarlier;
+        minimizeButtonLeft.setX(startXPos);
+        minimizeButtonLeft.setRotation(startAngle);
+    }
+
     private void onFloatingEggLoaded(String sumTokenString, boolean isShowTime, long timeRemainingSeconds) {
+        int[] coord = getCoordPreference();
+        if (coord[0] == -1) {
+            setMinimizeBehaviourHyperParameters(false, true, 0, oldAngleOfMinimizeBtn);
+        } else {
+            if (vgFloatingEgg.getX() < 0) {
+                setMinimizeBehaviourHyperParameters(true, false, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth(), oldAngleOfMinimizeBtn);
+            } else if (vgFloatingEgg.getX() == 0) {
+                setMinimizeBehaviourHyperParameters(false, false, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth(), newAngleOfMinimizeBtn);
+            } else if (vgFloatingEgg.getX() == rootWidth - vgFloatingEgg.getWidth()) {
+                setMinimizeBehaviourHyperParameters(false, true, 0, oldAngleOfMinimizeBtn);
+            } else if (vgFloatingEgg.getX() > rootWidth - vgFloatingEgg.getWidth()) {
+                setMinimizeBehaviourHyperParameters(true, true, 0, newAngleOfMinimizeBtn);
+            }
+        }
+        minimizeButtonLeft.setVisibility(View.VISIBLE);
+        minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
+
         if (TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
@@ -521,34 +588,68 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         //if the egg tends to the right, animate to the right
         if (((xEgg + (vgFloatingEgg.getWidth() / 2))) >= (rootWidth / 2)) {
             int targetX = rootWidth - vgFloatingEgg.getWidth();
-            PropertyValuesHolder pvhX =
-                    PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
-            PropertyValuesHolder pvhScaleX =
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
-            PropertyValuesHolder pvhScaleY =
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
+            if (isMinimized)
+                targetX = rootWidth - minimizeButtonLeft.getWidth();
+            AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
+
+            PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
+            PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
+            PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
-            objectAnimator.start();
+            rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
+            if (!isRight) {
+                if (isMinimized) {
+                    animateMinimizeButton(objectAnimator, newAngleOfMinimizeBtn, 0);
+                } else {
+                    animateMinimizeButton(objectAnimator, oldAngleOfMinimizeBtn, 0);
+                }
+                isRight = true;
+            } else {
+                objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
+                objectAnimator.start();
+            }
             saveCoordPreference(targetX, yEgg);
         } else {
+            AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
+            int target = 0;
+            if (isMinimized)
+                target = minimizeButtonLeft.getWidth() - vgFloatingEgg.getWidth();
             PropertyValuesHolder pvhX =
-                    PropertyValuesHolder.ofFloat(View.X, xEgg, 0);
+                    PropertyValuesHolder.ofFloat(View.X, xEgg, target);
             PropertyValuesHolder pvhScaleX =
                     PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
             PropertyValuesHolder pvhScaleY =
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
-            objectAnimator.start();
+            rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
-            saveCoordPreference(0, yEgg);
+            if (isRight) {
+                if (isMinimized) {
+                    animateMinimizeButton(objectAnimator, oldAngleOfMinimizeBtn, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
+                } else {
+                    animateMinimizeButton(objectAnimator, newAngleOfMinimizeBtn, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
+                }
+                isRight = false;
+            } else {
+                objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
+                objectAnimator.start();
+            }
+            saveCoordPreference(target, yEgg);
         }
     }
 
+    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX){
+        AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
+        final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, newAngle);
+        final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, newX);
+        ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
+        ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvhTranslateEggX);
+        rotateRightAnimatorSet.playTogether(animator, rotateMinimizeAnimator, translateEggXAnimator);
+        rotateRightAnimatorSet.start();
+    }
     @Override
     protected String getScreenName() {
         return null;
@@ -566,20 +667,20 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private void trackingEggImpression(int idToken, String name) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
-                            idToken +"_"+ name);
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
+                idToken + "_" + name);
 
     }
 
     private void trackingEggClick(int idToken, String name) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.CLICK_LUCKY_EGG,
-                            idToken + "_" + name
-                    );
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Action.CLICK_LUCKY_EGG,
+                idToken + "_" + name
+        );
     }
 
     public View getEgg() {

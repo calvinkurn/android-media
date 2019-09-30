@@ -15,6 +15,7 @@ import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.TetraDebugger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -45,7 +46,8 @@ import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
-    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = TimeUnit.MINUTES.toMillis(150); // 150 minutes (2.5 hours)
+    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 150; // 150 minutes (2.5 hours)
+    private static final String KEY_GTM_EXPIRED_TIME = "android_gtm_expired_time";
 
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
@@ -114,6 +116,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
             pResult.setResultCallback(cHolder -> {
                 cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                    if (!containerHolder.getStatus().isSuccess()) {
+                        return;
+                    }
                     if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
                         if (isAllowRefreshDefault(containerHolder)) {
                             Log.d("GTM TKPD", "Refreshed Container ");
@@ -132,7 +137,12 @@ public class GTMAnalytics extends ContextAnalytics {
         if (containerHolder.getContainer() != null) {
             lastRefresh = containerHolder.getContainer().getLastRefreshTime();
         }
-        return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
+        if (lastRefresh <= 0) {
+            return true;
+        }
+        long gtmExpiredTime = remoteConfig.getLong(KEY_GTM_EXPIRED_TIME, EXPIRE_CONTAINER_TIME_DEFAULT);
+        long gtmExpiredTimeInMillis = TimeUnit.MINUTES.toMillis(gtmExpiredTime);
+        return System.currentTimeMillis() - lastRefresh > gtmExpiredTimeInMillis;
     }
 
     public void eventError(String screenName, String errorDesc) {
@@ -364,8 +374,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String PRODUCTCLICK = "productclick";
     private static final String VIEWPRODUCT = "viewproduct";
     private static final String ADDTOCART = "addtocart";
+    private static final String BEGINCHECKOUT = "begin_checkout";
+    private static final String CHECKOUT_PROGRESS = "checkout_progress";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
+        // always allow sending gtm v5 in debug mode, and use remote config value in production
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
+
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
@@ -386,13 +402,21 @@ public class GTMAnalytics extends ContextAnalytics {
             case ADDTOCART:
                 keyEvent = FirebaseAnalytics.Event.ADD_TO_CART;
                 break;
-
+            case BEGINCHECKOUT:
+                keyEvent = FirebaseAnalytics.Event.BEGIN_CHECKOUT;
+                break;
+            case CHECKOUT_PROGRESS:
+                keyEvent = FirebaseAnalytics.Event.CHECKOUT_PROGRESS;
+                break;
         }
         logEvent(keyEvent, bundle, context);
     }
 
     public void pushGeneralGtmV5(Map<String, Object> params){
         sendGeneralEvent(params);
+        
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");

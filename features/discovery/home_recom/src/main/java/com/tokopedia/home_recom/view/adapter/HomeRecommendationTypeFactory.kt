@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.model.datamodel.*
 
 /**
+ * Created by Lukas on 26/08/19
+ *
  * A Interface of Type Factory Pattern.
  *
- * This interface initialize all viewType it will shown at Adapter
+ * This interface initialize all viewType it will shown at Adapter HomeRecommendation
  */
 interface HomeRecommendationTypeFactory {
     fun type(dataModel: ProductInfoDataModel): Int

@@ -28,14 +28,14 @@ constructor(private val flightOrderJourneyMapper: FlightOrderJourneyMapper,
                 orderEntity.attributes.flight.currency,
                 orderEntity.attributes.flight.pdf,
                 flightOrderJourneyMapper.transform(orderEntity.attributes.flight.journeys),
-                passengerViewModelMapper.transform(orderEntity.attributes.flight.passengers,
-                        orderEntity.attributes.flight.cancellations),
+                passengerViewModelMapper.transform(orderEntity.attributes.flight.passengers),
                 orderEntity.attributes.flight.payment,
                 orderEntity.attributes.flight.cancellations,
                 flightInsuranceMapper.transform(orderEntity.attributes.flight.insurances),
                 passengerViewModelMapper.getCancelledPassengerCount(orderEntity.attributes
                         .flight.cancellations),
-                orderEntity.attributes.flight.contactUsUrl)
+                orderEntity.attributes.flight.contactUsUrl,
+                if (orderEntity.attributes.flight.cancellationInfo != null && orderEntity.attributes.flight.cancellationInfo.isNotEmpty()) orderEntity.attributes.flight.cancellationInfo[0].text else "")
     }
 
     fun transform(orderEntities: List<OrderEntity>): List<FlightOrder> {

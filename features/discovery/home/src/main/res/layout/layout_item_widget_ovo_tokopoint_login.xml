@@ -163,7 +163,9 @@
                     android:textSize="@dimen/sp_12"
                     android:textColor="@color/font_black_primary_70"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="50 Toko Poin"/>
 
                 <TextView
                     android:id="@+id/tv_btn_action_tokopoint"
@@ -175,6 +177,7 @@
                     android:textColor="#03ac0e"
                     android:textSize="@dimen/sp_12"
                     android:visibility="gone"
+                    tools:text="Kupon Baru"
                     tools:visibility="visible" />
 
                 <TextView

@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'tokocash'
-    groupId = 'com.tokopedia.tokocash'
-    versionName = "2.22"
-    artifactName ="tkpdtokocash-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -21,9 +14,9 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -55,6 +48,13 @@ dependencies {
     }
     
     implementation project(rootProject.ext.libraries.track)
+}
+
+project.ext {
+    artifactId = 'tokocash'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "1.0.0"
+    artifactName ="fintechtokocash-release"
 }
 
 apply from: '../../../publish_local.gradle'

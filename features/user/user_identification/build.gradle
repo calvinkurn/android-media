@@ -18,12 +18,12 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cameraview)
@@ -43,3 +43,11 @@ dependencies {
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
+project.ext {
+    artifactId = 'identification'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "useridentification-release"
+}
+
+apply from: '../../../publish_local.gradle'

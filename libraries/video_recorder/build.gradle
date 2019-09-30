@@ -15,9 +15,18 @@ buildscript {
 dependencies {
     implementation rootProject.ext.supportLibDependencies.exifinterface
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.videoplayer)
 }
+
+project.ext {
+    artifactId = 'video-recorder'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryvideorecorder-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -31,6 +33,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -43,7 +46,9 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
@@ -64,6 +69,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -87,6 +93,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView secondaryActionBtn;
     FrameLayout progressBarLayout;
     private boolean isSingleButton;
+    private RecyclerView recommendationList;
+    private TextView recommendListTitle;
+    private LinearLayout ViewRecomendItems;
 
 
     @Override
@@ -130,6 +139,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        recommendationList = view.findViewById(R.id.recommendation_list);
+        recommendListTitle = view.findViewById(R.id.recommend_title);
+        ViewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -182,7 +194,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
+        if(!presenter.isValidUrl(invoice.invoiceUrl())){
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
@@ -227,6 +239,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
         additionalInfoLayout.addView(doubleTextView);
+    }
+
+    @Override
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
+
     }
 
     @Override
@@ -314,6 +331,21 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void askPermission() {
 
+    }
+
+    @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
+            if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
+                ViewRecomendItems.setVisibility(View.GONE);
+            } else {
+                if (getContext() != null) {
+                    recommendListTitle.setText(getContext().getString(R.string.tkpdtransaction_widget_title));
+                    recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                    recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+                }
+            }
+        }
     }
 
     @Override
@@ -456,5 +488,4 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
     }
-
 }

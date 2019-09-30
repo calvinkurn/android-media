@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -123,8 +124,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                                    .getSettingBankIntent(getActivity());
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();

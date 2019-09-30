@@ -15,19 +15,12 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'recentview'
-    groupId = 'com.tokopedia.recentview'
-    versionName = "${tkpdRecentviewVersion}"
-    artifactName ="recentview-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -55,6 +48,13 @@ dependencies {
     }
     
     implementation project(rootProject.ext.libraries.track)
+}
+
+project.ext {
+    artifactId = 'recent-view'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryrecentview-release"
 }
 
 apply from: '../../../publish_local.gradle'

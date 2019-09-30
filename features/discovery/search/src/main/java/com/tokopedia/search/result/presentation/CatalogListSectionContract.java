@@ -49,6 +49,8 @@ public interface CatalogListSectionContract {
         void backToTop();
 
         Map<String, Object> getSearchParameterMap();
+
+        void removeLoading();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

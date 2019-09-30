@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -65,10 +66,12 @@ public class DeepLinkChecker {
     public static final int SMCREFERRAL = 27;
     public static final int HOME_RECOMMENDATION = 28;
     public static final int CONTACT_US = 29;
+    public static final int HOTEL = 31;
 
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "flight";
+    private static final String HOTEL_SEGMENT = "hotel";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
@@ -99,6 +102,8 @@ public class DeepLinkChecker {
                 return OTHER;
             else if (isFlight(linkSegment))
                 return FLIGHT;
+            else if (isHotel(linkSegment))
+                return HOTEL;
             else if (isPromo(linkSegment))
                 return PROMO;
             else if (isSale(linkSegment))
@@ -170,6 +175,10 @@ public class DeepLinkChecker {
 
     private static boolean isFlight(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
+    }
+
+    private static boolean isHotel(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(HOTEL_SEGMENT);
     }
 
     private static List<String> getLinkSegment(String url) {
@@ -263,7 +272,9 @@ public class DeepLinkChecker {
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
                 && !isSMCReferral(linkSegment)
-                && !isHomeRecoomendation(linkSegment);
+                && !isHomeRecoomendation(linkSegment)
+                && !isLeasing(linkSegment)
+                && !isModalToko(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -329,6 +340,17 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("rekomendasi"));
     }
 
+    private static boolean isLeasing(List<String> linkSegment){
+        return (linkSegment.get(0).equals("kredit-motor"));
+    }
+
+    private static boolean isModalToko(List<String> linkSegment) {
+        if (linkSegment.size() == 2) {
+            return linkSegment.get(0).equals("fm") && linkSegment.get(1).equals("modal-toko");
+        }
+        return false;
+    }
+
     private static boolean isKycTerms(List<String> linkSegment) {
         return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
@@ -376,7 +398,7 @@ public class DeepLinkChecker {
 
     private static String constructSearchApplink(String query, String departmentId) {
         String applink = TextUtils.isEmpty(query) ?
-                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
         return applink
@@ -413,6 +435,12 @@ public class DeepLinkChecker {
     }
 
     public static void openProduct(String url, Context context) {
+        if (context != null) {
+            RouteManager.route(context, url);
+        }
+    }
+
+    public static void openHotel(Context context, String url) {
         if (context != null) {
             RouteManager.route(context, url);
         }
