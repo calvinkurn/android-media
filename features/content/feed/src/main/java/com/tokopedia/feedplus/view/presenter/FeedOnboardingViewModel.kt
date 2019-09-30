@@ -46,7 +46,7 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
 
     fun getOnboardingData(source: String, forceRefresh: Boolean) {
         launchCatchError(block = {
-            val resultDeffered = loadOnboardingData(source, forceRefresh)
+            val resultDeffered = loadOnboardingData(source)
             onboardingResp.value = Success(resultDeffered.await())
         }){
             it.printStackTrace()
@@ -64,14 +64,14 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         }
     }
 
-    private suspend fun loadOnboardingData(source: String, forceRefresh: Boolean): Deferred<OnboardingViewModel> {
+    private suspend fun loadOnboardingData(source: String): Deferred<OnboardingViewModel> {
         return async(Dispatchers.IO) {
             var resultData = OnboardingViewModel()
             val param = mapOf(PARAM_SOURC to source)
             val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_ONBOARDING_INTEREST],
                     OnboardingData::class.java, param)
 
-            val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val requests = mutableListOf(request)
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
             if (gqlResponse.getError(OnboardingData::class.java)?.isNotEmpty() != true) {
