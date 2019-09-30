@@ -21,6 +21,7 @@
                 product_id
                 product_name
                 product_price
+                is_eligible_free_shipping
             }
             product_id
             product_price
