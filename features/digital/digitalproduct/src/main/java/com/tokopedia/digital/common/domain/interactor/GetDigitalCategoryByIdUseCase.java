@@ -1,10 +1,10 @@
 package com.tokopedia.digital.common.domain.interactor;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -103,7 +103,7 @@ public class GetDigitalCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     public Map<String, String> getGeneratedAuthParamNetwork(
             Map<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
+        return AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
     }
 
 }

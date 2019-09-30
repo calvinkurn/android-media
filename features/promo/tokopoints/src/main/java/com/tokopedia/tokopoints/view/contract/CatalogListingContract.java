@@ -31,7 +31,7 @@ public interface CatalogListingContract {
 
         void onSuccessFilter(CatalogFilterBase filters);
 
-        void onErrorFilter(String errorMessage);
+        void onErrorFilter(String errorMessage, boolean hasInternet);
 
         Context getActivityContext();
 

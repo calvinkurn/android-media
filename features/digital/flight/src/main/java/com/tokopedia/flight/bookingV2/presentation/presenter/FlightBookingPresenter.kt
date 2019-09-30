@@ -156,7 +156,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onButtonSubmitClicked() {
         if (validateFields()) {
-            flightAnalytics.eventBookingNextClick(view.getString(R.string.flight_booking_analytics_customer_page))
+            flightAnalytics.eventBookingNextClick(view.getCurrentCartPassData(), view.getCurrentBookingParamViewModel().searchParam)
             view.getCurrentBookingParamViewModel().contactName = view.getContactName()
             view.getCurrentBookingParamViewModel().contactEmail = view.getContactEmail()
             view.getCurrentBookingParamViewModel().contactPhone = view.getContactPhoneNumber()
