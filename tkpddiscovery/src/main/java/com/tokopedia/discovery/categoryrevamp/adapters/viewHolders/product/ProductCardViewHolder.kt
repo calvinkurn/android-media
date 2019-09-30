@@ -254,6 +254,7 @@ abstract class ProductCardViewHolder(itemView: View,
     protected fun initReviewCount(productItem: ProductsItem) {
         val isReviewCountVisible = isReviewCountVisible(productItem)
         getProductCardView()?.setReviewCountVisible(isReviewCountVisible)
+
         if (isReviewCountVisible) {
             getProductCardView()?.setReviewCount(productItem.countReview)
         }

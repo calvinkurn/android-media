@@ -98,7 +98,7 @@ data class ProductsItem(
 
         @field:SerializedName("isTopAds")
         var isTopAds: Boolean = false
-        ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
+) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
 
     override fun type(typeFactory: ProductTypeFactory?): Int {
