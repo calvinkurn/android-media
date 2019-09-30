@@ -210,8 +210,8 @@ public class ShopListFragment
         if(userSession == null) return "";
 
         return userSession.isLoggedIn() ?
-                AuthHelperJava.md5(userSession.getUserId()) :
-                AuthHelperJava.md5(getRegistrationId());
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId());
     }
 
     private void loadDataFromPresenter() {

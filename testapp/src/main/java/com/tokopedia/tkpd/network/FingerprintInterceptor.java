@@ -46,7 +46,7 @@ public class FingerprintInterceptor implements Interceptor {
         String json = fingerprintModel.getFingerprintHash();
         newRequest.addHeader(KEY_SESSION_ID, fingerprintModel.getRegistrarionId());
         newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
-        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthHelperJava.md5(json + "+" + userSession.getUserId()));
+        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthHelper.getMD5Hash(json + "+" + userSession.getUserId()));
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());

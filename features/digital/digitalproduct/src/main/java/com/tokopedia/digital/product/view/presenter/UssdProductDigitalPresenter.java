@@ -68,7 +68,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
     @NonNull
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthHelperJava.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 

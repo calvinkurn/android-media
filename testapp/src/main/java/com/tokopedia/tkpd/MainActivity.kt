@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                         val map = mapOf(
                             "user_id" to it.userId.toString(),
                             "device_id" to DataSource.MOCK_DEVICE_ID,
-                            "hash" to AuthHelperJava.md5(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                            "hash" to AuthHelper.getMD5Hash(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
                             "os_type" to "1",
                             "device_time" to (Date().time / 1000).toString()
                         )
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                 mapOf(
                     "user_id" to userSession.userId.toString(),
                     "device_id" to DataSource.MOCK_DEVICE_ID,
-                    "hash" to AuthHelperJava.md5(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                    "hash" to AuthHelper.getMD5Hash(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
                     "os_type" to "1",
                     "device_time" to (Date().time / 1000).toString()
                 )

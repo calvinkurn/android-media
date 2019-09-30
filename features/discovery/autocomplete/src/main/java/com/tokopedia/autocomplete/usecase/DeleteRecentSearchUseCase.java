@@ -67,9 +67,9 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_SOURCE, "searchbar");
         params.putString(KEY_DELETE_ALL, "false");
         params.putString(KEY_Q, query);
-        String unique_id = AuthHelperJava.md5(registrationId);
+        String unique_id = AuthHelper.getMD5Hash(registrationId);
         if (!TextUtils.isEmpty(userId)) {
-            unique_id = AuthHelperJava.md5(userId);
+            unique_id = AuthHelper.getMD5Hash(userId);
             params.putString(KEY_USER_ID, userId);
         }
         params.putString(KEY_UNIQUE_ID, unique_id);
@@ -82,9 +82,9 @@ public class DeleteRecentSearchUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_DEVICE, "android");
         params.putString(KEY_SOURCE, "searchbar");
         params.putString(KEY_DELETE_ALL, "true");
-        String unique_id = AuthHelperJava.md5(registrationId);
+        String unique_id = AuthHelper.getMD5Hash(registrationId);
         if (!TextUtils.isEmpty(userId)) {
-            unique_id = AuthHelperJava.md5(userId);
+            unique_id = AuthHelper.getMD5Hash(userId);
             params.putString(KEY_USER_ID, userId);
         }
         params.putString(KEY_UNIQUE_ID, unique_id);

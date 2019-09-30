@@ -419,8 +419,8 @@ public class SearchActivity extends BaseActivity
 
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
-                AuthHelperJava.md5(userSession.getUserId()) :
-                AuthHelperJava.md5(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId(this));
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }

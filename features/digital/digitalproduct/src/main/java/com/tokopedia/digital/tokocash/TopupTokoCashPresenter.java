@@ -79,7 +79,7 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
 
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthHelperJava.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         return getView().getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 

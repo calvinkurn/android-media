@@ -1,4 +1,5 @@
-package com.tokopedia.authentication
+//package com.tokopedia.authentication
+package com.tokopedia.analytics.iseng
 
 import android.content.Context
 import android.os.Build

@@ -404,8 +404,8 @@ public class ProductListFragment
 
     private String generateUniqueId() {
         return userSession.isLoggedIn() ?
-                AuthHelperJava.md5(userSession.getUserId()) :
-                AuthHelperJava.md5(getRegistrationId());
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId());
     }
 
     @Override

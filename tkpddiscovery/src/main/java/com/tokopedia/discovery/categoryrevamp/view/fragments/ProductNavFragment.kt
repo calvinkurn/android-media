@@ -477,9 +477,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
-            AuthHelperJava.md5(userSession.userId)
+            AuthHelper.getMD5Hash(userSession.userId)
         else
-            AuthHelperJava.md5(gcmHandler.registrationId)
+            AuthHelper.getMD5Hash(gcmHandler.registrationId)
     }
 
     override fun onSwipeToRefresh() {

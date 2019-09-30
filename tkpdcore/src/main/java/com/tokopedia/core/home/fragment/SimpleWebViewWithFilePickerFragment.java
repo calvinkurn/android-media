@@ -183,7 +183,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                     NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
                     FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
                     String fingerprintHashData = fingerprintModel.getFingerprintHash();
-                    String fingerprintHash = AuthHelperJava.md5(fingerprintHashData + "+" +
+                    String fingerprintHash = AuthHelper.getMD5Hash(fingerprintHashData + "+" +
                             new UserSession(getContext()).getUserId());
                     Map<String, String> requestHeader = request.getRequestHeaders();
                     requestHeader.put(FINGERPRINT_HASH, fingerprintHash);
