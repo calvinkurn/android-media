@@ -40,10 +40,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -63,6 +62,16 @@
                     app:typographyType="body_2"
                     android:textColor="@color/Neutral_N700"
                     tools:text="Blus Lengan pendek Wanita gaya" />
+
+
+                <ImageView
+                    android:id="@+id/img_free_ongkir"
+                    android:layout_width="70dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:background="@color/tkpd_main_green"
+                    android:scaleType="fitXY" />
+
             </LinearLayout>
 
         </LinearLayout>
