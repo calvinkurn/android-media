@@ -38,6 +38,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int discountedRate;
     private int shippingRate;
     private int benefitAmount;
+    private String promoTitle;
 
     private String checksum;
     private String ut;
@@ -397,6 +398,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.ontimeDelivery = ontimeDelivery;
     }
 
+    public String getPromoTitle() {
+        return promoTitle;
+    }
+
+    public void setPromoTitle(String promoTitle) {
+        this.promoTitle = promoTitle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -433,6 +442,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeInt(this.discountedRate);
         dest.writeInt(this.shippingRate);
         dest.writeInt(this.benefitAmount);
+        dest.writeString(this.promoTitle);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
@@ -479,6 +489,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.discountedRate = in.readInt();
         this.shippingRate = in.readInt();
         this.benefitAmount = in.readInt();
+        this.promoTitle = in.readString();
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
