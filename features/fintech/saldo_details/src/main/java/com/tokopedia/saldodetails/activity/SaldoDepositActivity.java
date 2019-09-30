@@ -33,7 +33,6 @@ import javax.inject.Inject;
  */
 
 
-//@DeepLink(ApplinkConst.DEPOSIT)
 public class SaldoDepositActivity extends BaseSimpleActivity implements
         HasComponent<SaldoDetailsComponent> {
 
@@ -74,7 +73,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_saldo_deposit;
+        return com.tokopedia.saldodetails.R.layout.activity_saldo_deposit;
     }
 
     @Override
@@ -98,15 +97,15 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     private void setUpToolbar() {
-        toolbar = findViewById(R.id.toolbar);
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
+        toolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar);
+        Drawable upArrow = ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back);
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             toolbar.setNavigationIcon(upArrow);
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
-        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), getResources().getDimensionPixelOffset(R.dimen.dp_12), toolbar.getPaddingBottom());
+        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12), toolbar.getPaddingBottom());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,7 +119,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private void initializeView() {
         isSeller = userSession.hasShop() || userSession.isAffiliate();
-        TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
+        TextView saldoHelp = findViewById(com.tokopedia.saldodetails.R.id.toolbar_saldo_help);
 
         saldoHelp.setVisibility(View.VISIBLE);
         saldoHelp.setOnClickListener(v -> {
@@ -134,7 +133,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+            window.setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.white));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }

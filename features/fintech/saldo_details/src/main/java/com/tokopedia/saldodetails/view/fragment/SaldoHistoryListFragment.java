@@ -51,14 +51,14 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_history_list, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_history_list, container, false);
         initViews(view);
         initialVar();
         return view;
     }
 
     private void initViews(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(com.tokopedia.abstraction.R.id.recycler_view);
     }
 
     @Override

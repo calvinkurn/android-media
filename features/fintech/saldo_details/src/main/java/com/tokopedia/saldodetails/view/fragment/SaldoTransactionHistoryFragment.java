@@ -93,7 +93,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_history, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_history, container, false);
         initViews(view);
         return view;
     }
@@ -118,18 +118,18 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     private void initViews(View view) {
-        startDateLayout = view.findViewById(R.id.start_date_layout);
-        endDateLayout = view.findViewById(R.id.end_date_layout);
-        startDateTV = view.findViewById(R.id.start_date_tv);
+        startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout);
+        endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout);
+        startDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_tv);
         startDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_calendar_grey), null, null , null);
-        endDateTV = view.findViewById(R.id.end_date_tv);
+                (context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null , null);
+        endDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_tv);
         endDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_calendar_grey), null, null , null);
+                (context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null , null);
 
-        depositHistoryViewPager = view.findViewById(R.id.transaction_history_view_pager);
-        depositHistoryTabLayout = view.findViewById(R.id.transaction_history_tab_layout);
-        tabSeparator = view.findViewById(R.id.transaction_history_tab_view_separator);
+        depositHistoryViewPager = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_view_pager);
+        depositHistoryTabLayout = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_layout);
+        tabSeparator = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_view_separator);
     }
 
     private void initialVar() {

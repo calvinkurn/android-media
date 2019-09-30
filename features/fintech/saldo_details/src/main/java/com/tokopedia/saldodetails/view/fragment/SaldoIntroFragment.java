@@ -17,12 +17,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoIntroFragment extends TkpdBaseV4Fragment {
 
@@ -42,17 +41,17 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_intro, container, false);
-        viewMore = view.findViewById(R.id.si_view_more);
-        gotoSaldoPage = view.findViewById(R.id.si_goto_balance_page);
-        ((TextView)view.findViewById(R.id.dana_refund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (view.getContext(), R.drawable.ic_refund), null, null , null);
-        ((TextView)view.findViewById(R.id.disbursement_fund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (view.getContext(), R.drawable.ic_refund_disbursement), null, null , null);
-        ((TextView)view.findViewById(R.id.hasil_penjualan)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (view.getContext(), R.drawable.ic_sales_report), null, null , null);
-        ((TextView)view.findViewById(R.id.disbursement_priority_balance)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (view.getContext(), R.drawable.ic_balance_disbursement), null, null , null);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_intro, container, false);
+        viewMore = view.findViewById(com.tokopedia.saldodetails.R.id.si_view_more);
+        gotoSaldoPage = view.findViewById(com.tokopedia.saldodetails.R.id.si_goto_balance_page);
+        ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.dana_refund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (view.getContext(), com.tokopedia.saldodetails.R.drawable.ic_refund), null, null, null);
+        ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.disbursement_fund)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (view.getContext(), com.tokopedia.saldodetails.R.drawable.ic_refund_disbursement), null, null, null);
+        ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.hasil_penjualan)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (view.getContext(), com.tokopedia.saldodetails.R.drawable.ic_sales_report), null, null, null);
+        ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.disbursement_priority_balance)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (view.getContext(), com.tokopedia.saldodetails.R.drawable.ic_balance_disbursement), null, null, null);
         return view;
     }
 
@@ -66,10 +65,10 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String text = getResources().getString(R.string.saldo_intro_help);
+        String text = getResources().getString(com.tokopedia.saldodetails.R.string.saldo_intro_help);
 
         SpannableString spannableString = new SpannableString(text);
-        String indexOfString = getString(R.string.saldo_help_text);
+        String indexOfString = getString(com.tokopedia.saldodetails.R.string.saldo_help_text);
         int startIndexOfLink = text.indexOf(indexOfString);
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
@@ -83,9 +82,9 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
                 public void updateDrawState(@NonNull TextPaint ds) {
                     super.updateDrawState(ds);
                     ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.green_250));
+                    ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250));
                 }
-            }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.saldo_help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, startIndexOfLink, startIndexOfLink + getResources().getString(com.tokopedia.saldodetails.R.string.saldo_help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             viewMore.setMovementMethod(LinkMovementMethod.getInstance());
             viewMore.setText(spannableString);
         }
