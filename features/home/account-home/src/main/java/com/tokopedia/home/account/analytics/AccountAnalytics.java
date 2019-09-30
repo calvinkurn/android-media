@@ -15,11 +15,57 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_LEARN_MORE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_FIELD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENCY_CODE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ATTRIBUTION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_BRAND;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_POSITION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_PRICE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_VARIAN;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ECOMMERCE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EMPTY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
+import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NONE_OTHER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PRODUCTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
+import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT;
 
 /**
  * Created by meta on 04/08/18.
@@ -393,9 +439,5 @@ public class AccountAnalytics {
                     ""
             );
         }
-    }
-
-    public void sendScreenName(String screenName) {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 }

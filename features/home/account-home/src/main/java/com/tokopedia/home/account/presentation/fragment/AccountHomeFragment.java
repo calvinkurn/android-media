@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -186,26 +185,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
 
         onNotificationChanged(counterNumber, 0);
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) { }
-
-            @Override
-            public void onPageSelected(int i) {
-                String screenName = (i == 0) ?
-                        String.format("/%s/%s",
-                                AccountConstants.Analytics.USER,
-                                AccountConstants.Analytics.BELI) :
-                        String.format("/%s/%s",
-                                AccountConstants.Analytics.USER,
-                                AccountConstants.Analytics.JUAL);
-                accountAnalytics.sendScreenName(screenName);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) { }
-        });
     }
 
     @Override
