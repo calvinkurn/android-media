@@ -215,6 +215,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Ticker tvLogPromoMsg;
     private TextView tvSelectedPriceOnly;
     private View llCourierContainer;
+    private TextView tvDurationStrikedPrice;
+    private TextView tvDurationPrice;
 
     // order prioritas
     private CheckBox checkBoxPriority;
@@ -371,6 +373,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvLogTicker = itemView.findViewById(R.id.ticker_promo_logistic);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
         llCourierContainer = itemView.findViewById(R.id.selected_courier_container);
+        tvDurationStrikedPrice = itemView.findViewById(R.id.tv_duration_benefit_striked);
+        tvDurationPrice = itemView.findViewById(R.id.tv_duration_discounted_price);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();

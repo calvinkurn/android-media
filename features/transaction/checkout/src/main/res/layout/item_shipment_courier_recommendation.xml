@@ -7,20 +7,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_courier_recommendation_state_loading"
-        layout="@layout/partial_shimmering_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16" />
-
-    <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-        android:id="@+id/ticker_promo_logistic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_height="50dp"
-        android:visibility="visible"/>
-
     <LinearLayout
         android:id="@+id/ll_select_shipment_recommendation"
         android:layout_width="match_parent"
@@ -75,20 +61,47 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_4">
 
-            <TextView
-                android:id="@+id/tv_selected_duration_recommendation"
-                style="@style/TextMidMediumBlack70"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_weight="1"
                 android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
-                tools:text="8 jam" />
+                android:paddingBottom="@dimen/dp_16">
+
+                <TextView
+                    android:id="@+id/tv_selected_duration_recommendation"
+                    style="@style/TextMidMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="8 jam" />
+
+                <TextView
+                    android:id="@+id/tv_duration_benefit_striked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_selected_duration_recommendation"
+                    tools:text="Rp 10.000"
+                    tools:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_duration_discounted_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_selected_duration_recommendation"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_toEndOf="@+id/tv_duration_benefit_striked"
+                    android:layout_toRightOf="@+id/tv_duration_benefit_striked"
+                    tools:text="Rp 3.000"
+                    tools:visibility="gone" />
+
+            </RelativeLayout>
+
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_change_selected_duration"
@@ -181,11 +194,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="@dimen/dp_4"
+                app:closeButtonVisibility="gone"
                 app:tickerShapeType="loose"
                 app:tickerType="announcement"
-                app:closeButtonVisibility="gone"
-                tools:text="Tidak dapat ubah kurir karena promo telah diterapkan"
-                tools:layout_height="50dp"/>
+                tools:layout_height="50dp"
+                tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
 
         </LinearLayout>
 
@@ -196,9 +209,9 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
+            app:closeButtonVisibility="gone"
             app:tickerShapeType="loose"
             app:tickerType="announcement"
-            app:closeButtonVisibility="gone"
             tools:layout_height="50dp" />
 
     </LinearLayout>
@@ -211,5 +224,19 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/grey_300" />
+
+    <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+        android:id="@+id/ticker_promo_logistic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        tools:layout_height="50dp" />
+
+    <include
+        android:id="@+id/ll_courier_recommendation_state_loading"
+        layout="@layout/partial_shimmering_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16" />
 
 </LinearLayout>
