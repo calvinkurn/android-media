@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -58,16 +59,9 @@ class ProductDetailModule {
 
     @ProductDetailScope
     @Provides
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
+    fun provideGetRecommendationUseCase(rawQueries: Map<String, String>,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
-    }
-
-    @ProductDetailScope
-    @Provides
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+        return GetRecommendationUseCase(rawQueries[QUERY_RECOMMEN_PRODUCT]?:"", graphqlUseCase, userSessionInterface)
     }
 }
