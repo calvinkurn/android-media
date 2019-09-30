@@ -28,12 +28,6 @@ import static com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTrackingCo
 
 public class DiscoveryTracking {
 
-    public static final String ACTION_IMAGE_SEARCH = "/imagesearch";
-    public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
-    public static final String EVENT_ACTION = "eventAction";
-    public static final String EVENT_LABEL = "eventLabel";
-    public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
     public static final String EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru";
@@ -41,55 +35,8 @@ public class DiscoveryTracking {
     private UserSessionInterface userSessionInterface;
 
     @Inject
-    public DiscoveryTracking(Context context, UserSessionInterface userSessionInterface) {
+    public DiscoveryTracking(UserSessionInterface userSessionInterface) {
         this.userSessionInterface = userSessionInterface;
-    }
-
-    public void eventSearchImagePickerClickCamera() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                DiscoveryEventTracking.Event.IMAGE_SEARCH_CLICK,
-                DiscoveryEventTracking.Category.IMAGE_SEARCH,
-                DiscoveryEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_CAMERA,
-                "");
-    }
-
-    public void eventSearchImagePickerClickGallery() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                DiscoveryEventTracking.Event.IMAGE_SEARCH_CLICK,
-                DiscoveryEventTracking.Category.IMAGE_SEARCH,
-                DiscoveryEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_GALLERY,
-                "");
-    }
-
-    public static void trackEventClickImageSearchResultProduct(Object item) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT, DiscoveryEventTracking.Event.PRODUCT_CLICK,
-                EVENT_CATEGORY, DiscoveryEventTracking.Category.IMAGE_SEARCH_RESULT,
-                EVENT_ACTION, DiscoveryEventTracking.Action.CLICK_PRODUCT,
-                EVENT_LABEL, "",
-                ECOMMERCE, DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", ACTION_IMAGE_SEARCH),
-                                             "products", DataLayer.listOf(item)
-                                        )
-                            )
-                )
-        );
-    }
-
-    public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", DiscoveryEventTracking.Category.IMAGE_SEARCH_RESULT,
-                        "eventAction", "impression - product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
-                )
-        );
     }
 
     public static void eventSearchResultShare(Context context, String screenName) {

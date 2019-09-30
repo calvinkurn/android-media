@@ -1,7 +1,8 @@
 package com.tokopedia.tradein.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -12,31 +13,41 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.tradein.model.ValidateTradeInResponse;
+import com.tokopedia.tradein.model.ValidateTradePDP;
+import com.tokopedia.tradein.view.customview.TradeInTextView;
 import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tokopedia.tradein.model.TradeInParams;
-import com.tokopedia.tradein.model.ValidateTradeInResponse;
-import com.tokopedia.tradein.model.ValidateTradePDP;
 import rx.Subscriber;
-import com.tokopedia.tradein.view.customview.TradeInTextView;
 
-public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
+public class TradeInTextViewModel extends AndroidViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
+    private Application application;
 
-    public TradeInTextViewModel(FragmentActivity activity) {
-        activityWeakReference = new WeakReference<>(activity);
+    public TradeInTextViewModel(Application application) {
+        super(application);
         responseData = new MutableLiveData<>();
+        this.application = application;
+    }
+
+    public void setActivity(FragmentActivity activity) {
+        activityWeakReference = new WeakReference<>(activity);
     }
 
     public void showAccessRequestDialog() {
         if (activityWeakReference.get() != null) {
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
+            FragmentActivity activity = activityWeakReference.get();
+
             AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+            accessDialog.setBodyText(activity.getString(R.string.tradein_text_permission_description));
+            accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access));
             accessDialog.setNegativeButton("");
             accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         }
@@ -57,7 +68,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
             GraphqlUseCase gqlValidatetradeIn = new GraphqlUseCase();
             gqlValidatetradeIn.clearRequest();
             gqlValidatetradeIn.addRequest(new
-                    GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
+                    GraphqlRequest(GraphqlHelper.loadRawString(application.getResources(),
                     R.raw.gql_validate_tradein), ValidateTradePDP.class, variables, false));
             gqlValidatetradeIn.execute(new Subscriber<GraphqlResponse>() {
                 @Override

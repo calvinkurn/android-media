@@ -32,7 +32,7 @@ android {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "2.23"
+    versionName = "1.0.0"
     artifactName ="tkpdcore-release"
 }
 
@@ -47,8 +47,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.applink)
@@ -60,7 +60,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactiondata)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
 
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.referral)

@@ -37,6 +37,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -44,6 +45,8 @@ import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -70,6 +73,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
+    private static final String TAB_ID = "tabId";
+    private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -88,6 +93,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
     private boolean isdownloadable = false;
+    private OrderDetails details;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -128,6 +134,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -148,6 +155,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
+                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                    getView().setRecommendation(rechargeWidgetResponse);
                 }
             }
         });
@@ -323,6 +332,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private void setDetailsData(OrderDetails details) {
         if (getView() == null || getView().getAppContext() == null)
             return;
+        this.details = details;
         getView().hideProgressBar();
         getView().setStatus(details.status());
         getView().clearDynamicViews();
@@ -574,9 +584,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return (matcher.find() || this.isdownloadable);
     }
 
-    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
+            String paymentStatus = "", paymentMethod = "";
+            if (details != null && details.status() != null && !TextUtils.isEmpty(details.status().statusText())) {
+                paymentStatus = details.status().statusText();
+            }
+            if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
+                paymentMethod = details.getPayMethods().get(0).getValue();
+            }
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
         }
     }
 
@@ -597,6 +614,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public boolean shouldShowTimeForCancellation(){
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
+    }
+
+
+    private GraphqlRequest makegraphqlRequestForRecommendation() {
+        GraphqlRequest graphqlRequestForRecommendation;
+        Map<String, Object> variablesWidget = new HashMap<>();
+        variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+        graphqlRequestForRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        return graphqlRequestForRecommendation;
     }
 
     public boolean isValidUrl(String invoiceUrl) {

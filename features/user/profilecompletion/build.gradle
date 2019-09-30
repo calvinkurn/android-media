@@ -23,8 +23,8 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -63,6 +63,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-
 }
+
+project.ext {
+    artifactId = 'profile-compilation'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="userprofilecompilation-release"
+}
+
+apply from: '../../../publish_local.gradle'

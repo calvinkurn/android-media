@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'cacheapi'
-    groupId = 'com.tokopedia.cacheapi'
-    versionName = "${tkpdCacheApiVersion}"
-    artifactName ="cache_api-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -24,6 +17,13 @@ dependencies {
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+}
+
+project.ext {
+    artifactId = 'cache-api'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarycacheapi-release"
 }
 
 apply from: '../../publish_local.gradle'

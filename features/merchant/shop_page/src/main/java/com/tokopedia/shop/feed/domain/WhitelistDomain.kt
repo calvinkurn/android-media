@@ -1,6 +1,6 @@
 package com.tokopedia.shop.feed.domain
 
-import com.tokopedia.kolcommon.data.pojo.Author
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 
 import java.util.ArrayList
 
@@ -16,5 +16,5 @@ data class WhitelistDomain(
     var postSuccessMessage: String = "",
     var desc: String = "",
     var image: String = "",
-    var authors: ArrayList<Author> = ArrayList()
-){}
+    var authors: List<Author> = ArrayList()
+)

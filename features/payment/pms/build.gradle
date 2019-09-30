@@ -15,16 +15,9 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdPaymentManagementSystem}"
-    groupId = "${groupIdPayment}"
-    versionName = "${paymentGroupVersion}"
-    artifactName = "${artifactIdPaymentManagementSystem}-release"
-}
-
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -52,3 +45,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = "pms"
+    groupId = "com.tokopedia.payment"
+    versionName = "1.0.0"
+    artifactName = "paymentpms-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -4,8 +4,17 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
+
+project.ext {
+    artifactId = 'kotlin-extensions'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarykotlinextensions-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -12,20 +12,12 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'flashsale-management'
-    groupId = 'com.tokopedia.flashsale'
-    versionName = "${tkpdFlashsaleManagementVersion}"
-    artifactName ="flashsale_management-release"
-}
-
-
 dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -46,6 +38,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'flashsale-management'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryflashsalemanagement-release"
 }
 
 apply from: '../../../publish_local.gradle'

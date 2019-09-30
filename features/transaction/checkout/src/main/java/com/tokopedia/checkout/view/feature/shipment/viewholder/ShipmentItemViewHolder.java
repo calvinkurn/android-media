@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -53,6 +54,8 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +177,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvChangeSelectedDuration;
     private TextView tvSelectedCourierRecommendation;
     private TextView tvSelectedPriceRecommendation;
-    private TextView tvChangeSelectedCourierRecommendation;
+    private TextView tvCourierSelection;
     private LinearLayout llShipmentInfoTicker;
     private TextView tvTickerInfo;
     private LinearLayout layoutWarningAndError;
@@ -208,11 +211,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private View llLogPromo;
-    private RelativeLayout tvLogPromoLabel;
-    private TextView tvLogPromoTitle;
-    private TextView tvLogPromoDiscAmount;
-    private TextView tvLogPromoMsg;
-    private TextView tvLogPromoErr;
+    private TickerPromoStackingCheckoutView tvLogTicker;
+    private Ticker tvLogPromoMsg;
     private TextView tvSelectedPriceOnly;
 
     // order prioritas
@@ -226,7 +226,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgPriorityTnc;
     private TextView tvPrioritasInfo;
     private boolean isPriorityChecked = false;
-
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -329,7 +328,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvSelectedCourierRecommendation = itemView.findViewById(R.id.tv_selected_courier_recommendation);
         tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
         tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
-        tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_button_change_courier);
+        tvCourierSelection = itemView.findViewById(R.id.tv_button_change_courier);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
@@ -368,11 +367,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // promostacking
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
-        tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
-        tvLogPromoTitle = itemView.findViewById(R.id.tv_logistic_title_desc);
-        tvLogPromoDiscAmount = itemView.findViewById(R.id.tv_logistic_disc_amount);
+        tvLogTicker = itemView.findViewById(R.id.ticker_promo_logistic);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
-        tvLogPromoErr = itemView.findViewById(R.id.tv_logistic_promo_err);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -688,8 +684,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         });
-        tvChangeSelectedCourierRecommendation.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
-        tvChangeSelectedCourierRecommendation.setOnClickListener(v -> {
+        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
+        tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
@@ -699,26 +695,59 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
+            tvLogTicker.setVisibility(View.VISIBLE);
+            tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
+            if (shipmentCartItemModel.isError()) {
+                tvLogTicker.disableView();
+                mActionListener.onCancelVoucherLogisticClicked(
+                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                        getAdapterPosition());
+            } else {
+                tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
+                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
+                tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                    @Override
+                    public void onClickUsePromo() {
+
+                    }
+
+                    @Override
+                    public void onResetPromoDiscount() {
+                        mActionListener.onCancelVoucherLogisticClicked(
+                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                                getAdapterPosition());
+                    }
+
+                    @Override
+                    public void onClickDetailPromo() {
+
+                    }
+
+                    @Override
+                    public void onDisablePromoDiscount() {
+
+                    }
+                });
+            }
+            tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
+
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
-            tvLogPromoErr.setVisibility(isRed ? View.VISIBLE : View.GONE);
-            tvLogPromoLabel.setVisibility(isRed ? View.GONE : View.VISIBLE);
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
-            if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
-                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
-                tvLogPromoTitle.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
-                String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
-                tvLogPromoDiscAmount.setText(labelCouponAmount);
-            } else tvLogPromoLabel.setVisibility(View.GONE);
-            tvChangeSelectedCourierRecommendation.setTextColor(
-                    ContextCompat.getColor(context, R.color.n_700_44));
-            tvChangeSelectedCourierRecommendation.setOnClickListener(null);
-        } else llLogPromo.setVisibility(View.GONE);
+
+            // disable courier selection
+            tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
+            tvCourierSelection.setOnClickListener(null);
+        } else {
+            llLogPromo.setVisibility(View.GONE);
+            tvLogTicker.setVisibility(View.GONE);
+        }
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
+            CourierItemData courierData = shipmentDetailData.getSelectedCourier();
+            if (isCourierInstantOrSameday(courierData.getShipperId())) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);
@@ -738,21 +767,24 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llSelectShipmentRecommendation.setVisibility(View.GONE);
             llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
-            tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
+            tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
-            tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+            if (!TextUtils.isEmpty(courierData.getLogPromoMsg())) {
+                tvLogPromoMsg.setHtmlDescription(courierData.getLogPromoMsg());
+            }
 
-            if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
-            shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
-                OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
-                String html = otd.getText_detail();
+            if (courierData.getOntimeDelivery() != null &&
+                    courierData.getOntimeDelivery().getAvailable()
+                    && shipmentCartItemModel.getVoucherLogisticItemUiModel() == null) {
+                OntimeDelivery otd = courierData.getOntimeDelivery();
+                String html = (otd.getText_detail() != null) ? otd.getText_detail() : "";
                 String url = otd.getUrl_detail();
                 tickerOtd.setVisibility(View.VISIBLE);
                 tickerOtd.setHtmlDescription(html);
                 tickerOtd.setTickerTitle(otd.getText_label());
                 tickerOtd.setDescriptionClickEvent(new TickerCallback() {
                     @Override
-                    public void onDescriptionViewClick(CharSequence charSequence) {
+                    public void onDescriptionViewClick(@NotNull CharSequence linkUrl) {
                         mActionListener.onOntimeDeliveryClicked(url);
                     }
 
@@ -771,15 +803,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvSelectedPriceRecommendation.setVisibility(View.GONE);
                 tvSelectedPriceOnly.setVisibility(View.VISIBLE);
                 tvSelectedPriceOnly.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             } else {
                 // Robinhood Phase 21a
                 tvSelectedPriceOnly.setVisibility(View.GONE);
                 tvSelectedCourierRecommendation.setVisibility(View.VISIBLE);
                 tvSelectedPriceRecommendation.setVisibility(View.VISIBLE);
-                tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
+                tvSelectedCourierRecommendation.setText(courierData.getName());
                 tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             }
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
@@ -1314,7 +1346,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvChangeCourier.setClickable(false);
             tvChooseDuration.setClickable(false);
             tvChangeSelectedDuration.setClickable(false);
-            tvChangeSelectedCourierRecommendation.setClickable(false);
+            tvCourierSelection.setClickable(false);
             tvChangeSelectedCourierBlackbox.setClickable(false);
             etShipperName.setClickable(false);
             etShipperName.setFocusable(false);
@@ -1337,7 +1369,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvChangeCourier.setClickable(true);
             tvChooseDuration.setClickable(true);
             tvChangeSelectedDuration.setClickable(true);
-            tvChangeSelectedCourierRecommendation.setClickable(true);
+            tvCourierSelection.setClickable(true);
             tvChangeSelectedCourierBlackbox.setClickable(true);
             etShipperName.setClickable(true);
             etShipperName.setFocusable(true);

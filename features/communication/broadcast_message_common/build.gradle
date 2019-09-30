@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 dependencies {
     testCompile rootProject.ext.testDependencies.junit
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -12,3 +12,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = 'broadcast-message-common'
+    groupId = 'com.tokopedia.communication'
+    versionName = "1.0.0"
+    artifactName = "communicationbroadcastmessagecommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

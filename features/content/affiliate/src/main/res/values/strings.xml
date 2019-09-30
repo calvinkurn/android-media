@@ -132,5 +132,10 @@
     <string name="af_share_tokopedia_hint">%s orang akan melihat post ini</string>
 
     <string name="af_share_post">Share Post</string>
+    <string name="af_product_suggestion_title">Rekomendasi Barang Buatmu</string>
+    <string name="af_suggestion_shop_cm_title">Buat post &amp; promosikan tokomu</string>
+    <string name="af_suggestion_shop_cm_desc">Pilih salah satu barang untuk ditampilkan di Feed. Makin banyak yang lihat, makin laris!</string>
+    <string name="af_suggestion_aff_cm_title">Mari post barang kesukaanmu!</string>
+    <string name="af_suggestion_aff_cm_desc">Pilih barangnya, buat post-nya, dan dapatkan komisi kalau terjual.</string>
 
 </resources>

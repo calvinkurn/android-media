@@ -17,7 +17,7 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -27,3 +27,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'webview'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarywebview-release"
+}
+
+apply from: '../../publish_local.gradle'

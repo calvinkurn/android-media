@@ -19,8 +19,10 @@ public class EnhancedECommerceActionField {
     public static final String OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     public static final String OPTION_CLICK_CHECKOUT = "click checkout";
     public static final String OPTION_CLICK_BAYAR = "click bayar";
-    public static final String LIST_WISHLIST = "/wishlist";
-    public static final String LIST_RECENT_VIEW = "/recent";
+    public static final String LIST_WISHLIST = "/cart - wishlist";
+    public static final String LIST_WISHLIST_ON_EMPTY_CART = "/cart empty - wishlist";
+    public static final String LIST_RECENT_VIEW = "/cart - recent view";
+    public static final String LIST_RECENT_VIEW_ON_EMPTY_CART = "/cart empty - recent view";
     public static final String LIST_RECOMMENDATION = "/recommendation - primary product";
     public static final String LIST_CART_RECOMMENDATION = "/cart - rekomendasi untuk anda - ";
     public static final String LIST_CART_RECOMMENDATION_ON_EMPTY_CART = "/cart - rekomendasi untuk anda - empty_cart - ";

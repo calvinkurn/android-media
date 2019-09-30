@@ -19,3 +19,12 @@ dependencies {
         exclude module: 'answers-shim'
     }
 }
+
+project.ext {
+    artifactId = 'linker'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarylinker-release"
+}
+
+apply from: '../../publish_local.gradle'

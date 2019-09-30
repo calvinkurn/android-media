@@ -13,16 +13,25 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.nps)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation rootProject.ext.miscDependencies.reactNative
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'officialstore'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName = "merchantofficialstore-release"
+}
+
+apply from: '../../../publish_local.gradle'

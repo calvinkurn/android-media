@@ -19,9 +19,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.basemvvm)
@@ -41,3 +41,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'age-restriction'
+    groupId = 'com.tokopedia.category'
+    versionName = "1.0.0"
+    artifactName ="categoryagerestriction-release"
+}
+
+apply from: '../../../publish_local.gradle'

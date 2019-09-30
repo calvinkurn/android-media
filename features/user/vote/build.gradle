@@ -25,17 +25,11 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'vote'
-    groupId = 'com.tokopedia.vote'
-    versionName = "${tkpdVoteVersion}"
-    artifactName ="vote-release"
-}
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -47,3 +41,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = 'vote'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "uservote-release"
+}
+
+apply from: '../../../publish_local.gradle'

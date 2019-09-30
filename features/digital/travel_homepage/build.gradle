@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'travel_homepage'
-    groupId = 'com.tokopedia.travel.homepage'
-    versionName = "2.22"
-    artifactName = "travelhomepage-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -23,8 +16,8 @@ dependencies {
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.resourcesCommon)
 
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -62,6 +55,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
+}
+
+project.ext {
+    artifactId = 'homepage'
+    groupId = 'com.tokopedia.travel'
+    versionName = "1.0.0"
+    artifactName = "travelhomepage-release"
 }
 
 apply from: '../../../publish_local.gradle'

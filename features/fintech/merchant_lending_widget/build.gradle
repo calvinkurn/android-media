@@ -15,8 +15,8 @@ buildscript {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.commonNetwork)

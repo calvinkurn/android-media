@@ -22,5 +22,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 }
+
+project.ext {
+    artifactId = 'navigation-common'
+    groupId = 'com.tokopedia.home'
+    versionName = "1.0.0"
+    artifactName ="homenavigationcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
-import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
@@ -164,10 +163,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
-
-        if (BuildConfig.DEBUG) {
-            AndroidDevMetrics.initWith(this);
-        }
 
         LogWrapper.init(this);
         if (LogWrapper.instance != null) {

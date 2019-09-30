@@ -16,23 +16,16 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'attachproduct'
-    groupId = 'com.tokopedia.attachproduct'
-    versionName = "${tkpdInboxVersion}"
-    artifactName = "attachproduct-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -49,3 +42,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = 'attach-product'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "userattachproduct-release"
+}
+
+apply from: '../../../publish_local.gradle'

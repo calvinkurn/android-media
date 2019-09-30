@@ -31,6 +31,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -44,7 +45,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
@@ -73,7 +73,6 @@ import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.seller.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.seller.purchase.utils.OrderDetailConstant;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,7 +95,9 @@ public class OrderDetailActivity extends TActivity
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String PARAM_ORDER_ID = "order_id";
+    public static final String EXTRA_URL_UPLOAD = "EXTRA_URL_UPLOAD";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
@@ -227,17 +228,10 @@ public class OrderDetailActivity extends TActivity
             tvUploadAwbMessage.setText(Html.fromHtml(data.getAwbUploadProofText()));
             if (data.isShowUploadAwb()) {
                 btnUploadAwb.setVisibility(View.VISIBLE);
-                btnUploadAwb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (getApplication() instanceof SellerModuleRouter) {
-                            Intent intent = ((SellerModuleRouter) getApplication())
-                                    .transactionOrderDetailRouterGetIntentUploadAwb
-                                            (data.getAwbUploadProofUrl());
-                            startActivity(intent);
-                        }
-
-                    }
+                btnUploadAwb.setOnClickListener(view -> {
+                    Intent intent = RouteManager.getIntent(OrderDetailActivity.this, ApplinkConstInternalLogistic.UPLOAD_AWB);
+                    intent.putExtra(EXTRA_URL_UPLOAD, data.getAwbUploadProofUrl());
+                    startActivity(intent);
                 });
             } else {
                 btnUploadAwb.setVisibility(View.GONE);
@@ -596,9 +590,11 @@ public class OrderDetailActivity extends TActivity
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
+        String caller = (getExtraUserMode() == SELLER_MODE) ? "seller" : "";
 
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, caller);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(this, routingAppLink);
     }
@@ -695,7 +691,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
-        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "confirm");
+        intent.putExtra(EXTRA_ORDER_DETAIL_DATA, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
@@ -725,7 +722,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "change");
+        intent.putExtra(EXTRA_ORDER_DETAIL_DATA, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 

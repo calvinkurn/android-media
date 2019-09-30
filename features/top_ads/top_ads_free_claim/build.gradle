@@ -14,9 +14,18 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation project(rootProject.ext.features.topAdsManagementCommon)
 }
+
+project.ext {
+    artifactId = 'free-claim'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName = "topadsfreeclaim-release"
+}
+
+apply from: '../../../publish_local.gradle'

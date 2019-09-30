@@ -25,13 +25,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'groupchat'
-    groupId = 'com.tokopedia.groupchat'
-    versionName = "${tkpdGroupchatVersion}"
-    artifactName ="groupchat-release"
-}
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -39,11 +32,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.sharedata)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -86,6 +79,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation project(rootProject.ext.libraries.videoplayer)
+}
+
+project.ext {
+    artifactId = 'group-chat'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="usergroupchat-release"
 }
 
 apply from: '../../../publish_local.gradle'

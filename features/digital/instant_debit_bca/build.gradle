@@ -18,7 +18,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -35,3 +35,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'instant-debit-bca'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="digitalinstantdebitbca-release"
+}
+
+apply from: '../../../publish_local.gradle'

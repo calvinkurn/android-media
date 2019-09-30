@@ -39,15 +39,11 @@ class NotificationUpdatePresenter @Inject constructor(
     : BaseDaggerPresenter<NotificationUpdateContract.View>(),
         NotificationUpdateContract.Presenter {
 
-    val variables: HashMap<String, Any> = HashMap()
-    override fun filterBy(selectedItemList: HashMap<Int, Int>, filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>) {
-        variables.clear()
-        for ((key, value) in selectedItemList) {
-            val filterType = filterViewModel[key].filterType
-            val filterItemId = filterViewModel[key].list[value].id.toIntOrZero()
-            val filterName = filterViewModel[key].list[value].text
-            variables[filterType] = filterItemId
-        }
+    var variables: HashMap<String, Any> = HashMap()
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        resetFilter()
+        variables.putAll(filter)
     }
 
     override fun resetFilter() {

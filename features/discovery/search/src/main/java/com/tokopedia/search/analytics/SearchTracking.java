@@ -495,4 +495,12 @@ public class SearchTracking {
                 keyword
         );
     }
+
+    public static void trackEventProductLongPress(String keyword, String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickSearchResult",
+                "search result",
+                "click - long press product",
+                String.format("Keyword: %s - product id: %s", keyword, productId));
+    }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 
@@ -12,11 +12,8 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 class ContentCreatePostFragment : BaseCreatePostFragment() {
     private var isAddingProduct = false
 
-    private var shouldGoAttachProduct = false
-
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
-        private const val REQUEST_ATTACH_PRODUCT_FIRST = 11
 
         fun createInstance(bundle: Bundle): ContentCreatePostFragment {
             val fragment = ContentCreatePostFragment()
@@ -30,14 +27,6 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
             REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 getAttachProductResult(data)
             }
-            REQUEST_ATTACH_PRODUCT_FIRST -> {
-                if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK
-                        && data != null) {
-                    getAttachProductResult(data)
-                } else {
-                    activity?.finish()
-                }
-            }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
 
@@ -47,21 +36,11 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
     }
 
-    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
-        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
-        if (shouldGoAttachProduct) {
-            if (viewModel.productIdList.isEmpty() || viewModel.productIdList.first().isBlank()) {
-                goToAttachProduct(true)
-            }
-            shouldGoAttachProduct = false
-        }
-    }
-
     override fun onRelatedAddProductClick() {
-        goToAttachProduct(false)
+        goToAttachProduct()
     }
 
-    private fun goToAttachProduct(isFirstTime: Boolean) {
+    private fun goToAttachProduct() {
         val intent = AttachProductActivity.createInstance(context,
                 userSession.shopId,
                 "",
@@ -70,10 +49,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
                 viewModel.maxProduct - viewModel.productIdList.size,
                 ArrayList(viewModel.productIdList)
         )
-        startActivityForResult(
-                intent,
-                if (isFirstTime) REQUEST_ATTACH_PRODUCT_FIRST else REQUEST_ATTACH_PRODUCT
-        )
+        startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 
     private fun getAttachProductResult(data: Intent?) {
@@ -94,5 +70,10 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
             productAttachmentLayoutManager.startSmoothScroll(productSmoothScroller)
             isAddingProduct = false
         }
+    }
+
+    override fun fetchProductSuggestion(onSuccess: (List<ProductSuggestionItem>) -> Unit,
+                                        onError: (Throwable) -> Unit) {
+        presenter.fetchProductSuggestion(ProductSuggestionItem.TYPE_SHOP, onSuccess, onError)
     }
 }

@@ -30,6 +30,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
+import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
@@ -42,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import kotlin.Unit;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -82,6 +86,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     Lazy<GetKeywordSearchUseCase> getKeywordSearchUseCaseLazy;
 
+    @Inject
+    StickyLoginUseCase stickyLoginUseCase;
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -138,6 +144,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getTokocashBalance();
         getTokopoint();
         getSearchHint();
+        getStickyContent();
     }
 
     public void sendGeolocationData() {
@@ -612,5 +619,26 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         HomeRecommendationFeedViewModel feedViewModel = new HomeRecommendationFeedViewModel();
         feedViewModel.setFeedTabModel(feedTabModelList);
         return feedViewModel;
+    }
+
+    @Override
+    public void getStickyContent() {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME);
+        stickyLoginUseCase.execute(
+            tickerResponse -> {
+                for (StickyLoginTickerPojo.TickerDetail ticker : tickerResponse.getResponse().getTickers()) {
+                    if (ticker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
+                        getView().setStickyContent(ticker);
+                        return Unit.INSTANCE;
+                    }
+                }
+                getView().hideStickyLogin();
+                return Unit.INSTANCE;
+            },
+            throwable -> {
+                getView().hideStickyLogin();
+                return Unit.INSTANCE;
+            }
+        );
     }
 }

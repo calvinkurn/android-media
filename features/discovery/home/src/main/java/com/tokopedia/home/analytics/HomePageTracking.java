@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
@@ -39,8 +38,6 @@ public class HomePageTracking {
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
-    private static final String EVENT_CLICK_HOME_PAGE_STICKY = "clickHomepage";
-    private static final String EVENT_VIEW_HOME_PAGE_STICKY = "viewHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
@@ -71,6 +68,7 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
+    private static final String ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL = "lego banner gif click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
@@ -94,6 +92,8 @@ public class HomePageTracking {
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
+    public static final String EVENT_LEGO_BANNER_IMPRESSION = "lego banner gif impression";
+    public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
@@ -102,6 +102,7 @@ public class HomePageTracking {
     public static final String LIST_CLICK_FEED_HOME_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
     public static final String PRODUCTS = "products";
     public static final String PRODUCT_CLICK = "productClick";
+    public static final String PROMOTIONS_NAME = "/ - p1 - lego banner gif - %s";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
@@ -122,11 +123,6 @@ public class HomePageTracking {
     public static final String ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX = "click view all on dynamic channel mix";
 
     public static final String CHANNEL_ID = "channelId";
-
-    private static final String EVENT_LABEL_CLICK = "click";
-    private static final String EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET = "click on login sticky widget";
-    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click on button close login sticky widget";
-    private static final String EVENT_VIEW_STICKY_LOGIN_AT_HOME = "view login sticky widget";
 
     private static final String VALUE_PROMO_NAME_SIX_BANNER = "/ - p%s - lego banner - %s";
     private static final String VALUE_PROMO_NAME_THREE_BANNER = "/ - p%s - lego banner 3 image - %s";
@@ -151,49 +147,81 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_LEGO_BANNER_IMPRESSION = "lego banner impression";
     public static final String EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX = "impression on product dynamic channel mix";
     public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_DYNAMIC_CHANNEL_MIX = "impression on banner dynamic channel mix";
+    public static final String VALUE_NAME_PROMO_OVERLAY = "/ - p1 - promo overlay";
+    public static final String ACTION_OVERLAY_SLIDER_BANNER_IMPRESSION = "overlay slider banner impression";
+    public static final String VALUE_NAME_PROMO = "/ - p1 - promo";
+    public static final String ACTION_SLIDER_BANNER_IMPRESSION = "slider banner impression";
+    public static final String VALUE_EVENT_ACTION_SLIDER_BANNER_CLICK = "slider banner click";
+    public static final String VALUE_EVENT_ACTION_SLIDER_BANNER_OVERLAY_CLICK = "overlay slider banner click";
+    public static final String FIELD_PROMO_CODE = "promo_code";
+    public static final String NO_PROMO_CODE = "NoPromoCode";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
     }
 
-    // GA request
-    // replaced by eventPromoImpression(Context context, List<Promotion>promotions) to cater one shot GA.
-    @Deprecated
-    public static void eventPromoImpression(Context context,
-                                            Promotion promotion) {
+    public static void eventPromoClick(Context context, BannerSlidesModel slidesModel) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(promotion.getImpressionDataLayer());
+            tracker.sendEnhanceEcommerceEvent(getSliderBannerClick(
+                    slidesModel
+            ));
         }
     }
 
-    public static Map<String,Object> convertToPromoImpression(List<Promotion> promotions) {
-        List<Object> list = new ArrayList<>();
-        for (int i = 0; i < promotions.size(); i++) {
-            Promotion promotion = promotions.get(i);
-            list.add(promotion.getImpressionDataLayerItem());
+    public static void eventPromoOverlayClick(Context context, BannerSlidesModel slidesModel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(getSliderBannerOverlayClick(
+                    slidesModel
+            ));
         }
+    }
+
+    private static Map<String, Object> getSliderBannerClick(BannerSlidesModel slidesModel) {
         return DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", "homepage",
-                "eventAction", "slider banner impression",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
-                                        list.toArray()
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, VALUE_EVENT_ACTION_SLIDER_BANNER_CLICK,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_NAME, VALUE_NAME_PROMO,
+                                                FIELD_CREATIVE, slidesModel.getCreativeName(),
+                                                FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
+                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_PROMO_CODE, slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode(): NO_PROMO_CODE
+                                        )
                                 )
                         )
-                ),
-                "attribution", "1 - sliderBanner"
+                )
         );
     }
 
-    public static void eventPromoClick(Context context, Promotion promotion) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(promotion.getClickDataLayer());
-        }
+    private static Map<String, Object> getSliderBannerOverlayClick(BannerSlidesModel slidesModel) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, VALUE_EVENT_ACTION_SLIDER_BANNER_OVERLAY_CLICK,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
+                                                FIELD_CREATIVE, slidesModel.getCreativeName(),
+                                                FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
+                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_PROMO_CODE, slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode():NO_PROMO_CODE
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
     public static void eventClickViewAllPromo(Context context) {
@@ -340,6 +368,18 @@ public class HomePageTracking {
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
         map.put(EVENT_LABEL, applink);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
+    }
+
+    public static void eventClickSeeAllGifDCBannerChannel(Context context,
+                                                         String headerName,
+                                                         String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL);
+        map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker(context).sendGeneralEvent(map);
     }
@@ -978,6 +1018,64 @@ public class HomePageTracking {
         }
     }
 
+    public static void eventEnhanceImpressionBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    DataLayer.mapOf(
+                            EVENT, PROMO_VIEW,
+                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                            EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                            EVENT_LABEL, "",
+                            CHANNEL_ID, bannerChannel.getId(),
+                            ECOMMERCE, DataLayer.mapOf(
+                                    PROMO_VIEW, DataLayer.mapOf(
+                                            PROMOTIONS, DataLayer.listOf(
+                                                    DataLayer.mapOf(
+                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                            FIELD_POSITION, String.valueOf(1)
+                                                    )
+                                            )
+                                    )
+
+                            )
+                    )
+            );
+        }
+    }
+
+    public static void eventEnhanceClickBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    DataLayer.mapOf(
+                            EVENT, PROMO_CLICK,
+                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                            EVENT_ACTION, EVENT_LEGO_BANNER_CLICK,
+                            EVENT_LABEL, bannerChannel.getName(),
+                            CHANNEL_ID, bannerChannel.getId(),
+                            ECOMMERCE, DataLayer.mapOf(
+                                    PROMO_CLICK, DataLayer.mapOf(
+                                            PROMOTIONS, DataLayer.listOf(
+                                                    DataLayer.mapOf(
+                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                            FIELD_POSITION, String.valueOf(1)
+                                                    )
+                                            )
+                                    )
+
+                            )
+                    )
+            );
+        }
+    }
+
     public static void eventClickProductChannelMix(Context context,
                                                    DynamicHomeChannel.Channels bannerChannel,
                                                    int gridPosition) {
@@ -1005,37 +1103,6 @@ public class HomePageTracking {
                     bannerChannel.getEnhanceClickBannerButtonChannelMix()
             );
         }
-    }
-
-    public static void eventClickOnStickyLogin(boolean isOnSticky) {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        EVENT_CLICK_HOME_PAGE_STICKY,
-                        CATEGORY_HOME_PAGE,
-                        EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET,
-                        EVENT_LABEL_CLICK
-                );
-            } else {
-                tracker.sendGeneralEvent(
-                        EVENT_CLICK_HOME_PAGE_STICKY,
-                        CATEGORY_HOME_PAGE,
-                        EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
-                        LABEL_EMPTY
-                );
-            }
-        }
-    }
-
-    public static void eventOnStickyLoginShowing() {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        tracker.sendGeneralEvent(
-                EVENT_VIEW_HOME_PAGE_STICKY,
-                CATEGORY_HOME_PAGE,
-                EVENT_VIEW_STICKY_LOGIN_AT_HOME,
-                LABEL_EMPTY
-        );
     }
 
     private static String getHomeAttribution(int position, String creativeName, String homeAttribution) {
@@ -1150,6 +1217,35 @@ public class HomePageTracking {
                                 list.toArray(new Object[list.size()])
 
                         ))
+        );
+    }
+
+    /**
+     * Position always 1 cause just 1 gif dc
+     * @param channel
+     * @return
+     */
+    public static HashMap<String, Object> getEnhanceImpressionPromoGifBannerDC(DynamicHomeChannel.Channels channel){
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, "",
+                CHANNEL_ID, channel.getId(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, channel.getBanner().getId(),
+                                                FIELD_NAME, String.format(PROMOTIONS_NAME, channel.getHeader().getName()),
+                                                FIELD_CREATIVE, channel.getBanner().getAttribution(),
+                                                FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(1)
+                                        )
+                                )
+                        )
+
+                )
         );
     }
 
@@ -1341,26 +1437,21 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String, Object> getBannerTrackingData(List<BannerSlidesModel> slides) {
-        if (slides != null && slides.size() > 0) {
-            List<Promotion> promotionList = new ArrayList<>();
-            for (int i = 0, sizei = slides.size(); i < sizei; i++) {
-                BannerSlidesModel model = slides.get(i);
-
-                Promotion promotion = new Promotion();
-                promotion.setPromotionID(String.valueOf(model.getId()));
-                promotion.setPromotionName("/ - p1 - promo");
-                promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
-                promotion.setPromotionPosition(i + 1);
-                promotion.setRedirectUrl(model.getRedirectUrl());
-                promotion.setPromoCode(model.getPromoCode());
-
-                promotionList.add(promotion);
-            }
-            return (HashMap<String, Object>) HomePageTracking.convertToPromoImpression(promotionList);
-        } else {
-            return null;
-        }
+    public static HashMap<String,Object> getBannerImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
+        List<Object> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, ACTION_SLIDER_BANNER_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        listBanner
+                                )
+                        )
+                )
+        );
     }
 
     public static HashMap<String, Object> getEnhanceImpressionDynamicIconHomePage(HomeIconItem item,
@@ -1392,6 +1483,61 @@ public class HomePageTracking {
                         FIELD_POSITION, String.valueOf(position + 1)
                 )
         );
+        return list;
+    }
+
+    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
+        List<Object> listBanner = convertOverlaySliderBannerImpressionDataLayer(bannerOverlaySlides);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, ACTION_OVERLAY_SLIDER_BANNER_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        listBanner
+                                )
+                        )
+                )
+        );
+    }
+
+    private static List<Object> convertOverlaySliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
+        List<Object> list = new ArrayList<>();
+        if (bannerSlidesModels != null) {
+            for (int i = 0; i < bannerSlidesModels.size(); i++) {
+                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
+                list.add(
+                        DataLayer.mapOf(
+                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
+                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                        )
+                );
+            }
+        }
+        return list;
+    }
+
+    private static List<Object> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
+        List<Object> list = new ArrayList<>();
+        if (bannerSlidesModels != null) {
+            for (int i = 0; i < bannerSlidesModels.size(); i++) {
+                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
+                list.add(
+                        DataLayer.mapOf(
+                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_NAME, VALUE_NAME_PROMO,
+                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                        )
+                );
+            }
+        }
         return list;
     }
 }

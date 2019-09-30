@@ -3,9 +3,11 @@ package com.tokopedia.applink
 import android.content.Context
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
+import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -25,6 +27,12 @@ object DeeplinkMapper {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
             return getRegisteredNavigationFromHttp(context, deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
+            if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
+                return getRegisteredNavigationDigital(context, deeplink)
+            }
+            if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
+                return getRegisteredNavigationSearch(deeplink)
+            }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
             return getRegisteredNavigationFromSellerapp(deeplink)

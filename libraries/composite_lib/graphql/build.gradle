@@ -31,11 +31,12 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.0.6"
+    versionName = "1.0.8"
     artifactName = "graphql"
 }
 
 dependencies {
+    implementation "com.tokopedia.akamai:akamai_bot_lib:1.0.1"
     implementation "com.tokopedia.usecase:usecase:1.0.1"
     implementation rootProject.ext.miscDependencies.gson
     implementation "com.tokopedia.url:url:1.0.1"

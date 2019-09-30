@@ -24,6 +24,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
@@ -64,14 +65,16 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getNewFragment(): Fragment? {
-        if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
+        val type = if (intent.getStringExtra(EXTRA_TYPE).isNotEmpty()) intent.getStringExtra(EXTRA_TYPE) else "1"
+        if (Integer.parseInt(type) == TYPE_BELANJA) {
             autocompleteParam = AUTOCOMPLETE_BELANJA
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
-        } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+        } else if (Integer.parseInt(type) == TYPE_LAYANAN) {
             autocompleteParam = AUTOCOMPLETE_LAYANAN
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
+                val tab = if(intent.getStringExtra(EXTRA_TAB).isNotEmpty()) intent.getStringExtra(EXTRA_TAB) else "1"
                 DigitalBrowseServiceFragment.getFragmentInstance(
-                        Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
+                        Integer.parseInt(tab))
             } else {
                 DigitalBrowseServiceFragment.fragmentInstance
             }
@@ -95,7 +98,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
     fun onSearchClicked() {
         digitalBrowseAnalytics.eventClickOnSearchTopNav(screenName)
-        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE, autocompleteParam)
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}", autocompleteParam)
     }
 
     private fun setupToolbar() {

@@ -14,7 +14,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -26,3 +26,12 @@ dependencies {
     })
 
 }
+
+project.ext {
+    artifactId = 'management-source-tagging'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName = "topadsmanagementsourcetagging-release"
+}
+
+apply from: '../../../publish_local.gradle'
