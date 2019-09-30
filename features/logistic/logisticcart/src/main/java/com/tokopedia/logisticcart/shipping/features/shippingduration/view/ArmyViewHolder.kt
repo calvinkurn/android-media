@@ -35,6 +35,12 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             itemView.setOnClickListener(null)
         }
+
+        if (data.isApplied) {
+            itemView.img_check.visibility = View.VISIBLE
+        } else {
+            itemView.img_check.visibility = View.GONE
+        }
     }
 
 }
