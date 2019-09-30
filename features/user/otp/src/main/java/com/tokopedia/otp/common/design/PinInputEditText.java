@@ -61,7 +61,7 @@ public class PinInputEditText extends EditText {
     private OnClickListener mClickListener;
     private OnPinEnteredListener mOnPinEnteredListener = null;
 
-    public static String MASK_BLACK_DOT = "\u25CF";
+    public static String MASK_BLACK_DOT = "\u2022";
 
     private float mLineStroke = 1; //1dp by default
     private float mLineStrokeSelected = 2; //2dp by default
