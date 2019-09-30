@@ -257,6 +257,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
+
     public void onBuyAgainItems(List<Items> items, String eventActionLabel) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
@@ -294,6 +295,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
+
                     orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel);
                 }
 

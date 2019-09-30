@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
@@ -30,6 +31,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     String orderID;
     private OrderDetailsComponent orderListComponent;
+    OrderListAnalytics orderListAnalytics;
 
 
     public static Intent getInstance(Context context, String orderId, String uri, int cancelorderFragment) {
@@ -44,6 +46,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         orderID = getIntent().getStringExtra(KEY_ORDER_ID);
+        orderListAnalytics = new OrderListAnalytics();
     }
 
     @Override
@@ -95,6 +98,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
         intent.putExtra(OrderListContants.REASON_CODE, rejectParam.get(OrderListContants.REASON_CODE));
         intent.putExtra(ACTION_BUTTON_URL, getIntent().getStringExtra(ACTION_BUTTON_URL));
         setResult(REJECT_BUYER_REQUEST,intent);
+        orderListAnalytics.sendActionButtonClickEvent("click submit cancelation",rejectParam.get(OrderListContants.REASON));
         finish();
     }
 

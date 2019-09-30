@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +74,8 @@ import javax.inject.Inject;
 public class OrderListFragment extends BaseDaggerFragment implements
 
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
-        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,
-        SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener, QuickSingleFilterView.QuickFilterAnalytics,
+        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
+        SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
         OrderListViewHolder.OnActionButtonListener {
 
 
@@ -692,7 +691,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setSelectFilterName(String selectFilterName) {
         orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
-    }
+}
+
 
     public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
         if (actionButton != null)

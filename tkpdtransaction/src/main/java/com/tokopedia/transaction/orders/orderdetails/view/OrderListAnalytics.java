@@ -115,8 +115,8 @@ public class OrderListAnalytics {
     public OrderListAnalytics() {
     }
 
-    private void sendGtmData(String action, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, action, eventLabel));
+    private void sendGtmData(String action, String eventLable) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, action, eventLable));
     }
 
     public void sendHelpEventData(String eventLabel) {
