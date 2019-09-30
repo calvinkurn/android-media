@@ -73,7 +73,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
-        if (!shipmentAddressFormDataResponse.getTickers().isEmpty()) {
+        if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
             Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
             dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
         }
@@ -455,6 +455,12 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
+                                        !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    productResult.setFreeShipping(true);
+                                    productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
+                                }
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     TradeInInfo tradeInInfo = new TradeInInfo();

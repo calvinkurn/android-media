@@ -153,7 +153,7 @@ public class Product {
     @Expose
     private ProductTrackerData productTrackerData = new ProductTrackerData();
     @SerializedName("free_shipping")
-    private FreeShipping freeShipping;
+    private FreeShipping freeShipping = new FreeShipping();
 
     public ProductTrackerData getProductTrackerData() {
         return productTrackerData;

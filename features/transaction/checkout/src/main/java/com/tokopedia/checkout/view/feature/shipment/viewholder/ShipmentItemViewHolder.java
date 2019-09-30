@@ -26,29 +26,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
-import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
-import com.tokopedia.logisticdata.data.constant.CourierConstant;
-import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
-import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -207,6 +206,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private SaveStateDebounceListener saveStateDebounceListener;
     private TextView tvFulfillName;
     private ImageView imgFulfill;
+    private ImageView imgFreeShipping;
 
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
@@ -339,6 +339,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         tickerOtd = itemView.findViewById(R.id.ticker_otd);
+        imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -582,11 +583,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 String.valueOf(cartItemModel.getQuantity()),
                 WeightFormatterUtil.getFormattedWeight(cartItemModel.getWeight(), cartItemModel.getQuantity())));
 
+        renderNotesForSeller(cartItemModel);
+        renderPurchaseProtection(cartItemModel);
+        renderProductPropertiesFreereturn(cartItemModel);
+        renderProductPropertiesPreOrder(cartItemModel);
+        renderProductPropertiesCashback(cartItemModel);
+        renderProductPropertiesFreeShipping(cartItemModel);
+        renderProductPropertiesLayout(cartItemModel);
+    }
+
+    private void renderNotesForSeller(CartItemModel cartItemModel) {
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         tvOptionalNoteToSeller.setText(Utils.getHtmlFormat(cartItemModel.getNoteToSeller()));
         tvNoteToSellerLabel.setVisibility(View.GONE);
+    }
 
+    private void renderPurchaseProtection(CartItemModel cartItemModel) {
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable()) {
             tvPPPMore.setText(cartItemModel.getProtectionLinkText());
@@ -613,23 +626,44 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
 
         }
+    }
 
+    private void renderProductPropertiesFreereturn(CartItemModel cartItemModel) {
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+    }
+
+    private void renderProductPropertiesPreOrder(CartItemModel cartItemModel) {
         if (cartItemModel.isPreOrder()) {
             tvPreOrder.setText(cartItemModel.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);
         }
+    }
+
+    private void renderProductPropertiesCashback(CartItemModel cartItemModel) {
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
                 cartItemModel.getCashback() + "    ";
         tvCashback.setText(cashback);
+    }
 
+    private void renderProductPropertiesLayout(CartItemModel cartItemModel) {
         if (cartItemModel.isFreeReturn() || cartItemModel.isPreOrder() || cartItemModel.isCashback()) {
             llProductPoliciesLayout.setVisibility(View.VISIBLE);
         } else {
             llProductPoliciesLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertiesFreeShipping(CartItemModel cartItemModel) {
+        if (cartItemModel.isFreeShipping() && !TextUtils.isEmpty(cartItemModel.getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholder(
+                    imgFreeShipping, cartItemModel.getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
         }
     }
 

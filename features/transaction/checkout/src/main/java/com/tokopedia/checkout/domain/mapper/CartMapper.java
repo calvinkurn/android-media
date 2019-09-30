@@ -228,8 +228,9 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
                 cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
-                if (data.getProduct().getFreeShipping() != null) {
-                    cartItemDataOrigin.setFreeShipping(data.getProduct().getFreeShipping().getEligible());
+                if (data.getProduct().getFreeShipping() != null && data.getProduct().getFreeShipping().getEligible() &&
+                        !TextUtils.isEmpty(data.getProduct().getFreeShipping().getBadgeUrl())) {
+                    cartItemDataOrigin.setFreeShipping(true);
                     cartItemDataOrigin.setFreeShippingBadgeUrl(data.getProduct().getFreeShipping().getBadgeUrl());
                 }
                 if (data.getProduct().getWholesalePrice() != null) {
