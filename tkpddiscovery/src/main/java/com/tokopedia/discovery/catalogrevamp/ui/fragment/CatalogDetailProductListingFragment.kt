@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.authentication.AuthHelperJava
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
@@ -41,7 +42,6 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListene
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -396,9 +396,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
-            AuthUtil.md5(userSession.userId)
+            AuthHelperJava.md5(userSession.userId)
         else
-            AuthUtil.md5(gcmHandler.registrationId)
+            AuthHelperJava.md5(gcmHandler.registrationId)
     }
 
     private fun getPage(): Int {

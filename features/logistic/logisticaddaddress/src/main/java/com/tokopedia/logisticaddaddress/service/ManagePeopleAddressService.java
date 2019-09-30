@@ -11,6 +11,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
@@ -18,8 +19,6 @@ import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
-import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.SocketTimeoutException;
@@ -126,7 +125,7 @@ public class ManagePeopleAddressService extends IntentService {
      */
     private void handleActionSetDefaultAddress(String addressId) {
         peopleActApi
-                .editDefaultAddress(AuthUtil.generateParamsNetwork(
+                .editDefaultAddress(AuthHelper.generateParamsNetwork(
                         userSession.getUserId(), userSession.getDeviceId(), NetworkParam.paramEditDefaultAddress(addressId))
                 )
                 .subscribeOn(Schedulers.newThread())
@@ -136,7 +135,7 @@ public class ManagePeopleAddressService extends IntentService {
 
     private void handleActionDeleteAddress(String addressId) {
         peopleActApi
-                .deleteAddress(AuthUtil.generateParamsNetwork(
+                .deleteAddress(AuthHelper.generateParamsNetwork(
                         userSession.getUserId(), userSession.getDeviceId(), NetworkParam.paramDeleteAddress(addressId))
                 )
                 .subscribeOn(Schedulers.newThread())

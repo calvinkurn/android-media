@@ -28,6 +28,6 @@ public class ManageShopActivity extends TActivity {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        SplitCompat.install(this);
+        SplitCompat.installActivity(this);
     }
 }
