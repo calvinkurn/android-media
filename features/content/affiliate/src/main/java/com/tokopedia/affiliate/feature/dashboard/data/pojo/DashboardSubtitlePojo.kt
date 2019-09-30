@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName
 data class DashboardSubtitlePojo(
         @SerializedName("key")
         @Expose
-        val key: String,
+        val key: String = "",
 
         @SerializedName("text")
         @Expose
-        val text: String
+        val text: String = ""
 )
