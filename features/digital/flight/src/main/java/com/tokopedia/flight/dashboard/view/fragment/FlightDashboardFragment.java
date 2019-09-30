@@ -28,6 +28,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -47,6 +48,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
@@ -448,7 +450,23 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
+        if (oneWayTripAppCompatButton.isSelected()) {
+            FlightCalendarOneWayWidget flightCalendarDialog = FlightCalendarOneWayWidget.Companion.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate));
+            flightCalendarDialog.setListener(dateSelected -> {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+            });
+            flightCalendarDialog.show(getActivity().getSupportFragmentManager(), TAG_DEPARTURE_CALENDAR);
+        } else {
+            setCalendarDatePicker(selectedDate, minDate, maxDate,
+                    getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date),
+                    TAG_DEPARTURE_CALENDAR);
+        }
     }
 
     @Override
