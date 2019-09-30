@@ -8,4 +8,7 @@
         dist:title="@string/title_instantloan">
         <dist:fusing dist:include="true" />
     </dist:module>
+
+    <application android:hasCode="false" />
+
 </manifest>
