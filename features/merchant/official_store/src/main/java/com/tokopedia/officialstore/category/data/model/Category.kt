@@ -1,20 +1,23 @@
-package com.tokopedia.officialstore.presentation.model
+package com.tokopedia.officialstore.category.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 
 data class Category(
+        @SerializedName("id")
         val categoryId: String = "",
+        @SerializedName("name")
         val title: String = "",
+        @SerializedName("imageUrl")
         val icon: String = "",
         val slug: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString()) {
-    }
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(categoryId)

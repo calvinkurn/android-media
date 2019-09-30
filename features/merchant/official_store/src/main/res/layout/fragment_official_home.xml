@@ -35,9 +35,6 @@
             android:minHeight="?actionBarSize"
             android:background="@color/white"
             app:tabMode="scrollable"
-            app:tabTextAppearance="@style/TextAppearance.TabLayout"
-            app:tabSelectedTextColor="@color/Purple_P600"
-            app:tabTextColor="@color/Neutral_N700_96"
             app:tabIndicatorColor="@color/Purple_P600" />
 
     </android.support.design.widget.AppBarLayout>

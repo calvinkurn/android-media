@@ -1,0 +1,13 @@
+query OfficialStoreCategories{
+  OfficialStoreCategories(lang: "id") {
+    categories {
+        id
+        imageUrl
+        name
+        url
+        fullUrl
+        categories
+    }
+    total
+  }
+}
