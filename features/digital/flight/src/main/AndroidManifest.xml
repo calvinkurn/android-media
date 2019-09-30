@@ -137,7 +137,7 @@
 
                 <data
                     android:host="@string/host_flight"
-                    android:path="@string/path_flight_order_detail"
+                    android:pathPattern="@string/path_flight_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
