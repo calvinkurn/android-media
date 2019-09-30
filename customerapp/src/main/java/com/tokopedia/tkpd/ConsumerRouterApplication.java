@@ -276,8 +276,8 @@ import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
+//import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
+//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -1899,10 +1899,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    @Override
+    /*@Override
     public Intent getWithdrawIntent(Context context, boolean isSeller) {
         return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
+    }*/
 
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
@@ -2226,7 +2226,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return AddPasswordActivity.newInstance(context);
     }
 
-    @Override
+    /*@Override
     public boolean isSaldoNativeEnabled() {
         return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true);
@@ -2236,7 +2236,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public boolean isMerchantCreditLineEnabled() {
         return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
                 true);
-    }
+    }*/
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
@@ -2363,13 +2363,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
 
-        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(), SaldoDetailsInternalRouter.getSaldoClassName());
+//        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(), SaldoDetailsInternalRouter.getSaldoClassName());
     }
 
-    @Override
+    /*@Override
     public void startSaldoDepositIntent(Context context) {
         SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
-    }
+    }*/
 
     public Intent getInboxChatIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);

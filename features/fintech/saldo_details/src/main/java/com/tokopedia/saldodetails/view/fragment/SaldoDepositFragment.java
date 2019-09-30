@@ -35,6 +35,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
@@ -45,7 +46,6 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -59,6 +59,8 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
+
+//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -127,8 +129,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final int MCL_STATUS_BLOCK1 = 700;
     private static final int MCL_STATUS_BLOCK2 = 701;
     private static final int MCL_STATUS_BLOCK3 = 999;
-
+    private static final String IS_SELLER = "is_seller";
     private boolean showMclBlockTickerFirebaseFlag = false;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     public SaldoDepositFragment() {
     }
@@ -217,6 +220,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @SuppressLint("Range")
@@ -321,8 +325,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         checkBalanceStatus.setOnClickListener(v -> {
             try {
-                Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication())
-                        .getInboxTicketCallingIntent(context);
+                Intent intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET);
                 startActivity(intent);
             } catch (Exception e) {
 
@@ -394,7 +397,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
-            Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.WITHDRAW);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(IS_SELLER, isSellerEnabled());
+            intent.putExtras(bundle);
             saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock, mclLateCount, showMclBlockTickerFirebaseFlag);
         }
     }
@@ -423,32 +430,34 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
-        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
-            if (((SaldoDetailsRouter) getActivity().getApplication())
-                    .isSaldoNativeEnabled() && ((SaldoDetailsRouter) getActivity().getApplication())
-                    .isMerchantCreditLineEnabled()) {
-                saldoDetailsPresenter.getUserFinancialStatus();
-            } else {
-
-                if (((SaldoDetailsRouter) getActivity().getApplication())
-                        .isSaldoNativeEnabled()) {
-                    saldoDetailsPresenter.getMerchantSaldoDetails();
-                } else {
-                    hideSaldoPrioritasFragment();
-                }
-
-                if (((SaldoDetailsRouter) getActivity().getApplication())
-                        .isMerchantCreditLineEnabled()) {
-                    saldoDetailsPresenter.getMerchantCreditLineDetails();
-                } else {
-                    hideMerchantCreditLineFragment();
-                }
-            }
+        if (isSaldoNativeEnabled() && isMerchantCreditLineEnabled()) {
+            saldoDetailsPresenter.getUserFinancialStatus();
         } else {
-            hideUserFinancialStatusLayout();
+
+            if (isSaldoNativeEnabled()) {
+                saldoDetailsPresenter.getMerchantSaldoDetails();
+            } else {
+                hideSaldoPrioritasFragment();
+            }
+
+            if (isMerchantCreditLineEnabled()) {
+                saldoDetailsPresenter.getMerchantCreditLineDetails();
+            } else {
+                hideMerchantCreditLineFragment();
+            }
         }
 
+    }
+
+    private boolean isSaldoNativeEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    private boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
+                true);
     }
 
     @Override
@@ -531,9 +540,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void intentToAddPassword(Context context) {
-        context.startActivity(
-                ((SaldoDetailsRouter) context.getApplicationContext())
-                        .getAddPasswordIntent(context));
+        // TODO: 30/9/19 AddPasswordActivity intent and deeplink
+//        context.startActivity(AddPasswordActivity.newInstance(context));
     }
 
     @Override

@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
@@ -26,7 +28,6 @@ import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager;
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
@@ -224,8 +225,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onEmptyButtonClicked() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
-                .getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         startActivity(intent);
     }
 
