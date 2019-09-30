@@ -83,16 +83,16 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
 
         private fun initView(item: OnboardingDataViewModel, positionInAdapter: Int) {
             itemView.tv_onboarding_item.text = item.name
+            setBackgroundColor(item)
             if (!item.isLihatSemuaItem) {
                 ImageHandler.LoadImage(itemView.iv_onboarding_item, item.image)
             } else {
-                itemView.bg_selected.visibility = View.GONE
+                itemView.bg_selected.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.bg_onboarding_see_all))
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
                 itemView.iv_onboarding_item.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.ic_chevron_right_green_24dp))
                 itemView.iv_onboarding_item.maxHeight = convertDpToPixel(VAL_ICON_SIZE)
                 itemView.iv_onboarding_item.maxWidth = convertDpToPixel(VAL_ICON_SIZE)
             }
-            setBackgroundColor(item)
         }
 
         private fun initViewListener(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
@@ -109,7 +109,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
 
         private fun setBackgroundColor(item: OnboardingDataViewModel) {
             if (item.isSelected) {
-                itemView.bg_selected.background = itemView.context.resources.getDrawable(R.drawable.bg_interespick_selected)
+                itemView.bg_selected.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_interespick_selected)
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
             } else {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.white))
