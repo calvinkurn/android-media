@@ -60,19 +60,18 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                         ),
                         BlankSpaceConfig(
                                 ratingCount = true,
-                                discountPercentage = true
+                                discountPercentage = true,
+                                twoLinesProductName = true
                         )
                 )
                 setImageProductViewHintListener(product, object : ViewHintListener {
                     override fun onViewHint() {
-                        if (product.isTopAds) productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
-                        else productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
+                        productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
                     }
                 })
 
                 setOnClickListener {
-                    if (product.isTopAds) productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
-                    else productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
+                    productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
                 }
             }
         }

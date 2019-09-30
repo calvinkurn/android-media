@@ -56,6 +56,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_URL = "url";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+    public static final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
 
     public static final String RECOMMENDATION_ATTRIBUTION = "recommendation";
 

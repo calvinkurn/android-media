@@ -339,7 +339,8 @@ public class AccountAnalytics {
                 DATA_CATEGORY, recommendationItem.getCategoryBreadcrumbs(),
                 DATA_VARIAN, NONE_OTHER,
                 LIST, list,
-                DATA_POSITION, String.valueOf(position));
+                DATA_POSITION, String.valueOf(position),
+                DATA_DIMENSION_38, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:NONE_OTHER);
     }
 
     public void eventAccountProductClick(RecommendationItem recommendationItem, int position, String widgetTitle) {
@@ -367,7 +368,8 @@ public class AccountAnalytics {
                                             DATA_VARIAN, NONE_OTHER,
                                             LIST, widgetTitle,
                                             DATA_POSITION, String.valueOf(position),
-                                            DATA_ATTRIBUTION, NONE_OTHER
+                                            DATA_ATTRIBUTION, NONE_OTHER,
+                                            DATA_DIMENSION_38, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:NONE_OTHER
                                     )))
                             )
             );

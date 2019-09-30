@@ -376,6 +376,7 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     private fun initProductName(productName: String) {
+        if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
         textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
     }
 

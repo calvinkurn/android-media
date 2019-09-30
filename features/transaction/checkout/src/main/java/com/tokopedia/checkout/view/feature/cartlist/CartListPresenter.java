@@ -1117,6 +1117,11 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setListName(getActionFieldListStr(isEmptyCart, recommendationItem));
         enhancedECommerceProductCartMapData.setPosition(String.valueOf(position));
+        if (recommendationItem.isFreeOngkirActive()) {
+            enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
+        } else {
+            enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        }
         return enhancedECommerceProductCartMapData;
     }
 
@@ -1135,6 +1140,11 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setListName(getActionFieldListStr(isEmptyCart, recommendationItem));
         enhancedECommerceProductCartMapData.setPosition(String.valueOf(position));
         enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.RECOMMENDATION_ATTRIBUTION);
+        if (recommendationItem.isFreeOngkirActive()) {
+            enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
+        } else {
+            enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        }
         return enhancedECommerceProductCartMapData;
     }
 
