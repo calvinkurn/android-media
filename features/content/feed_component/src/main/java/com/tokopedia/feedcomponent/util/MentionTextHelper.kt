@@ -23,6 +23,8 @@ object MentionTextHelper {
     private const val OPENING_MENTION_TAG = "<$MENTION_TAG>"
     private const val CLOSING_MENTION_TAG = "</$MENTION_TAG>"
 
+    private const val WHITESPACE = ' '
+
     private const val ID_NAME_DELIMITER = "|"
 
     private const val ALLOWED_CHARS_REGEX = "[\\s\\S]"
@@ -71,7 +73,7 @@ object MentionTextHelper {
 
                 if (isFromEdit) {
                     spannableString.replace(
-                            startIndex + 1,
+                            startIndex + MENTION_CHAR.length,
                             endIndex,
                             mentionSpan.fullName)
                 } else {
@@ -82,6 +84,18 @@ object MentionTextHelper {
                     )
                 }
 
+                if (startIndex > 0 && spannableString[startIndex -1] != WHITESPACE) {
+                    spannableString.insert(startIndex, WHITESPACE.toString())
+                }
+
+                val newStartIndex = spannableString.getSpanStart(mentionSpan)
+                val newEndIndex = newStartIndex + mentionSpan.displayedText.length
+                if (
+                        (newEndIndex < spannableString.length && spannableString[newEndIndex] != WHITESPACE) ||
+                        newEndIndex == spannableString.length
+                ) {
+                    spannableString.insert(newEndIndex, WHITESPACE.toString())
+                }
             }
         }
 
