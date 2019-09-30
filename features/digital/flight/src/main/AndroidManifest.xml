@@ -16,7 +16,8 @@
 
                 <data
                     android:host="@string/host_flight"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:path="@string/path_flight_dashboard"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
