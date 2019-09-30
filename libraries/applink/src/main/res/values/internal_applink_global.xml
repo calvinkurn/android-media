@@ -30,6 +30,6 @@
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_instant_loan" translatable="false">/loan</string>
-    <string name="path_instant_loan_tab" translatable="false">/loan/category/*</string>
+    <string name="path_instant_loan_tab" translatable="false">/loan/category/.*\\</string>
 
 </resources>
