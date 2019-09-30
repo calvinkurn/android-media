@@ -1,16 +1,21 @@
 package com.tokopedia.product.detail.view.adapter
 
+import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-class RecommendationProductAdapter(private var product: RecommendationWidget,
+class RecommendationProductAdapter(private var recommendationWidget: RecommendationWidget,
                                    private val userActiveListener: UserActiveListener,
                                    private var pageName: String,
                                    private val productDetailTracking: ProductDetailTracking) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
@@ -20,35 +25,71 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
     }
 
     override fun getItemCount(): Int {
-        return product.recommendationItemList.size
+        return recommendationWidget.recommendationItemList.size
     }
 
     override fun onBindViewHolder(holder: RecommendationProductViewHolder, position: Int) {
-        holder.bind(product.recommendationItemList[position])
+        holder.bind(recommendationWidget.recommendationItemList[position])
     }
 
     inner class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
-        private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
+        private val productCardView: ProductCardViewSmallGrid? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {
-            recommendationCardView?.setRecommendationModel(product, this)
-            recommendationCardView?.setWishlistButtonVisible(false)
+            productCardView?.run {
+                setProductModel(
+                        ProductCardModel(
+                                slashedPrice = product.slashedPrice,
+                                productName = product.name,
+                                formattedPrice = product.price,
+                                productImageUrl = product.imageUrl,
+                                isTopAds = product.isTopAds,
+                                discountPercentage = product.discountPercentage.toString(),
+                                reviewCount = product.countReview,
+                                ratingCount = product.rating,
+                                shopLocation = product.location,
+                                isWishlistVisible = false,
+                                isWishlisted = product.isWishlist,
+                                shopBadgeList = product.badgesUrl.map {
+                                    ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                },
+                                freeOngkir = ProductCardModel.FreeOngkir(
+                                        isActive = product.isFreeOngkirActive,
+                                        imageUrl = product.freeOngkirImageUrl
+                                )
+                        ),
+                        BlankSpaceConfig(
+                                ratingCount = true,
+                                discountPercentage = true
+                        )
+                )
+                setImageProductViewHintListener(product, object : ViewHintListener {
+                    override fun onViewHint() {
+                        if (product.isTopAds) productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
+                        else productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
+                    }
+                })
+
+                setOnClickListener {
+                    if (product.isTopAds) productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
+                    else productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
+                }
+            }
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
+
         }
 
         override fun onClickTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive,pageName,product.title)
+
         }
 
         override fun onClickOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive,pageName,product.title)
+
         }
 
     }
