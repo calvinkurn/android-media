@@ -427,6 +427,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
+        swipe_refresh_layout.setRefreshing(true);
+        swipe_refresh_layout.setEnabled(true);
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
