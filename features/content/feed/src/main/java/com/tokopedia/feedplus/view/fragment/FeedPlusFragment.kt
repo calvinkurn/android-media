@@ -427,6 +427,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
+        parentFragment?.let {
+            (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
+        }
         swipe_refresh_layout.setEnabled(true);
         trackFeedImpression(listFeed)
 

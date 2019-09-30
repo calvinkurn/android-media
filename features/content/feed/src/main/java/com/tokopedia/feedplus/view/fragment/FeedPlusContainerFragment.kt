@@ -82,6 +82,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var badgeNumberInbox: Int = 0
     private var isFabExpanded = false
 
+    private lateinit var coachMarkItem:  CoachMarkItem
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.tabResp.observe(this, Observer {
@@ -230,10 +232,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun renderFab(whitelistDomain: WhitelistDomain) {
         if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
             showFeedFab(whitelistDomain)
-            if (!affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
-                showCreatePostOnBoarding()
-                affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
-            }
         }
     }
 
@@ -348,20 +346,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun showCreatePostOnBoarding() {
+     fun showCreatePostOnBoarding() {
         fab_feed.addOneTimeGlobalLayoutListener {
             val x1: Int = fab_feed.x.toInt()
             val y1: Int = fab_feed.y.toInt()
             val x2: Int = x1 + fab_feed.width
             val y2: Int = y1 + fab_feed.height
 
-            val item = CoachMarkItem(
+            coachMarkItem = CoachMarkItem(
                     fab_feed,
                     getString(R.string.feed_onboarding_create_post_title),
                     getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
-            coachMark.show(activity, "", arrayListOf(item))
+            showFabCoachMark()
+        }
+    }
+
+    fun showFabCoachMark() {
+        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
+            showCreatePostOnBoarding()
+            affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
     }
 }
