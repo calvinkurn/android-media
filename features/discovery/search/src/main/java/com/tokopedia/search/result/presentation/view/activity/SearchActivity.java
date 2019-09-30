@@ -227,7 +227,7 @@ public class SearchActivity extends BaseActivity
         searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
-        buttonCart.setOnClickListener(v -> moveToCartActivity());
+        buttonCart.setOnClickListener(v -> onCartButtonClicked());
         buttonHome.setOnClickListener(v -> moveToHomeActivity());
     }
 
@@ -263,9 +263,15 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void moveToCartActivity() {
+    private void onCartButtonClicked() {
         searchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
-        RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
+
+        if (userSession.isLoggedIn()) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
+        }
+        else {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+        }
     }
 
     private void moveToHomeActivity() {
