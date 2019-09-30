@@ -70,6 +70,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
 
+    private static final String LIMIT_ERR_MSG = "3";
+
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
     private static final CharSequence PIN_ERR_MSG = "PIN";
 
@@ -448,7 +450,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0) {
             errorOtp.setText(errorMessage.substring(0, errorMessage.indexOf("(")));
 
-            if(errorMessage.contains("3")) {
+            if(errorMessage.contains(LIMIT_ERR_MSG)) {
                 verifyButton.setVisibility(View.VISIBLE);
                 verifyButton.setText(R.string.other_method);
                 verifyButton.setOnClickListener(v -> {
