@@ -28,8 +28,6 @@ import dagger.Component;
 
 public interface DealsComponent {
 
-    PostVerifyCartUseCase getPostVerifyCartUseCase();
-
     void inject(DealsSearchActivity activity);
 
     void inject(DealDetailsFragment fragment);

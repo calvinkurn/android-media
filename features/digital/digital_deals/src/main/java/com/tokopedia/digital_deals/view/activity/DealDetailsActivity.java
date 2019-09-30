@@ -37,16 +37,6 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         return destination;
     }
 
-    public static Intent getCallingIntent(Activity activity,
-                                          DealDetailPassData passData) {
-        Intent intent = new Intent(activity, DealDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(DealDetailsPresenter.HOME_DATA, passData.getSlug());
-        bundle.putParcelable(DealDetailsPresenter.PARAM_DEAL_PASSDATA, passData);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     @Override
     protected int getLayoutRes() {
         return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals;
