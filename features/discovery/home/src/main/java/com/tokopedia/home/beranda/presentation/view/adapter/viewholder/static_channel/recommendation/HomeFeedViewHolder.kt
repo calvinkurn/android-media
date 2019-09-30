@@ -69,7 +69,6 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                     homeFeedView.onProductImpression(element, adapterPosition)
                 }
             })
-            realignLayout()
             setOnClickListener { homeFeedView.onProductClick(element, adapterPosition) }
             setButtonWishlistOnClickListener {
                 homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->
