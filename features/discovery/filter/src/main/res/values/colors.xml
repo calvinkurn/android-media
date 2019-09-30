@@ -2,5 +2,6 @@
 <resources>
 
     <color name="white_four">#e0e0e0</color>
+    <color name="price_pills_text_color_normal">#ae31353b</color>
 
 </resources>
