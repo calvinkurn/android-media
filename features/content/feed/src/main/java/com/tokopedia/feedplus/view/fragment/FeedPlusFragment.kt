@@ -135,6 +135,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_feed_plus.*
 
 /**
  * @author by nisie on 5/15/17.
@@ -1601,6 +1602,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedOnboardingData.addAll(data.dataList)
             data.dataList = feedOnboardingData
             adapter.addItem(data)
+            parentFragment?.let {
+                (it as FeedPlusContainerFragment).hideAllFab(true)
+            }
+            swipe_refresh_layout.setRefreshing(false);
+            swipe_refresh_layout.setEnabled(false);
         }
     }
 

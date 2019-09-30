@@ -317,7 +317,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun hideAllFab(isInitial: Boolean) {
+    fun hideAllFab(isInitial: Boolean) {
         if (activity == null) {
             return
         }
