@@ -148,6 +148,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     lateinit var productManageListAdapter: ProductManageListAdapter
 
+    private var productManageViewModels: List<ProductManageViewModel> = listOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
@@ -351,10 +352,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         isLoadingInitialData = true
         val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
 
-        if (adapter.data.isNotEmpty()) {
+        if (productManageViewModels.isNotEmpty()) {
             val textLowerCase = text.toLowerCase()
 
-            for (data in adapter.data) {
+            for (data in productManageViewModels) {
                 if (data.productName.toLowerCase().contains(textLowerCase)) {
                     tempShopEtalaseViewModels.add(data)
                 }
@@ -370,6 +371,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderList(tempShopEtalaseViewModels, false)
     }
 
+    override fun loadInitialData() {
+        super.loadInitialData()
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
+    }
+
     override fun onSearchTextChanged(text: String?) {
         // NO OP
     }
@@ -379,6 +387,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessGetProductList(list: MutableList<ProductManageViewModel>, totalItem: Int, hasNextPage: Boolean) {
+        productManageViewModels = list
         renderList(list, hasNextPage)
     }
 
@@ -592,9 +601,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
         loadInitialData()
     }
 
