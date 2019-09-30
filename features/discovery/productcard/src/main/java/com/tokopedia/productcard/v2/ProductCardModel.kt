@@ -5,7 +5,6 @@ data class ProductCardModel (
         val isWishlisted: Boolean = false,
         val isWishlistVisible: Boolean = false,
         val labelPromo: Label = Label(),
-        val freeOngkir: FreeOngkir = FreeOngkir(),
         val shopImageUrl: String = "",
         val shopName: String = "",
         val productName: String = "",
@@ -18,6 +17,7 @@ data class ProductCardModel (
         val reviewCount: Int = 0,
         val labelCredibility: Label = Label(),
         val labelOffers: Label = Label(),
+        val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false
 ) {
 

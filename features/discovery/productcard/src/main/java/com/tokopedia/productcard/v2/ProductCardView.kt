@@ -143,8 +143,8 @@ abstract class ProductCardView: BaseCustomView {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
-        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         labelOffers = inflatedView.findViewById(R.id.labelOffers)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds)
     }
 
@@ -166,8 +166,8 @@ abstract class ProductCardView: BaseCustomView {
         setLocationMarginLeft()
         setLocationConstraintEnd()
         setReviewCountMarginLeft()
-        setImageFreeOngkirPromoConstraint()
         setLabelOffersConstraint()
+        setImageFreeOngkirPromoConstraint()
         setTopAdsTopConstraint()
     }
 
@@ -245,19 +245,19 @@ abstract class ProductCardView: BaseCustomView {
         else R.dimen.dp_8
     }
 
-    protected open fun setImageFreeOngkirPromoConstraint() {
-        imageFreeOngkirPromo?.doIfVisible { imageFreeOngkirPromo ->
-            val imageFreeOngkirPromoTopConstraintView = getFreeOngkirPromoTopConstraintView()
+    protected open fun setLabelOffersConstraint() {
+        labelOffers?.doIfVisible { labelOffers ->
+            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
 
-            imageFreeOngkirPromoTopConstraintView?.let {
+            labelOffersTopConstraintView?.let {
                 setViewConstraint(
-                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
                 )
             }
         }
     }
 
-    protected open fun getFreeOngkirPromoTopConstraintView(): View? {
+    protected open fun getLabelOffersTopConstraintView(): View? {
         return when {
             labelCredibility.isNotNullAndVisible -> {
                 labelCredibility
@@ -275,24 +275,24 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    protected open fun setLabelOffersConstraint() {
-        labelOffers?.doIfVisible { labelOffers ->
-            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
+    protected open fun setImageFreeOngkirPromoConstraint() {
+        imageFreeOngkirPromo?.doIfVisible { imageFreeOngkirPromo ->
+            val imageFreeOngkirPromoTopConstraintView = getImageFreeOngkirTopConstraintView()
 
-            labelOffersTopConstraintView?.let {
+            imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
                 )
             }
         }
     }
 
-    protected open fun getLabelOffersTopConstraintView(): View? {
+    protected open fun getImageFreeOngkirTopConstraintView(): View? {
         return when {
-            imageFreeOngkirPromo.isNotNullAndVisible -> {
-                imageFreeOngkirPromo
+            labelOffers.isNotNullAndVisible -> {
+                labelOffers
             }
-            else -> getFreeOngkirPromoTopConstraintView()
+            else -> getLabelOffersTopConstraintView()
         }
     }
 
@@ -310,10 +310,10 @@ abstract class ProductCardView: BaseCustomView {
 
     private fun getImageTopAdsTopConstraintView(): View? {
         return when {
-            labelOffers.isNotNullAndVisible -> {
-                labelOffers
+            imageFreeOngkirPromo.isNotNullAndVisible -> {
+                imageFreeOngkirPromo
             }
-            else -> getLabelOffersTopConstraintView()
+            else -> getImageFreeOngkirTopConstraintView()
         }
     }
 
@@ -341,8 +341,8 @@ abstract class ProductCardView: BaseCustomView {
         initRating(productCardModel.ratingCount)
         initReview(productCardModel.reviewCount)
         initLabelCredibility(productCardModel.labelCredibility)
-        initFreeOngkir(productCardModel.freeOngkir)
         initLabelOffers(productCardModel.labelOffers)
+        initFreeOngkir(productCardModel.freeOngkir)
         initTopAdsIcon(productCardModel.isTopAds)
 
         realignLayout()
@@ -474,20 +474,20 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
+    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
+        labelOffers.configureVisibilityWithBlankSpaceConfig(
+                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
+            it.text = labelOffersModel.title
+            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
+        }
+    }
+
     private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
         val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
             ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
-        }
-    }
-
-    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
-        labelOffers.configureVisibilityWithBlankSpaceConfig(
-                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
-            it.text = labelOffersModel.title
-            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
         }
     }
 
