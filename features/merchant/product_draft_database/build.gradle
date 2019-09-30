@@ -32,7 +32,7 @@ project.ext {
     artifactId = 'product-draft-database'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantproductdraftdatabase-release"
+    artifactName ="product_draft_database-release"
 }
 
 apply from: '../../../publish_local.gradle'

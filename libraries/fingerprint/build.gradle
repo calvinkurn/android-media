@@ -13,15 +13,18 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 
 project.ext {
     artifactId = 'fingerprint'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="libraryfingerprint-release"
+    artifactName = "fingerprint-release"
 }
 
 apply from: '../../publish_local.gradle'
