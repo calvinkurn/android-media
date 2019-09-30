@@ -1359,7 +1359,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             productInfo.basic.weight,
                             productInfo.basic.weightUnit,
                             if (productInfoViewModel.multiOrigin.isFulfillment)
-                                productInfoViewModel.multiOrigin.origin else null
+                                productInfoViewModel.multiOrigin.origin else null,
+                            productInfo.freeOngkir.isFreeOngkirActive
                     ))
                 }
             }

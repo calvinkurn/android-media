@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +24,6 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneFreeOngkirTitle
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -39,9 +37,6 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Success
@@ -70,7 +65,6 @@ class AddToCartDoneBottomSheet :
     private lateinit var recyclerView: RecyclerView
     private lateinit var containerLayout: CoordinatorLayout
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
-    internal lateinit var remoteConfig: RemoteConfig
 
     override fun getLayoutResourceId(): Int {
         return R.layout.add_to_cart_done_bottomsheet
@@ -97,12 +91,6 @@ class AddToCartDoneBottomSheet :
             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
         }
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        remoteConfig = FirebaseRemoteConfigImpl(context)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         initViewModel()
@@ -124,13 +112,9 @@ class AddToCartDoneBottomSheet :
 
     private fun initAdapter() {
         val factory = AddToCartDoneTypeFactory(this, this)
-        val freeOngkirMsg = remoteConfig.getString(RemoteConfigKey.MAINAPP_FREE_ONGKIR_MSG)
         atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = atcDoneAdapter
-        if (!TextUtils.isEmpty(freeOngkirMsg)) {
-            atcDoneAdapter.addElement(0, AddToCartDoneFreeOngkirTitle(freeOngkirMsg))
-        }
         atcDoneAdapter.addElement(addedProductDataModel)
     }
 
@@ -143,15 +127,11 @@ class AddToCartDoneBottomSheet :
                 }
                 is Loaded -> {
                     (it.data as? Success)?.data?.let { result ->
-                        val freeOngkirMsg = remoteConfig.getString(RemoteConfigKey.MAINAPP_FREE_ONGKIR_MSG)
                         atcDoneAdapter.clearAllElements()
                         for (res in result) {
                             atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
                         }
                         atcDoneAdapter.addElement(0, addedProductDataModel)
-                        if (!TextUtils.isEmpty(freeOngkirMsg)) {
-                            atcDoneAdapter.addElement(0, AddToCartDoneFreeOngkirTitle(freeOngkirMsg))
-                        }
                         atcDoneAdapter.notifyDataSetChanged()
                     }
                 }
