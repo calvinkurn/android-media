@@ -37,7 +37,10 @@ class ProductListMapper {
                         item.isTopAds = true
                         item.rating = dataItem.product?.productRating ?: 0
 
-                        item.topAdsReviewCount = dataItem.product?.countReviewFormat?.replace(".","")?.replace(",","") ?: "0"
+                        val reviewCount = dataItem.product?.countReviewFormat?.replace(".", "")?.replace(",", "")
+                                ?: "0"
+                        item.countReview = Integer.parseInt(reviewCount)
+
                         item.wishlist = (dataItem.product?.wishlist) ?: false
 
                         item.id = (dataItem.product?.id?.toInt()) ?: 0
