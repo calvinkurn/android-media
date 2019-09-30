@@ -62,7 +62,13 @@ data class ProductInfo(
 
         @SerializedName("media")
         @Expose
-        val media: List<Media> = listOf()
+        val media: List<Media> = listOf(),
+
+        @SerializedName("freeOngkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
+
+
 ) {
     data class Response(
             @SerializedName("getPDPInfo")

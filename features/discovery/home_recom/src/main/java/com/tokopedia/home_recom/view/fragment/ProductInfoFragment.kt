@@ -456,7 +456,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             url = productDataModel.productDetailData.url,
             wishlistUrl = productDataModel.productDetailData.wishlistUrl,
             slashedPrice = productDataModel.productDetailData.slashedPrice,
-            discountPercentage = productDataModel.productDetailData.discountPercentage,
+            discountPercentageInt = productDataModel.productDetailData.discountPercentage,
             slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
             cartId = -1,
             shopId = productDataModel.productDetailData.shop.id,
@@ -468,7 +468,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
             badgesUrl = listOf(),
-            type = ""
+            type = "",
+            isFreeOngkirActive = false,
+            freeOngkirImageUrl = "",
+            discountPercentage = ""
     )
 
     /**

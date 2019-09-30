@@ -19,7 +19,7 @@ class HomeFeedViewModel(val productId: String,
                         val clickUrl: String,
                         val trackerImageUrl: String,
                         val slashedPrice: String,
-                        val discountPercentage: Int,
+                        val discountPercentage: String,
                         var priceNumber: Int,
                         val isTopAds: Boolean,
                         val position: Int,
@@ -28,7 +28,9 @@ class HomeFeedViewModel(val productId: String,
                         val badges: List<Badge>,
                         val location: String,
                         val wishlistUrl: String,
-                        var isWishList: Boolean) : ImpressHolder(), Visitable<HomeFeedTypeFactory> {
+                        var isWishList: Boolean,
+                        val isFreeOngkirActive: Boolean,
+                        val freeOngkirImageUrl: String) : ImpressHolder(), Visitable<HomeFeedTypeFactory> {
 
     override fun type(typeFactory: HomeFeedTypeFactory): Int {
         return typeFactory.type(this)

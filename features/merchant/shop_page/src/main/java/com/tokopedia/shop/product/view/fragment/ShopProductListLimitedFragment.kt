@@ -48,6 +48,7 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListVi
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -126,7 +127,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private set
     private var selectedEtalaseName: String = ""
 
-    private var remoteConfig: RemoteConfig? = null
+    private val remoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private val gridLayoutManager: GridLayoutManager by lazy {
@@ -348,11 +351,26 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
             shopProductAdapter.clearMembershipData()
-
+            if (it.freeOngkir.isActive)
+                loadFreeOngkirTicker()
             loadMembership()
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
+        }
+    }
+
+    private fun loadFreeOngkirTicker() {
+        remoteConfig.apply {
+            val titleTicker = "Belanja di toko ini Bebas Ongkir"
+            val descriptionTicker = "Ongkir dari toko ini akan ditanggung Tokopedia"
+            if (titleTicker.isNotEmpty() && descriptionTicker.isNotEmpty()) {
+                shopProductAdapter.setFreeOngkirTickerViewModel(FreeOngkirTickerViewModel(
+                        titleTicker,
+                        descriptionTicker
+                ))
+                shopProductAdapter.refreshSticky()
+            }
         }
     }
 
@@ -1096,7 +1114,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
-        remoteConfig = FirebaseRemoteConfigImpl(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
         onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
 

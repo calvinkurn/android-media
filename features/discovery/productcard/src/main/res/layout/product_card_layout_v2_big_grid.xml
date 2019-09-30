@@ -286,6 +286,21 @@
             tools:text="Offers Label" />
 
         <ImageView
+            android:id="@+id/imageFreeOngkirPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            tools:visibility="visible" />
+
+        <ImageView
             android:id="@+id/imageTopAds"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
