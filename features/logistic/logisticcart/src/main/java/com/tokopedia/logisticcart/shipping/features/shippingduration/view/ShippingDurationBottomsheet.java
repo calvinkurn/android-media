@@ -364,7 +364,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
                 presenter.getRecipientAddressModel(), mCartPosition,
-                serviceData.getServiceData(), false, data);
+                serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
         dismiss();
 
 //        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
