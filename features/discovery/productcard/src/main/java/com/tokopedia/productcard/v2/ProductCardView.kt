@@ -64,7 +64,6 @@ abstract class ProductCardView: BaseCustomView {
     protected var imageProduct: SquareImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
-    protected var imageFreeOngkirPromo: ImageView? = null
     protected var textViewShopName: Typography? = null
     protected var textViewProductName: Typography? = null
     protected var labelDiscount: Label? = null
@@ -81,6 +80,7 @@ abstract class ProductCardView: BaseCustomView {
     protected var textViewReviewCount: Typography? = null
     protected var labelCredibility: Label? = null
     protected var labelOffers: Label? = null
+    protected var imageFreeOngkirPromo: ImageView? = null
     protected var imageTopAds: ImageView? = null
     protected var blankSpaceConfig = BlankSpaceConfig()
 
@@ -128,7 +128,6 @@ abstract class ProductCardView: BaseCustomView {
         imageProduct = inflatedView.findViewById(R.id.imageProduct)
         buttonWishlist = inflatedView.findViewById(R.id.buttonWishlist)
         labelPromo = inflatedView.findViewById(R.id.labelPromo)
-        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         textViewShopName = inflatedView.findViewById(R.id.textViewShopName)
         textViewProductName = inflatedView.findViewById(R.id.textViewProductName)
         labelDiscount = inflatedView.findViewById(R.id.labelDiscount)
@@ -144,6 +143,7 @@ abstract class ProductCardView: BaseCustomView {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         labelOffers = inflatedView.findViewById(R.id.labelOffers)
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds)
     }
@@ -251,7 +251,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
                 )
             }
         }
