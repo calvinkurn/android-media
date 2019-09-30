@@ -1,22 +1,12 @@
 package com.tokopedia.seller.selling.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,18 +19,25 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ActionMode;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.presenter.Shipping;
@@ -173,6 +170,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 viewHolder.vRefNumber.setOnClickListener(onGetRefNumDialog(position));
                 viewHolder.CameraBut.setOnClickListener(onGetBarcodeListener(position));
                 viewHolder.BtnOverflow.setOnClickListener(onOverflowClicked(position));
+                viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClicked(int position) {
+                        onOpenDetail(position);
+                    }
+
+                    @Override
+                    public void onLongClicked(int position) {
+
+                    }
+                });
             }
 
             @Override
