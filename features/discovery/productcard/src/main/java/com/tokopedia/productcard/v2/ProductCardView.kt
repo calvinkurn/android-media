@@ -389,8 +389,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     private fun getIsLabelDiscountVisible(discountPercentage: String): Boolean {
-        return discountPercentage.isEmpty()
-                || discountPercentage.trim() == "0"
+        return discountPercentage.isNotEmpty()
+                && discountPercentage.trim() != "0"
     }
 
     private fun initSlashedPrice(slashedPrice: String) {
