@@ -1,8 +1,9 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
@@ -39,6 +40,9 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME;
+import static com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN;
+
 final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
@@ -60,6 +64,9 @@ final class ProductListPresenter
     RemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     RemoteConfig remoteConfig;
+    @Inject
+    @Named(FREE_ONGKIR_LOCAL_CACHE_NAME)
+    LocalCacheHandler freeOngkirLocalCache;
 
     private WishListActionListener wishlistActionListener;
     private boolean enableGlobalNavWidget;
@@ -646,11 +653,20 @@ final class ProductListPresenter
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
         getView().removeLoading();
         getView().setProductList(list);
+
+        if (shouldShowFreeOngkirShowCase()) {
+            getView().showFreeOngkirShowCase();
+        }
+
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean shouldShowFreeOngkirShowCase() {
+        return !freeOngkirLocalCache.getBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN);
     }
 
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
@@ -678,6 +694,16 @@ final class ProductListPresenter
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+    }
+
+    @Override
+    public void onClickButtonOKFreeOngkir() {
+        if (getView() != null) {
+            getView().hideFreeOngkirShowCase();
+
+            freeOngkirLocalCache.putBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true);
+            freeOngkirLocalCache.applyEditor();
+        }
     }
 
     @Override

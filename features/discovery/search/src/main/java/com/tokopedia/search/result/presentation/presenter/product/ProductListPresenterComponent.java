@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.search.di.module.FreeOngkirLocalCacheModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.di.module.AddWishListUseCaseModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
@@ -25,6 +26,7 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
         SearchLocalCacheHandlerModule.class,
+        FreeOngkirLocalCacheModule.class,
         RemoteConfigModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {
