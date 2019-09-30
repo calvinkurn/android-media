@@ -549,9 +549,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     fun showFAB(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
-        val author = whitelistDomain.authors.get(0)
         fab_feed.setOnClickListener {
-            onGoToLink(author.link)
+            goToCreatePost()
         }
 
     }
