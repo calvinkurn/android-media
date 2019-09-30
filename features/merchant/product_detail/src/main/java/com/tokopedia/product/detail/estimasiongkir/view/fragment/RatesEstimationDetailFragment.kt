@@ -12,10 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
 import com.tokopedia.product.detail.data.util.LABEL_GRAM
@@ -31,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rates_estimation_detail.*
 import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
-
 import javax.inject.Inject
 
 class RatesEstimationDetailFragment : BaseDaggerFragment() {
@@ -47,6 +47,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     private var productWeightUnit: String = LABEL_GRAM
     private var productWeight: Float = 0f
     private var origin: String? = null
+    private var isFreeOngkir: Boolean = false
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -86,6 +87,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
             origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
+            isFreeOngkir = it.getBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, false)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -133,6 +135,12 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
 
+        if (isFreeOngkir) {
+            ticker_free_ongkir.show()
+        } else {
+            ticker_free_ongkir.hide()
+        }
+
         shipping_destination.text = shop.cityName
         val title = userSession.name
         val spannableString = SpannableString(title)
@@ -160,13 +168,14 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null) =
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, isFreeOngkir: Boolean) =
                 RatesEstimationDetailFragment().apply {
                     arguments = Bundle().apply {
                         putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                         putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
+                        putBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, isFreeOngkir)
                     }
                 }
     }
