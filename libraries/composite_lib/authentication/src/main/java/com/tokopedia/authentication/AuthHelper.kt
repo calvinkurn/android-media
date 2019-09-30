@@ -5,7 +5,7 @@ import android.os.Build
 import android.support.v4.util.ArrayMap
 import android.util.Base64
 import com.google.gson.Gson
-import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.AbstractNetworkRouter
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -241,8 +241,8 @@ class AuthHelper {
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             headers[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
 
-            if (context.applicationContext is NetworkRouter) {
-                val fingerprintModel = (context.applicationContext as NetworkRouter).getFingerprintModel()
+            if (context.applicationContext is AbstractNetworkRouter) {
+                val fingerprintModel = (context.applicationContext as AbstractNetworkRouter).getFingerprintModel()
                 val json = fingerprintModel.getFingerprintHash()
 
                 headers[KEY_FINGERPRINT_HASH] = AuthHelperJava.md5("${json}+${session.userId}")
