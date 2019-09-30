@@ -86,7 +86,7 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                     product.clickUrl,
                     product.trackerImageUrl,
                     product.slashedPrice,
-                    product.discountPercentage!!,
+                    if (isLabelDiscountVisible(product)) "${product.discountPercentage}%" else "",
                     product.priceInt ?: 0,
                     product.isTopads ?: false,
                     position + 1,
@@ -101,5 +101,9 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
             ))
         }
         return homeFeedViewModels
+    }
+
+    private fun isLabelDiscountVisible(productItem: Product): Boolean {
+        return productItem.discountPercentage > 0
     }
 }

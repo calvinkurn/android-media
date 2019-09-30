@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
+import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -36,6 +37,7 @@ object SingleProductRecommendationMapper {
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
                     index,
                     data.shop?.id ?: -1,
                     "",
@@ -52,5 +54,9 @@ object SingleProductRecommendationMapper {
                     data.freeOngkirInformation?.imageUrl?:""
             )
          } ?: emptyList()
+    }
+
+    fun isLabelDiscountVisible(productItem: SingleProductRecommendationEntity.Recommendation): Boolean {
+        return productItem.discountPercentage > 0
     }
 }
