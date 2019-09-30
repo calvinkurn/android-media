@@ -13,11 +13,11 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
@@ -155,7 +155,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
             contentType = String.valueOf(param.get(CONTENT_TYPE));
         }
 
-        Map<String, String> headers = AuthUtil.getAuthHeaderReact(
+        Map<String, String> headers = AuthHelper.getAuthHeaderReact(
                 context,
                 param.containsKey(PATH) ? String.valueOf(param.get(PATH)) : "",
                 param.containsKey(PARAM) ? String.valueOf(param.get(PARAM)) : "",

@@ -18,7 +18,7 @@ public interface StackedCouponActivityContract {
 
         void onSuccess(List<CouponFilterItem> data);
 
-        void onError(String error);
+        void onError(String error, boolean hasInternet);
 
         Context getAppContext();
 

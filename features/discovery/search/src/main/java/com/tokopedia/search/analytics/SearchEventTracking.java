@@ -12,6 +12,7 @@ public interface SearchEventTracking {
 
     interface Category {
         String EVENT_TOP_NAV = "top nav";
+        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search - search result page";
         String SEARCH = "Search";
         String FILTER_PRODUCT = "filter product";
         String SEARCH_RESULT = "search result";
@@ -34,6 +35,7 @@ public interface SearchEventTracking {
         String REMOVE_WISHLIST = "remove wishlist";
         String CLICK_CART_BUTTON_SEARCH_RESULT = "click cart button - search result";
         String CLICK_HOME_BUTTON_SEARCH_RESULT = "click home button - search result";
+        String CLICK_SEARCH_BOX = "click search box";
     }
 
     interface Label {

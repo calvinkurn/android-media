@@ -512,4 +512,12 @@ public class SearchTracking {
                 SearchEventTracking.Action.LONG_PRESS_PRODUCT,
                 String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId));
     }
+
+    public static void trackEventClickSearchBar() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
+                SearchEventTracking.Action.CLICK_SEARCH_BOX,
+                "");
+    }
 }
