@@ -135,7 +135,7 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
-                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s - %s",
+                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
                         Label.FLIGHT_SMALL,
                         (dashboardViewModel.getDepartureAirport().getAirportCode() == null || dashboardViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                                 dashboardViewModel.getDepartureAirport().getCityCode() : dashboardViewModel.getDepartureAirport().getAirportCode(),
@@ -147,7 +147,7 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
                         dashboardViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
-                        dashboardViewModel.isOneWay()? "" : FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate())
+                        dashboardViewModel.isOneWay()? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
                 )
         ));
     }
@@ -244,6 +244,9 @@ public class FlightAnalytics {
     }
 
     public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
+        List<Object> products = new ArrayList<>();
+        products.add(transformSearchProductClick(flightSearchPassData, viewModel, 0));
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
@@ -254,7 +257,8 @@ public class FlightAnalytics {
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
-                                        "products", transformSearchProductClick(flightSearchPassData, viewModel, 0))
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])))
                         )
                 )
         );
@@ -262,6 +266,9 @@ public class FlightAnalytics {
     }
 
     public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel, int adapterPosition) {
+        List<Object> products = new ArrayList<>();
+        products.add(transformSearchProductClick(flightSearchPassData, viewModel, adapterPosition));
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
@@ -272,7 +279,8 @@ public class FlightAnalytics {
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
-                                        "products", transformSearchProductClick(flightSearchPassData, viewModel, adapterPosition))
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])))
                         )
                 )
         );
@@ -504,15 +512,16 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventBookingNextClick(FlightBookingCartData flightBookingCartData, FlightSearchPassDataViewModel searchParam) {
+    public void eventBookingNextClick(FlightBookingCartData flightBookingCartData, FlightSearchPassDataViewModel searchParam, String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
         if (flightBookingCartData.getDepartureTrip() != null) {
-            products = constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getId(),
+            products = constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
                     searchParam.getFlightClass().getTitle(), flightBookingCartData.getReturnTrip() == null);
             if (flightBookingCartData.getReturnTrip() != null) {
-                products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), flightBookingCartData.getId(), searchParam.getFlightClass().getTitle(), false));
+                products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), comboKey,
+                        searchParam.getFlightClass().getTitle(), false));
             }
         }
 
@@ -543,15 +552,15 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventReviewNextClick(FlightBookingReviewModel flightBookingReviewModel) {
+    public void eventReviewNextClick(FlightBookingReviewModel flightBookingReviewModel, String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
         if (flightBookingReviewModel.getDetailViewModelListDeparture() != null) {
-            products = constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), flightBookingReviewModel.getId(),
+            products = constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
                     flightBookingReviewModel.getFlightClass().getTitle(), flightBookingReviewModel.getDetailViewModelListReturn() == null);
             if (flightBookingReviewModel.getDetailViewModelListReturn() != null) {
-                products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), flightBookingReviewModel.getId(),
+                products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), comboKey,
                         flightBookingReviewModel.getFlightClass().getTitle(), false));
             }
         }
@@ -566,7 +575,7 @@ public class FlightAnalytics {
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "actionField", DataLayer.mapOf("step", 2,
-                                        "option", Category.BOOKING_NEXT),
+                                        "option", Category.REVIEW_NEXT),
                                 "products", DataLayer.listOf(
                                         products.toArray(new Object[products.size()])
                                 )
@@ -637,14 +646,16 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData, int resultTotalPrice, FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
+    public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData,
+                               int resultTotalPrice, FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel,
+                               String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
         if (departureViewModel != null) {
-            products = constructEnhanceEcommerceProduct(departureViewModel, cartData.getId(), flightClass.getTitle(), returnViewModel == null);
+            products = constructEnhanceEcommerceProduct(departureViewModel, comboKey, flightClass.getTitle(), returnViewModel == null);
             if (returnViewModel != null) {
-                products.add(constructEnhanceEcommerceProduct(returnViewModel, cartData.getId(), flightClass.getTitle(), false));
+                products.add(constructEnhanceEcommerceProduct(returnViewModel, comboKey, flightClass.getTitle(), false));
             }
         }
 
@@ -670,17 +681,17 @@ public class FlightAnalytics {
         }
     }
 
-    private List<Object> constructEnhanceEcommerceProduct(FlightDetailViewModel flightViewModel, String cartId, String flightClass, Boolean isOneWay) {
+    private List<Object> constructEnhanceEcommerceProduct(FlightDetailViewModel flightViewModel, String comboKey, String flightClass, Boolean isOneWay) {
         List<Object> products = new ArrayList<>();
         String name = flightViewModel.getDepartureAirportCity() + "-" + flightViewModel.getArrivalAirportCity();
         products.add(DataLayer.mapOf(
                 EnhanceEccomerce.NAME, name,
                 EnhanceEccomerce.PRICE, String.valueOf(flightViewModel.getTotalNumeric()),
-                EnhanceEccomerce.ID, cartId,
+                EnhanceEccomerce.ID, (comboKey != null && !comboKey.isEmpty()) ? comboKey : flightViewModel.getId(),
                 EnhanceEccomerce.BRAND, flightViewModel.getRouteList().get(0).getAirlineName(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.QUANTITY, String.valueOf(flightViewModel.getCountAdult() + flightViewModel.getCountChild() + flightViewModel.getCountInfant()),
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getDepartureTime()),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, isOneWay ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, flightClass,
                 EnhanceEccomerce.DIMENSION69, "",
@@ -706,7 +717,7 @@ public class FlightAnalytics {
                         banner.getAttributes().getPromoCode(), "slider banner"),
                 "creative", banner.getAttributes().getDescription().toLowerCase(),
                 "creative_url", banner.getAttributes().getLinkUrl(),
-                "position", String.valueOf(position + 1)
+                "position", String.valueOf(position)
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_VIEW_EVENT,
