@@ -22,15 +22,10 @@ data class Carousel(
 
         var filePath: String? = null,
 
-        var index: Int = 0,
-
-        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
-        var element_id: String? = ""
-) : Parcelable {
+        var index: Int = 0) : Parcelable {
 
     constructor(source: Parcel) : this(source.readString(), source.readString(),
-            source.readString(), source.readString(), source.readInt(),source.readString()
-            )
+            source.readString(), source.readString(), source.readInt())
 
     override fun describeContents(): Int {
         return 0
@@ -42,7 +37,6 @@ data class Carousel(
         dest?.writeString(this.icon)
         dest?.writeString(this.filePath)
         dest?.writeInt(this.index)
-        dest?.writeString(this.element_id)
     }
 
 
