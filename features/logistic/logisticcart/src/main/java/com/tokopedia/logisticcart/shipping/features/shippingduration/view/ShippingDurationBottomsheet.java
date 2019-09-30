@@ -345,41 +345,60 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
         mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
-        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
-        tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
-        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
-        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
-        tkpdDialog.setOnCancelClickListener(view -> {
-            mPromoTracker.eventClickBatalTerapkanPromo(data.getPromoCode());
-            tkpdDialog.dismiss();
-        });
-        tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
-                if (serviceData == null) {
-                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
-                    tkpdDialog.dismiss();
-                    return;
-                }
-                CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
-                if (courierData == null) {
-                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
-                    tkpdDialog.dismiss();
-                    return;
-                }
-                courierData.setLogPromoCode(data.getPromoCode());
-                courierData.setLogPromoMsg(data.getDisableText());
-                shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                        serviceData.getShippingCourierViewModelList(), courierData,
-                        presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                        serviceData.getServiceData(), false, data.getPromoCode());
-                tkpdDialog.dismiss();
-                dismiss();
-            }
-        });
-        tkpdDialog.show();
+
+        ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+        if (serviceData == null) {
+            showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+            return;
+        }
+        CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+        if (courierData == null) {
+            showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+            return;
+        }
+        courierData.setLogPromoCode(data.getPromoCode());
+        courierData.setLogPromoMsg(data.getDisableText());
+        shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                serviceData.getShippingCourierViewModelList(), courierData,
+                presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
+                serviceData.getServiceData(), false, data.getPromoCode());
+        dismiss();
+
+//        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+//        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
+//        tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
+//        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
+//        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
+//        tkpdDialog.setOnCancelClickListener(view -> {
+//            mPromoTracker.eventClickBatalTerapkanPromo(data.getPromoCode());
+//            tkpdDialog.dismiss();
+//        });
+//        tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+//                if (serviceData == null) {
+//                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+//                    tkpdDialog.dismiss();
+//                    return;
+//                }
+//                CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+//                if (courierData == null) {
+//                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+//                    tkpdDialog.dismiss();
+//                    return;
+//                }
+//                courierData.setLogPromoCode(data.getPromoCode());
+//                courierData.setLogPromoMsg(data.getDisableText());
+//                shippingDurationBottomsheetListener.onLogisticPromoChosen(
+//                        serviceData.getShippingCourierViewModelList(), courierData,
+//                        presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
+//                        serviceData.getServiceData(), false, data.getPromoCode());
+//                tkpdDialog.dismiss();
+//                dismiss();
+//            }
+//        });
+//        tkpdDialog.show();
     }
 
 }
