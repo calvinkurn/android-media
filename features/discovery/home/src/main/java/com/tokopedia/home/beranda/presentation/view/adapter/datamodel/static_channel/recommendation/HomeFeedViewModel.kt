@@ -51,7 +51,7 @@ class HomeFeedViewModel(val productId: String,
                 tabName,
                 recommendationType),
                 DATA_POSITION, position.toString(),
-                DATA_DIMENSION_38, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     fun convertFeedTabModelToImpressionDataForNonLoginUser(
@@ -70,7 +70,7 @@ class HomeFeedViewModel(val productId: String,
                 recommendationType
         ),
                 DATA_POSITION, position.toString(),
-                DATA_DIMENSION_38, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     fun convertFeedTabModelToClickData(): Any {
@@ -82,7 +82,7 @@ class HomeFeedViewModel(val productId: String,
                 DATA_VARIANT, DATA_NONE_OTHER,
                 DATA_CATEGORY, categoryBreadcrumbs,
                 DATA_POSITION, position.toString(),
-                DATA_DIMENSION_38, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     companion object {
@@ -97,7 +97,7 @@ class HomeFeedViewModel(val productId: String,
         private val DATA_POSITION = "position"
         private val DATA_LIST_VALUE = "/ - p2 - %s - rekomendasi untuk anda - %s"
         private val DATA_LIST_VALUE_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s"
-        private val DATA_DIMENSION_38 = "dimension83"
+        private val DATA_DIMENSION_83 = "dimension83"
         private val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         private val VALUE_NONE_OTHER = "none / other"
     }

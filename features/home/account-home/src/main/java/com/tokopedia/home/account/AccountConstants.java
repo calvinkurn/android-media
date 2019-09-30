@@ -132,7 +132,7 @@ public class AccountConstants {
 
         public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
         public static final String ITEM_POWER_MERCHANT = "Power Merchant";
-        public static final String DATA_DIMENSION_38 = "dimension83";
+        public static final String DATA_DIMENSION_83 = "dimension83";
         public static final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
     }
 

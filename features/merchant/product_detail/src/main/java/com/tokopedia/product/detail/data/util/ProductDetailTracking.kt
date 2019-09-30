@@ -255,6 +255,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -279,7 +280,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
-                                        DATA_DIMENSION_38, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
+                                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
                         ))
                 ))
         )
@@ -305,6 +306,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, position .toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
@@ -328,7 +330,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         VARIANT, DEFAULT_VALUE,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_38, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         ))
@@ -349,6 +351,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -376,7 +379,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         PROMO_POSITION, position + 1,
                         LIST, listValue,
-                        DATA_DIMENSION_38, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
         ))
         )
         trackingQueue.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
@@ -400,6 +403,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, position.toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
@@ -424,7 +428,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         VARIANT, DEFAULT_VALUE,
                         LIST, listValue,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_38, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         )
@@ -900,7 +904,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc  - "
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
-        private const val DATA_DIMENSION_38 = "dimension83"
+        private const val DATA_DIMENSION_83 = "dimension83"
         private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         private const val VALUE_NONE_OTHER = "none / other"
     }
