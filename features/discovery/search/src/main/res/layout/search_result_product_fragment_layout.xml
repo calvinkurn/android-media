@@ -83,7 +83,8 @@
         android:id="@+id/constraintLayoutFreeOngkirShowCase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/free_ongkir_promo_show_case_background">
+        android:background="@color/free_ongkir_promo_show_case_background"
+        android:visibility="gone">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutFreeOngkirShowCasePopUp"
