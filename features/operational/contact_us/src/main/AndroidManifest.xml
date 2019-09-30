@@ -10,7 +10,18 @@
             android:exported="true"
             android:label="@string/contact_us_title_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_contactus"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.tokopedia.contactus.home.view.BuyerPurchaseListActivity"
@@ -50,7 +61,18 @@
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_contact_us"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_contact_us"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
             android:screenOrientation="portrait" />
@@ -65,7 +87,18 @@
             android:exported="true"
             android:label="Detail Kendala"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_customercare"
+                    android:path="@string/path_ticket_detail"/>
+            </intent-filter>
+        </activity>
         <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity"
             android:exported="true"
             android:label="@string/cu_surey_layana"

@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
@@ -323,7 +324,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         submitSuccess.setVisibility(View.GONE);
         getActivity().startActivity(new Intent(getActivity(), InboxListActivity.class));
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.sendBroadcast(new Intent(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY));
+        manager.sendBroadcast(new Intent(ContactUsConstant.ACTION_CLOSE_ACTIVITY));
     }
 
     @Override

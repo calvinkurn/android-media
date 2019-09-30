@@ -15,4 +15,5 @@ public interface ContactUsConstant {
      int ID_SELLER = 103;
      int ID_OTHER = 104;
 
+    String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

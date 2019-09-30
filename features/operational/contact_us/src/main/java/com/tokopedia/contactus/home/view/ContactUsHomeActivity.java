@@ -19,12 +19,19 @@ import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
  */
 
 public class ContactUsHomeActivity extends BaseSimpleActivity {
+
+    public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
+    private RemoteConfig remoteConfig;
 
     @DeepLink(ApplinkConst.CONTACT_US_NATIVE)
     public static Intent getContactUsIntent(Context context, Bundle bundle) {
@@ -47,15 +54,25 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             if (url != null && url.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(url);
             } else {
-                return SimpleWebViewWithFilePickerFragment.createInstance(((ContactUsModuleRouter) getApplication()).getContactUsBaseURL());
+                return SimpleWebViewWithFilePickerFragment.createInstance(URL_HELP);
             }
         } else {
             return ContactUsHomeFragment.newInstance();
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initRemoteConfig();
+    }
+
     private boolean isNative() {
-        return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, false);
+        return remoteConfig.getBoolean(ContactUsHomeContract.CONTACT_US_WEB, false);
+    }
+
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     @Override

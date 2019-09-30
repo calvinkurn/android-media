@@ -36,8 +36,8 @@ public class ContactUsModule {
                 .addInterceptor(new ErrorResponseInterceptor(ContactUsErrorResponse.class));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(((ContactUsModuleRouter)context).getChuckInterceptor());
+//            builder.addInterceptor(httpLoggingInterceptor)
+//                    .addInterceptor(((ContactUsModuleRouter)context).getChuckInterceptor());
 
         }
         return builder.build();

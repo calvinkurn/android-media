@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
@@ -47,8 +48,7 @@ public class InboxListActivity extends InboxBaseActivity
 
     @DeepLink(ApplinkConst.INBOX_TICKET)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        Intent homeIntent = ((ContactUsModuleRouter) context.getApplicationContext()).getHomeIntent
-                (context);
+        Intent homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME);
         Intent parentIntent = InboxListActivity.getCallingIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);

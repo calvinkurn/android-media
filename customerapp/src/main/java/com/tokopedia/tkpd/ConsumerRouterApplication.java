@@ -65,7 +65,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
@@ -438,7 +437,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProfileModuleRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
-        ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
         InstantLoanChuckRouter,
@@ -2241,11 +2239,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return ProfileActivity.Companion.createIntent(context, userId);
-    }
-
-    @Override
-    public String getContactUsBaseURL() {
-        return TkpdBaseURL.ContactUs.URL_HELP;
     }
 
     @Override

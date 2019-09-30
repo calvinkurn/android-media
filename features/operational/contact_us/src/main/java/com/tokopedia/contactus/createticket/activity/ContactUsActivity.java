@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -179,8 +180,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             startActivity(intent);
             finish();
         } else {
-            Intent intent = ((ContactUsModuleRouter) MainApplication.getAppContext())
-                    .getHomeIntent(this);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

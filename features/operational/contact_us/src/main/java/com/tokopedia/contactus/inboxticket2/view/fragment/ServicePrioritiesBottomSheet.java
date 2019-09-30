@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 
@@ -42,9 +43,7 @@ public class ServicePrioritiesBottomSheet extends FrameLayout implements View.On
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(((ContactUsModuleRouter) (mContext.getApplicationContext()))
-                        .getWebviewActivityWithIntent(mContext,
-                                mContext.getString(R.string.learn_more_link)));
+                mContext.startActivity(RouteManager.getIntent(mContext, mContext.getString(R.string.learn_more_link)));
             }
 
             @Override
