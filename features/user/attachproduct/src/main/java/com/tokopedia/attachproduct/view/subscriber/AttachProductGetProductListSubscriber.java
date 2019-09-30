@@ -32,8 +32,14 @@ public class AttachProductGetProductListSubscriber extends Subscriber<List<Attac
     @Override
     public void onNext(List<AttachProductItemViewModel> attachProductItemViewModels) {
         view.hideAllLoadingIndicator();
-        view.addProductToList(attachProductItemViewModels,
-                (attachProductItemViewModels.size() >= DEFAULT_ROWS));
+
+        boolean hasNext = false;
+        if((attachProductItemViewModels.size() >= DEFAULT_ROWS)) {
+            hasNext = true;
+            attachProductItemViewModels.remove(attachProductItemViewModels.size()-1);
+        }
+        view.addProductToList(attachProductItemViewModels, hasNext);
+
         if(attachProductItemViewModels.size() > 0) {
             view.setShopName(attachProductItemViewModels.get(0).getShopName());
         }

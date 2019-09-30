@@ -167,11 +167,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
 
-    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
+
+    private var layoutManager: LinearLayoutManager? = null
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
@@ -270,9 +271,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
                 presenter.fetchNextPage()
         }
-        layoutManager = NpaLinearLayoutManager(activity,
-                LinearLayoutManager.VERTICAL,
-                false)
 
         val loginIdString = getUserSession().userId
         loginIdInt = if (TextUtils.isEmpty(loginIdString)) 0 else Integer.valueOf(loginIdString)
@@ -324,6 +322,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun prepareView() {
         adapter.itemTreshold = 2
+        layoutManager = NpaLinearLayoutManager(activity,
+                LinearLayoutManager.VERTICAL,
+                false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
@@ -342,11 +343,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         var position = 0
                         val item: Visitable<*>
                         if (itemIsFullScreen()) {
-                            position = layoutManager.findLastVisibleItemPosition()
-                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findFirstCompletelyVisibleItemPosition()
-                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findLastCompletelyVisibleItemPosition()
+                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
                         }
 
                         item = adapter.getlist()[position]
@@ -367,7 +368,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun itemIsFullScreen(): Boolean {
-        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
+        return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -383,8 +384,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onDestroyView()
         presenter.detachView()
 
-//        if (layoutManager != null)
-//            layoutManager = null
+        if (layoutManager != null) {
+            layoutManager = null
+        }
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
@@ -59,7 +60,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCa
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
@@ -710,12 +710,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
-                ?
-                AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
-                :
-                AuthUtil.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams
-                );
+                ? AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
+                : AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
     }
 
     @Override
@@ -1622,7 +1620,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void cancelAutoApplyCoupon(String variant) {
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
 
         RequestParams requestParams = RequestParams.create();
@@ -1679,7 +1677,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
 
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);

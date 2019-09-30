@@ -27,6 +27,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
@@ -42,6 +43,8 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateIte
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.navigation.util.NotifPreference
+import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.navigation.widget.ChipFilterItemDivider
 import javax.inject.Inject

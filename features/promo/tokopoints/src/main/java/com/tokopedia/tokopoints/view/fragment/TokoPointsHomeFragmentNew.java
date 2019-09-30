@@ -27,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -49,13 +50,13 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.customview.CustomViewPager;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -72,6 +73,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+/*
+ * Dynamic layout params are applied via
+ * function setLayoutParams() because configuration in statusBarHeight
+ * */
 
 public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements TokoPointsHomeContract.View, View.OnClickListener, TokoPointToolbar.OnTokoPointToolbarClickListener {
 
@@ -110,6 +116,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     private View statusBarBgView;
     private TokoPointToolbar tokoPointToolbar;
+    private ServerErrorView serverErrorView;
 
 
     public static TokoPointsHomeFragmentNew newInstance() {
@@ -135,11 +142,25 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         collapsingToolbarLayout.setTitle(" ");
 
         appBarHeader.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> handleAppBarOffsetChange(verticalOffset));
+        setLayoutParams();
 
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
-        layoutParams.topMargin = getStatusBarHeight(getActivity());
-        tokoPointToolbar.setLayoutParams(layoutParams);
         return view;
+    }
+
+
+    private void setLayoutParams() {
+        int statusBarHeight = getStatusBarHeight(getActivity());
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
+        layoutParams.topMargin = statusBarHeight;
+        tokoPointToolbar.setLayoutParams(layoutParams);
+
+        RelativeLayout.LayoutParams imageEggLp = (RelativeLayout.LayoutParams) mImgEgg.getLayoutParams();
+        imageEggLp.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_top_margin_big_image));
+        mImgEgg.setLayoutParams(imageEggLp);
+
+        RelativeLayout.LayoutParams imageBigLp = (RelativeLayout.LayoutParams) mImgBackground.getLayoutParams();
+        imageBigLp.height = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_home_top_bg_height));
+        mImgBackground.setLayoutParams(imageBigLp);
     }
 
     public static int getStatusBarHeight(Context context) {
@@ -410,6 +431,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         dynamicLinksContainer = view.findViewById(R.id.container_dynamic_links);
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
+        serverErrorView = view.findViewById(R.id.server_error_view);
         setStatusBarViewHeight();
     }
 
@@ -476,9 +498,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     @Override
-    public void onError(String error) {
+    public void onError(String error, boolean hasInternet) {
         if (mContainerMain != null) {
             mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+            serverErrorView.showErrorUi(hasInternet);
         }
     }
 

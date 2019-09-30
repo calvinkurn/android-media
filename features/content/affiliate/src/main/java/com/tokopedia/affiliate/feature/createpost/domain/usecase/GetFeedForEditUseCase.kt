@@ -6,6 +6,7 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.usecase.RequestParams
@@ -25,18 +26,27 @@ class GetFeedForEditUseCase @Inject constructor(private val dynamicFeedUseCase: 
     private fun DynamicPostViewModel.toFeedDetailForEditing(): FeedDetail{
         val postId = this.id.toString()
         val type = this.feedType
-        val media = this.contentList.mapNotNull { getMediaModel(it) }
+        val media = this.contentList.flatMap { getMediaModel(it) }
         val postTagId = this.postTag.items.map { it.id }.filter { it.isNotBlank() }
         val caption = this.caption.text
         return FeedDetail(postId, type, media, postTagId, caption)
-
     }
 
-    private fun getMediaModel(item: BasePostViewModel): MediaModel?{
+    private fun getMediaModel(item: BasePostViewModel): List<MediaModel> {
         return when(item){
-            is ImagePostViewModel -> MediaModel(item.image, MediaType.IMAGE)
-            is VideoViewModel -> MediaModel(item.url, MediaType.VIDEO)
-            else -> null
+            is ImagePostViewModel -> listOf(MediaModel(item.image, MediaType.IMAGE))
+            is VideoViewModel -> listOf(MediaModel(item.url, MediaType.VIDEO))
+            is MultimediaGridViewModel -> getMediaModelFromMultimediaGrid(item)
+            else -> emptyList()
+        }
+    }
+
+    private fun getMediaModelFromMultimediaGrid(item: MultimediaGridViewModel): List<MediaModel> {
+        return item.mediaItemList.map {
+            MediaModel(
+                    path = it.thumbnail,
+                    type = it.type
+            )
         }
     }
 }

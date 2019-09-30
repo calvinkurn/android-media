@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.Toaster
-import java.io.File
 import timber.log.Timber
+import java.io.File
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -170,12 +170,17 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
-            sessionId = it
-        }.addOnFailureListener {
+            if (it == 0) {
+                onSuccessfulLoad(moduleName, true)
+            } else {
+                sessionId = it
+            }
+        }.addOnFailureListener { exception ->
+            val errorCode = (exception as SplitInstallException).errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message)
+            showFailedMessage(message, errorCode.toString())
         }
     }
 
@@ -244,7 +249,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         Timber.w("P1Failed Module {$moduleName} - {$errorCode}")
-        val userMessage:String
+        val userMessage: String
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
         } else {
@@ -267,11 +272,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
-    private fun initialDownloadStatus(moduleName: String, moduleSize: Long){
+    private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
         var totalFreeSpaceSizeInMB = "-"
         applicationContext?.filesDir?.absoluteFile?.toString()?.let {
             val totalSize = File(it).freeSpace.toDouble()

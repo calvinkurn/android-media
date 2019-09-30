@@ -63,6 +63,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

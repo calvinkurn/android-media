@@ -16,7 +16,7 @@ public interface CouponCatalogContract {
     interface View extends CustomerView {
         void showLoader();
 
-        void showError();
+        void showError(boolean hasInternet);
 
         void onEmptyCatalog();
 

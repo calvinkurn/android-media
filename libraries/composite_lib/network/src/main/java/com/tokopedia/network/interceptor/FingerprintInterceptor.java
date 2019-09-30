@@ -1,8 +1,8 @@
 package com.tokopedia.network.interceptor;
 
+import com.tokopedia.authentication.AuthHelperJava;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class FingerprintInterceptor implements Interceptor {
         String json = fingerprintModel.getFingerprintHash();
         newRequest.addHeader(KEY_SESSION_ID, fingerprintModel.getRegistrarionId());
         newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
-        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
+        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthHelperJava.md5(json + "+" + userSession.getUserId()));
         newRequest.removeHeader(KEY_ACC_AUTH); //prevent double
         newRequest.addHeader(KEY_ACC_AUTH, String.format("%s %s", userSession.getTokenType(),
                 userSession.getAccessToken()));
