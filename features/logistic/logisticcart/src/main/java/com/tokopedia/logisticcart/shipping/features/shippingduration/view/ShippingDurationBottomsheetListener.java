@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -22,9 +23,8 @@ public interface ShippingDurationBottomsheetListener {
 
     void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                CourierItemData courierData,
-                               RecipientAddressModel recipientAddressModel,
-                               int cartPosition, int selectedServiceId,
-                               ServiceData serviceData, boolean flagNeedToSetPinpoint, String promoCode);
+                               RecipientAddressModel recipientAddressModel, int cartPosition,
+                               ServiceData serviceData, boolean flagNeedToSetPinpoint, LogisticPromoViewModel promo);
 
     void onNoCourierAvailable(String message);
 

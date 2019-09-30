@@ -10,10 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -346,6 +344,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
         mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
 
+        // Project Army
         ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
         if (serviceData == null) {
             showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
@@ -360,8 +359,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setLogPromoMsg(data.getDisableText());
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
-                presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                serviceData.getServiceData(), false, data.getPromoCode());
+                presenter.getRecipientAddressModel(), mCartPosition,
+                serviceData.getServiceData(), false, data);
         dismiss();
 
 //        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
@@ -392,8 +391,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
 //                courierData.setLogPromoMsg(data.getDisableText());
 //                shippingDurationBottomsheetListener.onLogisticPromoChosen(
 //                        serviceData.getShippingCourierViewModelList(), courierData,
-//                        presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-//                        serviceData.getServiceData(), false, data.getPromoCode());
+//                        presenter.getRecipientAddressModel(), mCartPosition,
+//                        serviceData.getServiceData(), false, data);
 //                tkpdDialog.dismiss();
 //                dismiss();
 //            }
