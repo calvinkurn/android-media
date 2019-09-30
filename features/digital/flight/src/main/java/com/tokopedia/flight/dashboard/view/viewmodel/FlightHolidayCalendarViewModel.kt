@@ -3,9 +3,9 @@ package com.tokopedia.flight.dashboard.view.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
-import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
-import com.tokopedia.common.travel.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher

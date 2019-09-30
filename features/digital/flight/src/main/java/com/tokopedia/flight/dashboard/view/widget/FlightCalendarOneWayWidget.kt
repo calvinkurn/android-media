@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
@@ -19,7 +19,6 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent
-import com.tokopedia.flight.dashboard.di.FlightDashboardComponent
 import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarViewModel
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarViewModel
@@ -30,7 +29,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment(), HasComponent<FlightDashboardComponent> {
+class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
     private lateinit var btnClose: ImageButton
     private lateinit var loadingProgressBar: ProgressBar
@@ -38,6 +37,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment(), HasCompon
     private lateinit var listener: ActionListener
     private lateinit var holidayCalendarViewModel: FlightHolidayCalendarViewModel
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
+    private lateinit var titlePage: TextView
 
     lateinit var minDate: Date
     lateinit var maxDate: Date
@@ -73,26 +73,27 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment(), HasCompon
         }
     }
 
-    override fun getComponent(): FlightDashboardComponent =
-            DaggerFlightDashboardComponent.builder()
-                    .flightComponent(FlightComponentInstance
-                            .getFlightComponent(activity?.application as Application))
-                    .build()
-
     fun initInjector() {
+        val component = DaggerFlightDashboardComponent.builder()
+                .flightComponent(FlightComponentInstance
+                        .getFlightComponent(activity?.application as Application))
+                .build()
         component.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_calendar_one_way, container, false)
-        btnClose = view.findViewById(R.id.btn_close)
-        loadingProgressBar = view.findViewById(R.id.loading_progress_bar)
-        calendarUnify = view.findViewById(R.id.calendar_unify)
+        val view = inflater.inflate(com.tokopedia.travelcalendar.R.layout.dialog_calendar_single_pick, container, false)
+        btnClose = view.findViewById(com.tokopedia.travelcalendar.R.id.btn_close)
+        loadingProgressBar = view.findViewById(com.tokopedia.travelcalendar.R.id.loading_progress_bar)
+        calendarUnify = view.findViewById(com.tokopedia.travelcalendar.R.id.calendar_unify)
+        titlePage = view.findViewById(com.tokopedia.travelcalendar.R.id.tv_title)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        titlePage.text = "Pilih Tanggal"
 
         loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
