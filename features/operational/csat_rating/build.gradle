@@ -12,21 +12,23 @@ buildscript {
     }
 }
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 }
 
 project.ext {
     artifactId = 'csatrating'
     groupId = 'com.tokopedia.operational'
     versionName = "1.0.0"
-    artifactName ="operationalcsatrating-release"
+    artifactName ="csat_rating-release"
 }
 
 apply from: '../../../publish_local.gradle'
