@@ -355,8 +355,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
             return;
         }
+
         courierData.setLogPromoCode(data.getPromoCode());
         courierData.setLogPromoMsg(data.getDisableText());
+        courierData.setDiscountedRate(data.getDiscountedRate());
+        courierData.setShippingRate(data.getShippingRate());
+
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
                 presenter.getRecipientAddressModel(), mCartPosition,
