@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
@@ -22,15 +21,11 @@ import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragmen
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_calendar_dialog.*
-import kotlinx.coroutines.*
-
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -74,8 +69,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         return inflater.inflate(R.layout.layout_calendar_dialog, container, false)
     }
 
-    override fun getComponent(): HotelComponent
-            = DaggerHotelComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): HotelComponent = DaggerHotelComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,18 +113,24 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
-        if (checkIn != null && checkOut != null) {
-            calendar.init(yesterday.time, nextYear.time, legends)
-                    .inMode(CalendarPickerView.SelectionMode.RANGE)
-                    .maxRange(30)
-                    .withSelectedDates(listOf(checkIn, checkOut))
-            date_in.requestFocus()
-        } else if (checkIn != null && checkOut == null) {
-            calendar.init(yesterday.time, nextYear.time, legends)
-                    .inMode(CalendarPickerView.SelectionMode.RANGE)
-                    .maxRange(30)
-                    .withSelectedDate(checkIn)
-            date_out.requestFocus()
+        checkIn?.let { checkIn ->
+            checkOut?.let { checkOut ->
+                calendar?.init(yesterday.time, nextYear.time, legends)
+                        ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+                        ?.maxRange(30)
+                        ?.withSelectedDates(listOf(checkIn, checkOut))
+                date_in.requestFocus()
+            }
+        }
+
+        if (checkOut == null) {
+            checkIn?.let {
+                calendar?.init(yesterday.time, nextYear.time, legends)
+                        ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+                        ?.maxRange(30)
+                        ?.withSelectedDate(it)
+                date_out.requestFocus()
+            }
         }
 
         val defaultIndLocale = Locale("id", "ID")
@@ -140,14 +140,14 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         if (checkIn != null) date_in.setText(dateFormat.format(checkIn))
         if (checkOut != null) date_out.setText(dateFormat.format(checkOut))
 
-        calendar.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
+        calendar?.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
 
         })
 
-        
+
         date_in.setOnFocusChangeListener { view, hasFocus ->
             if (checkOut == null) {
                 if (date_in.isFocused) date_out.requestFocus()
@@ -156,7 +156,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
             }
         }
 
-        calendar.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+        calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
             override fun onDateSelected(date: Date) {
 
