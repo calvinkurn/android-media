@@ -2,11 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -14,6 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -167,12 +167,12 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
 
-                if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)&&(item.getRating()==null|| item.getRating().equals(""))){
-                      settingRatingButtonsVisibility(View.VISIBLE);
-                      ratingThumbsUp.clearColorFilter();
-                      ratingThumbsDown.clearColorFilter();
-                }
-
+                try {
+                    if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)&&(item.getRating()==null|| item.getRating().equals(""))){
+                        settingRatingButtonsVisibility(View.VISIBLE);
+                        ratingThumbsUp.clearColorFilter();
+                        ratingThumbsDown.clearColorFilter();
+                    }
                 if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)|| item.getId()==null){
                       settingRatingButtonsVisibility(View.GONE);
                 }
@@ -191,6 +191,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
                 if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
                     rvAttachedImage.setVisibility(View.VISIBLE);
+                } catch (NullPointerException e) {}
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
