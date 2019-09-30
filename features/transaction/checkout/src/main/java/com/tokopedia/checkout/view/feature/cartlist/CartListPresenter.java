@@ -1305,7 +1305,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processGetRecommendationData(int page, List<String> allProductIds) {
         view.showItemLoading();
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
-                page, "recom_widget", "cart", allProductIds);
+                page, "recom_widget", "cart", allProductIds, "");
         getRecommendationUseCase.execute(requestParam, new GetRecommendationSubscriber(view, this));
     }
 

@@ -95,7 +95,9 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                     product.badges,
                     product.shop.city,
                     product.wishlistUrl,
-                    product.isWishlist
+                    product.isWishlist,
+                    product.freeOngkirInformation.isActive,
+                    product.freeOngkirInformation.imageUrl
             ))
         }
         return homeFeedViewModels
