@@ -30,6 +30,7 @@ abstract class ProductItemViewHolder(
         val productCardLabelCredibilityModel = createProductCardLabelCredibility(productItem)
         val productCardLabelOffersModel = createProductCardLabelOffers(productItem)
         val productCardShopBadgesList = createProductCardShopBadges(productItem)
+        val productCardFreeOngkir = createProductCardFreeOngkir(productItem)
 
         val productCardModel = ProductCardModel(
                 productImageUrl = if (isUsingBigImageUrl()) productItem.imageUrl700 else productItem.imageUrl,
@@ -47,6 +48,7 @@ abstract class ProductItemViewHolder(
                 reviewCount = productItem.countReview,
                 labelCredibility = productCardLabelCredibilityModel,
                 labelOffers = productCardLabelOffersModel,
+                freeOngkir = productCardFreeOngkir,
                 isTopAds = productItem.isTopAds
         )
 
@@ -111,6 +113,13 @@ abstract class ProductItemViewHolder(
         }
 
         return shopBadgeList
+    }
+
+    private fun createProductCardFreeOngkir(productItem: ProductItemViewModel): ProductCardModel.FreeOngkir {
+        return ProductCardModel.FreeOngkir(
+                productItem.freeOngkirViewModel.isActive,
+                productItem.freeOngkirViewModel.imageUrl
+        )
     }
 
     protected abstract fun getProductCardView(): ProductCardView?
