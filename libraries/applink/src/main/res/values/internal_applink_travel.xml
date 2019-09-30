@@ -25,5 +25,6 @@
     <string name="title_travel_homepage">Travel &amp; Entertainment</string>
 
     <string name="path_flight_search" translatable="false">/search</string>
+    <string name="path_flight_order_list" translatable="false">/order</string>
 
 </resources>
