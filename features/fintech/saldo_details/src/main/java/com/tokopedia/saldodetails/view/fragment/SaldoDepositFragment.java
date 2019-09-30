@@ -540,8 +540,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void intentToAddPassword(Context context) {
-        // TODO: 30/9/19 AddPasswordActivity intent and deeplink
-//        context.startActivity(AddPasswordActivity.newInstance(context));
+        context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD));
     }
 
     @Override

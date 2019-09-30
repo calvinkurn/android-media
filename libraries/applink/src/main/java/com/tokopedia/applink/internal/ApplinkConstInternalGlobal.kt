@@ -70,6 +70,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
+    // AddPasswordActivity
+    // tokopedia-android-internal://global/add-password
+    @JvmField
+    val ADD_PASSWORD = "$INTERNAL_GLOBAL/add-password"
+
     // ProfileCompletionActivity
     // tokopedia-android-internal://global/profile-completion
     @JvmField
