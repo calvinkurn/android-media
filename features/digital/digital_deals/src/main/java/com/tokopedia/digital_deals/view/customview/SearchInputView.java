@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
 
-import com.tokopedia.digital_deals.R;
-
 
 public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
 
@@ -26,7 +24,7 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
 
     @Override
     protected int getLayout() {
-        return R.layout.widget_search_input_view_deals;
+        return com.tokopedia.digital_deals.R.layout.widget_search_input_view_deals;
     }
 
     public void setSearchImageView(Drawable drawable){

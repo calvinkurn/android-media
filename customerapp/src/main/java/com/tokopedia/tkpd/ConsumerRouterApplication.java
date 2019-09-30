@@ -135,7 +135,7 @@ import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
-import com.tokopedia.digital_deals.DealsModuleRouter;
+//import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -448,7 +448,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
-        DealsModuleRouter,
+//        DealsModuleRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
         ChangePasswordRouter,

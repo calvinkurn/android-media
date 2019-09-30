@@ -7,30 +7,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.digital_deals.R;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 
+import java.util.List;
+
 public class BrandDetailsActivity extends DealsBaseActivity {
+    String brandSeoUrl;
 
 
-    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_BRAND})
-    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+    public Intent getInstanceIntentAppLinkBackToHome(Context context, String brandSeoUrl) {
         Intent destination = new Intent();
+        Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String deepLink = extras.getString(DeepLink.URI);
-            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-
-
-            String brandSeoUrl = extras.getString("slug");
             Brand brand = new Brand();
             brand.setUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_BRAND + brandSeoUrl);
             extras.putParcelable(BrandDetailsPresenter.BRAND_DATA, brand);
             destination = new Intent(context, BrandDetailsActivity.class)
-                    .setData(uri.build())
                     .putExtras(extras);
 
         }
@@ -39,7 +36,7 @@ public class BrandDetailsActivity extends DealsBaseActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals;
+        return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals;
     }
 
     @Override
@@ -51,6 +48,11 @@ public class BrandDetailsActivity extends DealsBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setVisibility(View.GONE);
-
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_BRAND_DETAIL, uri, true);
+            brandSeoUrl = params.get(0);
+            getInstanceIntentAppLinkBackToHome(this, brandSeoUrl);
+        }
     }
 }

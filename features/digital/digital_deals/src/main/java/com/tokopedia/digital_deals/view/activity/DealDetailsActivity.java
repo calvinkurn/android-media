@@ -9,9 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
@@ -29,19 +28,12 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     private List<Outlet> outlets;
     private DealsDetailsResponse dealDetail;
 
-    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_DETAILS})
 
-    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String deepLink = extras.getString(DeepLink.URI);
+    public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         Intent destination = new Intent();
-
-        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-
         extras.putString(DealDetailsPresenter.HOME_DATA, extras.getString("slug"));
         destination = new Intent(context, DealDetailsActivity.class)
-                .setData(uri.build())
                 .putExtras(extras);
-
         return destination;
     }
 
@@ -57,12 +49,11 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals;
+        return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals;
     }
 
     @Override
     protected Fragment getNewFragment() {
-
         return DealDetailsFragment.createInstance(getIntent().getExtras());
     }
 
@@ -70,15 +61,24 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setVisibility(View.GONE);
-
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_DETAIL, uri, true);
+            Bundle extra = getIntent().getExtras();
+            if (extra != null) {
+                extra.putString("slug", params.get(0));
+            }
+            getInstanceIntentAppLinkBackToHome(this, extra);
+        }
     }
 
     @Override
     public void replaceFragment(List<Outlet> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
+                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up);
+        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -87,7 +87,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     public void replaceFragment(DealsDetailsResponse dealDetail, int flag) {
         this.dealDetail = dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, SelectDealQuantityFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, SelectDealQuantityFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -98,8 +98,9 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         Bundle bundle = new Bundle();
         bundle.putString(TncBottomSheetFragment.TOOLBAR_TITLE, toolBarText);
         bundle.putString(TncBottomSheetFragment.TEXT, text);
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
+                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up);
+        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -48,8 +48,8 @@ import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkM
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
+//import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
+//import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
@@ -182,7 +182,7 @@ import rx.schedulers.Schedulers;
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        DealsDeepLinkModule.class,
+//        DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
@@ -252,7 +252,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new TokoCashApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new DealsDeepLinkModuleLoader(),
+//                    new DealsDeepLinkModuleLoader(),
                     new ShopAppLinkModuleLoader(),
                     new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),

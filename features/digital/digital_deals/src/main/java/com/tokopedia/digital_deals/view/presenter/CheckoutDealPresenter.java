@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.model.Outlet;
@@ -142,7 +141,7 @@ public class CheckoutDealPresenter
                 if (outlets.size() > 1) {
                     jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                             .getAsJsonObject().addProperty("name",
-                            String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), outlets.size()));
+                            String.format(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.text_available_locations), outlets.size()));
                 } else if (outlets.get(0) != null)
                     if (!TextUtils.isEmpty(outlets.get(0).getDistrict()))
                         jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
@@ -201,7 +200,7 @@ public class CheckoutDealPresenter
                 throwable.printStackTrace();
                 getView().hideProgressBar();
                 if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
-                    getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
+                    getView().showMessage(getView().getActivity().getString(com.tokopedia.digital_deals.R.string.please_enter_email));
                 else {
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
                             getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
