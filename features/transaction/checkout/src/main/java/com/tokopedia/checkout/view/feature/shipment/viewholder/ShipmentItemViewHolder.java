@@ -728,6 +728,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
         });
 
+        tvDurationPrice.setVisibility(View.GONE);
+        tvDurationStrikedPrice.setVisibility(View.GONE);
+
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             tvLogTicker.setVisibility(View.VISIBLE);
@@ -799,6 +802,24 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
+
+            // Project Army
+            if (courierData.getDiscountedRate() == 0) {
+                // Gratis Shipping Price
+                tvLogTicker.setVisibility(View.GONE);
+                tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
+            } else if (courierData.getDiscountedRate() > 0) {
+                // Discounted Shipping Price
+                tvDurationPrice.setVisibility(View.VISIBLE);
+                tvDurationStrikedPrice.setVisibility(View.VISIBLE);
+                tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        courierData.getShippingRate(), false
+                ));
+                tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        courierData.getDiscountedRate(), false
+                ));
+            }
 
             if (courierData.getOntimeDelivery() != null &&
                     courierData.getOntimeDelivery().getAvailable()
