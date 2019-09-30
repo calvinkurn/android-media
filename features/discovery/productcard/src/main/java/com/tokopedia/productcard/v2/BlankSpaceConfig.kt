@@ -15,5 +15,6 @@ class BlankSpaceConfig (
     val ratingCount: Boolean = false,
     val reviewCount: Boolean = false,
     val labelCredibility: Boolean = false,
+    val freeOngkir: Boolean = false,
     val labelOffers: Boolean = false
 )

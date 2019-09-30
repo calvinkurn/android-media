@@ -166,6 +166,7 @@ abstract class ProductCardView: BaseCustomView {
         setLocationMarginLeft()
         setLocationConstraintEnd()
         setReviewCountMarginLeft()
+        setImageFreeOngkirPromoConstraint()
         setLabelOffersConstraint()
         setTopAdsTopConstraint()
     }
@@ -244,19 +245,19 @@ abstract class ProductCardView: BaseCustomView {
         else R.dimen.dp_8
     }
 
-    protected open fun setLabelOffersConstraint() {
-        labelOffers?.doIfVisible { labelOffers ->
-            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
+    protected open fun setImageFreeOngkirPromoConstraint() {
+        imageFreeOngkirPromo?.doIfVisible { imageFreeOngkirPromo ->
+            val imageFreeOngkirPromoTopConstraintView = getFreeOngkirPromoTopConstraintView()
 
-            labelOffersTopConstraintView?.let {
+            imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
                 )
             }
         }
     }
 
-    protected open fun getLabelOffersTopConstraintView(): View? {
+    protected open fun getFreeOngkirPromoTopConstraintView(): View? {
         return when {
             labelCredibility.isNotNullAndVisible -> {
                 labelCredibility
@@ -271,6 +272,27 @@ abstract class ProductCardView: BaseCustomView {
                 textViewShopLocation
             }
             else -> null
+        }
+    }
+
+    protected open fun setLabelOffersConstraint() {
+        labelOffers?.doIfVisible { labelOffers ->
+            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
+
+            labelOffersTopConstraintView?.let {
+                setViewConstraint(
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
+                )
+            }
+        }
+    }
+
+    protected open fun getLabelOffersTopConstraintView(): View? {
+        return when {
+            imageFreeOngkirPromo.isNotNullAndVisible -> {
+                imageFreeOngkirPromo
+            }
+            else -> getFreeOngkirPromoTopConstraintView()
         }
     }
 
@@ -291,19 +313,7 @@ abstract class ProductCardView: BaseCustomView {
             labelOffers.isNotNullAndVisible -> {
                 labelOffers
             }
-            labelCredibility.isNotNullAndVisible -> {
-                labelCredibility
-            }
-            linearLayoutImageRating.isNotNullAndVisible -> {
-                linearLayoutImageRating
-            }
-            textViewReviewCount.isNotNullAndVisible -> {
-                textViewReviewCount
-            }
-            textViewShopLocation.isNotNullAndVisible -> {
-                textViewShopLocation
-            }
-            else -> null
+            else -> getLabelOffersTopConstraintView()
         }
     }
 
@@ -318,23 +328,21 @@ abstract class ProductCardView: BaseCustomView {
     open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = this.blankSpaceConfig) {
         this.blankSpaceConfig = blankSpaceConfig
 
-        removeAllShopBadges()
-
         initProductImage(productCardModel.productImageUrl)
+        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
+        initShopName(productCardModel.shopName)
+        initLabelPromo(productCardModel.labelPromo)
         initProductName(productCardModel.productName)
-        initFreeOngkir(productCardModel.freeOngkir)
-        initProductPrice(productCardModel.formattedPrice)
         initLabelDiscount(productCardModel.discountPercentage)
         initSlashedPrice(productCardModel.slashedPrice)
+        initProductPrice(productCardModel.formattedPrice)
+        initShopBadgeList(productCardModel.shopBadgeList)
+        initShopLocation(productCardModel.shopLocation)
         initRating(productCardModel.ratingCount)
         initReview(productCardModel.reviewCount)
-        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
-        initLabelPromo(productCardModel.labelPromo)
-        initShopName(productCardModel.shopName)
-        initShopLocation(productCardModel.shopLocation)
         initLabelCredibility(productCardModel.labelCredibility)
+        initFreeOngkir(productCardModel.freeOngkir)
         initLabelOffers(productCardModel.labelOffers)
-        initShopBadgeList(productCardModel.shopBadgeList)
         initTopAdsIcon(productCardModel.isTopAds)
 
         realignLayout()
@@ -346,20 +354,29 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initProductName(productName: String) {
-        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
-    }
-
-    private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
-        val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
-
-        imageFreeOngkirPromo.shouldShowWithAction(shouldShowFreeOngkirImage) {
-            ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
+    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
+        buttonWishlist.shouldShowWithAction(isWishlistVisible) {
+            if (isWishlisted) {
+                it.setImageResource(R.drawable.product_card_ic_wishlist_red)
+            } else {
+                it.setImageResource(R.drawable.product_card_ic_wishlist)
+            }
         }
     }
 
-    private fun initProductPrice(formattedPrice: String) {
-        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
+    private fun initShopName(shopName: String) {
+        textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
+    }
+
+    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
+        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
+            it.text = labelPromoModel.title
+            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+        }
+    }
+
+    private fun initProductName(productName: String) {
+        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
     }
 
     private fun initLabelDiscount(discountPercentage: String) {
@@ -374,59 +391,8 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initRating(ratingCount: Int) {
-        linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
-                ratingCount > 0, blankSpaceConfig.ratingCount) {
-            setRating(ratingCount)
-        }
-    }
-
-    private fun initReview(reviewCount: Int) {
-        textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
-                reviewCount > 0, blankSpaceConfig.reviewCount) {
-            it.text = getReviewCountFormattedAsText(reviewCount)
-        }
-    }
-
-    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
-        buttonWishlist.shouldShowWithAction(isWishlistVisible) {
-            if (isWishlisted) {
-                it.setImageResource(R.drawable.product_card_ic_wishlist_red)
-            } else {
-                it.setImageResource(R.drawable.product_card_ic_wishlist)
-            }
-        }
-    }
-
-    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
-        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
-            it.text = labelPromoModel.title
-            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
-        }
-    }
-
-    private fun initShopName(shopName: String) {
-        textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
-    }
-
-    private fun initShopLocation(shopLocation: String) {
-        textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
-    }
-
-    private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
-        labelCredibility.configureVisibilityWithBlankSpaceConfig(
-                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
-            it.text = labelCredibilityModel.title
-            it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
-        }
-    }
-
-    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
-        labelOffers.configureVisibilityWithBlankSpaceConfig(
-                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
-            it.text = labelOffersModel.title
-            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
-        }
+    private fun initProductPrice(formattedPrice: String) {
+        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
     }
 
     private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
@@ -480,6 +446,49 @@ abstract class ProductCardView: BaseCustomView {
 
     private fun loadShopBadgeFailed(view: View) {
         view.visibility = View.GONE
+    }
+
+    private fun initShopLocation(shopLocation: String) {
+        textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
+    }
+
+    private fun initRating(ratingCount: Int) {
+        linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
+                ratingCount > 0, blankSpaceConfig.ratingCount) {
+            setRating(ratingCount)
+        }
+    }
+
+    private fun initReview(reviewCount: Int) {
+        textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
+                reviewCount > 0, blankSpaceConfig.reviewCount) {
+            it.text = getReviewCountFormattedAsText(reviewCount)
+        }
+    }
+
+    private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
+        labelCredibility.configureVisibilityWithBlankSpaceConfig(
+                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
+            it.text = labelCredibilityModel.title
+            it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
+        }
+    }
+
+    private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
+        val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
+
+        imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
+                shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
+            ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
+        }
+    }
+
+    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
+        labelOffers.configureVisibilityWithBlankSpaceConfig(
+                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
+            it.text = labelOffersModel.title
+            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
+        }
     }
 
     private fun initTopAdsIcon(isTopAds: Boolean) {
