@@ -70,6 +70,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
@@ -501,6 +502,7 @@ public class ProductListFragment
             product.setName(item.getProductName());
             product.setPriceFormat(item.getPrice());
             product.setCategory(new Category(item.getCategoryID()));
+            product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
             TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
         }
     }
@@ -596,8 +598,20 @@ public class ProductListFragment
         product.setName(item.getProductName());
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
+        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
 
         return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
+        }
+
+        return null;
     }
 
     @Override

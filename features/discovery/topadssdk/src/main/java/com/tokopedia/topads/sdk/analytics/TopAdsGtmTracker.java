@@ -104,7 +104,8 @@ public class TopAdsGtmTracker {
                 "variant", "none/other",
                 "category", product.getCategory().getId(),
                 "list", "/searchproduct - topads productlist",
-                "position", position));
+                "position", position,
+                "dimension83", isFreeOngkirViewModelActive(product) ? "Bebas Ongkir" : "none / other"));
     }
 
     public void eventInboxProductView(TrackingQueue trackingQueue) {
@@ -269,10 +270,17 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
                                             "variant", "none/other",
-                                            "position", position))))
+                                            "position", position,
+                                            "dimension83", isFreeOngkirViewModelActive(product) ? "Bebas Ongkir" : "none / other"))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
+    }
+
+    private static boolean isFreeOngkirViewModelActive(Product product) {
+        return product != null
+                && product.getFreeOngkir() != null
+                && product.getFreeOngkir().isActive();
     }
 
     public void eventInboxProductClick(Context context, Product product, int position, String recommendationType) {
