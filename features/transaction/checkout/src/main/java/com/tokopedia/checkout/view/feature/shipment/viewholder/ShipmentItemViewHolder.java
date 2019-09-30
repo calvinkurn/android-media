@@ -567,6 +567,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
+        tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
+                        .getString(R.string.iotem_count_and_weight_format),
+                String.valueOf(cartItemModel.getQuantity()),
+                WeightFormatterUtil.getFormattedWeight(cartItemModel.getWeight(), cartItemModel.getQuantity())));
+        renderProductPrice(cartItemModel);
+        renderNotesForSeller(cartItemModel);
+        renderPurchaseProtection(cartItemModel);
+        renderProductPropertiesFreereturn(cartItemModel);
+        renderProductPropertiesPreOrder(cartItemModel);
+        renderProductPropertiesCashback(cartItemModel);
+        renderProductPropertiesFreeShipping(cartItemModel);
+        renderProductPropertiesLayout(cartItemModel);
+    }
+
+    private void renderProductPrice(CartItemModel cartItemModel) {
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false));
         if (cartItemModel.getOriginalPrice() > 0) {
@@ -578,18 +593,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             tvProductOriginalPrice.setVisibility(View.GONE);
         }
-        tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
-                        .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItemModel.getQuantity()),
-                WeightFormatterUtil.getFormattedWeight(cartItemModel.getWeight(), cartItemModel.getQuantity())));
-
-        renderNotesForSeller(cartItemModel);
-        renderPurchaseProtection(cartItemModel);
-        renderProductPropertiesFreereturn(cartItemModel);
-        renderProductPropertiesPreOrder(cartItemModel);
-        renderProductPropertiesCashback(cartItemModel);
-        renderProductPropertiesFreeShipping(cartItemModel);
-        renderProductPropertiesLayout(cartItemModel);
     }
 
     private void renderNotesForSeller(CartItemModel cartItemModel) {

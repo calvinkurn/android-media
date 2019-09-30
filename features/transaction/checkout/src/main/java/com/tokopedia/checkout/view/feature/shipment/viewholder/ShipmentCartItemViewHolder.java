@@ -96,6 +96,22 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
         ImageHandler.LoadImage(mIvProductImage, cartItem.getImageUrl());
         mTvProductName.setText(cartItem.getName());
+        mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
+                        .getString(R.string.iotem_count_and_weight_format),
+                String.valueOf(cartItem.getQuantity()),
+                WeightFormatterUtil.getFormattedWeight(cartItem.getWeight(), cartItem.getQuantity())));
+
+        renderProductPrice(cartItem);
+        renderNotesToSeller(cartItem);
+        renderPurchaseProtection(cartItem);
+        renderProductPropertyFreeReturn(cartItem);
+        renderProductPropertyPreOrder(cartItem);
+        renderProductPropertyCashback(cartItem);
+        renderProductPropertiesLayout(cartItem);
+        renderProductPropertiesFreeShipping(cartItem);
+    }
+
+    private void renderProductPrice(CartItemModel cartItem) {
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 (long) cartItem.getPrice(), false));
         if (cartItem.getOriginalPrice() > 0) {
@@ -105,15 +121,45 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             mTvProductOriginalPrice.setVisibility(View.GONE);
         }
-        mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
-                        .getString(R.string.iotem_count_and_weight_format),
-                String.valueOf(cartItem.getQuantity()),
-                WeightFormatterUtil.getFormattedWeight(cartItem.getWeight(), cartItem.getQuantity())));
+    }
 
+    private void renderNotesToSeller(CartItemModel cartItem) {
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
+        mTvNoteToSellerLabel.setVisibility(View.GONE);
+    }
 
+    private void renderProductPropertiesLayout(CartItemModel cartItem) {
+        if (cartItem.isFreeReturn() || cartItem.isPreOrder() || cartItem.isCashback()) {
+            mllProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            mllProductPoliciesLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyCashback(CartItemModel cartItem) {
+        mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
+        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
+                " " + cartItem.getCashback() + "    ";
+        mTvCashback.setText(cashback);
+    }
+
+    private void renderProductPropertyPreOrder(CartItemModel cartItem) {
+        if (cartItem.isPreOrder()) {
+            mTvPreOrder.setText(cartItem.getPreOrderInfo());
+            mTvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            mTvPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyFreeReturn(CartItemModel cartItem) {
+        mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
+        mTvFreeReturnLabel.setVisibility(View.GONE);
+    }
+
+    private void renderPurchaseProtection(CartItemModel cartItem) {
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
@@ -140,27 +186,6 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
                 mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
             }
         }
-
-        mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
-        mTvFreeReturnLabel.setVisibility(View.GONE);
-        if (cartItem.isPreOrder()) {
-            mTvPreOrder.setText(cartItem.getPreOrderInfo());
-            mTvPreOrder.setVisibility(View.VISIBLE);
-        } else {
-            mTvPreOrder.setVisibility(View.GONE);
-        }
-        mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
-                " " + cartItem.getCashback() + "    ";
-        mTvCashback.setText(cashback);
-        mTvNoteToSellerLabel.setVisibility(View.GONE);
-        if (cartItem.isFreeReturn() || cartItem.isPreOrder() || cartItem.isCashback()) {
-            mllProductPoliciesLayout.setVisibility(View.VISIBLE);
-        } else {
-            mllProductPoliciesLayout.setVisibility(View.GONE);
-        }
-
-        renderProductPropertiesFreeShipping(cartItem);
     }
 
     private void renderProductPropertiesFreeShipping(CartItemModel cartItemModel) {
