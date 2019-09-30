@@ -83,6 +83,10 @@ class ProfileListFragment :
         return R.id.profile_list_recycler_view
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.profile_list_swipe_refresh_layout
+    }
+
     private fun attachNavigationListener(context: Context) {
         if (context is SearchNavigationListener) {
             this.searchNavigationListener = context
