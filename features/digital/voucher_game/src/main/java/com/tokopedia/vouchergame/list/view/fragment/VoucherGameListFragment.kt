@@ -20,10 +20,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -98,6 +101,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                             else {
                                 renderBanners(banners)
                             }
+
+                            if (tickers.isNotEmpty()) renderTickers(tickers)
                         }
                     }
                     is Fail -> {
@@ -217,6 +222,29 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
 
         promo_banner.buildView()
+    }
+
+    private fun renderTickers(tickers: List<TopupBillsTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<TickerData>()
+            for (item in tickers) {
+                messages.add(TickerData(item.name, item.content,
+                        when (item.type) {
+                            "warning" -> Ticker.TYPE_WARNING
+                            "info" -> Ticker.TYPE_INFORMATION
+                            "success" -> Ticker.TYPE_ANNOUNCEMENT
+                            "error" -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
+            }
+            context?.run {
+                ticker_view.addPagerView(TickerPagerAdapter(this, messages), messages)
+            }
+            ticker_view.visibility = View.VISIBLE
+        } else {
+            ticker_view.visibility = View.GONE
+        }
+
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
