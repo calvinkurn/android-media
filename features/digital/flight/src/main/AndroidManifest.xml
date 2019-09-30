@@ -139,7 +139,19 @@
             android:name=".detail.view.activity.FlightDetailOrderActivity"
             android:label="@string/activity_label_flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.White.Flight">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_order_detail"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".cancellation.view.activity.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"

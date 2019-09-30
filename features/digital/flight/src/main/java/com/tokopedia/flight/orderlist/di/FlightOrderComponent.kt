@@ -1,6 +1,7 @@
 package com.tokopedia.flight.orderlist.di
 
 import com.tokopedia.flight.common.di.component.FlightComponent
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment
@@ -18,4 +19,7 @@ interface FlightOrderComponent {
     fun inject(flightDetailOrderFragment: FlightDetailOrderFragment)
 
     fun inject(flightResendETicketDialogFragment: FlightResendETicketDialogFragment)
+
+    fun inject(flightDetailOrderActivity: FlightDetailOrderActivity)
+
 }
