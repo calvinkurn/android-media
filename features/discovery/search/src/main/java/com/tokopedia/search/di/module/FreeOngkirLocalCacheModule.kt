@@ -3,7 +3,7 @@ package com.tokopedia.search.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.FREE_ONGKIR_LOCAL_CACHE_NAME
+import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME
 import com.tokopedia.search.di.scope.SearchScope
 import dagger.Module
 import dagger.Provides
