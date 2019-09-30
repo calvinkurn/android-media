@@ -71,5 +71,5 @@
     <string name="label_dob">Tanggal Lahir</string>
 
     <!-- Digital-Deals-->
-    <string name="digital_deals">Deals</string>
+    <string name="digital_deals">digital_deals</string>
 </resources>

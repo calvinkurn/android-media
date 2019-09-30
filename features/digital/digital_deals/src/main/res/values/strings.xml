@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">digital_deals</string>
+    <string name="digital_deals">digital_deals</string>
     <string name="activity_checkout_title">Checkout</string>
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="search">Search</string>

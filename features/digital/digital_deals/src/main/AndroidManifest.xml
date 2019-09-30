@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
+        android:label="@string/digital_deals"
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.DealsHomeActivity"
@@ -12,7 +12,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
-        <intent-filter>
+        <intent-filter android:autoVerify="true">
             <action android:name="android.intent.action.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />

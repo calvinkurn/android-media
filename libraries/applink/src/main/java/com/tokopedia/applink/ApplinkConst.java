@@ -253,6 +253,7 @@ public interface ApplinkConst {
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
+    String DEALS_HOME = "tokopedia://deals";
     String DEALS_DETAIL = "tokopedia://deals/{slug}";
     String DEALS_BRAND_DETAIL = "tokopedia://deals/brand/{slug}";
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
