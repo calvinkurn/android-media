@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import timber.log.Timber
 import java.io.File
 
 object DFInstaller {
@@ -123,9 +124,10 @@ object DFInstaller {
             val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
             messageStringBuilder.append("size: {$moduleSizeinMB}; ")
         }
-        if (errorCode > 0) {
-            messageStringBuilder.append("err: {$errorCode} ")
+        if (errorCode.isNotEmpty()) {
+            messageStringBuilder.append("err: {$errorCode}")
         }
+        Timber.w(messageStringBuilder.toString())
     }
 
 }
