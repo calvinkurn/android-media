@@ -14,7 +14,7 @@
         android:paddingRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/guided_search_item_background"
+        android:background="@drawable/search_guided_search_item_background"
         tools:text="superstar"/>
 
 </LinearLayout>

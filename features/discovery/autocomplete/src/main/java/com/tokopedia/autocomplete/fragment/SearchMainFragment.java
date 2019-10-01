@@ -104,7 +104,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     }
 
     private void initResources() {
-        networkErrorMessage = getString(R.string.msg_network_error);
+        networkErrorMessage = getString(com.tokopedia.abstraction.R.string.msg_network_error);
     }
 
     @Nullable
