@@ -3,7 +3,6 @@ package com.tokopedia.network;
 import android.app.Activity;
 
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.AbstractNetworkRouter;
 
 import okhttp3.Response;
 
@@ -11,7 +10,7 @@ import okhttp3.Response;
  * @author ricoharisin .
  */
 
-public interface NetworkRouter extends AbstractNetworkRouter{
+public interface NetworkRouter {
 
     void onForceLogout(Activity activity);
 

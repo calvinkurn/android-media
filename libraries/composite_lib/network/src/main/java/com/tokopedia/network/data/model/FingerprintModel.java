@@ -4,7 +4,7 @@ package com.tokopedia.network.data.model;
  * @author ricoharisin .
  */
 
-public class FingerprintModel extends AbstractFingerprintModel{
+public class FingerprintModel {
 
     public String getFingerprintHash() {
         return fingerprintHash;
