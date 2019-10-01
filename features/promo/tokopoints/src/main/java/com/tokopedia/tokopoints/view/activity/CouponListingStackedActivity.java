@@ -21,6 +21,7 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.StackedCouponFilterPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 import com.tokopedia.tokopoints.view.presenter.StackedCouponActivityPresenter;
@@ -42,6 +43,7 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     private ViewPager mPagerFilter;
     private Tabs mTabsFilter;
     private StackedCouponFilterPagerAdapter mAdapter;
+    private ServerErrorView serverErrorView;
 
     @Inject
     StackedCouponActivityPresenter mPresenter;
@@ -53,6 +55,7 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         getComponent().inject(this);
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
+        serverErrorView = findViewById(R.id.server_error_view);
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
@@ -164,8 +167,9 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     }
 
     @Override
-    public void onError(String error) {
+    public void onError(String error, boolean hasInternet) {
         mContainerMain.setDisplayedChild(2);
+        serverErrorView.showErrorUi(hasInternet);
     }
 
     @Override
