@@ -132,7 +132,6 @@ yang ditemukan</string>
     <string name="buyer_empty_chat_subtitle">Yuk bikin toko kamu lebih menarik agar pembeli jatuh hati</string>
     <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
 
-
     <!--Delete Chat Popup-->
     <string name="topchat_chat_delete_title">Hapus Chat?</string>
     <string name="topchat_chat_delete_body">Percakapan kamu dengan pengguna ini akan dihapus selamanya</string>
@@ -141,4 +140,9 @@ yang ditemukan</string>
 
     <string name="chat_check_cart">Lihat</string>
     <string name="error_compress_image">Gagal mengkompres gambar. Silahkan pilih gambar lain.</string>
+
+    <string name="coach_tab_title_seller">Chat sebagai pemilik toko</string>
+    <string name="coach_tab_description_seller">Semua chat seputar toko dan produkmu dari pembeli bisa dilihat di sini</string>
+    <string name="coach_tab_title_buyer">Chat sebagai pembeli</string>
+    <string name="coach_tab_description_buyer">Semua chat dari penjual dan teman bisa dilihat di sini</string>
 </resources>
