@@ -646,13 +646,28 @@ final class ProductListPresenter
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
         getView().removeLoading();
         getView().setProductList(list);
-        getView().showFreeOngkirShowCase();
+        getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
+        for(Visitable product: productList) {
+            if (product instanceof ProductItemViewModel) {
+                ProductItemViewModel productItemViewModel = (ProductItemViewModel) product;
+
+                if(productItemViewModel.getFreeOngkirViewModel() != null
+                        && productItemViewModel.getFreeOngkirViewModel().isActive()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {

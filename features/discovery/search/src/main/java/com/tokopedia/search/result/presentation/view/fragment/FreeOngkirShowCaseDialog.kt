@@ -16,24 +16,25 @@ class FreeOngkirShowCaseDialog: Fragment() {
 
     companion object {
         @JvmStatic
-        fun show(activity: FragmentActivity) {
+        fun show(activity: FragmentActivity, hasFreeOngkirBadge: Boolean) {
             try {
-                tryShowFragment(activity)
+                tryShowFragment(activity, hasFreeOngkirBadge)
             }
             catch(e: Exception) {
 
             }
         }
 
-        private fun tryShowFragment(activity: FragmentActivity) {
-            if (shouldShowFreeOngkirShowCase(activity)) {
+        private fun tryShowFragment(activity: FragmentActivity, hasFreeOngkirBadge: Boolean) {
+            if (isShowCaseHasNotShown(activity)
+                    && hasFreeOngkirBadge) {
                 val supportFragmentManager = activity.supportFragmentManager.beginTransaction()
                 supportFragmentManager.add(R.id.rootSearchResult, FreeOngkirShowCaseDialog())
                 supportFragmentManager.commit()
             }
         }
 
-        private fun shouldShowFreeOngkirShowCase(activity: FragmentActivity): Boolean {
+        private fun isShowCaseHasNotShown(activity: FragmentActivity): Boolean {
             val freeOngkirLocalCache = getFreeOngkirShowCaseLocalCache(activity)
             return !freeOngkirLocalCache.getBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN)
         }
