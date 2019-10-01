@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +9,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -24,7 +22,6 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
-import com.tokopedia.home.util.CustomGradientDrawable
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ContainerUnify
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
@@ -49,10 +46,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         const val ITEM_POSITION = "ITEM_POSITION"
         const val ITEM_NAME = "ITEM_NAME"
         const val ITEM_BACKGROUND = "ITEM_BACKGROUND"
-        private const val BLUE = "blue"
-        private const val YELLOW = "yellow"
-        private const val RED = "red"
-        private const val GREEN = "green"
+        const val BLUE = "blue"
+        const val YELLOW = "yellow"
+        const val RED = "red"
+        const val GREEN = "green"
 
         fun newInstance(item: HomeWidget.TabItem, backgroundColor: String, position: Int, name: String) : Fragment {
             val fragment = BusinessUnitItemFragment()
