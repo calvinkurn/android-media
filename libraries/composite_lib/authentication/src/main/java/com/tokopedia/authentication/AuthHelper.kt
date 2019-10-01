@@ -218,7 +218,8 @@ class AuthHelper {
                 path: String,
                 strParam: String,
                 method: String,
-                contentType: String
+                contentType: String,
+                fingerprintHash: String
         ): MutableMap<String, String> {
             val headers = getDefaultHeaderMap(
                     path,
@@ -240,12 +241,9 @@ class AuthHelper {
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             headers[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
 
-            if (context.applicationContext is NetworkRouter) {
-                val fingerprintModel = (context.applicationContext as NetworkRouter).getFingerprintModel()
-                val json = fingerprintModel.getFingerprintHash()
-
-                headers[KEY_FINGERPRINT_HASH] = getMD5Hash("${json}+${userSession.userId}")
-                headers[KEY_FINGERPRINT_DATA] = json
+            if (fingerprintHash.isNotEmpty()) {
+                headers[KEY_FINGERPRINT_HASH] = getMD5Hash("${fingerprintHash}+${userSession.userId}")
+                headers[KEY_FINGERPRINT_DATA] = fingerprintHash
             }
 
             return headers
