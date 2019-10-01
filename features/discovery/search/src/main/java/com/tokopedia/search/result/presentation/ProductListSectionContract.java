@@ -104,7 +104,7 @@ public interface ProductListSectionContract {
 
         void hideErrorMessage();
 
-        void showFreeOngkirShowCase();
+        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
