@@ -39,6 +39,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int shippingRate;
     private int benefitAmount;
     private String promoTitle;
+    private boolean isHidingShipperName;
 
     private String checksum;
     private String ut;
@@ -406,6 +407,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.promoTitle = promoTitle;
     }
 
+    public boolean isHidingShipperName() {
+        return isHidingShipperName;
+    }
+
+    public void setHidingShipperName(boolean hidingShipperName) {
+        isHidingShipperName = hidingShipperName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -443,6 +452,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeInt(this.shippingRate);
         dest.writeInt(this.benefitAmount);
         dest.writeString(this.promoTitle);
+        dest.writeByte(this.isHidingShipperName ? (byte) 1 : (byte) 0);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
@@ -490,6 +500,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shippingRate = in.readInt();
         this.benefitAmount = in.readInt();
         this.promoTitle = in.readString();
+        this.isHidingShipperName = in.readByte() != 0;
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();

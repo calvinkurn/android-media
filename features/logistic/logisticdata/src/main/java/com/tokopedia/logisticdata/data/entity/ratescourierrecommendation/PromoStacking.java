@@ -62,6 +62,9 @@ public class PromoStacking {
     @SerializedName("disabled")
     @Expose
     private boolean disabled;
+    @SerializedName("hide_shipper_name")
+    @Expose
+    private boolean hideShipperName;
 
 
     public Integer getIsPromo() {
@@ -206,5 +209,13 @@ public class PromoStacking {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public boolean isHideShipperName() {
+        return hideShipperName;
+    }
+
+    public void setHideShipperName(boolean hideShipperName) {
+        this.hideShipperName = hideShipperName;
     }
 }

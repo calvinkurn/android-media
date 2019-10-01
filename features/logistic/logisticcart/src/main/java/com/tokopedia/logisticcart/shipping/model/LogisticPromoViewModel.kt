@@ -21,7 +21,8 @@ data class LogisticPromoViewModel(val promoCode: String,
                                   val discountedRate: Int,
                                   val shippingRate: Int,
                                   val benefitAmount: Int,
-                                  val disabled: Boolean) : RatesViewModelType, Parcelable {
+                                  val disabled: Boolean,
+                                  val hideShipperName: Boolean) : RatesViewModelType, Parcelable{
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
@@ -38,6 +39,7 @@ data class LogisticPromoViewModel(val promoCode: String,
             source.readInt(),
             source.readInt(),
             source.readInt(),
+            1 == source.readInt(),
             1 == source.readInt()
     )
 
@@ -60,6 +62,7 @@ data class LogisticPromoViewModel(val promoCode: String,
         writeInt(shippingRate)
         writeInt(benefitAmount)
         writeInt((if (disabled) 1 else 0))
+        writeInt((if (hideShipperName) 1 else 0))
     }
 
     companion object {
