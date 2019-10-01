@@ -65,13 +65,16 @@
                   />
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/login_container"
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/socmed_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_24"
-                android:paddingRight="@dimen/dp_24"/>
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:text="@string/social_media"
+                android:textAllCaps="false"
+                app:buttonCompatType="white"/>
 
             <TextView
                 android:id="@+id/register_button"

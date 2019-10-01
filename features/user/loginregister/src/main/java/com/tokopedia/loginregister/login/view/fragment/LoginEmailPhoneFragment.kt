@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -15,12 +14,10 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -31,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -43,6 +39,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
@@ -74,7 +71,6 @@ import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -142,12 +138,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private var isAutoLogin: Boolean = false
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
-    private lateinit var loginLayout: LinearLayout
-    private lateinit var loginButtonsContainer: LinearLayout
+    private lateinit var socmedButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
     private lateinit var tickerAnnouncement: Ticker
+    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
 
     companion object {
 
@@ -278,8 +274,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
-        loginLayout = view.findViewById(R.id.ll_layout)
-        loginButtonsContainer = view.findViewById(R.id.login_container)
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
         passwordEditText = partialRegisterInputView.findViewById(R.id.password)
@@ -291,11 +285,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onViewCreated(view, savedInstanceState)
         clearData()
         prepareView()
-        showLoadingDiscover()
-        context?.run {
-            presenter.discoverLogin(this)
-        }
-
         if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
             emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
         } else if (isAutoLogin) {
@@ -340,20 +329,29 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-        val lastPos = loginLayout.childCount - 1
-        if (loginLayout.childCount >= 1 && loginLayout.getChildAt(lastPos) !is ProgressBar) {
-            loginLayout.addView(pb, lastPos)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+            socmedButtonsContainer.addView(pb, lastPos)
         }
     }
 
     override fun dismissLoadingDiscover() {
-        val lastPos = loginLayout.childCount - 2
-        if (loginLayout.childCount >= 2 && loginLayout.getChildAt(lastPos) is ProgressBar) {
-            loginLayout.removeViewAt(lastPos)
+        val lastPos = socmedButtonsContainer.childCount - 2
+        if (socmedButtonsContainer.childCount >= 2 && socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+            socmedButtonsContainer.removeViewAt(lastPos)
         }
     }
 
     private fun prepareView() {
+        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
+        closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstance(context)
+        closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, getString(R.string.choose_social_media), true)
+        socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
+
+        socmed_btn.setOnClickListener {
+            closeableBottomSheetDialog.show()
+        }
+
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
@@ -417,6 +415,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         }
 
+        showLoadingDiscover()
+        context?.run {
+            presenter.discoverLogin(this)
+        }
     }
 
     private fun onChangeButtonClicked() {
@@ -439,12 +441,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     }
 
+
+
     override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(0, 20, 0, 15)
-        loginButtonsContainer.removeAllViews()
+        val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f,
+                resources.displayMetrics).toInt()
+
+        layoutParams.setMargins(0, 10, 0, 10)
+        socmedButtonsContainer.removeAllViews()
         providers.forEach {
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
@@ -468,7 +475,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             tv.setRoundCorner(10)
 
             setDiscoverListener(it, tv)
-            loginButtonsContainer.addView(tv, loginButtonsContainer.childCount, layoutParams)
+            socmedButtonsContainer.addView(tv, socmedButtonsContainer.childCount, layoutParams)
         }
     }
 
@@ -484,6 +491,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
+            closeableBottomSheetDialog.dismiss()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -495,6 +503,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onLoginFacebookClick() {
 
         if (activity != null) {
+            closeableBottomSheetDialog.dismiss()
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
