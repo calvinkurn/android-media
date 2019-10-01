@@ -83,6 +83,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
                     position,
                     data.shop?.id ?: -1,
                     "",
@@ -94,11 +95,15 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
                     data.badges?.map { it.imageUrl } ?: emptyList(),
-                    layoutType
-
+                    layoutType,
+                    data.freeOngkirInformation?.isActive?:false,
+                    data.freeOngkirInformation?.imageUrl?:""
             )
 
         }
 
+        private fun isLabelDiscountVisible(productItem: RecomendationEntity.Recommendation): Boolean {
+            return productItem.discountPercentage > 0
+        }
     }
 }

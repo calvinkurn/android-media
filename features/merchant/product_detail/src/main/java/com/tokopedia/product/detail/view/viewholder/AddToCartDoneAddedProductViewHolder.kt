@@ -18,6 +18,13 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
+            when {
+                element.isFreeOngkir -> {
+                    ImageHandler.loadImage(context, img_free_ongkir, element.freeOngkirImg, R.drawable.ic_loading_image)
+                    img_free_ongkir.visibility = View.VISIBLE
+                }
+                else -> img_free_ongkir.visibility = View.GONE
+            }
             text_view_product_name.text = element.productName
             ImageHandler.loadImage(
                     itemView.context,

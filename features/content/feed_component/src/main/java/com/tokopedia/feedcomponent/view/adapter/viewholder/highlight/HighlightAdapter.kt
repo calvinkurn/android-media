@@ -78,7 +78,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             if (getBadgeId(item) != 0) {
                 ImageHandler.loadImageWithId(itemView.badge, getBadgeId(item))
             }
-            ImageHandler.loadImageFit2(itemView.context, itemView.userImage, item.header.avatar)
+            ImageHandler.loadImageCircle2(itemView.context, itemView.userImage, item.header.avatar)
             itemView.userName.text = item.header.avatarTitle
             bindLike(item.footer.like)
             bindComment(item.footer.comment)

@@ -42,6 +42,7 @@ class RecommendationPageTracking {
         private const val FIELD_SHOP_TYPE = "shop_type"
         private const val FIELD_SHOP_NAME = "shop_name"
         private const val FIELD_DIMENSION_45 = "dimension45"
+        private const val FIELD_DIMENSION_83 = "dimension83"
 
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_IDR = "IDR"
@@ -58,6 +59,7 @@ class RecommendationPageTracking {
         private const val VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE_NON_LOGIN = "/recommendationwithproductid - %s - non login - rekomendasi untuk anda - %s - %s"
         private const val VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE_NON_LOGIN = "/recommendation - %s - non login - rekomendasi untuk anda - %s - %s - product topads"
         private const val VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE_NON_LOGIN = "/recommendationwithproductid - %s - non login - rekomendasi untuk anda - %s - %s - product topads"
+        private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
         private const val EVENT_PRODUCT_VIEW = "productView"
         private const val EVENT_PRODUCT_CLICK = "productClick"
@@ -107,7 +109,8 @@ class RecommendationPageTracking {
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_LIST, list,
-                    FIELD_PRODUCT_POSITION, position
+                    FIELD_PRODUCT_POSITION, position,
+                    FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
             )
         }
 
@@ -126,7 +129,8 @@ class RecommendationPageTracking {
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                            FIELD_PRODUCT_POSITION, position
+                            FIELD_PRODUCT_POSITION, position,
+                            FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                     )
             )
             )

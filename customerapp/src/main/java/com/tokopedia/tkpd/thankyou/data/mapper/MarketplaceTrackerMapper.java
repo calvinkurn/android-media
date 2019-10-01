@@ -231,6 +231,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return s;
     }
 
+    private String getFreeShippingDimensionData(Boolean isFreeShipping) {
+        if (isFreeShipping) {
+            return "";
+        } else {
+            return "none/others";
+        }
+    }
+
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
         return graphqlResponse != null
                 && graphqlResponse.body() != null

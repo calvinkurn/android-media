@@ -55,6 +55,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -744,7 +746,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
+            CourierItemData courierData = shipmentDetailData.getSelectedCourier();
+            if (isCourierInstantOrSameday(courierData.getShipperId())) {
                 String tickerInfo = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker);
                 String boldText = tvTickerInfo.getResources().getString(R.string.label_hardcoded_courier_ticker_bold_part);
                 tvTickerInfo.setText(tickerInfo);
@@ -764,22 +767,24 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llSelectShipmentRecommendation.setVisibility(View.GONE);
             llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
-            tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
+            tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
-            tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+            if (!TextUtils.isEmpty(courierData.getLogPromoMsg())) {
+                tvLogPromoMsg.setHtmlDescription(courierData.getLogPromoMsg());
+            }
 
-            if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
-                    shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()
+            if (courierData.getOntimeDelivery() != null &&
+                    courierData.getOntimeDelivery().getAvailable()
                     && shipmentCartItemModel.getVoucherLogisticItemUiModel() == null) {
-                OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
-                String html = otd.getText_detail();
+                OntimeDelivery otd = courierData.getOntimeDelivery();
+                String html = (otd.getText_detail() != null) ? otd.getText_detail() : "";
                 String url = otd.getUrl_detail();
                 tickerOtd.setVisibility(View.VISIBLE);
                 tickerOtd.setHtmlDescription(html);
                 tickerOtd.setTickerTitle(otd.getText_label());
                 tickerOtd.setDescriptionClickEvent(new TickerCallback() {
                     @Override
-                    public void onDescriptionViewClick(CharSequence charSequence) {
+                    public void onDescriptionViewClick(@NotNull CharSequence linkUrl) {
                         mActionListener.onOntimeDeliveryClicked(url);
                     }
 
@@ -798,15 +803,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvSelectedPriceRecommendation.setVisibility(View.GONE);
                 tvSelectedPriceOnly.setVisibility(View.VISIBLE);
                 tvSelectedPriceOnly.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             } else {
                 // Robinhood Phase 21a
                 tvSelectedPriceOnly.setVisibility(View.GONE);
                 tvSelectedCourierRecommendation.setVisibility(View.VISIBLE);
                 tvSelectedPriceRecommendation.setVisibility(View.VISIBLE);
-                tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
+                tvSelectedCourierRecommendation.setText(courierData.getName());
                 tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             }
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
