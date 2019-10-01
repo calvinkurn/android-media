@@ -1,14 +1,11 @@
 //package com.tokopedia.authentication
 package com.tokopedia.analytics.iseng
 
-import android.content.Context
 import android.os.Build
 import android.support.v4.util.ArrayMap
 import android.util.Base64
 import com.google.gson.Gson
-import com.tokopedia.network.NetworkRouter
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -191,22 +188,20 @@ class AuthHelper {
         }
 
         @JvmStatic
-        fun getHeaderRequestReactNative(context: Context): String {
-            val session = UserSession(context)
-
+        fun getHeaderRequestReactNative(userSession: UserSessionInterface): String {
             val header = HashMap<String, String>()
-            header[HEADER_SESSION_ID] = session.deviceId
-            header[HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
-            header[HEADER_AUTHORIZATION] = "Bearer ${session.accessToken}"
+            header[HEADER_SESSION_ID] = userSession.deviceId
+            header[HEADER_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
+            header[HEADER_AUTHORIZATION] = "Bearer ${userSession.accessToken}"
 
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
+            header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            header[HEADER_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
             header[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString()
-            header[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
             header[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             header[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
 
