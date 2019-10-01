@@ -91,6 +91,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         }
     }
 
+    protected void openWebview(String url) {
+        RouteManager.route(
+                getActivity(),
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        );
+    }
+
     private boolean isApplink(String applink) {
         if (RouteManager.isSupportApplink(getContext(), applink)) {
             return true;
@@ -470,5 +477,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 ITEM_POWER_MERCHANT
         );
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+    }
+
+    @Override
+    public void onTokomemberClicked() {
+        sendTracking(PEMBELI, AKUN_SAYA, TOKOPOINTS);
+        openWebview("https://m.tokopedia.com/membership");
     }
 }

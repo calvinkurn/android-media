@@ -36,6 +36,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private View byMeButton;
     private View tokopointHolder;
     private View couponHolder;
+    private View tokomemberHolder;
     private BuyerCardPresenter buyerCardPresenter;
 
     public BuyerCardView(@NonNull Context context) {
@@ -66,6 +67,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         byMeButton = view.findViewById(R.id.by_me_button);
         tokopointHolder = view.findViewById(R.id.holder_tokopoint);
         couponHolder = view.findViewById(R.id.holder_coupon);
+        tokomemberHolder = view.findViewById(R.id.holder_tokomember);
         textTokoMemberAmount = view.findViewById(R.id.text_tokomember_amount);
         eggImage = view.findViewById(R.id.image_tokopoint);
         buyerCardPresenter = new BuyerCardPresenter();
@@ -153,6 +155,10 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     public void setOnClickTokoPoint(View.OnClickListener listener) {
         tokopointHolder.setOnClickListener(listener);
+    }
+
+    public void setOnClickTokoMember(View.OnClickListener listener) {
+        tokomemberHolder.setOnClickListener(listener);
     }
 
     public void setOnClickVoucher(View.OnClickListener listener) {

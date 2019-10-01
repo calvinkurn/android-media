@@ -75,4 +75,6 @@ interface AccountItemListener {
     fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable?) -> Unit))
 
     fun onPowerMerchantSettingClicked()
+
+    fun onTokomemberClicked()
 }
