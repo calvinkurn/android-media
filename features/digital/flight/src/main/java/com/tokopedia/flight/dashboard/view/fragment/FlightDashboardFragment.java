@@ -456,7 +456,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
                     getCurrentDashboardViewModel().getDepartureAirport().getAirportCode(),
                     getCurrentDashboardViewModel().getArrivalAirport().getAirportCode(),
-                    getCurrentDashboardViewModel().getFlightClass().getTitle());
+                    getCurrentDashboardViewModel().getFlightClass().getId());
             flightCalendarDialog.setListener(dateSelected -> {
                 Calendar calendarSelected = Calendar.getInstance();
                 calendarSelected.setTime(dateSelected);

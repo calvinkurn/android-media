@@ -47,7 +47,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     lateinit var selectedDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
-    lateinit var classFlight: String
+    var classFlight: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,7 +85,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
                 arrivalCode = it
             }
 
-            this.getString(ARG_CLASS)?.let {
+            this.getInt(ARG_CLASS)?.let {
                 classFlight = it
             }
         }
@@ -135,13 +135,13 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         calendar?.let { calendar ->
             calendar.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
                 override fun onScrolled(date: Date) {
-                    if (::departureCode.isInitialized && ::arrivalCode.isInitialized && ::classFlight.isInitialized) {
+                    if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
                         val mapFareParam = hashMapOf<String, Any>()
                         mapFareParam.put(PARAM_DEPARTURE_CODE, departureCode)
                         mapFareParam.put(PARAM_ARRIVAL_CODE, arrivalCode)
                         mapFareParam.put(PARAM_YEAR, date.dateToString(TRAVEL_CAL_YYYY))
                         mapFareParam.put(PARAM_MONTH, TravelDateUtil.dateToString(TRAVEL_CAL_M, date))
-                        mapFareParam.put(PARAM_CLASS, classFlight)
+                        mapFareParam.put(PARAM_CLASS, classFlight.toString())
                         activity?.run {
                             fareCalendarViewModel.getFareFlightCalendar(
                                     GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
@@ -211,7 +211,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         fun newInstance(minDateString: String, maxDateString: String,
                         selectedDate: String, departureCode: String, arrivalCode: String,
-                        classFlight: String): FlightCalendarOneWayWidget =
+                        classFlight: Int): FlightCalendarOneWayWidget =
                 FlightCalendarOneWayWidget().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_MIN_DATE, minDateString)
@@ -219,7 +219,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
                         putString(ARG_SELECTED_DATE, selectedDate)
                         putString(ARG_DEPARTURE_CODE, departureCode)
                         putString(ARG_ARRIVAL_CODE, arrivalCode)
-                        putString(ARG_CLASS, classFlight)
+                        putInt(ARG_CLASS, classFlight)
                     }
                 }
     }
