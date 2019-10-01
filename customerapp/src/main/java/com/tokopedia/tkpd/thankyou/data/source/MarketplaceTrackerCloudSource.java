@@ -54,17 +54,17 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
 
+        int queryTracker;
         if (isUsingQueryWithFreeShipping) {
-            return String.format(
-                    loadRawString(context.getResources(), R.raw.payment_tracker_query_with_free_shipping),
-                    requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
-            );
+            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
         } else {
-            return String.format(
-                    loadRawString(context.getResources(), R.raw.payment_tracker_query),
-                    requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
-            );
+            queryTracker = R.raw.payment_tracker_query;
         }
+
+        return String.format(
+                loadRawString(context.getResources(), queryTracker),
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
+        );
     }
 
     private String loadRawString(Resources resources, int resId) {

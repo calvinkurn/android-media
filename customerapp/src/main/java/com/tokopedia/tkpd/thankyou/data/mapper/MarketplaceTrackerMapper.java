@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
@@ -17,6 +18,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.FreeShipping;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
@@ -337,7 +339,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
-            product.setDimension83(getDimension83Value(orderData));
+            product.setDimension83(getDimension83Value(orderData.getOrderDetail().get(0).getFreeShipping()));
 
             products.add(product);
         }
@@ -352,9 +354,15 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-    private String getDimension83Value(Boolean isFreeShipping) {
-        if (isFreeShipping) {
-            return "bebas ongkir";
+    private String getDimension83Value(FreeShipping freeShipping) {
+        System.out.println(freeShipping);
+
+        if (freeShipping != null) {
+            if (freeShipping.isEligibleFreeShipping()) {
+                return "bebas ongkir";
+            } else {
+                return "none/others";
+            }
         } else {
             return "none/others";
         }
