@@ -27,7 +27,7 @@ class FreeOngkirShowCaseDialog: Fragment() {
         fun show(activity: FragmentActivity) {
             if (shouldShowFreeOngkirShowCase(activity)) {
                 val supportFragmentManager = activity.supportFragmentManager.beginTransaction()
-                supportFragmentManager.add(newInstance(), TAG)
+                supportFragmentManager.show(newInstance())
                 supportFragmentManager.commit()
             }
         }
