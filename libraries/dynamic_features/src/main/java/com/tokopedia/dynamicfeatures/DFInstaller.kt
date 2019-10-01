@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import timber.log.Timber
 import java.io.File
 
 object DFInstaller {
@@ -13,6 +12,7 @@ object DFInstaller {
     internal var sessionId: Int? = null
 
     private var listener: SplitInstallListener? = null
+    private var moduleSize:Long = 0
 
     private class SplitInstallListener(val application: Application,
                                        val moduleNameToDownload: List<String>) : SplitInstallStateUpdatedListener {
@@ -25,7 +25,8 @@ object DFInstaller {
             when (it.status()) {
                 SplitInstallSessionStatus.DOWNLOADING -> {
                     if (initialDownloading) {
-                        logDownloadingStatus(application, moduleNameToDownload, it.totalBytesToDownload())
+                        moduleSize = it.totalBytesToDownload()
+                        logDownloadingStatus(application, moduleNameToDownload)
                         initialDownloading = false
                     }
                 }
@@ -83,6 +84,7 @@ object DFInstaller {
     private fun unregisterListener() {
         if (listener != null) {
             manager?.unregisterListener(listener)
+            moduleSize = 0
             listener = null
         }
     }
@@ -92,23 +94,37 @@ object DFInstaller {
         manager?.registerListener(listener)
     }
 
-    internal fun logDownloadingStatus(context: Context, moduleNameToDownload: List<String>, moduleSize: Long = 0) {
-        val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
-        val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-        val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
-        Timber.w("P1Downloading Module Background {${moduleNameToDownload.joinToString()}} {$moduleSizeinMB:$totalFreeSpaceSizeInMB}")
+    internal fun logDownloadingStatus(context: Context, moduleNameToDownload: List<String>) {
+        logStatus(context, "Downloading Module Background", moduleNameToDownload.joinToString(), moduleSize)
     }
 
     internal fun logSuccessStatus(context: Context, moduleNameToDownload: List<String>) {
-        val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
-        val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-        Timber.w("P1Installed Module Background {${moduleNameToDownload.joinToString()}} {$totalFreeSpaceSizeInMB}")
+        logStatus(context, "Installed Module Background", moduleNameToDownload.joinToString(), moduleSize)
     }
 
     internal fun logFailedStatus(context: Context, moduleNameToDownload: List<String>, errorCode: Int = 0) {
+        logStatus(context, "Failed Module Background", moduleNameToDownload.joinToString(), moduleSize, errorCode)
+    }
+
+    internal fun logStatus(context: Context,
+                           tag: String = "",
+                           modulesName: String,
+                           moduleSize: Long = 0,
+                           errorCode: Int = 0) {
+        val messageStringBuilder = StringBuilder()
+        messageStringBuilder.append("P1$tag {$modulesName}; ")
+
         val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
         val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-        Timber.w("P1Failed Module Background {${moduleNameToDownload.joinToString()}} {$totalFreeSpaceSizeInMB} - {$errorCode}")
+        messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
+
+        if (moduleSize > 0) {
+            val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
+            messageStringBuilder.append("size: {$moduleSizeinMB}; ")
+        }
+        if (errorCode > 0) {
+            messageStringBuilder.append("err: {$errorCode} ")
+        }
     }
 
 }
