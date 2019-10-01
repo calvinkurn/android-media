@@ -286,7 +286,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     public void replyToUser(MentionableUserViewModel user) {
         CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
         kolComment.append(userToMention);
-        kolComment.setSelection(kolComment.length() - 1);
+        kolComment.setSelection(kolComment.length());
     }
 
     @Override
