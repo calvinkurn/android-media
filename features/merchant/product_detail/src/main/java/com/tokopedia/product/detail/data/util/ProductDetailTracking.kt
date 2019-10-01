@@ -600,7 +600,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             if (it.isFreeOngkirActive)
                 "Bebas Ongkir"
             else
-                ""
+                "none / other"
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
@@ -641,12 +641,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo,
                 trackerAttribution, isTradeIn,
-                isDiagnosed, multiOrigin)
+                isDiagnosed, multiOrigin, dimension83 ?: "none / other")
     }
 
     fun eventEnhanceEcommerceProductDetailV5(productInfo: ProductInfo?, shopInfo: ShopInfo?,
                                              trackerAttribution: String?, isTradeIn: Boolean,
-                                             isDiagnosed: Boolean, multiOrigin: Boolean) {
+                                             isDiagnosed: Boolean, multiOrigin: Boolean, dimension83: String) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -666,6 +666,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString("dimension38", trackerAttribution ?: "none / other")
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
             putString("dimension55", dimension55)
+            putString("dimension83", dimension83)
         }
 
         val event = Bundle().apply {
