@@ -33,6 +33,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.url)
+
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
