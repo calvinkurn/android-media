@@ -351,26 +351,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
             shopProductAdapter.clearMembershipData()
-            if (it.freeOngkir.isActive)
-                loadFreeOngkirTicker()
             loadMembership()
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
-        }
-    }
-
-    private fun loadFreeOngkirTicker() {
-        remoteConfig.apply {
-            val titleTicker = "Belanja di toko ini Bebas Ongkir"
-            val descriptionTicker = "Ongkir dari toko ini akan ditanggung Tokopedia"
-            if (titleTicker.isNotEmpty() && descriptionTicker.isNotEmpty()) {
-                shopProductAdapter.setFreeOngkirTickerViewModel(FreeOngkirTickerViewModel(
-                        titleTicker,
-                        descriptionTicker
-                ))
-                shopProductAdapter.refreshSticky()
-            }
         }
     }
 
