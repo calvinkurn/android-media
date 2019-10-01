@@ -89,15 +89,15 @@ class WebSocketViewModel
     private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
+        val msgId = responseData?.msgId.toString()
 
         val contact = ItemChatAttributesContactPojo(
-                responseData.fromUid.toString(),
-                responseData.fromRole,
+                responseData?.fromUid.toString(),
+                responseData?.fromRole.toString(),
                 "",
-                responseData.from,
+                responseData?.from.toString(),
                 0,
-                responseData.fromRole,
+                responseData?.fromRole.toString(),
                 ""
         )
 

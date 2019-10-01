@@ -21,6 +21,10 @@ query getShopFeaturedProduct($shopId: Int!){
                 is_cashback_expired
                 cashback_value
             }
+            free_ongkir {
+                is_active
+                img_url
+            }
             total_review
             rating
         }

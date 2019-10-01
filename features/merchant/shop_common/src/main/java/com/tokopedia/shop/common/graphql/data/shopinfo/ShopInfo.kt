@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
         @SerializedName("closedInfo")
@@ -66,7 +67,11 @@ data class ShopInfo(
 
         @SerializedName("bbInfo")
         @Expose
-        val bbInfo: List<BBInfo> = listOf()
+        val bbInfo: List<BBInfo> = listOf(),
+
+        @SerializedName("freeOngkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
 ) {
     data class Response(
         @SerializedName("shopInfoByID")

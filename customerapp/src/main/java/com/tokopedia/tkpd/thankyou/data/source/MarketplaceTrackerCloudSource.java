@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
@@ -27,6 +29,8 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private SessionHandler sessionHandler;
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
+    private RemoteConfig remoteConfig;
+    private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          MarketplaceTrackerApi marketplaceTrackerApi,
@@ -47,8 +51,18 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     }
 
     private String getRequestPayload() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+        Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
+
+        int queryTracker;
+        if (isUsingQueryWithFreeShipping) {
+            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
+        } else {
+            queryTracker = R.raw.payment_tracker_query;
+        }
+
         return String.format(
-                loadRawString(context.getResources(), R.raw.payment_tracker_query),
+                loadRawString(context.getResources(), queryTracker),
                 requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
         );
     }

@@ -16,6 +16,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.FreeOngkirTickerViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.MembershipStampProgressViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopMerchantVoucherViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
@@ -26,6 +27,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
+import com.tokopedia.shop.product.view.model.FreeOngkirTickerViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.MembershipStampProgressViewModel;
 import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
@@ -112,6 +114,15 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return HideViewHolder.LAYOUT;
         } else {
             return MembershipStampProgressViewHolder.getLAYOUT();
+        }
+
+    }
+
+    public int type(FreeOngkirTickerViewModel freeOngkirTickerViewModel) {
+        if (freeOngkirTickerViewModel.getDescription().isEmpty() || freeOngkirTickerViewModel.getTitle().isEmpty()) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return FreeOngkirTickerViewHolder.getLAYOUT();
         }
 
     }
@@ -212,6 +223,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type);
         } else if (type == MembershipStampProgressViewHolder.getLAYOUT()) {
             return new MembershipStampProgressViewHolder(parent, membershipStampAdapterListener);
+        } else if( type == FreeOngkirTickerViewHolder.getLAYOUT()){
+            return new FreeOngkirTickerViewHolder(parent);
         }
         if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
