@@ -3,7 +3,7 @@
     <string name="choose_verification_method">Pilih Metode Verifikasi</string>
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
     <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
-      dibawah ini untuk\nmendapatkan kode verifikasi.</string>
+        dibawah ini untuk\nmendapatkan kode verifikasi.</string>
     <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
     <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
     <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
@@ -27,11 +27,11 @@
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
     <string name="send_sms_verification">Kirim SMS Verifikasi</string>
     <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
-      mengirimkan kode verifikasi melalui email ke</string>
+        mengirimkan kode verifikasi melalui email ke</string>
     <string name="send_email_verification">Kirim Email Verifikasi</string>
     <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
     <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
-  nomor]]></string>
+    nomor]]></string>
 
     <string name="btn_continue">Lanjutkan</string>
     <string name="btn_cancel">Batal</string>
