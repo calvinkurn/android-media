@@ -16,22 +16,20 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.presentation.OfficialHomeContainerView
-import com.tokopedia.officialstore.presentation.RecyclerViewScrollListener
-import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.di.DaggerOfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
+import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
+import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.official_store_category_view.view.*
+import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import javax.inject.Inject
 
 class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
-        OfficialHomeContainerView,
         AllNotificationListener,
         RecyclerViewScrollListener {
 

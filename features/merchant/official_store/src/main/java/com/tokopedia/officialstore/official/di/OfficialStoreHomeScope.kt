@@ -1,10 +1,11 @@
-package com.tokopedia.officialstore.presentation.di
+package com.tokopedia.officialstore.official.di
 
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
-
 import javax.inject.Scope
+
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-annotation class OfficialHomeScope
+annotation class OfficialStoreHomeScope {
+}

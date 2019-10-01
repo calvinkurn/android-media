@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.officialstore.category.data.model.Category
-import kotlinx.android.synthetic.main.official_store_category_view.view.*
+import kotlinx.android.synthetic.main.view_official_store_category.view.*
 
 class OfficialHomeContainerAdapter(
         val context: Context?,
@@ -40,7 +40,7 @@ class OfficialHomeContainerAdapter(
     }
 
     fun getTabCustomView(position: Int): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.official_store_category_view,null)
+        val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category,null)
         with(view){
             ImageHandler.loadImage(
                     context,

@@ -1,4 +1,4 @@
-package com.tokopedia.officialstore.presentation.adapter
+package com.tokopedia.officialstore.official.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 

@@ -16,9 +16,10 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
         val gqlRequest  = GraphqlRequest(query,OfficialStoreCategories.Response::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
-        val qqq = graphqlUseCase.executeOnBackground()
-        return qqq.run {
-            getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java).OfficialStoreCategories
+        val graphqlResponse = graphqlUseCase.executeOnBackground()
+        return graphqlResponse.run {
+            getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java)
+                    .OfficialStoreCategories
         }
     }
 }

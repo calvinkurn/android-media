@@ -1,37 +1,26 @@
-package com.tokopedia.officialstore.presentation.adapter.viewholder
+package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.support.annotation.LayoutRes
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.banner.Banner
 import com.tokopedia.banner.BannerView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 
 class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
 
-    private val officialStoreImgBackground = "https://ecs7.tokopedia.net/img/android/others/official_store/background.png"
-
-    private var imageBg: ImageView? = null
     private var banner: Banner? = null
 
     init {
-        imageBg = view?.findViewById(R.id.banner_bg_official)
         banner = view?.findViewById(R.id.banner_official)
     }
 
     override fun bind(element: OfficialBannerViewModel?) {
-        Glide.with(itemView.context)
-                .load(officialStoreImgBackground)
-                .into(imageBg)
-
-        banner?.setPromoList(element?.dummyData())
+        banner?.setPromoList(element?.getBannerImgUrl())
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
         banner?.setOnPromoLoadedListener(this)

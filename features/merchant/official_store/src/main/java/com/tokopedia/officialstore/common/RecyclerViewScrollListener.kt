@@ -1,4 +1,4 @@
-package com.tokopedia.officialstore.presentation
+package com.tokopedia.officialstore.common
 
 interface RecyclerViewScrollListener {
     fun onScrollUp()

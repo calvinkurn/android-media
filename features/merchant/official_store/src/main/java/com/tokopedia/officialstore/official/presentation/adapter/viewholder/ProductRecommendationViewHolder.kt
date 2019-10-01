@@ -1,10 +1,10 @@
-package com.tokopedia.officialstore.presentation.adapter.viewholder
+package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 
 class ProductRecommendationViewHolder(view: View?): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 

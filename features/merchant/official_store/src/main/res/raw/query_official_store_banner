@@ -1,0 +1,20 @@
+query OfficialStoreBanners($categoryId: Int) {
+  OfficialStoreBanners(categoryId: $categoryId, source: 0) {
+      banners {
+          id
+          description
+          device
+          expireTime
+          htmlId
+          imageUrl
+          isDefault
+          redirectAppUrl
+          redirectUrl
+          shopName
+          startTime
+          state
+          title
+      }
+      total
+  }
+}
