@@ -149,7 +149,7 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
                         dashboardViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
-                        dashboardViewModel.isOneWay()? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
+                        dashboardViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
                 )
         ));
     }
@@ -236,7 +236,7 @@ public class FlightAnalytics {
                         searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
                         searchPassDataViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
-                        searchPassDataViewModel.isOneWay()? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
+                        searchPassDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
                 )
 
 
@@ -560,8 +560,8 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (flightBookingCartData.getDepartureTrip() != null) {
-            products = constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
-                    searchParam.getFlightClass().getTitle(), flightBookingCartData.getReturnTrip() == null);
+            products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
+                    searchParam.getFlightClass().getTitle(), flightBookingCartData.getReturnTrip() == null));
             if (flightBookingCartData.getReturnTrip() != null) {
                 products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), comboKey,
                         searchParam.getFlightClass().getTitle(), false));
@@ -600,8 +600,8 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (flightBookingReviewModel.getDetailViewModelListDeparture() != null) {
-            products = constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
-                    flightBookingReviewModel.getFlightClass().getTitle(), flightBookingReviewModel.getDetailViewModelListReturn() == null);
+            products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
+                    flightBookingReviewModel.getFlightClass().getTitle(), flightBookingReviewModel.getDetailViewModelListReturn() == null));
             if (flightBookingReviewModel.getDetailViewModelListReturn() != null) {
                 products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), comboKey,
                         flightBookingReviewModel.getFlightClass().getTitle(), false));
@@ -696,7 +696,7 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (departureViewModel != null) {
-            products = constructEnhanceEcommerceProduct(departureViewModel, comboKey, flightClass.getTitle(), returnViewModel == null);
+            products.add(constructEnhanceEcommerceProduct(departureViewModel, comboKey, flightClass.getTitle(), returnViewModel == null));
             if (returnViewModel != null) {
                 products.add(constructEnhanceEcommerceProduct(returnViewModel, comboKey, flightClass.getTitle(), false));
             }
