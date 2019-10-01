@@ -54,7 +54,7 @@ object DeeplinkDFMapper {
     private val DFM_SEARCH_RESULT = "search"
     private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    private val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
