@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -18,7 +19,6 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -33,6 +33,7 @@ import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivit
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
@@ -328,11 +329,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener {
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, 1, 30)
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
+            }
+        }
+        hotelCalendarDialog.listenerMaxRange = object : SelectionRangeCalendarWidget.OnNotifyMaxRange {
+            override fun onNotifyMax() {
+                Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
         hotelCalendarDialog.show(fragmentManager, "test")

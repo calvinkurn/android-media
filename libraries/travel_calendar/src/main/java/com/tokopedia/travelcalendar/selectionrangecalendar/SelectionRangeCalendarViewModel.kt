@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.common.presentation.widget.hotelcalendar
+package com.tokopedia.travelcalendar.selectionrangecalendar
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -9,8 +9,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class HotelCalendarDialogViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
-                                                       private val useCase: TravelCalendarHolidayUseCase)
+class SelectionRangeCalendarViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
+                                                          private val useCase: TravelCalendarHolidayUseCase)
     : BaseViewModel(dispatcher) {
 
     val holidayResult = MutableLiveData<Result<TravelCalendarHoliday.HolidayData>>()

@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarViewModel
 import com.tokopedia.travelcalendar.viewmodel.TravelHolidayCalendarViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,4 +20,9 @@ abstract class TravelCalendarViewModelModule {
     @IntoMap
     @ViewModelKey(TravelHolidayCalendarViewModel::class)
     internal abstract fun travelHolidayCalendarViewModel(customViewModel: TravelHolidayCalendarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SelectionRangeCalendarViewModel::class)
+    internal abstract fun selectionRangeCalendarViewModel(customViewModel: SelectionRangeCalendarViewModel): ViewModel
 }
