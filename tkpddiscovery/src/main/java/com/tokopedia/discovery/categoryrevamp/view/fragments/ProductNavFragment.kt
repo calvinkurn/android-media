@@ -539,7 +539,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun getProductItemPath(path: String, id: String): String {
         if (path.isNotEmpty()) {
-            return "category$path-$id"
+            return "category/$path-$id"
         }
         return ""
     }

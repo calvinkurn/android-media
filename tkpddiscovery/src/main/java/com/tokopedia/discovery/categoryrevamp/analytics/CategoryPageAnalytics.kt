@@ -206,8 +206,8 @@ class CategoryPageAnalytics {
                 "brand", "",
                 "variant", "",
                 KEY_LIST, pathList,
-                KEY_POSITION, "",
-                "attribution", position)))
+                KEY_POSITION, position,
+                "attribution", "")))
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -300,13 +300,13 @@ class CategoryPageAnalytics {
                 KEY_EVENT, EVENT_NAME_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, "quick filter",
-                KEY_EVENT_LABEL, "${option.name}-${option.value}" + "-" + filterValue.toString(),
+                KEY_EVENT_LABEL, "${option.key} - ${option.value}" + " - " + filterValue.toString(),
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-    //19  // abhishek
+    //19
 
     fun eventFilterApplied(category_id: String, filterName: String, filterValue: String) {
         val tracker = getTracker()
