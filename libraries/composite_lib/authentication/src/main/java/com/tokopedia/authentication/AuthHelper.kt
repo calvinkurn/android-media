@@ -1,13 +1,10 @@
 package com.tokopedia.authentication
 
-import android.content.Context
 import android.os.Build
 import android.support.v4.util.ArrayMap
 import android.util.Base64
 import com.google.gson.Gson
-import com.tokopedia.network.NetworkRouter
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -28,11 +25,10 @@ class AuthHelper {
                 contentType: String,
                 authKey: String,
                 dateFormat: String,
-                userId: String,
-                session: UserSessionInterface
+                userSession: UserSessionInterface
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
-            val contentMD5 = generateContentMd5(strParam)
+            val contentMD5 = getMD5Hash(strParam)
             val authString = "${method}\n${contentMD5}\n${contentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
 
@@ -46,13 +42,13 @@ class AuthHelper {
 
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
             headerMap[HEADER_OS_VERSION] = Build.VERSION.SDK_INT.toString(10)
             headerMap[HEADER_USER_AGENT] = getUserAgent()
-            headerMap[HEADER_USER_ID] = userId
+            headerMap[HEADER_USER_ID] = userSession.userId
             headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
 
             return headerMap
@@ -70,7 +66,7 @@ class AuthHelper {
                 session: UserSessionInterface
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
-            val contentMD5 = generateContentMd5(strParam)
+            val contentMD5 = getMD5Hash(strParam)
             val authString = "${method}\n${contentMD5}\n${contentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
 
@@ -84,7 +80,7 @@ class AuthHelper {
 
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
@@ -105,7 +101,7 @@ class AuthHelper {
                 authKey: String,
                 contentType: String?,
                 userId: String,
-                userSessionInterface: UserSessionInterface
+                userSession: UserSessionInterface
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMap(
                     path,
@@ -113,8 +109,10 @@ class AuthHelper {
                     method,
                     contentType ?: CONTENT_TYPE,
                     authKey,
-                    DATE_FORMAT, userId, userSessionInterface
+                    DATE_FORMAT,
+                    userSession
             )
+
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
 
             return finalHeader
@@ -177,7 +175,7 @@ class AuthHelper {
                 deviceId: String,
                 params: MutableMap<String, String>
         ): MutableMap<String, String> {
-            val hash = AuthHelperJava.md5("${userId}~${deviceId}")
+            val hash = getMD5Hash("${userId}~${deviceId}")
 
             params[PARAM_USER_ID] = userId
             params[PARAM_DEVICE_ID] = deviceId
@@ -189,22 +187,20 @@ class AuthHelper {
         }
 
         @JvmStatic
-        fun getHeaderRequestReactNative(context: Context): String {
-            val session = UserSession(context)
-
+        fun getHeaderRequestReactNative(userSession: UserSessionInterface): String {
             val header = HashMap<String, String>()
-            header[HEADER_SESSION_ID] = session.deviceId
-            header[HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
-            header[HEADER_AUTHORIZATION] = "Bearer ${session.accessToken}"
+            header[HEADER_SESSION_ID] = userSession.deviceId
+            header[HEADER_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
+            header[HEADER_AUTHORIZATION] = "Bearer ${userSession.accessToken}"
 
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            header[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            header[HEADER_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
             header[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString()
-            header[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
             header[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             header[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
 
@@ -213,13 +209,13 @@ class AuthHelper {
 
         @JvmStatic
         fun getAuthHeaderReact(
-                context: Context,
+                userSession: UserSessionInterface,
                 path: String,
                 strParam: String,
                 method: String,
-                contentType: String
+                contentType: String,
+                fingerprintHash: String
         ): MutableMap<String, String> {
-            val session = UserSession(context)
             val headers = getDefaultHeaderMap(
                     path,
                     strParam,
@@ -227,27 +223,22 @@ class AuthHelper {
                     contentType,
                     AuthKey.KEY_WSV4_NEW,
                     DATE_FORMAT,
-                    session.userId,
-                    session
+                    userSession
             ) as ArrayMap<String, String>
 
-            headers[HEADER_SESSION_ID] = session.deviceId
-            headers[HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            headers[HEADER_SESSION_ID] = userSession.deviceId
+            headers[HEADER_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
 
             headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headers[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headers[PARAM_OS_TYPE] = "1"
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            headers[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            headers[HEADER_X_TKPD_USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
 
-            if (context.applicationContext is NetworkRouter) {
-                val fingerprintModel = (context.applicationContext as NetworkRouter).getFingerprintModel()
-                val json = fingerprintModel.getFingerprintHash()
-
-                headers[KEY_FINGERPRINT_HASH] = AuthHelperJava.md5("${json}+${session.userId}")
-                AuthHelperJava.md5(json + "+" + session.userId)
-                headers[KEY_FINGERPRINT_DATA] = json
+            if (fingerprintHash.isNotEmpty()) {
+                headers[KEY_FINGERPRINT_HASH] = getMD5Hash("${fingerprintHash}+${userSession.userId}")
+                headers[KEY_FINGERPRINT_DATA] = fingerprintHash
             }
 
             return headers
@@ -274,8 +265,8 @@ class AuthHelper {
         }
 
         @JvmStatic
-        fun generateContentMd5(s: String): String {
-            return AuthHelperJava.md5(s)
+        fun getMD5Hash(raw: String): String {
+            return AuthHelperJava.getMD5Hash(raw)
         }
 
         @JvmStatic
