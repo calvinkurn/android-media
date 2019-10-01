@@ -162,6 +162,8 @@ public interface ShipmentContract {
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId);
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
+
+        void updateTickerAnnouncementMessage();
     }
 
     interface AnalyticsActionListener {

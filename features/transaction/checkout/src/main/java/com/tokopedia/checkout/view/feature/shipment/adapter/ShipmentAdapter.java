@@ -585,6 +585,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return recipientAddressModel;
     }
 
+    public int getTickerAnnouncementHolderDataIndex() {
+        return shipmentDataList.indexOf(tickerAnnouncementHolderData);
+    }
+
     private void checkDataForCheckout() {
         boolean availableCheckout = true;
         for (Object shipmentData : shipmentDataList) {

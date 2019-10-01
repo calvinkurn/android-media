@@ -2874,4 +2874,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         doCheckout(checkoutType);
     }
+
+    @Override
+    public void updateTickerAnnouncementMessage() {
+        int index = shipmentAdapter.getTickerAnnouncementHolderDataIndex();
+        if (index != RecyclerView.NO_POSITION) {
+            onNeedUpdateViewItem(index);
+        }
+    }
 }

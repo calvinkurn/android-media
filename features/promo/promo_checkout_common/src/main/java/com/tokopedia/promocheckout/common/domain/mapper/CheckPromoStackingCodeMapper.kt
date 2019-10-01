@@ -83,7 +83,16 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 clashings = mapClashing(data.clashingInfoDetail),
                 gatewayId = data.gatewayId,
                 isCoupon = data.isCoupon,
-                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail)
+                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail),
+                tickerInfoUiModel = mapTickerInfo(data.tickerInfo)
+        )
+    }
+
+    private fun mapTickerInfo(tickerInfo: TickerInfo): TickerInfoUiModel {
+        return TickerInfoUiModel(
+                uniqueId = tickerInfo.uniqueId,
+                statusCode = tickerInfo.statusCode,
+                message = tickerInfo.message
         )
     }
 
