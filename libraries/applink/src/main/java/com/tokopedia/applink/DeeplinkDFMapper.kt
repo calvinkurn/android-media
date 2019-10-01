@@ -67,7 +67,7 @@ object DeeplinkDFMapper {
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
-    private val DFM_SALDO_INTRO = "saldo_intro"
+    private val DFM_SALDO_INTRO = "saldo_deposit"
 
 
     private var manager: SplitInstallManager? = null
