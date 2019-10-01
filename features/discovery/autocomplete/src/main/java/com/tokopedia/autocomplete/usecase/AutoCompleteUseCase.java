@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.usecase;
 
 import android.text.TextUtils;
 
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.autocomplete.domain.model.SearchData;
 import com.tokopedia.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.common.constants.SearchApiConst;

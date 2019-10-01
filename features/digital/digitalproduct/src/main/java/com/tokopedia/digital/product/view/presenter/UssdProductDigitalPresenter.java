@@ -3,7 +3,7 @@ package com.tokopedia.digital.product.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.Operator;

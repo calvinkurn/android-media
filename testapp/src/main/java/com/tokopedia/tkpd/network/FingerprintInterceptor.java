@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.network;
 
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSession;
