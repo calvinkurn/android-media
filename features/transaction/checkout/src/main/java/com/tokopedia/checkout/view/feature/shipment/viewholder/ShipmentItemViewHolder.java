@@ -773,9 +773,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
             }
             tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
-
-            // hide courier selection
-            llCourierContainer.setVisibility(View.GONE);
         } else {
             tvLogTicker.setVisibility(View.GONE);
         }
@@ -824,6 +821,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         courierData.getDiscountedRate(), false
                 ));
+            }
+
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                if (courierData)
             }
 
             if (courierData.getOntimeDelivery() != null &&
