@@ -161,5 +161,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
     public static final String TOPCHAT_OLD = "android_topchat_old";
-    public static final String LABEL_FREE_ONGKIR_TITLE = "android_label_free_ongkir_title";
+    public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_shop_page_free_ongkir_title";
 }

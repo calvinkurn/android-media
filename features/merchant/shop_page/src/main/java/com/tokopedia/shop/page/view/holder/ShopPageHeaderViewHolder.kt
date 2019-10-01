@@ -18,7 +18,6 @@ import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -69,7 +68,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
-//        val labelTitle = remoteConfig.getString(LABEL_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
+//        val labelTitle = remoteConfig.getString(LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
         val labelTitle = LABEL_FREE_ONGKIR_DEFAULT_TITLE
         if (labelTitle.isNotEmpty()) {
             view.label_free_ongkir.show()
