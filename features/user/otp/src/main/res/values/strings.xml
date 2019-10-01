@@ -1,41 +1,50 @@
 <resources>
-    <string name="app_name">Otp</string>
-    <string name="choose_verification_method">Pilih Metode Verifikasi</string>
-    <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
-    <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
+  <string name="app_name">Otp</string>
+  <string name="choose_verification_method">Pilih Metode Verifikasi</string>
+  <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
+  <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
         dibawah ini untuk\nmendapatkan kode verifikasi.</string>
-    <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
-    <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
-    <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
-    <string name="title_verify">Verifikasi</string>
-    <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
-    <string name="verification_for_security">Verifikasi untuk Keamanan</string>
-    <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
-    <string name="dialog_cancel">BATAL</string>
-    <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
-    <string name="not_received_code">Tidak menerima kode?</string>
-    <string name="resend">Kirim ulang</string>
-    <string name="or_small">atau</string>
-    <string name="use_other_method">gunakan metode verifikasi lain</string>
-    <string name="button_verify">Verifikasi</string>
-    <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
-    <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
-    <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
-    <string name="please_wait_in">Mohon tunggu dalam</string>
-    <string name="second">detik</string>
-    <string name="to_resend_otp">untuk kirim ulang</string>
-    <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
-    <string name="send_sms_verification">Kirim SMS Verifikasi</string>
-    <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
+  <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
+  <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
+  <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
+  <string name="title_verify">Verifikasi</string>
+  <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
+  <string name="verification_for_security">Verifikasi untuk Keamanan</string>
+  <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
+  <string name="dialog_cancel">BATAL</string>
+  <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
+  <string name="not_received_code">Tidak menerima kode?</string>
+  <string name="resend">Kirim ulang</string>
+  <string name="or_small">atau</string>
+  <string name="use_other_method">gunakan metode verifikasi lain</string>
+  <string name="button_verify">Verifikasi</string>
+  <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
+  <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
+  <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
+  <string name="please_wait_in">Mohon tunggu dalam</string>
+  <string name="second">detik</string>
+  <string name="to_resend_otp">untuk kirim ulang</string>
+  <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
+  <string name="send_sms_verification">Kirim SMS Verifikasi</string>
+  <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
         mengirimkan kode verifikasi melalui email ke</string>
-    <string name="send_email_verification">Kirim Email Verifikasi</string>
-    <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
-    <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
+  <string name="send_email_verification">Kirim Email Verifikasi</string>
+  <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
+  <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
     nomor]]></string>
-
-    <string name="btn_continue">Lanjutkan</string>
-    <string name="btn_cancel">Batal</string>
-    <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
-    <string name="setting">Pengaturan</string>
+  
+  <string name="btn_continue">Lanjutkan</string>
+  <string name="btn_cancel">Batal</string>
+  <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
+  <string name="setting">Pengaturan</string>
+  
+  <string name="cotp_miscall_onboarding_title">Minta kode verifikasi lewat Missed Call</string>
+  <string name="cotp_miscall_send_call">Telpon saya</string>
+  <string name="cotp_miscall_point_1">1</string>
+  <string name="cotp_miscall_point_2">2</string>
+  <string name="cotp_miscall_step_1">Kamu akan menerima &lt;b&gt;panggilan telepon.&lt;/b&gt; Panggilan tidak perlu diangkat.</string>
+  <string name="cotp_miscall_step_2">Masukkan &lt;b&gt;6 digit terakhir nomor tersebut.&lt;/b&gt;</string>
+  <string name="cotp_miscall_verification">Masukkan 6 digit angka terakhir nomor telepon</string>
+  <string name="cotp_miscall_phone_code">021–75</string>
 
 </resources>
