@@ -241,17 +241,16 @@ public class OrderListAnalytics {
                 "eventAction", "click - product recommendation",
                 "eventLabel", recomTitle,
                 "ecommerce", DataLayer.mapOf(
-                        "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                                "name", item.getName(),
-                                                "id", item.getProductId(),
-                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
-                                                "brand", "none/other",
-                                                "category", item.getCategoryBreadcrumbs(),
-                                                "variant", "none/other",
-                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                                "position", String.valueOf(position)))))
+                        "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : "")),
+                                "products", DataLayer.listOf(DataLayer.mapOf(
+                                        "name", item.getName(),
+                                        "id", item.getProductId(),
+                                        "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", item.getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "position", String.valueOf(position))))
                 )));
     }
 
@@ -360,17 +359,19 @@ public class OrderListAnalytics {
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, item.getName()),
-                                PRODUCTS, DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                NAME, item.getName(),
-                                                ID, item.getId(),
-                                                PRICE, item.getPrice(),
-                                                LIST, item.getName(),
-                                                POSITION, position + 1
+                                        LIST, item.getName(),
+                                        PRODUCTS, DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        NAME, item.getName(),
+                                                        ID, item.getId(),
+                                                        PRICE, item.getPrice(),
+                                                        LIST, item.getName(),
+                                                        POSITION, position + 1
+                                                )
                                         )
                                 )
                         )
+
                 )
 
         ));
