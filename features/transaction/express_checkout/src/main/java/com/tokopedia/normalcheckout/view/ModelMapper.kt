@@ -6,10 +6,10 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.product.detail.common.data.model.product.Picture
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.ACTIVE
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.WAREHOUSE
+import com.tokopedia.product.detail.common.data.model.product.Picture
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -124,6 +124,8 @@ object ModelMapper {
         productViewModel.productImageUrl = productInfo.firstThumbnailPicture
         productViewModel.productName = productInfo.basic.name
         productViewModel.minOrderQuantity = productInfo.basic.minOrder
+        productViewModel.freeOngkirImg = productInfo.freeOngkir.freeOngkirImgUrl
+        productViewModel.isFreeOngkir = productInfo.freeOngkir.isFreeOngkirActive
         productViewModel.maxOrderQuantity = when {
             productInfo.stock.useStock && productInfo.stock.value > 0 ->
                 productInfo.stock.value

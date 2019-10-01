@@ -6,6 +6,7 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
 
     <color name="color_item_preview_border">#e0e0e0</color>
     <color name="black_54">#8a000000</color>
@@ -23,4 +24,6 @@
     <color name="shadow">#AD31353B</color>
 
     <color name="tkpd_bg_color">#EAEAEA</color>
+
+    <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
 </resources>
