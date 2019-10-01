@@ -146,6 +146,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
 
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$INTERNAL_GLOBAL/deals-slug/{slug}"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY = "$INTERNAL_GLOBAL/deals/category/page"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS = "$INTERNAL_GLOBAL/deals-allbrands/{isVoucher}"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL = "$INTERNAL_GLOBAL/deals-brand/{slug}"
+
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
     @JvmField

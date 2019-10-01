@@ -238,7 +238,11 @@ public class RouteManager {
         if (URLUtil.isNetworkUrl(applink)) {
             return true;
         }
-        return buildInternalExplicitIntent(context, applink) != null;
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, applink);
+        if (TextUtils.isEmpty(mappedDeeplink)) {
+            mappedDeeplink = applink;
+        }
+        return buildInternalExplicitIntent(context, mappedDeeplink) != null;
     }
 
     public static String routeWithAttribution(Context context, String applink,
