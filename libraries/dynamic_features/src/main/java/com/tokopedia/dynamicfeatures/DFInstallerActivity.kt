@@ -246,7 +246,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun showFailedMessage(message: String, errorCode: Int = 0) {
-        DFInstaller.logStatus(this, "Failed Module", moduleName, 0, errorCode)
+        DFInstaller.logStatus(this, "Failed Module", moduleName, 0, errorCode.toString())
         val userMessage: String
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
