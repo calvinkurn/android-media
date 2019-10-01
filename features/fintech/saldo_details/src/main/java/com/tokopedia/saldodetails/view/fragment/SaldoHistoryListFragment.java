@@ -66,6 +66,12 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     }
 
     @Override
+    public int getRecyclerViewResourceId(){
+        return com.tokopedia.saldodetails.R.id.saldo_history_recycler_view;
+    }
+
+
+    @Override
     public SaldoDepositAdapter getAdapter() {
         return adapter;
     }
