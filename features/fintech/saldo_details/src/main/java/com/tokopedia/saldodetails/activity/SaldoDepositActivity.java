@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
@@ -86,6 +85,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
             return null;
         }
 
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.saldodetails.R.id.saldo_deposit_parent_view;
     }
 
     @Override
