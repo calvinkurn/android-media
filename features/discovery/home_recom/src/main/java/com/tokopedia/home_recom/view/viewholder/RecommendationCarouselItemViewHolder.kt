@@ -54,7 +54,8 @@ class RecommendationCarouselItemViewHolder (
                     ),
                     BlankSpaceConfig(
                             ratingCount = true,
-                            discountPercentage = true
+                            discountPercentage = true,
+                            twoLinesProductName = true
                     )
             )
 

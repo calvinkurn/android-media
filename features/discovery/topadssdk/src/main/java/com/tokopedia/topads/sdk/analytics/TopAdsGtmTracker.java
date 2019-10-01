@@ -146,7 +146,8 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", categoryBreadcrumbs,
                                             "variant", "none/other",
-                                            "position", position))))
+                                            "position", position),
+                                            "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other")))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
@@ -179,7 +180,8 @@ public class TopAdsGtmTracker {
                 "variant", "none/other",
                 "category", categoryBreadcrumbs,
                 "list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomendationType+" - product topads",
-                "position", position));
+                "position", position,
+                "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other"));
     }
 
     public void addInboxProductViewImpressions(Product product, int position, String recommendationType) {

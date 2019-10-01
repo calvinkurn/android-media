@@ -52,7 +52,8 @@ class AddToCartDoneRecommendationProductViewHolder(
                     ),
                     BlankSpaceConfig(
                             ratingCount = true,
-                            discountPercentage = true
+                            discountPercentage = true,
+                            twoLinesProductName = true
                     )
             )
             setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
