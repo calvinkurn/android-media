@@ -210,10 +210,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
-    private View llLogPromo;
     private TickerPromoStackingCheckoutView tvLogTicker;
-    private Ticker tvLogPromoMsg;
     private TextView tvSelectedPriceOnly;
+    private View llCourierContainer;
+    private TextView tvDurationStrikedPrice;
+    private TextView tvDurationPrice;
 
     // order prioritas
     private CheckBox checkBoxPriority;
@@ -367,9 +368,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         // promostacking
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
-        llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogTicker = itemView.findViewById(R.id.ticker_promo_logistic);
-        tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
+        llCourierContainer = itemView.findViewById(R.id.selected_courier_container);
+        tvDurationStrikedPrice = itemView.findViewById(R.id.tv_duration_benefit_striked);
+        tvDurationPrice = itemView.findViewById(R.id.tv_duration_discounted_price);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -721,7 +723,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         });
-        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
+        llCourierContainer.setVisibility(View.VISIBLE);
         tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
@@ -731,7 +733,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-            llLogPromo.setVisibility(View.VISIBLE);
             tvLogTicker.setVisibility(View.VISIBLE);
             tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
             if (shipmentCartItemModel.isError()) {
@@ -768,14 +769,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
 
-            boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
-            tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
-
-            // disable courier selection
-            tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
-            tvCourierSelection.setOnClickListener(null);
+            // hide courier selection
+            llCourierContainer.setVisibility(View.GONE);
         } else {
-            llLogPromo.setVisibility(View.GONE);
             tvLogTicker.setVisibility(View.GONE);
         }
 
@@ -806,9 +802,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(courierData.getLogPromoMsg())) {
-                tvLogPromoMsg.setHtmlDescription(courierData.getLogPromoMsg());
-            }
 
             if (courierData.getOntimeDelivery() != null &&
                     courierData.getOntimeDelivery().getAvailable()

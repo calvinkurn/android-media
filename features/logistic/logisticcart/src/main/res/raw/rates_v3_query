@@ -146,6 +146,11 @@
       shipper_disable_text
       service_id
       is_applied
+      image_url
+      discounted_rate
+      shipping_rate
+      benefit_amount
+      disabled
     }
     info {
       blackbox_info {

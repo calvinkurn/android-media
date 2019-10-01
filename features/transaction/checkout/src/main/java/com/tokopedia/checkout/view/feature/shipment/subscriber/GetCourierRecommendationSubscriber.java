@@ -96,6 +96,9 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                                 && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
                                                 && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()){
                                             courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
+                                            courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
+                                            courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
+                                            courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
                                         }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
