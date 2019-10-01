@@ -726,6 +726,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         });
         llCourierContainer.setVisibility(View.VISIBLE);
+        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
         tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
@@ -806,25 +807,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
 
             // Project Army
-            if (courierData.getDiscountedRate() == 0) {
-                // Gratis Shipping Price
-                tvLogTicker.setVisibility(View.GONE);
-                tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
-            } else if (courierData.getDiscountedRate() > 0) {
-                // Discounted Shipping Price
-                tvDurationPrice.setVisibility(View.VISIBLE);
-                tvDurationStrikedPrice.setVisibility(View.VISIBLE);
-                tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        courierData.getShippingRate(), false
-                ));
-                tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        courierData.getDiscountedRate(), false
-                ));
-            }
-
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                if (courierData)
+                if (courierData.isHideShipperName()) {
+                    // Hide shipper name
+                    llCourierContainer.setVisibility(View.GONE);
+                } else {
+                    // Show shipper name then disable
+                    llCourierContainer.setVisibility(View.VISIBLE);
+                    tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
+                    tvCourierSelection.setOnClickListener(null);
+                }
+
+                if (courierData.getDiscountedRate() == 0) {
+                    // Gratis Shipping Price
+                    tvLogTicker.setVisibility(View.GONE);
+                    tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
+                } else if (courierData.getDiscountedRate() > 0) {
+                    // Discounted Shipping Price
+                    tvDurationStrikedPrice.setVisibility(View.VISIBLE);
+                    tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierData.getShippingRate(), false
+                    ));
+                    tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    tvDurationPrice.setVisibility(View.VISIBLE);
+                    tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierData.getDiscountedRate(), false
+                    ));
+                }
             }
 
             if (courierData.getOntimeDelivery() != null &&
