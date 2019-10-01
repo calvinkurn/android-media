@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -52,6 +54,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
     public static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
     public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
+    public static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
+    public static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -81,7 +85,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
                                                           int cartPosition, int codHistory,
-                                                          boolean isLeasing, String pslCode) {
+                                                          boolean isLeasing, String pslCode,
+                                                          ArrayList<Product> products, String cartString) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -92,6 +97,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
         bundle.putBoolean(ARGUMENT_IS_LEASING, isLeasing);
         bundle.putString(ARGUMENT_PSL_CODE, pslCode);
+        bundle.putParcelableArrayList(ARGUMENT_PRODUCTS, products);
+        bundle.putString(ARGUMENT_CART_STRING, cartString);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -110,6 +117,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
     }
 
+    // Called from express checkout only
     public void updateArguments(ShippingParam shippingParam, int selectedServiceId, int codHistory, boolean disableCourierPromo, List<ShopShipment> shopShipmentList) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPPING_PARAM, shippingParam);
@@ -169,9 +177,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
+            ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
+            String cartString = getArguments().getString(ARGUMENT_CART_STRING);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing, pslCode);
+                // Called from checkout
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString);
             } else if (shippingParam != null) {
+                // Called from express checkout
                 presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
             }
         }
@@ -231,8 +244,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
                             boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
                             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
+                            ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
+                            String cartString = getArguments().getString(ARGUMENT_CART_STRING);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing, pslCode);
+                                presenter.loadCourierRecommendation(
+                                        shipmentDetailData, selectedServiceId, shopShipments,
+                                        codHistory, mIsCorner, isLeasing, pslCode,
+                                        products, cartString
+                                );
                             }
                         }
                     }

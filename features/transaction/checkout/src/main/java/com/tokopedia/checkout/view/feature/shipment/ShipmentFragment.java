@@ -76,6 +76,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -2314,10 +2315,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             if (shipmentDetailData != null) {
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
+                ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
                 shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
                         recipientAddressModel, cartPosition, codHistory,
-                        shipmentCartItemModel.getIsLeasingProduct(), pslCode);
+                        shipmentCartItemModel.getIsLeasingProduct(), pslCode, products, shipmentCartItemModel.getCartString());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {
@@ -2325,6 +2327,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
+    }
+
+    private ArrayList<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
+        ArrayList<Product> products = new ArrayList<>();
+        if (shipmentCartItemModel != null && shipmentCartItemModel.getCartItemModels() != null) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                Product product = new Product();
+                product.setProductId(cartItemModel.getProductId());
+                product.setFreeShipping(cartItemModel.isFreeShipping());
+
+                products.add(product);
+            }
+        }
+
+        return products;
     }
 
     @Override
@@ -2369,7 +2386,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId(),
                         cartPosition,
                         shipmentCartItemModel.getSelectedShipmentDetailData(),
-                        shipmentCartItemModel, shopShipmentList, false);
+                        shipmentCartItemModel, shopShipmentList, false,
+                        getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString());
             }
         }
     }
@@ -2413,7 +2431,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shopShipmentList != null && shopShipmentList.size() > 0) {
             shipmentDetailData.setTradein(isTradeIn());
             if (useCourierRecommendation) {
-                shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
+                shipmentPresenter.processGetCourierRecommendation(
+                        shipperId, spId, itemPosition, shipmentDetailData,
+                        shipmentCartItemModel, shopShipmentList, true,
+                        getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString());
             } else {
                 shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
             }

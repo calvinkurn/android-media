@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
@@ -171,7 +172,7 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     GetCourierRecommendationUseCase provideGetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
-        return new GetCourierRecommendationUseCase(shippingDurationConverter);
+        return new GetCourierRecommendationUseCase(shippingDurationConverter, new Gson());
     }
 
     @Provides

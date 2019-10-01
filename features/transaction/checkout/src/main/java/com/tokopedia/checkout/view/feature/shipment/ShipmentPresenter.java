@@ -51,6 +51,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
@@ -1759,9 +1760,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 ShipmentDetailData shipmentDetailData,
                                                 ShipmentCartItemModel shipmentCartItemModel,
                                                 List<ShopShipment> shopShipmentList,
-                                                boolean isInitialLoad) {
+                                                boolean isInitialLoad, ArrayList<Product> products,
+                                                String cartString) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
         boolean cornerId = false;
@@ -1776,7 +1778,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData, List<Product> products, String cartString) {
         ShippingParam shippingParam = new ShippingParam();
         shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
         shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
@@ -1798,6 +1800,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setTradein(shipmentDetailData.isTradein());
+        shippingParam.setProducts(products);
+        shippingParam.setUniqueId(cartString);
         return shippingParam;
     }
 
