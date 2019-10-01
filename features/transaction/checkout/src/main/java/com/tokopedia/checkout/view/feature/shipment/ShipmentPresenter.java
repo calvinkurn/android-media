@@ -73,6 +73,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseC
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
@@ -1539,7 +1540,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().showLoading();
             }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), voucherType, shopIndex, ignoreAPIResponse));
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse));
         }
     }
 
@@ -1577,7 +1578,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                // Do nothing
+                ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
+                if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
+                    tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                    getView().updateTickerAnnouncementMessage();
+                }
             }
         });
     }
