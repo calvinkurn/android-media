@@ -151,7 +151,10 @@ object ApplinkConstInternalGlobal {
     // InstantLoanActivity with specific tab
     // tokopedia-android-internal://global/loan/category/{tab_name}
     @JvmField
-    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/.*\\/"
+    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
