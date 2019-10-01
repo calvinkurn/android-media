@@ -24,7 +24,6 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
         tools:text="Hypebeast Banget Pokoknya" />
 
     <com.tokopedia.design.countdown.CountDownView
