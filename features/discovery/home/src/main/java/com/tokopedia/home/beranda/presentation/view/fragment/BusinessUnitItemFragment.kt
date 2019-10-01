@@ -39,7 +39,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     private lateinit var itemTab: HomeWidget.TabItem
     private lateinit var trackingQueue: TrackingQueue
-    private lateinit var businessUnitContainer: LinearLayout
+    private lateinit var businessUnitContainer: ContainerUnify
     private var positionWidget: Int = 0
     private var nameTab: String = ""
     private var backgroundColor: String = ""
@@ -49,6 +49,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         const val ITEM_POSITION = "ITEM_POSITION"
         const val ITEM_NAME = "ITEM_NAME"
         const val ITEM_BACKGROUND = "ITEM_BACKGROUND"
+        private const val BLUE = "blue"
+        private const val YELLOW = "yellow"
+        private const val RED = "red"
+        private const val GREEN = "green"
 
         fun newInstance(item: HomeWidget.TabItem, backgroundColor: String, position: Int, name: String) : Fragment {
             val fragment = BusinessUnitItemFragment()
@@ -166,7 +170,15 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         super.onViewCreated(view, savedInstanceState)
         if(!this::businessUnitContainer.isInitialized){
             businessUnitContainer = view.findViewById(R.id.business_unit_container)
-            businessUnitContainer.background = CustomGradientDrawable.generate(view.context, Color.parseColor(backgroundColor))
+            businessUnitContainer.setContainerColor(
+                    when (backgroundColor) {
+                        RED -> ContainerUnify.RED
+                        BLUE -> ContainerUnify.BLUE
+                        YELLOW -> ContainerUnify.YELLOW
+                        GREEN -> ContainerUnify.GREEN
+                        else -> ContainerUnify.RED
+                    }
+            )
         }
         getRecyclerView(view).addItemDecoration(
                 SpacingItemDecoration(
