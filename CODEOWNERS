@@ -111,6 +111,7 @@
 
 /features/content/affiliate/            @tokopedia/minion-stuart
 /features/content/affiliate_common/     @tokopedia/minion-stuart
+/features/content/createpost/           @tokopedia/minion-stuart
 /features/content/explore/              @tokopedia/minion-stuart
 /features/content/feed/                 @tokopedia/minion-stuart
 /features/content/feed_component/       @tokopedia/minion-stuart
