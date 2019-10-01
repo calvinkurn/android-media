@@ -219,6 +219,29 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventProductViewNotFound(FlightSearchPassDataViewModel searchPassDataViewModel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_SEARCH_PRODUCT_NOT_FOUND,
+                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                        Label.FLIGHT_SMALL,
+                        (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                                searchPassDataViewModel.getDepartureAirport().getCityCode() : searchPassDataViewModel.getDepartureAirport().getAirportCode(),
+                        (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                                searchPassDataViewModel.getArrivalAirport().getCityCode() : searchPassDataViewModel.getArrivalAirport().getAirportCode(),
+                        searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                        searchPassDataViewModel.getFlightPassengerViewModel().getAdult(),
+                        searchPassDataViewModel.getFlightPassengerViewModel().getChildren(),
+                        searchPassDataViewModel.getFlightPassengerViewModel().getInfant(),
+                        searchPassDataViewModel.getFlightClass().getTitle(),
+                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
+                        searchPassDataViewModel.isOneWay()? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
+                )
+
+
+        ));
+    }
+
     public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, List<FlightJourneyViewModel> listJourneyViewModel) {
 
         List<Object> products = new ArrayList<>();
@@ -865,6 +888,7 @@ public class FlightAnalytics {
         static String SELECT_CLASS = "select flight class";
         static String CLICK_SEARCH = "click search flight";
         static String CLICK_SEARCH_PRODUCT = "product click";
+        static String CLICK_SEARCH_PRODUCT_NOT_FOUND = "product not found";
         static String CLICK_SEARCH_DETAIL = "click see the details";
         static String PRODUCT_DETAIL_IMPRESSION = "product detail impression";
         static String CLICK_PRICE_TAB = "click price tab";
