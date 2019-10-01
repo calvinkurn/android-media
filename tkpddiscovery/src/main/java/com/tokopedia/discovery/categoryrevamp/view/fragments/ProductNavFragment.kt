@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.authentication.AuthHelperJava
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
@@ -477,9 +477,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
-            AuthHelperJava.md5(userSession.userId)
+            AuthHelper.getMD5Hash(userSession.userId)
         else
-            AuthHelperJava.md5(gcmHandler.registrationId)
+            AuthHelper.getMD5Hash(gcmHandler.registrationId)
     }
 
     override fun onSwipeToRefresh() {

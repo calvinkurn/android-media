@@ -11,7 +11,7 @@
         android:paddingBottom="@dimen/dp_12"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
-        android:background="@drawable/guided_search_item_background"
+        android:background="@drawable/autocomplete_item_background"
         tools:text="superstar"
         />
 
