@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -74,7 +73,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -119,8 +117,6 @@ public class ProductListFragment
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
-    protected ConstraintLayout constraintLayoutFreeOngkirPromoShowCase;
-    protected Typography buttonOKFreeOngkir;
 
     @Inject
     ProductListSectionContract.Presenter presenter;
@@ -243,8 +239,6 @@ public class ProductListFragment
 
     private void bindView(View rootView) {
         recyclerView = rootView.findViewById(R.id.recyclerview);
-        constraintLayoutFreeOngkirPromoShowCase = rootView.findViewById(R.id.constraintLayoutFreeOngkirShowCase);
-        buttonOKFreeOngkir = rootView.findViewById(R.id.buttonOKFreeOngkir);
     }
 
     private void initTopAdsConfig() {
@@ -279,9 +273,6 @@ public class ProductListFragment
     private void setupListener() {
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-
-        View.OnClickListener buttonOKFreeOngkirListener = getButtonOKFreeOngkirListener();
-        buttonOKFreeOngkir.setOnClickListener(buttonOKFreeOngkirListener);
     }
 
     private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
@@ -293,14 +284,6 @@ public class ProductListFragment
                 } else {
                     adapter.removeLoading();
                 }
-            }
-        };
-    }
-
-    private View.OnClickListener getButtonOKFreeOngkirListener() {
-        return v -> {
-            if (presenter != null) {
-                presenter.onClickButtonOKFreeOngkir();
             }
         };
     }
@@ -1168,15 +1151,8 @@ public class ProductListFragment
 
     @Override
     public void showFreeOngkirShowCase() {
-        if (constraintLayoutFreeOngkirPromoShowCase != null) {
-            constraintLayoutFreeOngkirPromoShowCase.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void hideFreeOngkirShowCase() {
-        if (constraintLayoutFreeOngkirPromoShowCase != null) {
-            constraintLayoutFreeOngkirPromoShowCase.setVisibility(View.GONE);
+        if (getActivity() != null) {
+            FreeOngkirShowCaseDialog.show(getActivity());
         }
     }
 }
