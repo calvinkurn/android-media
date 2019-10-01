@@ -17,6 +17,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.FreeShipping;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
@@ -231,14 +232,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return s;
     }
 
-    private String getFreeShippingDimensionData(Boolean isFreeShipping) {
-        if (isFreeShipping) {
-            return "";
-        } else {
-            return "none/others";
-        }
-    }
-
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
         return graphqlResponse != null
                 && graphqlResponse.body() != null
@@ -345,6 +338,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
+            product.setDimension83(getDimension83Value(orderData.getOrderDetail().get(0).getFreeShipping()));
 
             products.add(product);
         }
@@ -357,6 +351,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return "";
+    }
+
+    private String getDimension83Value(FreeShipping freeShipping) {
+        if (freeShipping != null && freeShipping.isEligibleFreeShipping()) {
+            return "bebas ongkir";
+        } else {
+            return "none/others";
+        }
     }
 
     private String getDimension54Value(boolean isFulfillment) {
