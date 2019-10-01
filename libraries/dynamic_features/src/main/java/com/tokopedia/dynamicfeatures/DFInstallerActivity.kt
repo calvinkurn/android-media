@@ -161,11 +161,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
         manager.startInstall(request).addOnSuccessListener {
             sessionId = it
         }.addOnFailureListener { exception ->
-            val errorCode = (exception as SplitInstallException).errorCode
+            val errorCode = (exception as? SplitInstallException)?.errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message, errorCode.toString())
+            showFailedMessage(message, errorCode?.toString() ?: exception.toString())
         }
     }
 
@@ -235,7 +235,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         Timber.w("P1Failed Module {$moduleName} - {$errorCode} {$totalFreeSpaceSizeInMB}")
-        val userMessage:String
+        val userMessage: String
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
         } else {
@@ -258,17 +258,17 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
-    private fun initialDownloadStatus(moduleName: String, moduleSize: Long){
+    private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
         totalFreeSpaceSizeInMB = getTotalFreeSpaceSizeInMB()
         val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / (ONE_KB * ONE_KB))
         Timber.w("P1Downloading Module {$moduleName} {$moduleSizeinMB:$totalFreeSpaceSizeInMB}")
     }
 
-    private fun getTotalFreeSpaceSizeInMB() : String {
+    private fun getTotalFreeSpaceSizeInMB(): String {
         totalFreeSpaceSizeInMB = "-"
         applicationContext?.filesDir?.absoluteFile?.toString()?.let {
             val totalSize = File(it).freeSpace.toDouble()
