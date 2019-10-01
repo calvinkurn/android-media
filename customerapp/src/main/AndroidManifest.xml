@@ -327,45 +327,6 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
-            android:label="@string/title_activity_people_deposit"
-            android:theme="@style/Theme.White"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:path="@string/path_saldo_deposit"/>
-            </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoIntroActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
-            android:theme="@style/Theme.White.PopupTransparent" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:path="@string/path_saldo_intro"/>
-            </intent-filter>
-
-        </activity>
-
-        <activity
             android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

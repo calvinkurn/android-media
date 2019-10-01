@@ -156,9 +156,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initRemoteConfig();
         initialVar();
         initListeners();
         startShowCase();
+    }
+
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     private void startShowCase() {
@@ -220,7 +225,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @SuppressLint("Range")
@@ -431,23 +435,24 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
 
-        if (isSaldoNativeEnabled() && isMerchantCreditLineEnabled()) {
-            saldoDetailsPresenter.getUserFinancialStatus();
-        } else {
-
-            if (isSaldoNativeEnabled()) {
-                saldoDetailsPresenter.getMerchantSaldoDetails();
+        if (getActivity() != null) {
+            if (isSaldoNativeEnabled() && isMerchantCreditLineEnabled()) {
+                saldoDetailsPresenter.getUserFinancialStatus();
             } else {
-                hideSaldoPrioritasFragment();
-            }
 
-            if (isMerchantCreditLineEnabled()) {
-                saldoDetailsPresenter.getMerchantCreditLineDetails();
-            } else {
-                hideMerchantCreditLineFragment();
+                if (isSaldoNativeEnabled()) {
+                    saldoDetailsPresenter.getMerchantSaldoDetails();
+                } else {
+                    hideSaldoPrioritasFragment();
+                }
+
+                if (isMerchantCreditLineEnabled()) {
+                    saldoDetailsPresenter.getMerchantCreditLineDetails();
+                } else {
+                    hideMerchantCreditLineFragment();
+                }
             }
         }
-
     }
 
     private boolean isSaldoNativeEnabled() {

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener;
@@ -58,7 +57,7 @@ public class SaldoHistoryListFragment extends BaseListFragment<DepositHistoryLis
     }
 
     private void initViews(View view) {
-        recyclerView = view.findViewById(com.tokopedia.abstraction.R.id.recycler_view);
+        recyclerView = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_history_recycler_view);
     }
 
     @Override

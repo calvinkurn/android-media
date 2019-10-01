@@ -24,7 +24,7 @@ public interface SellerModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-//    void startSaldoDepositIntent(Context context);
+    void startSaldoDepositIntent(Context context);
 
     Intent getTopProfileIntent(Context context, String userId);
 

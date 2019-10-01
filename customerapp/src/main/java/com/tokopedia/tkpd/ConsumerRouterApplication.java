@@ -45,6 +45,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -73,6 +74,7 @@ import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -2216,7 +2218,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getAddPasswordIntent(Context context) {
-        return AddPasswordActivity.newInstance(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
     }
 
     /*@Override
@@ -2356,7 +2358,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
 
-//        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(), SaldoDetailsInternalRouter.getSaldoClassName());
+        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
+                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
     }
 
     public Intent getInboxChatIntent(Context context) {
@@ -2367,6 +2370,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return InboxReputationActivity.getCallingIntent(context);
     }
 
+    @Override
+    public void startSaldoDepositIntent(Context context) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
+    }
 
     public Intent getInboxHelpIntent(Context context) {
         return InboxListActivity.getCallingIntent(context);
