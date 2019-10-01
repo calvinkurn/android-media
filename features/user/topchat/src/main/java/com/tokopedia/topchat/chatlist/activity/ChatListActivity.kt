@@ -158,9 +158,15 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun determineFragmentByTag(tag: String?): ChatListFragment? {
-        return when (tag) {
-            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
-            else -> fragmentAdapter.getItem(1) as ChatListFragment
+        val fragment = when (tag) {
+            "User" -> fragmentAdapter.getItem(0)
+            else -> fragmentAdapter.getItem(1)
+        }
+
+        return if(fragment == null) {
+            null
+        } else  {
+            fragment as ChatListFragment
         }
     }
 
