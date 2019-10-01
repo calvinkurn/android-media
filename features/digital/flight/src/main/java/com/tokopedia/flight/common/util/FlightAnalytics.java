@@ -7,6 +7,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -703,9 +704,13 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
         String name = flightViewModel.getDepartureAirportCity() + "-" + flightViewModel.getArrivalAirportCity();
 
+        int totalPriceAdult = flightViewModel.getAdultNumericPrice() * flightViewModel.getCountAdult();
+        int totalPriceChild = flightViewModel.getChildNumericPrice() * flightViewModel.getCountChild();
+        int totalPriceInfant = flightViewModel.getInfantNumericPrice() * flightViewModel.getCountInfant();
+
         products.add(DataLayer.mapOf(
                 EnhanceEccomerce.NAME, name,
-                EnhanceEccomerce.PRICE, String.valueOf(flightViewModel.getTotalNumeric()),
+                EnhanceEccomerce.PRICE, String.valueOf(totalPriceAdult + totalPriceChild + totalPriceInfant),
                 EnhanceEccomerce.ID, (comboKey != null && !comboKey.isEmpty()) ? comboKey : flightViewModel.getId(),
                 EnhanceEccomerce.BRAND, flightViewModel.getRouteList().get(0).getAirlineName(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
@@ -721,9 +726,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.DIMENSION74, flightViewModel.getRouteList().get(0).getAirlineCode() + " - " + flightViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.DIMENSION75, flightViewModel.getDepartureTime(),
                 EnhanceEccomerce.DIMENSION76, flightViewModel.getArrivalTime(),
-                EnhanceEccomerce.VARIANT, (flightViewModel.getAdultNumericPrice() * flightViewModel.getCountAdult()) + " - " +
-                        (flightViewModel.getChildNumericPrice() * flightViewModel.getCountChild()) + " - " +
-                        (flightViewModel.getInfantNumericPrice() * flightViewModel.getCountInfant())
+                EnhanceEccomerce.VARIANT, totalPriceAdult + " - " + totalPriceChild + " - " + totalPriceInfant
         ));
         return products;
     }
@@ -744,7 +747,7 @@ public class FlightAnalytics {
                         EVENT_ACTION, Action.PROMOTION_VIEW,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT_SMALL,
-                                position,
+                                position + 1,
                                 banner.getAttributes().getPromoCode()
                         ),
                         ECOMMERCE, DataLayer.mapOf(
