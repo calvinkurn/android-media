@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
