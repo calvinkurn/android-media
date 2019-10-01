@@ -50,6 +50,8 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -333,7 +335,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
     }
 
-    override fun chatItemClicked(element: ItemChatListPojo) {
+    override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {
         activity?.let {
             with(chatListAnalytics) {
                 eventClickChatList(
@@ -350,7 +352,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                     element.attributes?.contact?.role,
                     0,
                     "",
-                    element.attributes?.contact?.thumbnail
+                    element.attributes?.contact?.thumbnail,
+                    itemPosition
             )
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
@@ -387,8 +390,26 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == OPEN_DETAIL_MESSAGE
-                && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == OPEN_DETAIL_MESSAGE) {
+            data?.extras?.let { extras ->
+                itemPositionLongClicked = extras.getInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, -1)
+                when (resultCode) {
+//                    Activity.RESULT_OK -> {
+//                        val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
+//                        if(moveToTop) {
+//                            val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
+//                            lastItem?.let {
+//                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, lastItem.replyTime)
+//                                updateItemOnIndex(itemPositionLongClicked, model)
+//                            }
+//                        }
+//                    }
+                    TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
+                        adapter.deleteItem(itemPositionLongClicked)
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 

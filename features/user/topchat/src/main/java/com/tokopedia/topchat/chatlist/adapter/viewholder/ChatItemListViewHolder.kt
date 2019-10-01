@@ -77,7 +77,7 @@ class ChatItemListViewHolder(
             bindReadState(attributes.readStatus, attributes.unreads)
         }
 
-        listener.chatItemClicked(chat)
+        listener.chatItemClicked(chat, adapterPosition)
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
