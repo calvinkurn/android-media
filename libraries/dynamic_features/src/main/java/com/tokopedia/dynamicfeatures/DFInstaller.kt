@@ -12,7 +12,7 @@ object DFInstaller {
     internal var sessionId: Int? = null
 
     private var listener: SplitInstallListener? = null
-    private var moduleSize:Long = 0
+    private var moduleSize: Long = 0
 
     private class SplitInstallListener(val application: Application,
                                        val moduleNameToDownload: List<String>) : SplitInstallStateUpdatedListener {
@@ -34,7 +34,7 @@ object DFInstaller {
                     logSuccessStatus(application, moduleNameToDownload)
                 }
                 SplitInstallSessionStatus.FAILED -> {
-                    logFailedStatus(application, moduleNameToDownload, it.errorCode())
+                    logFailedStatus(application, moduleNameToDownload, it.errorCode().toString())
                 }
             }
         }
@@ -73,9 +73,10 @@ object DFInstaller {
                 sessionId = it
             }
         }.addOnFailureListener {
-            val errorCode = (it as? SplitInstallException)?.errorCode ?: 0
+            val errorCode = (it as? SplitInstallException)?.errorCode
             sessionId = null
-            logFailedStatus(applicationContext, moduleNameToDownload, errorCode)
+            logFailedStatus(applicationContext, moduleNameToDownload,
+                errorCode?.toString() ?: it.toString())
             unregisterListener()
         }
         registerListener(application, moduleNameToDownload)
@@ -102,7 +103,7 @@ object DFInstaller {
         logStatus(context, "Installed Module Background", moduleNameToDownload.joinToString(), moduleSize)
     }
 
-    internal fun logFailedStatus(context: Context, moduleNameToDownload: List<String>, errorCode: Int = 0) {
+    internal fun logFailedStatus(context: Context, moduleNameToDownload: List<String>, errorCode: String = "") {
         logStatus(context, "Failed Module Background", moduleNameToDownload.joinToString(), moduleSize, errorCode)
     }
 
@@ -110,7 +111,7 @@ object DFInstaller {
                            tag: String = "",
                            modulesName: String,
                            moduleSize: Long = 0,
-                           errorCode: Int = 0) {
+                           errorCode: String = "") {
         val messageStringBuilder = StringBuilder()
         messageStringBuilder.append("P1$tag {$modulesName}; ")
 
