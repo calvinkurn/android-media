@@ -35,7 +35,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
 
         Map<String, String> headerMap = AuthHelper.getDefaultHeaderMap(
                 path, strParam, method, contentType,
-                authKey, "dd MMM yy HH:mm ZZZ", userSession.getUserId(), userSession.getAccessToken());
+                authKey, "dd MMM yy HH:mm ZZZ", userSession);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH);
         String date = dateFormat.format(new Date());
