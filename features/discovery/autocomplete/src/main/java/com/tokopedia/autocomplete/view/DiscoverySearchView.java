@@ -464,7 +464,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         mOldQueryText = newText.toString();
 
-        if (mSuggestionFragment != null) {
+        if (mSuggestionFragment != null  && !TextUtils.equals(newText, mOldQueryText)) {
             mSuggestionFragment.search(searchParameter);
         }
     }
@@ -706,6 +706,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private void textViewRequestFocus() {
         mSearchSrcTextView.setText(lastQuery);
+        onTextChanged(lastQuery);
 
         searchTextViewShowKeyboard();
     }
