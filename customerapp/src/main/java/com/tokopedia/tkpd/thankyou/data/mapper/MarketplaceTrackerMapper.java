@@ -355,14 +355,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     private String getDimension83Value(FreeShipping freeShipping) {
-        System.out.println(freeShipping);
-
-        if (freeShipping != null) {
-            if (freeShipping.isEligibleFreeShipping()) {
-                return "bebas ongkir";
-            } else {
-                return "none/others";
-            }
+        if (freeShipping != null && freeShipping.isEligibleFreeShipping()) {
+            return "bebas ongkir";
         } else {
             return "none/others";
         }
