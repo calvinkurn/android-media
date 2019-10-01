@@ -84,15 +84,15 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 gatewayId = data.gatewayId,
                 isCoupon = data.isCoupon,
                 trackingDetailUiModel = mapTrackingDetails(data.trackingDetail),
-                tickerInfoUiModel = mapTickerInfo(data.tickerInfo)
+                tickerInfoUiModel = mapTickerInfo(data.freeOngkir)
         )
     }
 
-    private fun mapTickerInfo(tickerInfo: TickerInfo): TickerInfoUiModel {
+    private fun mapTickerInfo(freeOngkir: FreeOngkir): TickerInfoUiModel {
         return TickerInfoUiModel(
-                uniqueId = tickerInfo.uniqueId,
-                statusCode = tickerInfo.statusCode,
-                message = tickerInfo.message
+                tickerMessage = freeOngkir.tickerMessage,
+                errorCode = freeOngkir.errorCode,
+                errorMessage = freeOngkir.errorMessage
         )
     }
 

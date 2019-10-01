@@ -882,8 +882,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                        if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
-                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
+                        if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getTickerMessage())) {
+                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getTickerMessage());
                             getView().updateTickerAnnouncementMessage();
                         }
                         if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR")) {
@@ -1563,7 +1563,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
 
-        // Fire and forget
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override

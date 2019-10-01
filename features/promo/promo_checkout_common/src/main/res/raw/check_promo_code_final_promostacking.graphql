@@ -66,10 +66,10 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
           text
         }
       }
-      ticker_info {
-        unique_id
-        status_code
-        message
+      free_ongkir {
+        ticker_message
+        error_code
+        error_code
       }
     }
   }
