@@ -453,7 +453,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             FlightCalendarOneWayWidget flightCalendarDialog = FlightCalendarOneWayWidget.Companion.newInstance(
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate));
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
+                    getCurrentDashboardViewModel().getDepartureAirport().getAirportCode(),
+                    getCurrentDashboardViewModel().getArrivalAirport().getAirportCode(),
+                    getCurrentDashboardViewModel().getFlightClass().getTitle());
             flightCalendarDialog.setListener(dateSelected -> {
                 Calendar calendarSelected = Calendar.getInstance();
                 calendarSelected.setTime(dateSelected);

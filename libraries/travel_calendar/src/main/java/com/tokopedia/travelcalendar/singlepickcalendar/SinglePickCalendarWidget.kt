@@ -12,10 +12,7 @@ import android.widget.ProgressBar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
-import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.YYYY_MM_DD
-import com.tokopedia.travelcalendar.stringToDate
-import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
+import com.tokopedia.travelcalendar.*
 import com.tokopedia.travelcalendar.viewmodel.TravelHolidayCalendarViewModel
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import kotlinx.coroutines.GlobalScope
@@ -61,15 +58,15 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
     fun getBundleData() {
         arguments?.run {
             this.getString(MIN_DATE)?.let {
-                minDate = it.stringToDate(YYYY_MM_DD)
+                minDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
             }
 
             this.getString(MAX_DATE)?.let {
-                maxDate = it.stringToDate(YYYY_MM_DD)
+                maxDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
             }
 
             this.getString(SELECTED_DATE)?.let {
-                selectedDate = it.stringToDate(YYYY_MM_DD)
+                selectedDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
             }
         }
     }

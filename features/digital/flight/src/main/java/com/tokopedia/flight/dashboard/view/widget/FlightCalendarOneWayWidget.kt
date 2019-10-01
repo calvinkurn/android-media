@@ -22,6 +22,9 @@ import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent
 import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarViewModel
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarViewModel
+import com.tokopedia.travelcalendar.TRAVEL_CAL_M
+import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
+import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -42,6 +45,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     lateinit var minDate: Date
     lateinit var maxDate: Date
     lateinit var selectedDate: Date
+    lateinit var departureCode: String
+    lateinit var arrivalCode: String
+    lateinit var classFlight: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,16 +65,28 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         }
 
         arguments?.run {
-            this.getString(MIN_DATE)?.let {
+            this.getString(ARG_MIN_DATE)?.let {
                 minDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
             }
 
-            this.getString(MAX_DATE)?.let {
+            this.getString(ARG_MAX_DATE)?.let {
                 maxDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
             }
 
-            this.getString(SELECTED_DATE)?.let {
+            this.getString(ARG_SELECTED_DATE)?.let {
                 selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
+            }
+
+            this.getString(ARG_DEPARTURE_CODE)?.let {
+                departureCode = it
+            }
+
+            this.getString(ARG_ARRIVAL_CODE)?.let {
+                arrivalCode = it
+            }
+
+            this.getString(ARG_CLASS)?.let {
+                classFlight = it
             }
         }
     }
@@ -114,25 +132,28 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                 ?.withSelectedDate(selectedDate)
 
-        fareCalendarViewModel.fareFlightCalendarData.observe(this, android.arch.lifecycle.Observer {
-            it?.let {
-                calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
-            }
-        })
-
-        calendar?.run {
-            this.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
+        calendar?.let { calendar ->
+            calendar.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
                 override fun onScrolled(date: Date) {
-                    val mapFareParam = hashMapOf<String, Any>()
-                    mapFareParam.put("departCode", "CGK")
-                    mapFareParam.put("arrivalCode", "DPS")
-                    mapFareParam.put("year", TravelDateUtil.dateToString(TravelDateUtil.YYYY, date))
-                    mapFareParam.put("month", TravelDateUtil.dateToString("M", date))
-                    mapFareParam.put("class", "1")
-                    activity?.run {
-                        fareCalendarViewModel.getFareFlightCalendar(
-                                GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
-                                mapFareParam)
+                    if (::departureCode.isInitialized && ::arrivalCode.isInitialized && ::classFlight.isInitialized) {
+                        val mapFareParam = hashMapOf<String, Any>()
+                        mapFareParam.put(PARAM_DEPARTURE_CODE, departureCode)
+                        mapFareParam.put(PARAM_ARRIVAL_CODE, arrivalCode)
+                        mapFareParam.put(PARAM_YEAR, date.dateToString(TRAVEL_CAL_YYYY))
+                        mapFareParam.put(PARAM_MONTH, TravelDateUtil.dateToString(TRAVEL_CAL_M, date))
+                        mapFareParam.put(PARAM_CLASS, classFlight)
+                        activity?.run {
+                            fareCalendarViewModel.getFareFlightCalendar(
+                                    GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
+                                    mapFareParam)
+
+                            fareCalendarViewModel.fareFlightCalendarData.observe(this, android.arch.lifecycle.Observer {
+                                it?.let {
+                                    val subtitleList = mapFareFlightToSubtitleCalendar(it)
+                                    calendar.setSubTitles(subtitleList)
+                                }
+                            })
+                        }
                     }
                 }
             }
@@ -175,17 +196,30 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
     companion object {
 
-        private const val MIN_DATE = "min_date"
-        private const val MAX_DATE = "max_date"
-        private const val SELECTED_DATE = "selected_date"
+        private const val ARG_MIN_DATE = "arg_min_date"
+        private const val ARG_MAX_DATE = "arg_max_date"
+        private const val ARG_SELECTED_DATE = "arg_selected_date"
+        private const val ARG_DEPARTURE_CODE = "arg_departure_code"
+        private const val ARG_ARRIVAL_CODE = "arg_arrival_code"
+        private const val ARG_CLASS = "arg_class"
+
+        private const val PARAM_DEPARTURE_CODE = "departCode"
+        private const val PARAM_ARRIVAL_CODE = "arrivalCode"
+        private const val PARAM_YEAR = "year"
+        private const val PARAM_MONTH = "month"
+        private const val PARAM_CLASS = "class"
 
         fun newInstance(minDateString: String, maxDateString: String,
-                        selectedDate: String): FlightCalendarOneWayWidget =
+                        selectedDate: String, departureCode: String, arrivalCode: String,
+                        classFlight: String): FlightCalendarOneWayWidget =
                 FlightCalendarOneWayWidget().also {
                     it.arguments = Bundle().apply {
-                        putString(MIN_DATE, minDateString)
-                        putString(MAX_DATE, maxDateString)
-                        putString(SELECTED_DATE, selectedDate)
+                        putString(ARG_MIN_DATE, minDateString)
+                        putString(ARG_MAX_DATE, maxDateString)
+                        putString(ARG_SELECTED_DATE, selectedDate)
+                        putString(ARG_DEPARTURE_CODE, departureCode)
+                        putString(ARG_ARRIVAL_CODE, arrivalCode)
+                        putString(ARG_CLASS, classFlight)
                     }
                 }
     }

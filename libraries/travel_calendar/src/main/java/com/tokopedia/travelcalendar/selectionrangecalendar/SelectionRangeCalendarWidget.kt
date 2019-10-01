@@ -10,11 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
-import com.tokopedia.travelcalendar.YYYY_MM_DD
+import com.tokopedia.travelcalendar.*
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
-import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,10 +57,10 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
 
         arguments?.let {
             if (it.getString(ARG_MIN_DATE) != null)
-                minDate = it.getString(ARG_MIN_DATE).stringToDate(YYYY_MM_DD)
+                minDate = it.getString(ARG_MIN_DATE).stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             if (it.getString(ARG_MAX_DATE) != null)
-                maxDate = it.getString(ARG_MAX_DATE).stringToDate(YYYY_MM_DD)
+                maxDate = it.getString(ARG_MAX_DATE).stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             if (it.getInt(ARG_RANGE_YEAR) != null)
                 rangeYear = it.getInt(ARG_RANGE_YEAR)
@@ -207,7 +204,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
         for (holiday in holidayData.data) {
-            legendList.add(Legend(holiday.attribute.date.stringToDate(YYYY_MM_DD),
+            legendList.add(Legend(holiday.attribute.date.stringToDate(TRAVEL_CAL_YYYY_MM_DD),
                     holiday.attribute.label))
         }
         return legendList

@@ -8,13 +8,14 @@ import java.util.*
  * Created by nabillasabbaha on 30/09/19.
  */
 
-const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-const val YYYY_MM_DD = "yyyy-MM-dd"
-const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
-const val VIEW_FORMAT_WITHOUT_YEAR = "dd MMM"
-const val YYYYMMDD = "yyyyMMdd"
-const val YYYY = "yyyy"
-const val MM = "MM"
+const val TRAVEL_CAL_YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+const val TRAVEL_CAL_YYYY_MM_DD = "yyyy-MM-dd"
+const val TRAVEL_CAL_DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
+const val TRAVEL_CAL_VIEW_FORMAT_WITHOUT_YEAR = "dd MMM"
+const val TRAVEL_CAL_YYYYMMDD = "yyyyMMdd"
+const val TRAVEL_CAL_YYYY = "yyyy"
+const val TRAVEL_CAL_MM = "MM"
+const val TRAVEL_CAL_M = "M"
 
 private val DEFAULT_LOCALE = Locale("in", "ID")
 
