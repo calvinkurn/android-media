@@ -1,0 +1,35 @@
+// project dependencies
+include "libraries:inappupdate"
+
+// search dependencies
+include "features:discovery:search"
+
+// search dependencies - features
+include "features:common:resources_common"
+
+include "features:content:kol_common"
+
+include "features:discovery:discovery_common"
+include "features:discovery:filter"
+include "features:discovery:productcard"
+include "features:discovery:topadssdk"
+include "features:discovery:wishlist_common"
+
+include "features:merchant:gold_merchant_resource"
+include "features:merchant:shop_common"
+
+// search dependencies - libraries
+include "libraries:analytics"
+include "libraries:applink"
+include "libraries:cache_api"
+include "libraries:cameraview"
+include "libraries:image_picker"
+include "libraries:kotlin_extensions"
+include "libraries:linker"
+include "libraries:remote_config"
+include "libraries:track"
+include "libraries:tracking_optimizer"
+
+// search dependencies - tkpdxxx
+include "tkpdabstraction"
+include "tkpddesign"
