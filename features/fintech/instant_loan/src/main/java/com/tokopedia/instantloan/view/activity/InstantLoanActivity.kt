@@ -593,7 +593,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
 
-    object DeepLinkIntents {
+    /*object DeepLinkIntents {
         //        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
         @JvmStatic
         fun getInstantLoanCallingIntent(context: Context, bundle: Bundle): Intent {
@@ -601,6 +601,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
             intent.putExtras(bundle)
             return intent
         }
-    }
+    }*/
 }
 
