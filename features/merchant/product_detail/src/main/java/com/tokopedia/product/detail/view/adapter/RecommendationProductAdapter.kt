@@ -4,6 +4,8 @@ import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
@@ -72,6 +74,9 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
 
                 setOnClickListener {
                     productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
+                    context?.run {
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString())
+                    }
                 }
             }
         }
