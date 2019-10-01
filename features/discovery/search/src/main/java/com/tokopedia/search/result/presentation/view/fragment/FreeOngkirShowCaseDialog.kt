@@ -15,19 +15,20 @@ import kotlinx.android.synthetic.main.search_result_free_ongkir_show_case_dialog
 class FreeOngkirShowCaseDialog: Fragment() {
 
     companion object {
-        @JvmField
-        val TAG: String = FreeOngkirShowCaseDialog::class.java.simpleName
-
-        @JvmStatic
-        fun newInstance(): FreeOngkirShowCaseDialog {
-            return FreeOngkirShowCaseDialog()
-        }
-
         @JvmStatic
         fun show(activity: FragmentActivity) {
+            try {
+                tryShowFragment(activity)
+            }
+            catch(e: Exception) {
+
+            }
+        }
+
+        private fun tryShowFragment(activity: FragmentActivity) {
             if (shouldShowFreeOngkirShowCase(activity)) {
                 val supportFragmentManager = activity.supportFragmentManager.beginTransaction()
-                supportFragmentManager.show(newInstance())
+                supportFragmentManager.add(R.id.rootSearchResult, FreeOngkirShowCaseDialog())
                 supportFragmentManager.commit()
             }
         }
@@ -43,7 +44,7 @@ class FreeOngkirShowCaseDialog: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.search_result_free_ongkir_show_case_dialog, null)
+        return inflater.inflate(R.layout.search_result_free_ongkir_show_case_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,12 +55,12 @@ class FreeOngkirShowCaseDialog: Fragment() {
 
     private fun onClickButtonOK() {
         activity?.let { activity ->
-            setFreeOngkirLocalCacheAlreadyShown(activity)
+            setFreeOngkirShowCaseAlreadyShown(activity)
             dismiss(activity)
         }
     }
 
-    private fun setFreeOngkirLocalCacheAlreadyShown(activity: FragmentActivity) {
+    private fun setFreeOngkirShowCaseAlreadyShown(activity: FragmentActivity) {
         val freeOngkirLocalCache = getFreeOngkirShowCaseLocalCache(activity)
         freeOngkirLocalCache.putBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
         freeOngkirLocalCache.applyEditor()

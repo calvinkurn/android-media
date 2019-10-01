@@ -1152,7 +1152,7 @@ public class ProductListFragment
     @Override
     public void showFreeOngkirShowCase() {
         if (getActivity() != null) {
-            FreeOngkirShowCaseDialog.show(getActivity());
+            recyclerView.postDelayed(() -> FreeOngkirShowCaseDialog.show(getActivity()), 300);
         }
     }
 }
