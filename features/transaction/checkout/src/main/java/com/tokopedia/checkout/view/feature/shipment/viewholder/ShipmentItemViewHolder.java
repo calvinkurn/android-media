@@ -149,6 +149,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgInsuranceInfo;
     private LinearLayout llDropshipper;
     private CheckBox cbDropshipper;
+    private Typography tvDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
     private AppCompatEditText etShipperName;
@@ -301,6 +302,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgInsuranceInfo = itemView.findViewById(R.id.img_insurance_info);
         llDropshipper = itemView.findViewById(R.id.ll_dropshipper);
         cbDropshipper = itemView.findViewById(R.id.cb_dropshipper);
+        tvDropshipper = itemView.findViewById(R.id.label_dropshipper);
         imgDropshipperInfo = itemView.findViewById(R.id.img_dropshipper_info);
         llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
         etShipperName = itemView.findViewById(R.id.et_shipper_name);
@@ -1044,16 +1046,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     checkDropshipperState(shipmentCartItemModel);
                 }
 
-                llDropshipper.setOnClickListener(getDropshipperClickListener());
-                imgDropshipperInfo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showBottomSheet(imgDropshipperInfo.getContext(),
-                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
-                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
-                                R.drawable.ic_dropshipper);
-                    }
-                });
+                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                    cbDropshipper.setChecked(false);
+                    cbDropshipper.setEnabled(false);
+                    llDropshipper.setOnClickListener(null);
+                    tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_disabled));
+                    imgDropshipperInfo.setOnClickListener(v -> showBottomSheet(imgDropshipperInfo.getContext(),
+                            imgDropshipperInfo.getContext().getString(R.string.title_dropshipper_army),
+                            imgDropshipperInfo.getContext().getString(R.string.desc_dropshipper_army),
+                            R.drawable.ic_dropshipper));
+                } else {
+                    tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+                    llDropshipper.setOnClickListener(getDropshipperClickListener());
+                    imgDropshipperInfo.setOnClickListener(view -> showBottomSheet(imgDropshipperInfo.getContext(),
+                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
+                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
+                            R.drawable.ic_dropshipper));
+                }
 
                 etShipperName.addTextChangedListener(new TextWatcher() {
                     @Override
