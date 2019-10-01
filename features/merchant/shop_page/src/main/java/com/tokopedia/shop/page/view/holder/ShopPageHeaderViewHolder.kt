@@ -62,14 +62,15 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             displayAsBuyer()
         }
 
-        if(true)
+        if(shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)
         else
             view.label_free_ongkir.hide()
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
-        val labelTitle = remoteConfig.getString(LABEL_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
+//        val labelTitle = remoteConfig.getString(LABEL_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
+        val labelTitle = LABEL_FREE_ONGKIR_DEFAULT_TITLE
         if (labelTitle.isNotEmpty()) {
             view.label_free_ongkir.show()
             view.label_free_ongkir.text = labelTitle
