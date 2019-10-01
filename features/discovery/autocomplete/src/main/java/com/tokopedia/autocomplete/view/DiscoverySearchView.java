@@ -462,11 +462,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mOnQueryChangeListener.onQueryTextChange(newText.toString());
         }
 
-        mOldQueryText = newText.toString();
-
         if (mSuggestionFragment != null  && !TextUtils.equals(newText, mOldQueryText)) {
             mSuggestionFragment.search(searchParameter);
         }
+
+        mOldQueryText = newText.toString();
     }
 
     private void onSubmitQuery() {
