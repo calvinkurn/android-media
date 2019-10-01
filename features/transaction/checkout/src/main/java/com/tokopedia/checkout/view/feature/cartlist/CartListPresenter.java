@@ -1249,6 +1249,8 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
         enhancedECommerceProductCartMapData.setPromoCode(cartItemData.getOriginData().getPromoCodes());
         enhancedECommerceProductCartMapData.setPromoDetails(cartItemData.getOriginData().getPromoDetails());
+        enhancedECommerceProductCartMapData.setDimension83(cartItemData.getOriginData().isFreeShipping() ?
+                EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR : EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         return enhancedECommerceProductCartMapData;
     }
 

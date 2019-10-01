@@ -58,6 +58,8 @@
     <string name="label_choose_pinpoint">Tandai Lokasi Pickup</string>
     <string name="message_pinpoint_too_far">Jarak terlalu jauh dari penjual, Anda tidak dapat mengunakan kurir instan</string>
     <string name="label_dropshipper_new">Dropshipper</string>
+    <string name="title_dropshipper_army">Dropshipper tidak tersedia</string>
+    <string name="desc_dropshipper_army">Pengiriman secara dropshipping tidak bisa dipilih karena kamu menggunakan Bebas Ongkir</string>
     <string name="label_accept_partial_order_new">Terima Sebagian</string>
     <string name="label_shipment_fee">Total Ongkos Kirim</string>
     <string name="label_order_shipping_address_new">Alamat Pengiriman</string>

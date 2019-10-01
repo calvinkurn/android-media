@@ -9,10 +9,12 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
@@ -282,7 +284,8 @@ public interface ShipmentContract {
                                              ShipmentDetailData shipmentDetailData,
                                              ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList,
-                                             boolean isInitialLoad);
+                                             boolean isInitialLoad, ArrayList<Product> products,
+                                             String cartString);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -307,6 +310,10 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
+
+        TickerAnnouncementHolderData getTickerAnnouncementHolderData();
+
+        void setTickerAnnouncementHolderData(TickerAnnouncementHolderData tickerAnnouncementHolderData);
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
 
