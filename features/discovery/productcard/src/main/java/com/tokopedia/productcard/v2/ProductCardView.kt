@@ -502,7 +502,7 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initTopAdsIcon(isTopAds: Boolean) {
+    private fun initTopAdsIcon(isVisible: Boolean) {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 

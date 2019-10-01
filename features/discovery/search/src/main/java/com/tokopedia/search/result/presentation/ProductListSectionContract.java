@@ -105,8 +105,6 @@ public interface ProductListSectionContract {
         void hideErrorMessage();
 
         void showFreeOngkirShowCase();
-
-        void hideFreeOngkirShowCase();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
@@ -117,7 +115,5 @@ public interface ProductListSectionContract {
         void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
-
-        void onClickButtonOKFreeOngkir();
     }
 }
