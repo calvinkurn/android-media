@@ -522,15 +522,18 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
         if (list.isNotEmpty() && shopInfo != null) {
-            shopPageTracking?.impressionProductList(
-                    isOwner,
-                    ListTitleTypeDef.ETALASE,
-                    selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                    "", attribution),
-                    list, shopProductAdapter.shopProductViewModelList.size, shopInfo!!.shopCore.shopID,
-                    shopInfo!!.shopCore.name
-            )
+            shopInfo?.let {
+                shopPageTracking?.impressionProductList(
+                        isOwner,
+                        ListTitleTypeDef.ETALASE,
+                        selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                        "", attribution),
+                        list, shopProductAdapter.shopProductViewModelList.size, shopInfo!!.shopCore.shopID,
+                        shopInfo!!.shopCore.name,
+                        it.freeOngkir.isActive
+                )
+            }
         }
 
         hideLoading()
@@ -589,12 +592,15 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 etalaseHighlightCarouselViewModels.add(
                         EtalaseHighlightCarouselViewModel(listItem, viewModel.etalaseHighLight[index]))
                 if (listItem.isNotEmpty()) {
-                    shopPageTracking?.impressionProductList(isOwner,
-                            ListTitleTypeDef.HIGHLIGHTED,
-                            viewModel.etalaseHighLight[index].etalaseName,
-                            customDimensionShopPageAttribution,
-                            listItem, 0, shopInfo!!.shopCore.shopID,
-                            shopInfo!!.shopCore.name)
+                    shopInfo?.let {shopInfo ->
+                        shopPageTracking?.impressionProductList(isOwner,
+                                ListTitleTypeDef.HIGHLIGHTED,
+                                viewModel.etalaseHighLight[index].etalaseName,
+                                customDimensionShopPageAttribution,
+                                listItem, 0, shopInfo!!.shopCore.shopID,
+                                shopInfo.shopCore.name,shopInfo.freeOngkir.isActive)
+                    }
+
                 }
             }
 
@@ -673,14 +679,18 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
         if (list.isNotEmpty() && shopInfo != null) {
-            shopPageTracking?.impressionProductList(
-                    isOwner,
-                    ListTitleTypeDef.HIGHLIGHTED,
-                    FEATURED_PRODUCT,
-                    CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                            shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution),
-                    list, 0,
-                    shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+            shopInfo?.let {
+                shopPageTracking?.impressionProductList(
+                        isOwner,
+                        ListTitleTypeDef.HIGHLIGHTED,
+                        FEATURED_PRODUCT,
+                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution),
+                        list, 0,
+                        shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                        it.freeOngkir.isActive
+                )
+            }
         }
         shopProductAdapter.refreshSticky()
     }
@@ -863,29 +873,38 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                   productPosition: Int) {
         if (shopInfo != null) {
             if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.HIGHLIGHTED,
-                        FEATURED_PRODUCT,
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.HIGHLIGHTED,
+                            FEATURED_PRODUCT,
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             } else if (shopTrackType == ShopTrackProductTypeDef.PRODUCT) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.ETALASE,
-                        selectedEtalaseName,
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.ETALASE,
+                            selectedEtalaseName,
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             } else if (shopTrackType == ShopTrackProductTypeDef.ETALASE_HIGHLIGHT) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.HIGHLIGHTED,
-                        shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.HIGHLIGHTED,
+                            shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
