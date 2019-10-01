@@ -1,4 +1,3 @@
-include ':saldo_deposit'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
