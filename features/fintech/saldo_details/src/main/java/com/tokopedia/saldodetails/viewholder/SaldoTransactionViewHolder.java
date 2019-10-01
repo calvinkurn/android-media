@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 
 import java.text.ParseException;
@@ -33,7 +32,7 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
     public SaldoTransactionViewHolder(View itemView) {
         super(itemView);
         this.context = itemView.getContext();
-        dateTV = itemView.findViewById(com.tokopedia.design.R.id.date);
+        dateTV = itemView.findViewById(com.tokopedia.saldodetails.R.id.saldo_transaction_date);
         note = itemView.findViewById(com.tokopedia.saldodetails.R.id.note);
         nominal = itemView.findViewById(com.tokopedia.saldodetails.R.id.nominal);
         heading = itemView.findViewById(com.tokopedia.saldodetails.R.id.transaction_heading);
