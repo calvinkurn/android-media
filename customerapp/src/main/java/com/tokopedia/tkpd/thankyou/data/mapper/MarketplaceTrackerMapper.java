@@ -231,14 +231,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return s;
     }
 
-    private String getFreeShippingDimensionData(Boolean isFreeShipping) {
-        if (isFreeShipping) {
-            return "";
-        } else {
-            return "none/others";
-        }
-    }
-
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
         return graphqlResponse != null
                 && graphqlResponse.body() != null
@@ -345,6 +337,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
+            product.setDimension83(getDimension83Value(orderData));
 
             products.add(product);
         }
@@ -357,6 +350,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return "";
+    }
+
+    private String getDimension83Value(Boolean isFreeShipping) {
+        if (isFreeShipping) {
+            return "bebas ongkir";
+        } else {
+            return "none/others";
+        }
     }
 
     private String getDimension54Value(boolean isFulfillment) {
