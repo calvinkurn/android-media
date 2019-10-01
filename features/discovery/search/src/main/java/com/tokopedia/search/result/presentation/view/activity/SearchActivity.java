@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -82,18 +81,6 @@ public class SearchActivity extends BaseActivity
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
-
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        Uri uri = Uri.parse(bundle.getString(DeepLink.URI));
-
-        if(uri == null) return new Intent();
-
-        return RouteManager.getIntent(
-                context,
-                ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + uri.getEncodedQuery()
-        );
-    }
 
     private Toolbar toolbar;
     private FrameLayout container;
