@@ -149,6 +149,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgInsuranceInfo;
     private LinearLayout llDropshipper;
     private CheckBox cbDropshipper;
+    private Typography tvDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
     private AppCompatEditText etShipperName;
@@ -301,6 +302,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         imgInsuranceInfo = itemView.findViewById(R.id.img_insurance_info);
         llDropshipper = itemView.findViewById(R.id.ll_dropshipper);
         cbDropshipper = itemView.findViewById(R.id.cb_dropshipper);
+        tvDropshipper = itemView.findViewById(R.id.label_dropshipper);
         imgDropshipperInfo = itemView.findViewById(R.id.img_dropshipper_info);
         llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
         etShipperName = itemView.findViewById(R.id.et_shipper_name);
@@ -724,12 +726,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         });
         llCourierContainer.setVisibility(View.VISIBLE);
+        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
         tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
                         currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
         });
+
+        tvDurationPrice.setVisibility(View.GONE);
+        tvDurationStrikedPrice.setVisibility(View.GONE);
 
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -768,9 +774,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
             }
             tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
-
-            // hide courier selection
-            llCourierContainer.setVisibility(View.GONE);
         } else {
             tvLogTicker.setVisibility(View.GONE);
         }
@@ -802,6 +805,36 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
+
+            // Project Army
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                if (courierData.isHideShipperName()) {
+                    // Hide shipper name
+                    llCourierContainer.setVisibility(View.GONE);
+                } else {
+                    // Show shipper name then disable
+                    llCourierContainer.setVisibility(View.VISIBLE);
+                    tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
+                    tvCourierSelection.setOnClickListener(null);
+                }
+
+                if (courierData.getDiscountedRate() == 0) {
+                    // Gratis Shipping Price
+                    tvLogTicker.setVisibility(View.GONE);
+                    tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
+                } else if (courierData.getDiscountedRate() > 0) {
+                    // Discounted Shipping Price
+                    tvDurationStrikedPrice.setVisibility(View.VISIBLE);
+                    tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierData.getShippingRate(), false
+                    ));
+                    tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    tvDurationPrice.setVisibility(View.VISIBLE);
+                    tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierData.getDiscountedRate(), false
+                    ));
+                }
+            }
 
             if (courierData.getOntimeDelivery() != null &&
                     courierData.getOntimeDelivery().getAvailable()
@@ -1026,16 +1059,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     checkDropshipperState(shipmentCartItemModel);
                 }
 
-                llDropshipper.setOnClickListener(getDropshipperClickListener());
-                imgDropshipperInfo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showBottomSheet(imgDropshipperInfo.getContext(),
-                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
-                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
-                                R.drawable.ic_dropshipper);
-                    }
-                });
+                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                    cbDropshipper.setChecked(false);
+                    cbDropshipper.setEnabled(false);
+                    llDropshipper.setOnClickListener(null);
+                    tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_disabled));
+                    imgDropshipperInfo.setOnClickListener(v -> showBottomSheet(imgDropshipperInfo.getContext(),
+                            imgDropshipperInfo.getContext().getString(R.string.title_dropshipper_army),
+                            imgDropshipperInfo.getContext().getString(R.string.desc_dropshipper_army),
+                            R.drawable.ic_dropshipper));
+                } else {
+                    tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+                    llDropshipper.setOnClickListener(getDropshipperClickListener());
+                    imgDropshipperInfo.setOnClickListener(view -> showBottomSheet(imgDropshipperInfo.getContext(),
+                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
+                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
+                            R.drawable.ic_dropshipper));
+                }
 
                 etShipperName.addTextChangedListener(new TextWatcher() {
                     @Override

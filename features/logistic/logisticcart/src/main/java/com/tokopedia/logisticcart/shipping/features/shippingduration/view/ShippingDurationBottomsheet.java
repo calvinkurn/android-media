@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -379,11 +378,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setLogPromoMsg(data.getDisableText());
         courierData.setDiscountedRate(data.getDiscountedRate());
         courierData.setShippingRate(data.getShippingRate());
+        courierData.setBenefitAmount(data.getBenefitAmount());
+        courierData.setPromoTitle(data.getTitle());
+        courierData.setHideShipperName(data.getHideShipperName());
 
         shippingDurationBottomsheetListener.onLogisticPromoChosen(
                 serviceData.getShippingCourierViewModelList(), courierData,
                 presenter.getRecipientAddressModel(), mCartPosition,
-                serviceData.getServiceData(), false, data);
+                serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
         dismiss();
 
 //        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);

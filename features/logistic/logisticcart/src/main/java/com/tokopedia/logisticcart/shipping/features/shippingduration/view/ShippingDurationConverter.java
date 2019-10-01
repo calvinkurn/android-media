@@ -38,7 +38,7 @@ public class ShippingDurationConverter {
                 promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
                 promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
-                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled());
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
     }
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,

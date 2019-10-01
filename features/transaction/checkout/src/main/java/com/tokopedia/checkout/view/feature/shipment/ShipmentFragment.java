@@ -31,7 +31,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
@@ -77,7 +76,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
@@ -2127,12 +2125,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                       CourierItemData courierData, RecipientAddressModel recipientAddressModel,
                                       int cartPosition, ServiceData serviceData, boolean flagNeedToSetPinpoint,
-                                      LogisticPromoViewModel promo) {
+                                      String promoCode, int selectedServiceId) {
         onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel,
-                cartPosition, promo.getServiceId(), serviceData, flagNeedToSetPinpoint,
+                cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
                 false, false);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
-        String promoCode = promo.getPromoCode();
         if (!flagNeedToSetPinpoint)
             shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition, cartString, promoCode);
     }

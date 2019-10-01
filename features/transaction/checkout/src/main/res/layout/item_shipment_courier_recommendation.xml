@@ -98,6 +98,7 @@
                     android:id="@+id/tv_duration_benefit_striked"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/font_disabled"
                     android:layout_below="@+id/tv_selected_duration_recommendation"
                     tools:text="Rp 10.000"
                     tools:visibility="gone" />

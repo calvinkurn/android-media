@@ -1049,7 +1049,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promo: LogisticPromoViewModel) {
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String, selectedServiceId: Int) {
         // Haven't discussed yet
     }
 
