@@ -35,8 +35,8 @@
                     android:id="@+id/action_up_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
                     app:srcCompat="@drawable/search_ic_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -45,8 +45,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_6"
                     android:paddingBottom="@dimen/dp_6"
                     android:paddingLeft="@dimen/dp_4"

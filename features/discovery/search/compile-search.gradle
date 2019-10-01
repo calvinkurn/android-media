@@ -16,16 +16,12 @@ include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
 
 include "features:merchant:gold_merchant_resource"
-include "features:merchant:shop_common"
 
 // search dependencies - libraries
 include "libraries:analytics"
 include "libraries:applink"
 include "libraries:cache_api"
-include "libraries:cameraview"
-include "libraries:image_picker"
 include "libraries:kotlin_extensions"
-include "libraries:linker"
 include "libraries:remote_config"
 include "libraries:track"
 include "libraries:tracking_optimizer"
