@@ -14,8 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <android.support.constraint.ConstraintLayout
+    <com.tokopedia.unifycomponents.ContainerUnify
         android:id="@+id/backgroundBanner"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,5 +99,5 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@+id/dc_banner_card" />
-    </android.support.constraint.ConstraintLayout>
+    </com.tokopedia.unifycomponents.ContainerUnify>
 </android.support.constraint.ConstraintLayout>
