@@ -216,7 +216,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
-//        SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
         CharacterPerMinuteInterface,
@@ -1138,11 +1137,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return new Intent(context, ContactUsActivity.class);
     }
 
-   /* @Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
-    }*/
-
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
@@ -1251,12 +1245,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    /*@Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }*/
-
     public void onLoginSuccess() {
     }
 
@@ -1273,11 +1261,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getCheckoutIntent(Context context, String deviceid) {
         return null;
     }
-
-    /*@Override
-    public boolean isMerchantCreditLineEnabled() {
-        return false;
-    }*/
 
     public String getDeviceId(Context context) {
         return "";

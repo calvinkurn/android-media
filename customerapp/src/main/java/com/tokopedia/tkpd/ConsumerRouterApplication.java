@@ -1893,11 +1893,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    /*@Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
-    }*/
-
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
     }
@@ -2220,18 +2215,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAddPasswordIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
     }
-
-    /*@Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
-    @Override
-    public boolean isMerchantCreditLineEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
-                true);
-    }*/
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {

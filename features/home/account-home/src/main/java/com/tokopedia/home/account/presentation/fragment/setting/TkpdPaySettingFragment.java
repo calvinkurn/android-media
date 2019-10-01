@@ -151,7 +151,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
                     if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
                         if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                            router.goToSaldo(getActivity());
+                            goToSaldo(getActivity());
                         } else {
                             pvtUserSession.setSaldoIntroPageStatus(true);
                             RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
