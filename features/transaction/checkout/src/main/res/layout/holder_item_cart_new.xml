@@ -113,11 +113,12 @@
 
                     <ImageView
                         android:id="@+id/img_free_shipping"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="67dp"
+                        android:layout_height="@dimen/dp_20"
+                        android:scaleType="fitCenter"
                         android:layout_below="@id/tv_price_changes"
                         android:layout_marginTop="@dimen/dp_4"
-                        tools:background="@color/unify_N75" />
+                        tools:src="@mipmap/ic_launcher" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
