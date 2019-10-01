@@ -105,6 +105,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
@@ -2881,5 +2882,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (index != RecyclerView.NO_POSITION) {
             onNeedUpdateViewItem(index);
         }
+    }
+
+    @Override
+    public void setPromoBenefit(List<SummariesUiModel> summariesUiModels) {
+        shipmentAdapter.setPromoBenefit(summariesUiModels);
+        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void resetPromoBenefit() {
+        shipmentAdapter.resetPromoBenefit();
+        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
 }

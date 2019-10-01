@@ -152,8 +152,24 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 description = summaries.description,
                 type = summaries.type,
                 amountStr = summaries.amountStr,
-                amount = summaries.amount
+                amount = summaries.amount,
+                details = mapSummaryBenefitDetails(summaries.details)
         )
+    }
+
+    private fun mapSummaryBenefitDetails(details: List<Detail>): ArrayList<DetailUiModel> {
+        val listDetails = ArrayList<DetailUiModel>()
+        details.forEach {
+            val detailUiModel = DetailUiModel(
+                    description = it.description,
+                    amount = it.amount,
+                    amountStr = it.amountStr,
+                    type = it.type
+            )
+            listDetails.add(detailUiModel)
+        }
+
+        return listDetails
     }
 
     private fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {
