@@ -1,12 +1,12 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -79,7 +79,7 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
 
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         return getView().getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 

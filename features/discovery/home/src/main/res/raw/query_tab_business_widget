@@ -4,5 +4,8 @@ query HomeWidget() {
       id
       name
     }
+    widget_header{
+        back_color
+    }
   }
 }

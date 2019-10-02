@@ -21,6 +21,7 @@ import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.section.TokopointsSection;
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
 
             @Override
             public void onError(Throwable e) {
-                getView().onError(e.getLocalizedMessage());
+                getView().onError(e.getLocalizedMessage(), NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
 
                 if (getView() != null) getView().onFinishRendering();
             }

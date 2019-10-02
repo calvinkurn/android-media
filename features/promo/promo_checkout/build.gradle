@@ -21,20 +21,22 @@ buildscript {
 }
 
 dependencies {
-
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.applink)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
@@ -43,7 +45,7 @@ project.ext {
     artifactId = 'checkout'
     groupId = 'com.tokopedia.promo'
     versionName = "1.0.0"
-    artifactName ="promocheckout-release"
+    artifactName ="promo_checkout-release"
 }
 
 apply from: '../../../publish_local.gradle'
