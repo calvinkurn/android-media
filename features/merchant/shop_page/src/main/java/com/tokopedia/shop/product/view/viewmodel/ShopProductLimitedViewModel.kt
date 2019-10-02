@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
@@ -76,8 +77,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
     val etalaseHighLight = mutableListOf<ShopEtalaseViewModel>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
 
-    fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false) {
-        getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
+    fun getFeaturedProduct(shopId: String, userId: String, isForceRefresh: Boolean = false) {
+        getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt(), userId.toIntOrZero())
         getShopFeaturedProductUseCase.isFromCacheFirst = !isForceRefresh
 
         launchCatchError(block = {

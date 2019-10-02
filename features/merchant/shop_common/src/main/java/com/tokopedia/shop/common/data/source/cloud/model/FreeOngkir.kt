@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FreeOngkir(
-        @SerializedName("is_active")
+        @SerializedName(value = "is_active", alternate = ["isActive"])
         @Expose
         val isActive: Boolean = false,
 
-        @SerializedName("img_url")
+        @SerializedName(value = "img_url", alternate = ["imgURL"])
         @Expose
         val imgUrl: String = ""
 )

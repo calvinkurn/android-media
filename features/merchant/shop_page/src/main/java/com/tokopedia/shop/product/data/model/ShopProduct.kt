@@ -50,7 +50,7 @@ data class ShopProduct(
         @Expose
         val stock: Int = 0,
 
-        @SerializedName("free_ongkir")
+        @SerializedName("freeOngkir")
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir()
 ){
