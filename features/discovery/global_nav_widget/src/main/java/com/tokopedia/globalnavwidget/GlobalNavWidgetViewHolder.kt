@@ -19,7 +19,7 @@ internal class GlobalNavWidgetViewHolder(
     private val context: Context? = itemView.context
 
     internal fun bind(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavItemContainer?.let {
+        itemView.globalNavItemContainer?.setOnClickListener { _ ->
             listener.onClickItem(item)
         }
 
@@ -32,7 +32,7 @@ internal class GlobalNavWidgetViewHolder(
         }
 
         itemView.globalNavItemInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
-            itemView.globalNavItemName?.text = item.info
+            itemView.globalNavItemInfo?.text = item.info
         }
     }
 }

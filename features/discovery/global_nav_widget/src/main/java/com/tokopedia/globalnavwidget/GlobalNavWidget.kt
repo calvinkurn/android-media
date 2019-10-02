@@ -53,7 +53,8 @@ class GlobalNavWidget: BaseCustomView {
 
         val gradientDrawable = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex]))
+                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex])
+        )
 
         gradientDrawable.cornerRadius = 0f
 
