@@ -137,6 +137,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                         firstVisibleInListview = currentFirstVisible
 
                         // TODO logic load more
+                        // please see ProductDetailFragment > function addLoadMoreImpression
                         viewModel.loadMore()
                     }
 
