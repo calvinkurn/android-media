@@ -179,7 +179,6 @@ public class SearchActivity extends BaseActivity
     private void initToolbar() {
         configureSupportActionBar();
         setSearchTextViewDrawableLeft();
-        configureButtonCart();
         configureToolbarOnClickListener();
     }
 
@@ -198,18 +197,6 @@ public class SearchActivity extends BaseActivity
         searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
     }
 
-    private void configureButtonCart() {
-        if (isCartIconInSearchEnabled()) {
-            showButtonCart();
-        } else {
-            hideButtonCart();
-        }
-    }
-
-    private boolean isCartIconInSearchEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
-    }
-
     private void configureToolbarOnClickListener() {
         searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
@@ -221,23 +208,6 @@ public class SearchActivity extends BaseActivity
     private void onSearchBarClicked() {
         SearchTracking.trackEventClickSearchBar();
         moveToAutoCompleteActivity();
-    }
-
-    private void showButtonCart() {
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
-        if (drawable instanceof LayerDrawable) {
-            CountDrawable countDrawable = new CountDrawable(this);
-            int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
-            countDrawable.setCount(String.valueOf(cartCount));
-            drawable.mutate();
-            ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
-            buttonCart.setImageDrawable(drawable);
-            buttonCart.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideButtonCart() {
-        buttonCart.setVisibility(View.GONE);
     }
 
     private void moveToAutoCompleteActivity() {
@@ -578,7 +548,49 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        configureButtonCart();
         unregisterShake();
+    }
+
+    private void configureButtonCart() {
+        if (isCartIconInSearchEnabled()) {
+            showButtonCart();
+        } else {
+            hideButtonCart();
+        }
+    }
+
+    private boolean isCartIconInSearchEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
+    }
+
+    private void showButtonCart() {
+        if (userSession.isLoggedIn()) {
+            setButtonCartCount();
+        }
+
+        buttonCart.setVisibility(View.VISIBLE);
+    }
+
+    private void setButtonCartCount() {
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
+
+        if (drawable instanceof LayerDrawable) {
+            int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+
+            CountDrawable countDrawable = new CountDrawable(this);
+            countDrawable.setCount(String.valueOf(cartCount));
+
+            drawable.mutate();
+
+            ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+
+            buttonCart.setImageDrawable(drawable);
+        }
+    }
+
+    private void hideButtonCart() {
+        buttonCart.setVisibility(View.GONE);
     }
 
     @Override
