@@ -21,9 +21,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.debug
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
@@ -191,6 +189,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         val index = adapter.list.indexOf(existingThread)
 
 
+        updateItemOnIndex(index, newChat)
+    }
+
+    private fun updateItemOnIndex(index: Int, newChat: IncomingChatWebSocketModel) {
         when {
             //not found on list
             index == -1 -> {
@@ -205,19 +207,18 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
             //found on list, not the first
             index > 0 -> {
-
+                val existingThread: Visitable<Any>? = adapter.list[index]
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
                 existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
                 existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
                 existingThread.attributes?.lastReplyTimeStr = newChat.time
-                adapter.list.removeAt(index)
-                adapter.list.add(0, existingThread)
-                adapter.notifyItemRangeChanged(0, index + 1)
+                adapter.list.swap(index, 0)
+                adapter.notifyItemMoved(index, 0)
                 animateWhenOnTop()
-
             }
             //found on list, and the first item
             else -> {
+                val existingThread: Visitable<Any>? = adapter.list[index]
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
                 existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
                 existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
