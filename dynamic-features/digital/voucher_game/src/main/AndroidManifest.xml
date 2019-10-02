@@ -3,7 +3,7 @@
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="false"
+        dist:onDemand="true"
         dist:title="@string/voucher_game_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>
