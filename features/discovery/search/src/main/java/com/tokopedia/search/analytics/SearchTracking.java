@@ -85,6 +85,7 @@ public class SearchTracking {
         }
 
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
+        TrackApp.getInstance().getGTM().sendScreenV5(screen);
     }
 
     public void eventSearchResultSort(String screenName, String sortByValue) {
@@ -505,7 +506,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickSearchBar() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
