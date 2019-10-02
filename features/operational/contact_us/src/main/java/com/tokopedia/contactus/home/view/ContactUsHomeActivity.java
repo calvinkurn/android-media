@@ -55,7 +55,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             String uri = getIntent().getData().getQueryParameter(URL_KEY);
             if (url != null && url.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(url);
-            } else if (uri!=null && uri.length() > 0) {
+            } else if (uri != null && uri.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(uri);
             } else {
                 return SimpleWebViewWithFilePickerFragment.createInstance(URL_HELP);
@@ -72,6 +72,9 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     }
 
     private boolean isNative() {
+        if (remoteConfig == null) {
+            initRemoteConfig();
+        }
         return remoteConfig.getBoolean(ContactUsHomeContract.CONTACT_US_WEB, false);
     }
 
@@ -105,10 +108,10 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-            if(id==R.id.action_inbox){
-                startActivity(InboxListActivity.getCallingIntent(this));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
+        if (id == R.id.action_inbox) {
+            startActivity(InboxListActivity.getCallingIntent(this));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

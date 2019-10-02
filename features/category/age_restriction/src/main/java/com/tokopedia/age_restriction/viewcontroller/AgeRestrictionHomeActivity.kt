@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.tradein_common.IAccessRequestListener
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
 
@@ -130,6 +131,22 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
     override fun getMenuRes(): Int {
         return 0
+    }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
+    }
+
+    override fun getRootView(): View {
+        return root_view
+    }
+
+    override fun showProgressBar() {
+        progress_bar_layout.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progress_bar_layout.visibility = View.GONE
     }
 
     override fun getLayoutRes(): Int {

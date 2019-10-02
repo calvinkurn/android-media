@@ -232,8 +232,12 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
+        transaction.replace(getRootViewId(), fragment);
         transaction.commit();
+    }
+
+    public int getRootViewId() {
+        return R.id.root_view;
     }
 
     protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
