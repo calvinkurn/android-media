@@ -33,6 +33,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
+import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.CreatePostActivity
 import com.tokopedia.createpost.view.activity.CreatePostImagePickerActivity
@@ -136,10 +137,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                                         onError: (Throwable) -> Unit)
 
     override fun initInjector() {
-//        DaggerCreatePostComponent.builder()
-//                .createPostModule(CreatePostModule(context!!.applicationContext))
-//                .build()
-//                .inject(this)
+        DaggerCreatePostComponent.builder()
+                .createPostModule(CreatePostModule(context!!.applicationContext))
+                .build()
+                .inject(this)
     }
 
     override fun onAttach(context: Context?) {
