@@ -57,7 +57,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 /**
  * @author anggaprasetiyo on 29/01/18.

@@ -51,7 +51,7 @@
                     android:paddingRight="10dp"
                     android:lines="1"
                     android:textColor="#ae31353b"
-                    android:background="@drawable/bg_autocomplete_input"
+                    android:background="@drawable/search_bg_autocomplete_input"
                     app:typographyType="body_2"
                     app:typographyWeight="reguler" />
 
@@ -125,7 +125,7 @@
         android:id="@+id/search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_search_navigation"
+        android:background="@drawable/search_background_search_navigation"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
         android:layout_marginBottom="@dimen/dp_20"

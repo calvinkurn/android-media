@@ -16,19 +16,24 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    
 }
 
 project.ext {
     artifactId = "atc-common"
     groupId = "com.tokopedia.transaction"
     versionName = "1.0.0"
-    artifactName = "transactionatccommon-release"
+    artifactName = "atc_common-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
