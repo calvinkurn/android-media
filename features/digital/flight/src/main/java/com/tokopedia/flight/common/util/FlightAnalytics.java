@@ -730,7 +730,7 @@ public class FlightAnalytics {
         int totalPriceChild = flightViewModel.getChildNumericPrice() * flightViewModel.getCountChild();
         int totalPriceInfant = flightViewModel.getInfantNumericPrice() * flightViewModel.getCountInfant();
 
-        long layoverDayDiff = FlightDateUtil.countDayDifference(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
+        long layoverDayDiff = FlightDateUtil.countDayDifference(FlightDateUtil.YYYYMMDD, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(flightViewModel.getRouteList().size() - 1).getArrivalTimestamp()));
         String dayDiffString = layoverDayDiff > 0 ? String.format(" +%s", layoverDayDiff) : "";
 
