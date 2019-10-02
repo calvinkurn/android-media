@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetOfficialStoreHomeUseCase @Inject constructor(
+class GetOfficialStoreBannerUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
         @Named(QUERY_OFFICIAL_STORE_BANNERS) val query: String
 ): UseCase<OfficialStoreBanners>() {

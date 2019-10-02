@@ -3,10 +3,9 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.official.data.OfficialStoreBanners
-import com.tokopedia.officialstore.official.domain.GetOfficialStoreHomeUseCase
+import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,7 +15,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
-        private val getOfficialStoreBannersUseCase: GetOfficialStoreHomeUseCase,
+        private val getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase,
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
@@ -31,7 +30,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     fun getOfficialStoreBanners(categoryId: String) {
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
-                getOfficialStoreBannersUseCase.params = GetOfficialStoreHomeUseCase.createParams(categoryId.toIntOrNull() ?: 0)
+                getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.
+                        createParams(categoryId.toIntOrNull() ?: 0)
                 getOfficialStoreBannersUseCase.executeOnBackground()
             }
             _officialStoreBannersResult.value = Success(response)

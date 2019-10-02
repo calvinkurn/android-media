@@ -66,7 +66,6 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory()
         adapter = OfficialHomeAdapter(adapterTypeFactory)
-        adapter?.addElement(listOfOfficialHome)
         recyclerView?.adapter = adapter
         return view
     }
@@ -82,8 +81,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    OfficialHomeMapper.mappingBanners(it.data, listOfOfficialHome)
-                    adapter?.notifyItemInserted(0) // banner will always first
+                    OfficialHomeMapper.mappingBanners(it.data, adapter)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)
