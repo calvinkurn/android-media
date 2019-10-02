@@ -17,7 +17,6 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
-import com.tokopedia.shop.product.view.model.FreeOngkirTickerViewModel;
 import com.tokopedia.shop.product.view.model.MembershipStampProgressViewModel;
 import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
@@ -37,7 +36,6 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALAS
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
-import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FREE_ONGKIR_TICKER_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_MEMBERSHIP_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_MERCHANT_VOUCHER_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
@@ -119,10 +117,6 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             this.membershipStampViewModel = membershipStampViewModel;
         }
         setVisitable(DEFAULT_MEMBERSHIP_POSITION, this.membershipStampViewModel);
-    }
-
-    public void setFreeOngkirTickerViewModel(FreeOngkirTickerViewModel freeOngkirTickerViewModel){
-        setVisitable(DEFAULT_FREE_ONGKIR_TICKER_POSITION, freeOngkirTickerViewModel);
     }
 
     public void setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {

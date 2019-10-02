@@ -485,7 +485,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
-            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
+            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
             searchInputView.setListener(object : SearchInputView.Listener {
                 override fun onSearchSubmitted(text: String?) {
