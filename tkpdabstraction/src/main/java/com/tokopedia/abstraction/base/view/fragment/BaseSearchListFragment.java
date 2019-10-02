@@ -54,6 +54,12 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
         return R.id.search_input_view;
     }
 
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(getSwipeRefreshLayoutResourceId());
+    }
+
     @Override
     public void renderList(@NonNull List<T> list) {
         getAdapter().clearAllElements();
