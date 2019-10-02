@@ -8,7 +8,7 @@ import android.view.ViewGroup
  */
 abstract class BaseAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    protected val delegatesManager = AdapterDelegatesManager<Any>()
+    protected val delegatesManager = AdapterDelegatesManager<T>()
     protected val itemList: MutableList<T> = mutableListOf()
 
     fun setItems(itemList: List<T>) {
@@ -30,11 +30,11 @@ abstract class BaseAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     @Suppress("UNCHECKED_CAST")
     override fun getItemViewType(position: Int): Int {
-        return delegatesManager.getItemViewType(itemList as List<Any>, position)
+        return delegatesManager.getItemViewType(itemList, position)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return delegatesManager.onBindViewHolder(itemList as List<Any>, position, holder)
+        return delegatesManager.onBindViewHolder(itemList, position, holder)
     }
 }

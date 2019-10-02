@@ -6,9 +6,9 @@ import android.view.ViewGroup
 /**
  * Created by jegul on 2019-10-01.
  */
-abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder> : AdapterDelegate<Any> {
+abstract class TypedAdapterDelegate<T, VH : RecyclerView.ViewHolder> : AdapterDelegate<Any> {
 
-    abstract fun isForViewType(item: ST, itemList: List<ST>, position: Int): Boolean
+    abstract fun isForViewType(item: Any, itemList: List<Any>, position: Int): Boolean
 
     abstract fun onBindViewHolder(item: T, holder: VH)
 
@@ -16,7 +16,7 @@ abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder
 
     @Suppress("UNCHECKED_CAST")
     override fun isForViewType(itemList: List<Any>, position: Int): Boolean {
-        return isForViewType(itemList[position] as ST, itemList as List<ST>, position)
+        return isForViewType(itemList[position], itemList, position)
     }
 
     @Suppress("UNCHECKED_CAST")
