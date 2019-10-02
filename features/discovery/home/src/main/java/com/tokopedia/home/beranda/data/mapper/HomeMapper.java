@@ -77,7 +77,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getTicker().getTickers() != null
                     && !homeData.getTicker().getTickers().isEmpty()
                     && !HomeFragment.HIDE_TICKER) {
-                list.add(mappingTicker(homeData.getTicker().getTickers()));
+                HomeVisitable ticker = mappingTicker(homeData.getTicker().getTickers());
+                if (ticker != null) {
+                    list.add(ticker);
+                }
             }
 
             if (homeData.getDynamicHomeIcon() != null
@@ -272,15 +275,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
-        ArrayList<Ticker.Tickers> _ticker = new ArrayList<>();
-        for (Ticker.Tickers _tickers: tickers) {
-            if (!_tickers.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
-                _ticker.add(_tickers);
+        ArrayList<Ticker.Tickers> _tickers = new ArrayList<>();
+        for (Ticker.Tickers _ticker: tickers) {
+            if (!_ticker.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
+                _tickers.add(_ticker);
             }
         }
 
+        if (_tickers.size() <= 0) {
+            return null;
+        }
+
         TickerViewModel viewModel = new TickerViewModel();
-        viewModel.setTickers(_ticker);
+        viewModel.setTickers(_tickers);
         return viewModel;
     }
 
