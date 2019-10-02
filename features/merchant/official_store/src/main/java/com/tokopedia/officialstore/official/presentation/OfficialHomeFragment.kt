@@ -96,6 +96,22 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         })
     }
 
+    private fun observeFeaturedShop() {
+        viewModel.officialStoreFeaturedShopResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+
+                }
+                is Fail -> {
+                    if (BuildConfig.DEBUG)
+                        it.throwable.printStackTrace()
+                }
+
+            }
+        })
+    }
+
     private fun setListener() {
         swipeRefreshLayout?.setOnRefreshListener {
             refreshData()

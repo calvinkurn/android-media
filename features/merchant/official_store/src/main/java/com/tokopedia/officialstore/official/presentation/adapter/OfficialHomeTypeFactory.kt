@@ -6,5 +6,7 @@ interface OfficialHomeTypeFactory {
 
     fun type(officialBannerViewModel: OfficialBannerViewModel): Int
 
+    fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int
+
     fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int
 }
