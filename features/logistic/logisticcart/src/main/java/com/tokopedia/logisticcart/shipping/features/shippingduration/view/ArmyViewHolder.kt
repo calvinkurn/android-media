@@ -24,6 +24,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bindData(data: LogisticPromoViewModel, listener: ShippingDurationAdapterListener) {
         itemView.tv_title.text = data.title
         itemView.tv_info.text = MethodChecker.fromHtml(data.description)
+        if(data.description.isEmpty()) itemView.tv_info.visibility = View.GONE
         ImageHandler.LoadImage(itemView.img_logo, data.imageUrl)
 
         val fontColor = if (data.disabled) {
