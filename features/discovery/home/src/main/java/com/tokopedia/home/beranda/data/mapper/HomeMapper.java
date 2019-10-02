@@ -32,8 +32,6 @@ import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +49,8 @@ import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<HomeVisitable>> {
     private final Context context;
     private final HomeVisitableFactory homeVisitableFactory;
+
+    private String TICKER_LAYOUT_TYPE_FLOATING = "floating";
 
     public HomeMapper(Context context,
                       HomeVisitableFactory homeVisitableFactory) {
@@ -272,8 +272,15 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
+        ArrayList<Ticker.Tickers> _ticker = new ArrayList<>();
+        for (Ticker.Tickers _tickers: tickers) {
+            if (!_tickers.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
+                _ticker.add(_tickers);
+            }
+        }
+
         TickerViewModel viewModel = new TickerViewModel();
-        viewModel.setTickers(tickers);
+        viewModel.setTickers(_ticker);
         return viewModel;
     }
 
