@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -33,7 +31,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -63,8 +61,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
@@ -83,18 +79,6 @@ public class SearchActivity extends BaseActivity
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        Uri uri = Uri.parse(bundle.getString(DeepLink.URI));
-
-        if(uri == null) return new Intent();
-
-        return RouteManager.getIntent(
-                context,
-                ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + uri.getEncodedQuery()
-        );
-    }
-
     private Toolbar toolbar;
     private FrameLayout container;
     private ProgressBar loadingView;
@@ -109,6 +93,7 @@ public class SearchActivity extends BaseActivity
     private TextView searchTextView;
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
+    private ImageView buttonHome;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -180,6 +165,7 @@ public class SearchActivity extends BaseActivity
         searchTextView = findViewById(R.id.searchTextView);
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
+        buttonHome = findViewById(R.id.search_home_button);
     }
 
     protected void prepareView() {
@@ -215,41 +201,13 @@ public class SearchActivity extends BaseActivity
         searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
-        buttonCart.setOnClickListener(v -> moveToCartActivity());
+        buttonCart.setOnClickListener(v -> onCartButtonClicked());
+        buttonHome.setOnClickListener(v -> moveToHomeActivity());
     }
-    
+
     private void onSearchBarClicked() {
         SearchTracking.trackEventClickSearchBar();
         moveToAutoCompleteActivity();
-    }
-
-    private void configureButtonCart() {
-        if (!userSession.isLoggedIn()) {
-            hideButtonCart();
-        } else {
-            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true)) {
-                showButtonCart();
-            } else {
-                hideButtonCart();
-            }
-        }
-    }
-
-    private void showButtonCart() {
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
-        if (drawable instanceof LayerDrawable) {
-            CountDrawable countDrawable = new CountDrawable(this);
-            int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
-            countDrawable.setCount(String.valueOf(cartCount));
-            drawable.mutate();
-            ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
-            buttonCart.setImageDrawable(drawable);
-            buttonCart.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideButtonCart() {
-        buttonCart.setVisibility(View.GONE);
     }
 
     private void moveToAutoCompleteActivity() {
@@ -262,9 +220,20 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void moveToCartActivity() {
+    private void onCartButtonClicked() {
         searchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
-        RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
+
+        if (userSession.isLoggedIn()) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
+        }
+        else {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+        }
+    }
+
+    private void moveToHomeActivity() {
+        searchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
+        RouteManager.route(this, ApplinkConst.HOME);
     }
 
     private void initViewPager() {
@@ -419,8 +388,8 @@ public class SearchActivity extends BaseActivity
 
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
-                AuthHelperJava.md5(userSession.getUserId()) :
-                AuthHelperJava.md5(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId(this));
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }
@@ -572,52 +541,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startActivityWithApplink(String applink, String... parameter) {
-        finishCurrentActivityIfRedirectedToSearch(applink);
-
         Intent intent = RouteManager.getIntent(this, applink, parameter);
-        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
-
-        startActivityForResult(intent, startActivityForResultRequestCode);
-    }
-
-    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
-        if(isApplinkToSearchActivity(applink)) {
-            finish();
-        }
-    }
-
-    private boolean isApplinkToSearchActivity(String applink) {
-        if(TextUtils.isEmpty(applink)) return false;
-
-        Uri uri = Uri.parse(applink);
-        String applinkTarget = constructApplinkTarget(uri);
-
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH)
-                || applinkTarget.equals(ApplinkConstInternalDiscovery.SEARCH_RESULT);
-    }
-
-    private String constructApplinkTarget(@NonNull Uri uri) {
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        String path = uri.getEncodedPath();
-
-        return scheme + "://" + host + path;
-    }
-
-    private int getStartActivityForResultRequestCode(String applink) {
-        if(isApplinkToAutoCompleteActivity(applink)) {
-            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-        }
-
-        return -1;
-    }
-
-    private boolean isApplinkToAutoCompleteActivity(String applink) {
-        Uri uri = Uri.parse(applink);
-        String applinkTarget = constructApplinkTarget(uri);
-
-        return applinkTarget.equals(ApplinkConstInternalDiscovery.AUTOCOMPLETE) ||
-                applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        startActivity(intent);
     }
 
     @Override
@@ -627,30 +552,54 @@ public class SearchActivity extends BaseActivity
         unregisterShake();
     }
 
+    private void configureButtonCart() {
+        if (isCartIconInSearchEnabled()) {
+            showButtonCart();
+        } else {
+            hideButtonCart();
+        }
+    }
+
+    private boolean isCartIconInSearchEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
+    }
+
+    private void showButtonCart() {
+        if (userSession.isLoggedIn()) {
+            setButtonCartCount();
+        }
+
+        buttonCart.setVisibility(View.VISIBLE);
+    }
+
+    private void setButtonCartCount() {
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
+
+        if (drawable instanceof LayerDrawable) {
+            int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+
+            CountDrawable countDrawable = new CountDrawable(this);
+            countDrawable.setCount(String.valueOf(cartCount));
+
+            drawable.mutate();
+
+            ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+
+            buttonCart.setImageDrawable(drawable);
+        }
+    }
+
+    private void hideButtonCart() {
+        buttonCart.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        switch(requestCode) {
-            case AUTO_COMPLETE_ACTIVITY_REQUEST_CODE:
-                handleResultFromAutoCompleteActivity(resultCode);
-                break;
-            default:
-                handleDefaultActivityResult(requestCode, resultCode, data);
-                break;
-        }
+        onActivityResultBottomSheet(requestCode, resultCode, data);
     }
 
-    private void handleResultFromAutoCompleteActivity(int resultCode) {
-        switch(resultCode) {
-            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY:
-                finish();
-                overridePendingTransition(0, 0);
-                break;
-        }
-    }
-
-    private void handleDefaultActivityResult(int requestCode, int resultCode, Intent data) {
+    private void onActivityResultBottomSheet(int requestCode, int resultCode, Intent data) {
         bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
     }
 
