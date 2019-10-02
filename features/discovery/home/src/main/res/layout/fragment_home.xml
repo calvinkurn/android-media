@@ -43,15 +43,13 @@
           app:floating_title_allcaps="false" />
       </FrameLayout>
       
-      <com.tokopedia.home.widget.StickyTextView
+      <com.tokopedia.stickylogin.view.StickyLoginView
         android:id="@+id/sticky_login_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/sticky_bg_color"
         app:sticky_highlight_color="@color/g_500"
-        app:sticky_left_icon="@drawable/ic_toped_widget_login"
-        app:sticky_text="@string/discovery_mau_akses_semua_fitur"
-        app:sticky_text_highlight="@string/discovery_masuk_yuk" />
+        app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
     
     </LinearLayout>
     

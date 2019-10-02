@@ -46,6 +46,7 @@ import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
 import com.tokopedia.events.view.utils.ShadowTransformer;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,7 @@ public class EventsHomeActivity extends EventBaseActivity
 
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+    public static final String SCREEN_NAME = "digital/events";
 
     private Menu mMenu;
 
@@ -86,6 +88,7 @@ public class EventsHomeActivity extends EventBaseActivity
     private final static String TOP = "top";
 
     private EventsAnalytics eventsAnalytics;
+    private UserSession userSession;
 
 
     public final static String EXTRA_SECTION = "extra_section";
@@ -128,6 +131,7 @@ public class EventsHomeActivity extends EventBaseActivity
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
         eventsAnalytics = new EventsAnalytics();
+        userSession = new UserSession(this);
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
                 null, null);
         searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),
@@ -145,7 +149,10 @@ public class EventsHomeActivity extends EventBaseActivity
         });
 
         setLightToolbarStyle();
-
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
+        if (userSession.isLoggedIn()) {
+            eventHomePresenter.sendNSQEvent(userSession.getUserId(), "home-page");
+        }
     }
 
     @Override
@@ -274,6 +281,7 @@ public class EventsHomeActivity extends EventBaseActivity
             if (categoryViewModel.getItems() != null && categoryViewModel.getItems().size() != 0) {
                 if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                     adapter = new SlidingImageAdapter(EventsHomeActivity.this, eventHomePresenter.getCarouselImages(categoryViewModel.getItems()), eventHomePresenter);
+                    adapter.addItems(categoryViewModel.getItems());
                     setViewPagerListener();
                     tabLayout.setViewPager(viewPager);
                     eventHomePresenter.startBannerSlide(viewPager);
@@ -348,6 +356,10 @@ public class EventsHomeActivity extends EventBaseActivity
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (userSession.isLoggedIn()) {
+                    eventHomePresenter.sendNSQEvent(userSession.getUserId(), "category-page");
+                }
+                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CATEGORY_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_CATEGORY_CLICK, String.format("%s - %d", tab.getText(), tab.getPosition()));
                 try {
                     View customeView = tab.getCustomView();
                     ImageView icon = customeView.findViewById(R.id.category_icon);
@@ -459,7 +471,7 @@ public class EventsHomeActivity extends EventBaseActivity
 
     @Override
     public String getScreenName() {
-        return eventHomePresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override
@@ -478,6 +490,10 @@ public class EventsHomeActivity extends EventBaseActivity
         if (v.getId() == R.id.tv_addtocalendar) {
             eventHomePresenter.onClickEventCalendar();
         } else if (v.getId() == R.id.search_input_view) {
+            if (userSession.isLoggedIn()) {
+                eventHomePresenter.sendNSQEvent(userSession.getUserId(), "search");
+            }
+            eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ACTION, "");
             eventHomePresenter.onOptionMenuClick(R.id.action_menu_search);
         } else if (v.getId() == R.id.promo_event) {
             eventHomePresenter.onOptionMenuClick(R.id.action_promo);

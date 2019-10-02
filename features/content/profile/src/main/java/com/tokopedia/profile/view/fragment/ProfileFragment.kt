@@ -598,7 +598,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             presenter.trackPostClick(uniqueTrackingId, url)
         }
 
-        profileRouter.openRedirectUrl(activity as Activity, url)
+        onGoToLink(url)
     }
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
@@ -829,6 +829,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
+    private fun getShopIntent(
+            context: Context,
+            shopId: String
+    ) = RouteManager.getIntent(context,ApplinkConst.SHOP,shopId)
+
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
@@ -904,8 +909,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
-        startActivity(intent)
+        context?.let {
+            startActivity(getShopIntent(it, shop.id))
+        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
@@ -1618,12 +1624,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_CODE)
+        }
     }
 
     private fun followAfterLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_FOLLOW_CODE)
+        }
     }
+
+    private fun getLoginIntent(context: Context) = RouteManager.getIntent(context, ApplinkConst.LOGIN)
 
     private fun doFollowAfterLogin() {
         swipeToRefresh.isRefreshing = true
@@ -1688,9 +1700,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onGoToLink(link: String) {
-        activity?.let {
-            if (!TextUtils.isEmpty(link)) {
-                profileRouter.openRedirectUrl(it, link)
+        if (context != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(context, link)) {
+                RouteManager.route(context, link)
+            } else {
+                RouteManager.route(
+                        context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                )
             }
         }
     }

@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -33,6 +32,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -42,7 +42,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
@@ -82,18 +81,6 @@ public class SearchActivity extends BaseActivity
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
-
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        Uri uri = Uri.parse(bundle.getString(DeepLink.URI));
-
-        if(uri == null) return new Intent();
-
-        return RouteManager.getIntent(
-                context,
-                ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + uri.getEncodedQuery()
-        );
-    }
 
     private Toolbar toolbar;
     private FrameLayout container;
@@ -212,10 +199,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureToolbarOnClickListener() {
-        searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
+        searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> moveToCartActivity());
+    }
+    
+    private void onSearchBarClicked() {
+        SearchTracking.trackEventClickSearchBar();
+        moveToAutoCompleteActivity();
     }
 
     private void configureButtonCart() {
@@ -253,7 +245,7 @@ public class SearchActivity extends BaseActivity
         if (!TextUtils.isEmpty(autocompleteApplink)) {
             startActivityWithApplink(autocompleteApplink);
         } else {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query);
         }
     }
 
@@ -414,8 +406,8 @@ public class SearchActivity extends BaseActivity
 
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId(this));
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }
@@ -611,7 +603,8 @@ public class SearchActivity extends BaseActivity
         Uri uri = Uri.parse(applink);
         String applinkTarget = constructApplinkTarget(uri);
 
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        return applinkTarget.equals(ApplinkConstInternalDiscovery.AUTOCOMPLETE) ||
+                applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
     }
 
     @Override

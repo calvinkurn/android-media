@@ -27,4 +27,13 @@ class Cache(context: Context) {
     fun isEnableLogEntries(): Boolean {
         return sharedPreferences.getBoolean(IRIS_LOG_ENABLED, false)
     }
+
+    fun setEnableAlarm(isAlarmOn: Boolean) {
+        editor.putBoolean(IRIS_IS_ALARM_ON, isAlarmOn)
+        editor.commit()
+    }
+
+    fun isAlarmOn(): Boolean {
+        return sharedPreferences.getBoolean(IRIS_IS_ALARM_ON, false)
+    }
 }

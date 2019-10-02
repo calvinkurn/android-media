@@ -56,6 +56,9 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
@@ -80,6 +83,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                               private val stickyLoginUseCase: StickyLoginUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -88,6 +92,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val p2General = MutableLiveData<ProductInfoP2General>()
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
+    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
 
     val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
 
@@ -643,6 +648,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 submitTicketSubscription = null
             }
         })
+    }
+
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    onSuccess.invoke(it.response.tickers[0])
+                } else {
+                    onError?.invoke(Throwable("Data not found"))
+                }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
     }
 
     companion object {

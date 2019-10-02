@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -31,7 +30,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -40,11 +38,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -73,8 +73,8 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -100,6 +100,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val ID_ACTION_REGISTER = 111
     private val ID_ACTION_DEVOPS = 112
     val RC_SIGN_IN_GOOGLE = 7777
+    val KEY_REMOTE_CONFIG_INSTALL_DF_AT_LOGIN = "android_customerapp_install_df_at_login"
 
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
@@ -189,6 +190,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -264,7 +267,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         context?.run {
             mIris = IrisAnalytics.getInstance(this)
-            analytics.onCreate(this)
         }
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -492,6 +494,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onLoginFacebookClick() {
+
         if (activity != null) {
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
@@ -575,16 +578,29 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
-        if (activity != null) {
-            activity!!.setResult(Activity.RESULT_OK)
-            activity!!.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK)
+            finish()
 
             analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
+
+            installDynamicFeatureAtLogin()
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun installDynamicFeatureAtLogin(){
+        // for POC - start install when login
+        activity?.run {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            val installAtLogin = remoteConfig.getBoolean(KEY_REMOTE_CONFIG_INSTALL_DF_AT_LOGIN, false)
+            if (!GlobalConfig.isSellerApp() && installAtLogin) {
+                DFInstaller.installOnBackground(application, listOf(DeeplinkDFMapper.DFM_SHOP_SETTINGS_CUSTOMERAPP))
+            }
+        }
     }
 
     private fun setFCM() {
@@ -1086,9 +1102,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -1104,9 +1120,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {

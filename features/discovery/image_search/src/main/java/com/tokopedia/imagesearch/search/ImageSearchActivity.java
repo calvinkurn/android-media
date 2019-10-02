@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -174,7 +175,8 @@ public class ImageSearchActivity extends BaseActivity
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.image_search_action_search) {
-            return false;
+            moveToAutoCompletePage();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -610,9 +612,9 @@ public class ImageSearchActivity extends BaseActivity
     @Override
     public void moveToAutoCompletePage() {
         if (!TextUtils.isEmpty(lastQuery)) {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + lastQuery);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + lastQuery);
         } else {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE);
         }
     }
 
@@ -635,7 +637,8 @@ public class ImageSearchActivity extends BaseActivity
         Uri uri = Uri.parse(applink);
         String applinkTarget = constructApplinkTarget(uri);
 
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        return applinkTarget.equals(ApplinkConstInternalDiscovery.AUTOCOMPLETE) ||
+                applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
     }
 
     private String constructApplinkTarget(@NonNull Uri uri) {

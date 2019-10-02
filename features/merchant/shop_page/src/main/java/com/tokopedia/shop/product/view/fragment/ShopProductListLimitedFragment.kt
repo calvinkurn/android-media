@@ -55,8 +55,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION
-import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
+import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -1108,14 +1107,22 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onButtonClaimClicked(questId: Int) {
+        shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CLAIM)
         lastQuestId = questId
         viewModel.claimMembershipBenefit(questId)
     }
 
-    override fun goToVoucherOrRegister(url: String?) {
+    override fun goToVoucherOrRegister(url: String?, clickOrigin: String?) {
         val intent: Intent = if (url == null) {
+            shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_COUPON_CHECK)
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
+            if (clickOrigin == GO_TO_MEMBERSHIP_DETAIL) {
+                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_DETAIL_PAGE)
+            } else {
+                shopPageTracking?.sendEventMembership(ShopPageTrackingConstant.MEMBERSHIP_CLICK_MEMBER)
+            }
+
             RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
 
