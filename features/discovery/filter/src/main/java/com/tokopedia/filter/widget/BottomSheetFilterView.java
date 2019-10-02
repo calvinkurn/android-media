@@ -425,6 +425,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         return filterController.getFilterViewState(uniqueId);
     }
 
+    @Override
+    public void onPriceRangeClicked() {
+        applyFilter();
+    }
+
     public interface Callback {
         void onApplyFilter(Map<String, String> filterParameter);
         void onShow();
