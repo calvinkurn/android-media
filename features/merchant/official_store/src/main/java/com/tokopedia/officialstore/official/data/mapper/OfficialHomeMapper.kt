@@ -13,11 +13,13 @@ class OfficialHomeMapper {
 
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
             adapter?.addElement(0, OfficialBannerViewModel(banner.banners))
+            adapter?.notifyItemInserted(0)
         }
 
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
             if (adapter?.getDataByPosition(0) is OfficialBannerViewModel) { // check if banner is exist
                 adapter.addElement(1, OfficialFeaturedShopViewModel(featuredShop.featuredShops))
+                adapter.notifyItemInserted(1)
             }
         }
     }

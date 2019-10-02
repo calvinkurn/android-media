@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +62,6 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         layoutManager = LinearLayoutManager(context)
         recyclerView?.layoutManager = layoutManager
 
-        refreshData() // avoid race condition
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory()
         adapter = OfficialHomeAdapter(adapterTypeFactory)
@@ -74,15 +74,13 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeFeaturedShop()
+        refreshData()
         setListener()
     }
 
     private fun refreshData() {
         adapter?.clearAllElements()
-        viewModel.getOfficialStoreBanners(category?.categoryId ?: "")
-        viewModel.getOfficialStoreFeaturedShop(category?.categoryId ?: "")
-
-        // TODO get dynamic channel & product recommendation
+        viewModel.loadFirstData(category?.categoryId ?: "")
     }
 
     private fun observeBannerData() {
@@ -137,10 +135,11 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                             scrollListener.onScrollDown()
                         }
                         firstVisibleInListview = currentFirstVisible
+
+                        // TODO logic load more
+                        viewModel.loadMore()
                     }
 
-                    // TODO logic load more
-                    // TODO get dynamic channel & product recommendation
                 })
             }
         }
