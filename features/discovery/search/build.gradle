@@ -95,6 +95,7 @@ dependencies {
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler

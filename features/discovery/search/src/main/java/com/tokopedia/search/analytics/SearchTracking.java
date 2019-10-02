@@ -1,9 +1,13 @@
 package com.tokopedia.search.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -191,7 +195,7 @@ public class SearchTracking {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }
 
-    public static void trackEventClickSearchResultProduct(Context context,
+    public static void trackEventClickSearchResultProduct(ProductItemViewModel productItemViewModel,
                                                           Object item,
                                                           int pageNumber,
                                                           String eventLabel,
@@ -210,9 +214,36 @@ public class SearchTracking {
                         "searchFilter", filterSortParams
                 )
         );
+
+        eventClickSearchResultProductV5(productItemViewModel, eventLabel);
     }
 
-    public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
+    public static void eventClickSearchResultProductV5(ProductItemViewModel item,
+                                                       String eventLabel) {
+
+        Bundle product = new Bundle();
+        product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getProductID());
+        product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getProductName());
+        product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
+        product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
+        product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPrice()));
+        product.putLong(FirebaseAnalytics.Param.INDEX, 1);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("eventCategory", "search result");
+        bundle.putString("eventAction", "click - product");
+        bundle.putString("eventLabel", eventLabel);
+        bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+        bundle.putBundle("items", product);
+
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
+                                                          List<Object> list,
+                                                          List<ProductItemViewModel> productItemViewModels,
+                                                          String eventLabel) {
         trackingQueue.putEETracking(
                 (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
                         "eventCategory", "search result",
@@ -225,6 +256,45 @@ public class SearchTracking {
                                 ))
                 )
         );
+
+        eventImpressionSearchResultProductV5(productItemViewModels, eventLabel);
+    }
+
+    public static void eventImpressionSearchResultProductV5(List<ProductItemViewModel> productItemViewModels,
+                                                          String eventLabel) {
+
+        ArrayList products = new ArrayList();
+
+        int index = 0;
+        for (ProductItemViewModel item : productItemViewModels) {
+            index++;
+            Bundle product = new Bundle();
+            product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getProductID());
+            product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getProductName());
+            product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
+            product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
+            product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
+            product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPrice()));
+            product.putLong(FirebaseAnalytics.Param.INDEX, index);
+            products.add(product);
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("eventCategory", "search result");
+        bundle.putString("eventAction", "impression - product");
+        bundle.putString("eventLabel", eventLabel);
+        bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+        bundle.putParcelableArrayList("items", products);
+
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
+    }
+
+    private static double safeParseDouble(String price) {
+        try {
+            return Double.parseDouble(price);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public static void eventClickGuidedSearch(String previousKey, int position, String nextKey) {
