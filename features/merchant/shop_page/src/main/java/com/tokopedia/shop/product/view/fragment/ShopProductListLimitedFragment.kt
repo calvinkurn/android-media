@@ -354,7 +354,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             loadMembership()
             loadVoucherList()
 
-            viewModel.getFeaturedProduct(it.shopCore.shopID, false)
+            viewModel.getFeaturedProduct(it.shopCore.shopID, viewModel.userId, false)
         }
     }
 
