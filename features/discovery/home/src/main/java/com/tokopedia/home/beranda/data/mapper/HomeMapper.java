@@ -275,19 +275,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
-        ArrayList<Ticker.Tickers> _tickers = new ArrayList<>();
-        for (Ticker.Tickers _ticker: tickers) {
-            if (!_ticker.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
-                _tickers.add(_ticker);
+        ArrayList<Ticker.Tickers> tmpTickers = new ArrayList<>();
+        for (Ticker.Tickers tmpTicker: tickers) {
+            if (!tmpTicker.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
+                tmpTickers.add(tmpTicker);
             }
         }
 
-        if (_tickers.size() <= 0) {
+        if (tmpTickers.size() <= 0) {
             return null;
         }
 
         TickerViewModel viewModel = new TickerViewModel();
-        viewModel.setTickers(_tickers);
+        viewModel.setTickers(tmpTickers);
         return viewModel;
     }
 
