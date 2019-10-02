@@ -38,7 +38,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvEmasPrice;
     private TextView mTvTradeInLabel;
     private TextView mTvTradeInPrice;
-    private RelativeLayout mRlTotalPromo;
     private TextView mTvTotalPromoStackAmount;
     private TextView mTvTotalPromoStackLabel;
     private TextView mTvOrderPrioritasLabel;
@@ -79,7 +78,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvEmasPrice = itemView.findViewById(R.id.tv_emas_price);
         mTvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
         mTvTradeInPrice = itemView.findViewById(R.id.tv_trade_in);
-        mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
         mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
         mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
         mTvOrderPrioritasLabel = itemView.findViewById(R.id.tv_order_prioritas_label);
@@ -128,14 +126,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         }
         mTvBookingFee.setText(getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.getBookingFee()));
 
-        if (shipmentCost.getTotalPromoStackAmount() > 0) {
-            mRlTotalPromo.setVisibility(View.VISIBLE);
-            mTvTotalPromoStackAmount.setText(shipmentCost.getTotalPromoStackAmountStr());
-            mRlTotalPromo.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
-        } else {
-            mRlTotalPromo.setVisibility(View.GONE);
-        }
-
         renderDiscount(shipmentCost);
         renderCashback(shipmentCost);
     }
@@ -175,10 +165,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
             mTvCashbackLabel.setText(shipmentCost.getCashbackLabel());
         }
         mTvCashbackPrice.setText(getPriceFormat(mTvCashbackLabel, mTvCashbackPrice, shipmentCost.getCashbackAmount()));
-    }
-
-    public void hideTotalNilaiPromo() {
-        mRlTotalPromo.setVisibility(View.GONE);
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {
