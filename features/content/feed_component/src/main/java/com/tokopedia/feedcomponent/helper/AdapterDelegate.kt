@@ -10,7 +10,7 @@ interface AdapterDelegate<T> {
 
     fun isForViewType(itemList: List<T>, position: Int): Boolean
 
-    fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
+    fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 
     fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder)
 }
