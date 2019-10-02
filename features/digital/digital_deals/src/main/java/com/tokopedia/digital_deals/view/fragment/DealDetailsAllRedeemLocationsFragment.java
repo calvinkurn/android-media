@@ -2,33 +2,51 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealDetailsAllLocationsAdapter;
+import com.tokopedia.digital_deals.view.customview.SearchInputView;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 
+import org.w3c.dom.Text;
 
-public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment implements SearchInputView.Listener {
 
 
     private DealFragmentCallbacks fragmentCallbacks;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private AppBarLayout appBarLayout;
+    private SearchInputView searchInputView;
+    private LinearLayout noContentLayout;
+    private DealDetailsAllLocationsAdapter adapter;
+    List<Outlet> outlets = new ArrayList<>();
 
 
     public static Fragment createInstance() {
@@ -44,7 +62,8 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
         setViewIds(view);
 
         if (fragmentCallbacks.getOutlets() != null) {
-            DealDetailsAllLocationsAdapter adapter = new DealDetailsAllLocationsAdapter(fragmentCallbacks.getOutlets());
+            outlets.addAll(fragmentCallbacks.getOutlets());
+            adapter = new DealDetailsAllLocationsAdapter(outlets);
             recyclerView.setAdapter(adapter);
         }
         return view;
@@ -63,7 +82,13 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
 
     private void setViewIds(View view) {
         toolbar = view.findViewById(R.id.toolbar);
+        noContentLayout = view.findViewById(R.id.no_content);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
+        searchInputView = view.findViewById(R.id.search_input_view);
+        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals_outlets));
+        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(),R.drawable.ic_search_deal));
+        searchInputView.setListener(this);
         if (getActivity() instanceof CheckoutActivity) {
             appBarLayout.setVisibility(View.GONE);
         } else {
@@ -72,6 +97,14 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
             toolbar.setTitle(getActivity().getResources().getString(R.string.redeem_locations));
         }
         recyclerView = view.findViewById(R.id.recyclerView);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+            }
+        });
 
     }
 
@@ -84,5 +117,33 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
         getComponent(DealsComponent.class).inject(this);
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        if (!TextUtils.isEmpty(text) && fragmentCallbacks.getOutlets() != null) {
+            outlets.clear();
+            for (Outlet outlet : fragmentCallbacks.getOutlets()) {
+                if (!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
+                    outlets.add(outlet);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            if (outlets.size() == 0) {
+                noContentLayout.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
+        } else {
+            noContentLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            outlets.clear();
+            outlets.addAll(fragmentCallbacks.getOutlets());
+            adapter.notifyDataSetChanged();
+        }
     }
 }

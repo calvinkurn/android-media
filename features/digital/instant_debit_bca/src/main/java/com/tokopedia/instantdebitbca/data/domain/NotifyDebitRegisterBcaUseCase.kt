@@ -5,13 +5,13 @@ import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.instantdebitbca.R
 import com.tokopedia.instantdebitbca.data.data.ResponseDebitRegisterBca
 import com.tokopedia.instantdebitbca.data.view.model.NotifyDebitRegisterBca
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -76,8 +76,8 @@ constructor(@param:ApplicationContext var context: Context, var graphqlUseCase: 
         val CALLBACK_URL = "callbackUrl"
         val SIGNATURE = "signature"
         val DEBIT_DATA = "debitData"
-        val MERCHANT_DATA = AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_CODE
-        val BANK_DATA = AuthUtil.KEY.INSTANT_DEBIT_BCA_BANK_CODE
+        val MERCHANT_DATA = AuthKey.INSTANT_DEBIT_BCA_MERCHANT_CODE
+        val BANK_DATA = AuthKey.INSTANT_DEBIT_BCA_BANK_CODE
         val CALLBACK_DATA = "https://tokopedia.com"
     }
 }

@@ -64,8 +64,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
@@ -88,8 +88,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
         quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 
@@ -256,9 +256,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
         private void setBackgroundResource(Option option) {
             if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+                itemContainer.setBackgroundResource(R.drawable.search_quick_filter_item_background_selected);
             } else {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+                itemContainer.setBackgroundResource(R.drawable.search_quick_filter_item_background_neutral);
             }
         }
     }
@@ -316,11 +316,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private static class GuidedSearchViewHolder extends RecyclerView.ViewHolder {
 
         private static final int[] BACKGROUND = {
-                R.drawable.guided_back_1,
-                R.drawable.guided_back_2,
-                R.drawable.guided_back_3,
-                R.drawable.guided_back_4,
-                R.drawable.guided_back_5,
+                R.drawable.search_guided_back_1,
+                R.drawable.search_guided_back_2,
+                R.drawable.search_guided_back_3,
+                R.drawable.search_guided_back_4,
+                R.drawable.search_guided_back_5,
         };
 
         TextView textView;

@@ -3,11 +3,11 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -57,7 +57,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void saveAddress() {
         mView.showLoading();
-        Map<String, String> param = AuthUtil.generateParamsNetwork(
+        Map<String, String> param = AuthHelper.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
