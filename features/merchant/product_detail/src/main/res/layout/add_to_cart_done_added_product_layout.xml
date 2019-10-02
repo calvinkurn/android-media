@@ -64,12 +64,13 @@
                     android:textColor="@color/Neutral_N700"
                     tools:text="Blus Lengan pendek Wanita gaya" />
 
-
                 <ImageView
                     android:id="@+id/img_free_ongkir"
-                    android:layout_width="70dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="@dimen/dp_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:adjustViewBounds="true"
+                    tools:visibility="visible"
                     android:scaleType="fitXY" />
 
             </LinearLayout>
@@ -77,6 +78,7 @@
         </LinearLayout>
 
         <com.tokopedia.design.component.ButtonCompat
+            android:layout_marginTop="@dimen/dp_5"
             android:id="@+id/button_go_to_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
