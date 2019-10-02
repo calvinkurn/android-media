@@ -2212,11 +2212,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getAddPasswordIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
-    }
-
-    @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return ProfileActivity.Companion.createIntent(context, userId);
     }

@@ -33,7 +33,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +150,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
                     if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
                         if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                            goToSaldo(getActivity());
+                            router.goToSaldo(getActivity());
                         } else {
                             pvtUserSession.setSaldoIntroPageStatus(true);
                             RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
@@ -217,9 +216,9 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     }
 
     private void intentToAddPassword() {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+        if (getActivity() != null) {
+            startActivityForResult(RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_CHANGE_PASSWORD);
         }
     }
 }
