@@ -53,7 +53,7 @@ public class GlobalNavWidget extends BaseCustomView {
     }
 
     private void init() {
-//        final View view = inflate(getContext(), R.layout.widget_global_nav, this);
+//        final View view = inflate(getContext(), R.layout.global_nav_widget_layout, this);
 //        globalNavContainerLayout = view.findViewById(R.id.globalNavContainerLayout);
 //        globalNavTitle = view.findViewById(R.id.globalNavTitle);
 //        globalNavSeeAllButton = view.findViewById(R.id.globalNavSeeAllButton);
@@ -96,7 +96,7 @@ public class GlobalNavWidget extends BaseCustomView {
 
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_global_nav_item, parent, false);
+//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.global_nav_widget_item_layout, parent, false);
 //            return new ViewHolder(view, itemClickListener);
 
             return null;

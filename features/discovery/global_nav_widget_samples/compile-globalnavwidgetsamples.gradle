@@ -1,0 +1,10 @@
+include "libraries:inappupdate"
+
+include "features:discovery:global_nav_widget_samples"
+
+include "libraries:kotlin_extensions"
+
+include "tkpdabstraction"
+include "tkpddesign"
+
+apply from: "../global_nav_widget/compile-globalnavwidget.gradle"

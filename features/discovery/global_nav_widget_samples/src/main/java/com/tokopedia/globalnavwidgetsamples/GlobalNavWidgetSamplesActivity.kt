@@ -1,13 +1,15 @@
-package com.tokopedia.globalnavwidget
+package com.tokopedia.globalnavwidgetsamples
 
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import com.google.gson.Gson
-import com.tokopedia.globalnavwidget.test.R
+import com.tokopedia.globalnavwidget.GlobalNavWidget
+import com.tokopedia.globalnavwidget.GlobalNavWidgetListener
+import com.tokopedia.globalnavwidget.GlobalNavWidgetModel
 
-class GlobalNavWidgetActivity : AppCompatActivity(), GlobalNavWidgetListener {
+class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListener {
 
     private val constraintLayoutGlobalNavWidgetActivity by lazy {
         findViewById<ConstraintLayout>(R.id.constraintLayoutGlobalNavWidgetActivity)
@@ -18,7 +20,7 @@ class GlobalNavWidgetActivity : AppCompatActivity(), GlobalNavWidgetListener {
     }
 
     private val globalNavWidgetWithInfo by lazy {
-        findViewById<GlobalNavWidget>(R.id.globalNavWidgetWithNoInfo)
+        findViewById<GlobalNavWidget>(R.id.globalNavWidgetWithInfo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +46,12 @@ class GlobalNavWidgetActivity : AppCompatActivity(), GlobalNavWidgetListener {
     private fun initGlobalNavWidgetWithNoInfo() {
         val globalNavWidgetModel = buildGlobalNavModel(globalNavWidgetItemNoInfo)
 
-        globalNavWidgetWithNoInfo.setData(globalNavWidgetModel, this)
+        globalNavWidgetWithNoInfo?.setData(globalNavWidgetModel, this)
     }
 
     private fun initGlobalNavWidgetWithInfo() {
         val globalNavWidgetModel = buildGlobalNavModel(globalNavWidgetItemWithInfo)
 
-        globalNavWidgetWithInfo.setData(globalNavWidgetModel, this)
+        globalNavWidgetWithInfo?.setData(globalNavWidgetModel, this)
     }
 }

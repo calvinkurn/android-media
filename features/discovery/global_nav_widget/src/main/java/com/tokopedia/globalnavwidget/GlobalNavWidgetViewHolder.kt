@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.widget_global_nav_item.view.*
+import kotlinx.android.synthetic.main.global_nav_widget_item_layout.view.*
 
 internal class GlobalNavWidgetViewHolder(
         itemView: View,
@@ -13,7 +13,7 @@ internal class GlobalNavWidgetViewHolder(
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.widget_global_nav_item
+        val LAYOUT = R.layout.global_nav_widget_item_layout
     }
 
     private val context: Context? = itemView.context

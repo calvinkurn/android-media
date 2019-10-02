@@ -38,7 +38,7 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.widget_global_nav, this)
+        val view = View.inflate(context, R.layout.global_nav_widget_layout, this)
 
         globalNavContainerLayout = view.findViewById(R.id.globalNavContainerLayout)
         globalNavTitle = view.findViewById(R.id.globalNavTitle)

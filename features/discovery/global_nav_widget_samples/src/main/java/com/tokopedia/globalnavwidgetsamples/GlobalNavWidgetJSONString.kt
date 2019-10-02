@@ -1,4 +1,4 @@
-package com.tokopedia.globalnavwidget
+package com.tokopedia.globalnavwidgetsamples
 
 val globalNavWidgetItemNoInfo = """
 {
