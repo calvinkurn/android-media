@@ -19,8 +19,8 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:host="@string/host_deals"
-                android:pathPattern="@string/path_deals_home"
+                android:host="@string/host_global"
+                android:pathPattern="/deals"
                 android:scheme="@string/internal_scheme" />
         </intent-filter>
     </activity>
@@ -39,8 +39,8 @@
         <category android:name="android.intent.category.BROWSABLE" />
 
         <data
-            android:host="@string/host_deals_slug"
-            android:pathPattern="/.*"
+            android:host="@string/host_global"
+            android:pathPattern="/deals-slug/.*\\"
             android:scheme="@string/internal_scheme" />
         </intent-filter>
     </activity>
@@ -56,8 +56,8 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:host="@string/host_deals"
-                android:pathPattern="@string/path_deals_category"
+                android:host="@string/host_global"
+                android:pathPattern="/deals/category/page/.*\\/"
                 android:scheme="@string/internal_scheme" />
         </intent-filter>
     </activity>
@@ -74,8 +74,8 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:host="@string/host_deals"
-                android:pathPattern="@string/path_deals_all_brand"
+                android:host="@string/host_global"
+                android:pathPattern="/deals/allbrands/.*\\/"
                 android:scheme="@string/internal_scheme" />
         </intent-filter>
     </activity>
@@ -90,8 +90,8 @@
             <category android:name="android.intent.category.BROWSABLE" />
 
             <data
-                android:host="@string/host_deals"
-                android:pathPattern="@string/path_deals_brand_detail"
+                android:host="@string/host_global"
+                android:pathPattern="/deals/brand/.*\\/"
                 android:scheme="@string/internal_scheme" />
         </intent-filter>
     </activity>

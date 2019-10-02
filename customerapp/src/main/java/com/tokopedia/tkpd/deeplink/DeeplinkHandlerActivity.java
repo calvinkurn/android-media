@@ -119,8 +119,6 @@ import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
-import com.tokopedia.search.applink.SearchApplinkModule;
-import com.tokopedia.search.applink.SearchApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -170,7 +168,6 @@ import rx.schedulers.Schedulers;
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
-        SearchApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
@@ -241,7 +238,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
-                    new SearchApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
