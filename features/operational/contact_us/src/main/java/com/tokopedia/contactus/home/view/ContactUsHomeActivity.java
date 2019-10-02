@@ -67,8 +67,8 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         initRemoteConfig();
+        super.onCreate(savedInstanceState);
     }
 
     private boolean isNative() {
