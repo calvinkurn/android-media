@@ -61,6 +61,6 @@ data class Data(
         val trackingDetail: List<TrackingDetail> = arrayListOf(),
 
         @field:SerializedName("ticker_info")
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val tickerInfo: TickerInfo = TickerInfo()
 
 )
