@@ -144,5 +144,5 @@ yang ditemukan</string>
     <string name="coach_tab_title_seller">Chat sebagai pemilik toko</string>
     <string name="coach_tab_description_seller">Semua chat seputar toko dan produkmu dari pembeli bisa dilihat di sini</string>
     <string name="coach_tab_title_buyer">Chat sebagai pembeli</string>
-    <string name="coach_tab_description_buyer">Semua chat dari penjual dan teman bisa dilihat di sini</string>
+    <string name="coach_tab_description_buyer">Semua chat dari penjual bisa dilihat di sini</string>
 </resources>
