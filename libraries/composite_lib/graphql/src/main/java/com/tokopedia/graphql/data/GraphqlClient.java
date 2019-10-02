@@ -36,7 +36,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
-            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 
@@ -82,5 +82,12 @@ public class GraphqlClient {
             throw new RuntimeException("Please call init() before using graphql library");
         }
         return sFingerprintManager;
+    }
+
+    public static synchronized void flush(){
+        sRetrofit = null;
+        sGraphqlApi = null;
+        sFingerprintManager = null;
+        sGraphqlDatabase = null;
     }
 }
