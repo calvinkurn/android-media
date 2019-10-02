@@ -6,21 +6,20 @@ import android.view.ViewGroup
 /**
  * Created by jegul on 2019-10-01.
  */
-abstract class TypedAdapterDelegate<T, VH : RecyclerView.ViewHolder> : AdapterDelegate<Any> {
+abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder> : AdapterDelegate<ST> {
 
-    abstract fun isForViewType(item: Any, itemList: List<Any>, position: Int): Boolean
+    abstract val itemClass: Class<T>
 
     abstract fun onBindViewHolder(item: T, holder: VH)
 
     abstract fun onCreateViewHolder(parent: ViewGroup): VH
 
-    @Suppress("UNCHECKED_CAST")
-    override fun isForViewType(itemList: List<Any>, position: Int): Boolean {
-        return isForViewType(itemList[position], itemList, position)
+    override fun isForViewType(itemList: List<ST>, position: Int): Boolean {
+        return itemList[position]::class.java == itemClass
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onBindViewHolder(itemList: List<Any>, position: Int, holder: RecyclerView.ViewHolder) {
+    override fun onBindViewHolder(itemList: List<ST>, position: Int, holder: RecyclerView.ViewHolder) {
         onBindViewHolder(itemList[position] as T, holder as VH)
     }
 

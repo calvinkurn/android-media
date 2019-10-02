@@ -5,7 +5,7 @@ import android.support.v7.util.DiffUtil
 /**
  * Created by jegul on 2019-10-02.
  */
-abstract class BaseDiffUtilAdapter<T> : BaseAdapter<T>() {
+abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
 
     abstract fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 

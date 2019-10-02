@@ -6,7 +6,7 @@ import android.view.ViewGroup
 /**
  * Created by jegul on 2019-10-01.
  */
-abstract class BaseAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     protected val delegatesManager = AdapterDelegatesManager<T>()
     protected val itemList: MutableList<T> = mutableListOf()
@@ -28,12 +28,10 @@ abstract class BaseAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         return itemList.size
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getItemViewType(position: Int): Int {
         return delegatesManager.getItemViewType(itemList, position)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         return delegatesManager.onBindViewHolder(itemList, position, holder)
     }

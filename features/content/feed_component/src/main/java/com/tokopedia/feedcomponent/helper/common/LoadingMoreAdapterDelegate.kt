@@ -11,11 +11,9 @@ import com.tokopedia.feedcomponent.helper.TypedAdapterDelegate
 /**
  * Created by jegul on 2019-10-02.
  */
-class LoadingMoreAdapterDelegate : TypedAdapterDelegate<LoadingMoreModel, LoadingMoreViewHolder>() {
+class LoadingMoreAdapterDelegate : TypedAdapterDelegate<LoadingMoreModel, Any, LoadingMoreViewHolder>() {
 
-    override fun isForViewType(item: Any, itemList: List<Any>, position: Int): Boolean {
-        return item is LoadingMoreModel
-    }
+    override val itemClass: Class<LoadingMoreModel> = LoadingMoreModel::class.java
 
     override fun onBindViewHolder(item: LoadingMoreModel, holder: LoadingMoreViewHolder) {
         holder.bind(item)
