@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class EnhancedECommerceActionField {
 
+    public static final String STEP_0 = "0";
     public static final String STEP_1 = "1";
     public static final String STEP_2 = "2";
     public static final String STEP_3 = "3";
