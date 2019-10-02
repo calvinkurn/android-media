@@ -143,28 +143,28 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCost.getProductDiscountLabel() != null) {
             mTvProductDiscountLabel.setText(shipmentCost.getProductDiscountLabel());
         }
-        mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount()));
+        mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
         if (shipmentCost.getShippingDiscountLabel() != null) {
             mTvShippingDiscountLabel.setText(shipmentCost.getShippingDiscountLabel());
         }
-        mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount()));
+        mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
     }
 
     private void renderGeneralDiscount(ShipmentCostModel shipmentCost) {
         if (shipmentCost.getDiscountLabel() != null) {
             mTvDiscountLabel.setText(shipmentCost.getDiscountLabel());
         }
-        mTvDiscountPrice.setText(getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, shipmentCost.getDiscountAmount()));
+        mTvDiscountPrice.setText(getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, shipmentCost.getDiscountAmount() * -1));
     }
 
     private void renderCashback(ShipmentCostModel shipmentCost) {
         if (shipmentCost.getCashbackLabel() != null) {
             mTvCashbackLabel.setText(shipmentCost.getCashbackLabel());
         }
-        mTvCashbackPrice.setText(getPriceFormat(mTvCashbackLabel, mTvCashbackPrice, shipmentCost.getCashbackAmount()));
+        mTvCashbackPrice.setText(getPriceFormat(mTvCashbackLabel, mTvCashbackPrice, shipmentCost.getCashbackAmount() * -1));
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {
