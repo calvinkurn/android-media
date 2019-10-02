@@ -2,9 +2,17 @@ package com.tokopedia.globalnavwidgetsamples
 
 val globalNavWidgetItemNoInfo = """
 {
-    "title": "Beli Tiket",
+    "source": "",
     "keyword": "bali",
-    "nav_template": "1",
+    "title": "Beli Tiket",
+    "nav_template": "card",
+    "background": "",
+    "logo_url": "",
+    "reputation_url": "",
+    "icon_badge_url": "",
+    "credibility": "",
+    "is_official": false,
+    "is_power_merchant": false,
     "see_all_applink": "tokopedia://pesawat",
     "see_all_url": "https://tokopedia.com/flight",
     "list": [
@@ -35,19 +43,20 @@ val globalNavWidgetItemNoInfo = """
 
 val globalNavWidgetItemWithInfo = """
 {
-    "title": "Beli Pulsa",
+    "source": "recharge",
     "keyword": "pulsa simpati",
-    "nav_template": "1",
+    "title": "Beli Pulsa",
+    "nav_template": "pill",
+    "background": "https://ecs7.tokopedia.net/img/yellow-container.png",
+    "logo_url": "",
+    "reputation_url": "",
+    "icon_badge_url": "",
+    "credibility": "",
+    "is_official": false,
+    "is_power_merchant": false,
     "see_all_applink": "tokopedia://digital/form?category_id=1&operator_id=12",
     "see_all_url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12",
     "list": [
-        {
-            "name": "500.000",
-            "info": "Rp 500.000",
-            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
-            "applink": "tokopedia://digital/form?category_id=1&operator_id=12&product_id=117",
-            "url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=117"
-        },
         {
             "name": "1.000",
             "info": "Rp 1.800",
@@ -70,11 +79,18 @@ val globalNavWidgetItemWithInfo = """
             "url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=69"
         },
         {
-            "name": "15.000",
-            "info": "Rp 15.000",
+            "name": "500.000",
+            "info": "Rp 500.000",
             "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
-            "applink": "tokopedia://digital/form?category_id=1&operator_id=12&product_id=3443",
-            "url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=3443"
+            "applink": "tokopedia://digital/form?category_id=1&operator_id=12&product_id=117",
+            "url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=117"
+        },
+        {
+            "name": "30.000",
+            "info": "Rp 30.000",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+            "applink": "tokopedia://digital/form?category_id=1&operator_id=12&product_id=3445",
+            "url": "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=3445"
         }
     ]
 }
