@@ -2188,6 +2188,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                     setBenefitSummaryInfoUiModel(null);
+                    if (!stillHasAppliedPromo()) {
+                        resetPromoBenefit();
+                    }
                     shipmentAdapter.clearTotalPromoStackAmount();
                     shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateCheckoutButtonData(null);
@@ -2640,6 +2643,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (!stillHasAppliedPromo()) {
             clearPromoTrackingData();
+            resetPromoBenefit();
         }
 
         shipmentAdapter.clearTotalPromoStackAmount();
