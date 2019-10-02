@@ -22,7 +22,6 @@ import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent
 import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarViewModel
 import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarViewModel
-import com.tokopedia.travelcalendar.TRAVEL_CAL_M
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
@@ -122,41 +121,41 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             }
         })
 
+
+
         btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
     private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
         val calendar = calendarUnify.calendarPickerView
 
-        calendar?.init(minDate, maxDate, holidayArrayList)
+        val nextYear = Calendar.getInstance()
+        nextYear.add(Calendar.YEAR, 2)
+
+        calendar?.init(minDate, nextYear.time, holidayArrayList)
                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                 ?.withSelectedDate(selectedDate)
 
-        calendar?.let { calendar ->
-            calendar.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
-                override fun onScrolled(date: Date) {
-                    if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
-                        val mapFareParam = hashMapOf<String, Any>()
-                        mapFareParam.put(PARAM_DEPARTURE_CODE, departureCode)
-                        mapFareParam.put(PARAM_ARRIVAL_CODE, arrivalCode)
-                        mapFareParam.put(PARAM_YEAR, date.dateToString(TRAVEL_CAL_YYYY))
-                        mapFareParam.put(PARAM_MONTH, TravelDateUtil.dateToString(TRAVEL_CAL_M, date))
-                        mapFareParam.put(PARAM_CLASS, classFlight.toString())
-                        activity?.run {
-                            fareCalendarViewModel.getFareFlightCalendar(
-                                    GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
-                                    mapFareParam)
+        if (::departureCode.isInitialized && ::arrivalCode.isInitialized && classFlight > 0) {
 
-                            fareCalendarViewModel.fareFlightCalendarData.observe(this, android.arch.lifecycle.Observer {
-                                it?.let {
-                                    val subtitleList = mapFareFlightToSubtitleCalendar(it)
-                                    calendar.setSubTitles(subtitleList)
-                                }
-                            })
-                        }
-                    }
-                }
+            val mapFareParam = hashMapOf<String, Any>()
+            mapFareParam[PARAM_DEPARTURE_CODE] = departureCode
+            mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
+            mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
+            mapFareParam[PARAM_CLASS] = classFlight.toString()
+            activity?.run {
+                fareCalendarViewModel.getFareFlightCalendar(
+                        GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
+                        mapFareParam, minDate, maxDate)
             }
+
+
+            fareCalendarViewModel.fareFlightCalendarData.observe(this, android.arch.lifecycle.Observer {
+                it?.let {
+                    calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
+                }
+            })
+
         }
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
@@ -205,7 +204,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         private const val PARAM_DEPARTURE_CODE = "departCode"
         private const val PARAM_ARRIVAL_CODE = "arrivalCode"
-        private const val PARAM_YEAR = "year"
+        const val PARAM_YEAR = "year"
         private const val PARAM_MONTH = "month"
         private const val PARAM_CLASS = "class"
 
