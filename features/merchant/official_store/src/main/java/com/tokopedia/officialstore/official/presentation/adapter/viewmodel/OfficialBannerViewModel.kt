@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.officialstore.official.data.Banner
+import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 
 class OfficialBannerViewModel(val banner: MutableList<Banner>) : Visitable<OfficialHomeAdapterTypeFactory> {

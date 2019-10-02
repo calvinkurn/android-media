@@ -1,0 +1,13 @@
+query OfficialStoreFeaturedShop($categoryAliasID: Int) {
+   OfficialStoreFeaturedShop(categoryAliasID: $categoryAliasID, device: 1, size: 4){
+      totalShops
+      shops{
+        id
+        name
+        url
+        logoUrl
+        imageUrl
+        additionalInformation
+      }
+    }
+}

@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.officialstore.BuildConfig
@@ -16,13 +15,12 @@ import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
-import com.tokopedia.officialstore.official.data.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,7 +45,6 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private var category: Category? = null
 
     private var adapter: OfficialHomeAdapter? = null
-    private var listOfOfficialHome: ArrayList<Visitable<OfficialHomeAdapterTypeFactory>> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,13 +71,21 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         super.onViewCreated(view, savedInstanceState)
         setListener()
         observeBannerData()
+        refreshData()
+    }
+
+    private fun refreshData() {
         viewModel.getOfficialStoreBanners(category?.categoryId ?: "")
+        viewModel.getOfficialStoreFeaturedShop(category?.categoryId ?: "")
+
+        // TODO get dynamic channel & product recommendation
     }
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter)
                 }
                 is Fail -> {
@@ -93,8 +98,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     private fun setListener() {
         swipeRefreshLayout?.setOnRefreshListener {
-            swipeRefreshLayout?.isRefreshing = false
-            viewModel.getOfficialStoreBanners(category?.categoryId ?: "")
+            refreshData()
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -114,6 +118,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                         }
                         firstVisibleInListview = currentFirstVisible
                     }
+
+                    // TODO logic load more
+                    // TODO get dynamic channel & product recommendation
                 })
             }
         }

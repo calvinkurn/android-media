@@ -1,4 +1,4 @@
-package com.tokopedia.officialstore.official.data
+package com.tokopedia.officialstore.official.data.model
 
 import android.os.Parcel
 import android.os.Parcelable

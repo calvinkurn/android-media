@@ -3,7 +3,7 @@ package com.tokopedia.officialstore.official.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
-import com.tokopedia.officialstore.official.data.OfficialStoreBanners
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named

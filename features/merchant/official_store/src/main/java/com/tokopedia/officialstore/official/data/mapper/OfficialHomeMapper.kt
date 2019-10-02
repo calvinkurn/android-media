@@ -1,6 +1,7 @@
 @file:JvmName("OfficialHomeMapper")
-package com.tokopedia.officialstore.official.data
+package com.tokopedia.officialstore.official.data.mapper
 
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 
