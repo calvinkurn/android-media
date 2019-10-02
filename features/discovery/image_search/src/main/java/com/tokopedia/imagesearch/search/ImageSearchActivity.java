@@ -175,7 +175,8 @@ public class ImageSearchActivity extends BaseActivity
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.image_search_action_search) {
-            return false;
+            moveToAutoCompletePage();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

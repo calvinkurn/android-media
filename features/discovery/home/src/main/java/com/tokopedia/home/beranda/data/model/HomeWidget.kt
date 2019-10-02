@@ -15,7 +15,10 @@ class HomeWidget(
         val tabBusinessList: List<TabItem> = listOf(),
         @SerializedName("widget_grid")
         @Expose
-        val contentItemTabList: List<ContentItemTab> = listOf()
+        val contentItemTabList: List<ContentItemTab> = listOf(),
+        @SerializedName("widget_header")
+        @Expose
+        val widgetHeader: WidgetHeader = WidgetHeader("")
 ) {
 
     data class Data (
@@ -64,6 +67,14 @@ class HomeWidget(
                 return arrayOfNulls(size)
             }
         }
+    }
+
+    class WidgetHeader(
+            @SerializedName("back_color")
+            @Expose
+            val backColor: String)
+    {
+
     }
 
     class ContentItemTab(

@@ -60,7 +60,7 @@ public class PhoneVerificationInterceptor extends TkpdAuthInterceptor {
                                                           String contentType, String authKey,
                                                           String dateFormat, String userId) {
         String date = AuthHelper.generateDate(dateFormat);
-        String contentMD5 = AuthHelper.generateContentMd5(strParam);
+        String contentMD5 = AuthHelper.getMD5Hash(strParam);
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
         String signature = AuthHelper.calculateRFC2104HMAC(authString, AuthKey.KEY_WSV4);
