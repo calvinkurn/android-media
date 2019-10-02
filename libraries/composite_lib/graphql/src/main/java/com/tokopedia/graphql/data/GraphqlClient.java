@@ -83,11 +83,4 @@ public class GraphqlClient {
         }
         return sFingerprintManager;
     }
-
-    public static synchronized void flush(){
-        sRetrofit = null;
-        sGraphqlApi = null;
-        sFingerprintManager = null;
-        sGraphqlDatabase = null;
-    }
 }
