@@ -3,10 +3,16 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
 import kotlinx.android.synthetic.main.item_army.view.*
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.ColorMatrix
+
+
 
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -17,7 +23,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bindData(data: LogisticPromoViewModel, listener: ShippingDurationAdapterListener) {
         itemView.tv_title.text = data.title
-        itemView.tv_info.text = data.description
+        itemView.tv_info.text = MethodChecker.fromHtml(data.description)
         ImageHandler.LoadImage(itemView.img_logo, data.imageUrl)
 
         val fontColor = if (data.disabled) {
@@ -25,6 +31,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             ContextCompat.getColor(itemView.context, R.color.font_black_primary_70)
         }
+
         itemView.tv_title.setTextColor(fontColor)
         itemView.tv_info.setTextColor(fontColor)
 
@@ -33,6 +40,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 listener.onLogisticPromoClicked(data)
             }
         } else {
+            itemView.img_logo.setDisabled()
             itemView.setOnClickListener(null)
         }
 
@@ -41,6 +49,14 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             itemView.img_check.visibility = View.GONE
         }
+    }
+
+    private fun ImageView.setDisabled() {
+        val matrix = ColorMatrix()
+        matrix.setSaturation(0f)
+
+        val filter = ColorMatrixColorFilter(matrix)
+        this.colorFilter = filter
     }
 
 }
