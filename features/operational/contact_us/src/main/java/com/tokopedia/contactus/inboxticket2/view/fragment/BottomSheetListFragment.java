@@ -31,7 +31,7 @@ public class BottomSheetListFragment extends InboxBottomSheetFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        rvBottomSheet = rootView.findViewById(R.id.rv_filter);
+        rvBottomSheet = rootView.findViewById(com.tokopedia.design.R.id.rv_filter);
         rvBottomSheet.setAdapter(mAdapter);
         return rootView;
     }

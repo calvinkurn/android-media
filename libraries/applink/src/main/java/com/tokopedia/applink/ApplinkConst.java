@@ -168,7 +168,7 @@ public interface ApplinkConst {
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
-    String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String CONTACT_US_NATIVE = "tokopedia://contactus?url={url}";
 
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";

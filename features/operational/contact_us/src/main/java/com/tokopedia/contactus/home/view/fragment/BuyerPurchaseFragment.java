@@ -60,7 +60,7 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
 
         View view = inflater.inflate(R.layout.layout_full_order_list, container, false);
         orderListFull = view.findViewById(R.id.order_list_full);
-        emptyLayout = view.findViewById(R.id.empty_layout);
+        emptyLayout = view.findViewById(com.tokopedia.core2.R.id.empty_layout);
         getPresenter().attachView(this);
         orderListFull.setAdapter(adapter);
         orderListFull.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

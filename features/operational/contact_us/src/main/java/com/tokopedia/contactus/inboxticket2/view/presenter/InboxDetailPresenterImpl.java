@@ -181,7 +181,7 @@ public class InboxDetailPresenterImpl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
+        if (item.getItemId() == com.tokopedia.core2.R.id.action_search) {
             mView.toggleSearch(View.VISIBLE);
             return true;
         } else if (item.getItemId() == android.R.id.home) {
@@ -508,7 +508,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void clickRate(int id, String commentID) {
         rateCommentID = commentID;
-        if (id == R.id.btn_yes) {
+        if (id == com.tokopedia.inbox.R.id.btn_yes) {
             String YES = "YES";
             postRatingUseCase.setQueryMap(rateCommentID, YES, 0, 0, "");
             mView.showProgressBar();
@@ -601,7 +601,7 @@ public class InboxDetailPresenterImpl
                     try {
                         file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
                     } catch (IOException e) {
-                        throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.error_upload_image));
                     }
                     RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                             networkCalculator.getContent().get(NetworkCalculator.USER_ID));

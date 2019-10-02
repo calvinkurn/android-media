@@ -216,7 +216,7 @@ public class InboxListPresenterImpl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
+        if (item.getItemId() == com.tokopedia.core2.R.id.action_search) {
             mView.toggleSearch(View.VISIBLE);
             return true;
         }

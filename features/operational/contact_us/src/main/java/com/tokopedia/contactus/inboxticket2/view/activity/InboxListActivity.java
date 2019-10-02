@@ -136,7 +136,7 @@ public class InboxListActivity extends InboxBaseActivity
         findingViewsId();
         settingOnClickListener();
         btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (this, R.drawable.ic_filter_list), null, null , null);
+                (this, com.tokopedia.core2.R.drawable.ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }

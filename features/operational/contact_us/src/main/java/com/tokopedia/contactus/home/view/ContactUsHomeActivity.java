@@ -31,6 +31,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
+    public static final String URL_KEY = "url";
     private RemoteConfig remoteConfig;
 
     @DeepLink(ApplinkConst.CONTACT_US_NATIVE)
@@ -51,8 +52,11 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         if (!isNative()) {
             String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
+            String uri = getIntent().getData().getQueryParameter(URL_KEY);
             if (url != null && url.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(url);
+            } else if (uri!=null && uri.length() > 0) {
+                return SimpleWebViewWithFilePickerFragment.createInstance(uri);
             } else {
                 return SimpleWebViewWithFilePickerFragment.createInstance(URL_HELP);
             }

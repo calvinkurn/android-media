@@ -115,7 +115,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         view.findViewById(R.id.img_tooltip).setOnClickListener(this);
         sendButton.setOnClickListener(this);
         view.findViewById(R.id.btn_tutup).setOnClickListener(this);
-        view.findViewById(R.id.btn_ok).setOnClickListener(this);
+        view.findViewById(com.tokopedia.design.R.id.btn_ok).setOnClickListener(this);
     }
 
     private TextWatcher watcher() {
@@ -289,7 +289,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);
@@ -364,7 +364,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
             onSendClick();
         }else if(id==R.id.btn_tutup){
             ontutupClick();
-        }else if(id==R.id.btn_ok){
+        }else if(id==com.tokopedia.design.R.id.btn_ok){
             onOkClick();
         }
     }

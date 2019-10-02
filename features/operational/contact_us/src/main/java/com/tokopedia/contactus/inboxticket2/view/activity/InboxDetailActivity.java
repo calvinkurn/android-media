@@ -159,7 +159,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
                     getResources().getColor(R.color.grey_200),
-                    getResources().getColor(R.color.black_38), textSizeLabel));
+                    getResources().getColor(com.tokopedia.core2.R.color.black_38), textSizeLabel));
             showIssueClosed();
 
         } else if (ticketDetail.isShowRating()) {
@@ -216,9 +216,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void toggleSearch(int visibility) {
         searchView.setVisibility(visibility);
         if (visibility == View.VISIBLE) {
-            mMenu.findItem(R.id.action_search).setVisible(false);
+            mMenu.findItem(com.tokopedia.core2.R.id.action_search).setVisible(false);
         } else {
-            mMenu.findItem(R.id.action_search).setVisible(true);
+            mMenu.findItem(com.tokopedia.core2.R.id.action_search).setVisible(true);
         }
     }
 
@@ -255,7 +255,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     private void findingViewsId() {
-        rootView = findViewById(R.id.root_view);
+        rootView = findViewById(com.tokopedia.core2.R.id.root_view);
         tvTicketTitle = findViewById(R.id.tv_ticket_title);
         tvIdNum = findViewById(R.id.tv_id_num);
         rvMessageList = findViewById(R.id.rv_message_list);
@@ -326,7 +326,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);
@@ -571,7 +571,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
                 getResources().getColor(R.color.grey_200),
-                getResources().getColor(R.color.black_38), textSizeLabel));
+                getResources().getColor(com.tokopedia.core2.R.color.black_38), textSizeLabel));
     }
 
     @Override
@@ -583,7 +583,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void setSubmitButtonEnabled(boolean enabled) {
         isSendButtonEnabled = enabled;
         if (enabled) {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.green_nob));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.green_nob));
         } else {
             ivSendButton.setColorFilter(getResources().getColor(R.color.grey_300));
         }

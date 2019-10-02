@@ -54,7 +54,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_contact_us_create_ticket;
+        return com.tokopedia.inbox.R.layout.activity_contact_us_create_ticket;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
             fragment = (CreateTicketFormFragment) getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName());
         }
 
-        fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.core2.R.id.main_view, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
 
         setTitle();
@@ -83,7 +83,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
                 getIntent().getExtras().getString(PARAM_TITLE, "").length() > 0) {
             toolbar.setTitle(getIntent().getExtras().getString(PARAM_TITLE, ""));
         } else {
-            toolbar.setTitle(R.string.title_activity_contact_us);
+            toolbar.setTitle(com.tokopedia.core2.R.string.title_activity_contact_us);
         }
     }
 
@@ -109,7 +109,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
 
     @Override
     public void onFinishCreateTicket() {
-        Toast.makeText(this, R.string.title_contact_finish, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, com.tokopedia.core2.R.string.title_contact_finish, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }

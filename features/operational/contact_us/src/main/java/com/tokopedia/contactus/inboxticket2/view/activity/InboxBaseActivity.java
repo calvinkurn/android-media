@@ -81,7 +81,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public View getRootView() {
-        return findViewById(R.id.root_view);
+        return findViewById(com.tokopedia.core2.R.id.root_view);
     }
 
     @Override

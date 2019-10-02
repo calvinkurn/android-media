@@ -68,7 +68,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 @Override
                 public void onNullData() {
                     viewListener.finishLoading();
-                    viewListener.showError(viewListener.getString(R.string.default_request_error_null_data));
+                    viewListener.showError(viewListener.getString(com.tokopedia.abstraction.R.string.default_request_error_null_data));
 
                 }
             });
@@ -120,13 +120,13 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         }
 
         if (viewListener.getMessage().getText().toString().trim().length() == 0) {
-            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_empty));
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(com.tokopedia.core2.R.string.error_detail_empty));
             return false;
         } else if (viewListener.getMessage().getText().toString().trim().length() < 30) {
-            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_too_short));
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(com.tokopedia.core2.R.string.error_detail_too_short));
             return false;
         } else if (viewListener.getAttachmentNote().getVisibility() == View.VISIBLE && viewListener.getAttachment().isEmpty()) {
-            viewListener.showError(viewListener.getActivity().getString(R.string.error_attachment));
+            viewListener.showError(viewListener.getActivity().getString(com.tokopedia.core2.R.string.error_attachment));
             return false;
         }
 
@@ -183,7 +183,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                     @Override
                     public void onNullData() {
                         viewListener.finishLoading();
-                        viewListener.showErrorEmptyState(viewListener.getString(R.string.default_request_error_null_data),
+                        viewListener.showErrorEmptyState(viewListener.getString(com.tokopedia.abstraction.R.string.default_request_error_null_data),
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {

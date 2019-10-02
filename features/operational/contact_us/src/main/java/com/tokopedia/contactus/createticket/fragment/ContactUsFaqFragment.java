@@ -114,7 +114,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_contact_us_faq;
+        return com.tokopedia.core2.R.layout.fragment_contact_us_faq;
     }
 
     @Override
@@ -122,8 +122,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         if (webView != null) {
             webView.clearCache(true);
         }
-        webView = view.findViewById(R.id.webview);
-        progressBar = view.findViewById(R.id.progressbar);
+        webView = view.findViewById(com.tokopedia.abstraction.R.id.webview);
+        progressBar = view.findViewById(com.tokopedia.abstraction.R.id.progressbar);
 
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());

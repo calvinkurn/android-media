@@ -123,7 +123,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
         private void findindViewsId(View view) {
             ivProfile = view.findViewById(R.id.iv_profile);
-            tvName = view.findViewById(R.id.tv_name);
+            tvName = view.findViewById(com.tokopedia.core2.R.id.tv_name);
             tvDateRecent = view.findViewById(R.id.tv_date_recent);
             tvComment = view.findViewById(R.id.tv_comment);
             tvCollapsedTime = view.findViewById(R.id.tv_collapsed_time);
