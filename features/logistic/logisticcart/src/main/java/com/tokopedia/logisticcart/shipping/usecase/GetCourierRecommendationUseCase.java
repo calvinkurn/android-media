@@ -158,6 +158,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         if (shippingParam.getDestinationLongitude() != null) {
             destinationStringBuilder.append(",").append(shippingParam.getDestinationLongitude());
         }
+        String productJson = gson.toJson(shippingParam.getProducts());
         queryStringBuilder = setParam(queryStringBuilder, Param.DESTINATION, destinationStringBuilder.toString());
 
         double weightInKilograms = shippingParam.getWeightInKilograms();
@@ -180,7 +181,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(shippingParam.isTradein() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.VEHICLE_LEASING, String.valueOf(isLeasing ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.PSL_CODE, (promoCode != null) ? promoCode : "");
-        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCTS, gson.toJson(shippingParam.getProducts()));
+        queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCTS, productJson.replace("\"", "\\\""));
         queryStringBuilder = setParam(queryStringBuilder, Param.UNIQUE_ID, shippingParam.getUniqueId());
 
         return queryStringBuilder.toString();
