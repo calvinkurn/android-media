@@ -31,10 +31,10 @@
     <TextView
         android:id="@+id/guided_search_text"
         style="@style/TextView.Small.White.Bold"
-        android:paddingTop="@dimen/dp_30"
-        android:paddingBottom="@dimen/dp_30"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         tools:text="superstar"/>
 
 </RelativeLayout>
