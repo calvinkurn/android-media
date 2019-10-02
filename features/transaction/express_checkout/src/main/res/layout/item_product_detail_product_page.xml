@@ -56,7 +56,8 @@
             style="@style/TextMidMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_3"
+            app:layout_constraintVertical_bias="0"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/orange_red"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
@@ -89,14 +90,13 @@
 
         <ImageView
             android:id="@+id/img_free_ongkir"
-            android:layout_width="50dp"
-            android:layout_height="18dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintLeft_toRightOf="@+id/tv_discount"
-            app:layout_constraintTop_toTopOf="@+id/tv_discount"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_product_price"
             android:visibility="gone"
+            android:adjustViewBounds="true"
             android:scaleType="fitXY" />
 
     </android.support.constraint.ConstraintLayout>
