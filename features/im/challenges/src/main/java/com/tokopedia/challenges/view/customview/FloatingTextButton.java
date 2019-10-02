@@ -150,7 +150,7 @@ public class FloatingTextButton extends FrameLayout {
     private void inflateLayout(Context context) {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.widget_floating_text_button, this, true);
+        View view = inflater.inflate(R.layout.ch_widget_floating_text_button, this, true);
 
         container = view.findViewById(R.id.layout_button_container);
 

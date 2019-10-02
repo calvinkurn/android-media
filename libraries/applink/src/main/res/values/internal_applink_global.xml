@@ -29,4 +29,6 @@
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
+    <string name="path_details" translatable="false">/challenge/{challenge-id}</string>
+    <string name="path_submission" translatable="false">/submission</string>
 </resources>

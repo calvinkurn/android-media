@@ -41,7 +41,7 @@ public class EmptyStateViewHelper {
             params.weight = 1.0f;
             View retryLoad = rootview.findViewById(R.id.empty_view);
             if (retryLoad == null) {
-                retryLoad = inflater.inflate(R.layout.empty_view, (ViewGroup) rootview);
+                retryLoad = inflater.inflate(R.layout.ch_empty_view, (ViewGroup) rootview);
             } else {
                 retryLoad.setVisibility(View.VISIBLE);
             }

@@ -1,11 +1,9 @@
 <resources>
-    <string name="tokopedia_scheme" translatable="false">tokopedia</string>
-    <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="host_challenges" translatable="false">challenge</string>
     <string name="path_home" translatable="false">/home</string>
-    <string name="path_details" translatable="false">/challenge/{challenge-id}</string>
-    <string name="path_submission" translatable="false">/submission</string>
+   <!-- <string name="path_details" translatable="false">/challenge/{challenge-id}</string>
+    <string name="path_submission" translatable="false">/submission</string>-->
 
     <string name="ch_description">Deskripsi</string>
     <string name="ch_image_title">Judul</string>

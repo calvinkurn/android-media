@@ -99,7 +99,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
-                android:background="@drawable/rounded_rectangle_grey_border"
+                android:background="@drawable/ch_rounded_rectangle_grey_border"
                 android:focusable="true"
                 android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent"

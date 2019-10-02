@@ -61,7 +61,7 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.layout_fragment_image_viewer, container, false);
+        View contentView = inflater.inflate(R.layout.ch_layout_fragment_image_viewer, container, false);
         vpImageViewer = contentView.findViewById(R.id.vp_image_viewer);
         closebtn = contentView.findViewById(R.id.close_button);
         closebtn.setOnClickListener(this);

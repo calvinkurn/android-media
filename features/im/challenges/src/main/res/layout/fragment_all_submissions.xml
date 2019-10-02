@@ -24,7 +24,7 @@
             app:contentInsetStartWithNavigation="0dp" />
     </android.support.design.widget.AppBarLayout>
     <include
-        layout="@layout/empty_view"
+        layout="@layout/ch_empty_view"
         android:visibility="gone"></include>
     <LinearLayout
         android:id="@+id/base_main_content"

@@ -46,7 +46,7 @@ public class MySubmissionsListAdapter extends RecyclerView.Adapter<RecyclerView.
                 holder = new MySubmissionsViewHolder(context, v);
                 break;
             case FOOTER:
-                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                v = inflater.inflate(R.layout.ch_footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
                 break;
             default:

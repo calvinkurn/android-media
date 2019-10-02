@@ -78,7 +78,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 holder = new ItemViewHolder(v);
                 break;
             case FOOTER:
-                v = inflater.inflate(R.layout.footer_layout, parent, false);
+                v = inflater.inflate(R.layout.ch_footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
                 break;
             default:
