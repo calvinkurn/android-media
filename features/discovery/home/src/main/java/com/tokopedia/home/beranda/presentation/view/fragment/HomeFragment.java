@@ -194,6 +194,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SharedPreferences sharedPrefs;
 
     private int[] positionSticky = new int[2];
+    private StickyLoginTickerPojo.TickerDetail tickerDetail;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -1551,7 +1552,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
-        stickyLoginView.setContent(tickerDetail);
+        this.tickerDetail = tickerDetail;
         updateStickyState();
     }
 
@@ -1561,21 +1562,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void updateStickyState() {
-        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if (!isCanShowing) {
-            stickyLoginView.setVisibility(View.GONE);
+        if (this.tickerDetail == null) {
+            hideStickyLogin();
             return;
         }
 
-        if (stickyLoginView.isShowing()) {
-            positionSticky = stickyLoginView.getLocation();
+        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if (!isCanShowing) {
+            hideStickyLogin();
+            return;
         }
 
         if (isUserLoggedIn()) {
-            stickyLoginView.setVisibility(View.GONE);
-        } else {
-            stickyLoginView.show(StickyLoginConstant.Page.HOME);
-            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+            hideStickyLogin();
+            return;
+        }
+
+        stickyLoginView.setContent(this.tickerDetail);
+        stickyLoginView.show(StickyLoginConstant.Page.HOME);
+        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+
+        if (stickyLoginView.isShowing()) {
+            positionSticky = stickyLoginView.getLocation();
         }
     }
 
