@@ -6,7 +6,6 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.CardView
@@ -26,6 +25,10 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -62,6 +65,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     var bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
     var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
+    val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
 
     companion object {
         val TYPE_CAROUSEL = "carousel"
@@ -71,78 +75,13 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.dc_banner_rv)
-
-        val bannerItem = channel.banner
         clearItemRecyclerViewDecoration(recyclerView)
+        mappingBackgroundContainerUnify(channel)
+        mappingView(channel)
+        valuateRecyclerViewDecoration(channel)
+    }
 
-        backgroundBanner.setContainerColor(
-                when (channel.header.backColor) {
-                    RED -> ContainerUnify.RED
-                    BLUE -> ContainerUnify.BLUE
-                    YELLOW -> ContainerUnify.YELLOW
-                    GREEN -> ContainerUnify.GREEN
-                    else -> ContainerUnify.RED
-                }
-        )
-
-        val visitables = arrayListOf<Visitable<BannerMixTypeFactory>>()
-        channel.grids.forEach {
-            visitables.add(ProductBannerMixDataModel(it, channel))
-        }
-
-        if (isHasSeeMoreApplink(channel)) {
-            visitables.add(SeeMoreBannerMixDataModel(
-                    channel.header.textColor,
-                    channel.header.backImage,
-                    channel.header.applink
-            ))
-        }
-
-        recyclerView.adapter = BannerItemAdapter(
-                BannerMixTypeFactoryImpl(homeCategoryListener),
-                channel.layout,
-                channel.grids,
-                channel,
-                homeCategoryListener,
-                visitables
-        )
-
-        mappingCtaButton(channel.banner.cta)
-
-        bannerUnifyButton.setOnClickListener {
-            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, channel)
-
-            if (bannerItem.cta.couponCode.isEmpty()) {
-                homeCategoryListener.onSectionItemClicked(channel.banner.applink)
-            } else {
-                copyCoupon(itemView, bannerItem.cta)
-            }
-        }
-
-        itemView.setOnClickListener {
-            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
-            homeCategoryListener.onSectionItemClicked(channel.banner.applink)
-        }
-
-        bannerTitle.text = bannerItem.title
-        bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
-
-        Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
-                .asBitmap()
-                .centerCrop()
-                .dontAnimate()
-                .into(getRoundedImageViewTarget(bannerImage, 16f))
-        /**
-         * Set button
-         */
-        bannerUnifyButton.text = bannerItem.cta.text
-
-
+    private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
         when(channel.layout) {
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
                 recyclerView.layoutManager = GridLayoutManager(
@@ -182,6 +121,75 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
+    private fun mappingView(channel: DynamicHomeChannel.Channels) {
+        val bannerItem = channel.banner
+        val visitables = mappingVisitablesFromChannel(channel)
+        val ctaData = channel.banner.cta
+
+        mappingCtaButton(ctaData)
+
+        bannerTitle.text = bannerItem.title
+        bannerDescription.text = bannerItem.description
+
+        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
+        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+
+        Glide.with(itemView.context)
+                .load(bannerItem.imageUrl)
+                .asBitmap()
+                .centerCrop()
+                .dontAnimate()
+                .into(getRoundedImageViewTarget(bannerImage, 24f))
+
+        recyclerView.adapter = BannerItemAdapter(
+                BannerMixTypeFactoryImpl(homeCategoryListener),
+                channel.layout,
+                channel.grids,
+                channel,
+                homeCategoryListener,
+                visitables
+        )
+
+        itemView.setOnClickListener {
+            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
+            homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+        }
+
+        bannerUnifyButton.setOnClickListener {
+            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, channel)
+            if (ctaData.couponCode.isEmpty()) {
+                homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+            } else {
+                copyCoupon(itemView, ctaData)
+            }
+        }
+    }
+
+    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<BannerMixTypeFactory>> {
+        val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
+            ProductBannerMixDataModel(it, channel)
+        }.toMutableList()
+
+        if (isHasSeeMoreApplink(channel)) {
+            visitables.add(SeeMoreBannerMixDataModel(
+                    channel
+            ))
+        }
+        return visitables
+    }
+
+    private fun mappingBackgroundContainerUnify(channel: DynamicHomeChannel.Channels) {
+        backgroundBanner.setContainerColor(
+                when (channel.header.backColor) {
+                    RED -> ContainerUnify.RED
+                    BLUE -> ContainerUnify.BLUE
+                    YELLOW -> ContainerUnify.YELLOW
+                    GREEN -> ContainerUnify.GREEN
+                    else -> ContainerUnify.RED
+                }
+        )
+    }
+
     private fun copyCoupon(view: View, cta: DynamicHomeChannel.CtaData) {
         val clipboard = view.context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
@@ -212,6 +220,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             CTA_TYPE_TEXT -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
             else -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
         }
+
+        bannerUnifyButton.text = cta.text
     }
 
     private fun clearItemRecyclerViewDecoration(itemRecyclerView: RecyclerView) {

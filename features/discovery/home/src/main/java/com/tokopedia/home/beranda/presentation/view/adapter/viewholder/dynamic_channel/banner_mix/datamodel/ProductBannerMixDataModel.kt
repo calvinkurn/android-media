@@ -1,7 +1,8 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 
 class ProductBannerMixDataModel(
         val grid: DynamicHomeChannel.Grid,

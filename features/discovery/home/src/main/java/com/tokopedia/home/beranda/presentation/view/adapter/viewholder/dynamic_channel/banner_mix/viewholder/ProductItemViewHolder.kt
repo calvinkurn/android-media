@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
@@ -21,9 +22,6 @@ class ProductItemViewHolder(view: View,
 
     override fun bind(productBannerMixDataModel: ProductBannerMixDataModel) {
         productCardView.setLinesProductTitle(2)
-//        if (productCardWidth != 0) {
-//            productCardView.layoutParams.width = productCardWidth
-//        }
         val gridItem = productBannerMixDataModel.grid
         productCardView.setProductModel(
                 ProductCardModel(
@@ -40,7 +38,6 @@ class ProductItemViewHolder(view: View,
                         discountPercentage = true
                 )
         )
-//        productCardView.setProductN
         productCardView.setOnClickListener {
             HomePageTracking.eventClickProductChannelMix(productCardView.context, productBannerMixDataModel.channel, adapterPosition)
             homeCategoryListener.onSectionItemClicked(gridItem.applink)

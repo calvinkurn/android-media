@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
@@ -6,7 +6,9 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,15 +24,18 @@ class SeeMoreBannerMixViewHolder(view: View,
     private val seeMoreText: Typography by lazy { view.findViewById<Typography>(R.id.tv_dc_mix_see_more)}
 
     override fun bind(seeMoreBannerMixDataModel: SeeMoreBannerMixDataModel) {
+        val channel = seeMoreBannerMixDataModel.channel
         bannerBackgroundImage.setOnClickListener {
-            homeCategoryListener.onSectionItemClicked(seeMoreBannerMixDataModel.seeMoreApplink)
+            homeCategoryListener.onSectionItemClicked(channel.header.applink)
         }
         Glide.with(itemView.context)
-                .load(seeMoreBannerMixDataModel.backImageUrl)
+                .load(channel.header.backImage)
                 .crossFade()
                 .centerCrop()
-                .dontAnimate()
                 .into(bannerBackgroundImage)
+        container.setOnClickListener {
+            HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, channel.id, channel.header.name)
+        }
     }
 
     val productCard: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.banner_item) }
