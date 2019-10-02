@@ -66,6 +66,11 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
           text
         }
       }
+      free_ongkir {
+        ticker_message
+        error_code
+        error_code
+      }
     }
   }
 }

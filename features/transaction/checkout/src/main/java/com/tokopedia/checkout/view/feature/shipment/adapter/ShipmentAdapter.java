@@ -43,6 +43,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.DetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
@@ -585,6 +586,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return recipientAddressModel;
     }
 
+    public int getTickerAnnouncementHolderDataIndex() {
+        return shipmentDataList.indexOf(tickerAnnouncementHolderData);
+    }
+
     private void checkDataForCheckout() {
         boolean availableCheckout = true;
         for (Object shipmentData : shipmentDataList) {
@@ -897,6 +902,48 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((CartPromoSuggestion) object).setVisible(false);
                 notifyItemChanged(i);
             }
+        }
+    }
+
+    public void setPromoBenefit(List<SummariesUiModel> benefitSummaries) {
+        if (shipmentCostModel != null) {
+            for (SummariesUiModel summariesUiModel : benefitSummaries) {
+                if (summariesUiModel.getType().equals(SummariesUiModel.getTYPE_DISCOUNT())) {
+                    if (summariesUiModel.getDetails().size() > 0) {
+                        shipmentCostModel.setHasDiscountDetails(true);
+                        for (DetailUiModel detailUiModel : summariesUiModel.getDetails()) {
+                            if (detailUiModel.getType().equals(SummariesUiModel.getTYPE_SHIPPING_DISCOUNT())) {
+                                shipmentCostModel.setShippingDiscountAmount(detailUiModel.getAmount());
+                                shipmentCostModel.setShippingDiscountLabel(detailUiModel.getDescription());
+                            } else if (detailUiModel.getType().equals(SummariesUiModel.getTYPE_PRODUCT_DISCOUNT())) {
+                                shipmentCostModel.setProductDiscountAmount(detailUiModel.getAmount());
+                                shipmentCostModel.setProductDiscountLabel(detailUiModel.getDescription());
+                            }
+                        }
+                    } else {
+                        shipmentCostModel.setHasDiscountDetails(false);
+                        shipmentCostModel.setDiscountAmount(summariesUiModel.getAmount());
+                        shipmentCostModel.setDiscountLabel(summariesUiModel.getDescription());
+                    }
+                } else if (summariesUiModel.getType().equals(SummariesUiModel.getTYPE_CASHBACK())) {
+                    shipmentCostModel.setCashbackAmount(summariesUiModel.getAmount());
+                    shipmentCostModel.setCashbackLabel(summariesUiModel.getDescription());
+                }
+            }
+        }
+    }
+
+    public void resetPromoBenefit() {
+        if (shipmentCostModel != null) {
+            shipmentCostModel.setHasDiscountDetails(false);
+            shipmentCostModel.setDiscountAmount(0);
+            shipmentCostModel.setDiscountLabel("");
+            shipmentCostModel.setShippingDiscountAmount(0);
+            shipmentCostModel.setShippingDiscountLabel("");
+            shipmentCostModel.setProductDiscountAmount(0);
+            shipmentCostModel.setProductDiscountLabel("");
+            shipmentCostModel.setCashbackAmount(0);
+            shipmentCostModel.setCashbackLabel("");
         }
     }
 
