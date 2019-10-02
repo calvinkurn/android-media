@@ -166,4 +166,8 @@ public class FlightDateUtil {
         long diff = inputDate.getTime() - currentDate.getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
+
+    public static Long countDayDifference(String day1, String day2) {
+        return (stringToDate(YYYYMMDD, day2).getTime() - stringToDate(YYYYMMDD, day1).getTime()) / TimeUnit.DAYS.toMillis(1);
+    }
 }

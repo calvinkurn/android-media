@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -348,7 +346,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getAirline() + " - " + journeyViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
-                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
                 EnhanceEccomerce.POSITIONS, position,
                 EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
                 EnhanceEccomerce.LIST, "/flight"
@@ -394,7 +392,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getAirline() + " - " + journeyViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
-                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
                 EnhanceEccomerce.POSITIONS, position,
                 EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
                 EnhanceEccomerce.LIST, "/flight"
@@ -560,10 +558,10 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (flightBookingCartData.getDepartureTrip() != null) {
-            products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
+            products.addAll(constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
                     searchParam.getFlightClass().getTitle(), flightBookingCartData.getReturnTrip() == null));
             if (flightBookingCartData.getReturnTrip() != null) {
-                products.add(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), comboKey,
+                products.addAll(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), comboKey,
                         searchParam.getFlightClass().getTitle(), false));
             }
         }
@@ -600,10 +598,10 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (flightBookingReviewModel.getDetailViewModelListDeparture() != null) {
-            products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
+            products.addAll(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
                     flightBookingReviewModel.getFlightClass().getTitle(), flightBookingReviewModel.getDetailViewModelListReturn() == null));
             if (flightBookingReviewModel.getDetailViewModelListReturn() != null) {
-                products.add(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), comboKey,
+                products.addAll(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), comboKey,
                         flightBookingReviewModel.getFlightClass().getTitle(), false));
             }
         }
@@ -696,9 +694,9 @@ public class FlightAnalytics {
         List<Object> products = new ArrayList<>();
 
         if (departureViewModel != null) {
-            products.add(constructEnhanceEcommerceProduct(departureViewModel, comboKey, flightClass.getTitle(), returnViewModel == null));
+            products.addAll(constructEnhanceEcommerceProduct(departureViewModel, comboKey, flightClass.getTitle(), returnViewModel == null));
             if (returnViewModel != null) {
-                products.add(constructEnhanceEcommerceProduct(returnViewModel, comboKey, flightClass.getTitle(), false));
+                products.addAll(constructEnhanceEcommerceProduct(returnViewModel, comboKey, flightClass.getTitle(), false));
             }
         }
 
@@ -732,6 +730,10 @@ public class FlightAnalytics {
         int totalPriceChild = flightViewModel.getChildNumericPrice() * flightViewModel.getCountChild();
         int totalPriceInfant = flightViewModel.getInfantNumericPrice() * flightViewModel.getCountInfant();
 
+        long layoverDayDiff = FlightDateUtil.countDayDifference(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(flightViewModel.getRouteList().size() - 1).getArrivalTimestamp()));
+        String dayDiffString = layoverDayDiff > 0 ? String.format(" +%s", layoverDayDiff) : "";
+
         products.add(DataLayer.mapOf(
                 EnhanceEccomerce.NAME, name,
                 EnhanceEccomerce.PRICE, String.valueOf(totalPriceAdult + totalPriceChild + totalPriceInfant),
@@ -749,7 +751,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.DIMENSION73, flightViewModel.getCountAdult() + " - " + flightViewModel.getCountChild() + " - " + flightViewModel.getCountInfant(),
                 EnhanceEccomerce.DIMENSION74, flightViewModel.getRouteList().get(0).getAirlineCode() + " - " + flightViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.DIMENSION75, flightViewModel.getDepartureTime(),
-                EnhanceEccomerce.DIMENSION76, flightViewModel.getArrivalTime(),
+                EnhanceEccomerce.DIMENSION76, flightViewModel.getArrivalTime() + dayDiffString,
                 EnhanceEccomerce.VARIANT, totalPriceAdult + " - " + totalPriceChild + " - " + totalPriceInfant
         ));
         return products;
