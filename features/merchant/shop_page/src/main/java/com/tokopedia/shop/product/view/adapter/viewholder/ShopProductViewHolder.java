@@ -109,7 +109,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
             ImageHandler.loadImage(
                     freeOngkirBanner.getContext(),
                     freeOngkirBanner,
-                    "https://ecs7.tokopedia.net/img/ic_bebas_ongkir_beta.png",
+                    shopProductViewModel.getFreeOngkirPromoIcon(),
                     R.drawable.ic_loading_image
             );
             freeOngkirBanner.setVisibility(View.VISIBLE);
