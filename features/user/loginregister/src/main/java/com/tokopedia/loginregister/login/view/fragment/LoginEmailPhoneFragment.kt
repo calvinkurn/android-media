@@ -78,6 +78,7 @@ import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -143,7 +144,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
     private lateinit var tickerAnnouncement: Ticker
-    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
+    private lateinit var bottomSheet: BottomSheetUnify
 
     companion object {
 
@@ -343,13 +344,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
+
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-        closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstance(context)
-        closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, getString(R.string.choose_social_media), true)
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
 
+        bottomSheet = BottomSheetUnify()
+        bottomSheet.setTitle(getString(R.string.choose_social_media))
+        bottomSheet.setChild(viewBottomSheetDialog)
+        bottomSheet.setCloseClickListener {
+            bottomSheet.dismiss()
+        }
+
         socmed_btn.setOnClickListener {
-            closeableBottomSheetDialog.show()
+            bottomSheet.show(fragmentManager, getString(R.string.bottom_sheet_show))
         }
 
         partialActionButton.text = getString(R.string.next)
@@ -447,8 +454,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f,
-                resources.displayMetrics).toInt()
 
         layoutParams.setMargins(0, 10, 0, 10)
         socmedButtonsContainer.removeAllViews()
@@ -491,7 +496,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-            closeableBottomSheetDialog.dismiss()
+            bottomSheet.dismiss()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -503,7 +508,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onLoginFacebookClick() {
 
         if (activity != null) {
-            closeableBottomSheetDialog.dismiss()
+            bottomSheet.dismiss()
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }

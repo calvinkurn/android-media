@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
@@ -66,12 +67,12 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_initial_register.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -108,6 +109,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     lateinit var optionTitle: TextView
+    lateinit var separator: View
     lateinit var partialRegisterInputView: PartialRegisterInputView
     lateinit var registerButton: LoginTextView
     lateinit var loginButton: TextView
@@ -115,7 +117,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     lateinit var progressBar: RelativeLayout
     lateinit var tickerAnnouncement: Ticker
     private lateinit var socmedButton: ButtonCompat
-    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
+    private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
 
     private var phoneNumber: String? = ""
@@ -229,6 +231,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
+        separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
@@ -285,15 +288,21 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         presenter.getTickerInfo()
     }
 
+    @SuppressLint("RtlHardcoded")
     protected fun prepareView() {
         activity?.run {
             val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-            closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstance(context)
-            closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, getString(R.string.choose_social_media), true)
             socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
 
+            bottomSheet = BottomSheetUnify()
+            bottomSheet.setTitle(getString(R.string.choose_social_media))
+            bottomSheet.setChild(viewBottomSheetDialog)
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+
             socmedButton.setOnClickListener {
-                closeableBottomSheetDialog.show()
+                bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
             }
 
             registerButton.visibility = View.GONE
@@ -303,8 +312,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
-                optionTitle.typeface = Typeface.DEFAULT
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            }else{
+                separator.visibility = View.GONE
+                optionTitle.setText(R.string.register_now)
+                optionTitle.typeface = Typeface.DEFAULT_BOLD
+                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
+                layoutParams.setMargins(0, 32, 0, 0)
+                optionTitle.layoutParams = layoutParams
+                optionTitle.setPadding(0, 0, 0, 0)
+                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
             }
 
             registerButton.setColor(Color.WHITE)
@@ -565,6 +583,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterFacebookClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
             presenter.getFacebookCredential(this, callbackManager)
@@ -574,6 +593,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterGoogleClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             val intent = mGoogleSignInClient.signInIntent
