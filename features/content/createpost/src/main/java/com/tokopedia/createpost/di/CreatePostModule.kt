@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
@@ -81,9 +82,8 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    fun provideAffiliateAnalytics(@ApplicationContext context: Context,
-                                  userSessionInterface: UserSessionInterface): AffiliateAnalytics {
-        return AffiliateAnalytics(context as AbstractionRouter, userSessionInterface)
+    fun provideAffiliateAnalytics(userSessionInterface: UserSessionInterface): AffiliateAnalytics {
+        return AffiliateAnalytics(userSessionInterface)
     }
 
     @Provides

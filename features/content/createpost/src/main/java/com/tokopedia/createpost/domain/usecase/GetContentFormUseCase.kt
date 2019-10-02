@@ -3,6 +3,7 @@ package com.tokopedia.createpost.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery
 import com.tokopedia.createpost.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse

@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.domain.entity
 
+import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse
 
 

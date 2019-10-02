@@ -1,6 +1,6 @@
 package com.tokopedia.createpost
 
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 
 /**
  * @author by milhamj on 27/02/19.

@@ -18,6 +18,8 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
+import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -134,10 +136,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                                         onError: (Throwable) -> Unit)
 
     override fun initInjector() {
-        DaggerCreatePostComponent.builder()
-                .createPostModule(CreatePostModule(context!!.applicationContext))
-                .build()
-                .inject(this)
+//        DaggerCreatePostComponent.builder()
+//                .createPostModule(CreatePostModule(context!!.applicationContext))
+//                .build()
+//                .inject(this)
     }
 
     override fun onAttach(context: Context?) {

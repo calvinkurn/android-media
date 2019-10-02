@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.analytics;
+package com.tokopedia.affiliatecommon.analytics;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.track.TrackApp;
@@ -25,13 +25,10 @@ public class AffiliateAnalytics {
     private static final String PARAM_PRODUCT_ID = "product_id";
     private static final String PARAM_SHOP_ID = "shop_id";
 
-    private AbstractionRouter abstractionRouter;
     private UserSessionInterface userSession;
 
     @Inject
-    public AffiliateAnalytics(AbstractionRouter abstractionRouter,
-                              UserSessionInterface userSession) {
-        this.abstractionRouter = abstractionRouter;
+    public AffiliateAnalytics(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 

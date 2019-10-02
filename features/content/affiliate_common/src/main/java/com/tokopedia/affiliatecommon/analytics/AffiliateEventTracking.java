@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.analytics;
+package com.tokopedia.affiliatecommon.analytics;
 
 /**
  * @author by yfsx on 05/11/18.
