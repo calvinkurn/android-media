@@ -25,10 +25,11 @@
             android:layout_marginLeft="@dimen/dp_8"
             app:srcCompat="@drawable/ic_check" />
 
+
         <ImageView
             android:id="@+id/img_logo"
-            android:layout_width="70dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_16"
             app:srcCompat="@drawable/ic_icon_alert"
             tools:visibility="visible" />
