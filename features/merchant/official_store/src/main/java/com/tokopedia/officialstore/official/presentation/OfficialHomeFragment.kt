@@ -61,20 +61,24 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         layoutManager = LinearLayoutManager(context)
         recyclerView?.layoutManager = layoutManager
 
+        refreshData() // avoid race condition
+
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory()
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setListener()
         observeBannerData()
-        refreshData()
+        observeFeaturedShop()
+        setListener()
     }
 
     private fun refreshData() {
+        adapter?.clearAllElements()
         viewModel.getOfficialStoreBanners(category?.categoryId ?: "")
         viewModel.getOfficialStoreFeaturedShop(category?.categoryId ?: "")
 
@@ -101,7 +105,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)

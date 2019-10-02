@@ -5,6 +5,7 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 
 class OfficialHomeMapper {
 
@@ -12,10 +13,12 @@ class OfficialHomeMapper {
 
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
             adapter?.addElement(0, OfficialBannerViewModel(banner.banners))
-            adapter?.notifyItemInserted(0)
         }
 
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
+            if (adapter?.getDataByPosition(0) is OfficialBannerViewModel) { // check if banner is exist
+                adapter.addElement(1, OfficialFeaturedShopViewModel(featuredShop.featuredShops))
+            }
         }
     }
 }
