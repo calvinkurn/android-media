@@ -75,7 +75,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
-            overridePendingTransition(com.tokopedia.digital_deals.R.anim.slide_in_left_brands, com.tokopedia.digital_deals.R.anim.slide_out_right_brands);
+            overridePendingTransition(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands, com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
         }
 
         Uri uri = getIntent().getData();

@@ -234,7 +234,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 view = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_brand_normal, parent, false);
                 break;
             case ITEM_FOOTER:
-                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.footer_layout, parent, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.deals_footer_layout, parent, false);
                 break;
         }
         return new DealsBrandAdapter.BrandViewHolder(view);

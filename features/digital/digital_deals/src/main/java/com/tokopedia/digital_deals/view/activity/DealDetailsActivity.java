@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
-import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
@@ -66,8 +64,8 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     public void replaceFragment(List<Outlet> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up);
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
         transaction.add(com.tokopedia.digital_deals.R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
@@ -88,8 +86,8 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         Bundle bundle = new Bundle();
         bundle.putString(TncBottomSheetFragment.TOOLBAR_TITLE, toolBarText);
         bundle.putString(TncBottomSheetFragment.TEXT, text);
-        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up);
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
         transaction.add(com.tokopedia.digital_deals.R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
         transaction.addToBackStack(null);
         transaction.commit();

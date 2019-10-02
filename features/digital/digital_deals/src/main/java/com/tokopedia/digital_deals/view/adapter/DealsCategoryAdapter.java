@@ -183,7 +183,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 holder = new HeaderBrandViewHolder(v);
                 break;
             case FOOTER:
-                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.footer_layout, parent, false);
+                v = inflater.inflate(com.tokopedia.digital_deals.R.layout.deals_footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
                 break;
             default:

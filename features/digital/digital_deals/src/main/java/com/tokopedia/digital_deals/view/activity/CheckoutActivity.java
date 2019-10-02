@@ -62,8 +62,8 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
     public void replaceFragment(List<Outlet> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up);
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
         transaction.add(com.tokopedia.digital_deals.R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(LOCATION_FRAGMENT);
         transaction.commit();

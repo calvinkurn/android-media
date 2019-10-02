@@ -539,8 +539,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void startLocationFragment(List<Location> locations) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
-        getChildFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up)
+        getChildFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up)
                 .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
     }
 

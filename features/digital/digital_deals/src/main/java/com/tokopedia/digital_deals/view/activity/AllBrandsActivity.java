@@ -104,8 +104,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getComponent().inject(this);
-        overridePendingTransition(com.tokopedia.digital_deals.R.anim.slide_in_left_brands,
-                com.tokopedia.digital_deals.R.anim.slide_out_right_brands);
+        overridePendingTransition(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_ALL_BRANDS, uri, true);
@@ -256,8 +256,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     public void startLocationFragment(List<Location> locations) {
         Location location = Utils.getSingletonInstance().getLocation(this);
         Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up)
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up)
                 .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(ALL_BRANDS).commit();
     }
 

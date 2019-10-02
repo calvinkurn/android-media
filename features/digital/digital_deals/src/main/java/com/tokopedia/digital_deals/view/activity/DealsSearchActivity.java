@@ -210,8 +210,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
         Location location = Utils.getSingletonInstance().getLocation(this);
         Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString(), location);
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_up, com.tokopedia.digital_deals.R.anim.slide_in_down,
-                com.tokopedia.digital_deals.R.anim.slide_out_down, com.tokopedia.digital_deals.R.anim.slide_out_up)
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up)
                 .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 

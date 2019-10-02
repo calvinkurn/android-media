@@ -155,6 +155,7 @@
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
     <string name="title_homepage_digital">Digital</string>
-    
+    <string name="title_activity_all_brands">Brands</string>
     <string name="title_digital_deals">Deals</string>
+    <string name="title_activity_deals">Deals</string>
 </resources>

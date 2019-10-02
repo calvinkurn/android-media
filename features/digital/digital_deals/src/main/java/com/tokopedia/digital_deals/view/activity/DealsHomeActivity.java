@@ -73,8 +73,8 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         this.title = title;
         this.position = position;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.slide_in_left_brands,
-                com.tokopedia.digital_deals.R.anim.slide_out_right_brands);
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
         transaction.add(com.tokopedia.digital_deals.R.id.parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
