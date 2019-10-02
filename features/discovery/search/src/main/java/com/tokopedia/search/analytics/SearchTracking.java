@@ -234,6 +234,7 @@ public class SearchTracking {
         bundle.putString("eventCategory", "search result");
         bundle.putString("eventAction", "click - product");
         bundle.putString("eventLabel", eventLabel);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, getActionFieldString(item.getPageNumber()));
         bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         bundle.putBundle("items", product);
 
@@ -283,10 +284,18 @@ public class SearchTracking {
         bundle.putString("eventCategory", "search result");
         bundle.putString("eventAction", "impression - product");
         bundle.putString("eventLabel", eventLabel);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, getActionFieldString(getPageNumberFromFirstItem(productItemViewModels)));
         bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         bundle.putParcelableArrayList("items", products);
 
         TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
+    }
+
+    private static int getPageNumberFromFirstItem(List<ProductItemViewModel> itemList) {
+        if (itemList.get(0) != null) {
+            return itemList.get(0).getPageNumber();
+        }
+        return 0;
     }
 
     private static double safeParseDouble(String price) {
