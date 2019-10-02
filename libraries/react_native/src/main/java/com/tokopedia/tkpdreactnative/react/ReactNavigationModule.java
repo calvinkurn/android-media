@@ -209,7 +209,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void getGraphQLRequestHeader(Promise promise) {
-        promise.resolve(AuthHelper.getHeaderRequestReactNative(context));
+        UserSession userSession = new UserSession(context);
+
+        promise.resolve(AuthHelper.getHeaderRequestReactNative(userSession));
     }
 
     @ReactMethod

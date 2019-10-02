@@ -14,7 +14,7 @@ project.ext {
     artifactId = 'cpm'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarypm-release"
+    artifactName = "cpm-release"
 }
 
 apply from: '../../publish_local.gradle'

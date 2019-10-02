@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
@@ -63,7 +63,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     private static String generateATokenRechargeCheckout(Context context) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthHelperJava.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         UserSession userSession = new UserSession(context);
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }

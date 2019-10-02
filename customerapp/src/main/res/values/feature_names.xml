@@ -44,6 +44,15 @@
     <string name="title_image_search_module_name" >Pencarian Gambar</string>
     <string name="image_search_app_name">imagesearch</string>
     <string name="choose_image">Pilih Gambar</string>
+    <string name="title_similar_search" >Pencarian Serupa</string>
+    <string name="title_similar_search_module_name" >Pencarian Serupa</string>
+    <string name="similar_search_app_name">similarsearch</string>
+    <string name="title_autocomplete" >Pencarian</string>
+    <string name="title_autocomplete_module_name" >Pencarian</string>
+    <string name="autocomplete_app_name">autocomplete</string>
+    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_search_result_module_name" >Hasil Pencarian</string>
+    <string name="search_result_app_name">search</string>
 
     <!--TopAds Dashboard-->
     <string name="title_module_top_ads_dashboard">TopAds Module</string>
@@ -64,9 +73,6 @@
     <!--Report-->
     <string name="title_module_report">Report Module</string>
     <string name="product_report">Laporkan Produk</string>
-    <string name="title_similar_search" >Pencarian Serupa</string>
-    <string name="title_similar_search_module_name" >Pencarian Serupa</string>
-    <string name="similar_search_app_name">similarsearch</string>
     <string name="detail_report">Detail Laporan</string>
 
     <!--Age Restriction-->
