@@ -75,8 +75,9 @@
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
+
     <!--Contact Us-->
-    <string name="title_module_contact_us">Contact Us</string>
+    <string name="title_module_contact_us">Pusat Bantuan</string>
     <string name="contact_us_title_home">Pusat Bantuan</string>
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
