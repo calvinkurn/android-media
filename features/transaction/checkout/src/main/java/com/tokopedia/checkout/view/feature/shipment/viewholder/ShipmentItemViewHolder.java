@@ -665,7 +665,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderProductPropertiesFreeShipping(CartItemModel cartItemModel) {
         if (cartItemModel.isFreeShipping() && !TextUtils.isEmpty(cartItemModel.getFreeShippingBadgeUrl())) {
-            ImageHandler.loadImageWithoutPlaceholder(
+            ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, cartItemModel.getFreeShippingBadgeUrl()
             );
             imgFreeShipping.setVisibility(View.VISIBLE);

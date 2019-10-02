@@ -8,20 +8,20 @@ import android.os.Parcelable
  */
 
 data class TickerInfoUiModel(
-        var tickerMessage: String = "",
-        var errorCode: String = "",
-        var errorMessage: String = ""
+        var message: String = "",
+        var statusCode: Int = 0,
+        var uniqueId: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
+            parcel.readInt(),
             parcel.readString() ?: "") {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(tickerMessage)
-        parcel.writeString(errorCode)
-        parcel.writeString(errorMessage)
+        parcel.writeString(message)
+        parcel.writeInt(statusCode)
+        parcel.writeString(uniqueId)
     }
 
     override fun describeContents(): Int {

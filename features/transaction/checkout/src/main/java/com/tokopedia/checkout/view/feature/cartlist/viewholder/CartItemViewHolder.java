@@ -407,7 +407,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private void renderProductPropertiesFreeShipping(CartItemHolderData data) {
         if (data.getCartItemData().getOriginData().isFreeShipping() &&
                 !TextUtils.isEmpty(data.getCartItemData().getOriginData().getFreeShippingBadgeUrl())) {
-            ImageHandler.loadImageWithoutPlaceholder(
+            ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, data.getCartItemData().getOriginData().getFreeShippingBadgeUrl()
             );
             imgFreeShipping.setVisibility(View.VISIBLE);

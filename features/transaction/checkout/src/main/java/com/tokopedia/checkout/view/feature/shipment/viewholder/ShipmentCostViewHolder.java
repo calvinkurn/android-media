@@ -150,22 +150,30 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductDiscount(ShipmentCostModel shipmentCost) {
-        mTvProductDiscountLabel.setText(shipmentCost.getProductDiscountLabel());
+        if (shipmentCost.getProductDiscountLabel() != null) {
+            mTvProductDiscountLabel.setText(shipmentCost.getProductDiscountLabel());
+        }
         mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount()));
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
-        mTvShippingDiscountLabel.setText(shipmentCost.getShippingDiscountLabel());
+        if (shipmentCost.getShippingDiscountLabel() != null) {
+            mTvShippingDiscountLabel.setText(shipmentCost.getShippingDiscountLabel());
+        }
         mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount()));
     }
 
     private void renderGeneralDiscount(ShipmentCostModel shipmentCost) {
-        mTvDiscountLabel.setText(shipmentCost.getDiscountLabel());
+        if (shipmentCost.getDiscountLabel() != null) {
+            mTvDiscountLabel.setText(shipmentCost.getDiscountLabel());
+        }
         mTvDiscountPrice.setText(getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, shipmentCost.getDiscountAmount()));
     }
 
     private void renderCashback(ShipmentCostModel shipmentCost) {
-        mTvCashbackLabel.setText(shipmentCost.getCashbackLabel());
+        if (shipmentCost.getCashbackLabel() != null) {
+            mTvCashbackLabel.setText(shipmentCost.getCashbackLabel());
+        }
         mTvCashbackPrice.setText(getPriceFormat(mTvCashbackLabel, mTvCashbackPrice, shipmentCost.getCashbackAmount()));
     }
 
