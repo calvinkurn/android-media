@@ -315,33 +315,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 } else if (sellerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
                     NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.seller_saldo_less_min));
                 } else {
-                    if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) && showMclBlockTickerFirebaseFlag) {
-                        ivLockButton.setVisibility(View.VISIBLE);
-                        withdrawButtonWrapper.setEnabled(false);
-                        withdrawButtonWrapper.setClickable(false);
-                        sellerSaldoWithDrawTvStatus = true;
-                        SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
-                        String tickerMsg = getString(R.string.saldolock_info_text);
-                        int startIndex = tickerMsg.indexOf("di sini");
-                        tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
-                        ss.setSpan(new ClickableSpan() {
-                            @Override
-                            public void onClick(@NonNull View view) {
-                                RouteManager.route(getContext(), String.format("%s?url=%s",
-                                        ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
-                            }
-
-                            @Override
-                            public void updateDrawState(@NonNull TextPaint ds) {
-                                super.updateDrawState(ds);
-                                ds.setUnderlineText(false);
-                                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                            }
-                        }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                        tvWithDrawInfo.setText(ss);
-                        tvWithDrawInfo.setVisibility(View.VISIBLE);
-                    }
+                    showWarningMessage();
                     totalWithdrawal.setText("");
                     currentState = SELLER_STATE;
                     sellerWithdrawal = true;
@@ -443,10 +417,40 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     }
 
+    public void showWarningMessage() {
+        if ((statusWithDrawLock == MCL_STATUS_BLOCK3 || statusWithDrawLock == MCL_STATUS_BLOCK1) && showMclBlockTickerFirebaseFlag) {
+            ivLockButton.setVisibility(View.VISIBLE);
+            withdrawButtonWrapper.setEnabled(false);
+            withdrawButtonWrapper.setClickable(false);
+            sellerSaldoWithDrawTvStatus = true;
+            SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
+            String tickerMsg = getString(R.string.saldolock_info_text);
+            int startIndex = tickerMsg.indexOf("di sini");
+            tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
+            ss.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View view) {
+                    RouteManager.route(getContext(), String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
+                }
+
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                }
+            }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            tvWithDrawInfo.setText(ss);
+            tvWithDrawInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void showTicker() {
 
         String tickerMsg = getString(R.string.saldolock_tickerDescription);
-        int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+        int startIndex = tickerMsg.indexOf(getResources().getString(R.string.clickableTextWithdraw));
         String late = Integer.toString(mclLateCount);
         tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
         SpannableString ss = new SpannableString(tickerMsg);
@@ -529,9 +533,15 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.grey_300));
         withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_grey_border_radius_16));
 
-        withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.white));
-        withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
-
+        if (sellerSaldoWithDrawTvStatus) {
+            withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.white));
+            withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
+        }
+        else {
+            withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.white));
+            withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
+            showWarningMessage();
+        }
         saldoTitleTV.setText(getString(R.string.saldo_seller));
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
     }
