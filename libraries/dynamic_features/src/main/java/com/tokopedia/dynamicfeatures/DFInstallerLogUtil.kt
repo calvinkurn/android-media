@@ -20,35 +20,33 @@ object DFInstallerLogUtil {
                            errorCode: List<String>? = null,
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false) {
-        try {
-            val messageStringBuilder = StringBuilder()
-            messageStringBuilder.append("P1$tag {$modulesName};")
-            val playServiceVersion = PackageInfoCompat.getLongVersionCode(
-                context.packageManager.getPackageInfo(
-                    GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                    0
-                )
+        val messageStringBuilder = StringBuilder()
+        messageStringBuilder.append("P1$tag {$modulesName};")
+        val playServiceVersion = PackageInfoCompat.getLongVersionCode(
+            context.packageManager.getPackageInfo(
+                GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                0
             )
-            if (playServiceVersion > 0) {
-                messageStringBuilder.append("play_srv: {$playServiceVersion}")
-            }
-            messageStringBuilder.append("times_dl: {$downloadTimes};")
+        )
+        if (playServiceVersion > 0) {
+            messageStringBuilder.append("play_srv: {$playServiceVersion}")
+        }
+        messageStringBuilder.append("times_dl: {$downloadTimes};")
 
-            val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
-            val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-            messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
+        val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
+        val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
+        messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
 
-            if (moduleSize > 0) {
-                val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
-                messageStringBuilder.append("size: {$moduleSizeInMB}; ")
-            }
-            if (errorCode?.isNotEmpty() == true) {
-                messageStringBuilder.append("err: {${errorCode.joinToString("-")}}; ")
-            }
-            if (isSuccess) {
-                messageStringBuilder.append("Success; ")
-            }
-            Timber.w(messageStringBuilder.toString())
-        } catch (ignored: Exception) { }
+        if (moduleSize > 0) {
+            val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
+            messageStringBuilder.append("size: {$moduleSizeInMB}; ")
+        }
+        if (errorCode?.isNotEmpty() == true) {
+            messageStringBuilder.append("err: {${errorCode.joinToString("-")}}; ")
+        }
+        if (isSuccess) {
+            messageStringBuilder.append("Success; ")
+        }
+        Timber.w(messageStringBuilder.toString())
     }
 }
