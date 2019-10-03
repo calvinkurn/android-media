@@ -29,7 +29,7 @@
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
-    <string name="path_instant_loan" translatable="false">/loan</string>
-    <string name="path_instant_loan_tab" translatable="false">/loan/category/.*\\/</string>
+    <string name="path_instant_loan" translatable="false">/instant-loan</string>
+    <string name="path_instant_loan_tab" translatable="false">/loan/category/.*\\</string>
 
 </resources>
