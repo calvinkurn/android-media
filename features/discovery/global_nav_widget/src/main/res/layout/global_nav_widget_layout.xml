@@ -5,7 +5,6 @@
     android:id="@+id/globalNavContainerLayout"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/white"
     android:paddingTop="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
