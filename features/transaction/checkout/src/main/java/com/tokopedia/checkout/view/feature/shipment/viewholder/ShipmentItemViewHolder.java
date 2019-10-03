@@ -737,47 +737,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvDurationPrice.setVisibility(View.GONE);
         tvDurationStrikedPrice.setVisibility(View.GONE);
 
-        // Logistic Promo
-        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-            tvLogTicker.setVisibility(View.VISIBLE);
-            tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
-            if (shipmentCartItemModel.isError()) {
-                tvLogTicker.disableView();
-                mActionListener.onCancelVoucherLogisticClicked(
-                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
-                        getAdapterPosition());
-            } else {
-                tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
-                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
-                tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                    @Override
-                    public void onClickUsePromo() {
-
-                    }
-
-                    @Override
-                    public void onResetPromoDiscount() {
-                        mActionListener.onCancelVoucherLogisticClicked(
-                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
-                                getAdapterPosition());
-                    }
-
-                    @Override
-                    public void onClickDetailPromo() {
-
-                    }
-
-                    @Override
-                    public void onDisablePromoDiscount() {
-
-                    }
-                });
-            }
-            tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
-        } else {
-            tvLogTicker.setVisibility(View.GONE);
-        }
-
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
 
@@ -806,34 +765,76 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvSelectedDurationRecommendation.setText(courierData.getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
 
+            // Logistic Promo
             // Project Army
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                if (courierData.isHideShipperName()) {
-                    // Hide shipper name
-                    llCourierContainer.setVisibility(View.GONE);
+                tvLogTicker.setVisibility(View.VISIBLE);
+                tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
+                if (shipmentCartItemModel.isError()) {
+                    tvLogTicker.disableView();
+                    mActionListener.onCancelVoucherLogisticClicked(
+                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                            getAdapterPosition());
                 } else {
-                    // Show shipper name then disable
-                    llCourierContainer.setVisibility(View.VISIBLE);
-                    tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
-                    tvCourierSelection.setOnClickListener(null);
-                }
+                    tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
+                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
+                    tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                        @Override
+                        public void onClickUsePromo() {
 
-                if (courierData.getDiscountedRate() == 0) {
-                    // Gratis Shipping Price
-                    tvLogTicker.setVisibility(View.GONE);
-                    tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
-                } else if (courierData.getDiscountedRate() > 0) {
-                    // Discounted Shipping Price
-                    tvDurationStrikedPrice.setVisibility(View.VISIBLE);
-                    tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            courierData.getShippingRate(), false
-                    ));
-                    tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    tvDurationPrice.setVisibility(View.VISIBLE);
-                    tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            courierData.getDiscountedRate(), false
-                    ));
+                        }
+
+                        @Override
+                        public void onResetPromoDiscount() {
+                            mActionListener.onCancelVoucherLogisticClicked(
+                                    shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                                    getAdapterPosition());
+                        }
+
+                        @Override
+                        public void onClickDetailPromo() {
+
+                        }
+
+                        @Override
+                        public void onDisablePromoDiscount() {
+
+                        }
+                    });
                 }
+                tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
+
+                String state = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState();
+                if (state.equalsIgnoreCase(TickerCheckoutUtilKt.getGREEN())) {
+                    if (courierData.isHideShipperName()) {
+                        // Hide shipper name
+                        llCourierContainer.setVisibility(View.GONE);
+                    } else {
+                        // Show shipper name then disable
+                        llCourierContainer.setVisibility(View.VISIBLE);
+                        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
+                        tvCourierSelection.setOnClickListener(null);
+                    }
+
+                    if (courierData.getDiscountedRate() == 0) {
+                        // Gratis Shipping Price
+                        tvLogTicker.setVisibility(View.GONE);
+                        tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
+                    } else if (courierData.getDiscountedRate() > 0) {
+                        // Discounted Shipping Price
+                        tvDurationStrikedPrice.setVisibility(View.VISIBLE);
+                        tvDurationStrikedPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                courierData.getShippingRate(), false
+                        ));
+                        tvDurationStrikedPrice.setPaintFlags(tvDurationStrikedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        tvDurationPrice.setVisibility(View.VISIBLE);
+                        tvDurationPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                courierData.getDiscountedRate(), false
+                        ));
+                    }
+                }
+            } else {
+                tvLogTicker.setVisibility(View.GONE);
             }
 
             if (courierData.getOntimeDelivery() != null &&

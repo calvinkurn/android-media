@@ -362,11 +362,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
-        if (data.isApplied()) {
-            dismiss();
-            return;
-        }
-
         mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
         // Project Army
         ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
