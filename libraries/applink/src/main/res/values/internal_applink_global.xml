@@ -12,6 +12,7 @@
     <string name="path_withdraw">/withdraw</string>
     <string name="path_add_name_register">/add-name-register</string>
     <string name="path_forgot_password">/forgot-password</string>
+    <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_user_identification_info">/user-identification-info</string>
@@ -29,6 +30,8 @@
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
+    <string name="path_saldo_deposit">/saldo</string>
+    <string name="path_saldo_intro">/saldo-intro</string>
     <string name="path_instant_loan" translatable="false">/instant-loan</string>
     <string name="path_instant_loan_tab" translatable="false">/loan/category/.*\\</string>
 
