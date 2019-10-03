@@ -22,14 +22,14 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline1"
         app:layout_constraintRight_toLeftOf="@+id/guideline" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="@dimen/dp_26" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_0"
