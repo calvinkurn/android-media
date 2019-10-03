@@ -40,10 +40,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    kapt rootProject.ext.miscDependencies.dagger
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    kapt rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 }
