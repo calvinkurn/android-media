@@ -116,15 +116,15 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private fun initializeViews() {
         progressBar = findViewById(R.id.progress_bar)
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY)
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY)
         progressText = findViewById(R.id.progress_text)
         progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
 
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY);
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
@@ -154,16 +154,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Create request to install a feature module by name.
         val request = SplitInstallRequest.newBuilder()
-            .addModule(name)
-            .build()
+                .addModule(name)
+                .build()
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
-            if (it == 0) {
-                onSuccessfulLoad(moduleName, true)
-            } else {
-                sessionId = it
-            }
+            sessionId = it
         }.addOnFailureListener { exception ->
             val errorCode = (exception as? SplitInstallException)?.errorCode
             sessionId = null
@@ -214,7 +210,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
                   This may occur when attempting to download a sufficiently large module.
-
                   In order to see this, the application has to be uploaded to the Play Store.
                   Then features can be requested until the confirmation path is triggered.
                  */
@@ -226,12 +221,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
             SplitInstallSessionStatus.INSTALLING -> {
                 updateProgressMessage(
-                    getString(R.string.installing_x, moduleNameTranslated)
+                        getString(R.string.installing_x, moduleNameTranslated)
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message, state.errorCode())
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
@@ -246,9 +241,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
             userMessage = message
         }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            userMessage,
-            Snackbar.LENGTH_INDEFINITE,
-            getString(R.string.general_label_ok), View.OnClickListener { })
+                userMessage,
+                Snackbar.LENGTH_INDEFINITE,
+                getString(R.string.general_label_ok), View.OnClickListener { })
     }
 
     private fun updateProgressMessage(message: String) {
@@ -262,7 +257,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
