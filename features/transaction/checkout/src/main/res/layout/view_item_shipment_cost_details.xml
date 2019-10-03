@@ -471,48 +471,11 @@
         tools:text="Rp100.000"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cashback_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@+id/tv_product_discount_label"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:textColor="@color/text_black"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:ignore="HardcodedText"
-        tools:text="Total Potensial Cashback"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cashback_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/tv_product_discount_price"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:gravity="end"
-        android:textColor="@color/text_black"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp100.000"
-        tools:visibility="visible" />
-
     <RelativeLayout
-        android:id="@+id/rl_total_promo"
+        android:id="@+id/rl_total_cashback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_order_prioritas_label"
-        android:visibility="gone">
+        android:layout_below="@+id/tv_product_discount_price">
 
         <View
             android:id="@+id/item_shipment_divider"
@@ -521,7 +484,7 @@
             android:background="@color/checkout_module_color_background" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_promo_label"
+            android:id="@+id/tv_total_cashback_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_shipment_divider"
@@ -531,14 +494,14 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/label_total_nilai_promo"
+            tools:text="Total Cashback"
             android:textColor="@color/text_black"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:ignore="HardcodedText" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_promo_amount"
+            android:id="@+id/tv_total_cashback_amount"
             style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -560,8 +523,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_shipment_divider"
-            android:layout_alignTop="@+id/tv_total_promo_label"
-            android:layout_alignBottom="@+id/tv_total_promo_label"
+            android:layout_alignTop="@+id/tv_total_cashback_label"
+            android:layout_alignBottom="@+id/tv_total_cashback_label"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/dp_16"

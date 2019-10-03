@@ -38,8 +38,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvEmasPrice;
     private TextView mTvTradeInLabel;
     private TextView mTvTradeInPrice;
-    private TextView mTvTotalPromoStackAmount;
-    private TextView mTvTotalPromoStackLabel;
     private TextView mTvOrderPrioritasLabel;
     private TextView mTvOrderPrioritasFee;
     private TextView mTvBookingFeeLabel;
@@ -50,8 +48,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvShippingDiscountPrice;
     private TextView mTvProductDiscountLabel;
     private TextView mTvProductDiscountPrice;
-    private TextView mTvCashbackLabel;
-    private TextView mTvCashbackPrice;
+    private RelativeLayout mRlTotalCashback;
+    private TextView mTvTotalCashbackLabel;
+    private TextView mTvTotalCashbackAmount;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -78,8 +77,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvEmasPrice = itemView.findViewById(R.id.tv_emas_price);
         mTvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
         mTvTradeInPrice = itemView.findViewById(R.id.tv_trade_in);
-        mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
-        mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
         mTvOrderPrioritasLabel = itemView.findViewById(R.id.tv_order_prioritas_label);
         mTvOrderPrioritasFee = itemView.findViewById(R.id.tv_order_prioritas_price);
         mTvBookingFeeLabel = itemView.findViewById(R.id.tv_booking_fee_label);
@@ -90,8 +87,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingDiscountPrice = itemView.findViewById(R.id.tv_shipping_discount_price);
         mTvProductDiscountLabel = itemView.findViewById(R.id.tv_product_discount_label);
         mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
-        mTvCashbackLabel = itemView.findViewById(R.id.tv_cashback_label);
-        mTvCashbackPrice = itemView.findViewById(R.id.tv_cashback_price);
+        mRlTotalCashback = itemView.findViewById(R.id.rl_total_cashback);
+        mTvTotalCashbackLabel = itemView.findViewById(R.id.tv_total_cashback_label);
+        mTvTotalCashbackAmount = itemView.findViewById(R.id.tv_total_cashback_amount);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -169,9 +167,15 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
     private void renderCashback(ShipmentCostModel shipmentCost) {
         if (shipmentCost.getCashbackLabel() != null) {
-            mTvCashbackLabel.setText(shipmentCost.getCashbackLabel());
+            mTvTotalCashbackLabel.setText(shipmentCost.getCashbackLabel());
         }
-        mTvCashbackPrice.setText(getPriceFormat(mTvCashbackLabel, mTvCashbackPrice, shipmentCost.getCashbackAmount() * -1));
+        mTvTotalCashbackAmount.setText(getPriceFormat(mTvTotalCashbackLabel, mTvTotalCashbackAmount, shipmentCost.getCashbackAmount()));
+        if (shipmentCost.getCashbackAmount() > 0) {
+            mRlTotalCashback.setVisibility(View.VISIBLE);
+            mRlTotalCashback.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
+        } else {
+            mRlTotalCashback.setVisibility(View.GONE);
+        }
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {
