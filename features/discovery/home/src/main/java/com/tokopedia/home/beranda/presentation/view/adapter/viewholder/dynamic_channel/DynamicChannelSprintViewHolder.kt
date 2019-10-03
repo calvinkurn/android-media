@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Paint
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
@@ -11,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
@@ -21,9 +20,12 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.tokopoints.view.util.ImageUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -56,14 +58,32 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
         val backgroundThematic: ImageView = itemView.findViewById(R.id.background_thematic)
-        val title: Typography = itemView.findViewById(R.id.heading_3)
+        val title: Typography = itemView.findViewById(R.id.channel_title)
+        val seeAllButton: UnifyButton = itemView.findViewById(R.id.see_all_button_unify)
+        val seeAllButtonText: TextView = itemView.findViewById(R.id.see_all_button)
 
         if(channel.header.backImage.isNotBlank()) {
-            ImageUtil.loadImage(backgroundThematic, channel.header.backImage)
+            seeAllButton.show()
+            seeAllButtonText.invisible()
+//            seeAllButton.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+//            seeAllButton.setTextColor(ContextCompat.getColor(context, R.color.font_black_primary_70))
+            seeAllButton.setOnClickListener {
+                homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
+                HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
+                        DynamicLinkHelper.getActionLink(channel.header))
+                onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+            }
+            Glide.with(context)
+                    .load(channel.header.backImage)
+                    .override(200, 200)
+                    .into(backgroundThematic);
             title.setTextColor(
-                    if(channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                    if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
                     else ContextCompat.getColor(title.context, R.color.white)
             )
+        }else {
+            seeAllButton.hide()
+            seeAllButtonText.show()
         }
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(

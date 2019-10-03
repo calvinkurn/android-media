@@ -61,7 +61,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         try {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
-            val channelTitleContainer: View = itemView.findViewById(R.id.channel_title_container)
+            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
             countDownView = itemView.findViewById(R.id.count_down)
 
             val channel = element.channel
@@ -78,20 +78,16 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         adapterPosition,
                         getLayoutType(channel)))
             }
-            /**
-             * setup recyclerview content
-             */
-            setupContent(channel)
 
             /**
              * Requirement:
              * Only show channel header name when it is exist
              */
             if (!TextUtils.isEmpty(channelHeaderName)) {
-                channelTitleContainer.visibility = View.VISIBLE
+                channelTitleContainer?.visibility = View.VISIBLE
                 channelTitle.text = channelHeaderName
             } else {
-                channelTitleContainer.visibility = View.GONE
+                channelTitleContainer?.visibility = View.GONE
             }
 
             /**
@@ -125,6 +121,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
             } else {
                 countDownView.visibility = View.GONE
             }
+
+            /**
+             * setup recyclerview content
+             */
+            setupContent(channel)
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
