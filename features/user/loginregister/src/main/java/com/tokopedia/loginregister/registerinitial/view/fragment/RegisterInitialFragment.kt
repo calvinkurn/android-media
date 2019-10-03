@@ -298,10 +298,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             bottomSheet.setTitle(getString(R.string.choose_social_media))
             bottomSheet.setChild(viewBottomSheetDialog)
             bottomSheet.setCloseClickListener {
+                registerAnalytics.trackClickCloseSocmedButton()
                 bottomSheet.dismiss()
             }
 
             socmedButton.setOnClickListener {
+                registerAnalytics.trackClickSocmedButton()
                 bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
             }
 

@@ -351,11 +351,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet = BottomSheetUnify()
         bottomSheet.setTitle(getString(R.string.choose_social_media))
         bottomSheet.setChild(viewBottomSheetDialog)
-        bottomSheet.setCloseClickListener {
+        bottomSheet.setCloseClickListener{
+            analytics.eventClickSocmedButton()
             bottomSheet.dismiss()
         }
 
         socmed_btn.setOnClickListener {
+            analytics.eventClickCloseSocmedButton()
             bottomSheet.show(fragmentManager, getString(R.string.bottom_sheet_show))
         }
 
