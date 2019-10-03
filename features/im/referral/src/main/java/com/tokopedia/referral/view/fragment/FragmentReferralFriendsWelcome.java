@@ -41,8 +41,12 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
     ReferralAnalytics referralAnalytics;
 
 
-    public static FragmentReferralFriendsWelcome newInstance() {
+    public static FragmentReferralFriendsWelcome newInstance(String code, String owner) {
         FragmentReferralFriendsWelcome fragmentFriendsWelcome = new FragmentReferralFriendsWelcome();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.Key.Companion.CODE, code);
+        bundle.putString(Constants.Key.Companion.OWNER, owner);
+        fragmentFriendsWelcome.setArguments(bundle);
         return fragmentFriendsWelcome;
     }
 
@@ -90,8 +94,6 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         welcomeMessageSubHearer = view.findViewById(R.id.tv_referral_subheader);
         TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);
 
-        referralCodeTextView.setText(getActivity().getIntent().getStringExtra(Constants.Key.Companion.CODE));
-
         btnReferralExplore.setOnClickListener(v -> {
             referralAnalytics.eventReferralAndShare(
                     Constants.Action.Companion.CLICK_EXPLORE_TOKOPEDIA, Constants.EventLabel.Companion.HOME);
@@ -107,7 +109,9 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
                     Constants.Action.Companion.CLICK_KNOW_MORE, "");
             showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
-        welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
+
+        referralCodeTextView.setText(getArguments().getString(Constants.Key.Companion.CODE));
+        welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase(getArguments().getString(Constants.Key.Companion.OWNER))));
 
     }
 

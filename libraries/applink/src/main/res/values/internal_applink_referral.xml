@@ -2,6 +2,7 @@
 <resources>
     <string name="host_referral" translatable="false">referral</string>
 
+    <string name="path_referral_welcome" translatable="false">/.*\</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"

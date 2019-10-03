@@ -5,7 +5,7 @@ package com.tokopedia.referral.view.presenter
  */
 
 interface IReferralFriendsWelcomePresenter {
-    val subHeaderFromFirebase: String
+    fun getSubHeaderFromFirebase(owner: String) : String
     fun initialize()
     fun copyVoucherCode(code: String)
 }
