@@ -155,4 +155,5 @@
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
     <string name="title_homepage_digital">Digital</string>
+    <string name="title_im_referral">referral</string>
 </resources>

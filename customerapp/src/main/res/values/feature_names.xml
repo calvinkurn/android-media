@@ -75,4 +75,7 @@
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
+
+    <!-- Referral -->
+    <string name="title_module_referral">Referral</string>
 </resources>
