@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
+import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
@@ -49,8 +50,6 @@ import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<HomeVisitable>> {
     private final Context context;
     private final HomeVisitableFactory homeVisitableFactory;
-
-    private String TICKER_LAYOUT_TYPE_FLOATING = "floating";
 
     public HomeMapper(Context context,
                       HomeVisitableFactory homeVisitableFactory) {
@@ -277,7 +276,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
         ArrayList<Ticker.Tickers> tmpTickers = new ArrayList<>();
         for (Ticker.Tickers tmpTicker: tickers) {
-            if (!tmpTicker.getLayout().equals(TICKER_LAYOUT_TYPE_FLOATING)) {
+            if (!tmpTicker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
                 tmpTickers.add(tmpTicker);
             }
         }

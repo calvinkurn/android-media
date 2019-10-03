@@ -289,7 +289,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         swipeToRefresh.setOnRefreshListener {
             refreshData()
-            updateStickyState()
+            updateStickyContent()
         }
 
         mainLayout.requestFocus()
@@ -329,11 +329,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
         })
 
-        updateStickyContent()
-    }
-
-    override fun onResume() {
-        super.onResume()
         updateStickyContent()
     }
 
@@ -798,7 +793,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             return
         }
 
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
+        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
         if (!isCanShowing) {
             stickyLoginView.hide()
             return
@@ -811,8 +806,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
 
         this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+        stickyLoginView.show(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
 
         if (stickyLoginView.isShowing()) {
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
