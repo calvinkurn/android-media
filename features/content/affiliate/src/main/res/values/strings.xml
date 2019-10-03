@@ -17,7 +17,7 @@
     <string name="text_af_clicked">Diklik</string>
     <string name="text_af_buy">Dibeli</string>
     <string name="text_af_default_saldo">Rp. 0</string>
-    <string name="text_af_active_1">Raih</string>
+    <string name="text_af_active_1">Komisi masuk</string>
     <string name="text_af_active_2">tiap dibeli</string>
     <string name="text_empty_start_recommendation_string">Mulai Kurasi, Yuk!</string>
     <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
@@ -68,5 +68,69 @@
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
     <string name="af_title_edit">Edit</string>
     <string name="kol_action_share_to">Share ke:</string>
+    <string name="af_title_header_product_attachment">Barang di post ini</string>
+    <string name="af_label_post">Post</string>
+    <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
+    <string name="af_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_title_edit_post">Edit Post</string>
+
+    <!--New Dashboard-->
+    <string name="total_active_balance">Total Saldo Aktif</string>
+    <string name="affiliate_income">Penghasilan Affiliate</string>
+    <string name="check_balance_detail">Cek Detail Saldo</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="curated_product_history">Riwayat Produk Dibeli</string>
+    <string name="start_date">Tanggal Awal</string>
+    <string name="end_date">Tanggal Akhir</string>
+    <string name="choose_date">Pilih Tanggal</string>
+    <string name="curated_from_post">Dibeli dari Post</string>
+    <string name="curated_from_post_info">Lihat komisi yang kamu raih di sini saat pembeli membeli barang dari post-mu.</string>
+    <string name="curated_from_traffic">Dibeli dari Traffic</string>
+    <string name="curated_from_traffic_info">Lihat juga komisi yang kamu raih di sini saat pembeli membeli barang dari profilmu.</string>
+    <string name="posted_product">Produk Dipost</string>
+    <string name="posted_product_with_number">Produk Dipost (%s)</string>
+    <string name="filter_date">Filter Tanggal</string>
+    <string name="affiliate_product_berlangsung">Produk Afiliasi Berlangsung</string>
+    <string name="affiliate_product_berakhir">Produk Afiliasi Berakhir</string>
+    <string name="create_post">Buat Post</string>
+    <string name="af_sort">Urutkan</string>
+    <string name="af_curated_empty_title">Share profilmu, yuk!</string>
+    <string name="af_curated_empty_subtitle">Semakin sering share, Semakin besar kesempatanmu mendapatkan komisi</string>
+    <string name="af_share_now">Share Sekarang</string>
+    <string name="af_review_count_format">(%s)</string>
+    <string name="af_income_tooltip">Komisi masuk yang ditampilkan hanya dari 30 hari terakhir</string>
+    <string name="af_info">Info</string>
+    <string name="af_success_get_dashboard_info">Hasil telah berhasil ditampilkan</string>
+    <string name="af_ok">Oke</string>
+
+    <string name="af_share_title">Share dan dapatkan komisi</string>
+    <string name="af_share_subtitle">Makin banyak yang beli, makin untung!</string>
+
+    <string name="af_merchant_share_title">Share, yuk biar cepat untung!</string>
+    <string name="af_merchant_share_subtitle">Makin banyak yang lihat, makin hits</string>
+
+    <string name="af_share_tokopedia">Follower</string>
+    <string name="af_share_facebook">Facebook</string>
+    <string name="af_share_twitter">Twitter</string>
+
+    <string name="af_share_tokopedia_option">Share ke Follower</string>
+    <string name="af_share_facebook_option">Post ke Facebook</string>
+    <string name="af_share_twitter_option">Share di Twitter</string>
+
+    <string name="af_share_tokopedia_hint">%s orang akan melihat post ini</string>
+
+    <string name="af_share_post">Share Post</string>
+    <string name="af_product_suggestion_title">Rekomendasi Barang Buatmu</string>
+    <string name="af_suggestion_shop_cm_title">Buat post &amp; promosikan tokomu</string>
+    <string name="af_suggestion_shop_cm_desc">Pilih salah satu barang untuk ditampilkan di Feed. Makin banyak yang lihat, makin laris!</string>
+    <string name="af_suggestion_aff_cm_title">Mari post barang kesukaanmu!</string>
+    <string name="af_suggestion_aff_cm_desc">Pilih barangnya, buat post-nya, dan dapatkan komisi kalau terjual.</string>
+
+    <string name="af_tab_curated_from_post">Dibeli dari Post</string>
+    <string name="af_tab_curated_from_traffic">Dibeli dari Traffic</string>
+
+    <string name="af_no_connection_title">Nggak ada koneksi internet</string>
+    <string name="af_no_connection_detail">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
+    <string name="af_try_again">Coba Lagi</string>
 
 </resources>

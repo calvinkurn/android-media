@@ -21,6 +21,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -43,6 +44,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
