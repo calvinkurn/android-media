@@ -80,7 +80,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     private fun refreshData() {
         adapter?.clearAllElements()
-        viewModel.loadFirstData(category?.categoryId ?: "")
+        viewModel.loadFirstData(category)
     }
 
     private fun observeBannerData() {

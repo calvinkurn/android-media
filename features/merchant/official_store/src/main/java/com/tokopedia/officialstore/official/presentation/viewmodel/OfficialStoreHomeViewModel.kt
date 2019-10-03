@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
@@ -36,10 +37,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    fun loadFirstData(categoryId: String) {
+    fun loadFirstData(category: Category?) {
         launchCatchError(block = {
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(categoryId).await())
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(categoryId).await())
+//            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
+            _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
+            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
 
             // TODO get dynamic channel & product recommendation
 
@@ -57,7 +59,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             var banner = OfficialStoreBanners()
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.
-                        createParams(categoryId.toIntOrNull() ?: 0)
+                        createParams(categoryId)
                 banner = getOfficialStoreBannersUseCase.executeOnBackground()
             } catch (t:  Throwable) {
                 _officialStoreFeaturedShopResult.value = Fail(t)

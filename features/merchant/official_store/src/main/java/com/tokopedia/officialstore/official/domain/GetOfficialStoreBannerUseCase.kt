@@ -27,11 +27,11 @@ class GetOfficialStoreBannerUseCase @Inject constructor(
 
     companion object {
 
-        const val CATEGORY_ID = "categoryId"
+        const val SLUG = "page"
 
-        fun createParams(categoryId: Int): Map<String, Any> {
+        fun createParams(slug: String): Map<String, Any> {
             return mutableMapOf<String, Any>().apply {
-                put(CATEGORY_ID, categoryId)
+                put(SLUG, slug)
             }
         }
     }

@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 
 data class Banner(@SerializedName("id")
                   val bannerId: String = "",
-                  @SerializedName("description")
+                  @SerializedName("title")
                   val title: String = "",
-                  @SerializedName("imageUrl")
+                  @SerializedName("image_url")
                   val imageUrl: String = "",
-                  @SerializedName("redirectUrl")
+                  @SerializedName("redirect_url")
                   val redirectUrl: String = "",
-                  @SerializedName("redirectAppUrl")
+                  @SerializedName("applink")
                   val applink: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",

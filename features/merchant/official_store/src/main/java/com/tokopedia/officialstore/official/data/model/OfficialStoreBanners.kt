@@ -3,13 +3,11 @@ package com.tokopedia.officialstore.official.data.model
 import com.google.gson.annotations.SerializedName
 
 data class OfficialStoreBanners(
-    @SerializedName("banners")
+    @SerializedName("slides")
     val banners: MutableList<Banner> = mutableListOf()
 ) {
     data class Response(
-            @SerializedName("OfficialStoreBanners")
-            val officialStoreBanners : OfficialStoreBanners = OfficialStoreBanners(),
-            @SerializedName("total")
-            val total: String
+            @SerializedName("slides")
+            val officialStoreBanners : OfficialStoreBanners = OfficialStoreBanners()
     )
 }

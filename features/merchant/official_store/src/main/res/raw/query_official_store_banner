@@ -1,20 +1,11 @@
-query OfficialStoreBanners($categoryId: Int) {
-  OfficialStoreBanners(categoryId: $categoryId, source: 0) {
-      banners {
+query OfficialStoreBanners($slug: String) {
+  slides {
+		slides(page: $slug) {
           id
-          description
-          device
-          expireTime
-          htmlId
-          imageUrl
-          isDefault
-          redirectAppUrl
-          redirectUrl
-          shopName
-          startTime
-          state
+          image_url
           title
-      }
-      total
-  }
+          redirect_url
+          applink
+        }
+    }
 }
