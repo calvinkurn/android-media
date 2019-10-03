@@ -696,11 +696,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 break;
             case "tanya penjual":
                 getView().startSellerAndAddInvoice();
-                orderListAnalytics.sendActionButtonClickEventList("click ask seller");
+                orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
             case "ajukan pembatalan":
                 getView().requestCancelOrder(getStatus());
-                orderListAnalytics.sendActionButtonClickEventList("");
+                orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;
                 default:
                     break;

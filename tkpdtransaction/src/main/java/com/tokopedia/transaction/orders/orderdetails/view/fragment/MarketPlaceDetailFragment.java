@@ -108,6 +108,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_ASK_SELLER = "click ask seller";
     private static final String CLICK_ASK_SELLER_CANCELATION = "click ask seller - cancelation";
     private static final String CLICK_KEMBALI = "click kembali - cancelation";
+    private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
+    private static final String CLICK_VIEW_COMPLAIN ="click view complain";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -658,7 +660,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
                 if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya Penjual")) {
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + status.status());
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
                     orderListAnalytics.sendActionButtonClickEvent("click complain");
                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("selesai")) {
@@ -721,9 +723,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
                     startSellerAndAddInvoice(actionButton.getUri());
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER);
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
                 } else if (actionButton.getKey().contains("view_complaint")) {
-                    orderListAnalytics.sendActionButtonClickEvent("click view complain", status.status());
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
 
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -738,7 +740,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                     });
                         } else {
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + status.status());
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
                         }
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
@@ -798,6 +800,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             }
+            orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
 
 //            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
         }

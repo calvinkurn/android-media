@@ -175,9 +175,9 @@ public class OrderListAnalytics {
         sendGtmDataDetails(eventAction, eventLabel);
     }
 
-    public void sendActionButtonClickEventList(String eventAction) {
+    public void sendActionButtonClickEventList(String eventAction,String eventLabel) {
 
-        sendGtmData(eventAction, "");
+        sendGtmData(eventAction, eventLabel);
     }
 
     private void sendGtmDataDetails(String eventAction, String eventLabel) {
