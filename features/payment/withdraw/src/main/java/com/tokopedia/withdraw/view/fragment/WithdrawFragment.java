@@ -36,7 +36,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -55,14 +54,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
-import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
@@ -84,7 +75,6 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -338,6 +328,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
         CurrencyTextWatcher currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
+        currencyTextWatcher.setMaxLength(WithdrawConstant.MAX_LENGTH);
         currencyTextWatcher.setDefaultValue("");
 
         if (currencyTextWatcher != null) {
@@ -817,19 +808,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         switch (requestCode) {
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
-
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();
+                    presenter.refreshBankList();
+                    Toaster.Companion.showNormal(mainView, getString(R.string.swd_bank_added_success), Snackbar.LENGTH_LONG);
                 }
                 break;
             case BANK_SETTING_INTENT:

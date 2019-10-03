@@ -122,13 +122,25 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ttl_total" />
 
+        <TextView
+            android:id="@+id/admin_fees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_11"
+            android:visibility="gone"
+            android:paddingLeft="@dimen/dp_16"
+            android:textColor="@color/font_black_secondary_54"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Dikenai biaya admin Rp5.000"
+            app:layout_constraintTop_toBottomOf="@+id/amt" />
+
         <View
             android:id="@+id/dvdr_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/clr_f3f4f5"
-            app:layout_constraintTop_toBottomOf="@+id/amt" />
+            app:layout_constraintTop_toBottomOf="@+id/admin_fees" />
 
         <TextView
             android:id="@+id/backto_saldo_dtl"

@@ -350,7 +350,7 @@
             android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="wrapper_total_withdrawal,title_choose_bank,recycler_view_bank,withdrawal_all_tv,view_divider3,saldo_withdraw_hint,title_nominal_withdrawal,view_divider,view_divider2,saldo_title,tv_info,total_saldo_value,ivButtonLeft,add_account,withdraw_button" />
+            app:constraint_referenced_ids="wrapper_total_withdrawal,title_choose_bank,recycler_view_bank,withdrawal_all_tv,view_divider3,saldo_withdraw_hint,title_nominal_withdrawal,view_divider,view_divider2,saldo_title,tv_info,total_saldo_value,ivButtonLeft,withdraw_button" />
 
         <android.support.constraint.Group
             android:id="@+id/emptyGroup"
