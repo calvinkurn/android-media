@@ -1,0 +1,19 @@
+query crossSelling($product: String!, $flightRequest: FlightRequest!){
+    crossSelling(product: $product, flightRequest: $flightRequest){
+         items{
+            product
+            title
+            content
+            prefix
+            price
+            uri
+            uriWeb
+            imageURL
+          }
+            meta{
+            title
+            uri
+            uriWeb
+          }
+    }
+}

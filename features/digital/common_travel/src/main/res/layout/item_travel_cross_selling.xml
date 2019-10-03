@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_260"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginRight="@dimen/dp_8">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/item_image"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_4">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Sudah Punya tiket balik?"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:textColor="@color/Neutral_N700_96"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/item_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Kalau belum, beli tiket pesawat ke Bali, yuk!"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3"
+            />
+    </LinearLayout>
+
+</LinearLayout>

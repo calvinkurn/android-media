@@ -1,0 +1,57 @@
+package com.tokopedia.common.travel.data.entity
+
+import com.google.gson.annotations.SerializedName
+
+/**
+ * @author by jessica on 2019-10-02
+ */
+
+data class TravelCrossSelling(
+        @SerializedName("items")
+        val items: List<CrossSellingItem> = listOf(),
+
+        @SerializedName("meta")
+        val meta: Meta = Meta()
+) {
+    data class CrossSellingItem(
+            @SerializedName("product")
+            val product: String = "",
+
+            @SerializedName("title")
+            val title: String = "",
+
+            @SerializedName("content")
+            val content: String = "",
+
+            @SerializedName("prefix")
+            val prefix: String = "",
+
+            @SerializedName("price")
+            val price: String = "",
+
+            @SerializedName("imageURL")
+            val imageUrl: String = "",
+
+            @SerializedName("uriWeb")
+            val uriWeb: String = "",
+
+            @SerializedName("uri")
+            val uri: String = ""
+    )
+
+    data class Meta(
+            @SerializedName("title")
+            val title: String = "",
+
+            @SerializedName("uri")
+            val uri: String = "",
+
+            @SerializedName("uriWeb")
+            val uriWeb: String = ""
+    )
+
+    data class Response(
+            @SerializedName("response")
+            val response: TravelCrossSelling = TravelCrossSelling()
+    )
+}

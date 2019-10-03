@@ -1,0 +1,19 @@
+query crossSelling($product: String!, $hotelRequest: HotelRequest!){
+    crossSelling(product: $product, hotelRequest: $hotelRequest){
+         items{
+            product
+            title
+            content
+            prefix
+            price
+            uri
+            uriWeb
+            imageURL
+          }
+            meta{
+            title
+            uri
+            uriWeb
+          }
+    }
+}
