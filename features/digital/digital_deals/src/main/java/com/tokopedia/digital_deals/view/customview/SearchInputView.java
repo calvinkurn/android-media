@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
@@ -28,7 +30,8 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
     }
 
     public void setSearchImageView(Drawable drawable){
-        getSearchImageView().setImageDrawable(drawable);
+        ImageView imgView = findViewById(com.tokopedia.digital_deals.R.id.image_view_search);
+        imgView.setImageDrawable(drawable);
     }
 
     public void setSearchImageViewDimens(int width, int height){
@@ -38,11 +41,13 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
     }
 
     public void setSearchTextSize(float size){
-        getSearchTextView().setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        TextView searchText = findViewById(com.tokopedia.digital_deals.R.id.edit_text_search);
+        searchText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
 
     public void setSearchTextColor(int textColor) {
-        getSearchTextView().setTextColor(textColor);
+        TextView searchText = findViewById(com.tokopedia.digital_deals.R.id.edit_text_search);
+        searchText.setTextColor(textColor);
     }
 
 }

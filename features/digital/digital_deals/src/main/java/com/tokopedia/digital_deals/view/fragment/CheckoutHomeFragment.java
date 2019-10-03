@@ -159,7 +159,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         quantity = packageViewModel.getSelectedQuantity();
         ImageHandler.loadImage(getContext(), imageViewBrand,
                 dealDetails.getImageWeb(),
-                com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+                com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (dealDetails.getBrand() != null)
             tvBrandName.setText(dealDetails.getBrand().getTitle());

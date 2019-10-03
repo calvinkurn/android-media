@@ -112,7 +112,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bindData(final Brand brand, int position) {
             brandName.setText(brand.getTitle());
-            ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+            ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
 

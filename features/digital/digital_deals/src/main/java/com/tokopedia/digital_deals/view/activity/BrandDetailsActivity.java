@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -40,14 +41,24 @@ public class BrandDetailsActivity extends DealsBaseActivity {
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
+    protected int getParentViewResourceID(){
+        return com.tokopedia.digital_deals.R.id.deals_home_parent_view;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
+        toolbar.setVisibility(View.GONE);
         return BrandDetailsFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setVisibility(View.GONE);
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_BRAND_DETAIL, uri, true);

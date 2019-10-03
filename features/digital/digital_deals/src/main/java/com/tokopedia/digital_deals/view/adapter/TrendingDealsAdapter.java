@@ -215,9 +215,9 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
         void bindData(final ProductItem productItem, int itemPosition) {
             this.index = itemPosition;
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             if (!brandPageCard) {
-                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 brandName.setText(productItem.getBrand().getTitle());
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);

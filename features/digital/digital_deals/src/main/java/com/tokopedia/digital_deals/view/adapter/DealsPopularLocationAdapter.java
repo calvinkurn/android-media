@@ -201,7 +201,7 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
                 locType.setVisibility(View.VISIBLE);
                 locType.setText(location.getLocType().getDisplayName());
                 locType.setBackground(context.getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.rect_grey_loc_type_background));
-                ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+                ImageHandler.loadImage(context, locImage, location.getLocType().getIcon(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             }
 
         }

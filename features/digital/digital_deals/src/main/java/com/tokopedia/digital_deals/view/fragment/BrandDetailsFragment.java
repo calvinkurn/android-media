@@ -132,7 +132,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_action_back));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
@@ -164,7 +164,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             locationName = location.getName();
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
             dealsAdapter.clearList();
             recyclerViewDeals.clearOnScrollListeners();
@@ -190,7 +190,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onLoadStarted(Drawable placeholder) {
                 super.onLoadStarted(placeholder);
-                imageView.setImageResource(com.tokopedia.digital_deals.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
             }
 
             @Override
@@ -209,7 +209,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 super.onLoadFailed(e, errorDrawable);
-                imageView.setImageResource(com.tokopedia.digital_deals.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
             }
         });
     }

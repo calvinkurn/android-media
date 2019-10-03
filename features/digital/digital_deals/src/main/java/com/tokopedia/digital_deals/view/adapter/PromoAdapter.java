@@ -89,7 +89,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
         }
 
         void bindData(ProductItem item, int position) {
-            ImageHandler.loadImage(context, promoImage, item.getImageWeb(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+            ImageHandler.loadImage(context, promoImage, item.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             promoImage.setOnClickListener(view -> {
                 mPresenter.sendEventEcommerce(item, position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
                         , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_SUGGESTED_DEALS);

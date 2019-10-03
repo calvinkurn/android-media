@@ -177,7 +177,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         viewPager = view.findViewById(com.tokopedia.digital_deals.R.id.deals_images);
         circlePageIndicator = view.findViewById(com.tokopedia.digital_deals.R.id.pager_indicator);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_action_back));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
         buyDealNow = view.findViewById(com.tokopedia.digital_deals.R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_description);
         seeMoreButtonDesc = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_description);
@@ -296,7 +296,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             tvBrandAddress.setText(outlet.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(com.tokopedia.digital_deals.R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
-            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             if (dealDetail.getBrand().getUrl() != null) {
                 ivBrandLogo.setOnClickListener(new View.OnClickListener() {
                     @Override

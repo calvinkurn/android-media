@@ -255,7 +255,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
         toolbarTitle.setOnClickListener(this);
-        nestedScrollView = view.findViewById(com.tokopedia.design.R.id.nested_scroll_view);
+        nestedScrollView = view.findViewById(com.tokopedia.digital_deals.R.id.nested_scroll_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trendingDeals = view.findViewById(com.tokopedia.digital_deals.R.id.cl_topDeals);
         rvTrendingDeals.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -408,7 +408,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 imageViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_category);
                 textViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.tv_category);
                 textViewCatItem.setText(categoryList.get(position).getTitle());
-                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 final int position1 = position;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override

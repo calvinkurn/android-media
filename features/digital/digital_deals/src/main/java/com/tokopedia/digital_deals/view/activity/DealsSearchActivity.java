@@ -236,7 +236,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(com.tokopedia.digital_deals.R.color.black_38));
+                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.black_38));
             }
         }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
@@ -338,7 +338,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 imageViewBrandItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
                 brandName = view.findViewById(com.tokopedia.digital_deals.R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());
-                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), com.tokopedia.digital_deals.R.color.grey_1100, com.tokopedia.digital_deals.R.color.grey_1100);
+                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 view.setLayoutParams(params);
                 brandLayout.addView(view);
                 final int position1 = index;

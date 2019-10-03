@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
@@ -41,6 +42,16 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
 //    }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
+    protected int getParentViewResourceID(){
+        return com.tokopedia.digital_deals.R.id.deals_home_parent_view;
+    }
+
+    @Override
     protected int getLayoutRes() {
         return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals;
     }
@@ -75,7 +86,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands,
                 com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
-        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, TrendingDealsFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
