@@ -78,7 +78,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                 text = if (data.menu.name.isNotBlank()) {
                     MethodChecker.fromHtml(data.menu.name)
                 } else {
-                    context.getString(R.string.pdp_all_etalase)
+                    context.getString(R.string.pdp_etalase_empty_default_value)
                 }
                 setOnClickListener {
                     gotoEtalase(data.menu.id, data.basic.shopID)
