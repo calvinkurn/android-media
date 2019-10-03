@@ -173,4 +173,8 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // Phone Number Verification Activity
+    // tokopedia-android-internal://global/setting-referral-phone-verification
+    @JvmField
+    val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
 }
