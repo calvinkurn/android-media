@@ -1448,7 +1448,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void showBottomSheetTotalBenefit() {
         if (getFragmentManager() != null && getBenefitSummaryInfoUiModel() != null) {
             TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
-            bottomSheet.setBenefit(getBenefitSummaryInfoUiModel());
             bottomSheet.show(getFragmentManager(), null);
         }
     }
