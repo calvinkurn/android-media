@@ -168,15 +168,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
         val coachMarkItems = getCoachMarkItems()
         getNotificationUpdate()?.showOnBoarding(coachMarkItems)
-        setOnBoardingHasBeenShown(tag)
     }
 
     private fun hasBeenShown(tag: String): Boolean {
         return CoachMarkPreference.hasShown(this, tag)
-    }
-
-    private fun setOnBoardingHasBeenShown(tag: String) {
-        CoachMarkPreference.setShown(this, tag, true)
     }
 
     private fun getNotificationUpdate(): NotificationActivityListener? {
