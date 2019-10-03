@@ -13,9 +13,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.searchV3.data.api.single.response.Amenity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         setRefundableInfo(route);
     }
 
-    private void setRefundableInfo(FlightDetailRouteViewModel route) {
+    private void setRefundableInfo(FlightOrderDetailRouteViewModel route) {
         if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
             refundableInfo.setVisibility(View.VISIBLE);
@@ -82,7 +83,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         }
     }
 
-    public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+    public void setDefaultAmenities(FlightOrderDetailRouteViewModel flightDetailRouteViewModel) {
         if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
             gridAmenity.setVisibility(View.VISIBLE);
             separatorInfoView.setVisibility(View.VISIBLE);
@@ -98,7 +99,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     }
 
     private class ListInfoAdapter extends RecyclerView.Adapter<FlightDetailFacilityInfoViewHolder> {
-        List<FlightDetailRouteInfoViewModel> infoList;
+        List<FlightOrderDetailRouteInfoViewModel> infoList;
 
         public ListInfoAdapter() {
             infoList = new ArrayList<>();
@@ -120,7 +121,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
             return infoList.size();
         }
 
-        public void addData(List<FlightDetailRouteInfoViewModel> infos) {
+        public void addData(List<FlightOrderDetailRouteInfoViewModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();

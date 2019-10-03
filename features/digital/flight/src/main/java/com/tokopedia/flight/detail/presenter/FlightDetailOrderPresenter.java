@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -20,7 +17,8 @@ import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
-import com.tokopedia.flight.common.util.FlightStatusOrderType;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.orderlist.constant.FlightStatusOrderType;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -28,7 +26,10 @@ import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
@@ -151,7 +152,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         flightOrder.getJourneys(),
                         flightOrderDetailPassData
                 );
-                getView().updateFlightList(flightOrderJourneyList);
+                getView().updateFlightList(transformToDetailJourneyList(flightOrderJourneyList));
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
                 getView().setTransactionDate(
@@ -427,7 +428,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     break;
             }
 
-            for (FlightBookingAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
                 switch (Integer.toString(amenityViewModel.getAmenityType())) {
                     case FlightAmenityType.LUGGAGE:
                         String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
@@ -524,6 +525,25 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return flightDetailPassengers;
     }
 
+    private List<FlightDetailOrderJourney> transformToDetailJourneyList(List<FlightOrderJourney> journeyList) {
+        List<FlightDetailOrderJourney> items = new ArrayList<>();
+        for (FlightOrderJourney item : journeyList) {
+            items.add(new FlightDetailOrderJourney(
+                    item.getJourneyId(),
+                    item.getDepartureCity(),
+                    item.getDepartureCityCode(),
+                    item.getDepartureAiportId(),
+                    item.getDepartureTime(),
+                    item.getArrivalCity(),
+                    item.getArrivalCityCode(),
+                    item.getArrivalAirportId(),
+                    item.getArrivalTime(),
+                    item.getStatus(),
+                    item.getRouteViewModels()));
+        }
+        return items;
+    }
+
     private String generateSalutation(int passengerTitleId) {
         switch (passengerTitleId) {
             case FlightPassengerTitleType.TUAN:
@@ -537,13 +557,13 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightBookingAmenityViewModel> amenities) {
+    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-        for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : amenities) {
+        for (FlightOrderAmenityViewModel flightOrderAmenityViewModel : amenities) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()), flightBookingAmenityViewModel.getDepartureId(),
-                    flightBookingAmenityViewModel.getArrivalId()));
-            simpleViewModel.setLabel(flightBookingAmenityViewModel.getTitle());
+            simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightOrderAmenityViewModel.getAmenityType()), flightOrderAmenityViewModel.getDepartureId(),
+                    flightOrderAmenityViewModel.getArrivalId()));
+            simpleViewModel.setLabel(flightOrderAmenityViewModel.getTitle());
             simpleViewModels.add(simpleViewModel);
         }
         return simpleViewModels;

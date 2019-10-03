@@ -16,6 +16,8 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
+import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.searchV3.data.db.FlightComboDao;
 import com.tokopedia.flight.searchV3.data.db.FlightJourneyDao;
 import com.tokopedia.flight.searchV3.data.db.FlightRouteDao;
@@ -64,4 +66,8 @@ public interface FlightComponent {
     void inject(FlightDetailActivity flightDetailActivity);
 
     void inject(FlightInsuranceWebViewFragment flightInsuranceWebViewFragment);
+
+    void inject(FlightDetailOrderFragment flightDetailOrderFragment);
+
+    void inject(FlightDetailOrderActivity flightDetailOrderActivity);
 }

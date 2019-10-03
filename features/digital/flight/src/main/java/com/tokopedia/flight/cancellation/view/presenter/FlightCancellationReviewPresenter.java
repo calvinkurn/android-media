@@ -10,7 +10,7 @@ import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewC
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Iterator;

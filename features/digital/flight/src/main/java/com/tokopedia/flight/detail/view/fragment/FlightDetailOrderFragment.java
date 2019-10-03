@@ -43,22 +43,21 @@ import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
-import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
-import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
@@ -71,6 +70,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
+import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_CANCELLATION;
 
 /**
  * Created by zulfikarrahman on 12/12/17.
@@ -83,7 +84,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
-    public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -135,7 +135,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
-        bundle.putBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, isCancellation);
+        bundle.putBoolean(EXTRA_IS_CANCELLATION, isCancellation);
         flightDetailOrderFragment.setArguments(bundle);
         return flightDetailOrderFragment;
     }
@@ -147,7 +147,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     protected void initInjector() {
-        getComponent(FlightOrderComponent.class)
+        getComponent(FlightComponent.class)
                 .inject(this);
     }
 
@@ -155,7 +155,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
-        isCancellation = getArguments().getBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, false);
+        isCancellation = getArguments().getBoolean(EXTRA_IS_CANCELLATION, false);
     }
 
     @Nullable
@@ -324,7 +324,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateFlightList(List<FlightOrderJourney> journeys) {
+    public void updateFlightList(List<FlightDetailOrderJourney> journeys) {
         flightDetailOrderAdapter.addElement(journeys);
         flightDetailOrderAdapter.notifyDataSetChanged();
     }

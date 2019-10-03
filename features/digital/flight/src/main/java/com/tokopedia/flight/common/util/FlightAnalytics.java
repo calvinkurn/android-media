@@ -7,8 +7,8 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
 import com.tokopedia.flight.searchV3.data.api.single.response.Route;
 import com.tokopedia.flight.searchV3.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel;
@@ -373,7 +373,7 @@ public class FlightAnalytics {
     @NonNull
     private String transformAirlines(FlightDetailViewModel viewModel) {
         List<String> airlines = new ArrayList<>();
-        for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+        for (FlightOrderDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
             if (!airlines.contains(airlineDB.getAirlineName())) {
                 airlines.add(airlineDB.getAirlineName());
             }

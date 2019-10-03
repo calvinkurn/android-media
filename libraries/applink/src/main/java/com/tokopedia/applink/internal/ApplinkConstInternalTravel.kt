@@ -20,7 +20,10 @@ object ApplinkConstInternalTravel {
 
     @JvmField
     val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
+
     @JvmField
     val DASHBOARD_FLIGHT = "$INTERNAL_FLIGHT/dashboard"
+    @JvmField
+    val CANCELLATION_FLIGHT = "$INTERNAL_FLIGHT/cancel"
 
 }

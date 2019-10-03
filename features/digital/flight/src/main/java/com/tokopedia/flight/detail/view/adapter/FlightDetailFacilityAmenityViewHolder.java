@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
 import com.tokopedia.flight.searchV3.data.api.single.response.Amenity;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by zulfikarrahman on 10/31/17.
@@ -28,6 +28,20 @@ public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHold
     }
 
     public void bindData(Amenity amenity) {
+        if(amenity.isDefault()){
+            imageAmenity.setVisibility(View.GONE);
+            textAmenity.setVisibility(View.GONE);
+            defaultImage.setVisibility(View.VISIBLE);
+        }else {
+            imageAmenity.setVisibility(View.VISIBLE);
+            textAmenity.setVisibility(View.VISIBLE);
+            defaultImage.setVisibility(View.GONE);
+            imageAmenity.setImageDrawable(MethodChecker.getDrawable(imageAmenity.getContext(), FlightAmenityIconUtil.getImageResource(amenity.getIcon())));
+            textAmenity.setText(amenity.getLabel());
+        }
+    }
+
+    public void bindData(com.tokopedia.flight.orderlist.data.cloud.entity.Amenity amenity) {
         if(amenity.isDefault()){
             imageAmenity.setVisibility(View.GONE);
             textAmenity.setVisibility(View.GONE);

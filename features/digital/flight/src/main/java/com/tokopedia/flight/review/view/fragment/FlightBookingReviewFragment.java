@@ -48,10 +48,8 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
-import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
@@ -61,6 +59,9 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.orderlist.network.model.FlightOrderError;
+import com.tokopedia.flight.orderlist.network.model.FlightOrderException;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -657,7 +658,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void onErrorVerifyCode(Throwable e) {
         if (e instanceof FlightException) {
-            for (FlightError flightError : ((FlightException) e).getErrorList()) {
+            for (FlightOrderError flightError : ((FlightOrderException) e).getErrorList()) {
                 if (FlightErrorUtil.getErrorCode(flightError) >= 14 && FlightErrorUtil.getErrorCode(flightError) <= 21) {
                     Intent intent = new Intent();
                     intent.putExtra(RESULT_ERROR_CODE, FlightErrorUtil.getErrorCode(flightError));

@@ -33,11 +33,11 @@ import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresen
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.common.util.FlightErrorUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment

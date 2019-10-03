@@ -6,10 +6,11 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
@@ -27,7 +28,7 @@ public interface FlightDetailOrderContract {
 
         void onErrorGetOrderDetail(Throwable e);
 
-        void updateFlightList(List<FlightOrderJourney> journeys);
+        void updateFlightList(List<FlightDetailOrderJourney> journeys);
 
         void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers);
 

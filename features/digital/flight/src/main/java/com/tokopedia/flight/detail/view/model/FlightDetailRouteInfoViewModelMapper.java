@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.view.model;
 
 import com.tokopedia.flight.orderlist.data.cloud.entity.AmenityEntity;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel;
 import com.tokopedia.flight.searchV3.data.api.single.response.Info;
 
 import java.util.ArrayList;
@@ -18,19 +19,19 @@ public class FlightDetailRouteInfoViewModelMapper {
 
     }
 
-    public FlightDetailRouteInfoViewModel transform(Info info) {
-        FlightDetailRouteInfoViewModel viewModel = null;
+    public FlightOrderDetailRouteInfoViewModel transform(Info info) {
+        FlightOrderDetailRouteInfoViewModel viewModel = null;
         if (info != null) {
-            viewModel = new FlightDetailRouteInfoViewModel();
+            viewModel = new FlightOrderDetailRouteInfoViewModel();
             viewModel.setLabel(info.getLabel());
             viewModel.setValue(info.getValue());
         }
         return viewModel;
     }
 
-    public List<FlightDetailRouteInfoViewModel> transform(List<Info> infos) {
-        List<FlightDetailRouteInfoViewModel> viewModels = new ArrayList<>();
-        FlightDetailRouteInfoViewModel viewModel;
+    public List<FlightOrderDetailRouteInfoViewModel> transform(List<Info> infos) {
+        List<FlightOrderDetailRouteInfoViewModel> viewModels = new ArrayList<>();
+        FlightOrderDetailRouteInfoViewModel viewModel;
         if (infos != null) {
             for (Info info : infos) {
                 viewModel = transform(info);
@@ -42,35 +43,35 @@ public class FlightDetailRouteInfoViewModelMapper {
         return viewModels;
     }
 
-    public List<FlightDetailRouteInfoViewModel> transform(AmenityEntity freeAmenities) {
-        List<FlightDetailRouteInfoViewModel> routeInfoViewModels = new ArrayList<>();
+    public List<FlightOrderDetailRouteInfoViewModel> transform(AmenityEntity freeAmenities) {
+        List<FlightOrderDetailRouteInfoViewModel> routeInfoViewModels = new ArrayList<>();
         if (freeAmenities != null) {
             if (freeAmenities.getCabinBaggage() != null) {
-                FlightDetailRouteInfoViewModel infoViewModel = new FlightDetailRouteInfoViewModel();
+                FlightOrderDetailRouteInfoViewModel infoViewModel = new FlightOrderDetailRouteInfoViewModel();
                 infoViewModel.setLabel(freeAmenities.getCabinBaggage().getValue());
                 infoViewModel.setValue(freeAmenities.getCabinBaggage().getUnit());
                 routeInfoViewModels.add(infoViewModel);
             }
             if (freeAmenities.getFreeBaggage() != null) {
-                FlightDetailRouteInfoViewModel infoViewModel = new FlightDetailRouteInfoViewModel();
+                FlightOrderDetailRouteInfoViewModel infoViewModel = new FlightOrderDetailRouteInfoViewModel();
                 infoViewModel.setLabel(freeAmenities.getFreeBaggage().getValue());
                 infoViewModel.setValue(freeAmenities.getFreeBaggage().getUnit());
                 routeInfoViewModels.add(infoViewModel);
             }
             if (!freeAmenities.isMeal()) {
-                FlightDetailRouteInfoViewModel infoViewModel = new FlightDetailRouteInfoViewModel();
+                FlightOrderDetailRouteInfoViewModel infoViewModel = new FlightOrderDetailRouteInfoViewModel();
                 infoViewModel.setLabel("Meal");
                 infoViewModel.setValue("-");
                 routeInfoViewModels.add(infoViewModel);
             }
             if (!freeAmenities.isUsbPort()) {
-                FlightDetailRouteInfoViewModel infoViewModel = new FlightDetailRouteInfoViewModel();
+                FlightOrderDetailRouteInfoViewModel infoViewModel = new FlightOrderDetailRouteInfoViewModel();
                 infoViewModel.setLabel("Usb");
                 infoViewModel.setValue("-");
                 routeInfoViewModels.add(infoViewModel);
             }
             if (!freeAmenities.isWifi()) {
-                FlightDetailRouteInfoViewModel infoViewModel = new FlightDetailRouteInfoViewModel();
+                FlightOrderDetailRouteInfoViewModel infoViewModel = new FlightOrderDetailRouteInfoViewModel();
                 infoViewModel.setLabel("Wifi");
                 infoViewModel.setValue("-");
                 routeInfoViewModels.add(infoViewModel);

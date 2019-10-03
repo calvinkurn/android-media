@@ -1,7 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;

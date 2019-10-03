@@ -18,8 +18,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.searchV3.presentation.presenter.FlightFilterPresenter;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.searchV3.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV3.presentation.FlightFilterCountView;
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightFilterAirlineFragment;
@@ -28,8 +27,9 @@ import com.tokopedia.flight.searchV3.presentation.fragment.FlightFilterRefundabl
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.searchV3.presentation.fragment.OnFlightBaseFilterListener;
-import com.tokopedia.flight.searchV3.presentation.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel;
+import com.tokopedia.flight.searchV3.presentation.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.searchV3.presentation.presenter.FlightFilterPresenter;
 
 import java.util.List;
 

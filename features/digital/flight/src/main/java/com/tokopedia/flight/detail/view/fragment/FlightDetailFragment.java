@@ -12,6 +12,10 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
@@ -48,7 +52,7 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
 
     @Override
     public void loadData(int page) {
-        renderList(flightDetailViewModel.getRouteList());
+        renderList(transform(flightDetailViewModel.getRouteList()));
     }
 
     @Override
@@ -71,5 +75,39 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     @Override
     public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
 
+    }
+
+    private List<FlightDetailRouteViewModel> transform(List<FlightOrderDetailRouteViewModel> routeList) {
+        List<FlightDetailRouteViewModel> routeViewModelList = new ArrayList<>();
+
+        for (FlightOrderDetailRouteViewModel item : routeList) {
+            FlightDetailRouteViewModel viewModel = new FlightDetailRouteViewModel();
+            viewModel.setPnr(item.getPnr());
+            viewModel.setAirlineName(item.getAirlineName());
+            viewModel.setAirlineCode(item.getAirlineCode());
+            viewModel.setAirlineLogo(item.getAirlineLogo());
+            viewModel.setFlightNumber(item.getFlightNumber());
+            viewModel.setDepartureTimestamp(item.getDepartureTimestamp());
+            viewModel.setDepartureAirportCity(item.getDepartureAirportCity());
+            viewModel.setDepartureAirportCode(item.getDepartureAirportCode());
+            viewModel.setDepartureAirportName(item.getDepartureAirportName());
+            viewModel.setDepartureTerminal(item.getDepartureTerminal());
+            viewModel.setRefundable(item.isRefundable());
+            viewModel.setDuration(item.getDuration());
+            viewModel.setArrivalTimestamp(item.getArrivalTimestamp());
+            viewModel.setArrivalAirportCity(item.getArrivalAirportCity());
+            viewModel.setArrivalAirportCode(item.getArrivalAirportCode());
+            viewModel.setArrivalAirportName(item.getArrivalAirportName());
+            viewModel.setArrivalTerminal(item.getArrivalTerminal());
+            viewModel.setLayover(item.getLayover());
+            viewModel.setStopOver(item.getStopOver());
+            viewModel.setInfos(item.getInfos());
+            viewModel.setAmenities(item.getAmenities());
+            viewModel.setStopOverDetail(item.getStopOverDetail());
+
+            routeViewModelList.add(viewModel);
+        }
+
+        return routeViewModelList;
     }
 }
