@@ -16,8 +16,8 @@ public interface FilterEventTracking {
         String FILTER_SHOP = "filter shop";
         String FILTER_CATEGORY = "filter category";
         String FILTER_CATALOG_DETAIL = "filter catalog detail";
-        String PREFIX_SEARCH_RESULT_PAGE = "Search Result Page";
-        String PREFIX_CATEGORY_PAGE = "Category Page";
+        String PREFIX_SEARCH_RESULT_PAGE = "search result page";
+        String PREFIX_CATEGORY_PAGE = "category page";
         String PREFIX_CATALOG_PAGE = "catalog page";
     }
 

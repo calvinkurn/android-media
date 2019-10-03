@@ -104,12 +104,19 @@ public class FilterTracking {
     public static void eventApplyFilter(FilterTrackingData trackingData,
                                         String screenName,
                                         Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
                 trackingData.getEvent(),
                 trackingData.getPrefix() + " - " + trackingData.getFilterCategory(),
                 FilterEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
