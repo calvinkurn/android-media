@@ -27,7 +27,7 @@ object MentionTextHelper {
 
     private const val ID_NAME_DELIMITER = "|"
 
-    private const val ALLOWED_CHARS_REGEX = "[\\s\\S]"
+    private const val ALLOWED_CHARS_REGEX = "[a-zA-Z \\[\\]+`~'\",.|\\{\\}!@#\\$%^&*()\\-_+=\\\\]"
     private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\}$CLOSING_MENTION_TAG)"
     private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
 
@@ -84,15 +84,16 @@ object MentionTextHelper {
                     )
                 }
 
-                if (startIndex > 0 && spannableString[startIndex -1] != WHITESPACE) {
+                if (startIndex > 0 && spannableString[startIndex -1] != WHITESPACE && isFromEdit) {
                     spannableString.insert(startIndex, WHITESPACE.toString())
                 }
 
                 val newStartIndex = spannableString.getSpanStart(mentionSpan)
                 val newEndIndex = newStartIndex + mentionSpan.displayedText.length
                 if (
-                        (newEndIndex < spannableString.length && spannableString[newEndIndex] != WHITESPACE) ||
-                        newEndIndex == spannableString.length
+                        ((newEndIndex < spannableString.length && spannableString[newEndIndex] != WHITESPACE) ||
+                        newEndIndex == spannableString.length) &&
+                        isFromEdit
                 ) {
                     spannableString.insert(newEndIndex, WHITESPACE.toString())
                 }
