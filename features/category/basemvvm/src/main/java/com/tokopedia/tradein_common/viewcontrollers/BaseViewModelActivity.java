@@ -133,13 +133,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         startActivityForResult(intent, requestCode);
     }
 
-    public void showProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
-    }
+    protected abstract void showProgressBar();
 
-    public void hideProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
-    }
+    protected abstract void hideProgressBar();
 
     @Override
     protected void setupStatusBar() {
