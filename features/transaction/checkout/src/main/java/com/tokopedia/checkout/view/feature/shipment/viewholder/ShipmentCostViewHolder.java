@@ -150,7 +150,14 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCost.getShippingDiscountLabel() != null) {
             mTvShippingDiscountLabel.setText(shipmentCost.getShippingDiscountLabel());
         }
-        mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
+
+        if (shipmentCost.getShippingDiscountAmount() > 0) {
+            if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
+                mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
+            } else {
+                mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
+            }
+        }
     }
 
     private void renderGeneralDiscount(ShipmentCostModel shipmentCost) {
