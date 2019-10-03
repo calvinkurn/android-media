@@ -16,6 +16,9 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
     private int indentation;
     private String key;
 
+    public boolean isAnnotation() {
+        return Option.KEY_ANNOTATION_ID.equals(getKey());
+    }
 
     @Override
     public List<? extends MultiLevelExpIndListAdapter.ExpIndData> getChildren() {

@@ -15,83 +15,99 @@ import java.util.Map;
 
 public class FilterTracking {
 
-    public static void eventSearchResultFilterJourney(String trackingPrefix,
-                                                      String filterName,
-                                                      String filterValue,
-                                                      boolean isInsideDetail,
-                                                      boolean isActive,
-                                                      String keyValue) {
-        String filterType = "";
-        if (keyValue != null) {
-            if (keyValue.equals("annotation_id")) {
-                filterType = "annotation";
-            } else {
-                filterType = "standard";
-            }
-        }
+    public static void eventFilterJourney(FilterTrackingData trackingData,
+                                          String filterName,
+                                          String filterValue,
+                                          boolean isInsideDetail,
+                                          boolean isActive,
+                                          boolean isAnnotation) {
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.CLICK.toLowerCase() + " - "
                         + filterName + ": " + filterValue + " - "
-                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua") + " - " + filterType,
+                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua") + " - "
+                        + (isAnnotation ? "annotation" : "standard"),
                 Boolean.toString(isActive)
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
-    public static void eventSearchResultApplyFilterDetail(String trackingPrefix, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
+    public static void eventApplyFilterDetail(FilterTrackingData trackingData, String filterName) {
+
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.SIMPAN_ON_LIHAT_SEMUA + filterName,
                 ""
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
-    public static void eventSearchResultBackFromFilterDetail(String trackingPrefix, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
+    public static void eventBackFromFilterDetail(FilterTrackingData trackingData, String filterName) {
+
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.BACK_ON_LIHAT_SEMUA + filterName,
                 ""
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
-    public static void eventSearchResultNavigateToFilterDetail(String trackingPrefix, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
+    public static void eventNavigateToFilterDetail(FilterTrackingData trackingData, String filterName) {
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.CLICK_LIHAT_SEMUA + filterName,
                 ""
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
-    public static void eventSearchResultOpenFilterPage(String trackingPrefix, String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER.toLowerCase() + " " + tabName,
+    public static void eventOpenFilterPage(FilterTrackingData trackingData) {
+        Map<String, Object> trackingMap = TrackAppUtils.gtmData(
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + trackingData.getFilterCategory(),
                 FilterEventTracking.Action.CLICK_FILTER,
                 ""
-        ));
+        );
+
+        if (!TextUtils.isEmpty(trackingData.getCategoryId())) {
+            trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.getCategoryId());
+        }
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap);
     }
 
-    public static void eventSearchResultCloseBottomSheetFilter(String trackingPrefix,
-                                                               String screenName,
-                                                               Map<String, String> selectedFilter) {
+    public static void eventApplyFilter(FilterTrackingData trackingData,
+                                        String screenName,
+                                        Map<String, String> selectedFilter) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_PRODUCT,
+                trackingData.getEvent(),
+                trackingData.getPrefix() + " - " + trackingData.getFilterCategory(),
                 FilterEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
-    public static void eventSearchResultFilter(String trackingPrefix, String screenName, Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_PRODUCT,
-                FilterEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
         ));
     }
