@@ -52,6 +52,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -148,7 +149,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
-        setupChatBlastSellerMetaDataObserver()
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
     }
@@ -168,14 +168,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
-            }
-        })
-    }
-
-    private fun setupChatBlastSellerMetaDataObserver() {
-        chatItemListViewModel.chatBlastMetaData.observe(viewLifecycleOwner, Observer { response ->
-            when (response) {
-                is Success -> chatItemListViewModel.successGetMetaData(response.data)
             }
         })
     }
