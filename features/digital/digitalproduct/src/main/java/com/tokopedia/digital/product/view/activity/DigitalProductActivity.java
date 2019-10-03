@@ -78,14 +78,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 .build();
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
-
-        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID)) &&
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP, true)) {
-            destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
-            destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
-        } else {
-            destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
-        }
+        destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
         taskStackBuilder.addNextIntent(destination);
         return destination;
     }

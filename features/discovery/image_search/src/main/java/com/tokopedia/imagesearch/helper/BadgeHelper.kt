@@ -32,7 +32,7 @@ class BadgeHelper {
         }
 
         private fun loadShopBadgeSuccess(view: View, linearLayoutShopBadges: LinearLayout, bitmap: Bitmap) {
-            val image = view.findViewById<ImageView>(R.id.badge)
+            val image = view.findViewById<ImageView>(com.tokopedia.topads.sdk.R.id.badge)
 
             if (bitmap.height <= 1 && bitmap.width <= 1) {
                 view.visibility = View.GONE

@@ -18,6 +18,7 @@ import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -230,6 +231,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (getView() != null) {
                     getView().hideLoader();
                     getView().onFinishRendering();
+                    getView().showError(NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
                 }
             }
 

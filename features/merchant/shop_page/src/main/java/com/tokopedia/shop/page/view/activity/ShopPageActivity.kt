@@ -43,6 +43,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -65,11 +66,12 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.ShopPageViewModel
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
-import com.tokopedia.shop.page.view.widget.StickyTextView
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -102,7 +104,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
     lateinit var tabItemFeed: View
-    lateinit var stickyLoginTextView: StickyTextView
+    lateinit var stickyLoginTextView: StickyLoginView
     private lateinit var titles: Array<String>
 
     private var tabPosition = 0
@@ -320,14 +322,22 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             updateStickyState()
         }
         stickyLoginTextView.setOnClickListener {
-            shopPageTracking.eventClickOnStickyLogin(true)
+            stickyLoginTextView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
         }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
-            shopPageTracking.eventClickOnStickyLogin(false)
-            stickyLoginTextView.dismiss()
+            stickyLoginTextView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
         })
 
+        shopViewModel.getStickyLoginContent(
+            onSuccess = {
+                stickyLoginTextView.setContent(it)
+            },
+            onError = {
+                stickyLoginTextView.hide()
+            }
+        )
         updateStickyState()
         initSearchInputView()
     }
@@ -792,7 +802,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 
     private fun updateStickyState() {
-        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
         if (!isCanShowing) {
             stickyLoginTextView.visibility = View.GONE
             return
@@ -800,10 +810,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         val userSession = UserSession(this)
         if (userSession.isLoggedIn) {
-            stickyLoginTextView.dismiss()
+            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
         } else {
-            stickyLoginTextView.show()
-            shopPageTracking.eventViewLoginStickyWidget()
+            stickyLoginTextView.show(StickyLoginConstant.Page.SHOP)
+            stickyLoginTextView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
         }
 
         if (stickyLoginTextView.isShowing()) {

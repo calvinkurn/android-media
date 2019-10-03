@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
-import com.google.gson.Gson;
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -17,16 +17,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.tokopedia.network.utils.AuthUtil.HEADER_USER_AGENT;
-import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
@@ -121,7 +117,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_USER_AGENT, getUserAgent());
+        headerMap.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -158,7 +154,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_USER_AGENT, getUserAgent());
+        headerMap.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -248,7 +244,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_USER_AGENT, getUserAgent());
+        headerMap.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -277,7 +273,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_USER_AGENT, getUserAgent());
+        headerMap.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);

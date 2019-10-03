@@ -52,21 +52,21 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
         this.searchQuery = searchQuery;
-        productImage = itemView.findViewById(R.id.product_image);
-        title = (TextView) itemView.findViewById(R.id.title);
-        price = (TextView) itemView.findViewById(R.id.price);
-        location = (TextView) itemView.findViewById(R.id.location);
-        badgesContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        wishlistButton = (ImageView) itemView.findViewById(R.id.wishlist_button);
-        wishlistButtonContainer = (RelativeLayout) itemView.findViewById(R.id.wishlist_button_container);
-        container = itemView.findViewById(R.id.container);
-        rating = (ImageView) itemView.findViewById(R.id.rating);
-        reviewCount = (TextView) itemView.findViewById(R.id.review_count);
-        ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
-        topLabel = itemView.findViewById(R.id.topLabel);
-        bottomLabel = itemView.findViewById(R.id.bottomLabel);
-        newLabel = itemView.findViewById(R.id.new_label);
-        topadsIcon = itemView.findViewById(R.id.topads_icon);
+        productImage = itemView.findViewById(R.id.image_search_product_image);
+        title = (TextView) itemView.findViewById(R.id.image_search_title_text);
+        price = (TextView) itemView.findViewById(R.id.image_search_price);
+        location = (TextView) itemView.findViewById(R.id.image_search_location);
+        badgesContainer = (LinearLayout) itemView.findViewById(R.id.image_search_badges_container);
+        wishlistButton = (ImageView) itemView.findViewById(R.id.image_search_wishlist_button);
+        wishlistButtonContainer = (RelativeLayout) itemView.findViewById(R.id.image_search_wishlist_button_container);
+        container = itemView.findViewById(R.id.image_search_product_item_container);
+        rating = (ImageView) itemView.findViewById(R.id.image_search_rating);
+        reviewCount = (TextView) itemView.findViewById(R.id.image_search_review_count);
+        ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.image_search_rating_review_container);
+        topLabel = itemView.findViewById(R.id.image_search_topLabel);
+        bottomLabel = itemView.findViewById(R.id.image_search_bottomLabel);
+        newLabel = itemView.findViewById(R.id.image_search_new_label);
+        topadsIcon = itemView.findViewById(R.id.image_search_topads_icon);
         context = itemView.getContext();
         this.productListener = productListener;
     }
@@ -113,12 +113,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             }
         });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
-        wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
+        wishlistButton.setBackgroundResource(com.tokopedia.topads.sdk.R.drawable.ic_wishlist);
 
         if (productItem.isWishlisted()) {
-            wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
+            wishlistButton.setBackgroundResource(com.tokopedia.topads.sdk.R.drawable.ic_wishlist_red);
         } else {
-            wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
+            wishlistButton.setBackgroundResource(com.tokopedia.topads.sdk.R.drawable.ic_wishlist);
         }
 
         wishlistButtonContainer.setEnabled(productItem.isWishlistButtonEnabled());

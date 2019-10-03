@@ -310,8 +310,8 @@
     <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
     <string name="label_button_continue">Lanjutkan</string>
     <string name="label_button_cancel">Batal</string>
-    <string name="checkout_module_title_wishlist">Wishlist</string>
-    <string name="checkout_module_title_recent_view">Terakhir Dilihat</string>
+    <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
+    <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="product_invenage_remaining_stock">$less_than_count</string>
     <string name="product_invenage_in_other_cart">$pita_by_user_count</string>

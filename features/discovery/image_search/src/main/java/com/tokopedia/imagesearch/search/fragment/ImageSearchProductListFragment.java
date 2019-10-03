@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -21,8 +22,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
@@ -150,7 +149,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     protected void initInjector() {
         ImageSearchComponent component = DaggerImageSearchComponent.builder()
-                .baseAppComponent(getComponent(BaseAppComponent.class))
+                .baseAppComponent(getBaseAppComponent())
                 .build();
         component.inject(this);
     }
@@ -210,10 +209,10 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
+                getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                getContext().getResources().getColor(com.tokopedia.design.R.color.white)
                 ));
-        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+        recyclerView.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.design.R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -255,7 +254,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void bindView(View rootView) {
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.image_search_recyclerview);
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
@@ -456,7 +455,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 
     @Override
@@ -464,13 +463,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.eventSearchResultProductWishlistClick(true, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_add_wishlist));
     }
 
     @Override
     public void onErrorRemoveWishlist(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 
     @Override
@@ -478,7 +477,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.eventSearchResultProductWishlistClick(false, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_remove_wishlist));
     }
 
     @Override
@@ -526,8 +525,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {
-        SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item.getProductID());
+        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID());
+        startSimilarSearch(item.getProductID());
     }
+
+    public void startSimilarSearch(String productId) {
+        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    }
+
     public void onWishlistButtonClicked(ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }

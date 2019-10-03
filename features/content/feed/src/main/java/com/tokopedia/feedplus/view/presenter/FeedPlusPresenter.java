@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
@@ -19,6 +20,7 @@ import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.feedplus.view.subscriber.FeedPlusDeletePostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
@@ -59,6 +61,7 @@ public class FeedPlusPresenter
     private final GetDynamicFeedUseCase getDynamicFeedUseCase;
     private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
     private final AddToCartUseCase atcUseCase;
+    private final DeletePostUseCase deletePostUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -72,7 +75,8 @@ public class FeedPlusPresenter
                       GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase,
                       GetDynamicFeedUseCase getDynamicFeedUseCase,
                       TrackAffiliateClickUseCase trackAffiliateClickUseCase,
-                      AddToCartUseCase atcUseCase) {
+                      AddToCartUseCase atcUseCase,
+                      DeletePostUseCase deletePostUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.doFavoriteShopUseCase = favoriteShopUseCase;
@@ -83,6 +87,7 @@ public class FeedPlusPresenter
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.atcUseCase = atcUseCase;
+        this.deletePostUseCase = deletePostUseCase;
     }
 
     @Override
@@ -334,14 +339,8 @@ public class FeedPlusPresenter
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
-                            WhitelistDomain whitelistDomain = new WhitelistDomain();
-                            if (firstPageDomainModel.getWhitelistDomain() != null
-                                    && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
-                                whitelistDomain = firstPageDomainModel.getWhitelistDomain();
-                            }
                             getView().onSuccessGetFeedFirstPage(
-                                    new ArrayList<>(model.getPostList()),
-                                    new WhitelistViewModel(whitelistDomain)
+                                    new ArrayList<>(model.getPostList())
                             );
 
                             if (model.getHasNext()) {
@@ -459,5 +458,13 @@ public class FeedPlusPresenter
         } else {
             getView().onAddToCartFailed(postTagItem.getApplink());
         }
+    }
+
+    @Override
+    public void deletePost(int id, int rowNumber) {
+        deletePostUseCase.execute(
+                DeletePostUseCase.Companion.createRequestParams(String.valueOf(id)),
+                new FeedPlusDeletePostSubscriber(viewListener, id, rowNumber)
+        );
     }
 }

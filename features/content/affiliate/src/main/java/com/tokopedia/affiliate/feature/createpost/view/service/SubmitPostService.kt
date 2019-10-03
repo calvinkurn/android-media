@@ -43,10 +43,10 @@ class SubmitPostService : JobIntentService() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var notificationManager: SubmitPostNotificationManager? = null
-
     @Inject
     lateinit var twitterManager: TwitterManager
+
+    private var notificationManager: SubmitPostNotificationManager? = null
 
     companion object {
         private const val JOB_ID = 13131313

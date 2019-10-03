@@ -76,7 +76,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
-    protected ProgressBar loadingView;
 
     protected CatalogListAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -190,7 +189,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, container, false);
     }
 
     @Override
@@ -227,7 +226,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {

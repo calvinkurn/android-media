@@ -69,20 +69,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CartLoadingHolderData cartLoadingHolderData;
     private CartWishlistAdapter cartWishlistAdapter;
     private CartRecentViewAdapter cartRecentViewAdapter;
-    private RecyclerView recyclerView;
     private int cartSelectAllViewHolderPosition = -1;
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView = recyclerView;
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        this.recyclerView = null;
-    }
 
     @Inject
     public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
@@ -188,7 +175,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == CartTickerViewHolder.Companion.getLAYOUT()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerViewHolder.Companion.getLAYOUT(), parent, false);
-            return new CartTickerViewHolder(view, recyclerView, actionListener);
+            return new CartTickerViewHolder(view, actionListener);
         }
         throw new RuntimeException("No view holder type found");
     }

@@ -14,6 +14,7 @@ public class EventsDetailsViewModel implements Parcelable {
     private String title;
     private String duration;
     private String url;
+    private String seoUrl;
     private String timeRange;
     private String genre;
     private String imageApp;
@@ -81,6 +82,14 @@ public class EventsDetailsViewModel implements Parcelable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
+    }
+
+    public void setSeoUrl(String seoUrl) {
+        this.seoUrl = seoUrl;
     }
 
     public String getImageApp() {
@@ -304,6 +313,7 @@ public class EventsDetailsViewModel implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.duration);
         dest.writeString(this.url);
+        dest.writeString(this.seoUrl);
         dest.writeString(this.timeRange);
         dest.writeString(this.genre);
         dest.writeString(this.imageApp);
@@ -337,6 +347,7 @@ public class EventsDetailsViewModel implements Parcelable {
         this.title = in.readString();
         this.duration = in.readString();
         this.url = in.readString();
+        this.seoUrl = in.readString();
         this.timeRange = in.readString();
         this.genre = in.readString();
         this.imageApp = in.readString();

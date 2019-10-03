@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
-import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
@@ -165,10 +164,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
-        if (BuildConfig.DEBUG) {
-            AndroidDevMetrics.initWith(this);
-        }
-
         LogWrapper.init(this);
         if (LogWrapper.instance != null) {
             LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
@@ -181,6 +176,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onTerminate() {
+        // this function is not reliable and will never be called in production
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();

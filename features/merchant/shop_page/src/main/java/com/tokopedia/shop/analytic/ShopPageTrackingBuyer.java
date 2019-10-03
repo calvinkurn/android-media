@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -17,7 +16,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
@@ -246,6 +244,15 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX,
                 "",
                 null
+        );
+    }
+
+    public void sendEventMembership(String eventAction) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT,
+                ShopPageTrackingConstant.MEMBERSHIP_SHOP_PAGE,
+                eventAction,
+                ""
         );
     }
 }

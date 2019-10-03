@@ -4,12 +4,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -17,6 +17,9 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.page.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.page.domain.interactor.RequestModerateShopUseCase
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,16 +27,16 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
-class ShopPageViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
+class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+                                            private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
-                                            @Named(ShopPageConstant.SHOP_FAVORITE_QUERY) private val gqlFavorite: String,
+                                            private val stickyLoginUseCase: StickyLoginUseCase,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -72,10 +75,8 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
             var favoritInfo = ShopInfo.FavoriteData()
 
             try {
-                getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-                getShopInfoUseCase.isFromCacheFirst = false
-                getShopInfoUseCase.gqlFavoriteQuery = gqlFavorite
-                favoritInfo = getShopInfoUseCase.executeOnBackground().favoriteData
+                gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+                favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
             } catch (t: Throwable) {
             }
 
@@ -180,11 +181,31 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                 })
     }
 
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    onSuccess.invoke(it.response.tickers[0])
+                } else {
+                    onError?.invoke(Throwable(DATA_NOT_FOUND))
+                }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
+    }
+
     override fun clear() {
         super.clear()
         getWhitelistUseCase.unsubscribe()
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()
         requestModerateShopUseCase.unsubscribe()
+    }
+
+    companion object {
+        private const val DATA_NOT_FOUND = "Data not found"
     }
 }

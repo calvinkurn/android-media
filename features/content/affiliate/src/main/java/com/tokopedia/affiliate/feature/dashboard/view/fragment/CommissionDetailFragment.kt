@@ -37,7 +37,8 @@ import javax.inject.Inject
 class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), NetworkErrorHelper.RetryClickedListener {
 
     companion object {
-        val PARAM_AFF_ID = "AFF_ID"
+        const val PARAM_AFF_ID = "AFF_ID"
+
         fun newInstance(bundle: Bundle): CommissionDetailFragment {
             val fragment = CommissionDetailFragment()
             fragment.arguments = bundle

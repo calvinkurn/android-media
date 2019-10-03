@@ -17,12 +17,14 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
     public static final String CLICK_TOP_NAV = "clickTopNav";
 
+    public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
     public static final String SHOP_PAGE_BUYER = "shop page - buyer";
     public static final String SHOP_PAGE = "shop page";
     public static final String TOP_NAV = "top nav - %s";
+    public static final String MEMBERSHIP_SHOP_PAGE = "membership - shop page";
 
     //ACTION
     public static final String TOP_SECTION = "top section";
@@ -49,11 +51,6 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click - etalase autocomplete";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click - global autocomplete";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
-
-
-
-
-
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -94,8 +91,10 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_INFO = "Shop Info";
     public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_PAGEURL= "keyword:  %s - page: %s";
     public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_VALUE_PAGEURL= "keyword:  %s - value: %s - page:%s";
-
-
+    public static final String MEMBERSHIP_CLICK_MEMBER = "click daftar jadi member";
+    public static final String MEMBERSHIP_DETAIL_PAGE = "click membership detail page";
+    public static final String MEMBERSHIP_COUPON_CLAIM = "click klaim kupon";
+    public static final String MEMBERSHIP_COUPON_CHECK = "click cek kupon saya";
 
     //key
     public static final String EVENT = "event";

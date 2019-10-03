@@ -8,22 +8,19 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTickerHolderDa
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.item_cart_ticker.view.*
 
-class CartTickerViewHolder(itemView: View, val rv: RecyclerView?, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
+class CartTickerViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(cartTickerData: CartTickerHolderData) {
         itemView.cartTicker.tickerType = Ticker.TYPE_ANNOUNCEMENT
         itemView.cartTicker.tickerShape = Ticker.SHAPE_FULL
         itemView.cartTicker.closeButtonVisibility = View.GONE
         itemView.cartTicker.setHtmlDescription(cartTickerData.message)
-        itemView.cartTicker.requestLayout()
 
         // Workaround for ticker not wrapping multiline content correctly
         itemView.cartTicker.post {
-            if (rv != null) {
-                itemView.cartTicker.measure(View.MeasureSpec.makeMeasureSpec(rv.width, View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                itemView.cartTicker.requestLayout()
-            }
+            itemView.cartTicker.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+            itemView.cartTicker.requestLayout()
         }
 
         actionListener.onShowCartTicker(cartTickerData.id)
