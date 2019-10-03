@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
@@ -39,7 +40,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
     private void forDeeplink() {
         bundle = getIntent().getExtras();
         if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_VIEW) && getIntent().getData() != null){
-            List<String> list = UriUtil.destructureUri(ApplinkConst.TokoPoints.COUPON_DETAIL,getIntent().getData());
+            List<String> list = UriUtil.destructureUri(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_DETAIL,getIntent().getData());
             if (list.size() > 0) {
                 bundle = new Bundle();
                 bundle.putString("coupon_code", list.get(0));
