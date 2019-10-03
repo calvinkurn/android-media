@@ -37,9 +37,11 @@ object DFInstallerLogUtil {
         }
         messageStringBuilder.append("times_dl: {$downloadTimes};")
 
-        val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
-        val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-        messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
+        try {
+            val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
+            val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
+            messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
+        } catch (ignored: Exception) { }
 
         if (moduleSize > 0) {
             val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
