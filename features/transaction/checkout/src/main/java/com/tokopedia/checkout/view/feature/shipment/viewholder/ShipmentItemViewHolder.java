@@ -805,7 +805,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
 
                 String state = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState();
-                if (state.equalsIgnoreCase(TickerCheckoutUtilKt.getGREEN())) {
+                if (!state.equalsIgnoreCase(TickerCheckoutUtilKt.getRED_STATE())) {
                     if (courierData.isHideShipperName()) {
                         // Hide shipper name
                         llCourierContainer.setVisibility(View.GONE);
