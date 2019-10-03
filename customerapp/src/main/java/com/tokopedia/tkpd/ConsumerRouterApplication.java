@@ -270,7 +270,6 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarke
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
-import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -1690,13 +1689,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, CartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
-    }
-
-    @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
-        ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
-        referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
-                actionCreator, actionUIDelegate);
     }
 
     @Override
