@@ -39,6 +39,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -797,7 +798,6 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
         private val LIST_SPAN_COUNT = 1
         private val GRID_SPAN_COUNT = 2
-        private const val EMPTY_PRODUCT_SEARCH_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
