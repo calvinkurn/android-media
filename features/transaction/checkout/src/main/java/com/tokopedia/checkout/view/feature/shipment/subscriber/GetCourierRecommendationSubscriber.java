@@ -94,7 +94,8 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                         // Auto apply Promo Stacking Logistic
                                         if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
                                                 && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
-                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()){
+                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()
+                                                && !shippingRecommendationData.getLogisticPromo().getDisabled()) {
                                             courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
                                             courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
                                             courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
