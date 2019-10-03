@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -20,8 +18,7 @@ import javax.inject.Inject
  */
 class GetPostDetailUseCase @Inject constructor(
         @ApplicationContext val context: Context,
-        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-        private val getKolCommentsUseCase: GetKolCommentsUseCase) : UseCase<PostDetailViewModel>() {
+        private val getDynamicFeedUseCase: GetDynamicFeedUseCase) : UseCase<PostDetailViewModel>() {
 
     companion object {
         private const val LIMIT_3 = 3
@@ -58,17 +55,11 @@ class GetPostDetailUseCase @Inject constructor(
 
     private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams):
             Observable<PostDetailViewModel> {
-        val sourceId = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
-        return Observable.zip(
-                getDynamicFeedUseCase.createObservable(requestParams),
-                getKolCommentsUseCase.createObservable(GetKolCommentsUseCase.getFirstTimeParam(sourceId.toIntOrZero()))
-                        .onErrorReturn { KolComments("", false, emptyList(), null) }
-        ) { dynamicFeed, commentList ->
-            domain.apply {
-                dynamicPostViewModel.cursor = dynamicFeed.cursor
-                dynamicPostViewModel.hasNext = dynamicFeed.hasNext
-                dynamicPostViewModel.postList = (dynamicFeed.postList + commentList.listComments.take(3)).toMutableList()
-            }
+        return getDynamicFeedUseCase.createObservable(requestParams).flatMap { dynamicFeed ->
+            domain.dynamicPostViewModel.cursor = dynamicFeed.cursor
+            domain.dynamicPostViewModel.hasNext = dynamicFeed.hasNext
+            domain.dynamicPostViewModel.postList = dynamicFeed.postList
+            Observable.just(domain)
         }.flatMap { addFooter(domain) }
     }
 
