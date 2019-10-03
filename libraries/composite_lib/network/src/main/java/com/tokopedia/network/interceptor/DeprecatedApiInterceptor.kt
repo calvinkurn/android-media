@@ -16,7 +16,7 @@ class DeprecatedApiInterceptor(val context: Context) : Interceptor {
         if (!warningHeaderVal.isNullOrBlank()) {
             val handler = Handler(Looper.getMainLooper())
             handler.post {
-                Toast.makeText(context, warningHeaderVal, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, warningHeaderVal, Toast.LENGTH_LONG).show()
             }
         }
         return response
