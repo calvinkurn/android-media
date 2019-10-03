@@ -9,8 +9,4 @@ interface OnboardingOtpMiscall {
         fun startAnimation()
         fun stopAnimation()
     }
-
-    interface Presenter: CustomerPresenter<OnboardingOtpMiscall.View> {
-
-    }
 }
