@@ -22,12 +22,16 @@ object DFInstallerLogUtil {
                            isSuccess: Boolean = false) {
         val messageStringBuilder = StringBuilder()
         messageStringBuilder.append("P1$tag {$modulesName};")
-        val playServiceVersion = PackageInfoCompat.getLongVersionCode(
-            context.packageManager.getPackageInfo(
-                GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                0
+        val playServiceVersion = try {
+            PackageInfoCompat.getLongVersionCode(
+                context.packageManager.getPackageInfo(
+                    GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                    0
+                )
             )
-        )
+        } catch (e: Exception) {
+            0
+        }
         if (playServiceVersion > 0) {
             messageStringBuilder.append("play_srv: {$playServiceVersion}")
         }
