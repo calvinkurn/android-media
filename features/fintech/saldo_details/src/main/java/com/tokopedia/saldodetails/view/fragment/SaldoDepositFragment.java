@@ -701,14 +701,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+
         if (response != null && response.isEligible()) {
-            merchantStatusLL.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
-                    .commit();
             statusWithDrawLock = response.getStatus();
             switch (statusWithDrawLock) {
 
