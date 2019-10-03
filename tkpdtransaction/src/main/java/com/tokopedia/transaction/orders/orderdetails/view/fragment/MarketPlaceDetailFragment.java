@@ -27,7 +27,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -723,6 +722,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (actionButton.getUri().contains("askseller")) {
                     startSellerAndAddInvoice(actionButton.getUri());
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER);
+                } else if (actionButton.getKey().contains("view_complaint")) {
+                    orderListAnalytics.sendActionButtonClickEvent("click view complain", status.status());
+
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
