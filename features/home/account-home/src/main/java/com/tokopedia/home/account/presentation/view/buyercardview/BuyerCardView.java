@@ -16,7 +16,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 
 /**
  * @author okasurya on 7/17/18.

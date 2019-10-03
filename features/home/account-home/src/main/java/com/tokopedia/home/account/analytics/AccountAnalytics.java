@@ -375,6 +375,48 @@ public class AccountAnalytics {
         }
     }
 
+    public void eventAccountPromoClick(String creativeName, String label, int position) {
+        final Analytics tracker = TrackApp.getInstance().getGTM();
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    EVENT, EVENT_PROMO_CLICK,
+                    EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
+                    EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_CLICK,
+                    EVENT_LABEL, label,
+                    ECOMMERCE, DataLayer.mapOf(
+                            PROMOTION_CLICK, DataLayer.mapOf(
+                                    PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                                            FIELD_ID, 0,
+                                            FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
+                                            FIELD_CREATIVE, creativeName,
+                                            FIELD_CREATIVE_URL, NONE_OTHER,
+                                            FIELD_POSITION, String.valueOf(position)
+                                    )))
+                    )
+            );
+            tracker.sendEnhanceEcommerceEvent(map);
+        }
+    }
+
+    public static HashMap<String, Object> getAccountPromoImpression(String creativeName, int position) {
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
+                EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION,
+                EVENT_LABEL, EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMOTION_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                                        FIELD_ID, 0,
+                                        FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
+                                        FIELD_CREATIVE, creativeName,
+                                        FIELD_CREATIVE_URL, NONE_OTHER,
+                                        FIELD_POSITION, String.valueOf(position)
+                                )))
+                )
+        );
+    }
+
     public void eventClickWishlistButton(boolean wishlistStatus) {
         final Analytics analytics = TrackApp.getInstance().getGTM();
 
