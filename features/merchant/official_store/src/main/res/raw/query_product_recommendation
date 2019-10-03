@@ -1,12 +1,5 @@
 query productRecommendationWidget($userID: Int, $pageName: String, $pageNumber: Int, $xDevice: String, $xSource: String, $categoryIDs: String) {
       productRecommendationWidget(userID: $userID, pageName: $pageName, pageNumber: $pageNumber, xDevice: $xDevice, xSource: $xSource, categoryIDs: $categoryIDs, os: true) {
-        meta {
-          recommendation
-          size
-          failSize
-          processTime
-          experimentVersion
-        }
         data {
           tID
           source
@@ -23,6 +16,10 @@ query productRecommendationWidget($userID: Int, $pageName: String, $pageNumber: 
             wishlistUrl
             trackerImageUrl
             imageUrl
+            freeOngkir {
+              isActive
+              imageUrl
+            }
             price
             priceInt
             slashedPriceInt
@@ -57,12 +54,4 @@ query productRecommendationWidget($userID: Int, $pageName: String, $pageNumber: 
           }
         }
       }
-    }`,
-    variables: {
-      userID,
-      pageName,
-      pageNumber,
-      xDevice,
-      xSource,
-      categoryIDs,
-    },
+    }

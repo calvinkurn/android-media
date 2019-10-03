@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.Toaster
+import java.io.File
+import timber.log.Timber
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -40,7 +42,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var progressText: TextView
     private lateinit var progressTextPercent: TextView
     private lateinit var buttonDownload: Button
-    private lateinit var closeButton: View
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
@@ -51,6 +52,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var applink: String
     private var imageUrl: String? = null
     private var initialDownloading = false
+    private var totalFreeSpaceSizeInMB = "-"
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -86,11 +88,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
         }
         setContentView(R.layout.activity_dynamic_feature_installer)
         initializeViews()
+        totalFreeSpaceSizeInMB = getTotalFreeSpaceSizeInMB()
         if (manager.installedModules.contains(moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                DFInstaller.logStatus(this, "Download Module {launch}", moduleName)
+                Timber.w("P1Download Module {launch} {$moduleName} {$totalFreeSpaceSizeInMB}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -113,32 +116,20 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private fun initializeViews() {
         progressBar = findViewById(R.id.progress_bar)
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY)
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY)
         progressText = findViewById(R.id.progress_text)
         progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
 
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY);
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
-        closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
-            DFInstaller.logStatus(this, "Download Module {button}", moduleName)
+            Timber.w("P1Download Module {button} {$moduleName} {$totalFreeSpaceSizeInMB}")
             loadAndLaunchModule(moduleName)
-        }
-        closeButton.setOnClickListener {
-            try {
-                sessionId?.run {
-                    manager.cancelInstall(this)
-                }
-            } catch (e: Exception) {
-            } finally {
-                sessionId = null
-            }
-            hideProgress()
         }
         progressGroup = findViewById(R.id.progress_group)
 
@@ -163,27 +154,24 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Create request to install a feature module by name.
         val request = SplitInstallRequest.newBuilder()
-            .addModule(name)
-            .build()
+                .addModule(name)
+                .build()
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
-            if (it == 0) {
-                onSuccessfulLoad(moduleName, true)
-            } else {
-                sessionId = it
-            }
+            sessionId = it
         }.addOnFailureListener { exception ->
-            val errorCode = (exception as SplitInstallException).errorCode
+            val errorCode = (exception as? SplitInstallException)?.errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message, errorCode)
+            showFailedMessage(message, errorCode?.toString() ?: exception.toString())
         }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        DFInstaller.logStatus(this, "Installed Module", moduleName)
+        totalFreeSpaceSizeInMB = getTotalFreeSpaceSizeInMB()
+        Timber.w("P1Installed Module {$moduleName} {$totalFreeSpaceSizeInMB}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             launchAndForwardIntent(applink)
@@ -222,7 +210,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
                   This may occur when attempting to download a sufficiently large module.
-
                   In order to see this, the application has to be uploaded to the Play Store.
                   Then features can be requested until the confirmation path is triggered.
                  */
@@ -234,29 +221,29 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
             SplitInstallSessionStatus.INSTALLING -> {
                 updateProgressMessage(
-                    getString(R.string.installing_x, moduleNameTranslated)
+                        getString(R.string.installing_x, moduleNameTranslated)
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message, state.errorCode())
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String, errorCode: Int = 0) {
-        DFInstaller.logStatus(this, "Failed Module", moduleName, 0, errorCode.toString())
+    private fun showFailedMessage(message: String, errorCode: String = "") {
+        Timber.w("P1Failed Module {$moduleName} - {$errorCode} {$totalFreeSpaceSizeInMB}")
         val userMessage: String
-        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE == errorCode) {
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
         } else {
             userMessage = message
         }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            userMessage,
-            Snackbar.LENGTH_INDEFINITE,
-            getString(R.string.general_label_ok), View.OnClickListener { })
+                userMessage,
+                Snackbar.LENGTH_INDEFINITE,
+                getString(R.string.general_label_ok), View.OnClickListener { })
     }
 
     private fun updateProgressMessage(message: String) {
@@ -270,12 +257,23 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
     private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
-        DFInstaller.logStatus(this, "Downloading Module", moduleName, moduleSize)
+        totalFreeSpaceSizeInMB = getTotalFreeSpaceSizeInMB()
+        val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / (ONE_KB * ONE_KB))
+        Timber.w("P1Downloading Module {$moduleName} {$moduleSizeinMB:$totalFreeSpaceSizeInMB}")
+    }
+
+    private fun getTotalFreeSpaceSizeInMB(): String {
+        totalFreeSpaceSizeInMB = "-"
+        applicationContext?.filesDir?.absoluteFile?.toString()?.let {
+            val totalSize = File(it).freeSpace.toDouble()
+            totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / (ONE_KB * ONE_KB))
+        }
+        return totalFreeSpaceSizeInMB
     }
 
     private fun displayProgress() {

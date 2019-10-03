@@ -19,16 +19,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
@@ -69,6 +69,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
@@ -267,13 +268,11 @@ public class ProductListFragment
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
-        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16));
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
     }
 
     private void setupListener() {
-
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
-
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
@@ -339,7 +338,12 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-        startShowCase();
+
+        // This method is commented, due to "Bebas Ongkir" promo show case shown as pop up dialog.
+        // This start show case will be uncommented again
+        // after "Bebas Ongkir" promo show case is not pop up dialog anymore.
+
+        // startShowCase();
     }
 
     private void stopSearchResultPagePerformanceMonitoring() {
@@ -404,8 +408,8 @@ public class ProductListFragment
 
     private String generateUniqueId() {
         return userSession.isLoggedIn() ?
-                AuthHelper.getMD5Hash(userSession.getUserId()) :
-                AuthHelper.getMD5Hash(getRegistrationId());
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(getRegistrationId());
     }
 
     @Override
@@ -481,6 +485,7 @@ public class ProductListFragment
             product.setName(item.getProductName());
             product.setPriceFormat(item.getPrice());
             product.setCategory(new Category(item.getCategoryID()));
+            product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
             TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
         }
     }
@@ -526,7 +531,7 @@ public class ProductListFragment
         if (getContext() == null) {
             return null;
         }
-        
+
         if (!TextUtils.isEmpty(warehouseId)) {
             return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
         } else {
@@ -576,8 +581,20 @@ public class ProductListFragment
         product.setName(item.getProductName());
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
+        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
 
         return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
+        }
+
+        return null;
     }
 
     @Override
@@ -938,6 +955,10 @@ public class ProductListFragment
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
+    /**
+     * This method is left unused for now, due to "Bebas Ongkir" promo show case shown as pop up dialog.
+     * This start show case will be used again after "Bebas Ongkir" promo show case is not pop up dialog anymore.
+     */
     public void startShowCase() {
         final String showCaseTag = ProductListFragment.class.getName();
         if (!isShowCaseAllowed(showCaseTag)) {
@@ -987,6 +1008,7 @@ public class ProductListFragment
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
+                .customView(R.layout.item_top_ads_show_case)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
@@ -1138,6 +1160,13 @@ public class ProductListFragment
 
         if (relativeLayoutErrorMessageContainer != null) {
             relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
+        if (getActivity() != null) {
+            recyclerView.postDelayed(() -> FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge), 300);
         }
     }
 }
