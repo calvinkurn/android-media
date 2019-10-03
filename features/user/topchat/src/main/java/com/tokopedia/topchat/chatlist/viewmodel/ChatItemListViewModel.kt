@@ -18,11 +18,14 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -57,6 +60,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _deleteChat = MutableLiveData<Result<ChatDelete>>()
     val deleteChat: LiveData<Result<ChatDelete>>
         get() = _deleteChat
+
+    val chatBlastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
+    val broadCastButtonVisibility = MutableLiveData<Boolean>()
+    val broadCastButtonUrl = MutableLiveData<String>()
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -138,4 +145,28 @@ class ChatItemListViewModel @Inject constructor(
             result(Fail(it))
         }
     }
+    fun loadChatBlastSellerMetaData() {
+        val query = queries[QUERY_BLAST_SELLER_METADATA] ?: return
+        launchCatchError(block = {
+            val data = withContext(dispatcher) {
+                val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
+                repository.getReseponse(listOf(request))
+            }.getSuccessData<BlastSellerMetaDataResponse>()
+            chatBlastMetaData.value = Success(data.chatBlastSellerMetadata)
+        }) {
+            chatBlastMetaData.value = Fail(it)
+        }
+    }
+
+    fun successGetMetaData(metaData: ChatBlastSellerMetadata) {
+        broadCastButtonVisibility.value = true
+
+        var broadCastLink = "https://seller.tokopedia.com/edu/about-topads/broadcast-chat/"
+        if (metaData.isWhiteListed()) {
+            broadCastLink = "https://m.tokopedia.com/broadcast-chat"
+        }
+
+        broadCastButtonUrl.value = broadCastLink
+    }
+
 }
