@@ -64,9 +64,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
 
         if(channel.header.backImage.isNotBlank()) {
             seeAllButton.show()
-            seeAllButtonText.invisible()
-//            seeAllButton.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-//            seeAllButton.setTextColor(ContextCompat.getColor(context, R.color.font_black_primary_70))
+            seeAllButtonText.hide()
             seeAllButton.setOnClickListener {
                 homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                 HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
