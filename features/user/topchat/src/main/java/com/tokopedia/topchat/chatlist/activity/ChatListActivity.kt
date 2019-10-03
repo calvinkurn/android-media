@@ -126,7 +126,9 @@ class ChatListActivity : BaseTabActivity()
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            if(tabList.size > 1) {
+                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            }
                             setNotificationCounterOnTab()
                         }
                     }

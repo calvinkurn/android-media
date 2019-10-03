@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
@@ -70,9 +71,9 @@ class WebSocketViewModel
     private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
-        val message = responseData.message.censoredReply.trim()
-        val time = responseData.startTime
+        val msgId = responseData?.msgId.toString()
+        val message = responseData?.message?.censoredReply?.trim().toEmptyStringIfNull()
+        val time = responseData?.startTime.toEmptyStringIfNull()
 
         val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),
