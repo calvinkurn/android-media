@@ -3,9 +3,9 @@ package com.tokopedia.graphql.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.graphql.BuildConfig;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -47,6 +48,10 @@ public class GraphqlClient {
                 newRequest.addHeader("User-Agent", getUserAgent());
                 return chain.proceed(newRequest.build());
             });
+
+            if (BuildConfig.DEBUG) {
+                tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context));
+            }
 
             sRetrofit = CommonNetwork.createRetrofit(
                     GraphqlUrl.BASE_URL,
