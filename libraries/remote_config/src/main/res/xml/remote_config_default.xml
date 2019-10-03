@@ -333,7 +333,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>app_enable_catalog_revamp</key>
-        <value>true</value>
+        <key>android_mainapp_merchant_freeongkir_title</key>
+        <value>Pengiriman ini berpotensi Bebas Ongkir</value>
     </entry>
 </defaultsMap>

@@ -48,7 +48,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
-        tools:replace="name,android:label,android:hasCode">
+        tools:replace="name, android:label,android:hasCode">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AutoInitEnabled"

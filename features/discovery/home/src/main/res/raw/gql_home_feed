@@ -42,6 +42,10 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             title
             image_url
           }
+          free_ongkir {
+            is_active
+            image_url
+          }
       }
       banner {
             id

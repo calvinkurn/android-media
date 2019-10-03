@@ -74,6 +74,11 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {

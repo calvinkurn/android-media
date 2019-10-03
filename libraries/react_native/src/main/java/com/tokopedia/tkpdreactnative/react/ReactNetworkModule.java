@@ -277,6 +277,8 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
             promise.resolve(TokopediaUrl.Companion.getInstance().getTOME());
         } else if (param.equals("tokopedia")) {
             promise.resolve(TokopediaUrl.Companion.getInstance().getWEB());
+        } else if (param.equals("gql")) {
+            promise.resolve(TokopediaUrl.Companion.getInstance().getGQL());
         } else {
             promise.reject("Base api url param is not found!");
         }

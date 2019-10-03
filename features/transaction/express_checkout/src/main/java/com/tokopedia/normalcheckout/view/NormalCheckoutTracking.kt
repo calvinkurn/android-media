@@ -51,13 +51,14 @@ class NormalCheckoutTracking {
                                      trackerAttribution: String?,
                                      trackerListName: String?,
                                      multiOrigin: Boolean,
-                                     reference: String = ""
+                                     reference: String = "",
+                                     isFreeOngkir: Boolean
     ) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName, multiOrigin, reference)
+            trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -108,8 +109,10 @@ class NormalCheckoutTracking {
                                                   trackerAttribution: String?,
                                                   trackerListName: String?,
                                                   multiOrigin: Boolean,
-                                                  reference: String = ""
+                                                  reference: String = "",
+                                                  isFreeOngkir: Boolean = false
                                                   ) {
+        val dimension83 = if (isFreeOngkir) "Bebas Ongkir" else "none / other"
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -151,7 +154,9 @@ class NormalCheckoutTracking {
                             "category_id" to selectedProductInfo.category.id,
                             "dimension45" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER),
-                            "dimension54" to getMultiOriginAttribution(multiOrigin)
+                            "dimension54" to getMultiOriginAttribution(multiOrigin),
+                                "dimension83" to dimension83
+
                         )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
                     )
@@ -161,7 +166,7 @@ class NormalCheckoutTracking {
 
         eventClickAddToCartOrBuyInVariantV5(originalProductInfoAndVariant, actionLabel,
                 selectedVariantId, selectedProductInfo, qty, shopId, shopType, shopName,
-                cartId, trackerAttribution, multiOrigin)
+                cartId, trackerAttribution, multiOrigin,isFreeOngkir)
     }
 
     private fun eventClickAddToCartOrBuyInVariantV5(
@@ -175,7 +180,9 @@ class NormalCheckoutTracking {
             shopName: String? = NONE_OTHER,
             cartId: String? = NONE_OTHER,
             trackerAttribution: String?,
-            multiOrigin: Boolean) {
+            multiOrigin: Boolean,
+            isFreeOngkir: Boolean) {
+        val dimension83 = if(isFreeOngkir) "Bebas Ongkir" else "none / other"
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -202,6 +209,7 @@ class NormalCheckoutTracking {
             putString("dimension38", trackerAttribution ?: NONE_OTHER)
             putString("dimension45", cartId ?: NONE_OTHER)
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
+            putString("dimension83", dimension83)
         }
 
         val event = Bundle().apply {
