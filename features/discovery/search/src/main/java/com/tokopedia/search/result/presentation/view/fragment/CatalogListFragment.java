@@ -76,7 +76,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
-    protected ProgressBar loadingView;
 
     protected CatalogListAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -227,7 +226,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {

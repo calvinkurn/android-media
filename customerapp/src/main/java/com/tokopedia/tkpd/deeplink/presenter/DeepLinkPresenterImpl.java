@@ -725,7 +725,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         
         String applink = TextUtils.isEmpty(q) ?
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConst.DISCOVERY_SEARCH;
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
     }
