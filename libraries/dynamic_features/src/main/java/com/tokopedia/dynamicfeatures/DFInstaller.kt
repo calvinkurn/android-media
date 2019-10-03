@@ -12,7 +12,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 object DFInstaller {
     private var manager: SplitInstallManager? = null
     internal var sessionId: Int? = null
-    const val TAG_LOG_DFM_BG = "DFM Background"
+    private const val TAG_LOG_DFM_BG = "DFM Background"
 
     private var listener: SplitInstallListener? = null
     internal var moduleSize = 0L
