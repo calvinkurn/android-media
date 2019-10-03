@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TickerMetadata;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -79,7 +79,7 @@ public class TickerPagerAdapter extends PagerAdapter {
                         if (uri.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                             RouteManager.route(context, uri);
                         } else {
-                            ((TokopointRouter) mContext.getApplicationContext()).openTokoPoint(mContext, uri);
+                            RouteManager.route(mContext,String.format("%s?url=%s", ApplinkConst.WEBVIEW,uri));
                         }
 
                         AnalyticsTrackerUtil.sendEvent(mContext,

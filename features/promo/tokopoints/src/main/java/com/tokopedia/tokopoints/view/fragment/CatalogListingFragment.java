@@ -31,13 +31,14 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
+
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
@@ -448,7 +449,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s", ApplinkConst.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership)));
 
             AnalyticsTrackerUtil.sendEvent(source.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -547,7 +548,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        if (getContext() != null)
+        getContext().startActivity(RouteManager.getIntent(getActivityContext(),url));
     }
 
     @Override

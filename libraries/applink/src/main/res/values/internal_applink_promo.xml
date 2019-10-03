@@ -11,4 +11,15 @@
 
     <string name="path_promo_list_flight" translatable="false">/list/flight</string>
     <string name="path_promo_detail_flight" translatable="false">/detail/flight</string>
+
+
+    <!-- for tokopoint module -->
+    <string name="host_tokopoints">tokopoints</string>
+    <string name="path_tokopoint_home">/home</string>
+    <string name="path_tokopoints_coupon">/kupon-saya</string>
+    <string name="path_tokopoints_coupon_slug">/kupon-saya-slug/</string>
+    <string name="path_tokopoints_coupon_details">/kupon-saya-detail/</string>
+    <string name="path_tokopoints_catalog_details">/tukar-point-detail/</string>
+    <string name="path_tokopoints_catalog_listing">/tukar-point/</string>
+
 </resources>

@@ -17,10 +17,10 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.section.CountdownAttr;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
@@ -796,7 +796,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
 
             if (TextUtils.isEmpty(appLink)) {
-                ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
+                 mLayoutInflater.getContext().startActivity(RouteManager.getIntent(mLayoutInflater.getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,webLink)));
             } else {
                 RouteManager.route(mLayoutInflater.getContext(), appLink);
             }

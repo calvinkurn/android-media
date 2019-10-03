@@ -26,10 +26,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
@@ -55,7 +56,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tokopoints.ApplinkConstant.CATALOG_LISTING2;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -233,7 +233,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {

@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
@@ -20,22 +22,38 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.List;
+
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private UserSession mUserSession;
+    private Bundle bundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mUserSession = new UserSession(getApplicationContext());
+        forDeeplink();
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
+
+    }
+
+    private void forDeeplink() {
+        bundle = getIntent().getExtras();
+        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_VIEW) && getIntent().getData() != null){
+            List<String> list = UriUtil.destructureUri(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL,getIntent().getData());
+            if (list.size() > 0){
+                bundle = new Bundle();
+                bundle.putString("catalog_code",list.get(0));
+            }
+        }
     }
 
     @Override
     protected Fragment getNewFragment() {
         if (mUserSession.isLoggedIn()) {
-            return CouponCatalogFragment.newInstance(getIntent().getExtras());
+            return CouponCatalogFragment.newInstance(bundle);
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;
@@ -54,7 +72,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
         return intent;
     }
 
-    @DeepLink({ApplinkConstant.CATALOG_DETAIL3, ApplinkConstant.CATALOG_DETAIL4})
     public static Intent getCatalogDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }

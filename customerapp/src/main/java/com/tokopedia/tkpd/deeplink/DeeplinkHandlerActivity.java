@@ -133,8 +133,6 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
-import com.tokopedia.tokopoints.TokopointApplinkModule;
-import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
@@ -195,7 +193,6 @@ import rx.schedulers.Schedulers;
         HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
-        TokopointApplinkModule.class,
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
@@ -230,7 +227,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
-                    new ConsumerDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
@@ -265,7 +261,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HowtopayApplinkModuleLoader(),
                     new CustomerCareApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
-                    new TokopointApplinkModuleLoader(),
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),

@@ -26,9 +26,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
@@ -199,7 +200,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -338,8 +339,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
-
+                    RouteManager.route(getContext(),ApplinkConst.HOME);
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,

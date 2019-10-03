@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
@@ -42,7 +43,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             itemView.setOnClickListener(v -> {
                 // Do whatever you want on clicking the item
-                RouteManager.route(v.getContext(), ApplinkConstant.COUPON_LISTING);
+                RouteManager.route(v.getContext(), ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             });
         }
     }

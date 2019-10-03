@@ -18,16 +18,15 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
-@DeepLink(ApplinkConst.TOKOPOINTS)
 public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
@@ -43,9 +42,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     @Override
     protected Fragment getNewFragment() {
         if (mUserSession.isLoggedIn()) {
-            if (getApplicationContext() instanceof TokopointRouter
-                    && ((TokopointRouter) getApplicationContext())
-                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
+            if (TokoPointsRemoteConfig.Companion.instance(getApplicationContext()).getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
                 finish();
                 startActivity(new Intent(this, TokoPointsHomeNewActivity.class));
                 return null;
@@ -64,7 +61,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         return tokoPointComponent;
     }
 
-    @DeepLink({ApplinkConstant.HOMEPAGE, ApplinkConstant.HOMEPAGE2})
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, TokoPointsHomeActivity.class);
     }
@@ -96,7 +92,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_help) {
-            ((TokopointRouter) getApplicationContext()).openTokoPoint(this, CommonConstant.WebLink.INFO);
+            RouteManager.route(this,String.format("%s?url=%s",ApplinkConst.WEBVIEW,CommonConstant.WebLink.INFO));
 
             AnalyticsTrackerUtil.sendEvent(this,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

@@ -21,11 +21,12 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
@@ -36,6 +37,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +165,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getActivity(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
     }
 
     @Override
@@ -455,8 +457,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     private void fetchRemoteConfig() {
-        mRefreshTime = ((TokopointRouter) getAppContext())
-                .getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
+        mRefreshTime = TokoPointsRemoteConfig.Companion.instance(getContext()).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     @Override

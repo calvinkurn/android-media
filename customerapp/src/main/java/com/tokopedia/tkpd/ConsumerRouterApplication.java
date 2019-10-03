@@ -341,7 +341,6 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
@@ -444,7 +443,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanChuckRouter,
         InstantLoanRouter,
         TopChatRouter,
-        TokopointRouter,
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
@@ -1943,10 +1941,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
-    @Override
-    public void openTokopointWebview(Context context, String url, String title) {
-        context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
-    }
+
 
     public Intent getPromoDetailIntent(Context context, String slug) {
         return PromoDetailActivity.getCallingIntent(context, slug);

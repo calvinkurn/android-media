@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -35,7 +36,6 @@ import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
@@ -236,7 +236,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -244,7 +244,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.bottom_view_membership) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -253,7 +254,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
+            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_history));
+
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -261,7 +263,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty_saya) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
+            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -311,7 +313,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
     }
 
     @Override

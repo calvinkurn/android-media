@@ -18,9 +18,10 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
@@ -156,7 +157,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
         });
         getView().findViewById(R.id.text_empty_action).setOnClickListener(v ->
-                ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), CommonConstant.WebLink.INFO));
+                RouteManager.route(getContext(),String.format("%s?url=%s",ApplinkConst.WEBVIEW,CommonConstant.WebLink.INFO)));
 
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -168,7 +169,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
     }
 
     @Override
