@@ -6,9 +6,11 @@
         dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_module_setting_profile">
+        <dist:delivery>
+            <dist:install-time />
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
-
     <application android:hasCode="false" />
 </manifest>
 
