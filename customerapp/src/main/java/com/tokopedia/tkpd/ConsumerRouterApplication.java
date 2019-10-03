@@ -256,7 +256,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
-import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
@@ -272,7 +271,6 @@ import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketpla
 import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
-import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -469,7 +467,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalRouter,
         TopAdsRouter,
         CMRouter,
-        ReferralRouter,
         SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
@@ -1146,11 +1143,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getAdsId() {
         return TrackApp.getInstance().getGTM().getGoogleAdId();
-    }
-
-    @Override
-    public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
-        return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
     }
 
     @Override
@@ -1968,7 +1960,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }
-          
+
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
@@ -2709,60 +2701,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void refreshFCMTokenFromForegroundToCM() {
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
-    }
-
-    @Override
-    public void eventReferralAndShare(Context context, String action, String label) {
-        UnifyTracking.eventReferralAndShare(context, action, label);
-    }
-
-    @Override
-    public void setBranchReferralCode(String referralCode) {
-        PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
-    }
-
-    @Override
-    public void sendMoEngageReferralScreenOpen(Context context, String screenName) {
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.SCREEN_NAME, screenName
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
-    }
-
-    @Override
-    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap) {
-        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
-    }
-
-    @Override
-    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName) {
-        ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
-                "text/plain", null, null);
-    }
-
-    @Override
-    public void sendAnalyticsToGTM(Context context, String type, String channel) {
-        if (type.equals(ShareData.REFERRAL_TYPE)) {
-            eventReferralAndShare(context,
-                    com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
-            TrackingUtils.sendMoEngageReferralShareEvent(context.getApplicationContext(), channel);
-        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
-            UnifyTracking.eventAppShareWhenReferralOff(context.getApplicationContext(), com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
-        } else {
-            UnifyTracking.eventShare(context.getApplicationContext(), channel);
-        }
-    }
-
-    private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
-                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
-                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
-                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
-                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
-                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
-                .build();
-        return shareData;
     }
 
     @Override

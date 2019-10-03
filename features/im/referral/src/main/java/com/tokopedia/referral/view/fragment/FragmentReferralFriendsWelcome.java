@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
+import com.tokopedia.referral.analytics.ReferralAnalytics;
 import com.tokopedia.referral.di.ReferralComponent;
-import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.referral.view.listener.FriendsWelcomeView;
 import com.tokopedia.referral.view.presenter.ReferralFriendsWelcomePresenter;
 
@@ -27,7 +27,7 @@ import javax.inject.Inject;
  * Created by ashwanityagi on 06/12/17.
  */
 
-public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implements FriendsWelcomeView{
+public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implements FriendsWelcomeView {
     private TextView btnReferralExplore;
     private TextView welcomeMessageSubHearer;
     private TextView TextViewHelpLink;
@@ -37,6 +37,8 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
 
     @Inject
     ReferralFriendsWelcomePresenter presenter;
+    @Inject
+    ReferralAnalytics referralAnalytics;
 
 
     public static FragmentReferralFriendsWelcome newInstance() {
@@ -86,12 +88,12 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         imgTick = view.findViewById(R.id.img_check);
         btnReferralExplore = view.findViewById(R.id.btn_referral_explore);
         welcomeMessageSubHearer = view.findViewById(R.id.tv_referral_subheader);
-        TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);;
+        TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);
 
         referralCodeTextView.setText(getActivity().getIntent().getStringExtra(Constants.Key.Companion.CODE));
 
         btnReferralExplore.setOnClickListener(v -> {
-            ((ReferralRouter)getActivity().getApplicationContext()).eventReferralAndShare(getActivity(),
+            referralAnalytics.eventReferralAndShare(
                     Constants.Action.Companion.CLICK_EXPLORE_TOKOPEDIA, Constants.EventLabel.Companion.HOME);
             closeView();
         });
@@ -101,8 +103,8 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         TextViewHelpLink.setVisibility(presenter.isShowReferralHelpLink() ? View.VISIBLE : View.GONE);
         TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
-            ((ReferralRouter)getActivity().getApplicationContext()).eventReferralAndShare(getActivity(),
-                    Constants.Action.Companion.CLICK_KNOW_MORE,"");
+            referralAnalytics.eventReferralAndShare(
+                    Constants.Action.Companion.CLICK_KNOW_MORE, "");
             showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
