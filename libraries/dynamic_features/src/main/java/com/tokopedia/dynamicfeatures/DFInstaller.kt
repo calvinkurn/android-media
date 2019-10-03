@@ -4,20 +4,21 @@ import android.app.Application
 import android.content.Context
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import timber.log.Timber
-import java.io.File
 
+/**
+ * Dynamic Installer, object that handle installing dynamic feature in background for application
+ * Also handle the unify logging
+ */
 object DFInstaller {
     private var manager: SplitInstallManager? = null
-    private const val MEGA_BYTE = 1024 * 1024
     internal var sessionId: Int? = null
+    const val TAG_LOG_DFM_BG = "DFM Background"
 
     private var listener: SplitInstallListener? = null
-    private var moduleSize: Long = 0
+    internal var moduleSize = 0L
 
     private class SplitInstallListener(val application: Application,
                                        val moduleNameToDownload: List<String>) : SplitInstallStateUpdatedListener {
-        var initialDownloading = true
         override fun onStateUpdate(it: SplitInstallSessionState) {
             if (it.sessionId() != sessionId) {
                 return
@@ -25,17 +26,17 @@ object DFInstaller {
 
             when (it.status()) {
                 SplitInstallSessionStatus.DOWNLOADING -> {
-                    if (initialDownloading) {
+                    if (moduleSize == 0L) {
                         moduleSize = it.totalBytesToDownload()
-                        logDownloadingStatus(application, moduleNameToDownload)
-                        initialDownloading = false
                     }
                 }
                 SplitInstallSessionStatus.INSTALLED -> {
                     logSuccessStatus(application, moduleNameToDownload)
+                    unregisterListener()
                 }
                 SplitInstallSessionStatus.FAILED -> {
                     logFailedStatus(application, moduleNameToDownload, it.errorCode().toString())
+                    unregisterListener()
                 }
             }
         }
@@ -51,6 +52,8 @@ object DFInstaller {
         }
         val manager = manager ?: return
 
+        moduleSize = 0
+
         val requestBuilder = SplitInstallRequest.newBuilder()
 
         val moduleNameToDownload = mutableListOf<String>()
@@ -65,6 +68,7 @@ object DFInstaller {
         val request = requestBuilder.build()
 
         unregisterListener()
+        registerListener(application, moduleNameToDownload)
         manager.startInstall(request).addOnSuccessListener {
             if (it == 0) {
                 // success
@@ -76,14 +80,24 @@ object DFInstaller {
         }.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
             sessionId = null
-            logFailedStatus(applicationContext, moduleNameToDownload,
-                errorCode?.toString() ?: it.toString())
+            logFailedStatus(applicationContext, moduleNameToDownload, errorCode?.toString() ?: it.toString())
             unregisterListener()
         }
-        registerListener(application, moduleNameToDownload)
     }
 
-    private fun unregisterListener() {
+    internal fun logSuccessStatus(context: Context, moduleNameToDownload: List<String>) {
+        DFInstallerLogUtil.logStatus(context, TAG_LOG_DFM_BG,
+            moduleNameToDownload.joinToString(), moduleSize, null, 1, true)
+    }
+
+    internal fun logFailedStatus(applicationContext: Context, moduleNameToDownload: List<String>,
+                                 errorCode: String = "") {
+        DFInstallerLogUtil.logStatus(applicationContext,
+            TAG_LOG_DFM_BG, moduleNameToDownload.joinToString(), moduleSize,
+            listOf(errorCode), 1, false)
+    }
+
+    internal fun unregisterListener() {
         if (listener != null) {
             manager?.unregisterListener(listener)
             moduleSize = 0
@@ -94,40 +108,6 @@ object DFInstaller {
     private fun registerListener(application: Application, moduleNameToDownload: List<String>) {
         listener = SplitInstallListener(application, moduleNameToDownload)
         manager?.registerListener(listener)
-    }
-
-    internal fun logDownloadingStatus(context: Context, moduleNameToDownload: List<String>) {
-        logStatus(context, "Downloading Module Background", moduleNameToDownload.joinToString(), moduleSize)
-    }
-
-    internal fun logSuccessStatus(context: Context, moduleNameToDownload: List<String>) {
-        logStatus(context, "Installed Module Background", moduleNameToDownload.joinToString(), moduleSize)
-    }
-
-    internal fun logFailedStatus(context: Context, moduleNameToDownload: List<String>, errorCode: String = "") {
-        logStatus(context, "Failed Module Background", moduleNameToDownload.joinToString(), moduleSize, errorCode)
-    }
-
-    internal fun logStatus(context: Context,
-                           tag: String = "",
-                           modulesName: String,
-                           moduleSize: Long = 0,
-                           errorCode: String = "") {
-        val messageStringBuilder = StringBuilder()
-        messageStringBuilder.append("P1$tag {$modulesName}; ")
-
-        val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
-        val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-        messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
-
-        if (moduleSize > 0) {
-            val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
-            messageStringBuilder.append("size: {$moduleSizeinMB}; ")
-        }
-        if (errorCode.isNotEmpty()) {
-            messageStringBuilder.append("err: {$errorCode}")
-        }
-        Timber.w(messageStringBuilder.toString())
     }
 
 }
