@@ -163,7 +163,7 @@ class ChatItemListViewModel @Inject constructor(
 
         var broadCastLink = "https://seller.tokopedia.com/edu/about-topads/broadcast-chat/"
         if (metaData.isWhiteListed()) {
-            broadCastLink = "https://m.tokopedia.com/broadcast-chat"
+            broadCastLink = "https://34.staging-feature.tokopedia.com/broadcast-chat"
         }
 
         broadCastButtonUrl.value = broadCastLink
