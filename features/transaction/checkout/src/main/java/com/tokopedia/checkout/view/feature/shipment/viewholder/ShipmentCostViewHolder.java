@@ -138,17 +138,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductDiscount(ShipmentCostModel shipmentCost) {
-        if (shipmentCost.getProductDiscountLabel() != null) {
-            mTvProductDiscountLabel.setText(shipmentCost.getProductDiscountLabel());
-        }
+        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(R.string.label_product_discount));
         mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
-        if (shipmentCost.getShippingDiscountLabel() != null) {
-            mTvShippingDiscountLabel.setText(shipmentCost.getShippingDiscountLabel());
-        }
-
+        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount));
         if (shipmentCost.getShippingDiscountAmount() > 0) {
             if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
                 mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
@@ -159,16 +154,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderGeneralDiscount(ShipmentCostModel shipmentCost) {
-        if (shipmentCost.getDiscountLabel() != null) {
-            mTvDiscountLabel.setText(shipmentCost.getDiscountLabel());
-        }
+        mTvDiscountLabel.setText(mTvDiscountLabel.getContext().getString(R.string.label_total_discount));
         mTvDiscountPrice.setText(getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, shipmentCost.getDiscountAmount() * -1));
     }
 
     private void renderCashback(ShipmentCostModel shipmentCost) {
-        if (shipmentCost.getCashbackLabel() != null) {
-            mTvTotalCashbackLabel.setText(shipmentCost.getCashbackLabel());
-        }
+        mTvTotalCashbackLabel.setText(mTvTotalCashbackLabel.getContext().getString(R.string.label_total_cashback));
         mTvTotalCashbackAmount.setText(getPriceFormat(mTvTotalCashbackLabel, mTvTotalCashbackAmount, shipmentCost.getCashbackAmount()));
         if (shipmentCost.getCashbackAmount() > 0) {
             mRlTotalCashback.setVisibility(View.VISIBLE);
