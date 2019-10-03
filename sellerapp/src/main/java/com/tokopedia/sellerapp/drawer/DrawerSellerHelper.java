@@ -101,16 +101,15 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getSellerMenu());
         data.add(getInboxMenu());
         data.add(getProductMenu());
-
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
         if (!((SellerDrawerAdapter) adapter).isOfficialStore()) {
             data.add(powerMerchantDrawerItem);
         } else {
             data.remove(powerMerchantDrawerItem);
         }
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                R.drawable.ic_top_ads,
-                TkpdState.DrawerPosition.SELLER_TOP_ADS,
-                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
