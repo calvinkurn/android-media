@@ -43,7 +43,7 @@
     <string name="cotp_miscall_point_1">1</string>
     <string name="cotp_miscall_point_2">2</string>
     <string name="cotp_miscall_step_1">Kamu akan menerima &lt;b&gt;panggilan telepon.&lt;/b&gt; Panggilan tidak perlu diangkat.</string>
-    <string name="cotp_miscall_step_2">Masukkan &lt;b&gt;6 digit terakhir nomor tersebut.&lt;/b&gt;</string>
+    <string name="cotp_miscall_step_2">Masukkan &lt;b&gt;6 digit terakhir&lt;/b&gt; dari nomor tersebut.</string>
     <string name="cotp_miscall_verification">Masukkan 6 digit angka terakhir nomor telepon</string>
     <string name="cotp_miscall_phone_code">021–75</string>
 
