@@ -115,8 +115,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private List<BankAccount> listBank;
 
-    private float buyerSaldoBalance;
-    private float sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long sellerSaldoBalance;
     private int currentState = 0;
     private boolean isSeller = false;
     private boolean sellerWithdrawal;
@@ -238,8 +238,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (getArguments() != null) {
             showMclBlockTickerFirebaseFlag = getArguments().getBoolean(FIREBASE_FLAG_STATUS);
-            buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
-            sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
+            buyerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
+            sellerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
             statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
             mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
         }
