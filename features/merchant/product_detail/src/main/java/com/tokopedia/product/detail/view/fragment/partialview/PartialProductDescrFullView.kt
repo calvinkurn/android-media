@@ -74,16 +74,15 @@ class PartialProductDescrFullView private constructor(private val view: View,
             txt_asuransi.visible()
             txt_asuransi.text = if (data.basic.isMustInsurance) "Ya" else "Opsional"
 
-            if (data.menu.name.isNotBlank()) {
-                txt_etalase.text = MethodChecker.fromHtml(data.menu.name)
-                txt_etalase.visible()
-                label_etalase.visible()
-                txt_etalase.setOnClickListener {
+            with(txt_etalase){
+                text = if (data.menu.name.isNotBlank()) {
+                    MethodChecker.fromHtml(data.menu.name)
+                } else {
+                    context.getString(R.string.pdp_all_etalase)
+                }
+                setOnClickListener {
                     gotoEtalase(data.menu.id, data.basic.shopID)
                 }
-            } else {
-                txt_etalase.gone()
-                label_etalase.gone()
             }
 
             if (data.category.detail.isNotEmpty()) {
