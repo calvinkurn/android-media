@@ -9,6 +9,10 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.transaction.R
+import com.tokopedia.transaction.orders.orderdetails.di.OrderListDetailModule
+import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase
+import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,7 +22,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [TopAdsWishlistModule::class])
+@Module(includes = [TopAdsWishlistModule::class, OrderListDetailModule::class])
 class OrderListUseCaseModule {
 
     @Provides
@@ -71,8 +75,13 @@ class OrderListUseCaseModule {
 
     @Provides
     @OrderListModuleScope
-    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase, addWishListUseCase: AddWishListUseCase, removeWishListUseCase: RemoveWishListUseCase, topAdsWishlishedUseCase: TopAdsWishlishedUseCase, userSessionInterface: UserSessionInterface): OrderListPresenterImpl {
-        return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase, userSessionInterface)
+    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase,
+                                       addWishListUseCase: AddWishListUseCase, removeWishListUseCase: RemoveWishListUseCase,
+                                       topAdsWishlishedUseCase: TopAdsWishlishedUseCase, userSessionInterface: UserSessionInterface,
+                                       orderListAnalytics: OrderListAnalytics, postCancelReasonUseCase: PostCancelReasonUseCase,
+                                       finishOrderUseCase: FinishOrderUseCase): OrderListPresenterImpl {
+        return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase,
+                userSessionInterface, orderListAnalytics, postCancelReasonUseCase, finishOrderUseCase)
     }
 
 }

@@ -46,8 +46,6 @@ import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
-import org.w3c.dom.Text;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -121,11 +119,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
             variables.put(DETAIL, 1);
-            if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-                variables.put(ACTION, 0);
-            } else {
-                variables.put(ACTION, 1);
-            }
+            variables.put(ACTION, 1);
             variables.put(UPSTREAM, "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -254,14 +248,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void onBuyAgainAllItems() {
-        onBuyAgainItems(orderDetails.getItems());
+    public void onBuyAgainAllItems(String eventActionLabel) {
+        onBuyAgainItems(orderDetails.getItems(), eventActionLabel);
     }
 
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgainItems(List<Items> items) {
+    public void onBuyAgainItems(List<Items> items, String eventActionLabel) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
@@ -298,7 +292,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel);
                 }
 
             }

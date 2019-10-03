@@ -2,7 +2,7 @@ package com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment;
 
 import android.content.Context;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
@@ -52,7 +52,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         view.showLoading();
         interactor.onGetCourierList(
                 data.getShipmentId(),
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()),
                 new Subscriber<ListCourierViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -99,7 +99,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         params.put(SHIPMENT_NAME, editableModel.getShipmentName());
         params.put(SP_ID, editableModel.getPackageId());
         interactor.confirmShipping(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
                 processCourierSubscriber());
     }
 
@@ -114,7 +114,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         params.put(SHIPMENT_NAME, editableModel.getShipmentName());
         params.put(SP_ID, editableModel.getPackageId());
         interactor.changeCourier(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
                 processCourierSubscriber());
     }
 

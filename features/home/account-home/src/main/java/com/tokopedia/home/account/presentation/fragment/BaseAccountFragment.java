@@ -314,7 +314,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 openApplink(applink);
             } else {
                 userSession.setSaldoIntroPageStatus(true);
-                openApplink(ApplinkConst.SALDO_INTRO);
+                openApplink(ApplinkConstInternalGlobal.SALDO_INTRO);
             }
         } else {
             RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
@@ -324,7 +324,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onDepositClicked(SellerSaldoViewModel element) {
-        openSladoPage(ApplinkConst.DEPOSIT);
+        openSladoPage(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
     }
 
     @Override

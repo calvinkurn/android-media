@@ -154,7 +154,6 @@ ext {
             transactiondata                 : ":features:transaction:transactiondata",
             transactionanalytics            : ":features:transaction:transactionanalytics",
             checkout                        : ":features:transaction:checkout",
-            transactionInvoice              : ":features:transaction:transactioninvoice",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             expressCheckout                 : ":features:transaction:express_checkout",
