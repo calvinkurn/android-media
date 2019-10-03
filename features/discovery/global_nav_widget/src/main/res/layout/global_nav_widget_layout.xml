@@ -5,6 +5,7 @@
     android:id="@+id/globalNavContainerLayout"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/white"
     android:paddingTop="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
@@ -38,7 +39,13 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/globalNavRecyclerView"
+        android:id="@+id/globalNavPillRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/globalNavCardRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"/>

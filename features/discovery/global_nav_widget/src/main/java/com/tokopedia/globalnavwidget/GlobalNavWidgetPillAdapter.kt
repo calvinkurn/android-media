@@ -4,9 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 
-internal class GlobalNavWidgetAdapter(
+internal class GlobalNavWidgetPillAdapter(
         private val itemListener: GlobalNavWidgetListener
-): RecyclerView.Adapter<GlobalNavWidgetViewHolder>() {
+): RecyclerView.Adapter<GlobalNavWidgetPillViewHolder>() {
 
     private val itemList = mutableListOf<GlobalNavWidgetModel.Item>()
 
@@ -17,13 +17,13 @@ internal class GlobalNavWidgetAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GlobalNavWidgetViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(GlobalNavWidgetViewHolder.LAYOUT, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GlobalNavWidgetPillViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(GlobalNavWidgetPillViewHolder.LAYOUT, parent, false)
 
-        return GlobalNavWidgetViewHolder(view, itemListener)
+        return GlobalNavWidgetPillViewHolder(view, itemListener)
     }
 
-    override fun onBindViewHolder(holder: GlobalNavWidgetViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GlobalNavWidgetPillViewHolder, position: Int) {
         holder.bind(itemList[position])
     }
 

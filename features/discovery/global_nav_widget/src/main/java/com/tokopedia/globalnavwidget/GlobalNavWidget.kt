@@ -1,29 +1,17 @@
 package com.tokopedia.globalnavwidget
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
-import java.util.*
+import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
+import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
 
 class GlobalNavWidget: BaseCustomView {
-
-    companion object {
-        private const val GLOBAL_NAV_SPAN_COUNT = 5
-    }
-
-    private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
-
-    private var globalNavContainerLayout: LinearLayout? = null
-    private var globalNavTitle: TextView? = null
-    private var globalNavSeeAllButton: TextView? = null
-    private var globalNavRecyclerView: RecyclerView? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -38,54 +26,96 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.global_nav_widget_layout, this)
-
-        globalNavContainerLayout = view.findViewById(R.id.globalNavContainerLayout)
-        globalNavTitle = view.findViewById(R.id.globalNavTitle)
-        globalNavSeeAllButton = view.findViewById(R.id.globalNavSeeAllButton)
-        globalNavRecyclerView = view.findViewById(R.id.globalNavRecyclerView)
-
-        setupBackground()
-    }
-
-    private fun setupBackground() {
-        val backgroundIndex = Random().nextInt(backgroundGradientColorList.size)
-
-        val gradientDrawable = GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex])
-        )
-
-        gradientDrawable.cornerRadius = 0f
-
-        globalNavContainerLayout?.background = gradientDrawable
+        View.inflate(context, R.layout.global_nav_widget_layout, this)
     }
 
     fun setData(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
-        globalNavTitle?.text = globalNavWidgetModel.title
-
-        val globalNavWidgetAdapter = createGlobalNavWidgetAdapter(globalNavWidgetListener)
-        globalNavRecyclerView?.adapter = globalNavWidgetAdapter
-
-        val gridLayoutManager = createGlobalNavRecyclerViewLayoutManager()
-        globalNavRecyclerView?.layoutManager = gridLayoutManager
-
-        globalNavWidgetAdapter.setItemList(globalNavWidgetModel.itemList)
+        setTitle(globalNavWidgetModel.title)
+        setBackground(globalNavWidgetModel.background)
+        setContent(globalNavWidgetModel, globalNavWidgetListener)
 
         globalNavSeeAllButton?.setOnClickListener { _ ->
             globalNavWidgetListener.onClickSeeAll(globalNavWidgetModel)
         }
     }
 
-    private fun createGlobalNavWidgetAdapter(globalNavWidgetListener: GlobalNavWidgetListener): GlobalNavWidgetAdapter {
-        return GlobalNavWidgetAdapter(globalNavWidgetListener)
+    private fun setTitle(title: String) {
+        globalNavTitle?.text = MethodChecker.fromHtml(title)
     }
 
-    private fun createGlobalNavRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(
-                context,
-                GLOBAL_NAV_SPAN_COUNT,
-                GridLayoutManager.VERTICAL,
-                false)
+    private fun setBackground(backgroundImgUrl: String) {
+        globalNavContainerLayout?.let {
+            ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
+        }
+    }
+
+    private fun setContent(
+            globalNavWidgetModel: GlobalNavWidgetModel,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        if (globalNavWidgetModel.navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_CARD) {
+            hidePillContent()
+            setCardContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+        }
+        else if (globalNavWidgetModel.navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_PILL) {
+            hideCardContent()
+            setPillContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+        }
+    }
+
+    private fun setPillContent(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        globalNavPillRecyclerView?.visibility = View.VISIBLE
+        globalNavPillRecyclerView?.adapter = createPillAdapter(globalNavWidgetItemList, globalNavWidgetListener)
+        globalNavPillRecyclerView?.layoutManager = createPillRecyclerViewLayoutManager()
+    }
+
+    private fun createPillAdapter(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ): RecyclerView.Adapter<*> {
+
+        val pillsAdapter = GlobalNavWidgetPillAdapter(globalNavWidgetListener)
+        pillsAdapter.setItemList(globalNavWidgetItemList)
+
+        return pillsAdapter
+    }
+
+    private fun createPillRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(context, GLOBAL_NAV_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+    }
+
+    private fun hidePillContent() {
+        globalNavPillRecyclerView?.visibility = View.GONE
+    }
+
+    private fun setCardContent(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        globalNavCardRecyclerView?.visibility = View.VISIBLE
+        globalNavCardRecyclerView?.adapter = createCardAdapter(globalNavWidgetItemList, globalNavWidgetListener)
+        globalNavCardRecyclerView?.layoutManager = createCardRecyclerViewLayoutManager()
+    }
+
+    private fun createCardAdapter(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ): RecyclerView.Adapter<*> {
+
+        val pillsAdapter = GlobalNavWidgetCardAdapter(globalNavWidgetListener)
+        pillsAdapter.setItemList(globalNavWidgetItemList)
+
+        return pillsAdapter
+    }
+
+    private fun createCardRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun hideCardContent() {
+        globalNavCardRecyclerView?.visibility = View.GONE
     }
 }

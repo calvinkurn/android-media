@@ -63,6 +63,18 @@ data class GlobalNavWidgetModel(
             val clickItemApplink: String = "",
             @SerializedName("url")
             @Expose
-            val clickItemUrl: String = ""
+            val clickItemUrl: String = "",
+            @SerializedName("subtitle")
+            @Expose
+            val subtitle: String = "",
+            @SerializedName("strikethrough")
+            @Expose
+            val strikethrough: String = "",
+            @SerializedName("background_url")
+            @Expose
+            val backgroundUrl: String = "",
+            @SerializedName("logoUrl")
+            @Expose
+            val logoUrl: String = ""
     )
 }

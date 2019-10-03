@@ -20,6 +20,7 @@
 /features/discovery/autocomplete/       @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
 /features/discovery/global_nav_widget/  @tokopedia/minion-dave
+/features/discovery/global_nav_widget_samples/  @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
