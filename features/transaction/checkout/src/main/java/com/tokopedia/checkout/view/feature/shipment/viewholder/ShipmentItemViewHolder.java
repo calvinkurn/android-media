@@ -766,9 +766,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getLogPromoMsg())) {
-                tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
-            }
+            tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
 
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
                     shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()
