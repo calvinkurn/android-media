@@ -814,10 +814,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     tvCourierSelection.setOnClickListener(null);
                 }
 
+                // Change duration to promo title after promo is applied
+                tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
                 if (courierData.getDiscountedRate() == 0) {
                     // Gratis Shipping Price
                     tvLogTicker.setVisibility(View.GONE);
-                    tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
                 } else if (courierData.getDiscountedRate() > 0) {
                     // Discounted Shipping Price
                     tvDurationStrikedPrice.setVisibility(View.VISIBLE);
