@@ -167,7 +167,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         if (position != INDEX_NOTIFICATION_UPDATE || hasBeenShown(tag)) return
 
         val coachMarkItems = getCoachMarkItems()
-        getNotificationUpdate()?.showOnBoarding(coachMarkItems)
+        getNotificationUpdate()?.showOnBoarding(coachMarkItems, tag)
     }
 
     private fun hasBeenShown(tag: String): Boolean {

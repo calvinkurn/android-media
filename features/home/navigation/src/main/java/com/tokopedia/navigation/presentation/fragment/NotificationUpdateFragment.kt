@@ -148,8 +148,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
     }
 
-    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>) {
-        val tag = "NotifcenterOnboarding"
+    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
         coachMarkItems.add(
                 1 ,
                 CoachMarkItem(
