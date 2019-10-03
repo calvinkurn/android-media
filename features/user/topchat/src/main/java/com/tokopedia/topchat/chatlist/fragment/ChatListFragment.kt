@@ -28,6 +28,8 @@ import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -70,6 +72,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -142,10 +147,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller()) return
+        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupChatBlastSellerMetaDataObserver()
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
+    }
+
+    private fun isSellerBroadcastRemoteConfigOn(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
     private fun setupSellerBroadcastButton() {
