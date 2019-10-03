@@ -1580,10 +1580,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+        if (item.isLihatSemuaItem) feedAnalytics.eventClickFeedInterestPickSeeAll()
+        else feedAnalytics.eventClickFeedInterestPick(item.name)
 
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
         activity?.let {
             val bundle = Bundle()
             bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))

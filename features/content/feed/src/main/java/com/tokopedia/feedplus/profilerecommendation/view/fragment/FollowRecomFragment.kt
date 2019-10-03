@@ -17,7 +17,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
 import com.tokopedia.feedplus.profilerecommendation.view.adapter.FollowRecomAdapter
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecomContract
 import com.tokopedia.feedplus.profilerecommendation.view.presenter.FollowRecomPresenter
@@ -35,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.item_autocomplete_text_double_row.*
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -61,6 +64,9 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     @Inject
     lateinit var presenter: FollowRecomPresenter
 
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
     private val dialogOnboardingFollowView: DialogOnboardingRecomFollowView? by lazy {
         context?.let(::DialogOnboardingRecomFollowView)
     }
@@ -82,7 +88,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun getScreenName(): String {
-        return "Follow Recommendation"
+        return FeedAnalyticTracker.Screen.ONBOARDING_PROFILE_RECOM
     }
 
     override fun initInjector() {
@@ -100,6 +106,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedAnalyticTracker.eventOpenOnboardingProfileRecom()
         initView(view)
         setupView(view)
         presenter.getFollowRecommendationList(interestIds, cursor)
@@ -126,6 +133,11 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction) {
+        if (isFollowed) {
+            feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
+        } else {
+            feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
+        }
         presenter.followUnfollowRecommendation(authorId, actionToCall)
     }
 
@@ -170,6 +182,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onNameOrAvatarClicked(model: FollowRecomCardViewModel) {
+        feedAnalyticTracker.eventClickFollowRecomNameAndImage(model.authorId)
         setupDialogViewWithModel(model)
         dialogOnboardingFollow.show()
     }
@@ -195,14 +208,33 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, action: FollowRecomAction) {
+        when(action) {
+            FollowRecomAction.FOLLOW -> feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
+            FollowRecomAction.UNFOLLOW -> feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
+        }
         presenter.followUnfollowRecommendation(authorId, action)
     }
 
-    override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel) {
+    override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
+        authorType?.let {
+            when(it) {
+                AuthorType.SHOP -> feedAnalyticTracker.eventClickShopRecommendationProduct(model.id, "",0, itemPos)
+                AuthorType.USER -> feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos)
+            }
+        }
         context?.let { ctx ->
             startActivity(
                     MediaPreviewActivity.createIntent(ctx, model.id, 0)
             )
+        }
+    }
+
+    override fun onFirstTimeImageShown(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
+        authorType?.let {
+            when(it) {
+                AuthorType.SHOP -> feedAnalyticTracker.eventViewShopRecommendationProduct(model.id, "",0, itemPos)
+                AuthorType.USER -> feedAnalyticTracker.eventViewContentRecommendation(model.id, itemPos)
+            }
         }
     }
 
@@ -261,6 +293,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     private fun followAllRecommendation() {
+        feedAnalyticTracker.eventClickFollowAll()
         presenter.followAllRecommendation(interestIds)
     }
 

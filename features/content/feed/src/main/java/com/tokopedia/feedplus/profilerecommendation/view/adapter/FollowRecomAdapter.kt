@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
@@ -176,7 +177,10 @@ class FollowRecomAdapter(
                         imageView,
                         model.url
                 )
-                imageView.setOnClickListener { listener.onThumbnailClicked(model) }
+                imageView.setOnClickListener { listener.onThumbnailClicked(model, index, element.authorType) }
+                imageView.addOnImpressionListener(model.impressHolder) {
+                    listener.onFirstTimeImageShown(model, index, element.authorType)
+                }
             }
             tvName.text = element.title
             tvDescription.text = element.description
@@ -284,6 +288,7 @@ class FollowRecomAdapter(
         fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction)
         fun onFollowStateChanged(followCount: Int)
         fun onNameOrAvatarClicked(model: FollowRecomCardViewModel)
-        fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel)
+        fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?)
+        fun onFirstTimeImageShown(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?)
     }
 }
