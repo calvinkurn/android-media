@@ -11,8 +11,7 @@
 
     <include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error"
-        tools:visibility="gone"/>
+        layout="@layout/layout_item_warning_and_error" />
 
     <FrameLayout
         android:id="@+id/fl_shop_item_container"
