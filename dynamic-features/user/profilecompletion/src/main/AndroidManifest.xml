@@ -4,6 +4,7 @@
 
     <dist:module
         dist:instant="false"
+        dist:onDemand="false"
         dist:title="@string/title_module_setting_profile">
         <dist:delivery>
             <dist:install-time />

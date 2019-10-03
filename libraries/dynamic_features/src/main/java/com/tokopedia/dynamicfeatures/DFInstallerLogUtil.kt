@@ -22,37 +22,30 @@ object DFInstallerLogUtil {
                            isSuccess: Boolean = false) {
         val messageStringBuilder = StringBuilder()
         messageStringBuilder.append("P1$tag {$modulesName};")
-        val playServiceVersion = try {
-            PackageInfoCompat.getLongVersionCode(
-                context.packageManager.getPackageInfo(
-                    GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                    0
-                )
-            )
-        } catch (e: Exception) {
-            0
-        }
-        if (playServiceVersion > 0) {
-            messageStringBuilder.append("play_srv: {$playServiceVersion}")
-        }
-        messageStringBuilder.append("times_dl: {$downloadTimes};")
+        messageStringBuilder.append("times_dl:{$downloadTimes};")
 
         try {
             val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
             val totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / MEGA_BYTE)
-            messageStringBuilder.append("free: {$totalFreeSpaceSizeInMB}; ")
+            messageStringBuilder.append("free:{$totalFreeSpaceSizeInMB};")
         } catch (ignored: Exception) { }
 
         if (moduleSize > 0) {
             val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
-            messageStringBuilder.append("size: {$moduleSizeInMB}; ")
+            messageStringBuilder.append("size:{$moduleSizeInMB};")
         }
         if (errorCode?.isNotEmpty() == true) {
-            messageStringBuilder.append("err: {${errorCode.joinToString("-")}}; ")
+            messageStringBuilder.append("err:{${errorCode.joinToString("-")}};")
         }
         if (isSuccess) {
-            messageStringBuilder.append("Success; ")
+            messageStringBuilder.append("Success;")
         }
+        try {
+            val playServiceVersion = PackageInfoCompat.getLongVersionCode(
+                    context.packageManager.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0)
+            )
+            messageStringBuilder.append("play_srv:{$playServiceVersion}")
+        } catch (e: Exception) { }
         Timber.w(messageStringBuilder.toString())
     }
 }
