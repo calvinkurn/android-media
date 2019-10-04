@@ -44,6 +44,8 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
     var maxDate: Date? = null
     var rangeYear: Int = 0
     var rangeDateSelected: Long = 0
+    var minDateLabel: String = ""
+    var maxDateLabel: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,13 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
 
             if (it.getLong(ARG_RANGE_DATE_SELECTED) != null)
                 rangeDateSelected = it.getLong(ARG_RANGE_DATE_SELECTED)
+
+            if (it.getString(ARG_MIN_DATE_LABEL) != null)
+                minDateLabel = it.getString(ARG_MIN_DATE_LABEL)
+
+            if (it.getString(ARG_MAX_DATE_LABEL) != null)
+                maxDateLabel = it.getString(ARG_MAX_DATE_LABEL)
+
         }
     }
 
@@ -82,6 +91,9 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        text_checkin.text = minDateLabel
+        text_checkout.text = maxDateLabel
 
         loading_progress_bar.visibility = View.VISIBLE
 
@@ -124,13 +136,11 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
 
         minDate?.let { minDate ->
             maxDate?.let { maxDate ->
-                calendar.let { calendar ->
                     calendar.init(yesterday.time, nextYear.time, legends)
                             .inMode(CalendarPickerView.SelectionMode.RANGE)
                             .maxRange(rangeDateSelected)
                             .withSelectedDates(listOf(minDate, maxDate))
                     date_in.requestFocus()
-                }
             }
         }
 
@@ -222,17 +232,22 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
 
         const val ARG_MIN_DATE = "arg_min_date"
         const val ARG_MAX_DATE = "arg_max_date"
+        const val ARG_MIN_DATE_LABEL = "arg_min_date_label"
+        const val ARG_MAX_DATE_LABEL = "arg_max_date_label"
         const val ARG_RANGE_YEAR = "arg_range_year"
         const val ARG_RANGE_DATE_SELECTED = "arg_range_date_selected"
 
         fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
-                        rangeDateSelected: Long): SelectionRangeCalendarWidget =
+                        rangeDateSelected: Long, minDateLabel: String,
+                        maxDateLabel: String): SelectionRangeCalendarWidget =
                 SelectionRangeCalendarWidget().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_MIN_DATE, minDate)
                         putString(ARG_MAX_DATE, maxDate)
                         putInt(ARG_RANGE_YEAR, rangeYear)
                         putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
+                        putString(ARG_MIN_DATE_LABEL, minDateLabel)
+                        putString(ARG_MAX_DATE_LABEL, maxDateLabel)
                     }
                 }
     }

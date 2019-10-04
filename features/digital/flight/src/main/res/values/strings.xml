@@ -474,4 +474,7 @@
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
     <string name="flight_terminal_info">Terminal %s*</string>
     <string name="flight_airport_less_than_three_keyword_error">Lengkapi nama kota atau bandara yang kamu cari</string>
+
+    <string name="flight_min_date_label">Pergi</string>
+    <string name="flight_max_date_label">Pulang</string>
 </resources>

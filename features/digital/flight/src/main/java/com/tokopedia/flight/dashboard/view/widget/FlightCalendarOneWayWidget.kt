@@ -130,7 +130,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         val calendar = calendarUnify.calendarPickerView
 
         val nextYear = Calendar.getInstance()
-        nextYear.add(Calendar.YEAR, 2)
+        nextYear.add(Calendar.YEAR, 1)
 
         calendar?.init(minDate, nextYear.time, holidayArrayList)
                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)

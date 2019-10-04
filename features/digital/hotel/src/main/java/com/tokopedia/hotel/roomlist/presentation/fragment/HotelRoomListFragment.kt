@@ -289,7 +289,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(hotelRoomListPageModel.checkIn,
-                hotelRoomListPageModel.checkOut, 1, 30)
+                hotelRoomListPageModel.checkOut, 1, 30,
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label))
         hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
