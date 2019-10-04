@@ -345,11 +345,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {
-        if (activity != null && activity!!.applicationContext != null) {
-            val cache = LocalCacheHandler(
-                    activity!!.applicationContext,
-                    KEY_FEED
-            )
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
             cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
