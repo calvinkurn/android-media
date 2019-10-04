@@ -28,6 +28,7 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
     private TextView totalAmt;
     private TextView backToSaldoDetail;
     private TextView backToAppShopping;
+    private TextView adminFees;
 
     @Override
     protected void initInjector() {
@@ -54,6 +55,7 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
         backToSaldoDetail.setOnClickListener(this);
         backToAppShopping = view.findViewById(R.id.backto_shop);
         backToAppShopping.setOnClickListener(this);
+        adminFees = view.findViewById(R.id.admin_fees);
         return view;
     }
 
@@ -65,6 +67,10 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
             String message = getArguments().getString(WithdrawConstant.Keys.MESSAGE);
             titleTxtv.setText(message);
             bankName.setText(bankAccount.getBankName());
+            if(bankAccount.getAdminFee() > 0){
+                adminFees.setText(String.format(getActivity().getResources().getString(R.string.admin_fee_msg),  Long.toString(bankAccount.getAdminFee())));
+                adminFees.setVisibility(View.VISIBLE);
+            }
             accountNum.setText(bankAccount.getAccountNo() + "-" + bankAccount.getAccountName());
             double amount = getArguments().getDouble(WithdrawConstant.Keys.AMOUNT);
             totalAmt.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false));

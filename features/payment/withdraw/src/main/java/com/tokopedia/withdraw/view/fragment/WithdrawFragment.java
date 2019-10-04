@@ -36,7 +36,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -55,8 +54,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
-import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
@@ -78,7 +75,6 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -119,8 +115,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private List<BankAccount> listBank;
 
-    private float buyerSaldoBalance;
-    private float sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long sellerSaldoBalance;
     private int currentState = 0;
     private boolean isSeller = false;
     private boolean sellerWithdrawal;
@@ -145,8 +141,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private ImageView ivLockButton;
     TabLayout tabLayout;
 
-    private boolean buttonSellerSaldoStatus = false;
-    //private LinearLayout withdrawButtonWrapper;
 
     private CompositeSubscription subscription;
     private AlertDialog alertDialog;
@@ -242,8 +236,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         if (getArguments() != null) {
             showMclBlockTickerFirebaseFlag = getArguments().getBoolean(FIREBASE_FLAG_STATUS);
-            buyerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
-            sellerSaldoBalance = getArguments().getFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
+            buyerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT);
+            sellerSaldoBalance = getArguments().getLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT);
             statusWithDrawLock = getArguments().getInt(IS_WITHDRAW_LOCK);
             mclLateCount = getArguments().getInt(MCL_LATE_COUNT);
         }
@@ -254,12 +248,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
-        // saldoTypeCV.setVisibility(View.VISIBLE);
-        //new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
-
-        /*bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
-                "bank rakyat indonesia");
-*/
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
@@ -332,6 +320,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
         CurrencyTextWatcher currencyTextWatcher = new CurrencyTextWatcher(totalWithdrawal, CurrencyEnum.RPwithSpace);
+        currencyTextWatcher.setMaxLength(WithdrawConstant.MAX_LENGTH);
         currencyTextWatcher.setDefaultValue("");
 
         if (currencyTextWatcher != null) {
@@ -774,17 +763,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void goToAddBank() {
-        Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_BANK);
         startActivityForResult(intent, BANK_INTENT);
     }
 
     @Override
     public void goToSettingBank() {
-        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
         startActivityForResult(intent, BANK_SETTING_INTENT);
     }
 
@@ -846,6 +831,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     }
 
                 }
+                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
+                    getActivity().finish();
+                }
+                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
+                    getActivity().finish();
+                    RouteManager.route(getContext(), ApplinkConst.HOME, "");
+                }
                 break;
             default:
                 break;
@@ -890,80 +882,4 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bottomSheet.show();
     }
 
-    enum ProgramStatus {
-        Pending_In(0), Pending_Out(1), In_Progress_In(2), In_Progress_Out(3), Approved_In(4),
-        Approved_Out(5), Rejected(6);
-        int status;
-
-        ProgramStatus(int status) {
-            this.status = status;
-        }
-    }
 }
-
-/*
-
-    private void enableBuyerSaldoView() {
-        withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.white));
-        withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
-
-        withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.grey_300));
-        withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_grey_border_radius_16));
-
-        saldoTitleTV.setText(getString(R.string.saldo_refund));
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
-    }
-
-    private void enableSellerSaldoView() {
-        withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.grey_300));
-        withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_grey_border_radius_16));
-
-        withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.white));
-        withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
-
-        saldoTitleTV.setText(getString(R.string.saldo_seller));
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
-    }
-*/
-
-   /* private void startShowCase() {
-        if (!ShowCasePreference.hasShown(getContext(), WithdrawFragment.class.getName())) {
-            ShowCasePreference.setShown(getContext(), WithdrawFragment.class.getName(), true);
-            createShowCaseDialog().show(getActivity(),
-                    WithdrawFragment.class.getName(),
-                    getShowCaseObjectListForBuyerSaldo()
-            );
-        }
-    }*/
-
-    /*private ArrayList<ShowCaseObject> getShowCaseObjectListForBuyerSaldo() {
-        ArrayList<ShowCaseObject> showCaseObjects = new ArrayList<>();
-
-        showCaseObjects.add(new ShowCaseObject(
-                withdrawBuyerSaldoTV,
-                getString(R.string.saldo_withdraw_show_case_title),
-                getString(R.string.saldo_withdraw_show_case_desc),
-                ShowCaseContentPosition.BOTTOM,
-                Color.WHITE));
-
-        return showCaseObjects;
-    }
-
-    @SuppressLint("PrivateResource")
-    public ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
-                .finishStringRes(R.string.label_next)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }*/
