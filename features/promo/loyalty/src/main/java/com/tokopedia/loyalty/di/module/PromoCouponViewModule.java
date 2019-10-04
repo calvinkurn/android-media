@@ -50,9 +50,9 @@ public class PromoCouponViewModule {
 
     @Provides
     @LoyaltyScope
-    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor,
                                                        TrainCheckVoucherUseCase trainVoucherUseCase, @ApplicationContext Context context) {
-        return new PromoCouponPresenter(view, promoCouponInteractor, flightCheckVoucherUseCase, trainVoucherUseCase, new UserSession(context));
+        return new PromoCouponPresenter(view, promoCouponInteractor, trainVoucherUseCase, new UserSession(context));
     }
 
 
@@ -62,12 +62,6 @@ public class PromoCouponViewModule {
             return (LoyaltyModuleRouter) context;
         }
         throw new RuntimeException("Applicaton should implement LoyaltyModuleRouter");
-    }
-
-
-    @Provides
-    FlightCheckVoucherUseCase provideFlightCheckVoucherUseCase(LoyaltyModuleRouter loyaltyModuleRouter) {
-        return new FlightCheckVoucherUseCase(loyaltyModuleRouter);
     }
 
 
