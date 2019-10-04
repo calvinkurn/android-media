@@ -146,8 +146,8 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", categoryBreadcrumbs,
                                             "variant", "none/other",
-                                            "position", position),
-                                            "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other")))
+                                            "position", position,
+                                            "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other"))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
