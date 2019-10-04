@@ -31,7 +31,9 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.country.data.FlightCountryListDbSource;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
+import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
+import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
@@ -136,6 +138,12 @@ public class FlightModule {
     }
 
     @FlightScope
+    @Provides
+    public FlightOrderApi provideFlightOrderApi(@FlightQualifier Retrofit retrofit) {
+        return retrofit.create(FlightOrderApi.class);
+    }
+
+    @FlightScope
     @FlightQualifier
     @Provides
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
@@ -218,6 +226,12 @@ public class FlightModule {
     @Provides
     public Resources provideResources(@ApplicationContext Context context) {
         return context.getResources();
+    }
+
+    @FlightScope
+    @Provides
+    public FlightGetOrderUseCase provideFlightGetOrderUseCase(FlightRepository flightRepository) {
+        return new FlightGetOrderUseCase(flightRepository);
     }
 
 }

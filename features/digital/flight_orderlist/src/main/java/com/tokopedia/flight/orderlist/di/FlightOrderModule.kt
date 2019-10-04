@@ -106,7 +106,7 @@ class FlightOrderModule {
 
     @FlightOrderScope
     @Provides
-    fun provideFlightAirportApi(@FlightOrderQualifier retrofit: Retrofit): FlightOrderApi {
+    fun provideFlightOrderApi(@FlightOrderQualifier retrofit: Retrofit): FlightOrderApi {
         return retrofit.create(FlightOrderApi::class.java!!)
     }
 

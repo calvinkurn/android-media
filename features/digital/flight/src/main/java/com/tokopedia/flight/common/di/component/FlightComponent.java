@@ -18,6 +18,7 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
+import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.searchV3.data.db.FlightComboDao;
 import com.tokopedia.flight.searchV3.data.db.FlightJourneyDao;
 import com.tokopedia.flight.searchV3.data.db.FlightRouteDao;
@@ -60,6 +61,8 @@ public interface FlightComponent {
     FlightRouteDao flightRouteDao();
 
     Resources resources();
+
+    FlightGetOrderUseCase flightGetOrderUseCase();
 
     void inject(BaseFlightActivity baseFlightActivity);
 
