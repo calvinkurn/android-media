@@ -79,6 +79,14 @@ class ProfileListFragment :
         }
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.profile_list_recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.profile_list_swipe_refresh_layout
+    }
+
     private fun attachNavigationListener(context: Context) {
         if (context is SearchNavigationListener) {
             this.searchNavigationListener = context
@@ -297,7 +305,7 @@ class ProfileListFragment :
 
     private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileViewModel {
         val emptySearchModel = EmptySearchProfileViewModel()
-        emptySearchModel.imageRes = R.drawable.ic_empty_search
+        emptySearchModel.imageRes = com.tokopedia.design.R.drawable.ic_empty_search
         emptySearchModel.title = getEmptySearchTitle(context, sectionTitle)
         emptySearchModel.content = String.format(context.getString(R.string.empty_search_content_template), query)
         emptySearchModel.buttonText = context.getString(R.string.empty_search_button_text)

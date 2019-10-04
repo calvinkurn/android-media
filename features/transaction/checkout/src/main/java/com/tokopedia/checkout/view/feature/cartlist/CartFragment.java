@@ -116,6 +116,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -175,6 +176,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
+    @Inject
+    CartTrackingDataGenerator cartTrackingDataGenerator;
 
     private CartAdapter cartAdapter;
     private RefreshHandler refreshHandler;
@@ -553,7 +556,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
             if (message == null || message.equals("")) {
-                dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
+                dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
@@ -775,10 +778,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (wishlist.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductWishlistOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
                 } else {
                     sendAnalyticsOnClickProductWishlistOnCartList(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
                 }
             }
             position++;
@@ -795,10 +798,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recentView.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductRecentViewOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
                 } else {
                     sendAnalyticsOnClickProductRecentViewOnCartList(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
                 }
             }
             position++;
@@ -821,8 +824,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (recommendationItemClick != null) {
-                sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
-                        dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+            sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
         }
 
         onProductClicked(productId);
@@ -1431,43 +1434,30 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                            List<CartItemData> cartItemDataList,
                                             boolean checkoutProductEligibleForCashOnDelivery,
                                             int checklistCondition) {
+        Bundle eCommerceBundle = cartTrackingDataGenerator.generateBundleEnhancedEcommerce(cartItemDataList);
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
-                if (checkoutProductEligibleForCashOnDelivery) {
-                    sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(eeCheckoutData);
-                } else {
-                    sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
-                }
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
-                if (checkoutProductEligibleForCashOnDelivery) {
-                    sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(eeCheckoutData);
-                } else {
-                    sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
-                }
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
-                if (checkoutProductEligibleForCashOnDelivery) {
-                    sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(eeCheckoutData);
-                } else {
-                    sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
-                }
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
-                if (checkoutProductEligibleForCashOnDelivery) {
-                    sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(eeCheckoutData);
-                } else {
-                    sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
-                }
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
-                if (checkoutProductEligibleForCashOnDelivery) {
-                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(eeCheckoutData);
-                } else {
-                    sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
-                }
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
+                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
         }
         renderToAddressChoice();
@@ -1871,56 +1861,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckoutDefault(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutCheckAll(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShop(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialProduct(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(eeData);
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(eeData);
-    }
-
-    @Override
     public void sendAnalyticsOnClickBackArrow() {
         cartPageAnalytics.eventClickAtcCartClickArrowBack();
     }
@@ -2018,6 +1958,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         cartPageAnalytics.sendScreenName(getActivity(), screenName);
+        Map<String, String> params = new HashMap<>();
+        params.put("deeplinkUrl", ApplinkConst.CART);
+
+        cartPageAnalytics.sendScreenNameV5(screenName, params);
     }
 
     @Override

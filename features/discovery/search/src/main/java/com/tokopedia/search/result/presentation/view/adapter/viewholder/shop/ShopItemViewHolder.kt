@@ -159,7 +159,7 @@ class ShopItemViewHolder(
     }
 
     private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {
-        return ShopProductItemDecoration(getDimensionPixelSize(R.dimen.dp_8))
+        return ShopProductItemDecoration(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
     }
 
     private fun initShopVoucherLabel(shopViewItem: ShopViewModel.ShopItem) {
@@ -232,15 +232,15 @@ class ShopItemViewHolder(
 
     @DimenRes
     private fun getTextViewShopNameMarginLeft(): Int {
-        return itemView.imageViewShopBadge?.let { if (it.isVisible) R.dimen.dp_2 else R.dimen.dp_8 }
-                ?: R.dimen.dp_8
+        return itemView.imageViewShopBadge?.let { if (it.isVisible) com.tokopedia.design.R.dimen.dp_2 else com.tokopedia.design.R.dimen.dp_8 }
+                ?: com.tokopedia.design.R.dimen.dp_8
     }
 
     private fun setLabelVoucherCashbackMargin() {
         itemView.labelVoucherCashback?.doIfVisible {
             if(itemView.labelVoucherFreeShipping.isNullOrNotVisible) {
-                setViewMargins(it.id, ConstraintSet.LEFT, R.dimen.dp_0)
-                setViewMargins(it.id, ConstraintSet.START, R.dimen.dp_0)
+                setViewMargins(it.id, ConstraintSet.LEFT, com.tokopedia.design.R.dimen.dp_0)
+                setViewMargins(it.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_0)
             }
         }
     }
@@ -258,7 +258,7 @@ class ShopItemViewHolder(
             setViewConstraint(
                     labelVoucherFreeShipping.id, ConstraintSet.TOP,
                     topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    R.dimen.dp_4
+                    com.tokopedia.design.R.dimen.dp_4
             )
         }
 
@@ -266,7 +266,7 @@ class ShopItemViewHolder(
             setViewConstraint(
                     labelVoucherCashback.id, ConstraintSet.TOP,
                     topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    R.dimen.dp_4
+                    com.tokopedia.design.R.dimen.dp_4
             )
         }
     }

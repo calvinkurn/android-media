@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.*
@@ -61,9 +61,9 @@ class SearchShopViewModel(
 
     private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
-            AuthUtil.md5(userSession.userId)
+            AuthHelper.getMD5Hash(userSession.userId)
         else
-            AuthUtil.md5(getRegistrationId())
+            AuthHelper.getMD5Hash(getRegistrationId())
     }
 
     fun getRegistrationId(): String {
@@ -291,7 +291,7 @@ class SearchShopViewModel(
     }
 
     private fun generateParamsNetwork(requestParams: RequestParams): Map<String, String> {
-        return AuthUtil.generateParamsNetwork(
+        return AuthHelper.generateParamsNetwork(
                         userSession.userId,
                         userSession.deviceId,
                         requestParams.paramsAllValueInString)

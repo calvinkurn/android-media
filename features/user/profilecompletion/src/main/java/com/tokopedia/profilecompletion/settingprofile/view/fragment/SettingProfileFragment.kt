@@ -398,7 +398,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         getString(R.string.ticker_phone_verification)
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         goToVerifyPhone()
                     }
 

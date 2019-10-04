@@ -235,7 +235,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (!widgetTokenOnBoarding.hasSeenOnBoardingFromPref()) {
             tooltipHandler = new Handler();
             tooltipHandler.postDelayed(() -> {
-                if(crackLayoutTooltip != null)
+                if (crackLayoutTooltip != null)
                     crackLayoutTooltip.setVisibility(View.GONE);
             }, 4000);
             crackLayoutTooltip.setVisibility(View.VISIBLE);
@@ -246,7 +246,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             tooltipText.setText(spannableString);
         } else {
-            if(tooltipHandler != null)
+            if (tooltipHandler != null)
                 tooltipHandler.removeCallbacksAndMessages(null);
             crackLayoutTooltip.setVisibility(View.GONE);
         }
@@ -332,7 +332,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (crackTokenSuccessHandler != null) {
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
         }
-        if(tooltipHandler != null){
+        if (tooltipHandler != null) {
             tooltipHandler.removeCallbacksAndMessages(null);
         }
         if (crackTokenErrorhandler != null) {
@@ -695,7 +695,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
             if (getContext() != null) {
-                NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                if (crackResult.getResultStatus() != null && crackResult.getResultStatus().getMessage() != null
+                        && !TextUtils.isEmpty(crackResult.getResultStatus().getMessage().get(0))) {
+                    NetworkErrorHelper.showErrorSnackBar(crackResult.getResultStatus().getMessage().get(0), getContext(), rootView, true);
+
+                } else {
+                    NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                }
                 trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
             }
         }

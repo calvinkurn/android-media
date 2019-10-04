@@ -51,7 +51,7 @@ class ShopListFragmentKt:
     private var searchShopViewModel: SearchShopViewModel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_list_search, null)
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

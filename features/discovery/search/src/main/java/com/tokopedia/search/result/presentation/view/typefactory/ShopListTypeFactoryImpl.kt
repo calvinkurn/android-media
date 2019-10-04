@@ -31,15 +31,11 @@ class ShopListTypeFactoryImpl(
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-
-        when (type) {
-            EmptySearchViewHolder.LAYOUT -> viewHolder = EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null)
-            ShopHeaderViewHolder.LAYOUT -> viewHolder = ShopHeaderViewHolder(view, bannerAdsListener)
-            ShopItemViewHolder.LAYOUT -> viewHolder = ShopItemViewHolder(view, shopListener)
-            else -> viewHolder = super.createViewHolder(view, type)
+        return when (type) {
+            EmptySearchViewHolder.LAYOUT -> EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null)
+            ShopHeaderViewHolder.LAYOUT -> ShopHeaderViewHolder(view, bannerAdsListener)
+            ShopItemViewHolder.LAYOUT -> ShopItemViewHolder(view, shopListener)
+            else -> super.createViewHolder(view, type)
         }
-
-        return viewHolder
     }
 }

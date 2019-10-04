@@ -40,7 +40,7 @@ ext {
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.1'
+    playCoreVersion = '1.6.3'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -79,10 +79,10 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.5'
-    unifyComponentsVersion = '0.0.8'
+    unifyComponentsVersion = '0.0.10'
     unifyCoachMarkVersion = '1.0.1'
     unifyCalendarVersion = '0.0.2'
-    unifyBannerVersion = '0.0.5'
+    unifyBannerVersion = '0.0.6'
 
 
     gradlePlugin = [
@@ -276,17 +276,17 @@ ext {
     debugToolsDependencies = [
             stetho      : "com.facebook.stetho:stetho:1.4.2",
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
-            chuck       : "com.github.okasurya.chuck:library:1.0.4-alpha2",
-            chuckNoOp   : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
+            chuck       : "com.readystatesoftware.chuck:library:1.0.4-alpha2@aar",
+            chuckNoOp   : "com.readystatesoftware.chuck:library-no-op:1.0.4-alpha2@aar",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
-            blockCanary : "com.github.okasurya:AndroidPerformanceMonitor:1.4.3",
+            blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
             leakCanary  : "com.squareup.leakcanary:leakcanary-android:2.0-beta-3"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 

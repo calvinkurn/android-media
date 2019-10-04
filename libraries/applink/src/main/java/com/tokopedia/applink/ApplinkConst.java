@@ -69,9 +69,6 @@ public interface ApplinkConst {
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE = "tokopedia://search-autocomplete?navsource={source}";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE = "tokopedia://search-autocomplete?navsource=shoppingnav";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT = "tokopedia://search-autocomplete?navsource={source}&hint={hint}";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
@@ -88,6 +85,7 @@ public interface ApplinkConst {
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
@@ -199,8 +197,8 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
-    String DEPOSIT = "tokopedia://saldo";
-    String SALDO_INTRO = "tokopedia://saldointro";
+    String SALDO = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 

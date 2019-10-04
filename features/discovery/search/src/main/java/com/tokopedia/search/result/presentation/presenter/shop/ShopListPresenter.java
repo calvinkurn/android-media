@@ -1,15 +1,15 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
+import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel;
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel;
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel;
-import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -302,7 +302,7 @@ final class ShopListPresenter
 
     private Map<String, String> generateParamsNetwork(RequestParams requestParams) {
         return new HashMap<>(
-                AuthUtil.generateParamsNetwork(
+                AuthHelper.generateParamsNetwork(
                         userSession.getUserId(),
                         userSession.getDeviceId(),
                         requestParams.getParamsAllValueInString())

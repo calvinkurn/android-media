@@ -126,7 +126,7 @@ class ShopHeaderViewHolder(
 
     @DimenRes
     private fun getTextViewShopCountMarginTop(): Int {
-        return if (isAdsBannerViewVisible()) R.dimen.dp_0 else R.dimen.dp_16
+        return if (isAdsBannerViewVisible()) com.tokopedia.design.R.dimen.dp_0 else com.tokopedia.design.R.dimen.dp_16
     }
 
     private fun isAdsBannerViewVisible(): Boolean {

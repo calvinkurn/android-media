@@ -21,6 +21,7 @@
     <dimen name="tp_margin_xxxlarge">64dp</dimen>
     <dimen name="tp_margin_bottom_membership_and_egg">118dp</dimen>
     <dimen name="tp_margin_bottom_egg">80dp</dimen>
+    <dimen name="tp_margin_top_error_button">42dp</dimen>
 
     <!-- padding values-->
     <dimen name="tp_padding_xxsmall">2dp</dimen>
@@ -38,12 +39,16 @@
     <dimen name="tp_height_bottom_membership_view">52dp</dimen>
     <dimen name="tp_tnc_height">800dp</dimen>
 
-    <dimen name="tp_home_top_bg_height">192dp</dimen>
+    <dimen name="tp_home_top_bg_height">176dp</dimen>
     <dimen name="tp_toolbar_icon_wh">38dp</dimen>
+    <dimen name="tp_toolbar_icon_top_padding">5dp</dimen>
+    <dimen name="tp_toolbar_icon_side_padding">5dp</dimen>
+    <dimen name="tp_top_margin_big_image">62dp</dimen>
 
     <dimen name="tp_coupon_card_xxlarge">280dp</dimen>
     <dimen name="tp_coupon_card_xlarge">260dp</dimen>
     <dimen name="tp_coupon_card_large">240dp</dimen>
     <dimen name="tp_coupon_card_medium">220dp</dimen>
+    <dimen name="fontvs">12sp</dimen>
 
 </resources>

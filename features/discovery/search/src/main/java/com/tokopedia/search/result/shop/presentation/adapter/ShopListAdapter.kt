@@ -21,6 +21,8 @@ open class ShopListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+
+        @Suppress("UNCHECKED_CAST")
         return shopListTypeFactory.createViewHolder(view, viewType) as AbstractViewHolder<Visitable<*>>
     }
 
@@ -29,7 +31,9 @@ open class ShopListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
+        @Suppress("UNCHECKED_CAST")
         val data = list[position] as Visitable<AdapterTypeFactory>
+
         return data.type(shopListTypeFactory as AdapterTypeFactory)
     }
 

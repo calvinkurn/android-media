@@ -115,6 +115,7 @@ class SearchShopViewModelTest : Spek({
             mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
         }
 
+        @Suppress("UNUSED_VARIABLE")
         val searchShopViewModel by memoized {
             SearchShopViewModel(
                     Dispatchers.Unconfined, searchShopParameter,

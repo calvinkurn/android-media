@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
@@ -97,9 +98,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             SeeAllView seeAllView = new SeeAllView();
             seeAllView.setListener(this);
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
-        } else if (applink.equals(AccountConstants.Navigation.TOPADS)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
+        } else if (applink.equals(AccountConstants.Navigation.TOPADS)) {
+            RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
@@ -314,7 +314,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 openApplink(applink);
             } else {
                 userSession.setSaldoIntroPageStatus(true);
-                openApplink(ApplinkConst.SALDO_INTRO);
+                openApplink(ApplinkConstInternalGlobal.SALDO_INTRO);
             }
         } else {
             RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
@@ -324,7 +324,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onDepositClicked(SellerSaldoViewModel element) {
-        openSladoPage(ApplinkConst.DEPOSIT);
+        openSladoPage(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
     }
 
     @Override
@@ -436,9 +436,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onTopAdsMenuClicked() {
-        if (getContext() != null && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).
-                    gotoTopAdsDashboard(getContext());
+        if (getContext() != null) {
+            RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         }
     }
 
