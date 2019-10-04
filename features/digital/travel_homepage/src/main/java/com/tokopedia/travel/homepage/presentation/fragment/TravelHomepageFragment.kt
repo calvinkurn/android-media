@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
@@ -56,7 +57,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         return view
     }
 
-//    override fun getSwipeRefreshLayoutResourceId() = 0
+    //    override fun getSwipeRefreshLayoutResourceId() = 0
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -141,8 +142,13 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
-        if (RouteManager.getIntent(context, appUrl) !=  null) RouteManager.route(context, appUrl)
-        else if (webUrl.isNotEmpty()) RouteManager.route(context, webUrl)
+        context?.run {
+            when {
+                RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
+                DeeplinkMapper.getRegisteredNavigation(this, appUrl) != appUrl -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
+                webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
+            }
+        }
     }
 
     override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
