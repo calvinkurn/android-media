@@ -37,7 +37,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.example.akamai_bot_lib.UtilsKt.getSensorData;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getSensorData;
 
 /**
  * @author ricoharisin .

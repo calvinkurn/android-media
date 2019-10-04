@@ -3,7 +3,7 @@ package com.tokopedia.graphql.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
