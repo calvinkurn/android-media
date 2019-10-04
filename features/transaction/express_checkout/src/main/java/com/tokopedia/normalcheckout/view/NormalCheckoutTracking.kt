@@ -112,7 +112,7 @@ class NormalCheckoutTracking {
                                                   reference: String = "",
                                                   isFreeOngkir: Boolean = false
                                                   ) {
-        val dimension83 = if (isFreeOngkir) "Bebas Ongkir" else "none / other"
+        val dimension83 = if (isFreeOngkir) "bebas Ongkir" else "none / other"
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return

@@ -606,7 +606,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         val dimension83 = productInfo?.freeOngkir?.let {
             if (it.isFreeOngkirActive)
-                "Bebas Ongkir"
+                "bebas Ongkir"
             else
                 "none / other"
         }
