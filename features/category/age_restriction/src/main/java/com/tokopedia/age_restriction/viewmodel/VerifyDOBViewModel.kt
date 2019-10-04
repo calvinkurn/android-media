@@ -45,7 +45,7 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
 
         }
         if (userDOBUpdateResponse.userDobUpdateData.isDobVerified) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 18)
+            if (userDOBUpdateResponse.userDobUpdateData.age > 21)
                 userIsAdult.value = true
             else
                 userNotAdult.value = true

@@ -79,6 +79,7 @@
     <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
     <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
     <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+    <string name="pref_safe_mode" translatable="false">notification_safe_mode</string>
 
     <string name="application_version_fmt">Versi %1$s</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
@@ -170,7 +171,9 @@
     <string name="title_shake_setting">Shake Shake</string>
     <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
     <string name="title_geolocation_setting">Lokasi</string>
+    <string name="title_safe_mode_setting">Safe Mode</string>
     <string name="subtitle_geolocation_setting">Mendeteksi lokasi secara otomatis</string>
+    <string name="subtitle_safe_mode_setting">Saring hasil pencarian sesuai usia</string>
     <string name="account_home_label_logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
@@ -220,6 +223,12 @@
     <string name="account_home_ok_geolocation_alertdialog">OK</string>
     <string name="account_home_batal_geolocation_alertdialog">Batal</string>
 
+    <string name="account_home_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
+    <string name="account_home_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengunna</string>
+    <string name="account_home_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengunna</string>
+    <string name="account_home_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
+    <string name="account_home_safe_mode_selected_dialog_positive_button">Aktifkan</string>
+    <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
 

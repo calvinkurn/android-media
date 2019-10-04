@@ -1,4 +1,4 @@
-package com.tokopedia.tradein_common.viewcontrollers;
+package com.tokopedia.design.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,18 +8,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import com.tokopedia.design.R;
 
-import com.example.tradein_common.R;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.tradein_common.IAccessRequestListener;
-
-
-public class AccessRequestFragment extends DialogFragment {
+public class AccessRequestDialogFragment extends DialogFragment {
 
     public static final String TAG = "ACCESS REQUEST FRAGMENT";
 
@@ -32,9 +29,8 @@ public class AccessRequestFragment extends DialogFragment {
 
     private IAccessRequestListener accessRequestListener;
 
-    public static AccessRequestFragment newInstance() {
-        AccessRequestFragment accessRequestFragment = new AccessRequestFragment();
-        return accessRequestFragment;
+    public static AccessRequestDialogFragment newInstance() {
+        return new AccessRequestDialogFragment();
     }
 
     public void setLayoutResId(int resId) {
@@ -100,8 +96,10 @@ public class AccessRequestFragment extends DialogFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        accessRequestListener = (IAccessRequestListener) activity;
+        if(activity!=null) {
+            super.onAttach(activity);
+            accessRequestListener = (IAccessRequestListener) activity;
+        }
     }
 
     @Override
@@ -113,29 +111,23 @@ public class AccessRequestFragment extends DialogFragment {
         }
     }
 
+    public void onAttachFragment(Fragment fragment) {
+        accessRequestListener = (IAccessRequestListener) fragment;
+    }
+
     public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.button_accept) {
-                sendGeneralEvent("setuju");
                 accessRequestListener.clickAccept();
                 fromClickButtons = true;
                 dismiss();
             } else {
-                sendGeneralEvent("batal");
                 accessRequestListener.clickDeny();
                 fromClickButtons = true;
                 dismiss();
             }
-        }
-
-        private void sendGeneralEvent(String label) {
-            TrackApp trackApp = TrackApp.getInstance();
-            trackApp.getGTM().sendGeneralEvent("clickPDP",
-                    "product detail page",
-                    "click - asking permission trade in",
-                    label);
         }
     }
 }

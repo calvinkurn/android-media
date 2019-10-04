@@ -33,7 +33,7 @@ import com.tokopedia.tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.Constants;
-import com.tokopedia.tradein_common.IAccessRequestListener;
+import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;

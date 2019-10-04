@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -47,7 +49,9 @@ import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
 import com.tokopedia.home.account.presentation.listener.LogoutView;
+import com.tokopedia.home.account.presentation.listener.SettingOptionsView;
 import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
+import com.tokopedia.home.account.presentation.presenter.SettingsPresenter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -58,6 +62,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -65,9 +70,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
@@ -77,6 +79,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
@@ -84,7 +87,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITI
 import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE;
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
-        implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
+        implements LogoutView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
 
     private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
 
@@ -95,6 +98,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     @Inject
     NotifPreference notifPreference;
 
+    private SettingsPresenter settingsPresenter;
     private View loadingView;
     private View baseSettingView;
 
@@ -139,7 +143,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                         .getBaseAppComponent()).build();
         component.inject(this);
         presenter.attachView(this);
-
+        settingsPresenter = new SettingsPresenter(getActivity());
+        settingsPresenter.attachView(this);
         return inflater.inflate(R.layout.fragment_general_setting, container, false);
     }
 
@@ -148,6 +153,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.logout_status);
         baseSettingView = view.findViewById(R.id.setting_layout);
+        settingsPresenter.verifyUserAge();
         adapter.setSwitchSettingListener(this);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
@@ -183,6 +189,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true));
 
+        if(settingsPresenter.getAdultAgeVerified())
+            settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
+                getString(R.string.title_safe_mode_setting),getString(R.string.subtitle_safe_mode_setting), true));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -364,6 +373,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 return isItemSelected(getString(R.string.pref_receive_shake), true);
             case SettingConstant.SETTING_GEOLOCATION_ID:
                 return hasLocationPermission();
+            case SettingConstant.SETTING_SAFE_SEARCH_ID:
+                return isItemSelected(getString(R.string.pref_safe_mode),false);
             default:
                 return false;
         }
@@ -376,6 +387,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 accountAnalytics.eventClickSetting(SHAKE_SHAKE);
                 saveSettingValue(getString(R.string.pref_receive_shake), value);
                 break;
+            case SettingConstant.SETTING_SAFE_SEARCH_ID:
+                accountAnalytics.eventClickSetting(SAFE_MODE);
+                break;
             default:
                 break;
         }
@@ -387,6 +401,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         switch (settingId) {
             case SettingConstant.SETTING_GEOLOCATION_ID:
                 createAndShowLocationAlertDialog(currentValue);
+                break;
+                case SettingConstant.SETTING_SAFE_SEARCH_ID:
+                createAndShowSafeModeAlertDialog(currentValue);
                 break;
         }
     }
@@ -475,5 +492,41 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+    }
+
+    private void createAndShowSafeModeAlertDialog(boolean currentValue) {
+        String dialogTitleMsg = getString(R.string.account_home_safe_mode_selected_dialog_title);
+        String dialogBodyMsg = getString(R.string.account_home_safe_mode_selected_dialog_msg);
+        String dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button);
+        String dialogNegativeButton = getString(R.string.account_home_label_cancel);
+
+        if(currentValue){
+            dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title);
+            dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg);
+            dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button);
+        }
+
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
+        accessDialog.setTitle(dialogTitleMsg);
+        accessDialog.setBodyText(dialogBodyMsg);
+        accessDialog.setPositiveButton(dialogPositiveButton);
+        accessDialog.setNegativeButton(dialogNegativeButton);
+        accessDialog.show(getActivity().getSupportFragmentManager(), AccessRequestDialogFragment.TAG);
+    }
+
+    @Override
+    public void refreshSafeSearchOption(){
+        if(adapter!=null)
+            adapter.updateSettingItem(SettingConstant.SETTING_SAFE_SEARCH_ID);
+    }
+
+    @Override
+    public void refreshSettingOptionsList() {
+        if(adapter!=null)
+            adapter.notifyDataSetChanged();
+    }
+
+    public void onClickAcceptButton() {
+        settingsPresenter.onClickAcceptButton();
     }
 }

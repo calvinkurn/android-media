@@ -77,7 +77,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     private fun processUserDOB(userDOBResponse: UserDOBResponse?) {
         userDOBResponse?.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 18)
+                if (it.isAdult || it.age >= 21)
                     userAdult.value = 1
                 else
                     notAdult.value = 1

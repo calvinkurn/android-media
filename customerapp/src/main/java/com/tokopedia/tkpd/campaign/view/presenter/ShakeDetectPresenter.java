@@ -296,7 +296,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if (SessionHandler.isV4Login(getView().getCurrentActivity())) {
-            getView().getCurrentActivity().startActivity(GeneralSettingActivity.createIntent(getView().getCurrentActivity()));
+            getView().getCurrentActivity().startActivity(GeneralSettingActivity.Companion.createIntent(getView().getCurrentActivity()));
             getView().finish();
         } else {
             getView().makeInvisibleShakeShakeDisableView();

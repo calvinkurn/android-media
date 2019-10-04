@@ -153,7 +153,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         menuNotification = toolbar.findViewById(R.id.action_notification);
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.Companion.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
             accountAnalytics.eventTrackingNotification();

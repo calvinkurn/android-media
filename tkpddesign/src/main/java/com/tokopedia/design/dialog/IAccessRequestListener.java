@@ -1,4 +1,4 @@
-package com.tokopedia.tradein_common;
+package com.tokopedia.design.dialog;
 
 public interface IAccessRequestListener {
     void clickAccept();

@@ -17,7 +17,7 @@ import com.tokopedia.tradein.model.TradeInParams;
 import com.tokopedia.tradein.model.ValidateTradeInResponse;
 import com.tokopedia.tradein.model.ValidateTradePDP;
 import com.tokopedia.tradein.view.customview.TradeInTextView;
-import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -45,12 +45,12 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
             FragmentActivity activity = activityWeakReference.get();
 
-            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+            AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
+            accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
             accessDialog.setBodyText(activity.getString(R.string.tradein_text_permission_description));
             accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access));
             accessDialog.setNegativeButton("");
-            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+            accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
         }
     }
 

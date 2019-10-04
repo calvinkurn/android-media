@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_rect_white_round"
     tools:background="@color/colorPink"
-    tools:context="com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment">
+    tools:context="com.tokopedia.design.dialog.AccessRequestDialogFragment">
 
     <TextView
         android:id="@+id/tv_title_access"

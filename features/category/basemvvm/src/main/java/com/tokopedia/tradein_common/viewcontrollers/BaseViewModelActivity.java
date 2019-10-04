@@ -20,6 +20,7 @@ import com.example.tradein_common.R;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein_common.viewmodel.BaseLifeCycleObserver;
@@ -238,9 +239,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
         accessDialog.setLayoutResId(resId);
-        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
         accessDialog.setPositiveButton(positiveButton);
