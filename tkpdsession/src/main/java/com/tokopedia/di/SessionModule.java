@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-//import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -149,7 +149,7 @@ public class SessionModule {
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)
                 .addInterceptor(chuckInterceptor)
-//                .addInterceptor(new AkamaiBotInterceptor())
+                .addInterceptor(new AkamaiBotInterceptor())
                 .build();
     }
 
