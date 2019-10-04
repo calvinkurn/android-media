@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationChooseReasonFragment;
@@ -42,7 +41,7 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up);
+        overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay, com.tokopedia.common.travel.R.anim.travel_slide_out_up);
     }
 
     @Override

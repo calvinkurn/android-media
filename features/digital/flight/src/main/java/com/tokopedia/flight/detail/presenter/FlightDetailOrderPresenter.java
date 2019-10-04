@@ -351,7 +351,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private void generateStatus(int status, String statusString) {
         switch (status) {
             case FlightStatusOrderType.EXPIRED:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, true);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, true);
                 break;
             case FlightStatusOrderType.CONFIRMED:
                 getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
@@ -373,13 +373,13 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_PAYMENT:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
                 getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_TRANSFER:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
                 break;
             default:
                 break;

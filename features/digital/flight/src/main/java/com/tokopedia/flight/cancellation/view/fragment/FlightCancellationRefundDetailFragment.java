@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
@@ -188,7 +187,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
         int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
         int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(

@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.component.EditTextCompat;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -169,7 +168,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 startActivityForResult(FlightCancellationChooseReasonActivity.createIntent(getContext(), selectedReason),
                         CHOOSE_REASON_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
+                getActivity().overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in, com.tokopedia.common.travel.R.anim.travel_anim_stay);
             }
         });
 

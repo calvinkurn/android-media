@@ -24,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightInsuranceBenefitAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceBenefitViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
@@ -187,7 +186,7 @@ public class FlightInsuranceView extends LinearLayout {
 
     @NonNull
     private SpannableStringBuilder setMoreInfoToBold(String tncAggreement, String tncUrl, String title) {
-        final int color = getResources().getColor(R.color.green_300);
+        final int color = getResources().getColor(com.tokopedia.design.R.color.green_300);
         String fullText = String.format("%s. ", tncAggreement);
         if (tncUrl != null && tncUrl.length() > 0) {
             fullText += getContext().getString(com.tokopedia.flight.R.string.flight_insurance_learn_more_label);

@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationRefundDetailFragment;
@@ -66,7 +65,7 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
 
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500));
         String title = getString(com.tokopedia.flight.R.string.activity_label_flight_cancellation);
         String subtitle = String.format(
                 getString(com.tokopedia.flight.R.string.flight_cancellation_subtitle_order_id),
