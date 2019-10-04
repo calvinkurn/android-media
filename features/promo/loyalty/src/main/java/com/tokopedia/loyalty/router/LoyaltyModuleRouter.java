@@ -8,13 +8,9 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.List;
-
 import rx.Observable;
 
 public interface LoyaltyModuleRouter {
-
-    Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon);
 
     Observable<VoucherViewModel> checkTrainVoucher(String reservationId, String reservationCode, String galaCode);
 

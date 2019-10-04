@@ -149,13 +149,9 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
-import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -2074,25 +2070,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
         return null;
-    }
-
-    @Override
-    public Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon) {
-        FlightRepository flightRepository = FlightComponentInstance.getFlightComponent(this).flightRepository();
-        FlightCheckVoucherCodeUseCase checkVoucherCodeUseCase = new FlightCheckVoucherCodeUseCase(flightRepository);
-        return checkVoucherCodeUseCase.createObservable(checkVoucherCodeUseCase.createRequestParams(cartId, voucherCode, isCoupon))
-                .map(new Func1<AttributesVoucher, VoucherViewModel>() {
-                    @Override
-                    public VoucherViewModel call(AttributesVoucher attributesVoucher) {
-                        VoucherViewModel voucherViewModel = new VoucherViewModel();
-                        voucherViewModel.setCode(attributesVoucher.getVoucherCode());
-                        voucherViewModel.setMessage(attributesVoucher.getMessage());
-                        voucherViewModel.setRawDiscount((long) attributesVoucher.getDiscountAmountPlain());
-                        voucherViewModel.setRawCashback((long) attributesVoucher.getCashbackAmountPlain());
-                        voucherViewModel.setSuccess(true);
-                        return voucherViewModel;
-                    }
-                });
     }
 
     @Override
