@@ -13,11 +13,14 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
 
@@ -29,7 +32,7 @@ project.ext {
     artifactId = 'image-preview-slider'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="libraryimagepreviewslider-release"
+    artifactName ="imagepreviewslider-release"
 }
 
 apply from: '../../../publish_local.gradle'

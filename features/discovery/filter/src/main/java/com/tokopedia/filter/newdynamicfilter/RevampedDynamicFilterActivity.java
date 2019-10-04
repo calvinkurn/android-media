@@ -385,4 +385,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     public boolean getFilterViewState(String uniqueId) {
         return filterController.getFilterViewState(uniqueId);
     }
+
+    @Override
+    public void onPriceRangeClicked() {
+
+    }
 }
