@@ -56,13 +56,7 @@ import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
@@ -780,13 +774,17 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void goToAddBank() {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_BANK);
+        Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtras(bundle);
         startActivityForResult(intent, BANK_INTENT);
     }
 
     @Override
     public void goToSettingBank() {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
+        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtras(bundle);
         startActivityForResult(intent, BANK_SETTING_INTENT);
     }
 
@@ -817,19 +815,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         switch (requestCode) {
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
-
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();
+                    presenter.refreshBankList();
+                    Toaster.Companion.showNormal(mainView, getString(R.string.swd_bank_added_success), Snackbar.LENGTH_LONG);
                 }
                 break;
             case BANK_SETTING_INTENT:
@@ -858,13 +845,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
                     }
 
-                }
-                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
-                    getActivity().finish();
-                }
-                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
-                    getActivity().finish();
-                    RouteManager.route(getContext(), ApplinkConst.HOME, "");
                 }
                 break;
             default:

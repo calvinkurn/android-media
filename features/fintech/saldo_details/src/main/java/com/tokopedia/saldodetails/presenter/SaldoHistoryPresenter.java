@@ -259,9 +259,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         getView().setActionsEnabled(true);
                         if (getView().getAdapter() != null &&
                                 getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                 }
@@ -336,9 +336,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
         } else {
             if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
-                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
             } else {
-                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
             }
 
         }
@@ -372,7 +372,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             param.setStartDate(getDateParam(sdf_ws.format(formattedStart)));
             param.setEndDate(getDateParam(sdf_ws.format(formattedEnd)));
         } catch (ParseException e) {
-            getView().showErrorMessage(getView().getString(R.string.sp_error_invalid_date));
+            getView().showErrorMessage(getView().getString(com.tokopedia.saldodetails.R.string.sp_error_invalid_date));
         }
 
         param.setPage(paging.getPage());
@@ -390,7 +390,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             param.setStartDate(getDateParam(sdf_ws.format(formattedStart)));
             param.setEndDate(getDateParam(sdf_ws.format(formattedEnd)));
         } catch (ParseException e) {
-            getView().showErrorMessage(getView().getString(R.string.sp_error_invalid_date));
+            getView().showErrorMessage(getView().getString(com.tokopedia.saldodetails.R.string.sp_error_invalid_date));
         }
 
         param.setPage(page);
@@ -408,16 +408,16 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             Date startDate = sdf.parse(paramStartDate);
             if (endDate.getTime() - startDate.getTime() < 0) {
                 isValid = false;
-                getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
+                getView().showInvalidDateError(getView().getString(com.tokopedia.saldodetails.R.string.sp_error_invalid_date));
             }
 
             if ((endDate.getTime() - startDate.getTime()) / SEC_TO_DAY_CONVERSION >= MAX_DAYS_DIFFERENCE) {
                 isValid = false;
-                getView().showInvalidDateError(getView().getString(R.string.sp_title_max_day));
+                getView().showInvalidDateError(getView().getString(com.tokopedia.saldodetails.R.string.sp_title_max_day));
             }
         } catch (ParseException e) {
             isValid = false;
-            getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
+            getView().showInvalidDateError(getView().getString(com.tokopedia.saldodetails.R.string.sp_error_invalid_date));
         }
         return isValid;
     }
@@ -469,9 +469,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         getView().setActionsEnabled(true);
                         if (getView().getAdapter() != null &&
                                 getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                 }
@@ -519,9 +519,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
             }
         } else {
             if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
-                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
             } else {
-                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
             }
         }
         finishLoading();
@@ -565,9 +565,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         getView().setActionsEnabled(true);
                         if (getView().getAdapter() != null &&
                                 getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                 }
@@ -614,9 +614,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         }
                     } else {
                         if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                     finishLoading();
@@ -667,9 +667,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         getView().setActionsEnabled(true);
                         if (getView().getAdapter() != null &&
                                 getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                 }
@@ -717,9 +717,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                         }
                     } else {
                         if (getView().getAdapter() != null && getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+                            getView().showEmptyState(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                            getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                         }
                     }
                     finishLoading();
