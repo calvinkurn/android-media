@@ -46,6 +46,8 @@ abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
         fun onChangeSingleGrid()
 
         fun onListItemImpressionEvent(item:Visitable<Any>,position:Int)
+
+        fun wishListEnabledTracker(wishListTrackerUrl: String)
     }
 
 }
