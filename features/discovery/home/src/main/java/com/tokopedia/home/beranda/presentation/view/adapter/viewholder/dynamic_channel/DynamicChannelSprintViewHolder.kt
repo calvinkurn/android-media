@@ -58,7 +58,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
         val backgroundThematic: ImageView = itemView.findViewById(R.id.background_thematic)
-        val title: Typography = itemView.findViewById(R.id.channel_title)
         val seeAllButton: UnifyButton = itemView.findViewById(R.id.see_all_button_unify)
         val seeAllButtonText: TextView = itemView.findViewById(R.id.see_all_button)
 
@@ -75,10 +74,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     .load(channel.header.backImage)
                     .override(200, 200)
                     .into(backgroundThematic);
-            title.setTextColor(
-                    if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                    else ContextCompat.getColor(title.context, R.color.white)
-            )
         }else {
             seeAllButton.hide()
             seeAllButtonText.show()
