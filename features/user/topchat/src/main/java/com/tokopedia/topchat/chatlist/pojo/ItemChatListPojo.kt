@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 
 /**
  * @author : Steven 2019-08-08
@@ -23,4 +24,13 @@ data class ItemChatListPojo(
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun hasUnreadItem(): Boolean {
+        attributes?.let {
+            return it.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+        }
+        return false
+    }
+
+    fun ids() = listOf(msgId)
 }

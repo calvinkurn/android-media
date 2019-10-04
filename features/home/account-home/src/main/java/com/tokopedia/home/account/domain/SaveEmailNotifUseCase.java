@@ -4,12 +4,12 @@ import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.SettingEditResponse;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -58,7 +58,7 @@ public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
             param.put(key, String.valueOf(bodyParams.get(key)));
         }
 
-        return AuthUtil.generateParamsNetwork(userSession.getUserId(),
+        return AuthHelper.generateParamsNetwork(userSession.getUserId(),
                 userSession.getDeviceId(), param);
     }
 }

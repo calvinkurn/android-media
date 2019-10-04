@@ -18,6 +18,9 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -38,6 +41,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -199,5 +204,18 @@ public class FeedPlusModule {
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GraphqlRepository provideGraphQlRepository(@ApplicationContext Context context) {
+        GraphqlClient.init(context);
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @Provides
+    @FeedPlusScope
+    CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
     }
 }

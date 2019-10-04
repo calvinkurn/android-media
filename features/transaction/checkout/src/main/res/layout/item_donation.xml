@@ -15,9 +15,11 @@
         android:id="@+id/cb_donation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-5dp"
-        android:layout_marginBottom="-5dp"
-        android:theme="@style/TransactionCheckbox" />
+        android:layout_marginLeft="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_4"
+        android:button="@drawable/ic_cart_check_box" />
 
     <TextView
         android:id="@+id/tv_donation_title"
