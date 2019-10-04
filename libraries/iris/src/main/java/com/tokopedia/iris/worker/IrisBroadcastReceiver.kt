@@ -14,16 +14,16 @@ import rx.schedulers.Schedulers
 class IrisBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Observable.just(true)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map {
-                    if (context != null) {
-                        val i = Intent(context, IrisService::class.java)
-                        val maxRow = intent?.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
-                        i.putExtra(MAX_ROW, maxRow)
-                        IrisService.enqueueWork(context, i)
-                    }
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .map {
+                if (context != null) {
+                    val i = Intent(context, IrisService::class.java)
+                    val maxRow = intent?.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
+                    i.putExtra(MAX_ROW, maxRow)
+                    IrisService.enqueueWork(context, i)
                 }
-                .subscribe({}, {})
+            }
+            .subscribe({}, {})
     }
 }

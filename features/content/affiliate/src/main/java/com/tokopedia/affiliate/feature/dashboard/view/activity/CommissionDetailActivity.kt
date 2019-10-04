@@ -13,12 +13,10 @@ import com.tokopedia.affiliate.feature.dashboard.view.fragment.CommissionDetailF
 class CommissionDetailActivity: BaseSimpleActivity() {
 
     companion object {
-        const val PARAM_AFF_ID = "AFF_ID"
-
         @JvmStatic
-        fun newInstance(context: Context, bundle: Bundle): Intent {
+        fun newInstance(context: Context, affPostId: String): Intent {
             val intent = Intent(context, CommissionDetailActivity::class.java)
-            intent.putExtras(bundle)
+            intent.putExtra(CommissionDetailFragment.PARAM_AFF_ID, affPostId)
             return intent
         }
     }
