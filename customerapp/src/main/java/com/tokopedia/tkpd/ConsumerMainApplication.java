@@ -76,7 +76,7 @@ import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
 
-import static com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager;
+import static com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
