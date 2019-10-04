@@ -52,7 +52,7 @@ import com.tokopedia.shop.search.widget.share.ShopShareData
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_search_product.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -85,6 +85,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     @Inject
     lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
 
     private lateinit var viewModel: ShopSearchProductViewModel
 
@@ -225,7 +228,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val userSession = UserSession(context)
         if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
             menu.removeItem(R.id.action_cart)
         } else if (userSession.isLoggedIn) {
@@ -329,7 +331,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
         val listData: MutableList<ShopSearchProductDataModel> = arrayListOf()
-        universeSearchResponse.universeSearch.data[0].items.forEach {
+        universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
             listData.add(ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
                     it.keyword,
@@ -424,8 +426,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun initToolbar() {
         activity?.run {
-            (this as AppCompatActivity).setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (this as? AppCompatActivity)?.run {
+                setSupportActionBar(toolbar)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            }
         }
     }
 
