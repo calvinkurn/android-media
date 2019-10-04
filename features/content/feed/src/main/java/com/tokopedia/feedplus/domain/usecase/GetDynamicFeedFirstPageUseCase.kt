@@ -71,7 +71,9 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
         @JvmOverloads
         fun createRequestParams(userId: String, cursor: String = "", source: String,
                                 isLogin: Boolean = true): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(userId, cursor, source)
+            val requestParams = GetDynamicFeedUseCase.createRequestParams(
+                    userId= userId, cursor =  cursor, source = source
+            )
             requestParams.putBoolean(PARAM_IS_LOGIN, isLogin)
             return requestParams
         }

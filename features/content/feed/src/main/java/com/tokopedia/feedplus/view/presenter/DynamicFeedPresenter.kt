@@ -33,7 +33,10 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 .setSessionIncluded(true)
                 .build())
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -58,7 +61,10 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
 
     override fun getFeed() {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -137,6 +143,6 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
     }
 
     private fun getUserId(): String {
-        return if (userSession.isLoggedIn()) userSession.getUserId() else NON_LOGIN_USER_ID
+        return if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
     }
 }

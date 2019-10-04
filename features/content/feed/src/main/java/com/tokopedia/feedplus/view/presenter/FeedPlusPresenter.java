@@ -377,7 +377,9 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor,
+                GetDynamicFeedUseCase.Companion.createRequestParams(
+                        getUserId(),
+                        currentCursor,
                         GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
