@@ -719,7 +719,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
+                        freeOngkir.isFreeOngkirActive)
             }
             activity?.run {
                 if (isOcs) {
