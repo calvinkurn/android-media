@@ -14,7 +14,7 @@
     <color name="promo_checkout_bottom_separator_color">#f3f4f5</color>
     <color name="promo_checkout_mid_separator_color">#f3f4f5</color>
     <color name="promo_checkout_top_separator_color">#fef4f5</color>
-    <color name="promo_popup_negative_button_rounded_corner">#DBDEB0</color>
+    <color name="promo_popup_negative_button_rounded_corner">#dbdee2</color>
     <color name="promo_gradient_centercolor">#11111111</color>
     <color name="promo_gradient_endcolor">#00222222</color>
     <color name="promo_gradient_startcolor">#44000000</color>
