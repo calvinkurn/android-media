@@ -20,6 +20,8 @@ class NormalCheckoutTracking {
         const val SELECT_SIZE_VARIANT = "select size on variants page"
         const val NONE_OTHER = "none / other"
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
+        private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        private const val VALUE_NONE_OTHER = "none / other"
     }
 
     private var isTrackTradeIn = false
@@ -112,7 +114,7 @@ class NormalCheckoutTracking {
                                                   reference: String = "",
                                                   isFreeOngkir: Boolean = false
                                                   ) {
-        val dimension83 = if (isFreeOngkir) "Bebas Ongkir" else "none / other"
+        val dimension83 = if (isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -182,7 +184,7 @@ class NormalCheckoutTracking {
             trackerAttribution: String?,
             multiOrigin: Boolean,
             isFreeOngkir: Boolean) {
-        val dimension83 = if(isFreeOngkir) "Bebas Ongkir" else "none / other"
+        val dimension83 = if(isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
