@@ -111,9 +111,9 @@
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_item_count_and_weight"
-            android:layout_width="wrap_content"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fl_shipping_properties_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_policy"
             android:layout_marginStart="@dimen/dp_10"
@@ -122,26 +122,37 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler"
-            tools:text="2 barang (3 kg)" />
+            app:flexWrap="wrap">
 
-        <ImageView
-            android:id="@+id/img_free_shipping"
-            android:layout_width="67dp"
-            android:layout_height="@dimen/dp_20"
-            android:scaleType="fitCenter"
-            android:layout_below="@+id/layout_policy"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_toRightOf="@+id/tv_item_count_and_weight"
-            tools:src="@drawable/checkout_module_ic_close_corner_red" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:id="@+id/tv_item_count_and_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_policy"
+                android:layout_toEndOf="@id/iv_product_card"
+                android:layout_toRightOf="@id/iv_product_card"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="10000 barang (1000 kg)" />
+
+            <ImageView
+                android:id="@+id/img_free_shipping"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_20"
+                android:layout_below="@+id/layout_policy"
+                android:layout_toRightOf="@+id/tv_item_count_and_weight"
+                android:scaleType="fitStart"
+                tools:src="@color/unify_G500" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_item_count_and_weight"
+            android:layout_below="@id/fl_shipping_properties_container"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toEndOf="@id/iv_product_card"

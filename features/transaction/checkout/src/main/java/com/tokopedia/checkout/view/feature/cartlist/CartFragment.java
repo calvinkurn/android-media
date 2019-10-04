@@ -106,6 +106,7 @@ import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.user.session.UserSession;
@@ -1325,6 +1326,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartAdapter.checkForShipmentForm();
                 onCartNotEmpty();
                 cartPageAnalytics.eventViewCartListFinishRender();
+                List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
+                cartPageAnalytics.enhancedECommerceCartLoadedStep0(
+                        dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+                );
             }
 
             if (recentViewList == null) {

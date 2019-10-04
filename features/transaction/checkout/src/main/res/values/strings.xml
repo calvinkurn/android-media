@@ -317,8 +317,13 @@
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="product_invenage_remaining_stock">$less_than_count</string>
     <string name="product_invenage_in_other_cart">$pita_by_user_count</string>
+    <string name="label_free_shipping">Bebas Ongkir</string>
 
     <string name="label_toko">Toko: </string>
 
     <string name="ticker_action_link" formatted="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="label_total_cashback">Total Cashback</string>
+    <string name="label_total_discount">Total Diskon</string>
+    <string name="label_shipping_discount">Total Potongan Ongkos Kirim</string>
+    <string name="label_product_discount">Total Diskon Barang</string>
 </resources>

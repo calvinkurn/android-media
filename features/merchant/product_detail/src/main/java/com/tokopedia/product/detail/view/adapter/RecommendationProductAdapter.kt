@@ -16,6 +16,7 @@ import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationProductAdapter(private var recommendationWidget: RecommendationWidget,
                                    private val userActiveListener: UserActiveListener,
@@ -34,7 +35,7 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
         holder.bind(recommendationWidget.recommendationItemList[position])
     }
 
-    inner class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
+    inner class RecommendationProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val productCardView: ProductCardViewSmallGrid? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {
@@ -68,11 +69,17 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                 )
                 setImageProductViewHintListener(product, object : ViewHintListener {
                     override fun onViewHint() {
+                        if (product.isTopAds) {
+                            ImpresionTask().execute(product.trackerImageUrl)
+                        }
                         productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
                     }
                 })
 
                 setOnClickListener {
+                    if (product.isTopAds) {
+                        ImpresionTask().execute(product.clickUrl)
+                    }
                     productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
                     context?.run {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString())
@@ -80,22 +87,6 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                 }
             }
         }
-
-        override fun onImpressionTopAds(item: RecommendationItem) {
-        }
-
-        override fun onImpressionOrganic(item: RecommendationItem) {
-
-        }
-
-        override fun onClickTopAds(item: RecommendationItem) {
-
-        }
-
-        override fun onClickOrganic(item: RecommendationItem) {
-
-        }
-
     }
 
     interface UserActiveListener{

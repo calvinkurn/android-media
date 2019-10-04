@@ -2,9 +2,9 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/image_view_free_ongkir"
-    android:layout_width="@dimen/dp_100"
-    android:layout_height="@dimen/dp_18"
-    android:background="@color/tkpd_green_header"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:scaleType="fitXY"
+    android:adjustViewBounds="true"
     android:visibility="gone"
     tools:visibility="visible" />

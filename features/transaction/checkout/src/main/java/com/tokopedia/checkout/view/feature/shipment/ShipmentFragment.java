@@ -1448,7 +1448,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void showBottomSheetTotalBenefit() {
         if (getFragmentManager() != null && getBenefitSummaryInfoUiModel() != null) {
             TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
-            bottomSheet.setBenefit(getBenefitSummaryInfoUiModel());
             bottomSheet.show(getFragmentManager(), null);
         }
     }
@@ -2188,6 +2187,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                     setBenefitSummaryInfoUiModel(null);
+                    if (!stillHasAppliedPromo()) {
+                        resetPromoBenefit();
+                    }
                     shipmentAdapter.clearTotalPromoStackAmount();
                     shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateCheckoutButtonData(null);
@@ -2640,6 +2642,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (!stillHasAppliedPromo()) {
             clearPromoTrackingData();
+            resetPromoBenefit();
         }
 
         shipmentAdapter.clearTotalPromoStackAmount();
@@ -2648,6 +2651,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
         shipmentPresenter.setCouponStateChanged(true);
+    }
+
+    @Override
+    public void onSuccessClearPromoLogistic() {
+        if (!stillHasAppliedPromo()) {
+            clearPromoTrackingData();
+            resetPromoBenefit();
+        }
     }
 
     @Override

@@ -84,15 +84,15 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 gatewayId = data.gatewayId,
                 isCoupon = data.isCoupon,
                 trackingDetailUiModel = mapTrackingDetails(data.trackingDetail),
-                tickerInfoUiModel = mapTickerInfo(data.freeOngkir)
+                tickerInfoUiModel = mapTickerInfo(data.tickerInfo)
         )
     }
 
-    private fun mapTickerInfo(freeOngkir: FreeOngkir): TickerInfoUiModel {
+    private fun mapTickerInfo(tickerInfo: TickerInfo): TickerInfoUiModel {
         return TickerInfoUiModel(
-                tickerMessage = freeOngkir.tickerMessage,
-                errorCode = freeOngkir.errorCode,
-                errorMessage = freeOngkir.errorMessage
+                message = tickerInfo.message,
+                statusCode = tickerInfo.statusCode,
+                uniqueId = tickerInfo.uniqueId
         )
     }
 
@@ -157,16 +157,18 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
         )
     }
 
-    private fun mapSummaryBenefitDetails(details: List<Detail>): ArrayList<DetailUiModel> {
+    private fun mapSummaryBenefitDetails(details: List<Detail>?): ArrayList<DetailUiModel> {
         val listDetails = ArrayList<DetailUiModel>()
-        details.forEach {
-            val detailUiModel = DetailUiModel(
-                    description = it.description,
-                    amount = it.amount,
-                    amountStr = it.amountStr,
-                    type = it.type
-            )
-            listDetails.add(detailUiModel)
+        details?.apply {
+            this.forEach {
+                val detailUiModel = DetailUiModel(
+                        description = it.description,
+                        amount = it.amount,
+                        amountStr = it.amountStr,
+                        type = it.type
+                )
+                listDetails.add(detailUiModel)
+            }
         }
 
         return listDetails
