@@ -36,6 +36,7 @@ import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import rx.Subscriber;
@@ -314,7 +315,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
     public void onClickLocationDate(LocationDateModel model, int index) {
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
-        mView.setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
+        mView.setLocationDate(model.getmLocation(), model.getDate().toString(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
             selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
@@ -322,7 +323,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
     private void generateLocationDateModels() {
         locationDateModels = new ArrayList<>();
-
+        locationDateModels.clear();
         List<SchedulesViewModel> schedulesViewModelList = new ArrayList<>();
         if (dataModel != null) {
             schedulesViewModelList = dataModel.getSchedulesViewModels();
@@ -330,10 +331,8 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
                 for (SchedulesViewModel viewModel : schedulesViewModelList) {
                     LocationDateModel model = new LocationDateModel();
                     model.setmLocation(viewModel.getCityName());
-                    if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                        model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
-                    else
-                        model.setDate("");
+                    if (dataModel.getCustomText1() == 16384)
+                        model.setDate(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(viewModel.getStartDate()));
                     locationDateModels.add(model);
                 }
             }

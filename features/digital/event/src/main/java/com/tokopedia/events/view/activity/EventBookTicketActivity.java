@@ -15,15 +15,18 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.customview.SelectEventDateBottomSheet;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
-import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
+
+import java.util.List;
 
 public class EventBookTicketActivity
         extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView, View.OnClickListener {
@@ -47,7 +50,6 @@ public class EventBookTicketActivity
     private String title;
     EventsAnalytics eventsAnalytics;
 
-    private LocationDateBottomSheetFragment locationFragment;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
 
@@ -182,8 +184,6 @@ public class EventBookTicketActivity
             tvDate.setVisibility(View.GONE);
         }
         setFragmentData(datas);
-        if (locationFragment != null)
-            locationFragment.dismiss();
     }
 
     private void setFragmentData(SchedulesViewModel schedulesViewModel) {
@@ -210,11 +210,8 @@ public class EventBookTicketActivity
     @Override
     public void onBackPressed() {
         mPresenter.onBackPressed();
-        if (locationFragment != null && locationFragment.isVisible())
-            super.onBackPressed();
-        else
-            finish();
         eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        finish();
     }
 
     @Override
@@ -239,12 +236,13 @@ public class EventBookTicketActivity
         if (v.getId() == R.id.pay_tickets) {
             bookTicketPresenter.payTicketsClick(title);
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
-            if (locationFragment == null)
-                locationFragment = new LocationDateBottomSheetFragment();
-
-            locationFragment.setData(bookTicketPresenter.getLocationDateModels());
-            locationFragment.setPresenter(bookTicketPresenter);
-            locationFragment.show(getSupportFragmentManager(), "bottomsheetfragment");
+            if (bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
+                openCalender(bookTicketPresenter.getLocationDateModels());
         }
+    }
+
+    public void openCalender(List<LocationDateModel> models) {
+        SelectEventDateBottomSheet selectEventDateBottomSheet = SelectEventDateBottomSheet.Companion.getInstance(models);
+        selectEventDateBottomSheet.show(getSupportFragmentManager(), "");
     }
 }
