@@ -369,7 +369,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "userId", userId,
                 "shopId", getShopID(),
                 "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
-                "dimension83", isFreeOngkirActive() ? "Bebas Ongkir" : "none / other"
+                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other"
         );
     }
 
