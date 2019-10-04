@@ -7,5 +7,9 @@ interface ChatListContract {
     interface Activity {
         fun notifyViewCreated()
         fun loadNotificationCounter()
+        fun increaseUserNotificationCounter()
+        fun increaseSellerNotificationCounter()
+        fun decreaseUserNotificationCounter()
+        fun decreaseSellerNotificationCounter()
     }
 }

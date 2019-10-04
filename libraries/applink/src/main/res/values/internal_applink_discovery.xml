@@ -2,7 +2,6 @@
 <resources>
 
     <string name="host_discovery" translatable="false">discovery</string>
-    <string name="autocomplete_global_applink" translatable="false">search-autocomplete</string>
 
     <string name="path_filter" translatable="false">/filter</string>
     <string name="path_sort" translatable="false">/sort</string>
