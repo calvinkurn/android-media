@@ -372,10 +372,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onRefresh() {
         newFeed.visibility = View.GONE
         feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
@@ -430,7 +426,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         parentFragment?.let {
             (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
         }
-        swipe_refresh_layout.setEnabled(true);
+        swipe_refresh_layout.isEnabled = true
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -1609,11 +1605,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             parentFragment?.let {
                 (it as FeedPlusContainerFragment).hideAllFab(true)
             }
-            swipe_refresh_layout.setRefreshing(false);
-            swipe_refresh_layout.setEnabled(false);
+            swipe_refresh_layout.isRefreshing = false
+            swipe_refresh_layout.isEnabled = false
         }
     }
-
 
     private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
         context?.let {
@@ -1842,10 +1837,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
-    }
-
-    override fun getUserVisibleHint(): Boolean {
-        return super.getUserVisibleHint()
     }
 
     companion object {
