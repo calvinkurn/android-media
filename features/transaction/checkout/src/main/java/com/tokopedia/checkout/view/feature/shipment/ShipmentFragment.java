@@ -2742,6 +2742,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             log.setCode(voucherOrdersItemUiModel.getCode());
                             log.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
                             log.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemUiModel.getDiscountAmount()));
+                            log.setCouponAmountRaw(voucherOrdersItemUiModel.getDiscountAmount());
                             log.setMessage(voucherOrdersItemUiModel.getMessage());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
                         }
