@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -15,6 +13,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
+import com.tokopedia.feedplus.FeedPlusConstantKt;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
@@ -41,8 +40,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID;
 
 /**
  * @author by nisie on 5/15/17.
@@ -292,7 +289,7 @@ public class FeedPlusPresenter
     }
 
     private String getUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : NON_LOGIN_USER_ID;
+        return userSession.isLoggedIn() ? userSession.getUserId() : FeedPlusConstantKt.NON_LOGIN_USER_ID;
     }
 
     private void getFirstPageFeed() {

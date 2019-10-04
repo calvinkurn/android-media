@@ -110,6 +110,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
