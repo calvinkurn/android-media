@@ -47,12 +47,6 @@ public class GqlSubmitWithdrawUseCase {
     private static final String VALIDATE_TOKEN = "validateToken";
     private static final String PROGRAM = "program";
 
-    /*private static final String PARAM_USER_ID = "user_id";
-    private static final String PARAM_DEVICE_ID = "device_id";
-    private static final String PARAM_HASH = "hash";
-    private static final String PARAM_OS_TYPE = "os_type";
-    private static final String PARAM_TIMESTAMP = "device_time";*/
-
 
     @Inject
     public GqlSubmitWithdrawUseCase() {
@@ -79,8 +73,6 @@ public class GqlSubmitWithdrawUseCase {
 
     public void setRequestParams(String email, int withdrawal
             , BankAccount bankAccount, String password, boolean isSellerWithdrawal, String userId, String programName) {
-        //todo lalit
-//        HashMap<String, Object> params = new HashMap<>();
         params.put(PARAM_ACTION_USER, "user");
         params.put(PARAM_DEVICE_TYPE, MOBILE_DEVICE);
         params.put(EMAIL, email);
@@ -96,11 +88,6 @@ public class GqlSubmitWithdrawUseCase {
         params.put(MASTER_ID, "");
         params.put(VALIDATE_TOKEN, "");
         params.put(PROGRAM, programName);
-        /*params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));*/
-
 
         params.put(PARAM_BANK_ACC_NAME, bankAccount.getAccountName());
         params.put(PARAM_BANK_ACC_NUMBER, bankAccount.getAccountNo());

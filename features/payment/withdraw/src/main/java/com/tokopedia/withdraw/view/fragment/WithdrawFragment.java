@@ -121,7 +121,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private boolean isSeller = false;
     private boolean sellerWithdrawal;
     private TextView saldoTitleTV;
-    // private CardView saldoTypeCV;
     private TextView saldoValueTV;
     private TextView saldoWithdrawHintTV;
     private static final String IS_WITHDRAW_LOCK = "is_lock";
