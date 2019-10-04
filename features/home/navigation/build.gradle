@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterDetailAdapter
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterDetailOfferingAdapter
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 
 import java.util.ArrayList
 
@@ -23,7 +24,7 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
                             isSearchable: Boolean,
                             searchHint: String,
                             isUsingTracking: Boolean,
-                            trackingPrefix: String) {
+                            trackingData: FilterTrackingData) {
 
             if (activity != null) {
                 val intent = Intent(activity, DynamicFilterOfferingActivity::class.java)
@@ -32,7 +33,7 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_SEARCHABLE, isSearchable)
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_SEARCH_HINT, searchHint)
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING, isUsingTracking)
-                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix)
+                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_TRACKING_DATA, trackingData)
                 activity.startActivityForResult(intent, AbstractDynamicFilterDetailActivity.REQUEST_CODE)
             }
         }

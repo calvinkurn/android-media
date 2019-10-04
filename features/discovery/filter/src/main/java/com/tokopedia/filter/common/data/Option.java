@@ -20,6 +20,7 @@ public final class Option implements Parcelable {
     public static final String KEY_CATEGORY = "sc";
     public static final String KEY_OFFICIAL = "official";
     public static final String KEY_RATING = "rt";
+    public static final String KEY_ANNOTATION_ID = "annotation_id";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
@@ -80,6 +81,10 @@ public final class Option implements Parcelable {
     List<LevelTwoCategory> levelTwoCategoryList;
 
     String inputState = "";
+
+    public boolean isAnnotation() {
+        return Option.KEY_ANNOTATION_ID.equals(getKey());
+    }
 
     public boolean isCategoryOption() {
         return Option.KEY_CATEGORY.equals(getKey());
