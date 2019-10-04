@@ -9,7 +9,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -77,7 +76,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     protected TextView skipButton;
     protected TextView phoneNumberEditText;
     protected TextView requestOtpButton;
-    protected LinearLayout phoneContainer;
 
     private TextWatcher phoneTextWatcher = new TextWatcher() {
         @Override
@@ -169,7 +167,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         skipButton = view.findViewById(R.id.skip_button);
         phoneNumberEditText = view.findViewById(R.id.phone_number);
         requestOtpButton = view.findViewById(R.id.send_otp);
-        phoneContainer = view.findViewById(R.id.phone_container);
     }
 
     @Override
@@ -185,7 +182,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         if (phoneNumber != null && "".equalsIgnoreCase(phoneNumber.trim())) {
             phoneNumberEditText.setText(phoneNumber);
         }
-        phoneContainer.setOnClickListener(v -> moveToChangePhoneNumberPage());
+        phoneNumberEditText.setOnClickListener(v -> moveToChangePhoneNumberPage());
     }
 
     @Override
