@@ -16,7 +16,6 @@ import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -75,12 +74,6 @@ public class ProductManageModule {
                                                                 BulkUpdateProductUseCase bulkUpdateProductUseCase) {
         return new ProductManagePresenterImpl(getShopInfoUseCase, editPriceProductUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
                 setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
-    }
-
-    @Provides
-    @ProductManageScope
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     @Provides

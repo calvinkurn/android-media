@@ -27,10 +27,6 @@ public class GMCommonCloudDataSource {
         this.gmCommonApi = gmCommonApi;
     }
 
-    public Observable<Response<DataResponse<List<GMFeaturedProduct>>>> getFeaturedProductList(String shopId) {
-        return gmCommonApi.getFeaturedProductList(shopId);
-    }
-
     public Observable<Response<DataResponse<String>>> setCashback(RequestCashbackModel requestCashbackModel) {
         return gmCommonApi.setCashback(requestCashbackModel);
     }
