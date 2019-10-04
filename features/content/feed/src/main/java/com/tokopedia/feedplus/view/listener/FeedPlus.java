@@ -149,13 +149,11 @@ public interface FeedPlus {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void fetchFirstPage();
+        void fetchFirstPage(String firstPageCursor);
 
         void fetchNextPage();
 
         void favoriteShop(final Data promotedShopViewModel, final int adapterPosition);
-
-        void refreshPage();
 
         void setCursor(String cursor);
 

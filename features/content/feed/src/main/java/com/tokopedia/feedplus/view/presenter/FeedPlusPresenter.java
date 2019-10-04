@@ -103,8 +103,8 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void fetchFirstPage() {
-        getFirstPageFeed();
+    public void fetchFirstPage(String firstPageCursor) {
+        getFirstPageFeed(firstPageCursor);
     }
 
     @Override
@@ -172,11 +172,6 @@ public class FeedPlusPresenter
     @Override
     public void setCursor(String cursor) {
         this.currentCursor = cursor;
-    }
-
-    @Override
-    public void refreshPage() {
-        getFirstPageFeed();
     }
 
     @Override
@@ -292,14 +287,16 @@ public class FeedPlusPresenter
         return userSession.isLoggedIn() ? userSession.getUserId() : FeedPlusConstantKt.NON_LOGIN_USER_ID;
     }
 
-    private void getFirstPageFeed() {
+    private void getFirstPageFeed(String firstPageCursor) {
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
 
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "",
-                        GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(
+                        getUserId(), "",
+                        GetDynamicFeedUseCase.SOURCE_FEEDS, firstPageCursor,
+                        userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -359,10 +356,6 @@ public class FeedPlusPresenter
                     }
                 }
         );
-    }
-
-    private void addWhitelistData(List<Visitable<?>> postList, WhitelistDomain whitelistDomain) {
-        postList.add(0, new WhitelistViewModel(whitelistDomain));
     }
 
     private boolean hasFeed(DynamicFeedDomainModel model) {

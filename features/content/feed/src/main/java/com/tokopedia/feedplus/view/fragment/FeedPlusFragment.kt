@@ -250,7 +250,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             hideAdapterLoading()
             when (it) {
                 is Success -> onSuccessGetOnboardingData(it.data)
-                is Fail -> presenter.fetchFirstPage()
+                is Fail -> fetchFirstPage()
             }
         })
 
@@ -479,7 +479,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         finishLoading()
         if (adapter.itemCount == 0) {
             NetworkErrorHelper.showEmptyState(activity, mainContent, errorMessage
-            ) { presenter.refreshPage() }
+            ) { fetchFirstPage() }
         } else {
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         }
@@ -1592,9 +1592,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
     }
 
+    private fun fetchFirstPage() {
+        presenter.fetchFirstPage(getFirstPageCursor())
+    }
+
+    private fun getFirstPageCursor(): String {
+        context?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
+        }
+        return ""
+    }
+
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
         if (!data.isEnableOnboarding) {
-            presenter.fetchFirstPage()
+            fetchFirstPage()
         } else {
             finishLoading()
             clearData()
