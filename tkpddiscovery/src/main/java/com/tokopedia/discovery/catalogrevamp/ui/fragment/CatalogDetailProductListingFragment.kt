@@ -554,4 +554,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
     }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+    }
 }

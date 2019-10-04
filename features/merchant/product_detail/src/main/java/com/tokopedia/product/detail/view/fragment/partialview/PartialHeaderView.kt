@@ -101,7 +101,7 @@ class PartialHeaderView private constructor(private val view: View,
             if (campaign.isActive) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         campaign.discountedPrice.getCurrencyFormatted())
-
+                text_title_discount_timer.text =  data.campaign.name
                 if (campaign.hideGimmick) {
                     text_original_price.visibility = View.GONE
                     text_discount.visibility = View.GONE
