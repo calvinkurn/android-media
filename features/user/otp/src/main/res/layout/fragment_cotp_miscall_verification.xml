@@ -28,13 +28,14 @@
       android:orientation="vertical">
       
       <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/cotp_verify_icon"
         android:layout_width="@dimen/verification_icon"
         android:layout_height="@dimen/verification_icon"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_30" />
   
       <TextView
+        android:id="@+id/cotp_verify_text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -59,6 +60,7 @@
         android:orientation="horizontal">
         
         <TextView
+          android:id="@+id/cotp_verify_text_phone_hint"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_gravity="center_horizontal"
@@ -69,7 +71,7 @@
           android:textSize="@dimen/sp_20" />
         
         <com.tokopedia.otp.common.design.PinInputEditText
-          android:id="@+id/input_otp"
+          android:id="@+id/cotp_verify_text_title_input_otp"
           android:layout_width="@dimen/dp_0"
           android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/dp_8"
@@ -93,7 +95,7 @@
       </LinearLayout>
       
       <TextView
-        android:id="@+id/error_otp"
+        android:id="@+id/cotp_verify_text_title_error_otp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -116,7 +118,7 @@
         tools:visibility="visible">
         
         <TextView
-          android:id="@+id/resend"
+          android:id="@+id/cotp_verify_text_title_resend"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
@@ -131,8 +133,8 @@
           android:id="@+id/or"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_toEndOf="@+id/resend"
-          android:layout_toRightOf="@+id/resend"
+          android:layout_toEndOf="@+id/cotp_verify_text_title_resend"
+          android:layout_toRightOf="@+id/cotp_verify_text_title_resend"
           android:fontFamily="sans-serif"
           android:lineSpacingExtra="@dimen/sp_6"
           android:paddingTop="@dimen/dp_5"
@@ -143,7 +145,7 @@
           android:textStyle="normal" />
         
         <TextView
-          android:id="@+id/use_other_method"
+          android:id="@+id/cotp_verify_text_title_use_other_method"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_toEndOf="@+id/or"
@@ -181,28 +183,28 @@
   
   </ScrollView>
   
-  <com.tokopedia.unifycomponents.CardUnify
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="@dimen/dp_1"
+    android:background="@drawable/card_shadow_top"
     app:layout_constraintBottom_toBottomOf="parent">
   
     <com.tokopedia.unifycomponents.UnifyButton
-      android:id="@+id/verify_button"
+      android:id="@+id/cotp_verify_button"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/dp_44"
-      android:layout_marginStart="@dimen/dp_16"
-      android:layout_marginTop="@dimen/dp_8"
-      android:layout_marginEnd="@dimen/dp_16"
-      android:layout_marginBottom="@dimen/dp_8"
+      android:layout_height="@dimen/dp_40"
       android:background="@drawable/grey_button_otp"
       android:fontFamily="sans-serif"
       android:gravity="center"
       android:text="@string/button_verify"
       android:textColor="@color/grey_500"
-      android:textSize="@dimen/sp_13"
-      android:textStyle="bold" />
+      android:textSize="@dimen/sp_14"
+      android:textStyle="bold"
+      android:layout_marginStart="@dimen/dp_16"
+      android:layout_marginTop="@dimen/dp_16"
+      android:layout_marginEnd="@dimen/dp_16"
+      android:layout_marginBottom="@dimen/dp_16"/>
 
-  </com.tokopedia.unifycomponents.CardUnify>
+  </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

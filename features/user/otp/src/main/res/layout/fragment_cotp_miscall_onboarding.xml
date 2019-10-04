@@ -73,7 +73,6 @@
           android:lineHeight="@dimen/sp_20"
           android:textColor="@color/grey_550"
           android:textSize="@dimen/sp_14" />
-  
       </LinearLayout>
   
       <LinearLayout
@@ -114,21 +113,23 @@
     android:id="@+id/emptyCardContentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_shadow_top"
-    android:elevation="@dimen/dp_1"
     app:layout_constraintBottom_toBottomOf="parent">
   
     <com.tokopedia.unifycomponents.UnifyButton
       android:id="@+id/call_me"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/dp_40"
+      android:textColor="@color/grey_500"
+      android:fontFamily="sans-serif"
+      android:textSize="@dimen/sp_14"
+      android:textStyle="bold"
+      android:text="@string/cotp_miscall_send_call"
       android:layout_marginStart="@dimen/dp_16"
       android:layout_marginLeft="@dimen/dp_16"
       android:layout_marginTop="@dimen/dp_16"
       android:layout_marginEnd="@dimen/dp_16"
       android:layout_marginRight="@dimen/dp_16"
-      android:layout_marginBottom="@dimen/dp_16"
-      android:text="@string/cotp_miscall_send_call" />
+      android:layout_marginBottom="@dimen/dp_16" />
 
   </FrameLayout>
 
