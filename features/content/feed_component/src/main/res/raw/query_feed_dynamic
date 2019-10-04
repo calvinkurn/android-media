@@ -471,6 +471,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
     meta {
       totalData
       lastCursor
+      firstPageCursor
       hasNextPage
       linkSelf
     }
