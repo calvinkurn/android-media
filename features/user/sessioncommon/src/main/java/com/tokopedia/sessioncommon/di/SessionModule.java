@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
