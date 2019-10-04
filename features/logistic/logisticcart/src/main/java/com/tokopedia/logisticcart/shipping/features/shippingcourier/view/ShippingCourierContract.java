@@ -22,10 +22,6 @@ public interface ShippingCourierContract {
         void showLoading();
 
         void hideLoading();
-
-        void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList);
-
-        Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -36,10 +32,6 @@ public interface ShippingCourierContract {
         CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel);
 
         void updateSelectedCourier(ShippingCourierViewModel shippingCourierViewModel);
-
-        void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
-
-        RecipientAddressModel getRecipientAddressModel();
     }
 
 }

@@ -11,7 +11,6 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRODUCT_VIEW
@@ -860,6 +859,42 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_APPLY_LEASING,
+                "$productId - $isVariant"
+        )
+    }
+    
+    fun eventViewHelpPopUpWhenAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickReportOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickCloseOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -889,7 +924,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CATEGORY = "category"
         private const val LIST_DEFAULT = "/product - "
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc - "
+        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc"
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }

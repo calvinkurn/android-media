@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
  * Created by hangnadi on 10/3/17.

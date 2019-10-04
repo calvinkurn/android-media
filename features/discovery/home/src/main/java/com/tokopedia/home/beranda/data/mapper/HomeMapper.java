@@ -14,8 +14,20 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
 import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
+
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.SearchPlaceholderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
@@ -37,7 +49,7 @@ import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
  * Created by henrypriyono on 26/01/18.
  */
 
-public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<TrackedVisitable>> {
+public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<HomeVisitable>> {
     private final Context context;
 
     public HomeMapper(Context context) {
@@ -45,9 +57,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     @Override
-    public List<TrackedVisitable> call(Response<GraphqlResponse<HomeData>> response) {
+    public List<HomeVisitable> call(Response<GraphqlResponse<HomeData>> response) {
         if (response.isSuccessful()) {
-            List<TrackedVisitable> list = new ArrayList<>();
+            List<HomeVisitable> list = new ArrayList<>();
 
             HomeData homeData = response.body().getData();
 
@@ -97,7 +109,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 channel.setPosition(position);
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
                                 homeData.getSpotlight().setPromoName(String.format("/ - p%s - spotlight banner", String.valueOf(position)));
-                                homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
                                 homeData.getSpotlight().setChannelId(channel.getId());
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
@@ -155,7 +166,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             case DynamicHomeChannel.Channels.LAYOUT_SPRINT:
                                 list.add(mappingDynamicChannel(
                                         channel,
-                                        channel.getEnhanceImpressionSprintSaleHomePage(),
+                                        null,
                                         null,
                                         false,
                                         homeData.isCache()));
@@ -212,7 +223,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         }
     }
 
-    private TrackedVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {
+    private HomeVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {
         DigitalsViewModel digitalsViewModel = new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0);
         if (!isCache) {
             digitalsViewModel.setTrackingCombined(true);
@@ -221,7 +232,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return digitalsViewModel;
     }
 
-    private TrackedVisitable mappingDynamicTopAds(DynamicHomeChannel.Channels channel, boolean isCache) {
+    private HomeVisitable mappingDynamicTopAds(DynamicHomeChannel.Channels channel, boolean isCache) {
         TopAdsDynamicChannelModel visitable = new TopAdsDynamicChannelModel();
         List<Item> items = new ArrayList<>();
         for (int i = 0; i < channel.getGrids().length; i++) {
@@ -248,19 +259,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return visitable;
     }
 
-    private TrackedVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
+    private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
         TickerViewModel viewModel = new TickerViewModel();
         viewModel.setTickers(tickers);
         return viewModel;
     }
 
-    private TrackedVisitable mappingSearchPlaceholder(SearchPlaceholder placeholder){
+    private HomeVisitable mappingSearchPlaceholder(SearchPlaceholder placeholder){
         SearchPlaceholderViewModel viewModel = new SearchPlaceholderViewModel();
         viewModel.setSearchPlaceholder(placeholder);
         return viewModel;
     }
 
-    private TrackedVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
+    private HomeVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
         BannerViewModel viewModel = new BannerViewModel();
         viewModel.setSlides(slides);
         if (!isCache) {
@@ -291,7 +302,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         }
     }
 
-    private TrackedVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
+    private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
         UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
         for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
             viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
@@ -299,7 +310,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModel;
     }
 
-    private TrackedVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
+    private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
                                                 Map<String, Object> trackingData,
                                                 boolean isCache) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
@@ -313,7 +324,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModelDynamicIcon;
     }
 
-    private TrackedVisitable mappingDynamicChannel(DynamicHomeChannel.Channels channel,
+    private HomeVisitable mappingDynamicChannel(DynamicHomeChannel.Channels channel,
                                                    Map<String, Object> trackingData,
                                                    List<Object> trackingDataForCombination,
                                                    boolean isCombined,
@@ -334,7 +345,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModel;
     }
 
-    private TrackedVisitable mappingSpotlight(Spotlight spotlight, boolean isCache) {
+    private HomeVisitable mappingSpotlight(Spotlight spotlight, boolean isCache) {
         List<SpotlightItemViewModel> spotlightItems = new ArrayList<>();
 
         for (SpotlightItem spotlightItem : spotlight.getSpotlights()) {
@@ -355,7 +366,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     ));
         }
 
-        SpotlightViewModel viewModel = new SpotlightViewModel(spotlightItems);
+        SpotlightViewModel viewModel = new SpotlightViewModel(spotlightItems, spotlight.getChannelId());
         if (!isCache) {
             viewModel.setTrackingData(spotlight.getEnhanceImpressionSpotlightHomePage());
             viewModel.setTrackingCombined(false);

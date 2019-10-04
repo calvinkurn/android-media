@@ -37,7 +37,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;

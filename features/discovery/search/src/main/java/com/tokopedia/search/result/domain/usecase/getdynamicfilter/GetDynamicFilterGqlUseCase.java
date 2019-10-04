@@ -39,6 +39,7 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
 
         graphqlRequest.setVariables(variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
         return graphqlUseCase

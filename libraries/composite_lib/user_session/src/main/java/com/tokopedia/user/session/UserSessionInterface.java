@@ -80,6 +80,14 @@ public interface UserSessionInterface {
      */
     String getLoginMethod();
 
+    @Nullable
+    String getTwitterAccessToken();
+
+    @Nullable
+    String getTwitterAccessTokenSecret();
+
+    boolean getTwitterShouldPost();
+
     /**
      * SETTER METHOD
      */
@@ -153,5 +161,9 @@ public interface UserSessionInterface {
     void setAutofillUserData(String autofillUserData);
 
     void setLoginMethod(@NotNull String loginMethod);
+
+    void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
+
+    void setTwitterShouldPost(boolean shouldPost);
 
 }

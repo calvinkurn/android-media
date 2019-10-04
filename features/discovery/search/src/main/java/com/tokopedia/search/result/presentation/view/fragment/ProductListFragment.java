@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -20,17 +21,14 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
-import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -40,6 +38,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchEventTracking;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -58,7 +58,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
-import com.tokopedia.search.similarsearch.SimilarSearchManager;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -76,6 +76,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -137,11 +138,10 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
-        
+
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
 
@@ -162,7 +162,6 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            setFragmentPosition(getArguments().getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -190,12 +189,11 @@ public class ProductListFragment
         presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
 
-        return inflater.inflate(R.layout.search_fragment_base_discovery, null);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, null);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
@@ -204,6 +202,11 @@ public class ProductListFragment
         if (getUserVisibleHint()) {
             setupSearchNavigation();
         }
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT);
     }
 
     @Override
@@ -267,7 +270,6 @@ public class ProductListFragment
     }
 
     private void setupListener() {
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
@@ -300,6 +302,7 @@ public class ProductListFragment
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
         if(getSearchParameter() != null) {
+            getSearchParameter().cleanUpNullValuesInMap();
             adsParams.getParam().putAll(getSearchParameter().getSearchParameterHashMap());
         }
 
@@ -335,10 +338,7 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-
-        if (similarSearchManager.isSimilarSearchEnable()){
-            startShowCase();
-        }
+        startShowCase();
     }
 
     private void stopSearchResultPagePerformanceMonitoring() {
@@ -436,8 +436,6 @@ public class ProductListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
-
         isFirstTimeLoad = true;
         reloadData();
     }
@@ -539,7 +537,7 @@ public class ProductListFragment
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
         if(similarSearchManager == null || getSearchParameter() == null) return;
 
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item.getProductID());
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
@@ -613,9 +611,9 @@ public class ProductListFragment
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
 
-        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
-        applyFilterToSearchParameter(parameterFromFilter);
-        setSelectedFilter(new HashMap<>(parameterFromFilter));
+        Map<String, String> queryParams = quickFilterController.getParameter();
+        refreshSearchParameter(queryParams);
+        refreshFilterController(new HashMap<>(queryParams));
 
         clearDataFilterSort();
         reloadData();
@@ -754,7 +752,7 @@ public class ProductListFragment
 
     @Override
     public Map<String, String> getAdditionalParamsMap() {
-        return NetworkParamHelper.getParamMap(additionalParams);
+        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -841,7 +839,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
-        redirectionListener.onProductLoadingFinished();
+        removeSearchPageLoading();
         adapter.removeLoading();
     }
 
@@ -979,7 +977,7 @@ public class ProductListFragment
         if (getActivity() == null) {
             return false;
         }
-        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+        return !ShowCasePreference.hasShown(getActivity(), tag);
     }
 
     private ShowCaseDialog createShowCaseDialog() {
@@ -1017,13 +1015,9 @@ public class ProductListFragment
 
         if (getActivity() == null) return;
 
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        intent.putExtras(extras);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -1076,6 +1070,55 @@ public class ProductListFragment
     private void finishActivity() {
         if(getActivity() != null) {
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (getView() == null) return;
+
+        if (isFullScreenMessage) {
+            showFullScreenErrorMessage(getView(), errorMessage);
+        }
+        else {
+            showSnackbarErroMessage(errorMessage);
+        }
+    }
+
+    private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
+        View relativeLayoutErrorMessageContainer  = rootView.findViewById(R.id.relativeLayoutErrorMessageContainer);
+
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
+
+            TextView textViewErrorMessage = relativeLayoutErrorMessageContainer.findViewById(R.id.custom_text_view_empty_content_text);
+
+            if (textViewErrorMessage != null) {
+                textViewErrorMessage.setText(errorMessage);
+            }
+
+            View actionButton  = rootView.findViewById(R.id.custom_button_add_promo);
+            actionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSearchInputView();
+                }
+            });
+        }
+    }
+
+    private void showSnackbarErroMessage(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void hideErrorMessage() {
+        if (getView() == null) return;
+
+        View relativeLayoutErrorMessageContainer  = getView().findViewById(R.id.relativeLayoutErrorMessageContainer);
+
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
         }
     }
 }

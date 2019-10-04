@@ -22,6 +22,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetInitialLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
@@ -75,6 +76,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
+    private GetInitialLocationUseCase getInitialLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
     private ArrayList<CategoryItem> categoryItems;
@@ -84,7 +86,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private WrapContentHeightViewPager mTouchViewPager;
     private RequestParams searchNextParams = RequestParams.create();
     private Subscription subscription;
-    private HashMap<String, Object> params = new HashMap<>();
+    RequestParams params = RequestParams.create();
     private UserSessionInterface userSession;
     private DealsAnalytics dealsAnalytics;
     private boolean isTopLocations = true;
@@ -95,12 +97,13 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
         this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
+        this.getInitialLocationUseCase = getInitialLocationUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -119,6 +122,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (getCategoryDetailRequestUseCase != null) {
             getCategoryDetailRequestUseCase.unsubscribe();
+        }
+        if (getInitialLocationUseCase != null) {
+            getInitialLocationUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -175,13 +181,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (productItem == null)
             return;
-
-//        if (!productItem.isTrack()) {
-//            sendEventEcommerce(productItem.getId(), currentPage, productItem.getDisplayName(), DealsAnalytics.EVENT_PROMO_VIEW
-//                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
-//            productItem.setTrack(true);
-//
-//        }
     }
 
     @Override
@@ -199,7 +198,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
-            getLocations(false);
+            getView().startLocationFragment();
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
@@ -241,11 +240,11 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (getView() == null) {
             return;
         }
-        if (showProgressBar)
+        if (showProgressBar) {
             getView().showProgressBar();
-        params.putAll(getView().getParams().getParameters());
-        params.putAll(getView().getBrandParams().getParameters());
-        getDealsListRequestUseCase.setRequestParams(params);
+            params.putAll(getView().getParams().getParameters());
+            getDealsListRequestUseCase.setRequestParams(params);
+        }
         getDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -296,13 +295,51 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
                 processSearchResponse(dealsResponse);
                 isDealsLoaded = true;
-
+                getView().hideProgressBar();
                 getView().renderTopDeals(getCarouselOrTop(categoryItems, TOP));
                 getView().renderCarousels(getCarouselOrTop(categoryItems, CAROUSEL));
 
                 getView().renderCategoryList(getCategories(dealsResponse.getCategoryItems()), categoriesModels);
                 getView().renderCuratedDealsList(getCuratedDeals(dealsResponse.getCategoryItems(), TOP));
+            }
+        });
+    }
 
+
+    public void getBrandsHome() {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putAll(getView().getBrandParams().getParameters());
+        getAllBrandsUseCase.setRequestParams(params);
+        getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() == null) {
+                    return;
+                }
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getBrandsHome();
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
 
@@ -516,30 +553,19 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         dealsAnalytics.sendEventDealsDigitalView(action, label);
     }
 
-    public void getLocations(boolean isForFirstime) {
-        if (getView() == null) {
-            return;
-        }
-        getSearchLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
-        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+    public void getLocations() {
+        RequestParams params = RequestParams.create();
+        params.putInt("id", Utils.LOCATION_ID);
+        getInitialLocationUseCase.setRequestParams(params);
+        getInitialLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+
             }
 
             @Override
             public void onError(Throwable e) {
-                if (getView() == null) {
-                    return;
-                }
-                CommonUtils.dumper("enter error");
-                e.printStackTrace();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getLocations(false);
-                    }
-                });
+
             }
 
             @Override
@@ -552,8 +578,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
-                mTopLocations = locationResponse.getLocations();
-                getView().startLocationFragment(mTopLocations, isForFirstime);
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().updateInitialLocation(locationResponse.getLocations());
+                }
             }
         });
     }

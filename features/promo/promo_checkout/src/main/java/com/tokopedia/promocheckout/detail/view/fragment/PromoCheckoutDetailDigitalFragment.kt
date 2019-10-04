@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
@@ -24,12 +25,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     @Inject
     lateinit var promoCheckoutDetailDigitalPresenter: PromoCheckoutDetailDigitalPresenter
 
-    @Inject
-    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
     lateinit var promoDigitalModel: PromoDigitalModel
-    var pageTracking: Int = 1
-    lateinit var progressDialog: ProgressDialog
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +59,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickCancel() {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
-        }
+        super.onClickCancel()
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
@@ -75,36 +67,13 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         activity?.finish()
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
-        }
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    override fun onErrorValidatePromo(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromo(e)
-    }
-
-    override fun onErrorValidatePromoStacking(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromoStacking(e)
     }
 
     override fun hideProgressLoading() {

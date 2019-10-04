@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
+import com.tokopedia.search.utils.ListHelper;
 
 import java.util.ArrayList;
 import java.util.List;

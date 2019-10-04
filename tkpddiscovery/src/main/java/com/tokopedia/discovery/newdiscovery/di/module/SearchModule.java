@@ -8,8 +8,8 @@ import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
+import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -21,7 +21,7 @@ import dagger.Provides;
  * Created by henrypriyono on 10/10/17.
  */
 
-@SearchScope
+@DiscoveryScope
 @Module(includes = {
         ProductModule.class,
         ImageSearchModule.class,
@@ -32,26 +32,26 @@ import dagger.Provides;
 })
 public class SearchModule {
 
-    @SearchScope
+    @DiscoveryScope
     @Provides
     ImageProductListPresenter provideImageProductListPresenter(@ApplicationContext Context context) {
         return new ImageProductListPresenterImpl(context);
     }
 
-    @SearchScope
+    @DiscoveryScope
     @Provides
     AutoCompletePresenter provideAutoCompletePresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         return new AutoCompletePresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
-    @SearchScope
+    @DiscoveryScope
     @Provides
-    SearchTracking provideSearchTracking(@ApplicationContext Context context,
-                                         UserSessionInterface userSessionInterface) {
-        return new SearchTracking(context, userSessionInterface);
+    DiscoveryTracking provideSearchTracking(@ApplicationContext Context context,
+                                            UserSessionInterface userSessionInterface) {
+        return new DiscoveryTracking(context, userSessionInterface);
     }
 
-    @SearchScope
+    @DiscoveryScope
     @Provides
     PermissionCheckerHelper providePermissionCheckerHelper() {
         return new PermissionCheckerHelper();

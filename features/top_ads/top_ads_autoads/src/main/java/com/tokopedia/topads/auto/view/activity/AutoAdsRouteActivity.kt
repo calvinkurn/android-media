@@ -109,18 +109,4 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         }
     }
 
-//    object DeepLinkIntents {
-//        @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
-//        @JvmStatic
-//        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-//            if (GlobalConfig.isSellerApp()) {
-//                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-//                return getCallingIntent(context)
-//                        .setData(uri.build())
-//                        .putExtras(extras)
-//            } else {
-//                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
-//            }
-//        }
-//    }
 }

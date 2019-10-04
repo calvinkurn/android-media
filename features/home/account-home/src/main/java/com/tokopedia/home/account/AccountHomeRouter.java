@@ -23,8 +23,6 @@ public interface AccountHomeRouter {
 
     void goToManageShopProduct(Context context);
 
-    Intent getSettingBankIntent(Context context);
-
     void goToManageCreditCard(Context context);
 
     void goToTokoCash(String applinkUrl, Activity activity);

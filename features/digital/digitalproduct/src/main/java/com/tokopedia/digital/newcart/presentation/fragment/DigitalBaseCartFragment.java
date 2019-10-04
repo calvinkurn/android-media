@@ -34,7 +34,6 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
@@ -73,7 +72,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected DigitalCartCheckoutHolderView checkoutHolderView;
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
-    private boolean isAlreadyShowPostPaidPopUp;
     private boolean traceStop;
     private PerformanceMonitoring performanceMonitoring;
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
@@ -233,7 +231,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
-        startActivityForResult(intent, ConstantKt.getREQUST_CODE_LIST_PROMO());
+        startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
@@ -261,7 +259,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
-                requestCode = ConstantKt.getREQUST_CODE_LIST_PROMO();
+                requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
                 intent.putExtra("EXTRA_IS_USE", true);
@@ -292,7 +290,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == ConstantKt.getREQUST_CODE_LIST_PROMO() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == ConstantKt.getREQUST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 // Check between apply promo code or cancel promo from promo detail
@@ -323,7 +321,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
                                 .showAppFeedbackRatingDialog(
-                                        manager, () -> {
+                                        manager,
+                                        getContext(),
+                                        () -> {
                                             if (getActivity() != null) {
                                                 getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                                 closeView();
@@ -458,21 +458,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public boolean isAlreadyShowPostPaid() {
-        return isAlreadyShowPostPaidPopUp;
-    }
-
-    @Override
     public void showPostPaidDialog(String title,
                                    String content,
-                                   String confirmButtonTitle,
-                                   String userId) {
-        isAlreadyShowPostPaidPopUp = true;
+                                   String confirmButtonTitle) {
         DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
                 getActivity(),
-                Dialog.Type.RETORIC,
-                DigitalPostPaidLocalCache.newInstance(getActivity()),
-                userId
+                Dialog.Type.RETORIC
         );
         dialog.setTitle(title);
         dialog.setDesc(MethodChecker.fromHtml(content));

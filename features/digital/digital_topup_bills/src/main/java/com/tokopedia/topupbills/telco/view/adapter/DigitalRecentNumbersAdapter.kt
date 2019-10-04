@@ -54,7 +54,7 @@ class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TelcoRecommenda
         fun bind(telcoRecommendation: TelcoRecommendation) {
             this.telcoRecommendation = telcoRecommendation
             ImageHandler.loadImageWithoutPlaceholder(iconOperator, telcoRecommendation.iconUrl,
-                    ContextCompat.getDrawable(itemView.context, R.drawable.status_no_result)
+                    ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
             if (telcoRecommendation.description.isEmpty()) {
                 textClientNumber.text = telcoRecommendation.clientNumber

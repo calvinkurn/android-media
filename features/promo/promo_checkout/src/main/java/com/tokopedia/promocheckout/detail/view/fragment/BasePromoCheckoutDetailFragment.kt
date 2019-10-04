@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,9 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -28,12 +32,24 @@ import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
 
+    @Inject
+    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
+
     var isLoadingFinished = false
     var codeCoupon = ""
+    var pageTracking: Int = 1
     open var isUse = false
+
+    lateinit var progressDialog: ProgressDialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
@@ -44,31 +60,52 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadData()
+        validateViewLoading()
         validateButton()
         buttonUse.setOnClickListener { onClickUse() }
+        buttonCancel.setOnClickListener { onClickCancel() }
         timerUsage = TimerPromoCheckout()
     }
 
     protected fun validateButton() {
         if (isUse) {
+            buttonCancel.visibility = View.VISIBLE
             buttonUse.visibility = View.GONE
         } else {
+            buttonCancel.visibility = View.GONE
             buttonUse.visibility = View.VISIBLE
         }
     }
 
     abstract fun onClickUse()
-    abstract fun onClickCancel()
+
+    protected open fun onClickCancel() {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
+        }
+    }
 
     protected open fun loadData() {
         isLoadingFinished = false
+    }
+
+    protected fun validateViewLoading() {
+        if (isLoadingFinished) {
+            mainView.visibility = View.VISIBLE
+            progressBarLoading.visibility = View.GONE
+        } else {
+            mainView.visibility = View.GONE
+            progressBarLoading.visibility = View.VISIBLE
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
         promoCheckoutDetailModel.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-            view?.titlePeriod?.text = promoCheckoutDetailModel.usage.text
+            view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
             view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
             if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
@@ -87,14 +124,14 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             }
             textTitlePromo?.text = it.title
             hideTimerView()
-            if ((it.usage.activeCountDown ?: 0 > 0 &&
-                            it.usage.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setActiveTimerUsage(it.usage.activeCountDown?.toLong() ?: 0)
-            } else if ((it.usage.expiredCountDown ?: 0 > 0 &&
-                            it.usage.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setExpiryTimerUsage(it.usage.expiredCountDown?.toLong() ?: 0)
+            if ((it.usage?.activeCountDown ?: 0 > 0 &&
+                            it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
+            } else if ((it.usage?.expiredCountDown ?: 0 > 0 &&
+                            it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
             }
-            view?.textPeriod?.text = it.usage.usageStr
+            view?.textPeriod?.text = it.usage?.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
             enableOrDisableViews(it)
@@ -117,8 +154,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun enableOrDisableViews(item: PromoCheckoutDetailModel) {
-
-       if (item.usage.activeCountDown > 0 || item.usage.expiredCountDown <= 0) {
+        if (item.usage?.activeCountDown!! > 0 || item.usage?.expiredCountDown!! <= 0) {
             disableViews()
         } else {
             enableViews()
@@ -127,8 +163,8 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
 
     private fun disableViews() {
-        imageMinTrans?.setImageResource(R.drawable.ic_promo_rp_grey)
-        imagePeriod?.setImageResource(R.drawable.ic_promo_time)
+        imageMinTrans?.setImageResource(R.drawable.ic_tp_rp_grey)
+        imagePeriod?.setImageResource(R.drawable.ic_tp_time)
         buttonUse?.isEnabled = false
     }
 
@@ -140,10 +176,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
 
     private fun setActiveTimerUsage(countDown: Long) {
-        timerUsage.cancel()
-        timerUsage.expiredTimer = countDown
+        timerUsage?.cancel()
+        timerUsage?.expiredTimer = countDown
         buttonUse?.isEnabled = false
-        timerUsage.listener = object : TimerPromoCheckout.Listener {
+        timerUsage?.listener = object : TimerPromoCheckout.Listener {
             override fun onTick(l: Long) {
                 buttonUse?.text = timerUsage.formatMilliSecondsToTime(l * 1000)
             }
@@ -154,7 +190,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
                 enableViews()
             }
         }
-        timerUsage.start()
+        timerUsage?.start()
     }
 
     private fun setExpiryTimerUsage(countDown: Long) {
@@ -172,7 +208,13 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         view?.timerUsage?.start()
     }
 
-    override fun onErrorValidatePromo(e: Throwable) {
+    override fun onErrorCheckPromo(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException) {
             message = e.message
@@ -180,7 +222,13 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
-    override fun onErrorValidatePromoStacking(e: Throwable) {
+    override fun onErrorCheckPromoStacking(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException) {
             message = e.message
@@ -193,7 +241,13 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
+        }
+
         val intent = Intent()
         val variant = "global"
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
@@ -217,7 +271,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun onSuccessCancelPromoStacking() {
+    override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
         val intent = Intent()
@@ -229,10 +283,23 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
     override fun showLoading() {
         isLoadingFinished = false
+        validateViewLoading()
     }
 
     override fun hideLoading() {
         succesLoad()
+    }
+
+    override fun hideProgressLoading() {
+        progressDialog?.hide()
+    }
+
+    override fun showProgressLoading() {
+        try {
+            progressDialog?.show()
+        } catch (exception: UnsupportedOperationException) {
+            CommonUtils.dumper(exception)
+        }
     }
 
     private fun getFormattedHtml(content: String?): String {
@@ -260,11 +327,18 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
     fun succesLoad() {
         isLoadingFinished = true
+        validateViewLoading()
     }
 
     override fun onDestroyView() {
         view?.timerUsage?.cancel()
         timerUsage?.cancel()
         super.onDestroyView()
+    }
+
+    companion object {
+        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+        val EXTRA_IS_USE = "EXTRA_IS_USE"
+        val PAGE_TRACKING = "PAGE_TRACKING"
     }
 }

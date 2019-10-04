@@ -94,6 +94,7 @@ public interface ApplinkConst {
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
+    String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
     String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
@@ -135,6 +136,7 @@ public interface ApplinkConst {
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
+    String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -180,6 +182,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -214,6 +217,7 @@ public interface ApplinkConst {
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
+    String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
@@ -228,7 +232,6 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC = "tokopedia://kyc";
-    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -353,6 +356,7 @@ public interface ApplinkConst {
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
+        String EXTRA_REFERENCE = "reference";
 
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }

@@ -1,5 +1,8 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -11,10 +14,17 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
@@ -41,11 +51,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
     val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(),this) }
 
+    @Inject
+    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
+    lateinit var progressDialog: ProgressDialog
 
-    abstract var serviceId: String
-    open var categoryId: Int = 0
-    open var isCouponActive: Boolean = true
-    open var promoCode: String = ""
+    abstract var serviceId : String
+    open var categoryId : Int = 0
+    open var isCouponActive : Boolean = true
+    open var promoCode : String = ""
+    var pageTracking: Int = 1
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory(this)
@@ -66,6 +80,22 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         initViewExchangeCoupon(view)
     }
 
+    override fun showProgressLoading() {
+        progressDialog.show()
+    }
+
+    override fun hideProgressLoading() {
+        progressDialog.hide()
+    }
+
+    override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
+        }
+    }
+
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_promo_list_checkout
@@ -84,6 +114,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.title_loading))
+        textInputCoupon.setText(promoCode)
 
         populateLastSeen()
         buttonUse.setOnClickListener {
@@ -111,7 +145,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
         if (isCouponActive) {
             getRecyclerView(view).visibility = View.VISIBLE
-        } else {
+        }else{
             getRecyclerView(view).visibility = View.GONE
         }
     }
@@ -141,6 +175,32 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun showGetListLastSeenError(e: Throwable) {
         populateLastSeen()
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
+    }
+
+    override fun onErrorCheckPromo(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
+        }
+
+        if (e is CheckPromoCodeException || e is MessageErrorException) {
+            textInputLayoutCoupon.error = e.message
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
+        }
+    }
+
+    override fun onErrorEmptyPromo() {
+        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == Activity.RESULT_OK) {
+            activity?.setResult(Activity.RESULT_OK, data)
+            activity?.finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
@@ -174,7 +234,19 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
+        } else {
+            trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
+        }
+    }
 
+    protected fun trackSuccessCheckPromoCode(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
+        }
     }
 
     override fun initInjector() {
@@ -191,9 +263,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive) {
+        if(isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
+    }
+
+    companion object {
+        val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
+        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        val PAGE_TRACKING = "PAGE_TRACKING"
     }
 
 }

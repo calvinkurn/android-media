@@ -1,15 +1,38 @@
 package com.tokopedia.search.utils;
 
+import android.text.TextUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public final class UrlParamUtils {
+
+    public static HashMap<String, String> getParamMap(String paramString) {
+        HashMap<String, String> map = new HashMap<>();
+        if (!TextUtils.isEmpty(paramString)) {
+            String[] params = paramString.split("&");
+            for (String param : params) {
+                String[] val = param.split("=");
+                if (val.length == 2) {
+                    String name = val[0];
+                    String value = val[1];
+                    map.put(name, omitNewlineAndPlusSign(value));
+                }
+            }
+        }
+        return map;
+    }
+
+    private static String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
+    }
 
     public static <T> String generateUrlParamString(Map<String, T> paramMap) {
         if (mapIsEmpty(paramMap)) {

@@ -21,7 +21,8 @@ public class DynamicFilterDetailGeneralActivity
                               List<Option> optionList,
                               boolean isSearchable,
                               String searchHint,
-                              boolean isUsingTracking) {
+                              boolean isUsingTracking,
+                              String trackingPrefix) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterDetailGeneralActivity.class);
@@ -30,6 +31,7 @@ public class DynamicFilterDetailGeneralActivity
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
+            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

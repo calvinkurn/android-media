@@ -1,0 +1,48 @@
+ext {
+    getDynamicFeatureList = { final Project project->
+        getDynamicFeatureListByProjectName(project.name)
+    }
+
+    getDynamicFeatureListByProjectName = { final String projectName->
+        final def filemap = new File("buildconfig/appcompile/dynamic-feature-" + projectName + ".cfg")
+        if (filemap.exists()) {
+            return filemap.readLines().collect{it.trim()}
+                    .findAll {!it.empty && !it.startsWith('#') && !it.startsWith('//')}
+                    .collect {
+                        it.replaceAll("\t|\\s", "")
+                    }
+        }
+        []
+    }
+
+    getDynamicFeatureIfEnabled = {Project project->
+        if (project.hasProperty("disable-dynamic-feature")) {
+            println("No dynamic features module is added. ")
+            []
+        } else {
+            def prop = getDynamicFeatureList(project)
+            println("Below Dynamic Feature is enabled: ")
+            println(prop)
+            prop
+        }
+    }
+
+    includeDynamicFeatureIfEnabled = {String projectName ->
+        if (gradle.properties.toString().contains("disable-dynamic-feature")) {
+            println("Dynamic feature is disabled")
+        } else {
+            getDynamicFeatureListByProjectName(projectName).each {
+                def itTrim = ""
+                if (it.startsWith(':')) {
+                    itTrim = it.replaceFirst(":", "")
+                } else {
+                    itTrim = it
+                }
+                print("$itTrim; ")
+                include "$itTrim"
+            }
+            println()
+        }
+    }
+
+}

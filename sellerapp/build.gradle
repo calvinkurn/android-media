@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 
+apply from: '../tools/dynamic_feature_inclusion.gradle'
+
 def getDpiId(String density) {
 
     def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
@@ -203,7 +205,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
     }
 
     // Specifies 4 flavor dimensions.
@@ -223,19 +225,14 @@ android {
             dimension "client"
         }
     }
-    dynamicFeatures = [rootProject.ext.dynamicFeaturesSellerapp.shopSettings]
+    // put Dynamic Feature Modules in dynamic-feature-sellerapp.cfg
+    // to disable dynamic feature, use command option -Pdisable-dynamic-feature
+    dynamicFeatures = getDynamicFeatureIfEnabled(project)
 }
 
 repositories {
     flatDir {
         dirs 'libs'
-    }
-}
-
-afterEvaluate {
-    dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -419,6 +416,8 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

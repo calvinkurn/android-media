@@ -15,7 +15,7 @@ public interface CommonConstant {
     int PAGE_SIZE = 10;
     int HOMEPAGE_PAGE_SIZE = 10;
     int TAB_SETUP_DELAY_MS = 150;
-    int HOMEPAGE_TAB_COUNT = 2;
+    int HOMEPAGE_TAB_COUNT = 1;
     int DEFAULT_SORT_TYPE = 1;
     int DEFAULT_CATEGORY_TYPE = 1;
     int DEFAULT_AUTO_REFRESH_S = 10000;

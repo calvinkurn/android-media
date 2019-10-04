@@ -271,15 +271,7 @@ public class InboxReputationDetailItemViewHolder extends
 
 
         }
-
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
-                || element.isReviewSkipped()
-                || isOwnProduct(element)) {
-            giveReview.setVisibility(View.GONE);
-        } else {
-            giveReview.setVisibility(View.VISIBLE);
-        }
-
+        showOrHideGiveReviewLayout(element);
         giveReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,6 +297,17 @@ public class InboxReputationDetailItemViewHolder extends
         });
 
 
+    }
+
+    private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || element.isReviewSkipped()
+                || isOwnProduct(element)
+                || element.isReviewHasReviewed()) {
+            giveReview.setVisibility(View.GONE);
+        } else {
+            giveReview.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setSellerReply(final InboxReputationDetailItemViewModel element) {

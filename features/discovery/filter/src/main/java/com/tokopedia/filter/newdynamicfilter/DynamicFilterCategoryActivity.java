@@ -21,6 +21,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_EVENT_CATEGORY_PREFIX;
+import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING;
+
 
 /**
  * Created by henrypriyono on 8/24/17.
@@ -39,7 +42,6 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     private static final String EXTRA_DEFAULT_CATEGORY_ID = "EXTRA_DEFAULT_CATEGORY_ID";
     private static final String EXTRA_DEFAULT_CATEGORY_ROOT_ID = "EXTRA_DEFAULT_CATEGORY_ROOT_ID";
     private static final String EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST";
-    private static final String EXTRA_IS_USING_TRACKING = "EXTRA_IS_USING_TRACKING";
     private static final int DEFAULT_OFFSET = 170;
 
     List<Category> categoryList;
@@ -51,12 +53,14 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     private String defaultCategoryId;
     private String defaultCategoryRootId;
     private boolean isUsingTracking;
+    private String trackingPrefix;
 
     public static void moveTo(AppCompatActivity activity,
                               List<Option> optionList,
                               String defaultCategoryRootId,
                               String defaultCategoryId,
-                              boolean isUsingTracking
+                              boolean isUsingTracking,
+                              String trackingPrefix
                               ) {
 
         if (activity != null) {
@@ -65,6 +69,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ROOT_ID, defaultCategoryRootId);
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ID, defaultCategoryId);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
+            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
@@ -79,7 +84,8 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     }
 
     private void fetchDataFromIntent() {
-        isUsingTracking = getIntent().getBooleanExtra(DynamicFilterCategoryActivity.EXTRA_IS_USING_TRACKING, false);
+        isUsingTracking = getIntent().getBooleanExtra(EXTRA_IS_USING_TRACKING, false);
+        trackingPrefix = getIntent().getStringExtra(EXTRA_EVENT_CATEGORY_PREFIX);
         defaultCategoryId
                 = getIntent().getStringExtra(DynamicFilterCategoryActivity.EXTRA_DEFAULT_CATEGORY_ID);
         defaultCategoryRootId
@@ -149,7 +155,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
         } else {
             if (isUsingTracking) {
                 FilterTracking.eventSearchResultFilterJourney(
-                        this,
+                        trackingPrefix,
                         getResources().getString(R.string.title_category),
                         category.getName(), true, true);
             }

@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.domain
+package com.tokopedia.promocheckout.detail.domain
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper

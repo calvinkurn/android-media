@@ -1,6 +1,7 @@
 package com.tokopedia.seller.purchase.detail.activity;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -49,6 +50,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.seller.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.seller.purchase.detail.customview.OrderDetailButtonLayout;
@@ -731,25 +733,33 @@ public class OrderDetailActivity extends TActivity
     public void onRejectOrder(OrderDetailData data) {
         //TODO Change LATER
         if (getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) == null) {
-            RejectOrderFragment rejectOrderFragment = RejectOrderFragment
-                    .createFragment(data);
+            Fragment fragmentToOpen;
+            if (data.isRequestCancel()) {
+                fragmentToOpen = RejectOrderBuyerRequest.createFragment(data.getOrderId());
+            } else {
+                fragmentToOpen = RejectOrderFragment.createFragment(data);
+                toolbar.setTitle("");
+            }
+
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                    .add(R.id.main_view, rejectOrderFragment, REJECT_ORDER_FRAGMENT_TAG)
+                    .add(R.id.main_view, fragmentToOpen, REJECT_ORDER_FRAGMENT_TAG)
                     .commit();
-            toolbar.setTitle("");
         }
     }
 
     @Override
     public void onRejectShipment(OrderDetailData data) {
-        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
-            CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
-                    .createFragment(data.getOrderId());
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                    .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
-                    .commit();
+        if (data.isRequestCancel()) presenter.cancelShipping(this, data.getOrderId(), "");
+        else {
+            if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+                CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
+                        .createFragment(data.getOrderId());
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                        .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
+                        .commit();
+            }
         }
     }
 

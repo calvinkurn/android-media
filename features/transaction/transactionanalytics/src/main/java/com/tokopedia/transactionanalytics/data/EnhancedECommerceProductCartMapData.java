@@ -22,10 +22,10 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_CAT = "category";
     private static final String KEY_VARIANT = "variant";
     private static final String KEY_QTY = "quantity";
-    private static final String KEY_SHOP_ID = "shop_id";
-    private static final String KEY_SHOP_TYPE = "shop_type";
-    private static final String KEY_SHOP_NAME = "shop_name";
-    private static final String KEY_CATEGORY_ID = "category_id";
+    private static final String KEY_SHOP_ID = "dimension79";
+    private static final String KEY_SHOP_TYPE = "dimension81";
+    private static final String KEY_SHOP_NAME = "dimension80";
+    private static final String KEY_CATEGORY_ID = "dimension82";
     private static final String KEY_CART_ID = "dimension45";
     private static final String KEY_POS = "position";
     private static final String KEY_LIST = "list";

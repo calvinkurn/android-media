@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -40,6 +41,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.coachmark.CoachMark;
@@ -57,7 +60,6 @@ import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.PromoAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -69,6 +71,7 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -76,21 +79,18 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, CloseableBottomSheetDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
 
     private final long SHOW_CASE_DELAY = 400;
     private final String SCREEN_NAME = "/digital/deals/homepage";
+    private static final String HOME_FRAGMENT = "DealsHomeFragment";
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
 
     private Menu mMenu;
     @Inject
@@ -134,8 +134,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private boolean isFirstTime = false;
     private TextView promoheading;
 
-    public static Fragment createInstance() {
-        Fragment fragment = new DealsHomeFragment();
+    public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
+        DealsHomeFragment fragment = new DealsHomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(LOCATION_UPDATE, isLocationUpdated);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -143,6 +146,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+        }
     }
 
     @Override
@@ -162,8 +168,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
         mPresenter.sendScreenNameEvent(getScreenName());
     }
@@ -172,11 +182,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (location != null) {
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
-        } else {
-            mPresenter.getLocations(true);
+            mPresenter.getBrandsHome();
         }
     }
 
@@ -454,7 +465,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
                             mPresenter.sendSeeAllTrendingDealsEvent();
-                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), categoryItem.getItems(), 0);
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), 0);
                         }
                     }
                 });
@@ -565,7 +576,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        requestParams.putInt(DealsHomePresenter.TAG, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -574,7 +590,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -679,37 +700,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
+    public void startLocationFragment() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            if (getActivity() != null)
-                getActivity().finish();
-        } else {
-            if (locationUpdated) {
-                isLocationUpdated = locationUpdated;
-                selectLocationFragment.setCanceledOnTouchOutside(true);
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                mPresenter.getDealsList(true);
-                tvLocationName.setText(location.getName());
-            }
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-        }
-    }
-
-    @Override
-    public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        this.isFirstTime = isForFirstime;
-        if (isForFirstime) {
-            mPresenter.getDealsList(false);
-        }
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
-        if (isForFirstime) {
-            selectLocationFragment.setCanceledOnTouchOutside(false);
-        }
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
+        getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 
     @Override
@@ -739,6 +734,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void updateInitialLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        tvLocationName.setText(locations.get(0).getName());
+        mPresenter.getDealsList(true);
+        mPresenter.getBrandsHome();
+    }
+
+    @Override
     public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
@@ -759,14 +762,19 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         selectLocationFragment.dismiss();
     }
 
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
+    public void refreshHomePage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
+            tvLocationName.setText(location.getName());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
     }
 
+
     public interface OpenTrendingDeals {
-        void replaceFragment(String url, String title, List<ProductItem> items, int position);
+        void replaceFragment(String url, String title, int position);
     }
 }

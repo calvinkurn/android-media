@@ -1,0 +1,11 @@
+<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.settingbank.customerapp">
+
+    <dist:module
+        dist:instant="false"
+        dist:onDemand="true"
+        dist:title="@string/setting_bank_app_name">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+</manifest>
+

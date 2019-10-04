@@ -81,7 +81,7 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), categoryItem.getItems(), homePosition);
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), homePosition);
                         }
                     }
                 });

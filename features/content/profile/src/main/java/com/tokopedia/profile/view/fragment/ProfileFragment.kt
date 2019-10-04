@@ -46,6 +46,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -97,6 +98,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -171,6 +173,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
 
     @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
@@ -285,6 +290,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPause() {
         super.onPause()
         unregisterBroadcastReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {
@@ -922,7 +928,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -970,7 +976,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1054,6 +1060,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventProfileClickHashtag(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                hashtagText
+        )
+    }
+
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventProfileClickReadMore(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
     }
 
     private fun initVar(savedInstanceState: Bundle?) {
@@ -1574,7 +1597,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             affiliatePreference.setFirstTimeEducation(userSession.userId)
 
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }

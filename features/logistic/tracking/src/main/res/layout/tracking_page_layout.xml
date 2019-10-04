@@ -328,7 +328,7 @@
                 app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/tv_retry_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

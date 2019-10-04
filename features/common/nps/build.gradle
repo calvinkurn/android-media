@@ -17,17 +17,19 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

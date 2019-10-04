@@ -44,11 +44,13 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.miscDependencies.multiDex
 
 
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

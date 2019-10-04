@@ -10,7 +10,9 @@ import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRe
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DropshipDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.OntimeDeliveryGuarantee;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.RatesFeature;
 import com.tokopedia.transactiondata.entity.request.ShippingInfoCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 
@@ -141,6 +143,7 @@ public class ShipmentDataRequestConverter {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
+            RatesFeature ratesFeature = generateRatesFeature(courierItemData);
 
             // Create shop product model for shipment
             ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
@@ -154,6 +157,7 @@ public class ShipmentDataRequestConverter {
                             .checksum(courierItemData.getChecksum())
                             .ut(courierItemData.getUt())
                             .analyticsDataShippingCourierPrice(String.valueOf(courierItemData.getShipperPrice()))
+                            .ratesFeature(ratesFeature)
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
@@ -190,6 +194,17 @@ public class ShipmentDataRequestConverter {
             return shopProductCheckoutBuilder.build();
         }
         return null;
+    }
+
+    public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
+        RatesFeature result = new RatesFeature();
+        OntimeDeliveryGuarantee otdg = new OntimeDeliveryGuarantee();
+        if (courierItemData.getOntimeDelivery() != null) {
+            otdg.setAvailable(courierItemData.getOntimeDelivery().getAvailable());
+            otdg.setDuration(courierItemData.getOntimeDelivery().getValue());
+        }
+        result.setOntimeDeliveryGuarantee(otdg);
+        return result;
     }
 
     private CheckPromoCodeCartShipmentRequest.ShopProduct getShopProductPromoRequest(ShipmentCartItemModel shipmentCartItemModel) {

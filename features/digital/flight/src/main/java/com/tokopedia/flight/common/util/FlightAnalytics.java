@@ -223,8 +223,13 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
                         EVENT_CATEGORY, Category.DIGITAL_FLIGHT,
                         EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
-                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW, searchPassDataViewModel.getDepartureAirport().getAirportCode(),
-                                searchPassDataViewModel.getArrivalAirport().getAirportCode()),
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                                        searchPassDataViewModel.getDepartureAirport().getCityCode() :
+                                        searchPassDataViewModel.getDepartureAirport().getAirportCode(),
+                                (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                                        searchPassDataViewModel.getArrivalAirport().getCityCode() :
+                                        searchPassDataViewModel.getArrivalAirport().getAirportCode()),
                         ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, DEFAULT_CURRENCY_CODE, IMPRESSIONS, products)
                 )
         );

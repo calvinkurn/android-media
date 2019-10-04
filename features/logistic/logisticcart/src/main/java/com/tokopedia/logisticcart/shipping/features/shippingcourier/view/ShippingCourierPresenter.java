@@ -19,21 +19,10 @@ public class ShippingCourierPresenter extends BaseDaggerPresenter<ShippingCourie
 
     private final ShippingCourierConverter shippingCourierConverter;
     private List<ShippingCourierViewModel> shippingCourierViewModels;
-    private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingCourierPresenter(ShippingCourierConverter shippingCourierConverter) {
         this.shippingCourierConverter = shippingCourierConverter;
-    }
-
-    @Override
-    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
-        this.recipientAddressModel = recipientAddressModel;
-    }
-
-    @Override
-    public RecipientAddressModel getRecipientAddressModel() {
-        return recipientAddressModel;
     }
 
     @Override

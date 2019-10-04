@@ -1,9 +1,12 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -77,6 +80,16 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             addToCartGqlResponse.addToCartResponse.let {
+                val errorReporter = ErrorReporterModel()
+                errorReporter.eligible = it.errorReporter.eligible
+
+                val errorReporterTextModel = ErrorReporterTextModel()
+                errorReporterTextModel.submitTitle = it.errorReporter.texts.submitTitle
+                errorReporterTextModel.submitDescription = it.errorReporter.texts.submitDescription
+                errorReporterTextModel.submitButton = it.errorReporter.texts.submitButton
+                errorReporterTextModel.cancelButton = it.errorReporter.texts.cancelButton
+                errorReporter.texts = errorReporterTextModel
+
                 val dataModel = DataModel()
                 dataModel.success = it.data.success
                 dataModel.cartId = it.data.cartId
@@ -96,6 +109,8 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                 addToCartDataModel.status = it.status
                 addToCartDataModel.errorMessage = it.errorMessage
                 addToCartDataModel.data = dataModel
+                addToCartDataModel.errorReporter = errorReporter
+                addToCartDataModel.responseJson = Gson().toJson(addToCartGqlResponse)
 
                 addToCartDataModel
             }

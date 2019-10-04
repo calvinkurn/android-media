@@ -1,8 +1,16 @@
 ext {
 
+    // this file is no longer needed
+    // Put the corresponding dynamic features in dynamic-feature-<<app>>.cfg
+
     dynamicFeatures = [
             hotelTravel                     : ":dynamic-features:travel:hotel_travel",
+            digitalTopup                    : ":dynamic-features:digital:digital_topup",
+            profileCompletion               : ":dynamic-features:user:profilecompletion",
             shopSettings                    : ":dynamic-features:merchant:shop_settings",
+            shopOpen                        : ":dynamic-features:merchant:shop_open",
+            settingBank                     : ":dynamic-features:user:settingbank",
+            homepageTravel                  : ":dynamic-features:travel:homepage_travel"
     ]
 
     dynamicFeaturesSellerapp = [

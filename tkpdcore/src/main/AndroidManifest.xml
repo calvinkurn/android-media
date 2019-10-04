@@ -92,20 +92,8 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name="com.tokopedia.core.ViewShopNotes"
-            android:label="@string/title_shop_notes"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ShopLocation"
-            android:label="@string/title_activity_shop_location"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop"
-            android:label="@string/title_activity_people_favorited_shop"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.seller.OrderHistoryView"
@@ -125,10 +113,6 @@
         <activity
             android:name="com.tokopedia.core.MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ServerErrorPage"
-            android:label="@string/title_activity_server_error_page"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.ManageGeneral"

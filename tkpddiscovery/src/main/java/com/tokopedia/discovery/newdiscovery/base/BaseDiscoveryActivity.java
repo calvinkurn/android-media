@@ -21,11 +21,9 @@ public class BaseDiscoveryActivity
         extends BaseActivity
         implements BaseDiscoveryContract.View, HasComponent {
 
-    private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
 
     private BaseDiscoveryContract.Presenter presenter;
-    private boolean forceSwipeToShop;
     private int activeTabPosition;
 
     private Boolean isPause = false;
@@ -39,7 +37,6 @@ public class BaseDiscoveryActivity
 
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
-            setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
         }
     }
 
@@ -56,14 +53,6 @@ public class BaseDiscoveryActivity
 
     public void setActiveTabPosition(int activeTabPosition) {
         this.activeTabPosition = activeTabPosition;
-    }
-
-    public boolean isForceSwipeToShop() {
-        return forceSwipeToShop;
-    }
-
-    public void setForceSwipeToShop(boolean forceSwipeToShop) {
-        this.forceSwipeToShop = forceSwipeToShop;
     }
 
     public void setPresenter(BaseDiscoveryContract.Presenter presenter) {
@@ -143,14 +132,12 @@ public class BaseDiscoveryActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
         outState.putInt(KEY_TAB_POSITION, getActiveTabPosition());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP));
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 

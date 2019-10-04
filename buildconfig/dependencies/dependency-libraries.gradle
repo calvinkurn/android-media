@@ -29,13 +29,14 @@ ext {
             trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
             videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
-            usecase               : "com.tokopedia.usecase:usecase:1.0.1",
-            cachemanager          : "com.tokopedia.cachemanager:cachemanager:2.24",
-            globalconfig          : "com.tokopedia.config:global_config:1.0.2",
-            graphql               : "com.tokopedia.graphql:graphql:1.0.4",
-            network               : "com.tokopedia.network:network:1.0.2",
-            url                   : "com.tokopedia.url:url:1.0.1",
-            usersession           : "com.tokopedia.user.session:user_session:1.0.6"
+            usecase                 : "com.tokopedia.usecase:usecase:1.0.1",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.2",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.6",
+            network                 : "com.tokopedia.network:network:1.0.4",
+            url                     : "com.tokopedia.url:url:1.0.1",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.6",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.1"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -44,6 +45,7 @@ ext {
             applink           : ":libraries:applink",
             baseAdapter       : ":libraries:base_adapter",
             baseListSeller    : ":libraries:base_list_seller",
+            bannerDynamic     : ":libraries:banner_dynamic",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
             cameraview        : ":libraries:cameraview",
@@ -70,6 +72,7 @@ ext {
             sharedata         : ":libraries:sharedata",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
+            twitterShare      : ":libraries:twitter_share",
             videoRecorder     : ":libraries:video_recorder",
             videoUploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",

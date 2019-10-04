@@ -128,6 +128,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.banner
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 apply from: '../../../publish_local.gradle'

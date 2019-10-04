@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -125,7 +126,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
                     if (userSession.hasPassword()) {
-                        startActivity(router.getSettingBankIntent(getActivity()));
+                        startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
                     } else {
                         showNoPasswordDialog();
                     }

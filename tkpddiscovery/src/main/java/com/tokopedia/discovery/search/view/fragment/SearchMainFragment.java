@@ -27,7 +27,7 @@ import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;

@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -289,14 +288,6 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     fun updateDataByChangingKeyword(keyword: String) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE) == true) {
-            if (keyword.isNotEmpty() && !this.keyword.equals(keyword, ignoreCase = true)) {
-                selectedEtalaseId = ""
-                etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId)
-                etalaseChipAdapter.notifyDataSetChanged()
-            }
-        }
-
         if (!this.keyword.equals(keyword, ignoreCase = true)) {
             this.keyword = keyword
             loadInitialData()
@@ -701,7 +692,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                 addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge)
                 shopInfo?.let {
                     shopPageTracking?.clickMenuFromMoreMenu(viewModel.isMyShop(it.shopCore.shopID),
-                    selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
+                            selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
                 }
                 needReloadData = true
             }
@@ -775,9 +766,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     private fun updateHintRemoteConfig(selectedEtalaseName: String?) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE) != true) {
-            updateHint(selectedEtalaseName)
-        }
+        updateHint(selectedEtalaseName)
     }
 
     private fun updateHint(selectedEtalaseName: String?) {

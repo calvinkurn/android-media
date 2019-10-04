@@ -29,7 +29,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         if (promo == null) return
 
         if (TextUtils.isEmpty(promoCode)) {
-            view.onErrorEmptyPromoCode()
+            view.onErrorEmptyPromo()
             return
         } else {
             // Clear all merchant promo
@@ -66,16 +66,16 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                             if (it.equals(promoCode, true)) {
                                 if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                                     view?.hideProgressLoading()
-                                    view.onErrorCheckPromoCode(MessageErrorException(responseGetPromoStack.data.message.text))
+                                    view.onErrorCheckPromo(MessageErrorException(responseGetPromoStack.data.message.text))
                                 } else {
-                                    view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
+                                    view.onSuccessCheckPromo(responseGetPromoStack.data)
                                 }
                             }
                         }
                     }
                 } else {
                     val message = responseGetPromoStack.data.message.text
-                    view.onErrorCheckPromoCode(MessageErrorException(message))
+                    view.onErrorCheckPromo(MessageErrorException(message))
                 }
             }
 
@@ -86,7 +86,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.hideProgressLoading()
-                    view.onErrorCheckPromoCode(e)
+                    view.onErrorCheckPromo(e)
                 }
             }
 

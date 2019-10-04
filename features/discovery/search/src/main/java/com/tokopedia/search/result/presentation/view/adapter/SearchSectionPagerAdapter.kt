@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.*
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
@@ -49,19 +49,19 @@ class SearchSectionPagerAdapter(
     }
 
     private fun createProductFragment(): ProductListFragment {
-        return ProductListFragment.newInstance(searchParameter, TAB_FIRST_POSITION)
+        return ProductListFragment.newInstance(searchParameter)
     }
 
     private fun createCatalogFragment(): CatalogListFragment {
-        return CatalogListFragment.newInstance(searchParameter, TAB_SECOND_POSITION)
+        return CatalogListFragment.newInstance(searchParameter)
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance(searchParameter, TAB_THIRD_POSITION)
+        return ShopListFragment.newInstance(searchParameter)
     }
 
     private fun createProfileFragment(): ProfileListFragment {
-        return ProfileListFragment.newInstance(searchParameter.getSearchQuery(), TAB_FORTH_POSITION)
+        return ProfileListFragment.newInstance(searchParameter)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

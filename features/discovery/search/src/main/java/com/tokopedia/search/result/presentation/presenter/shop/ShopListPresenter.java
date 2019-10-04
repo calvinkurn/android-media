@@ -126,6 +126,7 @@ final class ShopListPresenter
 
     private void getViewToShowLoadDataFailed() {
         getView().onSearchShopFailed();
+        getView().removeLoading();
         isSearchShopReturnedNull = true;
     }
 
@@ -142,6 +143,7 @@ final class ShopListPresenter
 
     private void getViewToShowEmptyResult() {
         getView().onSearchShopSuccessEmptyResult();
+        getView().removeLoading();
     }
 
     private void getViewToShowSearchResultDataWithHeader(SearchShopModel searchShopModel, String query, int loadShopRow) {
@@ -154,6 +156,7 @@ final class ShopListPresenter
         List<Visitable> visitableList = createVisitableList(shopHeaderViewModel, shopViewModel.getShopItemList());
 
         getView().onSearchShopSuccessWithData(visitableList, shopViewModel.getHasNextPage());
+        getView().removeLoading();
     }
 
     private List<Visitable> createVisitableList(

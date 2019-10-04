@@ -68,7 +68,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
                 showLoading()
                 val selectedGenderView = radioGroup.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
                 val selectedGender = radioGroup.indexOfChild(selectedGenderView)
-                viewModel.mutateChangeGender(mapSelectedGender(selectedGender))
+                viewModel.mutateChangeGender(context!!, mapSelectedGender(selectedGender))
             }
         }
     }

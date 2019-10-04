@@ -4,8 +4,10 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public class DynamicHomeChannel {
         this.channels = channels;
     }
 
-    public class Channels {
+    public class Channels extends ImpressHolder {
         public static final String LAYOUT_HERO = "hero_4_image";
         public static final String LAYOUT_3_IMAGE = "3_image";
         public static final String LAYOUT_SPRINT = "sprint_3_image";
@@ -148,49 +150,6 @@ public class DynamicHomeChannel {
 
         public void setBanner(Banner banner) {
             this.banner = banner;
-        }
-
-        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
-            List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
-            return DataLayer.mapOf(
-                    "event", "productView",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale impression",
-                    "eventLabel", "",
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                            "currencyCode", "IDR",
-                            "impressions", DataLayer.listOf(
-                                    list.toArray(new Object[list.size()])
-
-                            )),
-                    "attribution", getHomeAttribution(position + 1, "")
-            );
-        }
-
-        private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
-            List<Object> list = new ArrayList<>();
-
-            if (grids != null) {
-                for (int i = 0; i < grids.length; i++) {
-                    Grid grid = grids[i];
-                    list.add(
-                            DataLayer.mapOf(
-                                    "name", grid.getName(),
-                                    "id", grid.getId(),
-                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
-                                            grid.getPrice()
-                                    )),
-                                    "brand", "none / other",
-                                    "category", "none / other",
-                                    "variant", "none / other",
-                                    "list", "/ - p1 - sprint sale",
-                                    "position", String.valueOf(i + 1)
-                            )
-                    );
-                }
-            }
-            return list;
         }
 
         private List<Object> convertProductEnhanceProductMixDataLayer(Grid[] grids, String headerName, String type) {
@@ -707,9 +666,9 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceImpressionBannerChannelMix() {
+        public HashMap<String, Object> getEnhanceImpressionBannerChannelMix() {
             List<Object> list = convertPromoEnhanceBannerChannelMix();
-            return DataLayer.mapOf(
+            return (HashMap<String, Object>) DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
                     "eventAction", "impression on banner dynamic channel mix",
@@ -739,14 +698,6 @@ public class DynamicHomeChannel {
             if (homeAttribution != null)
                 return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
             return "";
-        }
-
-        public void setHomeAttribution(String homeAttribution) {
-            this.homeAttribution = homeAttribution;
-        }
-
-        public String getHomeAttribution() {
-            return homeAttribution;
         }
     }
 
@@ -1104,7 +1055,7 @@ public class DynamicHomeChannel {
         }
     }
 
-    public class Banner {
+    public class Banner extends ImpressHolder{
         @Expose
         @SerializedName("id")
         private String id;

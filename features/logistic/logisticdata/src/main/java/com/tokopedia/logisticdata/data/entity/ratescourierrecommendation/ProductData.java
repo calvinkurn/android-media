@@ -66,6 +66,9 @@ public class ProductData implements Parcelable {
     @SerializedName("cod")
     @Expose
     private CodProductData codProductData;
+    @SerializedName("features")
+    @Expose
+    private ProductFeatures features;
 
     public ProductData() {
     }
@@ -88,6 +91,7 @@ public class ProductData implements Parcelable {
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
         error = in.readParcelable(ErrorProductData.class.getClassLoader());
+        features = in.readParcelable(ProductFeatures.class.getClassLoader());
     }
 
     @Override
@@ -109,6 +113,7 @@ public class ProductData implements Parcelable {
         dest.writeParcelable(insurance, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
+        dest.writeParcelable(features, flags);
     }
 
     @Override
@@ -270,5 +275,13 @@ public class ProductData implements Parcelable {
 
     public void setCodProductData(CodProductData codProductData) {
         this.codProductData = codProductData;
+    }
+
+    public ProductFeatures getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(ProductFeatures features) {
+        this.features = features;
     }
 }

@@ -59,6 +59,9 @@ public class UserSession implements UserSessionInterface {
     /**
      * Twitter Prefs
      */
+    private static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
+    private static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
+    private static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
 
     private Context context;
 

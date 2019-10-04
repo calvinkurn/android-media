@@ -35,6 +35,5 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
 }

@@ -10,13 +10,20 @@ import java.io.InputStreamReader
 
 object DeeplinkMapperDigital {
 
-    private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
-        val inputStream = context.getResources().openRawResource(R.raw.whitelist)
-        val reader = BufferedReader(InputStreamReader(inputStream))
+    /**
+     * Cache to variable to speed up performance
+     */
+    var whiteList: Whitelist? = null
 
-        val gson = Gson()
-        val whitelist = gson.fromJson(reader, Whitelist::class.java)
-        return whitelist.data
+    private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
+        if (whiteList == null) {
+            val inputStream = context.getResources().openRawResource(R.raw.whitelist)
+            val reader = BufferedReader(InputStreamReader(inputStream))
+
+            val gson = Gson()
+            whiteList = gson.fromJson(reader, Whitelist::class.java)
+        }
+        return whiteList?.data ?: listOf()
     }
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {

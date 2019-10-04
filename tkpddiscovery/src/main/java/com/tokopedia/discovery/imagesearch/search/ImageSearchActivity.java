@@ -19,7 +19,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryEventTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -221,9 +221,9 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     private void sendImageSearchFromGalleryGTM() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                DiscoveryEventTracking.Event.IMAGE_SEARCH_CLICK,
+                DiscoveryEventTracking.Category.IMAGE_SEARCH,
+                DiscoveryEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
                 "");
     }
 
@@ -341,18 +341,18 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     private void sendGalleryImageSearchResultGTM(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.GALLERY_SEARCH_RESULT,
+                DiscoveryEventTracking.Event.IMAGE_SEARCH_CLICK,
+                DiscoveryEventTracking.Category.IMAGE_SEARCH,
+                DiscoveryEventTracking.Action.GALLERY_SEARCH_RESULT,
                 label);
     }
 
 
     private void sendCameraImageSearchResultGTM(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.CAMERA_SEARCH_RESULT,
+                DiscoveryEventTracking.Event.IMAGE_SEARCH_CLICK,
+                DiscoveryEventTracking.Category.IMAGE_SEARCH,
+                DiscoveryEventTracking.Action.CAMERA_SEARCH_RESULT,
                 label);
     }
 
@@ -408,14 +408,14 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     public void sendMoEngageSearchAttemptSuccessImageSearch(String keyword, boolean isResultFound, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
-                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
-                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+                DiscoveryEventTracking.MOENGAGE.KEYWORD, keyword,
+                DiscoveryEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
         );
         if (category != null) {
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+            value.put(DiscoveryEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(DiscoveryEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, DiscoveryEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
     private void showImageSearchResult(ProductViewModel productViewModel) {

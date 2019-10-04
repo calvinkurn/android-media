@@ -9,11 +9,12 @@ import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
+import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 
-data class ProductInfoP2General (
+data class ProductInfoP2General(
         var rating: Rating = Rating(),
         var wishlistCount: WishlistCount = WishlistCount(),
         var vouchers: List<MerchantVoucherViewModel> = listOf(),
@@ -25,5 +26,6 @@ data class ProductInfoP2General (
         var latestTalk: Talk = Talk(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariant? = null,
-        var shopFeature: ShopFeatureData = ShopFeatureData()
+        var shopFeature: ShopFeatureData = ShopFeatureData(),
+        var productSpecificationResponse: ProductSpecificationResponse = ProductSpecificationResponse()
 )

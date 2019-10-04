@@ -14,9 +14,5 @@ public interface BottomSheetListener {
 
     void setFilterResultCount(String formattedResultCount);
 
-    void closeFilterBottomSheet();
-
-    boolean isBottomSheetShown();
-
     void launchFilterBottomSheet();
 }

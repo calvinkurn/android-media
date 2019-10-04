@@ -569,6 +569,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.OnClickLeaveQueue()
     }
 
+    override fun updateToolbar(profileName: String?, profileImage: String?) {
+        if (activity is ChatbotActivity){
+            (activity as ChatbotActivity).upadateToolbar(profileName,profileImage)
+        }
+    }
+
     override fun onBackPressed() {
         if(!isBackAllowed){
             val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)

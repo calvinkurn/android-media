@@ -43,6 +43,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
 
         graphqlRequest.setVariables(variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
         return graphqlUseCase

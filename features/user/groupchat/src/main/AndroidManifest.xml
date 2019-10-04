@@ -11,6 +11,7 @@
         <activity
             android:name=".channel.view.activity.ChannelActivity"
             android:label="@string/activity_channel"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity

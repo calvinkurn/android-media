@@ -19,7 +19,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;

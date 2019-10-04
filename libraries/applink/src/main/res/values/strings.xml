@@ -7,4 +7,5 @@
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
     <string name="shop_settings_title">Pengaturan Toko</string>
+    <string name="digital_topup_title">Digital Topup</string>
 </resources>

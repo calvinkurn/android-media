@@ -26,6 +26,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
@@ -367,6 +368,24 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             getView().setAdditionalInfo(additionalInfo);
         }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);
@@ -579,4 +598,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
+
+    public boolean isValidUrl(String invoiceUrl) {
+        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
+        Matcher matcher = pattern.matcher(invoiceUrl);
+        return matcher.find();
+    }
+
+    private String formatTitleHtml(String desc, String urlText, String url) {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
+    }
+
 }

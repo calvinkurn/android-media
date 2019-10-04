@@ -22,16 +22,20 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.NotificationUpdateItemViewHolder
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
@@ -40,6 +44,7 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateCon
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -323,7 +328,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean, templateKey: String) {
-        adapter.notifyItemChanged(adapterPosition)
+        adapter.notifyItemChanged(adapterPosition, NotificationUpdateItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
         analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
         if (needToResetCounter) {
@@ -385,6 +390,39 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return {
             markAllReadCounter = it.pojo.notifUnreadInt
             notifyBottomActionView()
+        }
+    }
+
+    override fun getAnalytic(): NotificationUpdateAnalytics {
+        return analytics
+    }
+
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+        presenter.addProductToCart(product, onSuccessAddToCart)
+    }
+
+    override fun showMessageAtcError(e: Throwable?) {
+        view?.let {
+            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(it.context, e)
+            Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    override fun showMessageAtcSuccess(message: String) {
+        view?.let {
+            Toaster.showNormalWithAction(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    getString(R.string.wishlist_check_cart),
+                    onClickSeeButtonOnAtcSuccessToaster()
+            )
+        }
+    }
+
+    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(it.context, ApplinkConstInternalMarketplace.CART)
         }
     }
 }

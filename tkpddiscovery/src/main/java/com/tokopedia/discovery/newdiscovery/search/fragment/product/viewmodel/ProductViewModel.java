@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;

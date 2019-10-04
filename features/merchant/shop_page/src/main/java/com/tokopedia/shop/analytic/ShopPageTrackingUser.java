@@ -25,6 +25,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CART_BUTTON;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DISCUSSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOWER_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_HOW_TO_ACTIVATE_SHOP;
@@ -245,6 +246,15 @@ public class ShopPageTrackingUser {
                 shopPageBuyerOrSeller(isOwner),
                 joinDash(TOP_SECTION, CLICK),
                 CLICK_SHARE_BUTTON,
+                customDimensionShopPage);
+    }
+
+    public void clickCartButton(boolean isOwner,
+                                CustomDimensionShopPage customDimensionShopPage) {
+        sendEvent(CLICK_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(TOP_SECTION, CLICK),
+                CLICK_CART_BUTTON,
                 customDimensionShopPage);
     }
 

@@ -5,7 +5,9 @@ if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.frogermcs.androiddevmetrics'
 
+apply from: '../tools/dynamic_feature_inclusion.gradle'
 
 def getDpiId(String density) {
 
@@ -221,7 +223,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
         resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
     }
 
@@ -243,14 +245,15 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
-
+    // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
+    // to disable dynamic feature, use command option -Pdisable-dynamic-feature
+    dynamicFeatures = getDynamicFeatureIfEnabled(project)
 }
 
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(":libraries:akamai_bot_lib")
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -362,12 +365,11 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
-    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-
+    implementation project(rootProject.ext.features.digitalHome)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -422,6 +424,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -544,6 +547,8 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
+
     implementation project(rootProject.ext.features.navigationCommon)
     implementation 'com.facebook.soloader:soloader:0.6.0'
 

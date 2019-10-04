@@ -64,6 +64,9 @@ public class Tickets{
 	@SerializedName("status")
 	private String status;
 
+	@SerializedName("allowClose")
+	private boolean allowClose;
+
 	public void setTotalComments(int totalComments){
 		this.totalComments = totalComments;
 	}
@@ -216,6 +219,14 @@ public class Tickets{
 		return badCsatReasonList;
 	}
 
+
+	public boolean isAllowClose() {
+		return allowClose;
+	}
+
+	public void setAllowClose(boolean allowClose) {
+		this.allowClose = allowClose;
+	}
 
 	@Override
  	public String toString(){

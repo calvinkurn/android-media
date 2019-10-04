@@ -87,7 +87,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_phone_format))
             } else {
                 showLoading()
-                viewModel.userProfileCompletionValidate(phone)
+                viewModel.userProfileCompletionValidate(context!!, phone)
             }
         }
     }
@@ -223,9 +223,9 @@ class AddPhoneFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
                 val phone = etPhone.text.toString()
-                viewModel.mutateAddPhone(phone.trim(), otpCode)
+                viewModel.mutateAddPhone(context!!, phone.trim(), otpCode)
             } else {
-                onErrorAddPhone(MessageErrorException(getString(R.string.default_request_error_unknown),
+                onErrorAddPhone(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }
