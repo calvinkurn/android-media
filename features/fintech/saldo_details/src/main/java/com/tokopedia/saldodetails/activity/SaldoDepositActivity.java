@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -14,12 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.saldodetails.R;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
@@ -28,7 +26,12 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-@DeepLink(ApplinkConst.DEPOSIT)
+/**
+ * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#SALDO_DEPOSIT}
+ */
+
+
 public class SaldoDepositActivity extends BaseSimpleActivity implements
         HasComponent<SaldoDetailsComponent> {
 
@@ -62,11 +65,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         SaldoDetailsComponentInstance.getComponent(getApplication()).inject(this);
     }
 
-    @DeepLink(ApplinkConst.DEPOSIT)
-    public static Intent createInstance(Context context) {
-        return new Intent(context, SaldoDepositActivity.class);
-    }
-
     @Override
     public SaldoDetailsComponent getComponent() {
         return SaldoDetailsComponentInstance.getComponent(getApplication());
@@ -74,7 +72,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_saldo_deposit;
+        return com.tokopedia.saldodetails.R.layout.activity_saldo_deposit;
     }
 
     @Override
@@ -90,6 +88,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.saldodetails.R.id.saldo_deposit_parent_view;
+    }
+
+    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         initInjector();
@@ -98,15 +101,15 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     private void setUpToolbar() {
-        toolbar = findViewById(R.id.toolbar);
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
+        toolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar);
+        Drawable upArrow = ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back);
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             toolbar.setNavigationIcon(upArrow);
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
-        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), getResources().getDimensionPixelOffset(R.dimen.dp_12), toolbar.getPaddingBottom());
+        toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12), toolbar.getPaddingBottom());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,11 +123,11 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private void initializeView() {
         isSeller = userSession.hasShop() || userSession.isAffiliate();
-        TextView saldoHelp = findViewById(R.id.toolbar_saldo_help);
+        TextView saldoHelp = findViewById(com.tokopedia.saldodetails.R.id.toolbar_saldo_help);
 
         saldoHelp.setVisibility(View.VISIBLE);
         saldoHelp.setOnClickListener(v -> {
-            RouteManager.route(this, ApplinkConst.SALDO_INTRO);
+            RouteManager.route(this, ApplinkConstInternalGlobal.SALDO_INTRO);
         });
     }
 
@@ -134,7 +137,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+            window.setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.white));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }

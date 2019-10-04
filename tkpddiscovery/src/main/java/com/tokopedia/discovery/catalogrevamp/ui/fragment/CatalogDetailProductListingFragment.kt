@@ -336,7 +336,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
