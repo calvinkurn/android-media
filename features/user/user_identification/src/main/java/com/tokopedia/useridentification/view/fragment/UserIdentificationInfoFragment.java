@@ -83,7 +83,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (isSourceSeller) {
             goToFormActivity();
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID, 1));
     }
 
     @Override

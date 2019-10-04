@@ -52,8 +52,6 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
 public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         implements UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
 
-    public static final String PARAM_PROJECTID = "TRADEIN_PROJECT";
-
     private ImageView imageKtp;
     private ImageView imageFace;
     private TextView buttonKtp;
@@ -90,7 +88,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                     .EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
-            analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+            analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID, 1));
         }
     }
 
@@ -142,7 +140,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 analytics.eventClickChangeKtpFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
-                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
@@ -153,7 +151,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 analytics.eventClickChangeSelfieFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
-                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });

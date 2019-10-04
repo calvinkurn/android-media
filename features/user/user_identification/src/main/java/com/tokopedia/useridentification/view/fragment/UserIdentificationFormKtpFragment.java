@@ -68,7 +68,7 @@ public class UserIdentificationFormKtpFragment extends
                 analytics.eventClickNextKtpPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
-                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });

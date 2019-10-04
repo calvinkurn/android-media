@@ -3,7 +3,6 @@ package com.tokopedia.useridentification.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,15 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.cameraview.BitmapCallback;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.cameraview.CameraListener;
 import com.tokopedia.cameraview.CameraOptions;
 import com.tokopedia.cameraview.CameraUtils;
 import com.tokopedia.cameraview.CameraView;
 import com.tokopedia.cameraview.PictureResult;
 import com.tokopedia.cameraview.Size;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.user_identification_common.KYCConstant;
@@ -107,7 +105,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID, 1));
     }
 
     @Nullable
