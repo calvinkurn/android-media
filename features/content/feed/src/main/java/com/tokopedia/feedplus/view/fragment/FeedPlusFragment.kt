@@ -111,6 +111,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
 import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
@@ -354,11 +355,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun setFirstPageCursor(firstPageCursor: String) {
-//        activity?.applicationContext?.let {
-//            val cache = LocalCacheHandler(it, KEY_FEED)
-//            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
-//            cache.applyEditor()
-//        }
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.applyEditor()
+        }
     }
 
     override fun onInfoClicked() {

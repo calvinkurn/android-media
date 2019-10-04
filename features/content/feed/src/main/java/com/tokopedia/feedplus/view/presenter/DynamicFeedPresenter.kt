@@ -17,9 +17,9 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-08-06
  */
-class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInterface,
-                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                               val likeKolPostUseCase: LikeKolPostUseCase):
+class DynamicFeedPresenter @Inject constructor(private val userSession: UserSessionInterface,
+                                               private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+                                               private val likeKolPostUseCase: LikeKolPostUseCase):
         BaseDaggerPresenter<DynamicFeedContract.View>(),
         DynamicFeedContract.Presenter {
 
