@@ -108,7 +108,7 @@ class FollowRecomAdapter(
         itemList[itemIndex] = (itemList[itemIndex] as FollowRecomCardViewModel).copy(
                 isFollowed = action == FollowRecomAction.FOLLOW
         )
-        notifyItemChanged(itemIndex)
+        notifyItemChanged(itemIndex, Unit)
         listener.onFollowStateChanged(getFollowedCount())
     }
 
