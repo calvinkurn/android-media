@@ -153,7 +153,7 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
+import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
@@ -464,7 +464,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductDetailRouter,
         OvoPayWithQrRouter,
         OvoP2pRouter,
-        KYCRouter{
+        KYCRouter {
 
     private static final String EXTRA = "extra";
 
@@ -520,6 +520,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             tetraDebugger.init();
         }
     }
+
     private void setTetraUserId(String userId) {
         if (tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
@@ -1484,7 +1485,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOvoActivityIntent(Context context) {
-        return new Intent(context,PaymentQRSummaryActivity.class);
+        return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
@@ -1880,7 +1881,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }
-          
+
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
@@ -1962,6 +1963,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);
                     }
+
                     @Override
                     public void onError(LinkerError linkerError) {
 
@@ -2685,7 +2687,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @SuppressLint("MissingPermission")
     @Override
     public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
+                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
         Bundle bundle = new Bundle();
         BaseDaggerFragment baseDaggerFragment = null;
         switch (cameraType) {
@@ -2694,7 +2696,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
                 baseDaggerFragment.setArguments(bundle);
-            break;
+                break;
             case KYC_SELFIEID_CAMERA:
                 baseDaggerFragment = new FragmentSelfieIdCamera();
                 bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
