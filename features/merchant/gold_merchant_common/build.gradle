@@ -25,6 +25,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -35,7 +36,6 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockk
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {
