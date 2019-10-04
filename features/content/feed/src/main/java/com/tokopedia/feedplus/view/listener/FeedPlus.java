@@ -76,8 +76,6 @@ public interface FeedPlus {
 
         void setLastCursorOnFirstPage(String lastCursor);
 
-        void onOpenVideo(String videoUrl, String subtitle);
-
         void onInfoClicked();
 
         void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);

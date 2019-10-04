@@ -64,7 +64,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.activity.TransparentVideoActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -350,11 +349,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
-    }
-
-    override fun onOpenVideo(videoUrl: String, subtitle: String) {
-        val intent = TransparentVideoActivity.getIntent(activity, videoUrl, subtitle)
-        startActivity(intent)
     }
 
     override fun onInfoClicked() {
