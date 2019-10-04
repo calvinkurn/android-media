@@ -5,6 +5,9 @@
         dist:instant="false"
         dist:onDemand="true"
         dist:title="@string/voucher_game_app_name">
+        <dist:delivery>
+            <dist:install-time />
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 </manifest>
