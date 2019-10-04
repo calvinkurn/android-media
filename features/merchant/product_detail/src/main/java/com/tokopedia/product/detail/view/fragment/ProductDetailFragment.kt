@@ -464,7 +464,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-        et_search.setOnClickListener { v ->
+        et_search.setOnClickListener {
+            productDetailTracking.eventClickSearchBar()
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
@@ -714,7 +715,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
-                val warehouseId: Int = productInfoViewModel.multiOrigin.id.toInt()
+                val warehouseId: Int = productInfoViewModel.multiOrigin.id.toIntOrZero()
                 val atcRequestParam = AtcRequestParam()
                 atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
                 atcRequestParam.setProductId(productInfo.productInfo.basic.id)
@@ -1140,7 +1141,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showAddToCartDoneBottomSheet(successMessage)
-                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1236,6 +1236,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"
             )
@@ -1368,7 +1372,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         p2ShopData.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
-            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
+            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toIntOrZero()))
             val data = productInfo ?: return
 
             actionButtonView.renderData(!data.basic.isActive(),
@@ -1577,17 +1581,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 isHandPhone = true
                 val handfone = 24
                 categoryId = if (detail.id.isNotEmpty())
-                    detail.id.toInt()
+                    detail.id.toIntOrZero()
                 else
                     handfone
 
             }
         }
         tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
+        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
-            productInfoViewModel.userId.toInt()
+            productInfoViewModel.userId.toIntOrZero()
         else
             0
         tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())

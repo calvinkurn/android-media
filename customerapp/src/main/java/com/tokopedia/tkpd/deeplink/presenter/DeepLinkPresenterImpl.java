@@ -221,7 +221,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
-                    RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
+                    openHotel();
                     screenName = "";
                     break;
                 /*
@@ -333,6 +333,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
 
         context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openHotel() {
+        RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
     }
 
@@ -721,7 +726,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
         String applink = TextUtils.isEmpty(q) ?
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConst.DISCOVERY_SEARCH;
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
     }

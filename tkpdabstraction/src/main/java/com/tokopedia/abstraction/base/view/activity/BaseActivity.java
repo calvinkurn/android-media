@@ -74,7 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         // hacky way of dynamic feature module, when activity is resumed after pausing.
         // SplitCompat.install initiates on onAttachBaseContext by default.
         if (pauseFlag) {
-            SplitCompat.install(this);
+            SplitCompat.installActivity(this);
             pauseFlag = false;
         }
 
@@ -211,7 +211,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
-        SplitCompat.install(this);
+        SplitCompat.installActivity(this);
     }
 
     public void setLogCrash() {

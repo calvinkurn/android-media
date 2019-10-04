@@ -19,7 +19,7 @@ project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.payment'
     versionName = "1.0.0"
-    artifactName = 'paymentcommon-release'
+    artifactName = 'common_payment-release'
 }
 
 dependencies {

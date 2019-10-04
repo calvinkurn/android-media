@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
@@ -15,7 +16,6 @@ import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -65,7 +65,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         param.put("voucher_code", voucherCode);
         param.put("category_id", categoryId);
         promoCodeInteractor.submitDigitalVoucher(voucherCode,
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 makeDigitalVoucherViewModel());
     }
 

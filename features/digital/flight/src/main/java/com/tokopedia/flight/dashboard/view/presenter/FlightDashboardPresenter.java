@@ -427,7 +427,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
-            flightAnalytics.eventSearchClick(getView().getScreenName());
+            flightAnalytics.eventSearchClick(getView().getCurrentDashboardViewModel());
             flightDeleteAllFlightSearchDataUseCase.execute(new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {

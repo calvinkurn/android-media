@@ -158,7 +158,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onButtonSubmitClicked() {
         if (validateFields()) {
-            flightAnalytics.eventBookingNextClick(view.getString(com.tokopedia.flight.R.string.flight_booking_analytics_customer_page))
+            flightAnalytics.eventBookingNextClick(view.getCurrentCartPassData(),
+                    view.getCurrentBookingParamViewModel().searchParam, view.getPriceViewModel().comboKey)
+
             view.getCurrentBookingParamViewModel().contactName = view.getContactName()
             view.getCurrentBookingParamViewModel().contactEmail = view.getContactEmail()
             view.getCurrentBookingParamViewModel().contactPhone = view.getContactPhoneNumber()
@@ -364,7 +366,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             if (!isFromSavedInstance) {
                 flightAnalytics.eventAddToCart(view.getCurrentBookingParamViewModel().searchParam.flightClass,
                         flightBookingCartData, resultTotalPrice, flightBookingCartData.departureTrip,
-                        flightBookingCartData.returnTrip)
+                        flightBookingCartData.returnTrip, view.getPriceViewModel().comboKey)
             }
         } else {
             initialize()

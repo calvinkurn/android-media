@@ -1,5 +1,8 @@
 package com.tokopedia.discovery.categoryrevamp.view.activity
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,26 +12,38 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
+import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
+import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
+import rx.Subscriber
+import javax.inject.Inject
 
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
@@ -80,12 +95,20 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private var departmentName: String = ""
 
 
+    lateinit var categoryNavComponent: CategoryNavComponent
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var categoryNavViewModel: CategoryNavViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
-
+        initInjector()
         prepareView()
         handleIntent(intent)
     }
@@ -116,7 +139,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-
+     fun initInjector() {
+        categoryNavComponent = DaggerCategoryNavComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication)
+                        .baseAppComponent).build()
+         categoryNavComponent.inject(this)
+    }
     private fun initSwitchButton() {
 
         icon_sort.setOnClickListener {
@@ -169,15 +197,66 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun prepareView() {
-        fetchBundle()
-        initToolbar()
-        initViewPager()
-        loadSection()
-        initSwitchButton()
-        initBottomSheetListener()
+        this.let { observer ->
+            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            categoryNavViewModel = viewModelProvider.get(CategoryNavViewModel::class.java)
+            fetchBundle()
+            initToolbar()
+            progressBar.visibility = View.VISIBLE
+            checkIfBanned()
+            bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
+                    FilterEventTracking.Event.CLICK_CATEGORY,
+                    FilterEventTracking.Category.FILTER_CATEGORY,
+                    getCategoryId(),
+                    FilterEventTracking.Category.PREFIX_CATEGORY_PAGE))
 
-        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
+        }
 
+    }
+
+    private fun checkIfBanned() {
+        categoryNavViewModel.mBannedCheck.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    progressBar.visibility = View.GONE
+                    if(it.data.isBanned == 1) {
+                       setEmptyView(it.data)
+                    }else {
+                        layout_banned_screen.visibility = View.GONE
+                        searchNavContainer?.visibility = View.VISIBLE
+                        initViewPager()
+                        loadSection()
+                        initSwitchButton()
+                        initBottomSheetListener()
+                    }
+                }
+                is Fail -> {
+                    progressBar.visibility = View.GONE
+                    setEmptyView(null)
+                }
+            }
+        })
+        categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
+    }
+
+    private fun setEmptyView(data :Data?){
+        layout_banned_screen.visibility = View.VISIBLE
+        searchNavContainer?.visibility = View.GONE
+        if(data == null) {
+            txt_header.text = "There is some error on server"
+            txt_no_data_description.text = "try again"
+        }else {
+            txt_header.text = data?.bannedMsgHeader
+            txt_no_data_description.text = data?.bannedMessage
+        }
+    }
+
+    private fun getSubCategoryParam(): RequestParams {
+        val subCategoryMap = RequestParams()
+        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, departmentId)
+        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
+        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
+        return subCategoryMap
     }
 
     private fun initBottomSheetListener() {
@@ -303,12 +382,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
         layout_search.setOnClickListener {
             catAnalyticsInstance.eventSearchBarClicked(departmentId)
-            moveToAutoCompleteActivity()
+            moveToAutoCompleteActivity(departmentName)
+        }
+
+        image_button_close.setOnClickListener {
+            moveToAutoCompleteActivity("")
         }
     }
 
-    private fun moveToAutoCompleteActivity() {
-        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departmentName)
+    private fun moveToAutoCompleteActivity(departMentName : String) {
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departMentName)
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {

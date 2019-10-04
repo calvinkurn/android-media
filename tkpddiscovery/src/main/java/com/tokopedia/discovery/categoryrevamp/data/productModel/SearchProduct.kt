@@ -13,6 +13,9 @@ data class SearchProduct(
 	@field:SerializedName("additionalParams")
 	val additionalParams: String? = null,
 
+	@field:SerializedName("count_text")
+	val countText: String? = null,
+
 	@field:SerializedName("related")
 	val related: Related? = null,
 
