@@ -336,7 +336,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
@@ -553,5 +553,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
 }

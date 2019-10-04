@@ -8,5 +8,6 @@
     <color name="grey_status_stroke">#e0e0e0</color>
     <color name="white_overlay_transparent">#7fffffff</color>
     <color name="black_38">#60000000</color>
-  <color name="sticky_bg_color">#E6EBFFEF</color>
+    <color name="sticky_bg_color">#E6EBFFEF</color>
+    <color name="orange_ff541a">#ff541a</color>
 </resources>

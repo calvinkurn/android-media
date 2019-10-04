@@ -29,6 +29,9 @@
     <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
 
+    <!-- Dynamic feature for Fintech-->
+    <string name="saldo_deposit_app_name">Saldo</string>
+
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>

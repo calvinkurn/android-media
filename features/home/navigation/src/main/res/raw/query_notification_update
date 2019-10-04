@@ -1,4 +1,4 @@
-query get_notification_update($page: Int!, $typeId: Int, $tagId: Int, $lastNotifId: String){
+query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifId: String){
   notifcenter_detail(page: $page, type_id: $typeId, tag_id: $tagId, last_notif_id: $lastNotifId) {
     paging {
       has_next

@@ -35,7 +35,8 @@
                     android:id="@+id/action_up_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
                     app:srcCompat="@drawable/search_ic_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -44,11 +45,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_6"
                     android:paddingBottom="@dimen/dp_6"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingStart="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
                     android:lines="1"
                     android:textColor="#ae31353b"
                     android:background="@drawable/search_bg_autocomplete_input"
@@ -56,19 +60,30 @@
                     app:typographyWeight="reguler" />
 
                 <ImageView
-                    android:id="@+id/search_cart_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:id="@+id/search_home_button"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
                     android:scaleType="centerInside"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    app:srcCompat="@drawable/search_ic_cart"/>
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    app:srcCompat="@drawable/ic_product_discovery_home_grayscale_24" />
+
+                <ImageView
+                    android:id="@+id/search_cart_button"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:scaleType="centerInside"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    app:srcCompat="@drawable/search_ic_cart" />
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    app:srcCompat="@drawable/search_ic_grid"/>
 
             </LinearLayout>
 
@@ -183,7 +198,8 @@
                 android:layout_height="wrap_content"
                 style="@style/TextView.Small.BlackPrimary"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:text="@string/filter"/>
+                android:layout_marginStart="@dimen/dp_4"
+                android:text="@string/filter" />
 
         </LinearLayout>
 

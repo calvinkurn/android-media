@@ -1,7 +1,6 @@
 package com.tokopedia.affiliate.util;
 
 import android.content.Context;
-
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 
 /**
