@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
@@ -87,7 +88,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
-    private static final int REQUEST_CODE_LOGIN = 6;
 
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
@@ -573,20 +573,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            stopTrace();
-            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
-    }
-
-    @Override
-    public void closePage() {
-        getActivity().finish();
-    }
-
-    @Override
     public void renderBannerView(List<BannerDetail> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
@@ -625,7 +611,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
             startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
                     getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
         } else {
@@ -661,12 +647,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
-                case REQUEST_CODE_LOGIN:
-                    presenter.onLoginResultReceived();
-                    break;
             }
-        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
-            presenter.onLoginResultReceived();
         }
     }
 
@@ -718,8 +699,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                         && ((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), url) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getBannerWebViewIntent(getActivity(), url));
+                    RouteManager.route(getContext(), url);
                 }
             }
         }

@@ -93,6 +93,9 @@ class DefaultShareData(
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult) {
+        if(linkerShareData.url.isNullOrBlank()) {
+            return
+        }
         val intent = getIntent(linkerShareData.shareContents, linkerShareData.url)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             val receiver = Intent(activity, ShareBroadcastReceiver::class.java)

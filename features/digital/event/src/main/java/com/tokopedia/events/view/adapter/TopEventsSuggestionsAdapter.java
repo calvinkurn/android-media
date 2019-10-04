@@ -27,6 +27,7 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,35 +39,37 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private Context mContext;
     private List<CategoryItemsViewModel> categoryItems;
+    List<CategoryItemsViewModel> itemsForGA = new ArrayList<>();
     private EventSearchPresenter mPresenter;
     private String highLightText;
     private boolean showCards;
     private boolean isFooterAdded = false;
     private EventsAnalytics eventsAnalytics;
+    private boolean shouldFireEvent;
 
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
 
-    public TopEventsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, EventSearchPresenter presenter, boolean showcards) {
+    public TopEventsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, EventSearchPresenter presenter, boolean showcards, boolean shouldFireEvent) {
         this.mContext = context;
         this.mPresenter = presenter;
         this.categoryItems = categoryItems;
         this.showCards = showcards;
+        this.shouldFireEvent = shouldFireEvent;
         mPresenter.setupCallback(this);
     }
-
-    @NonNull
+    
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
-        RecyclerView.ViewHolder holder;
+        RecyclerView.ViewHolder holder = null;
         this.mContext = parent.getContext();
         eventsAnalytics = new EventsAnalytics();
         View v;
         switch (viewType) {
             case ITEM:
-                if (showCards) {
+                if (!showCards) {
                     v = inflater.inflate(R.layout.event_category_item_revamp, parent, false);
                     holder = new EventsTitleHolder(v);
                 } else {
@@ -84,15 +87,16 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case ITEM:
                 CategoryItemsViewModel model = categoryItems.get(position);
-                if (showCards) {
+                if (!showCards) {
                     ((EventsTitleHolder) holder).setViewHolder(model, position);
                     ((EventsTitleHolder) holder).setShown(model.isTrack());
                 } else {
                     ((EventsSuggestionHolder) holder).bindView(position);
+                    ((EventsSuggestionHolder) holder).setShown(model.isTrack());
                 }
                 break;
             case FOOTER:
@@ -186,10 +190,19 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             if (!titleHolder.isShown()) {
                 titleHolder.setShown(true);
                 categoryItems.get(titleHolder.getAdapterPosition()).setTrack(true);
-                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION,
-                        highLightText
-                                + " - " + categoryItems.get(titleHolder.getAdapterPosition()).getTitle()
-                                + " - " + titleHolder.getAdapterPosition());
+                itemsForGA.add(categoryItems.get(titleHolder.getIndex()));
+                int  itemsToSend = (categoryItems.size() - 1) - titleHolder.getAdapterPosition();
+                if (this.shouldFireEvent && itemsForGA != null && (itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA || itemsToSend == 0)) {
+                    eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_PRODUCT_RESULT, itemsForGA);
+                    eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_PRODUCT_IMRESSION, itemsForGA);
+                    itemsForGA.clear();
+                }
+            }
+        } else if (holder instanceof EventsSuggestionHolder) {
+            EventsSuggestionHolder holder1 = (EventsSuggestionHolder) holder;
+            if (!holder1.isShown()) {
+                holder1.setShown(true);
+                categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
             }
         }
     }
@@ -343,10 +356,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
                 detailsIntent.putExtra("homedata", categoryItems.get(index));
                 mContext.startActivity(detailsIntent);
-                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
-                        highLightText
-                                + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
-                                + " - " + getAdapterPosition());
+                eventsAnalytics.sendEventSuggestionClickEvent(EventsAnalytics.EVENT_PRODUCT_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_PRODUCT_CLICK_RESULT, categoryItems.get(getIndex()), getIndex());
             } else if (v.getId() == R.id.tv_add_to_wishlist) {
                 mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
                 String like;
@@ -370,6 +380,8 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public class EventsSuggestionHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
+        boolean isShown;
+        int index;
 
         EventsSuggestionHolder(View itemView) {
             super(itemView);
@@ -377,6 +389,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             tvTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    eventsAnalytics.sendEventSuggestionClickEvent(EventsAnalytics.EVENT_PRODUCT_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_PRODUCT_CLICK, categoryItems.get(getIndex()), getIndex());
                     Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
                     detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
                     detailsIntent.putExtra("homedata", categoryItems.get(getAdapterPosition()));
@@ -385,7 +398,20 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             });
         }
 
+        boolean isShown() {
+            return isShown;
+        }
+
+        void setShown(boolean shown) {
+            isShown = shown;
+        }
+
+        int getIndex() {
+            return this.index;
+        }
+
         void bindView(int position) {
+            this.index = position;
             tvTitle.setText(getBoldTitle(categoryItems.get(position).getDisplayName()));
         }
     }

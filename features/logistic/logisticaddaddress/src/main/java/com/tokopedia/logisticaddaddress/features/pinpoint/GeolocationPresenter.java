@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
@@ -38,7 +39,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
@@ -351,7 +351,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("placeid", placeID);
         retrofitInteractor.generateLatLng(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 latLongListener());
     }
 

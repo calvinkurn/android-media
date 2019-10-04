@@ -72,14 +72,13 @@
     <string name="label_shop_status">Status Toko:</string>
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
     <string name="label_shop_close">Tutup</string>
-    <string name="search_autocomplete_hint">Cari di Tokopedia</string>
     <string name="global_nav_see_all_text">Lihat Semua</string>
     <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
     <string name="description_page_title">Deskripsi Produk</string>
     <string name="search_cancel_text">Cancel</string>
 
     <string name="category_nav_catalog_count">%s Katalog</string>
-    
+
     <string name="category_nav_product_no_data_title">Oops, Produk Nggak Ditemukan</string>
     <string name="category_nav_product_no_data_description">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="category_nav_catalog_no_data_title">Oops, Katalog Nggak Ditemukan</string>
@@ -87,4 +86,8 @@
 
 
 
+    <string name="catalog_marketprice">Harga Pasar</string>
+    <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
+    <string name="bullet_string">• %1$s</string>
+    <string name="description">Deskripsi</string>
 </resources>

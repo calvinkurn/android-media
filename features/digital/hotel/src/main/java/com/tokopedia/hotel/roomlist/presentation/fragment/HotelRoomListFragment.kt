@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -37,7 +38,6 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
-import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +52,7 @@ import kotlin.math.roundToLong
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), FilterChipAdapter.OnClickListener,
         HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
         RoomListViewHolder.OnClickBookListener {
 

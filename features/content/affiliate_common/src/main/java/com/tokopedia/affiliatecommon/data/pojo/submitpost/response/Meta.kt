@@ -7,10 +7,6 @@ import com.google.gson.annotations.SerializedName
  * Created by jegul on 2019-08-13.
  */
 data class Meta(
-        @SerializedName("followers")
-        @Expose
-        var followers: String = "",
-
         @SerializedName("content")
         @Expose
         var content: Content = Content()

@@ -34,15 +34,13 @@ import com.tokopedia.transaction.orders.orderlist.view.viewState.*
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
-class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, var menuListener: OnMenuItemListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
+class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,
+                          var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.order_list
 
-        private const val KEY_URI = "tokopedia"
-        private const val KEY_URI_PARAMETER = "idem_potency_key"
-        private const val KEY_URI_PARAMETER_EQUAL = "idem_potency_key="
         private const val KEY_FROM_PAYMENT = "?from_payment=false"
         private const val KEY_META_DATA = "a/n"
     }
@@ -97,8 +95,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     orderListBtnOverflow?.visibility = it.visibility
                 }
                 is SetActionButtonData -> {
-                    setButtonData(leftButton, it.leftVisibility, it.leftActionButton)
-                    setButtonData(rightButton, it.rightVisibility, it.rightActionButton)
+                    setButtonData(element.order, leftButton, it.leftVisibility, it.leftActionButton)
+                    setButtonData(element.order, rightButton, it.rightVisibility, it.rightActionButton)
                 }
                 is SetCategoryAndTitle -> {
                     setCategoryAndTitle(it.title, it.categoryName)
@@ -250,9 +248,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
     }
 
-    private fun setButtonData(button: TextView?, visibility: Int, actionButton: ActionButton?) {
+    private fun setButtonData(order: Order, button: TextView?, visibility: Int, actionButton: ActionButton?) {
         button?.visibility = visibility
-        if (TextUtils.isEmpty(actionButton?.label())) {
+        if (!TextUtils.isEmpty(actionButton?.label())) {
             button?.text = actionButton?.label()
             if (actionButton?.color() != null) {
                 if (!TextUtils.isEmpty(actionButton.color().background())) {
@@ -263,22 +261,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
             }
             button?.setOnClickListener {
-                var newUri = actionButton?.uri()
-                if (newUri?.startsWith(KEY_URI) == true) {
-                    if (newUri.contains(KEY_URI_PARAMETER)) {
-                        val url = Uri.parse(newUri)
-                        newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER)!!, "")
-                        newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "")
-                    }
-                    RouteManager.route(it.context, newUri)
-                } else if (!TextUtils.isEmpty(newUri)) {
-                    try {
-                        it.context.startActivity((it.context.applicationContext as UnifiedOrderListRouter).getWebviewActivityWithIntent(it.context,
-                                URLEncoder.encode(newUri, "UTF-8")))
-                    } catch (e: UnsupportedEncodingException) {
-                        e.printStackTrace()
-                    }
-                }
+                buttonListener?.handleActionButtonClick(order, actionButton)
             }
         }
     }
@@ -286,5 +269,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
 
     interface OnMenuItemListener {
         fun startUri(uri: String)
+    }
+
+    interface OnActionButtonListener {
+        fun handleActionButtonClick(order: Order, actionButton: ActionButton?)
     }
 }

@@ -81,6 +81,8 @@ public class Utils {
     private static final String SHOWCASE_PREFERENCES = "show_case_pref";
     private SparseIntArray likedEventMap;
     private SparseIntArray unLikedEventMap;
+    public static final String NSQ_SERVICE = "Recommendation_For_You";
+    public static final String NSQ_USE_CASE = "24";
 
 
     synchronized public static Utils getSingletonInstance() {

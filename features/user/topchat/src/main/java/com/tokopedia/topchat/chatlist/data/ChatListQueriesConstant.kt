@@ -8,6 +8,8 @@ object ChatListQueriesConstant {
     const val QUERY_CHAT_NOTIFICATION = "chat_notification"
     const val QUERY_CHAT_LIST_MESSAGE = "chat_list_message"
     const val QUERY_DELETE_CHAT_MESSAGE = "delete_chat_message"
+    const val MUTATION_MARK_CHAT_AS_READ = "mark_chat_as_read"
+    const val MUTATION_MARK_CHAT_AS_UNREAD = "mark_chat_as_unread"
 
     const val PARAM_TAB = "tab"
     const val PARAM_TAB_INBOX = "inbox"
@@ -24,4 +26,5 @@ object ChatListQueriesConstant {
     const val PARAM_PER_PAGE = "per_page"
 
     const val PARAM_MESSAGE_ID = "messageId"
+    const val PARAM_MESSAGE_IDS = "msgIDs"
 }

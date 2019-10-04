@@ -128,12 +128,11 @@ object ApplinkConstInternalMarketplace {
 
     //Report Product
     @JvmField
-    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
 
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
 
     // ChatSearchActivity
     @JvmField
