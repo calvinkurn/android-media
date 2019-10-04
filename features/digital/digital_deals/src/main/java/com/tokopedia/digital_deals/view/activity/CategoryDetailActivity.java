@@ -31,11 +31,9 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
     public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String deepLink = extras.getString(DeepLink.URI);
         Intent destination = new Intent();
 
         Location location = Utils.getSingletonInstance().getLocation(context);
-        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
             String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
@@ -55,9 +53,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         extras.putString(CATEGORY_NAME, categoriesModel.getTitle());
         extras.putParcelable(CATEGORIES_DATA, categoriesModel);
         destination = new Intent(context, CategoryDetailActivity.class)
-                .setData(uri.build())
                 .putExtras(extras);
-
         return destination;
     }
 
