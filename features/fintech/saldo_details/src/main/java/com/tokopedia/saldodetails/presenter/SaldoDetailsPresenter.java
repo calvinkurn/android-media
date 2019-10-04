@@ -12,6 +12,7 @@ import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
@@ -19,6 +20,7 @@ import com.tokopedia.saldodetails.subscriber.GetMerchantCreditDetailsSubscriber;
 import com.tokopedia.saldodetails.subscriber.GetMerchantFinancialStatusSubscriber;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
+import com.tokopedia.saldodetails.usecase.GetMCLLateCountUseCase;
 import com.tokopedia.saldodetails.usecase.GetMerchantCreditDetails;
 import com.tokopedia.saldodetails.usecase.GetMerchantFinancialStatus;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
@@ -43,6 +45,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private static final String IS_SELLER = "is_seller";
+    private static final String IS_WITHDRAW_LOCK = "is_lock";
+    private static final String MCL_LATE_COUNT = "late_count";
+    private static final String FIREBASE_FLAG_STATUS="is_on";
 
     private Bundle withdrawActivityBundle = new Bundle();
 
@@ -60,6 +65,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     GetMerchantCreditDetails getMerchantCreditDetails;
     @Inject
     GetMerchantFinancialStatus getMerchantFinancialStatus;
+    @Inject
+    GetMCLLateCountUseCase getMCLLateCountUseCase;
+
     private boolean isSeller;
 
     @Inject
@@ -77,6 +85,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getMerchantSaldoDetails.unsubscribe();
             getMerchantCreditDetails.unsubscribe();
             getMerchantFinancialStatus.unsubscribe();
+            getMCLLateCountUseCase.unsubscribe();
         } catch (NullPointerException e) {
 
         }
@@ -104,6 +113,36 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 new GetMerchantCreditDetailsSubscriber(this);
 
         getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
+    }
+
+    @Override
+    public void getMCLLateCount() {
+
+        getMCLLateCountUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                return;
+            }
+                getView().hideWithdrawTicker();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
+                    if (gqlMclLateCountResponse != null) {
+                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
+                    } else
+                        getView().hideWithdrawTicker();
+                }
+            }
+        });
     }
 
     @Override
@@ -205,7 +244,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
-    public void onDrawClicked(Intent intent) {
+    public void onDrawClicked(Intent intent, int statusWithDrawLock,int mclLateCount,boolean showMclBlockTickerFirebaseFlag) {
         if (!isViewAttached()) {
             return;
         }
@@ -220,6 +259,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
                 getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
             } else {
+                withdrawActivityBundle.putBoolean(FIREBASE_FLAG_STATUS,showMclBlockTickerFirebaseFlag);
+                withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);
+                withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount);
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
                 withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
                 withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());

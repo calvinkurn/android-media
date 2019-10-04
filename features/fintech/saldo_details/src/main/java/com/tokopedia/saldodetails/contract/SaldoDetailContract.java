@@ -57,6 +57,10 @@ public interface SaldoDetailContract {
 
         void hideTickerMessage();
 
+        void setLateCount(int count);
+
+        void hideWithdrawTicker();
+
         boolean isSellerEnabled();
 
         void showSellerSaldoRL();
@@ -78,6 +82,8 @@ public interface SaldoDetailContract {
 
         void getMerchantCreditLineDetails();
 
-        void onDrawClicked(Intent intent);
+        void onDrawClicked(Intent intent, int statusWithDrawLock,int mclLateCount,boolean showMclBlockTickerFirebaseFlag);
+
+        void getMCLLateCount();
     }
 }
