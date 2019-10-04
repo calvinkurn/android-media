@@ -141,7 +141,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
-        if (RouteManager.isSupportApplink(context, appUrl)) RouteManager.route(context, appUrl)
+        if (RouteManager.getIntent(context, appUrl) !=  null) RouteManager.route(context, appUrl)
         else if (webUrl.isNotEmpty()) RouteManager.route(context, webUrl)
     }
 
