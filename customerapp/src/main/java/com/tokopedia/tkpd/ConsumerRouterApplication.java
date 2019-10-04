@@ -149,8 +149,6 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
@@ -1647,17 +1645,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = UserIdentificationFormActivity.getIntent(this);
         intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
         return intent;
-    }
-
-    public Observable<String> getAtcObsr() {
-        FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
-        return useCase.createObservable(null)
-                .map(new Func1<CartEntity, String>() {
-                    @Override
-                    public String call(CartEntity cartEntity) {
-                        return cartEntity.toString();
-                    }
-                });
     }
 
     @Override
