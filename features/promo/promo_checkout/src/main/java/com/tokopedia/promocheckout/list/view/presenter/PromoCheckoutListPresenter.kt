@@ -88,9 +88,9 @@ class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDagge
     override fun getListExchangeCoupon(resources: Resources) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
-        getListCouponUseCase.clearRequest()
-        getListCouponUseCase.addRequest(graphqlRequest)
-        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
