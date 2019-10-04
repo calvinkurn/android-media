@@ -1,24 +1,28 @@
 package com.tokopedia.search.result.shop.repository
 
+import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.RepositoryKt
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
-import com.tokopedia.usecase.RequestParams
-import java.util.HashMap
+import java.util.*
 
 class SearchShopFirstPageRepository(
         private val graphqlUseCase: GraphqlUseCase<SearchShopModel>,
-): RepositoryKt<RequestParams, SearchShopModel> {
+        private val dispatcherProvider: DispatcherProvider
+): RepositoryKt<Map<String, Any>, SearchShopModel> {
 
-    override fun getResponse(inputParams: RequestParams): SearchShopModel {
-
+    override fun getResponse(inputParameter: Map<String, Any>): SearchShopModel {
+        return SearchShopModel()
+//        graphqlUseCase.setRequestParams(createParametersForQuery(inputParameter))
+//
+//        return graphqlUseCase.executeOnBackground()
     }
 
-    private fun createParametersForQuery(requestParams: Map<String, String>): Map<String, Any?> {
-        val variables = HashMap<String, Any?>()
+    private fun createParametersForQuery(requestParams: Map<String, Any>): Map<String, Any> {
+        val variables = HashMap<String, Any>()
 
         variables[SearchConstant.GQL.KEY_PARAMS] = UrlParamUtils.generateUrlParamString(requestParams)
         variables[SearchConstant.GQL.KEY_HEADLINE_PARAMS] = createHeadlineParams(requestParams)
@@ -26,7 +30,7 @@ class SearchShopFirstPageRepository(
         return variables
     }
 
-    private fun createHeadlineParams(requestParams: Map<String, String>): String {
+    private fun createHeadlineParams(requestParams: Map<String, Any>): String {
         val headlineParams = HashMap(requestParams)
 
         headlineParams[TopAdsParams.KEY_EP] = SearchConstant.SearchShop.HEADLINE
