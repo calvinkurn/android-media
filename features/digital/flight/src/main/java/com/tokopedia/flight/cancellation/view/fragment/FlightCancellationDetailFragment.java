@@ -83,22 +83,22 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_detail, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_detail, container, false);
 
-        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
-        rvFlights = view.findViewById(R.id.recycler_view_flight);
-        rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
-        txtCancellationStatus = view.findViewById(R.id.cancellation_status);
-        txtCancellationDate = view.findViewById(R.id.cancellation_date);
-        tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
-        containerBottomInfo = view.findViewById(R.id.container_bottom_info);
-        rvBottomTopInfo = view.findViewById(R.id.rv_bottom_top_info);
-        rvBottomMiddleInfo = view.findViewById(R.id.rv_bottom_middle_info);
-        rvBottomBottomInfo = view.findViewById(R.id.rv_bottom_bottom_info);
-        rvBottomNotes = view.findViewById(R.id.rv_bottom_notes);
-        bottomFirstSeparator = view.findViewById(R.id.bottom_first_separator);
-        bottomSecondSeparator = view.findViewById(R.id.bottom_second_separator);
+        layoutExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.layout_expendable_passenger);
+        imageExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        rvFlights = view.findViewById(com.tokopedia.flight.R.id.recycler_view_flight);
+        rvPassengers = view.findViewById(com.tokopedia.flight.R.id.recycler_view_data_passenger);
+        txtCancellationStatus = view.findViewById(com.tokopedia.flight.R.id.cancellation_status);
+        txtCancellationDate = view.findViewById(com.tokopedia.flight.R.id.cancellation_date);
+        tickerRefundInfo = view.findViewById(com.tokopedia.flight.R.id.ticker_refund_info);
+        containerBottomInfo = view.findViewById(com.tokopedia.flight.R.id.container_bottom_info);
+        rvBottomTopInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_top_info);
+        rvBottomMiddleInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_middle_info);
+        rvBottomBottomInfo = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_bottom_info);
+        rvBottomNotes = view.findViewById(com.tokopedia.flight.R.id.rv_bottom_notes);
+        bottomFirstSeparator = view.findViewById(com.tokopedia.flight.R.id.bottom_first_separator);
+        bottomSecondSeparator = view.findViewById(com.tokopedia.flight.R.id.bottom_second_separator);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);

@@ -38,7 +38,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment;
@@ -182,27 +181,27 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_review, container, false);
-        fullPageLoading = (LinearLayout) view.findViewById(R.id.full_page_loading);
-        discountAppliedLayout = (LinearLayout) view.findViewById(R.id.voucher_applied_layout);
-        containerFullPage = (NestedScrollView) view.findViewById(R.id.container_full_page);
-        reviewTime = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
-        reviewDetailDepartureFlight = (TextView) view.findViewById(R.id.review_detail_departure_flight);
-        recyclerViewDepartureFlight = (RecyclerView) view.findViewById(R.id.recycler_view_departure_flight);
-        reviewDetailReturnFlight = (TextView) view.findViewById(R.id.review_detail_return_flight);
-        recyclerViewReturnFlight = (RecyclerView) view.findViewById(R.id.recycler_view_return_flight);
-        recyclerViewDataPassenger = (RecyclerView) view.findViewById(R.id.recycler_view_data_passenger);
-        recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
-        reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
-        reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);
-        reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
-        buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-        promoTicker = (TickerCheckoutView) view.findViewById(R.id.flight_promo_ticker_view);
-        containerFlightReturn = view.findViewById(R.id.container_flight_return);
-        tickerView = view.findViewById(R.id.flight_ticker_view);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_review, container, false);
+        fullPageLoading = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.full_page_loading);
+        discountAppliedLayout = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.voucher_applied_layout);
+        containerFullPage = (NestedScrollView) view.findViewById(com.tokopedia.flight.R.id.container_full_page);
+        reviewTime = (CountdownTimeView) view.findViewById(com.tokopedia.flight.R.id.countdown_finish_transaction);
+        reviewDetailDepartureFlight = (TextView) view.findViewById(com.tokopedia.flight.R.id.review_detail_departure_flight);
+        recyclerViewDepartureFlight = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.recycler_view_departure_flight);
+        reviewDetailReturnFlight = (TextView) view.findViewById(com.tokopedia.flight.R.id.review_detail_return_flight);
+        recyclerViewReturnFlight = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.recycler_view_return_flight);
+        recyclerViewDataPassenger = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.recycler_view_data_passenger);
+        recyclerViewDetailPrice = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.recycler_view_detail_price);
+        reviewTotalPrice = (TextView) view.findViewById(com.tokopedia.flight.R.id.total_price);
+        reviewDiscountPrice = (TextView) view.findViewById(com.tokopedia.flight.R.id.tv_discount_voucher);
+        reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_total_final_price);
+        buttonSubmit = (Button) view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        promoTicker = (TickerCheckoutView) view.findViewById(com.tokopedia.flight.R.id.flight_promo_ticker_view);
+        containerFlightReturn = view.findViewById(com.tokopedia.flight.R.id.container_flight_return);
+        tickerView = view.findViewById(com.tokopedia.flight.R.id.flight_ticker_view);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
@@ -381,7 +380,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     private String getFormattedDiscountPrice(double discountAmountPlain) {
-        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
+        return String.format(getString(com.tokopedia.flight.R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
     }
 
     private void renderPromoTicker() {
@@ -454,7 +453,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             intent.putExtra("EXTRA_CART_ID", flightBookingReviewModel.getId());
             startActivityForResult(intent, requestCode);
         } else {
-            Toast.makeText(getActivity(), R.string.promo_none_applied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), com.tokopedia.promocheckout.common.R.string.promo_none_applied, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -493,8 +492,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void showExpireTransactionDialog(String message) {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(R.string.flight_booking_expired_booking_label);
-            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+            dialog.setMessage(com.tokopedia.flight.R.string.flight_booking_expired_booking_label);
+            dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -513,8 +512,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void showSoldOutDialog() {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(R.string.flight_booking_sold_out_label);
-            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+            dialog.setMessage(com.tokopedia.flight.R.string.flight_booking_sold_out_label);
+            dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -647,7 +646,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
+        return String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     @Override

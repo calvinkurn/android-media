@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
@@ -90,7 +89,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_passenger_list, container, false);
+        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_passenger_list, container, false);
     }
 
     @Override
@@ -223,7 +222,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     private void addNewPassengerElement() {
         getAdapter().addElement(new FlightBookingNewPassengerViewModel(
-                getString(R.string.flight_list_passenger_add_passenger_label)
+                getString(com.tokopedia.flight.R.string.flight_list_passenger_add_passenger_label)
         ));
 
         getAdapter().notifyDataSetChanged();
@@ -242,7 +241,7 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
     @Override
     protected Visitable getEmptyDataViewModel() {
         return new FlightBookingNewPassengerViewModel(
-                getString(R.string.flight_list_passenger_add_passenger_label)
+                getString(com.tokopedia.flight.R.string.flight_list_passenger_add_passenger_label)
         );
     }
 
@@ -261,12 +260,12 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     @Override
     public void showSuccessChangePassengerData() {
-        showSuccessSnackbar(R.string.flight_passenger_update_success);
+        showSuccessSnackbar(com.tokopedia.flight.R.string.flight_passenger_update_success);
     }
 
     @Override
     public void onSuccessDeletePassengerData() {
-        showSuccessSnackbar(R.string.flight_passenger_delete_success);
+        showSuccessSnackbar(com.tokopedia.flight.R.string.flight_passenger_delete_success);
     }
 
     @Override
@@ -284,8 +283,8 @@ public class FlightPassengerListFragment extends BaseListFragment<FlightBookingP
 
     private void showDeleteDialog(final String passengerId) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_passenger_delete_dialog_title));
-        dialog.setDesc(getString(R.string.flight_passenger_delete_dialog_description));
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_passenger_delete_dialog_title));
+        dialog.setDesc(getString(com.tokopedia.flight.R.string.flight_passenger_delete_dialog_description));
         dialog.setBtnOk("Hapus");
         dialog.setBtnCancel("Batal");
         dialog.setOnOkClickListener(new View.OnClickListener() {

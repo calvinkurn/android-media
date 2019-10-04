@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 
@@ -29,7 +28,7 @@ import java.io.File;
 public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<FlightCancellationAttachmentViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_cancellation_attachment;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_attachment;
 
     private AppCompatImageView ivAttachment;
     private AppCompatTextView tvFilename;
@@ -53,12 +52,12 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
     private void setupView(View view) {
         context = view.getContext();
-        imageContainer = view.findViewById(R.id.image_container);
-        ivAttachment = view.findViewById(R.id.iv_attachment);
-        tvFilename = view.findViewById(R.id.tv_filename);
-        tvPassengerName = view.findViewById(R.id.tv_passenger_name);
-        tvChangeImage = view.findViewById(R.id.tv_change_image);
-        tvViewImage = view.findViewById(R.id.tv_view_image);
+        imageContainer = view.findViewById(com.tokopedia.flight.R.id.image_container);
+        ivAttachment = view.findViewById(com.tokopedia.flight.R.id.iv_attachment);
+        tvFilename = view.findViewById(com.tokopedia.flight.R.id.tv_filename);
+        tvPassengerName = view.findViewById(com.tokopedia.flight.R.id.tv_passenger_name);
+        tvChangeImage = view.findViewById(com.tokopedia.flight.R.id.tv_change_image);
+        tvViewImage = view.findViewById(com.tokopedia.flight.R.id.tv_view_image);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -100,7 +99,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
             });
 
-            imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_stroke);
+            imageContainer.setBackgroundResource(com.tokopedia.flight.R.drawable.bg_flight_gray_rounded_stroke);
 
         } else {
             ivAttachment.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +112,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             });
 
             tvChangeImage.setVisibility(View.GONE);
-            imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_dashed);
+            imageContainer.setBackgroundResource(com.tokopedia.flight.R.drawable.bg_flight_gray_rounded_dashed);
 
             resizeAttachmentTo40x40();
         }
@@ -135,14 +134,14 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     }
 
     private void resizeAttachmentTo60x60() {
-        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
-        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60);
         ivAttachment.requestLayout();
     }
 
     private void resizeAttachmentTo40x40() {
-        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_40);
-        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_40);
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40);
         ivAttachment.requestLayout();
     }
 

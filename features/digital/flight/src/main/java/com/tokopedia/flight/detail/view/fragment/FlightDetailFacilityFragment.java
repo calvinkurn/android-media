@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailFacilityAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -34,7 +33,7 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_detail, container, false);
+        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_detail, container, false);
     }
 
     @Override

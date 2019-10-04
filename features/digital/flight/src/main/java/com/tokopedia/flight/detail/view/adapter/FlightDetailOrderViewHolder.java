@@ -24,7 +24,7 @@ import java.util.List;
 
 public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetailOrderJourney> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_flight_detail_order;
+    public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_detail_order;
     private TextView flightCounter;
     private View journeyView;
     private TextView titleJourney;
@@ -43,13 +43,13 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
         super(layoutView);
         this.expandableOnClickListener = expandableOnClickListener;
 
-        flightCounter = layoutView.findViewById(R.id.counter_flight);
-        journeyView = layoutView.findViewById(R.id.layout_expendable_flight);
-        titleJourney = layoutView.findViewById(R.id.title_expendable_passenger);
-        imageJourney = layoutView.findViewById(R.id.image_expendable_passenger);
-        recyclerViewFlightJourney = layoutView.findViewById(R.id.recycler_view_flight_detail_journey);
-        cekSyaratText = layoutView.findViewById(R.id.text_view_flight_cek_syarat);
-        separatorLine = layoutView.findViewById(R.id.flight_detail_order_separator_line);
+        flightCounter = layoutView.findViewById(com.tokopedia.flight.R.id.counter_flight);
+        journeyView = layoutView.findViewById(com.tokopedia.flight.R.id.layout_expendable_flight);
+        titleJourney = layoutView.findViewById(com.tokopedia.flight.R.id.title_expendable_passenger);
+        imageJourney = layoutView.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        recyclerViewFlightJourney = layoutView.findViewById(com.tokopedia.flight.R.id.recycler_view_flight_detail_journey);
+        cekSyaratText = layoutView.findViewById(com.tokopedia.flight.R.id.text_view_flight_cek_syarat);
+        separatorLine = layoutView.findViewById(com.tokopedia.flight.R.id.flight_detail_order_separator_line);
         FlightDetailRouteTypeFactory detailRouteTypeFactory = new FlightDetailAdapterTypeFactory(
                 new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
                     @Override
@@ -78,8 +78,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
     @Override
     public void bind(FlightDetailOrderJourney flightOrderJourney) {
         this.flightOrderJourney = flightOrderJourney;
-        flightCounter.setText(itemView.getContext().getString(R.string.flight_label_detail_counter, getAdapterPosition() + 1));
-        titleJourney.setText(itemView.getContext().getString(R.string.flight_label_detail_format,
+        flightCounter.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_detail_counter, getAdapterPosition() + 1));
+        titleJourney.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_detail_format,
                 flightOrderJourney.getDepartureCity(), flightOrderJourney.getDepartureAiportId(), flightOrderJourney.getArrivalCity(), flightOrderJourney.getArrivalAirportId()));
         List<Visitable> visitables = new ArrayList<>();
         visitables.addAll(transform(this.flightOrderJourney.getRouteViewModels()));

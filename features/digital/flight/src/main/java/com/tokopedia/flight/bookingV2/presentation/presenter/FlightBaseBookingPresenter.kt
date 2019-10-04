@@ -2,7 +2,6 @@ package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
@@ -272,7 +271,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.departureAirport,
                             departureDetailViewModel.arrivalAirport,
-                            view.getString(R.string.flightbooking_price_adult_label),
+                            view.getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
                             departureDetailViewModel.countAdult,
                             departureDetailViewModel.adultNumericPrice * departureDetailViewModel.countAdult
                     )
@@ -286,7 +285,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.departureAirport,
                             departureDetailViewModel.arrivalAirport,
-                            view.getString(R.string.flightbooking_price_child_label),
+                            view.getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
                             departureDetailViewModel.countChild,
                             departureDetailViewModel.childNumericPrice * departureDetailViewModel.countChild
                     )
@@ -300,7 +299,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                     formatPassengerFarePriceDetail(
                             departureDetailViewModel.departureAirport,
                             departureDetailViewModel.arrivalAirport,
-                            view.getString(R.string.flightbooking_price_infant_label),
+                            view.getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
                             departureDetailViewModel.countInfant,
                             departureDetailViewModel.infantNumericPrice * departureDetailViewModel.countInfant
                     )
@@ -315,7 +314,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.departureAirport,
                                 returnDetailViewModel.arrivalAirport,
-                                view.getString(R.string.flightbooking_price_adult_label),
+                                view.getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
                                 returnDetailViewModel.countAdult,
                                 returnDetailViewModel.adultNumericPrice * returnDetailViewModel.countAdult
                         )
@@ -327,7 +326,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.departureAirport,
                                 returnDetailViewModel.arrivalAirport,
-                                view.getString(R.string.flightbooking_price_child_label),
+                                view.getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
                                 returnDetailViewModel.countChild,
                                 returnDetailViewModel.childNumericPrice * returnDetailViewModel.countChild
                         )
@@ -339,7 +338,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                         formatPassengerFarePriceDetail(
                                 returnDetailViewModel.departureAirport,
                                 returnDetailViewModel.arrivalAirport,
-                                view.getString(R.string.flightbooking_price_infant_label),
+                                view.getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
                                 returnDetailViewModel.countInfant,
                                 returnDetailViewModel.infantNumericPrice * returnDetailViewModel.countInfant
                         )
@@ -378,14 +377,14 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
         for ((key, value) in meals) {
             simpleViewModels.add(SimpleViewModel(
-                    String.format("%s %s", view.getString(R.string.flight_price_detail_prefixl_meal_label),
+                    String.format("%s %s", view.getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             key),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(value)))
 
         }
         for ((key, value) in luggages) {
             simpleViewModels.add(SimpleViewModel(
-                    String.format("%s %s", view.getString(R.string.flight_price_detail_prefix_luggage_label),
+                    String.format("%s %s", view.getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             key),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(value)))
 
@@ -415,7 +414,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
     private fun formatPassengerFarePriceDetail(departureAirport: String, arrivalAirport: String, label: String,
                                                passengerCount: Int, price: Int): SimpleViewModel =
             SimpleViewModel(
-                    String.format(view.getString(R.string.flight_booking_passenger_price_format),
+                    String.format(view.getString(com.tokopedia.flight.R.string.flight_booking_passenger_price_format),
                             departureAirport,
                             arrivalAirport,
                             label,

@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -49,14 +48,14 @@ public class FlightBookingAmenityActivity extends BaseSimpleActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_flight_amenity_info_reset, menu);
+        getMenuInflater().inflate(com.tokopedia.flight.R.menu.menu_flight_amenity_info_reset, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_reset) {
+        if (id == com.tokopedia.flight.R.id.action_reset) {
             onResetClicked();
             return true;
         } else {

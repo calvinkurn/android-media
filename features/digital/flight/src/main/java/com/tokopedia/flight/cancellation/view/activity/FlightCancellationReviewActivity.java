@@ -38,9 +38,9 @@ public class FlightCancellationReviewActivity extends BaseFlightActivity impleme
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
-        String title = getString(R.string.activity_label_flight_review_cancellation);
+        String title = getString(com.tokopedia.flight.R.string.activity_label_flight_review_cancellation);
         String subtitle = String.format(
-                getString(R.string.flight_cancellation_subtitle_order_id),
+                getString(com.tokopedia.flight.R.string.flight_cancellation_subtitle_order_id),
                 getIntent().getExtras().getString(FlightCancellationFragment.EXTRA_INVOICE_ID)
         );
         updateTitle(title, subtitle);

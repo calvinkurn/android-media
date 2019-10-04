@@ -7,17 +7,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
-import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.searchV3.di.DaggerFlightSearchComponent
-import com.tokopedia.flight.searchV3.presentation.model.*
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_PRICE_VIEW_MODEL
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchReturnContract
+import com.tokopedia.flight.searchV3.presentation.model.*
+import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchReturnPresenter
 import kotlinx.android.synthetic.main.fragment_search_return.*
 import javax.inject.Inject
@@ -83,7 +82,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         flightSearchComponent?.inject(this)
     }
 
-    override fun getLayout(): Int = R.layout.fragment_search_return
+    override fun getLayout(): Int = com.tokopedia.flight.R.layout.fragment_search_return
 
     override fun getDepartureAirport(): FlightAirportViewModel = flightSearchPassData.arrivalAirport
 
@@ -94,7 +93,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
         if (flightJourneyViewModel.airlineDataList != null &&
                 flightJourneyViewModel.airlineDataList.size > 1) {
-            departure_trip_label.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)))
+            departure_trip_label.setValueName(String.format(" | %s", getString(com.tokopedia.flight.R.string.flight_label_multi_maskapai)))
         } else if (flightJourneyViewModel.airlineDataList != null &&
                 flightJourneyViewModel.airlineDataList.size == 1) {
             departure_trip_label.setValueName(String.format(" | %s", flightJourneyViewModel.airlineDataList[0].shortName))
@@ -138,8 +137,8 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     override fun showReturnTimeShouldGreaterThanArrivalDeparture() {
         if (isAdded) {
             val dialog = AlertDialog.Builder(activity)
-            dialog.setMessage(R.string.flight_search_return_departure_should_greater_message)
-            dialog.setPositiveButton(activity!!.getString(R.string.title_ok)
+            dialog.setMessage(com.tokopedia.flight.R.string.flight_search_return_departure_should_greater_message)
+            dialog.setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
             ) { dialog, which ->
                 dialog.dismiss()
             }
@@ -150,7 +149,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun showErrorPickJourney() {
         NetworkErrorHelper.showRedCloseSnackbar(activity,
-                getString(R.string.flight_error_pick_journey))
+                getString(com.tokopedia.flight.R.string.flight_error_pick_journey))
     }
 
     override fun showSeeAllResultView() {
@@ -216,11 +215,11 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     private fun showSeeAllResultDialog(normalPrice: String) {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_search_return_price_change_title_dialog))
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_return_price_change_desc_dialog, normalPrice)
+                getString(com.tokopedia.flight.R.string.flight_search_return_price_change_desc_dialog, normalPrice)
         ))
-        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
+        dialog.setBtnOk(getString(com.tokopedia.flight.R.string.flight_search_dialog_proceed_button_text))
         dialog.setOnOkClickListener {
             getFilterModel().isBestPairing = false
             isViewOnlyBestPairing = false
@@ -228,18 +227,18 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
-        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
+        dialog.setBtnCancel(getString(com.tokopedia.flight.R.string.flight_search_return_dialog_abort))
         dialog.setOnCancelClickListener { dialog.dismiss() }
         dialog.show()
     }
 
     private fun showSeeBestPairingDialog(bestPairPrice: String) {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_search_return_price_change_title_dialog))
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)
+                getString(com.tokopedia.flight.R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)
         ))
-        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
+        dialog.setBtnOk(getString(com.tokopedia.flight.R.string.flight_search_dialog_proceed_button_text))
         dialog.setOnOkClickListener {
             getFilterModel().isBestPairing = true
             isViewOnlyBestPairing = true
@@ -247,7 +246,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
-        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
+        dialog.setBtnCancel(getString(com.tokopedia.flight.R.string.flight_search_return_dialog_abort))
         dialog.setOnCancelClickListener { dialog.dismiss() }
         dialog.show()
     }

@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
@@ -90,11 +89,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation, container, false);
 
         recyclerView = getRecyclerView(view);
-        btnContainer = view.findViewById(R.id.btn_container);
-        btnSubmit = view.findViewById(R.id.button_submit);
+        btnContainer = view.findViewById(com.tokopedia.flight.R.id.btn_container);
+        btnSubmit = view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +120,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     protected BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> createAdapterInstance() {
         BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> adapter = super.createAdapterInstance();
         ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
-        errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
+        errorNetworkModel.setIconDrawableRes(com.tokopedia.flight.R.drawable.ic_flight_empty_state);
         errorNetworkModel.setOnRetryListener(this);
         adapter.setErrorNetworkModel(errorNetworkModel);
         return adapter;
@@ -226,7 +225,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void showShouldChooseAtLeastOnePassengerError() {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
-                getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error));
+                getString(com.tokopedia.flight.R.string.flight_cancellation_should_choose_at_least_one_passenger_error));
     }
 
     @Override
@@ -250,10 +249,10 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public void showAutoCheckDialog() {
         isFirstRelationCheck = false;
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
-        dialog.setTitle(getString(R.string.flight_cancellation_auto_check_dialog_title));
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_title));
         dialog.setDesc(getString(
-                R.string.flight_cancellation_auto_check_dialog_desc));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_auto_check_dialog_button));
+                com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_desc));
+        dialog.setBtnOk(getString(com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

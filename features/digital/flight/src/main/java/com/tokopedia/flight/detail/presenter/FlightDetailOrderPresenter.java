@@ -243,11 +243,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
-                getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
+                getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_manual_label);
                 getView().setPaymentDescription(renderManualPaymentDescriptionText(flightOrder.getPayment().getManualTransfer()));
                 getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
             } else {
-                getView().setPaymentLabel(R.string.flight_order_payment_label);
+                getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
                 if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
                     getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getNeedToPayAmount()));
@@ -293,8 +293,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         SpannableStringBuilder desc = new SpannableStringBuilder();
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
-        result.append(getView().getString(R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
-        result.append(getView().getString(R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
+        result.append(getView().getString(com.tokopedia.flight.orderlist.R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
+        result.append(getView().getString(com.tokopedia.flight.orderlist.R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
         result.append(manualTransfer.getAccountNo());
         makeSmall(desc.append(result.toString()));
         text.append("\n");
@@ -354,29 +354,29 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, true);
                 break;
             case FlightStatusOrderType.CONFIRMED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.FAILED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.FINISHED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.PROGRESS:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.READY_FOR_QUEUE:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.FLIGHT_CANCELLED:
             case FlightStatusOrderType.REFUNDED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_PAYMENT:
                 getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_TRANSFER:
                 getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
@@ -460,26 +460,26 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
         // add simpleViewModel price for adult passenger
         if (passengerAdultCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
 
         // add simpleViewModel price for child passenger
         if (passengerChildCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
 
         // add simpleViewModel price for infant passenger
         if (passengerInfantCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
 
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
             simpleViewModelList.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
         }
 
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
             simpleViewModelList.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
         }
@@ -572,9 +572,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private String generateLabelPassenger(String type, String departureId, String arrivalId) {
         switch (type) {
             case FlightAmenityType.LUGGAGE:
-                return getView().getString(R.string.flight_luggage_detail_order, departureId, arrivalId);
+                return getView().getString(com.tokopedia.flight.R.string.flight_luggage_detail_order, departureId, arrivalId);
             case FlightAmenityType.MEAL:
-                return getView().getString(R.string.flight_meal_detail_order, departureId, arrivalId);
+                return getView().getString(com.tokopedia.flight.R.string.flight_meal_detail_order, departureId, arrivalId);
             default:
                 return "";
         }

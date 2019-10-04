@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
@@ -24,7 +23,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRouteViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_flight_detail;
+    public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_detail;
 
     private ImageView imageAirline;
     private TextView airlineName;
@@ -53,29 +52,29 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
 
     public FlightDetailViewHolder(View itemView, FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener) {
         super(itemView);
-        imageAirline = itemView.findViewById(R.id.airline_icon);
-        airlineName = itemView.findViewById(R.id.airline_name);
-        airlineCode = itemView.findViewById(R.id.airline_code);
-        refundableInfo = itemView.findViewById(R.id.airline_refundable_info);
-        departureTime = itemView.findViewById(R.id.departure_time);
-        departureDate = itemView.findViewById(R.id.departure_date);
-        departureCircleImage = itemView.findViewById(R.id.departure_time_circle);
-        departureAirportName = itemView.findViewById(R.id.departure_airport_name);
-        departureAirportDesc = itemView.findViewById(R.id.departure_desc_airport_name);
-        departureTerminal = itemView.findViewById(R.id.departure_terminal);
-        flightTime = itemView.findViewById(R.id.flight_time);
-        arrivalTime = itemView.findViewById(R.id.arrival_time);
-        arrivalDate = itemView.findViewById(R.id.arrival_date);
-        arrivalCircleImage = itemView.findViewById(R.id.arrival_time_circle);
-        arrivalAirportName = itemView.findViewById(R.id.arrival_airport_name);
-        arrivalAirportDesc = itemView.findViewById(R.id.arrival_desc_airport_name);
-        arrivalTerminal = itemView.findViewById(R.id.arrival_terminal);
-        transitInfo = itemView.findViewById(R.id.transit_info);
-        containerPNR = itemView.findViewById(R.id.container_pnr);
-        pnrCode = itemView.findViewById(R.id.pnr_code);
-        copyPnr = itemView.findViewById(R.id.copy_pnr);
-        stopOverTextView = itemView.findViewById(R.id.tv_flight_stop_over);
-        stopOverContainerLayout = itemView.findViewById(R.id.container_flight_stop_over);
+        imageAirline = itemView.findViewById(com.tokopedia.flight.R.id.airline_icon);
+        airlineName = itemView.findViewById(com.tokopedia.flight.R.id.airline_name);
+        airlineCode = itemView.findViewById(com.tokopedia.flight.R.id.airline_code);
+        refundableInfo = itemView.findViewById(com.tokopedia.flight.R.id.airline_refundable_info);
+        departureTime = itemView.findViewById(com.tokopedia.flight.R.id.departure_time);
+        departureDate = itemView.findViewById(com.tokopedia.flight.R.id.departure_date);
+        departureCircleImage = itemView.findViewById(com.tokopedia.flight.R.id.departure_time_circle);
+        departureAirportName = itemView.findViewById(com.tokopedia.flight.R.id.departure_airport_name);
+        departureAirportDesc = itemView.findViewById(com.tokopedia.flight.R.id.departure_desc_airport_name);
+        departureTerminal = itemView.findViewById(com.tokopedia.flight.R.id.departure_terminal);
+        flightTime = itemView.findViewById(com.tokopedia.flight.R.id.flight_time);
+        arrivalTime = itemView.findViewById(com.tokopedia.flight.R.id.arrival_time);
+        arrivalDate = itemView.findViewById(com.tokopedia.flight.R.id.arrival_date);
+        arrivalCircleImage = itemView.findViewById(com.tokopedia.flight.R.id.arrival_time_circle);
+        arrivalAirportName = itemView.findViewById(com.tokopedia.flight.R.id.arrival_airport_name);
+        arrivalAirportDesc = itemView.findViewById(com.tokopedia.flight.R.id.arrival_desc_airport_name);
+        arrivalTerminal = itemView.findViewById(com.tokopedia.flight.R.id.arrival_terminal);
+        transitInfo = itemView.findViewById(com.tokopedia.flight.R.id.transit_info);
+        containerPNR = itemView.findViewById(com.tokopedia.flight.R.id.container_pnr);
+        pnrCode = itemView.findViewById(com.tokopedia.flight.R.id.pnr_code);
+        copyPnr = itemView.findViewById(com.tokopedia.flight.R.id.copy_pnr);
+        stopOverTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_flight_stop_over);
+        stopOverContainerLayout = itemView.findViewById(com.tokopedia.flight.R.id.container_flight_stop_over);
         this.onFlightDetailListener = onFlightDetailListener;
     }
 
@@ -95,7 +94,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         setArrivalInfo(route);
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.ic_airline_default)
         );
         if (onFlightDetailListener != null) {
             bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());
@@ -106,7 +105,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             if (route.getStopOverDetail() != null) {
                 stopOverContainerLayout.setVisibility(View.VISIBLE);
                 if (route.getStopOverDetail().size() < route.getStopOver()) {
-                    stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
+                    stopOverTextView.setText(String.format(getString(com.tokopedia.flight.R.string.flight_detail_total_stop_over_label), route.getStopOver()));
                 } else {
                     stopOverTextView.setText(TextUtils.join("\n", route.getStopOverDetail()));
                 }
@@ -118,14 +117,14 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         }
 
         if (route.getDepartureTerminal() != null && route.getDepartureTerminal().length() > 0) {
-            departureTerminal.setText(getString(R.string.flight_terminal_info, route.getDepartureTerminal()));
+            departureTerminal.setText(getString(com.tokopedia.flight.R.string.flight_terminal_info, route.getDepartureTerminal()));
             departureTerminal.setVisibility(View.VISIBLE);
         } else {
             departureTerminal.setVisibility(View.GONE);
         }
 
         if (route.getArrivalTerminal() != null && route.getArrivalTerminal().length() > 0) {
-            arrivalTerminal.setText(getString(R.string.flight_terminal_info, route.getArrivalTerminal()));
+            arrivalTerminal.setText(getString(com.tokopedia.flight.R.string.flight_terminal_info, route.getArrivalTerminal()));
             arrivalTerminal.setVisibility(View.VISIBLE);
         } else {
             arrivalTerminal.setVisibility(View.GONE);
@@ -146,11 +145,11 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
             arrivalAirportDesc.setText(route.getArrivalAirportName());
             arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
-            transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+            transitInfo.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
         } else {
             arrivalAirportName.setText(route.getArrivalAirportCode());
             arrivalAirportDesc.setText("");
-            transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCode(), route.getLayover()));
+            transitInfo.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_transit, route.getArrivalAirportCode(), route.getLayover()));
         }
     }
 
@@ -162,12 +161,12 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
                 @Override
                 public void onClick(View view) {
                     ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), pnrCode.getText().toString());
+                    ClipData clip = ClipData.newPlainText(getString(com.tokopedia.flight.R.string.flight_label_order_id), pnrCode.getText().toString());
                     clipboard.setPrimaryClip(clip);
                     clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
                         @Override
                         public void onPrimaryClipChanged() {
-                            Toast.makeText(itemView.getContext(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(itemView.getContext(), com.tokopedia.flight.R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -179,9 +178,9 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
 
     private void setRefundableInfo(FlightDetailRouteViewModel route) {
         if (route.isRefundable()) {
-            refundableInfo.setText(R.string.flight_label_refundable_info);
+            refundableInfo.setText(com.tokopedia.flight.R.string.flight_label_refundable_info);
         } else {
-            refundableInfo.setText(R.string.flight_label_non_refundable_info);
+            refundableInfo.setText(com.tokopedia.flight.R.string.flight_label_non_refundable_info);
         }
         refundableInfo.setVisibility(View.VISIBLE);
     }

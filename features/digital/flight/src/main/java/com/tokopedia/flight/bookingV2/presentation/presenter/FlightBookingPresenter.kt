@@ -9,7 +9,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
@@ -159,7 +158,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onButtonSubmitClicked() {
         if (validateFields()) {
-            flightAnalytics.eventBookingNextClick(view.getString(R.string.flight_booking_analytics_customer_page))
+            flightAnalytics.eventBookingNextClick(view.getString(com.tokopedia.flight.R.string.flight_booking_analytics_customer_page))
             view.getCurrentBookingParamViewModel().contactName = view.getContactName()
             view.getCurrentBookingParamViewModel().contactEmail = view.getContactEmail()
             view.getCurrentBookingParamViewModel().contactPhone = view.getContactPhoneNumber()
@@ -169,10 +168,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     view.getCurrentCartPassData(),
                     view.getDepartureTripId(),
                     view.getReturnTripId(),
-                    view.getString(R.string.flight_luggage_prefix),
-                    view.getString(R.string.flight_meal_prefix),
-                    view.getString(R.string.flight_birthdate_prefix),
-                    view.getString(R.string.flight_passenger_passport_number_hint)
+                    view.getString(com.tokopedia.flight.R.string.flight_luggage_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_meal_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_birthdate_prefix),
+                    view.getString(com.tokopedia.flight.R.string.flight_passenger_passport_number_hint)
             ))
         }
     }
@@ -663,9 +662,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             viewModel.passengerLocalId = passengerNumber
             viewModel.type = FlightBookingPassenger.ADULT
             viewModel.headerTitle = formatPassengerHeader(
-                    view.getString(R.string.flight_booking_prefix_passenger),
+                    view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                     passengerNumber,
-                    view.getString(R.string.flight_booking_postfix_adult_passenger)
+                    view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_adult_passenger)
             )
             viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
             viewModel.flightBookingMealMetaViewModels = arrayListOf()
@@ -678,9 +677,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.CHILDREN
                 viewModel.headerTitle = formatPassengerHeader(
-                        view.getString(R.string.flight_booking_prefix_passenger),
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                         passengerNumber,
-                        view.getString(R.string.flight_booking_postfix_children_passenger))
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_children_passenger))
                 viewModel.flightBookingMealMetaViewModels = ArrayList()
                 viewModel.flightBookingLuggageMetaViewModels = ArrayList()
                 viewModels.add(viewModel)
@@ -693,9 +692,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.INFANT
                 viewModel.headerTitle = formatPassengerHeader(
-                        view.getString(R.string.flight_booking_prefix_passenger),
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                         passengerNumber,
-                        view.getString(R.string.flight_booking_postfix_infant_passenger))
+                        view.getString(com.tokopedia.flight.R.string.flight_booking_postfix_infant_passenger))
 
                 viewModel.flightBookingLuggageMetaViewModels = ArrayList()
                 viewModel.flightBookingMealMetaViewModels = ArrayList()
@@ -708,7 +707,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     private fun formatPassengerHeader(prefix: String, number: Int, postix: String): String {
-        return String.format(view.getString(R.string.flight_booking_header_passenger_format),
+        return String.format(view.getString(com.tokopedia.flight.R.string.flight_booking_header_passenger_format),
                 prefix,
                 number,
                 postix
@@ -749,34 +748,34 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         var isValid = true
         if (view.getContactName().isEmpty()) {
             isValid = false
-            view.showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error)
+            view.showContactNameEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_name_empty_error)
         } else if (view.getContactName().isNotEmpty() && !isAlphabetAndSpaceOnly(view.getContactName())) {
             isValid = false
-            view.showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error)
+            view.showContactNameInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_name_alpha_space_error)
         } else if (view.getContactEmail().isEmpty()) {
             isValid = false
-            view.showContactEmailEmptyError(R.string.flight_booking_contact_email_empty_error)
+            view.showContactEmailEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_email_empty_error)
         } else if (!isValidEmail(view.getContactEmail())) {
             isValid = false
-            view.showContactEmailInvalidError(R.string.flight_booking_contact_email_invalid_error)
+            view.showContactEmailInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_error)
         } else if (!isEmailWithoutProhibitSymbol(view.getContactEmail())) {
             isValid = false
-            view.showContactEmailInvalidSymbolError(R.string.flight_booking_contact_email_invalid_symbol_error)
+            view.showContactEmailInvalidSymbolError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_symbol_error)
         } else if (view.getContactPhoneNumber().isEmpty()) {
             isValid = false
-            view.showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error)
+            view.showContactPhoneNumberEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_phone_empty_error)
         } else if (view.getContactPhoneNumber().isNotEmpty() && !isNumericOnly(view.getContactPhoneNumber())) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_invalid_error)
         } else if (view.getContactPhoneNumber().length > 13) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_max_length_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_max_length_error)
         } else if (view.getContactPhoneNumber().length < 9) {
             isValid = false
-            view.showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_min_length_error)
+            view.showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_min_length_error)
         } else if (!isAllPassengerFilled(view.getCurrentBookingParamViewModel().passengerViewModels)) {
             isValid = false
-            view.showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error)
+            view.showPassengerInfoNotFullfilled(com.tokopedia.flight.R.string.flight_booking_passenger_not_fullfilled_error)
         }
         return isValid
     }

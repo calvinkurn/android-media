@@ -39,7 +39,6 @@ import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
@@ -161,7 +160,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         paramViewModel = new FlightBookingParamViewModel();
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) arguments.getParcelable(EXTRA_SEARCH_PASS_DATA));
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         priceViewModel = arguments.getParcelable(EXTRA_PRICE);
     }
@@ -185,30 +184,30 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_flight_booking, container, false);
-        countdownFinishTransactionView = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
-        priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
-        departureInfoView = (CardWithAction) view.findViewById(R.id.cwa_departure_info);
-        returnInfoView = (CardWithAction) view.findViewById(R.id.cwa_return_info);
-        passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking, container, false);
+        countdownFinishTransactionView = (CountdownTimeView) view.findViewById(com.tokopedia.flight.R.id.countdown_finish_transaction);
+        priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_total_price);
+        departureInfoView = (CardWithAction) view.findViewById(com.tokopedia.flight.R.id.cwa_departure_info);
+        returnInfoView = (CardWithAction) view.findViewById(com.tokopedia.flight.R.id.cwa_return_info);
+        passengerRecyclerView = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_passengers);
         passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
-        submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
-        tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
-        etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);
-        tilContactEmail = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_email);
-        etContactEmail = (AppCompatEditText) view.findViewById(R.id.et_contact_email);
-        contactPhoneNumberLayout = (RelativeLayout) view.findViewById(R.id.contact_phone_number_layout);
-        contactPhoneNumberLabel = (AppCompatTextView) view.findViewById(R.id.contact_phone_number_label);
-        tvPhoneCountryCode = (AppCompatTextView) view.findViewById(R.id.et_phone_country_code);
-        etPhoneNumber = (AppCompatEditText) view.findViewById(R.id.et_phone_number);
-        pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
-        fullPageLoadingLayout = (LinearLayout) view.findViewById(R.id.full_page_loading);
-        fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
-        sameAsContactContainer = view.findViewById(R.id.container_same_as_contact);
-        sameAsContactCheckbox = view.findViewById(R.id.checkbox);
-        insuranceLayout = view.findViewById(R.id.insurance_layout);
-        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
-        tickerView = view.findViewById(R.id.flight_ticker_view);
+        submitButton = (AppCompatButton) view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        tilContactName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_contact_name);
+        etContactName = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_contact_name);
+        tilContactEmail = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_contact_email);
+        etContactEmail = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_contact_email);
+        contactPhoneNumberLayout = (RelativeLayout) view.findViewById(com.tokopedia.flight.R.id.contact_phone_number_layout);
+        contactPhoneNumberLabel = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.contact_phone_number_label);
+        tvPhoneCountryCode = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.et_phone_country_code);
+        etPhoneNumber = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_phone_number);
+        pricelistsRecyclerView = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_price_lists);
+        fullPageLoadingLayout = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.full_page_loading);
+        fullPageLayout = (NestedScrollView) view.findViewById(com.tokopedia.flight.R.id.container_full_page);
+        sameAsContactContainer = view.findViewById(com.tokopedia.flight.R.id.container_same_as_contact);
+        sameAsContactCheckbox = view.findViewById(com.tokopedia.flight.R.id.checkbox);
+        insuranceLayout = view.findViewById(com.tokopedia.flight.R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(com.tokopedia.flight.R.id.rv_insurance);
+        tickerView = view.findViewById(com.tokopedia.flight.R.id.flight_ticker_view);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,7 +258,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     private void initializePriceList() {
         priceListAdapter = new FlightSimpleAdapter();
-        priceListAdapter.setDescriptionTextColor(getResources().getColor(R.color.font_black_secondary_54));
+        priceListAdapter.setDescriptionTextColor(getResources().getColor(com.tokopedia.design.R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pricelistsRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
@@ -459,16 +458,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             if (returnTrip.getAirlineDataList().size() == 1) {
                 airLineSection = returnTrip.getAirlineDataList().get(0).getShortName();
             } else {
-                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+                airLineSection = getString(com.tokopedia.flight.R.string.flight_booking_multiple_airline_trip_card);
             }
         }
         if (returnTrip.getTotalTransit() > 0) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format), returnTrip.getTotalTransit(), getString(com.tokopedia.flight.R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format_without_count), getString(com.tokopedia.flight.R.string.flight_booking_directly_trip_card));
         }
         returnInfoView.setSubContent(airLineSection);
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -483,16 +482,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             if (departureTrip.getAirlineDataList().size() == 1) {
                 airLineSection = departureTrip.getAirlineDataList().get(0).getShortName();
             } else {
-                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+                airLineSection = getString(com.tokopedia.flight.R.string.flight_booking_multiple_airline_trip_card);
             }
         }
         if (departureTrip.getTotalTransit() > 0) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format), departureTrip.getTotalTransit(), getString(com.tokopedia.flight.R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format_without_count), getString(com.tokopedia.flight.R.string.flight_booking_directly_trip_card));
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), departureTrip.getDepartureTime(), departureTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format), departureTrip.getDepartureTime(), departureTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -592,7 +591,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void showExpireTransactionDialog(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage(message);
-        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+        dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -615,8 +614,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showSoldOutDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_sold_out_label);
-        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+        dialog.setMessage(com.tokopedia.flight.R.string.flight_booking_sold_out_label);
+        dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -673,7 +672,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         }
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return userId + String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
+        return userId + String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     private void showMessageErrorInSnackBar(int resId) {

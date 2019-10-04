@@ -21,7 +21,6 @@ import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
-import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
@@ -91,13 +90,13 @@ class FlightBookingFragment : BaseDaggerFragment(),
         paramViewModel = FlightBookingParamViewModel()
         paramViewModel.searchParam = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title))
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title))
         progressDialog.setCancelable(false)
         flightPriceViewModel = args.getParcelable(EXTRA_PRICE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_booking, container, false)
+            inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -344,16 +343,16 @@ class FlightBookingFragment : BaseDaggerFragment(),
             airLineSection = if (departureTrip.airlineDataList.size == 1) {
                 departureTrip.airlineDataList[0].shortName
             } else {
-                getString(R.string.flight_booking_multiple_airline_trip_card)
+                getString(com.tokopedia.flight.R.string.flight_booking_multiple_airline_trip_card)
             }
         }
         tripInfo += if (departureTrip.totalTransit > 0) {
-            String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.totalTransit, getString(R.string.flight_booking_transit_trip_card))
+            String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format), departureTrip.totalTransit, getString(com.tokopedia.flight.R.string.flight_booking_transit_trip_card))
         } else {
-            String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card))
+            String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format_without_count), getString(com.tokopedia.flight.R.string.flight_booking_directly_trip_card))
         }
         cwa_departure_info.setSubContent(airLineSection)
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), departureTrip.departureTime, departureTrip.arrivalTime)
+        tripInfo += " " + String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format), departureTrip.departureTime, departureTrip.arrivalTime)
         cwa_departure_info.setSubContentInfo(tripInfo)
     }
 
@@ -367,16 +366,16 @@ class FlightBookingFragment : BaseDaggerFragment(),
             airLineSection = if (returnTrip.airlineDataList.size == 1) {
                 returnTrip.airlineDataList[0].shortName
             } else {
-                getString(R.string.flight_booking_multiple_airline_trip_card)
+                getString(com.tokopedia.flight.R.string.flight_booking_multiple_airline_trip_card)
             }
         }
         tripInfo += if (returnTrip.totalTransit > 0) {
-            String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.totalTransit, getString(R.string.flight_booking_transit_trip_card))
+            String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format), returnTrip.totalTransit, getString(com.tokopedia.flight.R.string.flight_booking_transit_trip_card))
         } else {
-            String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card))
+            String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_format_without_count), getString(com.tokopedia.flight.R.string.flight_booking_directly_trip_card))
         }
         cwa_return_info.setSubContent(airLineSection)
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.departureTime, returnTrip.arrivalTime)
+        tripInfo += " " + String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format), returnTrip.departureTime, returnTrip.arrivalTime)
         cwa_return_info.setSubContentInfo(tripInfo)
     }
 
@@ -441,7 +440,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun showExpireTransactionDialog(message: String) {
         val dialog = AlertDialog.Builder(activity)
                 .setMessage(message)
-                .setPositiveButton(activity!!.getString(R.string.title_ok)
+                .setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
                 ) { _, _ ->
                     FlightFlowUtil.actionSetResultAndClose(activity!!,
                             activity!!.intent,
@@ -465,8 +464,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun showSoldOutDialog() {
         val dialog = AlertDialog.Builder(activity)
-                .setMessage(R.string.flight_booking_sold_out_label)
-                .setPositiveButton(activity!!.getString(R.string.title_ok)
+                .setMessage(com.tokopedia.flight.R.string.flight_booking_sold_out_label)
+                .setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
                 ) { _, _ ->
                     FlightFlowUtil.actionSetResultAndClose(activity!!,
                             activity!!.intent,
@@ -539,7 +538,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         }
         val timeMillis = System.currentTimeMillis().toString()
         val token = FlightRequestUtil.md5(timeMillis)
-        return userId + String.format(getString(R.string.flight_booking_id_empotency_format),
+        return userId + String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format),
                 requestId, if (token.isEmpty()) timeMillis else token)
     }
 
@@ -594,7 +593,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     private fun initializePriceList() {
         priceListAdapter = FlightSimpleAdapter()
-        priceListAdapter.setDescriptionTextColor(resources.getColor(R.color.font_black_secondary_54))
+        priceListAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.design.R.color.font_black_secondary_54))
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_price_lists.layoutManager = layoutManager
         rv_price_lists.setHasFixedSize(true)

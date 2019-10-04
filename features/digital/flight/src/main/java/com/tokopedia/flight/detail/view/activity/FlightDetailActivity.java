@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment;
@@ -57,7 +56,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_flight_detail;
+        return com.tokopedia.flight.R.layout.activity_flight_detail;
     }
 
     @Override
@@ -65,14 +64,14 @@ public class FlightDetailActivity extends BaseTabActivity {
         flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         isSubmitDisplayed = getIntent().getBooleanExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, true);
         super.setupLayout(savedInstanceState);
-        buttonSubmit = (Button) findViewById(R.id.button_submit);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        buttonSubmit = (Button) findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(com.tokopedia.flight.R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(" ");
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
-        departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
-        arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
-        arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
+        appBarLayout = (AppBarLayout) findViewById(com.tokopedia.abstraction.R.id.app_bar_layout);
+        departureAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_code);
+        departureAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_name);
+        arrivalAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_code);
+        arrivalAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_name);
 
         departureAirportCode.setText(flightDetailViewModel.getDepartureAirport());
         departureAirportName.setText(flightDetailViewModel.getDepartureAirportCity());
@@ -158,11 +157,11 @@ public class FlightDetailActivity extends BaseTabActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return getString(R.string.flight_label);
+                        return getString(com.tokopedia.flight.R.string.flight_label);
                     case 1:
-                        return getString(R.string.flight_label_facility);
+                        return getString(com.tokopedia.flight.R.string.flight_label_facility);
                     case 2:
-                        return getString(R.string.flight_label_price);
+                        return getString(com.tokopedia.flight.R.string.flight_label_price);
                     default:
                         return super.getPageTitle(position);
                 }

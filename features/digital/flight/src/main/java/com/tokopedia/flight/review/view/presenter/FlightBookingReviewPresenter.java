@@ -4,7 +4,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
@@ -204,13 +203,13 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void onPaymentFailed() {
-        getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
+        getView().showPaymentFailedErrorMessage(com.tokopedia.flight.R.string.flight_review_failed_checkout_message);
     }
 
     @Override
     public void onPaymentCancelled() {
         getView().setNeedToRefreshOnPassengerInfo();
-        getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
+        getView().showPaymentFailedErrorMessage(com.tokopedia.flight.R.string.flight_review_cancel_checkout_message);
         flightAnalytics.eventPurchaseAttemptCancelled();
     }
 

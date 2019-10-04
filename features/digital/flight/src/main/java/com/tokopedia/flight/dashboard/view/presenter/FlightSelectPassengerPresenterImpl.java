@@ -1,7 +1,6 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 
@@ -45,13 +44,13 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
         boolean isValid = true;
         if (!validator.validateTotalPassenger(passengerPassData)) {
             isValid = false;
-            getView().showTotalPassengerErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            getView().showTotalPassengerErrorMessage(com.tokopedia.flight.R.string.select_passenger_total_passenger_error_message);
         } else if (!validator.validateInfantNotGreaterThanAdult(passengerPassData)) {
             isValid = false;
-            getView().showInfantGreaterThanAdultErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+            getView().showInfantGreaterThanAdultErrorMessage(com.tokopedia.flight.R.string.select_passenger_infant_greater_than_adult_error_message);
         } else if (!validator.validateAdultCountAtleastOne(passengerPassData)) {
             isValid = false;
-            getView().showAdultShouldAtleastOneErrorMessage(R.string.select_passenger_adult_atleast_one_error_message);
+            getView().showAdultShouldAtleastOneErrorMessage(com.tokopedia.flight.R.string.select_passenger_adult_atleast_one_error_message);
         }
         return isValid;
     }

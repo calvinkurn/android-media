@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
 import com.tokopedia.flight.searchV3.data.api.single.response.Amenity;
 
@@ -22,9 +21,9 @@ public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHold
 
     public FlightDetailFacilityAmenityViewHolder(View itemView) {
         super(itemView);
-        imageAmenity = (AppCompatImageView) itemView.findViewById(R.id.image_amenity);
-        textAmenity = (TextView) itemView.findViewById(R.id.text_amenity);
-        defaultImage = (AppCompatImageView) itemView.findViewById(R.id.icon_default);
+        imageAmenity = (AppCompatImageView) itemView.findViewById(com.tokopedia.flight.R.id.image_amenity);
+        textAmenity = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.text_amenity);
+        defaultImage = (AppCompatImageView) itemView.findViewById(com.tokopedia.flight.R.id.icon_default);
     }
 
     public void bindData(Amenity amenity) {

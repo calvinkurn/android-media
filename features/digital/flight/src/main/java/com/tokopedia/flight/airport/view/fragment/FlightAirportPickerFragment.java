@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
@@ -55,7 +54,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_airport_picker, container, false);
         view.requestFocus();
         return view;
     }
@@ -66,7 +65,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
 
         searchHint = getArguments().getString(EXTRA_TOOLBAR_TITLE);
         searchInputView.setSearchHint(String.format(
-                getString(R.string.flight_label_search_hint_airport), searchHint));
+                getString(com.tokopedia.common.travel.R.string.flight_label_search_hint_airport), searchHint));
     }
 
     @Override
@@ -143,7 +142,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         if (searchInputView.getSearchText().length() < 3)
-            emptyModel.setContent(getString(R.string.flight_airport_less_than_three_keyword_error));
+            emptyModel.setContent(getString(com.tokopedia.flight.R.string.flight_airport_less_than_three_keyword_error));
         else emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
         return emptyModel;
     }

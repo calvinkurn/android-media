@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.searchV3.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV3.presentation.model.Duration;
@@ -24,7 +23,7 @@ import java.util.List;
 
 public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyViewModel> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_search;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_search;
 
     private LinearLayout containerLayout;
     private TextView tvDeparture;
@@ -44,19 +43,19 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
 
     public FlightSearchViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
-        containerLayout = itemView.findViewById(R.id.container_layout);
-        tvDeparture = itemView.findViewById(R.id.departure_time);
-        tvArrival = itemView.findViewById(R.id.arrival_time);
-        tvAirline = itemView.findViewById(R.id.tv_airline);
-        flightMultiAirlineView = itemView.findViewById(R.id.view_multi_airline);
-        airlineRefundableInfo = itemView.findViewById(R.id.airline_refundable_info);
-        tvPrice = itemView.findViewById(R.id.total_price);
-        tvDuration = itemView.findViewById(R.id.flight_time);
-        savingPrice = itemView.findViewById(R.id.saving_price);
-        arrivalAddDay = itemView.findViewById(R.id.arrival_add_day);
-        discountTag = itemView.findViewById(R.id.tv_discount_tag);
-        bestPairingTag = itemView.findViewById(R.id.tv_best_pairing_tag);
-        containerDetail = itemView.findViewById(R.id.container_detail);
+        containerLayout = itemView.findViewById(com.tokopedia.flight.R.id.container_layout);
+        tvDeparture = itemView.findViewById(com.tokopedia.flight.R.id.departure_time);
+        tvArrival = itemView.findViewById(com.tokopedia.flight.R.id.arrival_time);
+        tvAirline = itemView.findViewById(com.tokopedia.flight.R.id.tv_airline);
+        flightMultiAirlineView = itemView.findViewById(com.tokopedia.flight.R.id.view_multi_airline);
+        airlineRefundableInfo = itemView.findViewById(com.tokopedia.flight.R.id.airline_refundable_info);
+        tvPrice = itemView.findViewById(com.tokopedia.flight.R.id.total_price);
+        tvDuration = itemView.findViewById(com.tokopedia.flight.R.id.flight_time);
+        savingPrice = itemView.findViewById(com.tokopedia.flight.R.id.saving_price);
+        arrivalAddDay = itemView.findViewById(com.tokopedia.flight.R.id.arrival_add_day);
+        discountTag = itemView.findViewById(com.tokopedia.flight.R.id.tv_discount_tag);
+        bestPairingTag = itemView.findViewById(com.tokopedia.flight.R.id.tv_best_pairing_tag);
+        containerDetail = itemView.findViewById(com.tokopedia.flight.R.id.container_detail);
         this.onFlightSearchListener = onFlightSearchListener;
     }
 
@@ -88,18 +87,18 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
 
         if (getAdapterPosition() == 0) {
             params.setMargins(
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_8)
             );
             containerLayout.setLayoutParams(params);
         } else {
             params.setMargins(
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
-                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_8),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(com.tokopedia.flight.R.dimen.margin_8)
             );
             containerLayout.setLayoutParams(params);
         }
@@ -109,7 +108,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
             arrivalAddDay.setVisibility(View.VISIBLE);
             arrivalAddDay.setText(itemView.getContext().getString(
-                    R.string.flight_label_duration_add_day, flightJourneyViewModel.getAddDayArrival()));
+                    com.tokopedia.flight.R.string.flight_label_duration_add_day, flightJourneyViewModel.getAddDayArrival()));
         } else {
             arrivalAddDay.setVisibility(View.GONE);
         }
@@ -119,10 +118,10 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         Duration duration = DurationUtil.convertFormMinute(flightJourneyViewModel.getDurationMinute());
         String durationString = DurationUtil.getReadableString(itemView.getContext(), duration);
         if (flightJourneyViewModel.getTotalTransit() > 0) {
-            tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_transit,
+            tvDuration.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_duration_transit,
                     durationString, String.valueOf(flightJourneyViewModel.getTotalTransit())));
         } else {
-            tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_direct,
+            tvDuration.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_duration_direct,
                     durationString));
         }
     }
@@ -161,7 +160,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
             } else {
                 flightMultiAirlineView.setAirlineLogos(null);
             }
-            tvAirline.setText(R.string.flight_label_multi_maskapai);
+            tvAirline.setText(com.tokopedia.flight.R.string.flight_label_multi_maskapai);
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
             flightMultiAirlineView.setAirlineLogo(flightJourneyViewModel.getAirlineDataList().get(0).getLogo());

@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerViewModel;
 
 /**
@@ -15,7 +14,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingNewPassengerView
 public class FlightPassengerNewViewHolder extends AbstractViewHolder<FlightBookingNewPassengerViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_booking_new_passenger;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_new_passenger;
 
     public interface ListenerClickedNewPassenger {
         View.OnClickListener onNewPassengerClicked();
@@ -26,7 +25,7 @@ public class FlightPassengerNewViewHolder extends AbstractViewHolder<FlightBooki
 
     public FlightPassengerNewViewHolder(View itemView, ListenerClickedNewPassenger listenerClickedNewPassenger) {
         super(itemView);
-        txtTitle = itemView.findViewById(R.id.txt_new_passenger);
+        txtTitle = itemView.findViewById(com.tokopedia.flight.R.id.txt_new_passenger);
         this.listenerClickedNewPassenger = listenerClickedNewPassenger;
     }
 

@@ -149,25 +149,25 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_flight_dashboard, container, false);
-        AppCompatButton searchTicketButton = (AppCompatButton) view.findViewById(R.id.button_search_ticket);
-        oneWayTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_one_way_trip);
-        roundTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_round_trip);
-        reverseAirportImageView = (AppCompatImageView) view.findViewById(R.id.image_reverse_airport);
-        airportDepartureLayout = (LinearLayout) view.findViewById(R.id.departure_airport_layout);
-        airportArrivalLayout = (LinearLayout) view.findViewById(R.id.arrival_airport_layout);
-        airportDepartureTextInputView = (AppCompatTextView) view.findViewById(R.id.tv_departure_airport_label);
-        airportArrivalTextInputView = (AppCompatTextView) view.findViewById(R.id.tv_arrival_airport_label);
-        passengerTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_passenger);
-        classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
-        departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
-        returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
-        returnDateSeparatorView = view.findViewById(R.id.separator_date_return);
-        bannerLayout = view.findViewById(R.id.banner_layout);
-        bannerView = view.findViewById(R.id.banner);
-        progressBar = view.findViewById(R.id.progress_bar);
-        formContainerLayout = view.findViewById(R.id.dashboard_container);
-        tickerView = view.findViewById(R.id.flight_ticker_view);
+        final View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_dashboard, container, false);
+        AppCompatButton searchTicketButton = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_search_ticket);
+        oneWayTripAppCompatButton = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_one_way_trip);
+        roundTripAppCompatButton = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_round_trip);
+        reverseAirportImageView = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.image_reverse_airport);
+        airportDepartureLayout = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.departure_airport_layout);
+        airportArrivalLayout = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.arrival_airport_layout);
+        airportDepartureTextInputView = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_departure_airport_label);
+        airportArrivalTextInputView = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_arrival_airport_label);
+        passengerTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_passenger);
+        classTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_class);
+        departureDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_departure);
+        returnDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_return);
+        returnDateSeparatorView = view.findViewById(com.tokopedia.flight.R.id.separator_date_return);
+        bannerLayout = view.findViewById(com.tokopedia.flight.R.id.banner_layout);
+        bannerView = view.findViewById(com.tokopedia.flight.R.id.banner);
+        progressBar = view.findViewById(com.tokopedia.common.travel.R.id.progress_bar);
+        formContainerLayout = view.findViewById(com.tokopedia.flight.R.id.dashboard_container);
+        tickerView = view.findViewById(com.tokopedia.flight.R.id.flight_ticker_view);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -193,14 +193,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         airportDepartureLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(R.string.flight_airportpicker_departure_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_departure_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE);
             }
         });
         airportArrivalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(R.string.flight_airportpicker_arrival_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_arrival_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_ARRIVAL);
             }
         });
@@ -380,13 +380,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
-            airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
+            airportDepartureTextInputView.setHint(getString(com.tokopedia.flight.R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
             airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
-            airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
+            airportArrivalTextInputView.setHint(getString(com.tokopedia.flight.R.string.flight_dashboard_arrival_airport_hint));
         }
         if (viewModel.getFlightClass() != null) {
             classTextInputView.setText(viewModel.getFlightClass().getTitle());
@@ -409,13 +409,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
-            airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
+            airportDepartureTextInputView.setHint(getString(com.tokopedia.flight.R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
             airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
-            airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
+            airportArrivalTextInputView.setHint(getString(com.tokopedia.flight.R.string.flight_dashboard_arrival_airport_hint));
         }
         if (viewModel.getFlightClass() != null) {
             classTextInputView.setText(viewModel.getFlightClass().getTitle());
@@ -447,12 +447,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
     }
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,

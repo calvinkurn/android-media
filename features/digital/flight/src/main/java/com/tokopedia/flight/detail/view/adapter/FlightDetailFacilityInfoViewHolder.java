@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel;
 
 /**
@@ -18,8 +17,8 @@ public class FlightDetailFacilityInfoViewHolder extends RecyclerView.ViewHolder 
 
     public FlightDetailFacilityInfoViewHolder(View itemView) {
         super(itemView);
-        titleInfo = (TextView) itemView.findViewById(R.id.title_info);
-        descInfo = (TextView) itemView.findViewById(R.id.desc_info);
+        titleInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.title_info);
+        descInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.desc_info);
     }
 
     public void bindData(FlightOrderDetailRouteInfoViewModel info) {

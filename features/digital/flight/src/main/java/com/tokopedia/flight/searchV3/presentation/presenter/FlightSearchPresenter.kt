@@ -5,7 +5,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
@@ -14,10 +13,10 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.searchV3.domain.*
-import com.tokopedia.flight.searchV3.presentation.model.*
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
+import com.tokopedia.flight.searchV3.presentation.model.*
+import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -131,11 +130,11 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val twoYears: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
 
         if (dateToSet.after(twoYears)) {
-            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error)
+            view.showDepartureDateMaxTwoYears(com.tokopedia.flight.R.string.flight_dashboard_departure_max_one_years_from_today_error)
         } else if (!view.isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
-            view.showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error)
+            view.showDepartureDateShouldAtLeastToday(com.tokopedia.flight.R.string.flight_dashboard_departure_should_atleast_today_error)
         } else if (view.isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.departureDate))) {
-            view.showReturnDateShouldGreatedOrEqual(R.string.flight_dashboard_return_should_greater_equal_error)
+            view.showReturnDateShouldGreatedOrEqual(com.tokopedia.flight.R.string.flight_dashboard_return_should_greater_equal_error)
         } else {
             val dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT)
 

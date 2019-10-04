@@ -1,7 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
@@ -99,7 +98,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                     @Override
                     public void onNext(CancellationRequestEntity cancellationRequestEntity) {
                         getView().hideLoading();
-                        getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description);
+                        getView().showSuccessDialog(com.tokopedia.flight.R.string.flight_cancellation_review_dialog_non_refundable_success_description);
                     }
                 }
         );
@@ -112,11 +111,11 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                 getView().hideRefundDetail();
             } else {
                 getView().hideEstimateValue();
-                getView().showRefundDetail(R.string.flight_cancellation_review_refund_to_email_detail);
+                getView().showRefundDetail(com.tokopedia.flight.R.string.flight_cancellation_review_refund_to_email_detail);
             }
         } else {
             getView().hideEstimateValue();
-            getView().showRefundDetail(R.string.flight_cancellation_review_no_refund_detail);
+            getView().showRefundDetail(com.tokopedia.flight.R.string.flight_cancellation_review_no_refund_detail);
         }
     }
 

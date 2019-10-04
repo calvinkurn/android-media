@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -70,8 +69,8 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_booking_luggage, container, false);
-        Button button = (Button) view.findViewById(R.id.button_save);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_booking_luggage, container, false);
+        Button button = (Button) view.findViewById(com.tokopedia.flight.R.id.button_save);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -161,38 +161,38 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_detail_order, container, false);
-        orderId = view.findViewById(R.id.order_id_detail);
-        copyOrderId = view.findViewById(R.id.copy_order_id);
-        containerSendEticket = view.findViewById(R.id.container_send_eticket);
-        orderStatus = view.findViewById(R.id.status_ticket);
-        transactionDate = view.findViewById(R.id.transaction_date);
-        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
-        recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
-        recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
-        recyclerViewPrice = view.findViewById(R.id.recycler_view_detail_price);
-        containerDownloadInvoice = view.findViewById(R.id.container_download_invoice);
-        totalPrice = view.findViewById(R.id.total_price);
-        orderHelp = view.findViewById(R.id.help);
-        buttonCancelTicket = view.findViewById(R.id.button_cancel);
-        buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
-        buttonReorder = view.findViewById(R.id.button_reorder);
-        paymentInfoLayout = view.findViewById(R.id.payment_info_layout);
-        paymentCostLayout = view.findViewById(R.id.payment_cost_layout);
-        paymentDueDateLayout = view.findViewById(R.id.payment_due_date_layout);
-        tvPaymentDescriptionLabel = view.findViewById(R.id.tv_payment_description_label);
-        tvPaymentDescription = view.findViewById(R.id.tv_payment_description);
-        tvPaymentCost = view.findViewById(R.id.tv_payment_cost);
-        tvPaymentCostLabel = view.findViewById(R.id.tv_payment_cost_label);
-        tvPaymentDueDate = view.findViewById(R.id.tv_payment_due_date);
-        insuranceLayout = view.findViewById(R.id.insurance_layout);
-        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
-        showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_detail_order, container, false);
+        orderId = view.findViewById(com.tokopedia.flight.R.id.order_id_detail);
+        copyOrderId = view.findViewById(com.tokopedia.flight.R.id.copy_order_id);
+        containerSendEticket = view.findViewById(com.tokopedia.flight.R.id.container_send_eticket);
+        orderStatus = view.findViewById(com.tokopedia.flight.R.id.status_ticket);
+        transactionDate = view.findViewById(com.tokopedia.flight.R.id.transaction_date);
+        layoutExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.layout_expendable_passenger);
+        imageExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        recyclerViewFlight = view.findViewById(com.tokopedia.flight.R.id.recycler_view_flight);
+        recyclerViewPassenger = view.findViewById(com.tokopedia.flight.R.id.recycler_view_data_passenger);
+        recyclerViewPrice = view.findViewById(com.tokopedia.flight.R.id.recycler_view_detail_price);
+        containerDownloadInvoice = view.findViewById(com.tokopedia.flight.R.id.container_download_invoice);
+        totalPrice = view.findViewById(com.tokopedia.flight.R.id.total_price);
+        orderHelp = view.findViewById(com.tokopedia.flight.R.id.help);
+        buttonCancelTicket = view.findViewById(com.tokopedia.design.R.id.button_cancel);
+        buttonRescheduleTicket = view.findViewById(com.tokopedia.flight.R.id.button_reschedule);
+        buttonReorder = view.findViewById(com.tokopedia.flight.R.id.button_reorder);
+        paymentInfoLayout = view.findViewById(com.tokopedia.flight.orderlist.R.id.payment_info_layout);
+        paymentCostLayout = view.findViewById(com.tokopedia.flight.R.id.payment_cost_layout);
+        paymentDueDateLayout = view.findViewById(com.tokopedia.flight.R.id.payment_due_date_layout);
+        tvPaymentDescriptionLabel = view.findViewById(com.tokopedia.flight.R.id.tv_payment_description_label);
+        tvPaymentDescription = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_description);
+        tvPaymentCost = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_cost);
+        tvPaymentCostLabel = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_cost_label);
+        tvPaymentDueDate = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_due_date);
+        insuranceLayout = view.findViewById(com.tokopedia.flight.R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(com.tokopedia.flight.R.id.rv_insurance);
+        showEticket = view.findViewById(com.tokopedia.flight.R.id.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
-        containerCancellation = view.findViewById(R.id.cancellation_container);
-        cancellationWarningTicker = view.findViewById(R.id.cancellation_warning);
+        containerCancellation = view.findViewById(com.tokopedia.flight.R.id.cancellation_container);
+        cancellationWarningTicker = view.findViewById(com.tokopedia.flight.orderlist.R.id.cancellation_warning);
 
         setViewClickListener();
 
@@ -206,7 +206,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         recyclerViewPassenger.setAdapter(flightBookingReviewPassengerAdapter);
         recyclerViewPrice.setAdapter(flightBookingReviewPriceAdapter);
         recyclerViewPrice.setLayoutManager(new LinearLayoutManager(getActivity()));
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         orderId.setText(flightOrderDetailPassData.getOrderId());
 
@@ -226,13 +226,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), orderId.getText().toString());
+                ClipData clip = ClipData.newPlainText(getString(com.tokopedia.flight.R.string.flight_label_order_id), orderId.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
                     @Override
                     public void onPrimaryClipChanged() {
                         if (getActivity() != null) {
-                            Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), com.tokopedia.flight.R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -594,7 +594,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == RESULT_OK) {
-                    showGreenSnackbar(R.string.resend_eticket_success);
+                    showGreenSnackbar(com.tokopedia.flight.orderlist.R.string.resend_eticket_success);
                 }
                 break;
             case REQUEST_CODE_CANCELLATION:
@@ -635,9 +635,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_cancellation_dialog_refundable_description)));
+                getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -646,7 +646,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -659,9 +659,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(getString(
-                R.string.flight_cancellation_dialog_non_refundable_description)));
+                com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -670,7 +670,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

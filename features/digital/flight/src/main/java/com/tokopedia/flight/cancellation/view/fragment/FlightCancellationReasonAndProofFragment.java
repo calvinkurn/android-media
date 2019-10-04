@@ -134,19 +134,19 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_refundable_step_two, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_refundable_step_two, container, false);
         buildView(view);
         return view;
     }
 
     private void buildView(View view) {
-        container = view.findViewById(R.id.container);
-        progressBar = view.findViewById(R.id.progress_bar);
-        tvChooseReason = view.findViewById(R.id.et_saved_passenger);
-        attachmentContainer = view.findViewById(R.id.attachment_container);
-        attachmentDescription = view.findViewById(R.id.attachment_description);
-        rvAttachments = view.findViewById(R.id.rv_attachments);
-        btnNext = view.findViewById(R.id.btn_next);
+        container = view.findViewById(com.tokopedia.design.R.id.container);
+        progressBar = view.findViewById(com.tokopedia.common.travel.R.id.progress_bar);
+        tvChooseReason = view.findViewById(com.tokopedia.flight.R.id.et_saved_passenger);
+        attachmentContainer = view.findViewById(com.tokopedia.flight.R.id.attachment_container);
+        attachmentDescription = view.findViewById(com.tokopedia.flight.R.id.attachment_description);
+        rvAttachments = view.findViewById(com.tokopedia.flight.R.id.rv_attachments);
+        btnNext = view.findViewById(com.tokopedia.flight.R.id.btn_next);
 
         FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this, true);
         adapter = new FlightCancellationAttachmentAdapter(adapterTypeFactory);
@@ -302,7 +302,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onUploadAttachmentButtonClicked(int positionIndex) {
         positionChangedImage = positionIndex;
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);

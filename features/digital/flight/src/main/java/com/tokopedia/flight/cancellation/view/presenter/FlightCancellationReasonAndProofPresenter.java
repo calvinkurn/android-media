@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
@@ -126,10 +125,10 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         int fileSize = Integer.parseInt(String.valueOf(file.length() / DEFAULT_ONE_MEGABYTE));
 
         if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
-            getView().showAttachmentMinDimensionErrorMessage(R.string.flight_cancellation_min_dimension_error);
+            getView().showAttachmentMinDimensionErrorMessage(com.tokopedia.flight.R.string.flight_cancellation_min_dimension_error);
             return false;
         } else if (fileSize >= MAX_FILE_SIZE) {
-            getView().showAttachmentMaxSizeErrorMessage(R.string.flight_cancellation_max_error);
+            getView().showAttachmentMaxSizeErrorMessage(com.tokopedia.flight.R.string.flight_cancellation_max_error);
             return false;
         } else {
             return true;
@@ -174,7 +173,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                 @Override
                 public void onNext(Boolean aBoolean) {
                     if (!aBoolean)
-                        getView().showRequiredMinimalOneAttachmentErrorMessage(R.string.flight_cancellation_attachment_required_error_message);
+                        getView().showRequiredMinimalOneAttachmentErrorMessage(com.tokopedia.flight.R.string.flight_cancellation_attachment_required_error_message);
                 }
             });
 
@@ -208,7 +207,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                         int totalPassenger = calculateTotalPassenger(getView().getCancellationViewModel());
                         getView().showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(
                                 String.format(
-                                        getView().getString(R.string.flight_cancellation_attachment_more_than_max_error_message), totalPassenger + 1)
+                                        getView().getString(com.tokopedia.flight.R.string.flight_cancellation_attachment_more_than_max_error_message), totalPassenger + 1)
                         );
                     }
                 }
