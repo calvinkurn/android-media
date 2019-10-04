@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {
