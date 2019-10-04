@@ -21,8 +21,15 @@ object DFInstallerLogUtil {
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false) {
         val messageStringBuilder = StringBuilder()
-        messageStringBuilder.append("P1$tag {$modulesName};")
+        messageStringBuilder.append("P1$tag{$modulesName};")
         messageStringBuilder.append("times_dl:{$downloadTimes};")
+
+        if (errorCode?.isNotEmpty() == true) {
+            messageStringBuilder.append("err:{${errorCode.joinToString("|")}};")
+        }
+        if (isSuccess) {
+            messageStringBuilder.append("success;")
+        }
 
         try {
             val totalSize = File(context.filesDir.absoluteFile.toString()).freeSpace.toDouble()
@@ -33,12 +40,6 @@ object DFInstallerLogUtil {
         if (moduleSize > 0) {
             val moduleSizeInMB = String.format("%.2fMB", moduleSize.toDouble() / MEGA_BYTE)
             messageStringBuilder.append("size:{$moduleSizeInMB};")
-        }
-        if (errorCode?.isNotEmpty() == true) {
-            messageStringBuilder.append("err:{${errorCode.joinToString("-")}};")
-        }
-        if (isSuccess) {
-            messageStringBuilder.append("Success;")
         }
         try {
             val playServiceVersion = PackageInfoCompat.getLongVersionCode(

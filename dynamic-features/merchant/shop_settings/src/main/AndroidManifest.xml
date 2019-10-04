@@ -8,6 +8,7 @@
         dist:title="@string/shop_settings_title">
         <dist:fusing dist:include="true" />
     </dist:module>
+
     <application android:hasCode="false" />
 
 </manifest>
