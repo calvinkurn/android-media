@@ -1166,7 +1166,7 @@ public class ProductListFragment
     @Override
     public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
         if (getActivity() != null) {
-            recyclerView.postDelayed(() -> FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge), 300);
+            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge);
         }
     }
 }
