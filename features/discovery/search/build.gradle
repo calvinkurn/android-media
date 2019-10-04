@@ -60,6 +60,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.globalNavWidget)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 

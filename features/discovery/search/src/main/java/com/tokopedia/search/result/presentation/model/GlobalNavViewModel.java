@@ -86,6 +86,10 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             return url;
         }
 
+        public int getPosition() {
+            return position;
+        }
+
         public Object getGlobalNavItemAsObjectDataLayer() {
             return DataLayer.mapOf(
                     "id", name,
@@ -107,6 +111,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             dest.writeString(this.imageUrl);
             dest.writeString(this.applink);
             dest.writeString(this.url);
+            dest.writeInt(this.position);
         }
 
         protected Item(Parcel in) {
@@ -115,6 +120,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             this.imageUrl = in.readString();
             this.applink = in.readString();
             this.url = in.readString();
+            this.position = in.readInt();
         }
 
         public static final Creator<Item> CREATOR = new Creator<Item>() {

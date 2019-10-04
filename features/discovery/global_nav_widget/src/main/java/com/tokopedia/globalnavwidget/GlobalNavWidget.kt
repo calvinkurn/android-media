@@ -32,11 +32,8 @@ class GlobalNavWidget: BaseCustomView {
     fun setData(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
         setTitle(globalNavWidgetModel.title)
         setBackground(globalNavWidgetModel.background)
+        setSeeAllButtonListener(globalNavWidgetModel, globalNavWidgetListener)
         setContent(globalNavWidgetModel, globalNavWidgetListener)
-
-        globalNavSeeAllButton?.setOnClickListener { _ ->
-            globalNavWidgetListener.onClickSeeAll(globalNavWidgetModel)
-        }
     }
 
     private fun setTitle(title: String) {
@@ -49,42 +46,32 @@ class GlobalNavWidget: BaseCustomView {
         }
     }
 
+    private fun setSeeAllButtonListener(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+        val shouldShowSeeAllButton = globalNavWidgetModel.clickSeeAllApplink.isNotEmpty()
+
+        globalNavSeeAllButton?.shouldShowWithAction(shouldShowSeeAllButton) { globalNavSeeAllButton ->
+            globalNavSeeAllButton.setOnClickListener {
+                globalNavWidgetListener.onClickSeeAll(globalNavWidgetModel)
+            }
+        }
+    }
+
     private fun setContent(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
-        if (globalNavWidgetModel.navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_CARD) {
-            hidePillContent()
-            setCardContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
-        }
-        else if (globalNavWidgetModel.navTemplate == GlobalNavWidgetConstant.NAV_TEMPLATE_PILL) {
-            hideCardContent()
-            setPillContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+        when(globalNavWidgetModel.navTemplate) {
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            else -> handleDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
         }
     }
 
-    private fun setPillContent(
-            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+    private fun handleCardTemplate(
+            globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
-        globalNavPillRecyclerView?.visibility = View.VISIBLE
-        globalNavPillRecyclerView?.adapter = createPillAdapter(globalNavWidgetItemList, globalNavWidgetListener)
-        globalNavPillRecyclerView?.layoutManager = createPillRecyclerViewLayoutManager()
-    }
-
-    private fun createPillAdapter(
-            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
-            globalNavWidgetListener: GlobalNavWidgetListener
-    ): RecyclerView.Adapter<*> {
-
-        val pillsAdapter = GlobalNavWidgetPillAdapter(globalNavWidgetListener)
-        pillsAdapter.setItemList(globalNavWidgetItemList)
-
-        return pillsAdapter
-    }
-
-    private fun createPillRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(context, GLOBAL_NAV_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+        hidePillContent()
+        setCardContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
     }
 
     private fun hidePillContent() {
@@ -115,7 +102,39 @@ class GlobalNavWidget: BaseCustomView {
         return GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
     }
 
+    private fun handleDefaultTemplate(
+            globalNavWidgetModel: GlobalNavWidgetModel,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        hideCardContent()
+        setPillContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+    }
+
     private fun hideCardContent() {
         globalNavCardRecyclerView?.visibility = View.GONE
+    }
+
+    private fun setPillContent(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        globalNavPillRecyclerView?.visibility = View.VISIBLE
+        globalNavPillRecyclerView?.adapter = createPillAdapter(globalNavWidgetItemList, globalNavWidgetListener)
+        globalNavPillRecyclerView?.layoutManager = createPillRecyclerViewLayoutManager()
+    }
+
+    private fun createPillAdapter(
+            globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
+            globalNavWidgetListener: GlobalNavWidgetListener
+    ): RecyclerView.Adapter<*> {
+
+        val pillsAdapter = GlobalNavWidgetPillAdapter(globalNavWidgetListener)
+        pillsAdapter.setItemList(globalNavWidgetItemList)
+
+        return pillsAdapter
+    }
+
+    private fun createPillRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(context, GLOBAL_NAV_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
     }
 }

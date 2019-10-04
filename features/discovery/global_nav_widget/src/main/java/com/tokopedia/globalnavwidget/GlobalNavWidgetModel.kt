@@ -26,6 +26,7 @@ data class GlobalNavWidgetModel(
             val subtitle: String = "",
             val strikethrough: String = "",
             val backgroundUrl: String = "",
-            val logoUrl: String = ""
+            val logoUrl: String = "",
+            val position: Int = 0
     )
 }

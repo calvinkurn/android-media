@@ -816,6 +816,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavData {
+        @SerializedName("source")
+        private String source = "";
+
         @SerializedName("title")
         private String title = "";
 
@@ -825,6 +828,27 @@ public class SearchProductModel {
         @SerializedName("nav_template")
         private String navTemplate = "";
 
+        @SerializedName("background")
+        private String background = "";
+
+        @SerializedName("logo_url")
+        private String logoUrl = "";
+
+        @SerializedName("reputation_url")
+        private String reputationUrl = "";
+
+        @SerializedName("icon_badge_url")
+        private String iconBadgeUrl = "";
+
+        @SerializedName("credibility")
+        private String credibility = "";
+
+        @SerializedName("isOfficial")
+        private Boolean isOfficial = false;
+
+        @SerializedName("isPowerMerchant")
+        private Boolean isPowerMerchant = false;
+
         @SerializedName("see_all_applink")
         private String seeAllApplink = "";
 
@@ -833,6 +857,8 @@ public class SearchProductModel {
 
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
+
+        private String getSource() { return source; }
 
         public String getTitle() {
             return title;
@@ -844,6 +870,28 @@ public class SearchProductModel {
 
         public String getNavTemplate() {
             return navTemplate;
+        }
+
+        public String getBackground() { return background; }
+
+        public String getLogoUrl() { return logoUrl; }
+
+        public String getReputationUrl() { return reputationUrl; }
+
+        public String getIconBadgeUrl() {
+            return iconBadgeUrl;
+        }
+
+        public String getCredibility() {
+            return credibility;
+        }
+
+        public Boolean getOfficial() {
+            return isOfficial;
+        }
+
+        public Boolean getPowerMerchant() {
+            return isPowerMerchant;
         }
 
         public String getSeeAllApplink() {
@@ -875,6 +923,18 @@ public class SearchProductModel {
         @SerializedName("url")
         private String url = "";
 
+        @SerializedName("subtitle")
+        private String subtitle = "";
+
+        @SerializedName("strikethrough")
+        private String strikethrough = "";
+
+        @SerializedName("background_url")
+        private String backgroundUrl = "";
+
+        @SerializedName("logo_url")
+        private String logoUrl = "";
+
         public String getName() {
             return name;
         }
@@ -893,6 +953,22 @@ public class SearchProductModel {
 
         public String getUrl() {
             return url;
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+        public String getStrikethrough() {
+            return strikethrough;
+        }
+
+        public String getBackgroundUrl() {
+            return backgroundUrl;
+        }
+
+        public String getLogoUrl() {
+            return logoUrl;
         }
     }
 }
