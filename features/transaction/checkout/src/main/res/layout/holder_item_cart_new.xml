@@ -37,9 +37,10 @@
                     android:id="@+id/cb_select_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_8"
-                    android:theme="@style/TransactionCheckbox" />
+                    android:layout_marginTop="14dp"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_10"
+                    android:button="@drawable/ic_cart_check_box" />
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/iv_product_card"
