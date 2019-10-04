@@ -413,6 +413,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
+        adapter.showEmpty();
     }
 
     @Override
