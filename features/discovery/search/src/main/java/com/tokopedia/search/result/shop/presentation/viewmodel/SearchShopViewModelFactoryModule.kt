@@ -38,9 +38,9 @@ class SearchShopViewModelFactoryModule(
     @Provides
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
+            @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
             searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+            @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
             searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
             getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,

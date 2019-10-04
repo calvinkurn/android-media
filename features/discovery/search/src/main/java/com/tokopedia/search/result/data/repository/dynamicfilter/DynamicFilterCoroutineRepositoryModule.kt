@@ -20,14 +20,16 @@ class DynamicFilterCoroutineRepositoryModule {
     @SearchScope
     @Provides
     @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY)
-    fun provideDynamicFilterRepository(dataSource: DynamicFilterCoroutineDataSource): Repository<DynamicFilterModel> {
+    fun provideDynamicFilterRepository(dataSource: DynamicFilterCoroutineDataSource)
+            : Repository<Map<String, Any>, DynamicFilterModel> {
         return DynamicFilterCoroutineRepository(dataSource, Dispatchers.IO)
     }
 
     @SearchScope
     @Provides
     @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY_V4)
-    fun provideDynamicFilterRepositoryV4(dataSource: DynamicFilterCoroutineDataSource): Repository<DynamicFilterModel> {
+    fun provideDynamicFilterRepositoryV4(dataSource: DynamicFilterCoroutineDataSource)
+            : Repository<Map<String, Any>, DynamicFilterModel> {
         return DynamicFilterCoroutineRepositoryV4(dataSource, Dispatchers.IO)
     }
 }

@@ -9,11 +9,11 @@ import kotlinx.coroutines.withContext
 class DynamicFilterCoroutineRepository(
         private val dynamicFilterCoroutineDataSource: DynamicFilterCoroutineDataSource,
         private val coroutineDispatcher: CoroutineDispatcher
-): Repository<DynamicFilterModel> {
+): Repository<Map<String, Any>, DynamicFilterModel> {
 
-    override suspend fun query(params: Map<String, Any?>): DynamicFilterModel {
+    override suspend fun getResponse(inputParameter: Map<String, Any>): DynamicFilterModel {
         return withContext(coroutineDispatcher) {
-            dynamicFilterCoroutineDataSource.getDynamicAttribute(params)
+            dynamicFilterCoroutineDataSource.getDynamicAttribute(inputParameter)
         }
     }
 }

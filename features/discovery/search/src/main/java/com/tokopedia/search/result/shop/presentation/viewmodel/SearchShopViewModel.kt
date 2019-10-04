@@ -10,6 +10,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
+import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.search.result.common.EmptySearchCreator
@@ -27,8 +28,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 class SearchShopViewModel(
         dispatcher: CoroutineDispatcher,
         searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
-        private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
+        private val searchShopFirstPageUseCase: Repository<Map<String, Any>, SearchShopModel>,
+        private val searchShopLoadMoreUseCase: Repository<Map<String, Any>, SearchShopModel>,
         private val getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
@@ -105,10 +106,6 @@ class SearchShopViewModel(
         searchShopFirstPageSuccess(searchShopModel)
 
         getDynamicFilter()
-    }
-
-    private fun isSearchShopListContainItems(): Boolean {
-        return searchShopMutableList.isNotEmpty()
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -361,7 +358,7 @@ class SearchShopViewModel(
     }
 
     private suspend fun tryRetrySearchShop() {
-        if (isSearchShopLiveDataDoesNotContainItems()) {
+        if (isSearchShopLiveDataEmpty()) {
             trySearchShop()
         }
         else {
@@ -369,8 +366,8 @@ class SearchShopViewModel(
         }
     }
 
-    private fun isSearchShopLiveDataDoesNotContainItems(): Boolean {
-        return !isSearchShopListContainItems()
+    private fun isSearchShopLiveDataEmpty(): Boolean {
+        return searchShopMutableList.isEmpty()
     }
 
     fun onViewReloadData() {

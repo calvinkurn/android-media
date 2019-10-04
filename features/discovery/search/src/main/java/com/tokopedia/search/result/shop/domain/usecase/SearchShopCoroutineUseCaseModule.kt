@@ -21,7 +21,7 @@ class SearchShopCoroutineUseCaseModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
     fun provideSearchShopFirstPageUseCase(
             @ApplicationContext context: Context
     ): SearchUseCase<SearchShopModel> {
@@ -32,7 +32,7 @@ class SearchShopCoroutineUseCaseModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
     fun provideSearchShopLoadMoreUseCase(
             @ApplicationContext context: Context
     ): SearchUseCase<SearchShopModel> {

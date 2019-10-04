@@ -2,15 +2,15 @@ package com.tokopedia.search.result.shop.repository
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.Repository
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.TopAdsParams
-import java.util.*
+import java.util.HashMap
 
-class SearchShopFirstPageRepository(
+class SearchShopLoadMoreRepository(
         private val queryString: String,
         private val graphqlCacheStrategy: GraphqlCacheStrategy,
         private val graphqlRepository: GraphqlRepository
@@ -35,19 +35,7 @@ class SearchShopFirstPageRepository(
         val variables = HashMap<String, Any>()
 
         variables[SearchConstant.GQL.KEY_PARAMS] = UrlParamUtils.generateUrlParamString(requestParams)
-        variables[SearchConstant.GQL.KEY_HEADLINE_PARAMS] = createHeadlineParams(requestParams)
 
         return variables
-    }
-
-    private fun createHeadlineParams(requestParams: Map<String, Any>): String {
-        val headlineParams = HashMap(requestParams)
-
-        headlineParams[TopAdsParams.KEY_EP] = SearchConstant.SearchShop.HEADLINE
-        headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.SearchShop.HEADLINE_TEMPLATE_VALUE
-        headlineParams[TopAdsParams.KEY_ITEM] = SearchConstant.SearchShop.HEADLINE_ITEM_VALUE
-        headlineParams[TopAdsParams.KEY_SRC] = SearchConstant.SearchShop.ADS_SOURCE
-
-        return UrlParamUtils.generateUrlParamString(headlineParams)
     }
 }
