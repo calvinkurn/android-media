@@ -5,7 +5,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.R
@@ -13,6 +12,8 @@ import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.constant.GMParamConstant
 import com.tokopedia.gm.common.data.interceptor.PowerMerchantSubscribeInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,6 +35,23 @@ class GmCommonModule {
         return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
     }
 
+    @GmCommonQualifier
+    @Provides
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
+
+    @GmCommonQualifier
+    @Provides
+    fun provideTkpdAuthInterceptor(
+            @ApplicationContext  context: Context,
+            @GmCommonQualifier networkRouter: NetworkRouter,
+            @GmCommonQualifier userSession: UserSessionInterface
+    ): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
+
+
     @Provides
     fun providePowerMerchantSubscribeInterceptor(@GmCommonQualifier userSessionInterface: UserSessionInterface): PowerMerchantSubscribeInterceptor {
         return PowerMerchantSubscribeInterceptor(userSessionInterface)
@@ -43,7 +61,7 @@ class GmCommonModule {
     @Provides
     fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
-                            tkpdAuthInterceptor: TkpdAuthInterceptor,
+                            @GmCommonQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
                             powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
