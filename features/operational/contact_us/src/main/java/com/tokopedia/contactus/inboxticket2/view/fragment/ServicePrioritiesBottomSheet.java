@@ -50,7 +50,7 @@ public class ServicePrioritiesBottomSheet extends FrameLayout implements View.On
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
             }
         }, startIndexOfLink, startIndexOfLink + LEARN_MORE_TEXT.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         link.setHighlightColor(Color.TRANSPARENT);

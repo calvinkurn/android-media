@@ -123,7 +123,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
         private void findindViewsId(View view) {
             ivProfile = view.findViewById(R.id.iv_profile);
-            tvName = view.findViewById(com.tokopedia.core2.R.id.tv_name);
+            tvName = view.findViewById(R.id.tv_name);
             tvDateRecent = view.findViewById(R.id.tv_date_recent);
             tvComment = view.findViewById(R.id.tv_comment);
             tvCollapsedTime = view.findViewById(R.id.tv_collapsed_time);
@@ -156,11 +156,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             if(item.getRating()!=null && item.getRating().equals(KEY_DIS_LIKED)){
                 ratingThumbsDown.setVisibility(View.VISIBLE);
-                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                 ratingThumbsUp.setVisibility(View.GONE);
             }else if(item.getRating()!=null && item.getRating().equals(KEY_LIKED)) {
                 ratingThumbsUp.setVisibility(View.VISIBLE);
-                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                 ratingThumbsDown.setVisibility(View.GONE);
             }
             if (position == commentList.size() - 1 || !commentList.get(position).isCollapsed() || searchMode) {
@@ -209,7 +209,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
             ratingThumbsUp.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                     ratingThumbsDown.setVisibility(View.GONE);
                     mPresenter.onClick(true, position, item.getId());
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful);
@@ -218,7 +218,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
             ratingThumbsDown.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false, position, item.getId());
                     sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful);

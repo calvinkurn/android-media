@@ -145,7 +145,6 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
-
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
     String SELLER_INFO = "tokopedia://sellerinfo";
@@ -168,7 +167,7 @@ public interface ApplinkConst {
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
-    String CONTACT_US_NATIVE = "tokopedia://contactus?url={url}";
+    String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";

@@ -93,5 +93,8 @@
     <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
     <string name="layanan_prioritas">Layanan Prioritas</string>
     <string name="contact_us_minimum_length_error_text">Pesan terlalu pendek, minimum 15 karakter</string>
+    <string name="detail_kendala">Detail Kendala</string>
+    <string name="inbox">Inbox</string>
+    <string name="choose_image">Pilih Gambar</string>
 
 </resources>

@@ -298,7 +298,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.voucherGame)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsDashboard)

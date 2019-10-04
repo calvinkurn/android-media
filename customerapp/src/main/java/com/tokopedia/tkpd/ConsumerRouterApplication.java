@@ -471,6 +471,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         KYCRouter {
 
     private static final String EXTRA = "extra";
+    public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
+    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1024,12 +1026,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE, TkpdBaseURL.BASE_CONTACT_US);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
+        return intent;
     }
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE, url, toolbarTitle);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        intent.putExtra(EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
+        return intent;
     }
 
     @Override
@@ -1062,7 +1069,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE, url);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        return intent;
     }
 
     @Override
@@ -2315,10 +2324,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void startSaldoDepositIntent(Context context) {
         RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-    }
-
-    public Intent getInboxHelpIntent(Context context) {
-        return InboxListActivity.getCallingIntent(context);
     }
 
     @Override

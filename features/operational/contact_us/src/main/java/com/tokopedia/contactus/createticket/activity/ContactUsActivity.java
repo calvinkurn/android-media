@@ -151,7 +151,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            transaction.setCustomAnimations(R.animator.contactus_slide_in_left, 0, 0, R.animator.contactus_slide_out_right);
             transaction.add(com.tokopedia.core2.R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             if (!getIntent().getBooleanExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, false)) {
                 transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());

@@ -43,24 +43,11 @@ public class InboxListActivity extends InboxBaseActivity
     private CustomEditText editText;
     private View clearSearch;
     private TicketListAdapter mAdapter;
-
     private TextView btnFilterTv;
-
-    @DeepLink(ApplinkConst.INBOX_TICKET)
-    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        Intent homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME);
-        Intent parentIntent = InboxListActivity.getCallingIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
-        return taskStackBuilder;
-    }
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxListActivity.class);
     }
-
 
     @Override
     public void renderTicketList(List<TicketsItem> ticketList) {

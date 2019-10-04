@@ -165,7 +165,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public void addPopularArticleDivider() {
         View divider = new View(getContext());
         Resources resources = getActivity().getResources();
-        divider.setBackgroundColor(resources.getColor(R.color.grey_200));
+        divider.setBackgroundColor(resources.getColor(com.tokopedia.design.R.color.grey_200));
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) resources.getDimension(R.dimen.divider_height_thin));
         linearlayoutPopularArticle.addView(divider, layoutParams);
     }

@@ -304,7 +304,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
     public void disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.grey_500));
+        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_500));
         mTxtFinished.setEnabled(false);
     }
 

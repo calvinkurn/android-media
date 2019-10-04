@@ -86,4 +86,6 @@
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
+    <string name="detail_kendala">Detail Kendala</string>
+    <string name="inbox">Inbox</string>
 </resources>

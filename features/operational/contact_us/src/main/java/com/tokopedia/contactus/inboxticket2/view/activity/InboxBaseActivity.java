@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -81,7 +80,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public View getRootView() {
-        return findViewById(com.tokopedia.core2.R.id.root_view);
+        return findViewById(R.id.root_view);
     }
 
     @Override

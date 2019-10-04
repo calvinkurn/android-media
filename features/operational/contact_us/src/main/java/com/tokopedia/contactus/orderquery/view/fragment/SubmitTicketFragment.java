@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -241,7 +240,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if (enabled) {
             sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_greenbutton_solid));
         } else {
-            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_grey_solid));
+            sendButton.setBackground(getResources().getDrawable(R.drawable.contactus_rounded_rectangle_grey_solid));
         }
     }
 

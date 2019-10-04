@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +23,9 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
@@ -103,17 +110,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     private boolean isSendButtonEnabled = false;
 
-    @DeepLink(ApplinkConst.TICKET_DETAIL)
-    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
-        if (ticketId == null) {
-            ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        }
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
-        return taskStackBuilder;
+    @Override
+    public void onCreateNavigateUpTaskStack(android.app.TaskStackBuilder builder) {
+        super.onCreateNavigateUpTaskStack(builder);
+    }
+
+    @Override
+    public void onCreateSupportNavigateUpTaskStack(@NonNull TaskStackBuilder builder) {
+        super.onCreateSupportNavigateUpTaskStack(builder);
     }
 
     public static Intent getIntent(Context context, String ticketId) {
@@ -142,8 +146,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (ticketDetail.getStatus().equalsIgnoreCase(utils.SOLVED)
                 || ticketDetail.getStatus().equalsIgnoreCase(utils.OPEN)) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
-                    getResources().getColor(R.color.y_200),
-                    getResources().getColor(R.color.orange_500), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.y_200),
+                    getResources().getColor(com.tokopedia.design.R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase(ROLE_TYPE_AGENT)&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
@@ -158,14 +162,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (ticketDetail.getStatus().equalsIgnoreCase(utils.CLOSED)
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
-                    getResources().getColor(R.color.grey_200),
-                    getResources().getColor(com.tokopedia.core2.R.color.black_38), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.grey_200),
+                    getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
             showIssueClosed();
 
         } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
-                    getResources().getColor(R.color.r_100),
-                    getResources().getColor(R.color.r_400), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.r_100),
+                    getResources().getColor(com.tokopedia.design.R.color.r_400), textSizeLabel));
             toggleTextToolbar(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
         }
@@ -314,6 +318,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConst.TICKET_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                String ticketId = paths.get(0);
+                getIntent().putExtra(PARAM_TICKET_T_ID, ticketId);
+            }
+        }
         super.onCreate(savedInstanceState);
         imageUploadAdapter = new ImageUploadAdapter(this, this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -332,7 +344,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                 null, null);
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
-
     }
 
     @Override
@@ -570,7 +581,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         int textSizeLabel = 11;
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
-                getResources().getColor(R.color.grey_200),
+                getResources().getColor(com.tokopedia.design.R.color.grey_200),
                 getResources().getColor(com.tokopedia.core2.R.color.black_38), textSizeLabel));
     }
 
@@ -585,7 +596,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (enabled) {
             ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.green_nob));
         } else {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.grey_300));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.grey_300));
         }
     }
 

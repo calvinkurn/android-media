@@ -244,7 +244,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.contactus.R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);

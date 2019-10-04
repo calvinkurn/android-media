@@ -12,15 +12,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter android:autoVerify="true"
+                android:label="deeplink second activity">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/host_contactus"
-                    android:path="@string/path_contactus"/>
+                    android:host="@string/host_contactus"/>
             </intent-filter>
         </activity>
 
@@ -80,7 +80,7 @@
         <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"
             android:exported="true"
-            android:label="Inbox"
+            android:label="@string/inbox"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
@@ -91,14 +91,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_contactus"
+                    android:host="@string/host_customercare"
                     android:path="@string/path_inbox_list"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".inboxticket2.view.activity.InboxDetailActivity"
             android:exported="true"
-            android:label="Detail Kendala"
+            android:label="@string/detail_kendala"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
             <intent-filter android:autoVerify="true">
@@ -109,7 +109,7 @@
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_customercare"
-                    android:path="@string/path_ticket_detail"/>
+                    android:pathPattern="@string/path_ticket_detail"/>
             </intent-filter>
         </activity>
         <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity"
