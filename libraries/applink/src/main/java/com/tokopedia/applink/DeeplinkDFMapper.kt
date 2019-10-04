@@ -68,7 +68,7 @@ object DeeplinkDFMapper {
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
-    private val DFM_REFERRAL = "referral"
+    private val DFM_REFERRAL = "im_referral"
 
 
     private var manager: SplitInstallManager? = null
