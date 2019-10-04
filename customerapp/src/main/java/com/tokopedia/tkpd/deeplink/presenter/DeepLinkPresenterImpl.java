@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
@@ -18,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
@@ -45,7 +45,6 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
-import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -65,10 +64,7 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
-import rx.Subscriber;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,6 +72,11 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import rx.Subscriber;
 
 
 /**
@@ -177,7 +178,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.CONTACT_US:
                     URLParser urlParser = new URLParser(uriData.toString());
-                    RouteManager.route(context,ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
                     screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
                 case DeepLinkChecker.PRODUCT:
@@ -355,7 +356,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight() {
-        Intent intent = FlightDashboardActivity.getCallingIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT)
         viewListener.goToPage(intent);
     }
 
@@ -522,7 +523,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (shopInfo != null && shopInfo.getInfo() != null) {
                     String shopId = shopInfo.getInfo().getShopId();
                     String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                    if (isEtalase(linkSegment)){
+                    if (isEtalase(linkSegment)) {
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_ETALASE,
                                 shopId,
@@ -588,7 +589,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
+                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
                 context.startActivity(intent);
                 context.finish();
             }
@@ -613,7 +614,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
                     context.startActivity(intent);
                 }
                 context.finish();
@@ -717,7 +718,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private static String constructSearchApplink(Uri uriData) {
         String q = uriData.getQueryParameter("q");
-        
+
         String applink = TextUtils.isEmpty(q) ?
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
