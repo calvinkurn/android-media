@@ -606,9 +606,9 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         val dimension83 = productInfo?.freeOngkir?.let {
             if (it.isFreeOngkirActive)
-                "bebas Ongkir"
+                VALUE_BEBAS_ONGKIR
             else
-                "none / other"
+                VALUE_NONE_OTHER
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
