@@ -134,6 +134,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
             renderProductDiscount(shipmentCost);
         } else {
             renderGeneralDiscount(shipmentCost);
+            mTvShippingDiscountLabel.setVisibility(View.GONE);
+            mTvShippingDiscountPrice.setVisibility(View.GONE);
+            mTvProductDiscountLabel.setVisibility(View.GONE);
+            mTvProductDiscountPrice.setVisibility(View.GONE);
         }
     }
 

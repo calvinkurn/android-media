@@ -146,6 +146,8 @@ public interface ShipmentContract {
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
+        void onSuccessClearPromoLogistic();
+
         void resetCourier(int position);
 
         Promo generateCheckPromoFirstStepParam();

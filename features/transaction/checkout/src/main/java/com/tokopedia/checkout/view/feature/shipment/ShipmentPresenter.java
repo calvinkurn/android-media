@@ -1581,9 +1581,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
-                if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
-                    tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
-                    getView().updateTickerAnnouncementMessage();
+                if (getView() != null) {
+                    if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
+                        tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                        getView().updateTickerAnnouncementMessage();
+                    }
+                    getView().onSuccessClearPromoLogistic();
                 }
             }
         });
