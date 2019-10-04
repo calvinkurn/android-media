@@ -25,30 +25,40 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'cm_push_notifications'
-    groupId = 'com.tokopedia.notifications'
-    versionName = "${tkpdPushNotifVersion}"
-    artifactName ="cm_push_notifications-release"
-}
 dependencies {
-    implementation rootProject.ext.supportLibDependencies.kotlinSupport
-
-    api rootProject.ext.miscDependencies.coroutineCore
-
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.playServicesDependencies.ads
-    implementation project(rootProject.ext.libraries.config)
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.firebase.messaging
-
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.common_promo)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.networkDependencies.glide
+    implementation (rootProject.ext.playServicesDependencies.ads){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+}
+
+project.ext {
+    artifactId = 'cm-push-notifications'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "cm_push_notifications-release"
 }
 
 apply from: '../../publish_local.gradle'

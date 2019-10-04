@@ -1,12 +1,9 @@
 package com.tokopedia.hotel.booking.presentation.widget
 
-import android.app.Dialog
-import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 
 /**
@@ -42,4 +39,6 @@ class HotelBookingBottomSheets : BottomSheets() {
     fun addContentView(view: View) {
         contentViewList.add(view)
     }
+
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }

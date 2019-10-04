@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +24,11 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     private TextView tvMessage;
     private TextView tvSubMessage;
     private Button tvRetryButton;
+    private Context context;
 
     public ErrorNetworkViewHolder(View itemView) {
         super(itemView);
+        context = itemView.getContext();
         ivIcon = itemView.findViewById(R.id.iv_icon);
         tvMessage = itemView.findViewById(R.id.message_retry);
         tvSubMessage = itemView.findViewById(R.id.sub_message_retry);
@@ -35,7 +38,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     @Override
     public void bind(final ErrorNetworkModel errorNetworkModel) {
         if (errorNetworkModel.getIconDrawableRes() != 0) {
-            ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),errorNetworkModel.getIconDrawableRes()));
+            ivIcon.setImageDrawable(MethodChecker.getDrawable(context, errorNetworkModel.getIconDrawableRes()));
         }
         if (errorNetworkModel.getErrorMessage() != null && errorNetworkModel.getErrorMessage().length() > 0) {
             tvMessage.setText(errorNetworkModel.getErrorMessage());
@@ -43,7 +46,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
         if (errorNetworkModel.getSubErrorMessage() != null && errorNetworkModel.getSubErrorMessage().length() > 0) {
             tvSubMessage.setText(errorNetworkModel.getSubErrorMessage());
         }
-        tvRetryButton.setOnClickListener(new View.OnClickListener() {
+        tvRetryButton.setOnClickListener(new View .OnClickListener() {
             @Override
             public void onClick(View view) {
                 ErrorNetworkModel.OnRetryListener listener = errorNetworkModel.getOnRetryListener();

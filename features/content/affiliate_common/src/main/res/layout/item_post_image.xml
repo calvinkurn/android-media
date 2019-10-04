@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_loading_image"
+        app:srcCompat="@drawable/ic_loading_image"
         tools:src="@tools:sample/avatars"
         tools:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"

@@ -7,7 +7,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
@@ -16,11 +15,10 @@ import com.tokopedia.discovery.newdiscovery.category.domain.usecase.GetCategoryH
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
@@ -41,8 +39,8 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     GetProductUseCase getProductUseCase;
     GCMHandler gcmHandler;
 
-    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        super(context, getProductUseCase, getImageSearchUseCase);
+    public CategoryPresenter(Context context, GetProductUseCase getProductUseCase) {
+        super(getProductUseCase);
         this.getProductUseCase = getProductUseCase;
         this.gcmHandler = new GCMHandler(context);
         CategoryComponent categoryComponent = DaggerCategoryComponent.builder()

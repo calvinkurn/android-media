@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedcomponent.R;
@@ -109,7 +108,8 @@ public class FeedScrollListener {
     }
 
     private static boolean isVideoCard(List<Visitable> list, int position) {
-        return list.get(position) instanceof DynamicPostViewModel
+        return list.size() > position
+                && list.get(position) instanceof DynamicPostViewModel
                 && ((DynamicPostViewModel)list.get(position)).getContentList().size() == 1
                 && (((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof VideoViewModel
                     || ((((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof MultimediaGridViewModel)

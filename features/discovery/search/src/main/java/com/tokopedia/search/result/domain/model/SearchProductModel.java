@@ -2,8 +2,8 @@ package com.tokopedia.search.result.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -87,6 +87,9 @@ public class SearchProductModel {
         @SerializedName("shareUrl")
         @Expose
         private String shareUrl;
+        @SerializedName("errorMessage")
+        @Expose
+        private String errorMessage;
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
@@ -96,12 +99,24 @@ public class SearchProductModel {
         @SerializedName("count")
         @Expose
         private int count;
+        @SerializedName("response_code")
+        @Expose
+        private String responseCode;
         @SerializedName("count_text")
         @Expose
         private String countText;
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("autocomplete_applink")
+        @Expose
+        private String autocompleteApplink;
+        @SerializedName("default_view")
+        @Expose
+        private int defaultView = 0;
+        @SerializedName("redirection")
+        @Expose
+        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -110,7 +125,7 @@ public class SearchProductModel {
         private Related related = new Related();
         @SerializedName("products")
         @Expose
-        private List<Product> products = null;
+        private List<Product> products = new ArrayList<>();
 
         public String getQuery() {
             return query;
@@ -128,6 +143,10 @@ public class SearchProductModel {
             return isFilter;
         }
 
+        public String getErrorMessage() {
+            return this.errorMessage;
+        }
+
         public boolean isQuerySafe() {
             return isQuerySafe;
         }
@@ -136,12 +155,28 @@ public class SearchProductModel {
             return count;
         }
 
+        public String getResponseCode() {
+            return responseCode;
+        }
+
         public String getCountText() {
             return countText;
         }
 
         public String getAdditionalParams() {
             return additionalParams;
+        }
+
+        public String getAutocompleteApplink() {
+            return autocompleteApplink;
+        }
+
+        public int getDefaultView() {
+            return defaultView;
+        }
+
+        public Redirection getRedirection() {
+            return this.redirection;
         }
 
         public Suggestion getSuggestion() {
@@ -154,6 +189,17 @@ public class SearchProductModel {
 
         public Related getRelated() {
             return related;
+        }
+    }
+
+    public static class Redirection {
+
+        @SerializedName("redirect_applink")
+        @Expose
+        private String redirectApplink;
+
+        public String getRedirectApplink() {
+            return this.redirectApplink;
         }
     }
 
@@ -683,31 +729,6 @@ public class SearchProductModel {
 
         public boolean isShown() {
             return isShown;
-        }
-    }
-
-    public static class Redirection {
-
-        @SerializedName("redirect_url")
-        @Expose
-        private String redirectUrl;
-        @SerializedName("department_id")
-        @Expose
-        private String departmentId;
-        @SerializedName("redirect_applink")
-        @Expose
-        private String redirectApplink;
-
-        public String getRedirectUrl() {
-            return redirectUrl;
-        }
-
-        public String getDepartmentId() {
-            return departmentId;
-        }
-
-        public String getRedirectApplink() {
-            return redirectApplink;
         }
     }
 

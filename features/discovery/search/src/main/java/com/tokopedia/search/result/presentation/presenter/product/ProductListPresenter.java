@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
@@ -27,6 +27,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ import rx.Subscriber;
 final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
+
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
 
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -513,31 +516,92 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
         if (isViewAttached()) {
-            getView().clearLastProductItemPositionFromCache();
-
-            int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
-
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
-
-            saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
-
-            if (productViewModel.getProductList().isEmpty()) {
-                getViewToShowEmptySearch();
-            } else {
-                getViewToShowProductList(productViewModel);
+            if(isSearchRedirected(searchProductModel)) {
+                getViewToRedirectSearch(searchProductModel);
             }
-
-            getView().storeTotalData(productViewModel.getTotalData());
-
-            if(isFirstTimeLoad) {
-                getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            else {
+                getViewToProcessSearchResult(searchProductModel, isFirstTimeLoad);
             }
         }
     }
 
-    private void getViewToShowEmptySearch() {
+    private boolean isSearchRedirected(SearchProductModel searchProductModel) {
+        SearchProductModel.Redirection redirection = searchProductModel.getSearchProduct().getRedirection();
+
+        return redirection != null
+                && redirection.getRedirectApplink() != null
+                && redirection.getRedirectApplink().length() > 0;
+    }
+
+    private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
+        String applink = searchProductModel.getSearchProduct().getRedirection().getRedirectApplink();
+
+        getView().redirectSearchToAnotherPage(applink);
+    }
+
+    private void getViewToProcessSearchResult(SearchProductModel searchProductModel, boolean isFirstTimeLoad) {
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+
+        sendTrackingNoSearchResult(productViewModel);
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
+
+        if (productViewModel.getProductList().isEmpty()) {
+            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
+            getViewToShowEmptySearch(productViewModel);
+        } else {
+            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
+            getViewToShowProductList(productViewModel);
+        }
+
+        getView().storeTotalData(productViewModel.getTotalData());
+
+        if (isFirstTimeLoad) {
+            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
+        try {
+            String alternativeKeyword = "";
+            if (productViewModel.getRelatedSearchModel() != null) {
+                alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            }
+            int resultCode = Integer.parseInt(productViewModel.getResponseCode());
+            if (searchNoResultCodeList.contains(resultCode)) {
+                getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword);
+            }
+        } catch (NumberFormatException e) {
+
+        }
+    }
+
+    private ProductViewModel createProductViewModelWithPosition(SearchProductModel searchProductModel) {
+        getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
+    }
+
+    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+        }
+        else {
+            getView().hideErrorMessage();
+        }
+    }
+
+    private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        boolean isGlobalNavWidgetAvailable
+                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         getView().removeLoading();
-        getView().setEmptyProduct();
+        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
         getView().setTotalSearchResultCount("0");
     }
 
@@ -560,7 +624,7 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         if (isGlobalNavWidgetAvailable) {
-            headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
+            list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {

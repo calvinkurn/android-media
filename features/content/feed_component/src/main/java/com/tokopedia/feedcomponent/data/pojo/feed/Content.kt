@@ -9,6 +9,8 @@ data class Content (
     @SerializedName("cardbanner")
     var cardbanner: Cardbanner = Cardbanner(),
     @SerializedName("cardrecom")
-    var cardRecommendation: CardRecommendation = CardRecommendation()
+    var cardRecommendation: CardRecommendation = CardRecommendation(),
+    @SerializedName("cardhighlight")
+    var cardHighlight: CardHighlight = CardHighlight()
 
 )

@@ -27,6 +27,7 @@
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
     <string name="tp_label_my_coupon_new">Kupon Saya</string>
+    <string name="tp_label_my_coupon_new_card">Lihat Semua\nKupon Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
@@ -47,13 +48,13 @@
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
     <string name="tp_label_min_exchange_sort">Min. transaksi:</string>
     <string name="tp_label_refresh_repeat">Refresh Ulang</string>
-    <string name="tp_label_send">Kirim</string>
+    <string name="tp_label_send">Lanjut</string>
     <string name="tp_label_email">Email Penerima</string>
     <string name="tp_label_notes">Tulis Pesan (Opsional)</string>
-    <string name="tp_label_send_coupon_as_gift">Kirim Kupon sebagai Hadiah</string>
+    <string name="tp_label_send_coupon_as_gift">Kirim Kupon</string>
     <string name="tp_label_for">Untuk :</string>
     <string name="tp_label_message">Pesan :</string>
-    <string name="tp_label_send_now">Kirim Sekarang</string>
+    <string name="tp_label_send_now">Kirim </string>
     <string name="tp_send_gift_success_title">Kupon Berhasil Terkirim</string>
     <string name="tp_send_gift_success_message">Hore, hadiah Kupon yang kamu kirim sudah sampai di penerima!</string>
     <string name="tp_send_gift_failed_title">Kupon Gagal Dikirim</string>
@@ -86,5 +87,18 @@
     <string name="tp_history_empty_title">Kamu belum punya riwayat TokoPoints</string>
     <string name="tp_history_empty_desc">Ayo lakukan transaksi dan dapatkan Lucky Egg</string>
     <string name="tp_history_btn_action">Yuk Belanja</string>
+    <string name="see_more_txt">Baca Selengkapnya</string>
+    <string name="points_saya">Points Saya:</string>
+    <string name="tnc_coupon_catalog"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="how_to_use_coupon_catalog">Cara Pakai</string>
+    <string name="tp_gift_btn_text">Hadiahin</string>
+    <string name="tp_default_gift_text">Hadiahin kupon ini ke temanmu!</string>
+    <string name="tp_title_kirim_coupon">Kirim Kupon</string>
+    <string name="tp_coupon_name">Kupon Travel Cashback hingga Rp300.000</string>
+    <string name="tp_pesan">Pesan:</string>
+    <string name="tp_okay">Oke</string>
+    <string name="tp_try_again">Coba Lagi</string>
+    <string name="tp_no_internet_title">Nggak ada koneksi internet</string>
+    <string name="tp_no_internet_label">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
 
 </resources>

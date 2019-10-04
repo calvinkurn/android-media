@@ -26,7 +26,7 @@ class ShopEtalaseViewHolder(itemView: View,
         ivMenuMore = itemView.findViewById(R.id.ivMenuMore)
         tvEtalaseName = itemView.findViewById(R.id.tvEtalaseName)
         tvEtalaseCount = itemView.findViewById(R.id.tvEtalaseCount)
-        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
+        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_primary_70))
     }
 
     interface OnShopEtalaseViewHolderListener {

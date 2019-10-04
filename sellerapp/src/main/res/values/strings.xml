@@ -41,7 +41,21 @@
     <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
     <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
 
+    <!-- Dynamic features Shop Setting -->
+    <string name="shop_settings_manage_shop_info">Informasi</string>
+    <string name="shop_settings_manage_address">Lokasi</string>
+    <string name="shop_settings_manage_etalase">Etalase</string>
+    <string name="shop_settings_manage_notes">Catatan</string>
+    <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_settings_add_note">Tambah Catatan</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_add_address">Tambah Lokasi</string>
+    <string name="shop_settings_shop_status">Status Toko</string>
+
     <!--Power Merchant-->
+    <string name="active_label">Aktif</string>
+    <string name="inactive_label">Nonaktif</string>
+    <string name="upgrade_power_merchant">Upgrade Tokomu</string>
     <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
     <string name="bracket_format">(%1$s)</string>
     <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menjadi <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>

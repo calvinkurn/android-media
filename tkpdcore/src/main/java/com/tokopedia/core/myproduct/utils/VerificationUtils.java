@@ -5,9 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
-import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 import com.tokopedia.core.util.Pair;
@@ -22,24 +19,10 @@ import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTE
  * this class is used for {@link com.tokopedia.core.myproduct.fragment.AddProductFragment} to verfy input
  */
 public class VerificationUtils {
+    public static final int WHOLESALE_QTY1 = 0;
+    public static final int WHOLESALE_QTY2 = 1;
     public static final String TAG = VerificationUtils.class.getSimpleName();
     public static final String messageTAG = TAG+" : ";
-
-    public static Pair<Boolean, String> validateAllInstoped(Context context, List<ImageModel> textDeleteModels){
-        boolean isSelect = false;
-        for(ImageModel textDeleteModel : textDeleteModels){
-            boolean contains = textDeleteModel.getTypes().contains(SELECTED.getType());
-            if(!contains){
-                isSelect |= true;
-            }else{
-                isSelect |= false;
-            }
-        }
-        if(isSelect)
-            return new Pair<>(false, context.getString(R.string.error_not_all_instoped));
-
-        return new Pair<>(true, null);
-    }
 
     public static Pair<Boolean, String> validateEtalase(Context context, List<TextDeleteModel> textDeleteModels){
         boolean isSelect = false;
@@ -66,10 +49,6 @@ public class VerificationUtils {
             return new Pair<>(false, context.getString(R.string.etalase_less_than_three_char));
         }
 
-        if(!DbManagerImpl.getInstance().isEtalaseEmpty(etalaseName)){
-            return new Pair<>(false, context.getString(R.string.error_etalase_exist));
-        }
-
         return new Pair<>(true, null);
     }
 
@@ -84,22 +63,6 @@ public class VerificationUtils {
         }
         if(isSelect)
             return new Pair<>(false, context.getString(R.string.error_no_category_selected));
-
-        return new Pair<>(true, null);
-    }
-
-    public static Pair<Boolean, String> validateImages(Context context, List<ImageModel> imageModels){
-        boolean isAllDefaultImage = true;
-        for(ImageModel imageModel : imageModels){
-            if(imageModel.getDbId()==0){
-                isAllDefaultImage &= true;
-            }else{
-                isAllDefaultImage &= false;
-            }
-        }
-
-        if(isAllDefaultImage)
-            return new Pair<>(false, context.getString(R.string.error_no_picture_selected));
 
         return new Pair<>(true, null);
     }
@@ -215,7 +178,7 @@ public class VerificationUtils {
         boolean resBoolean = false;
         String resString = null;
         switch (index){
-            case WholesaleAdapter.QTY1:
+            case WHOLESALE_QTY1:
                 String quantityOne = data;
                 String quantityTwo = ref;
                 if(quantityOne.length()<=0||quantityOne.equals("")
@@ -250,7 +213,7 @@ public class VerificationUtils {
                 res.setModel1(true);
                 res.setModel2(null);
                 return res;
-            case WholesaleAdapter.QTY2:
+            case WHOLESALE_QTY2:
                 quantityOne = ref;
                 quantityTwo = data;
                 if(quantityOne.length()<=0||quantityOne.equals("")

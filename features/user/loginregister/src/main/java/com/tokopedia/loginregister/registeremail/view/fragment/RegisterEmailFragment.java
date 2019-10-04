@@ -97,6 +97,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     TextView registerNextTAndC;
     ProgressBar progressBar;
 
+    String source = "";
+
     @Inject
     RegisterEmailPresenter presenter;
 
@@ -139,6 +141,17 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return LoginRegisterAnalytics.Companion.getSCREEN_REGISTER_EMAIL();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
+        } else if (getArguments()!= null && getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE) != null) {
+            source = getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
+        }
     }
 
     @Nullable
@@ -508,7 +521,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             Intent intent = ActivationActivity.getCallingIntent(getActivity(),
                     email,
-                    password
+                    password,
+                    source
             );
             startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
         }
@@ -519,7 +533,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email.getText().toString(),
-                registerPassword.getText().toString()
+                registerPassword.getText().toString(),
+                source
         );
         startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
     }

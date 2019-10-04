@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.R;
@@ -14,6 +15,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
 
+    @Nullable
     protected abstract Fragment getNewFragment();
 
     @Override
@@ -34,8 +36,12 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, newFragment, getTagFragment())
+                .replace(getParentViewResourceID(), newFragment, getTagFragment())
                 .commit();
+    }
+
+    protected int getParentViewResourceID(){
+        return R.id.parent_view;
     }
 
     protected Fragment getFragment() {

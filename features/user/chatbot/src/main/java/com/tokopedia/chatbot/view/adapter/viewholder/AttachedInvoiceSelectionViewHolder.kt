@@ -16,6 +16,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
+import com.tokopedia.kotlin.extensions.view.hide
 
 /**
  * Created by Hendri on 28/03/18.
@@ -25,10 +26,10 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                                          private val selectedListener: AttachedInvoiceSelectionListener)
     : AbstractViewHolder<AttachInvoiceSelectionViewModel>(itemView) {
     private val singleItemAdapter: AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter
+    private val invoiceSelection: RecyclerView = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection)
 
     init {
         singleItemAdapter = AttachedInvoicesItemsAdapter()
-        val invoiceSelection = itemView.findViewById<RecyclerView>(R.id.attach_invoice_chat_invoice_selection)
         invoiceSelection.layoutManager = LinearLayoutManager(itemView.context,
                 LinearLayoutManager.HORIZONTAL, false)
         invoiceSelection.adapter = singleItemAdapter
@@ -51,7 +52,8 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                                       position: Int) {
             if (position < list!!.size) {
                 holder.bind(list!![position])
-                holder.itemView.setOnClickListener { v ->
+                holder.itemView.setOnClickListener {
+                    invoiceSelection.hide()
                     selectedListener.onInvoiceSelected(
                             AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                     )

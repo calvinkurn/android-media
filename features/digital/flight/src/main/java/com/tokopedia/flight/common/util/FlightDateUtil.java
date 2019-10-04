@@ -30,6 +30,7 @@ public class FlightDateUtil {
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+    public static final String YYYYMMDD = "yyyyMMdd";
 
     public FlightDateUtil() {
 
@@ -164,5 +165,9 @@ public class FlightDateUtil {
         Date currentDate = trimDate(getCurrentDate());
         long diff = inputDate.getTime() - currentDate.getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    public static Long countDayDifference(String format, String day1, String day2) {
+        return (stringToDate(format, day2).getTime() - stringToDate(format, day1).getTime()) / TimeUnit.DAYS.toMillis(1);
     }
 }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_90">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_90">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_chat_bubble"
@@ -22,7 +23,6 @@
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars[0]" />
@@ -62,7 +62,7 @@
 
         <TextView
             android:id="@+id/tv_price"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
@@ -73,10 +73,9 @@
             android:textColor="@color/orange_red"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_invoice_id"
-            tools:text="Rp 25.500" />
+            tools:text="Rp 25.500.000" />
     </android.support.constraint.ConstraintLayout>
 
     <ImageView

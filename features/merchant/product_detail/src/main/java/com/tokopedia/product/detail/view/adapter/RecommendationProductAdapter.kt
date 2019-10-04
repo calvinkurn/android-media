@@ -12,7 +12,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 class RecommendationProductAdapter(private var product: RecommendationWidget,
                                    private val userActiveListener: UserActiveListener,
-                                   private var pageName: String) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
+                                   private var pageName: String,
+                                   private val productDetailTracking: ProductDetailTracking) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
@@ -27,7 +28,6 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
     }
 
     inner class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
-        private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {

@@ -1,17 +1,45 @@
-task enableLibrariesCompositeBuild{
+task("enableComposite") {
     group = 'Tools'
-    description = 'Enable Libraries composite build'
+    description = "Enable scan composite build"
     doLast {
-        new File("./libraries/composite_lib/.composite-enable").createNewFile()
+        new File("$rootDir/.compositeScan-enable").createNewFile()
     }
 }
 
-task disableLibrariesCompositeBuild{
+task("disableComposite") {
     group = 'Tools'
-    description = 'Enable Libraries composite build'
+    description = "disable scan composite build"
     doLast {
-        File file = new File("./libraries/composite_lib/.composite-enable")
-        if(file.exists())
-            file.delete()
+        File fileComposite = new File("$rootDir/.compositeScan-enable")
+        if (fileComposite.exists()) {
+            fileComposite.delete()
+        }
+    }
+}
+if (new File("${rootDir}/.compositeScan-enable").exists()) {
+    def fileTreeComposite = fileTree(dir: '.', include: '**/settings.gradle')
+    fileTreeComposite.each {    file ->
+        def path = file.path.toString().replace("/settings.gradle", "");
+        if (!"$rootDir".equals("${path}")) {
+            def lastPaths = path.replace("$rootDir/", "").replace("\"", "").trim().split("/")
+            def lastPath = lastPaths[lastPaths.size() - 1]
+            task("enable${lastPath}") {
+                group = 'Tools'
+                description = "Enable ${lastPath} composite build"
+                doLast {
+                    new File("${path}/.composite-enable").createNewFile()
+                }
+            }
+            task("disable${lastPath}") {
+                group = 'Tools'
+                description = "Disable ${lastPath} composite build"
+                doLast {
+                    File fileComposite = new File("${path}/.composite-enable")
+                    if (fileComposite.exists()) {
+                        fileComposite.delete()
+                    }
+                }
+            }
+        }
     }
 }

@@ -33,7 +33,7 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
 
         @JvmStatic
         fun createRequestParams(query: String, shopId: String)= RequestParams.create().apply {
-                putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId.toInt())
+                putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId.toIntOrNull() ?: 0)
                 putString(PARAM_QUERY, query)
             }
 

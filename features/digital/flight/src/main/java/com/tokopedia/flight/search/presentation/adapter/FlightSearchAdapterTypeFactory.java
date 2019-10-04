@@ -97,6 +97,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         void onShowAllClicked();
 
         void onShowBestPairingClicked();
+
     }
 
 }

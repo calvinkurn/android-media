@@ -87,7 +87,7 @@
             android:layout_gravity="center_horizontal"
             android:enabled="false"
             android:gravity="center"
-            android:text="@string/button_save"
+            android:text="@string/button_next"
             android:textColor="@color/black_70"
             app:buttonCompatSize="big"
             app:buttonCompatType="primary_disabled"

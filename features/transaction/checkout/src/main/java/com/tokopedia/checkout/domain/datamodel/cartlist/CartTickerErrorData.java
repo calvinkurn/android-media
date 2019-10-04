@@ -17,6 +17,14 @@ public class CartTickerErrorData implements Parcelable {
         actionInfo = builder.actionInfo;
     }
 
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
+    }
+
+    public void setActionInfo(String actionInfo) {
+        this.actionInfo = actionInfo;
+    }
+
     public String getErrorInfo() {
         return errorInfo;
     }

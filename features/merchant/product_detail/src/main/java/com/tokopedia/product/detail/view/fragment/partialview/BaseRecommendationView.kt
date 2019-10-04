@@ -4,10 +4,10 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_1
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_2
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_3
@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
-abstract class BaseRecommendationView(context: Context) : View(context) {
+abstract class BaseRecommendationView(context: Context,
+                                      private val productDetailTracking: ProductDetailTracking) : View(context) {
 
     fun hideView() {
         getView().gone()
@@ -50,8 +51,9 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
             getView().base_recom_4 -> PDP_4
             else -> ""
         }
-        getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
+        getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName, productDetailTracking)
         getRecyclerView().visible()
+        getLayoutProgress().gone()
     }
 
     fun startLoading() {
@@ -66,6 +68,6 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
     abstract fun getLayoutTitle(): TextView
     abstract fun getView(): View
     abstract fun getRecyclerView(): RecyclerView
-    abstract fun getLayoutProgress(): ProgressBar
+    abstract fun getLayoutProgress(): View
 
 }

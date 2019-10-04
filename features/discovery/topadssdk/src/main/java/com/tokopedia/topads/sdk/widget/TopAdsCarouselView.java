@@ -246,6 +246,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     public void setAdsItemImpressionListener(TopAdsItemImpressionListener adsItemImpressionListener) {
+        this.adsItemImpressionListener = adsItemImpressionListener;
         this.adapter.setAdsItemImpressionListener(adsItemImpressionListener);
     }
 
@@ -271,6 +272,9 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
             SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist),
                     Snackbar.LENGTH_LONG).show();
         }
+        if (adsItemImpressionListener != null) {
+            adsItemImpressionListener.onAddWishlist(true);
+        }
     }
 
     @Override
@@ -286,6 +290,9 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         if(getContext() != null) {
             SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist),
                     Snackbar.LENGTH_LONG).show();
+        }
+        if (adsItemImpressionListener != null) {
+            adsItemImpressionListener.onAddWishlist(false);
         }
     }
 

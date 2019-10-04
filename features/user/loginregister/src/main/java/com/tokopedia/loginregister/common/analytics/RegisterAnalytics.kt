@@ -1,16 +1,13 @@
 package com.tokopedia.loginregister.common.analytics
 
 import android.content.Context
-
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.HashMap
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -66,6 +63,9 @@ class RegisterAnalytics @Inject constructor() {
         private val ACTION_CLICK_ON_TICKER_LOGIN = "click on ticker login"
         private val ACTION_CLICK_TICKER_LINK = "click ticker link"
         private val ACTION_CLICK_ON_BUTTON_CLOSE_TICKER = "click on button close ticker"
+        private val ACTION_CLICK_PHONE_NUMBER_SUGGESTION = "click phone number suggestion"
+        private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
+        private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
 
         private val LABEL_EMPTY = ""
         private val LABEL_CLICK = "click"
@@ -578,6 +578,33 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_TICKER,
+                ""
+        ))
+    }
+
+    fun trackClickPhoneNumberSuggestion(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_PHONE_NUMBER_SUGGESTION,
+                ""
+        ))
+    }
+
+    fun trackClickSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_SOCMED,
+                ""
+        ))
+    }
+
+    fun trackClickCloseSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
         ))
     }

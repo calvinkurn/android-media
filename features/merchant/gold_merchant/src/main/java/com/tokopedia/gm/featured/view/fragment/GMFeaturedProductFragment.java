@@ -16,10 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.Pair;
@@ -28,14 +30,19 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
+import com.tokopedia.gm.featured.constant.GMFeaturedConstant;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.di.component.DaggerGMFeaturedProductComponent;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperAdapter;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.helper.SimpleItemTouchHelperCallback;
+import com.tokopedia.gm.featured.view.adapter.GMFeatureProductEmptyDataBinder;
 import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
+import com.tokopedia.gm.featured.view.adapter.model.TickerReadMoreFeaturedModel;
+import com.tokopedia.gm.featured.view.adapter.viewholder.TickerReadMoreFeaturedViewHolder;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
@@ -44,25 +51,36 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_FEATURED_PRODUCT;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERCHANT_SCORE_TIPS;
+
 /**
  * Created by normansyahputa on 9/6/17.
  */
 
 public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, GMFeaturedProductModel>
-        implements GMFeaturedProductView, OnStartDragListener,
-        GMFeaturedProductAdapter.UseCaseListener, SimpleItemTouchHelperCallback.isEnabled,
-        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel> {
+        implements GMFeaturedProductView,
+        OnStartDragListener,
+        GMFeaturedProductAdapter.UseCaseListener,
+        SimpleItemTouchHelperCallback.isEnabled,
+        BaseMultipleCheckListAdapter.CheckedCallback<GMFeaturedProductModel>,
+        TickerReadMoreFeaturedViewHolder.TickerReadMoreFeaturedViewHolderListener,
+        MerchantCommonBottomSheet.BottomSheetListener {
 
     private static final int REQUEST_CODE = 12314;
     private static final int MAX_ITEM = 5;
     @Inject
     GMFeaturedProductPresenterImpl featuredProductPresenter;
+    @Inject
+    UserSessionInterface userSession;
     private FloatingActionButton fab;
     private ItemTouchHelper mItemTouchHelper;
     private ProgressDialog progressDialog;
@@ -78,7 +96,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     protected BaseListAdapter<GMFeaturedProductModel> getNewAdapter() {
-        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this);
+        GMFeaturedProductAdapter gmFeaturedProductAdapter = new GMFeaturedProductAdapter(this, this);
         gmFeaturedProductAdapter.setUseCaseListener(this);
         gmFeaturedProductAdapter.setCheckedCallback(this);
         return gmFeaturedProductAdapter;
@@ -91,11 +109,34 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyGroupAdsDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
-        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.gm_featured_product_add_title_empty));
-        emptyGroupAdsDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+        GMFeatureProductEmptyDataBinder emptyDataBinder = new GMFeatureProductEmptyDataBinder(
+                adapter,
+                GMFeaturedConstant.IMG_URL_NO_FEATURED_PRODUCT,
+                new GMFeatureProductEmptyDataBinder.GMFeaturedProductEmptyDataBinderListener() {
+                    @Override
+                    public void buttonOverlayClicked() {
+                        if (!isPowerMerchant()) {
+                            RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                        } else if (isIdlePowerMerchant()) {
+                            showIdlePowerMerchantBottomSheet(
+                                    getString(R.string.gm_featured_product_feature_name)
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void spanReadMoreClicked() {
+                        RouteManager.route(
+                                getContext(),
+                                ApplinkConstInternalGlobal.WEBVIEW, URL_FEATURED_PRODUCT
+                        );
+                    }
+                }
+        );
+        emptyDataBinder.setEmptyTitleText(getString(R.string.gm_featured_product_title_empty));
+        emptyDataBinder.setEmptyContentText(getString(R.string.gm_featured_product_description_empty));
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.gm_featured_product_add_title_empty));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
                 moveToProductPicker();
@@ -106,13 +147,40 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 moveToProductPicker();
             }
         });
-        return emptyGroupAdsDataBinder;
+        return emptyDataBinder;
+    }
+
+    private boolean isPowerMerchant() {
+        return userSession.isGoldMerchant();
+    }
+
+    private void showIdlePowerMerchantBottomSheet(String featureName) {
+        String title = getString(R.string.bottom_sheet_idle_title, featureName);
+        String description = getString(R.string.bottom_sheet_idle_desc, featureName);
+        String buttonName = getString(R.string.bottom_sheet_idle_btn);
+        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName);
+    }
+
+    private void showBottomSheet(String title, String imageUrl, String description, String buttonName) {
+        MerchantCommonBottomSheet.BottomSheetModel model = new MerchantCommonBottomSheet.BottomSheetModel(
+                title,
+                description,
+                imageUrl,
+                buttonName,
+                ""
+        );
+        MerchantCommonBottomSheet bottomSheet = MerchantCommonBottomSheet.newInstance(model);
+        bottomSheet.setListener(this);
+        bottomSheet.show(getChildFragmentManager(), "merchant_warning_bottom_sheet");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        if (isIdlePowerMerchant())
+            setHasOptionsMenu(false);
+        else
+            setHasOptionsMenu(true);
     }
 
     @Override
@@ -236,9 +304,27 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     protected void showViewList(@NonNull List<GMFeaturedProductModel> list) {
         super.showViewList(list);
+        if (!adapter.isEmpty()) {
+            if (isIdlePowerMerchant()) {
+                addTickerIdlePowerMerchant();
+            }
+        }
         getActivity().invalidateOptionsMenu();
         updateTitle();
         updateFabDisplay();
+    }
+
+    private boolean isIdlePowerMerchant() {
+        return userSession.isPowerMerchantIdle();
+    }
+
+    private void addTickerIdlePowerMerchant() {
+        TickerReadMoreFeaturedModel tickerReadMoreFeaturedModel = new TickerReadMoreFeaturedModel(
+                getString(R.string.ticker_featured_product_title),
+                getString(R.string.ticker_featured_product_description),
+                getString(R.string.ticker_featured_product_read_more)
+        );
+        adapter.getDataItemType().add(0, tickerReadMoreFeaturedModel);
     }
 
     @Override
@@ -339,7 +425,10 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 if (totalItem <= 0 || totalItem >= MAX_ITEM) {
                     hideFab();
                 } else {
-                    showFab();
+                    if (isIdlePowerMerchant())
+                        hideFab();
+                    else
+                        showFab();
                 }
         }
     }
@@ -529,5 +618,18 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
         return null;
+    }
+
+    @Override
+    public void onTickerReadMoreClicked() {
+        RouteManager.route(
+                getContext(),
+                ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS
+        );
+    }
+
+    @Override
+    public void onBottomSheetButtonClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
     }
 }

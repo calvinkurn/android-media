@@ -53,6 +53,9 @@ public class GroupShop {
     @SerializedName("save_state_flag")
     @Expose
     private boolean saveStateFlag;
+    @SerializedName("vehicle_leasing")
+    @Expose
+    private VehicleLeasing vehicleLeasing;
 
     public List<String> getErrors() {
         return errors;
@@ -105,4 +108,6 @@ public class GroupShop {
     public boolean isSaveStateFlag() {
         return saveStateFlag;
     }
+
+    public VehicleLeasing getVehicleLeasing() { return vehicleLeasing; }
 }

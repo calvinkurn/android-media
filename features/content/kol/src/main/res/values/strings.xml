@@ -32,6 +32,7 @@
 
     <!--Kol Following List-->
     <string name="title_following_kol">Following</string>
+    <string name="title_follower_kol">Followers</string>
     <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
     <string name="string_follow_empty_button">Explore Influencer</string>
     <string name="title_image_picker">Image Picker</string>

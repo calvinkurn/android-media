@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.customadapter.ProductAdapter;
@@ -34,7 +33,6 @@ import com.tokopedia.core.util.AppUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * Created on 8/2/16.
@@ -44,17 +42,11 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     private static final String TAG = ChooseProductTroubleFragment.class.getSimpleName();
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.recycler_view)
-    RecyclerView productRecyclerView;
-    @BindView(R2.id.action_submit)
-    View submitButton;
-    @BindView(R2.id.action_abort)
-    View actionAbort;
+    private TextView invoice;
+    private TextView shopName;
+    private RecyclerView productRecyclerView;
+    private View submitButton;
+    private View actionAbort;
 
     private ActionParameterPassData passData;
     private CreateResCenterListener listener;
@@ -119,12 +111,21 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
     @Override
     protected void initView(View view) {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        settingUpVariables(view);
         adapter = new ProductAdapter(passData.getProductTroubleChoosenList(), passData.getTroubleCategoryChoosen());
         productRecyclerView.setHasFixedSize(true);
         productRecyclerView.setLayoutManager(layoutManager);
         productRecyclerView.setAdapter(adapter);
         renderInvoiceData(passData.getFormData().getForm());
         renderShopData(passData.getFormData().getForm());
+    }
+
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        productRecyclerView = view.findViewById(R.id.recycler_view);
+        submitButton = view.findViewById(R.id.action_submit);
+        actionAbort = view.findViewById(R.id.action_abort);
     }
 
     private void renderShopData(CreateResCenterFormData.FormValueData form) {

@@ -17,6 +17,10 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var name: String = ""
     private var type: String = ""
 
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {

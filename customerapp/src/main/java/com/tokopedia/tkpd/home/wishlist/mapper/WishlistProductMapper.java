@@ -21,6 +21,7 @@ public class WishlistProductMapper implements Func2<GraphqlResponse, List<? exte
     @Override
     public GqlWishListDataResponse call(GraphqlResponse graphqlResponse, List<? extends RecommendationWidget> recommendationWidgets) {
         GqlWishListDataResponse response = graphqlResponse.getData(GqlWishListDataResponse.class);
+        response.setTitle(recommendationWidgets.get(0).getTitle());
         response.setTopAdsModel(mappingTopAdsModel(recommendationWidgets.get(0)));
         return response;
     }
@@ -42,6 +43,9 @@ public class WishlistProductMapper implements Func2<GraphqlResponse, List<? exte
                 p.setImage(img);
                 p.setPriceFormat(r.getPrice());
                 p.setWishlist(r.isWishlist());
+                p.setCategoryBreadcrumb(r.getCategoryBreadcrumbs());
+                p.setRecommendationType(r.getRecommendationType());
+                p.setTopAds(r.isTopAds());
                 d.setProduct(p);
                 d.setProductClickUrl(r.getClickUrl());
                 d.setProductWishlistUrl(r.getWishlistUrl());

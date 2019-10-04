@@ -4,6 +4,9 @@ package com.tokopedia.gm.featured.di.component;
  * Created by normansyahputa on 9/7/17.
  */
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.featured.di.module.GMFeaturedProductModule;
 import com.tokopedia.gm.featured.di.scope.GMFeaturedProductScope;

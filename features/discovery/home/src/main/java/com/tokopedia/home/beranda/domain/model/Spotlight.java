@@ -14,6 +14,8 @@ public class Spotlight {
     @Expose
     private List<SpotlightItem> spotlights = new ArrayList<>();
 
+    private String channelId = "";
+
     private String promoName = "";
     private String homeAttribution = "";
 
@@ -23,6 +25,14 @@ public class Spotlight {
 
     public void setSpotlights(List<SpotlightItem> spotlights) {
         this.spotlights = spotlights;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
     }
 
     public void setPromoName(String promoName) {
@@ -44,6 +54,7 @@ public class Spotlight {
                 "eventCategory", "homepage",
                 "eventAction", "impression on banner spotlight",
                 "eventLabel", "",
+                "channelId", channelId,
                 "ecommerce", DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(

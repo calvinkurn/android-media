@@ -96,8 +96,6 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
-    Intent getIntentCreateShop(Context context);
-
     Intent getSplashScreenIntent(Context context);
 
     Class getDeepLinkClass();
@@ -127,10 +125,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getResolutionCenterIntent(Context context);
-
-    Intent getResolutionCenterIntentBuyer(Context context);
-
     Intent getResolutionCenterIntentSeller(Context context);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
@@ -157,12 +151,6 @@ public interface TkpdCoreRouter {
 
     Observable<TokoCashData> getTokoCashBalance();
 
-    Intent getAddEmailIntent(Context context);
-
-    Intent getAddPasswordIntent(Context context);
-
-    Intent getChangeNameIntent(Context context);
-
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);
@@ -171,20 +159,13 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    String getDesktopLinkGroupChat();
-
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
-    Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getManageAdressIntent(Context context);
 
-    Intent getAutomaticResetPasswordIntent(Context context, String email);
-
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
-
-    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }

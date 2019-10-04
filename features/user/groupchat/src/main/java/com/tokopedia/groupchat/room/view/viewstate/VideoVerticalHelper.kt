@@ -198,4 +198,13 @@ class VideoVerticalHelper constructor (
     fun isVideoShown(): Boolean {
         return playerView.isShown && videoStreamViewModel?.isActive
     }
+
+    fun releasePlayer() {
+        player?.releasePlayer()
+        val transaction = fragmentManager.beginTransaction()
+        player?.let {
+            transaction.remove(it)
+            transaction.commit()
+        }
+    }
 }

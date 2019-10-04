@@ -66,7 +66,7 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
-    }time_message
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_broadcast_message_preview, container, false)
@@ -97,8 +97,10 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         }
         message.text = model.message
         time_message.text = getString(R.string.time_template, getTimeNow())
-        time_message.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-        (activity, R.drawable.ic_broadcast_message_grey), null)
+        time_message.setCompoundDrawablesWithIntrinsicBounds(null,
+                null,
+                MethodChecker.getDrawable(activity, R.drawable.ic_broadcast_message_grey),
+                null)
     }
 
     private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())

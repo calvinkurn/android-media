@@ -217,20 +217,21 @@ public class SellerDashboardModule {
 
     @DeleteCacheScope
     @Provides
-    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
-        return new DeleteShopInfoTomeUseCase();
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoTomeUseCase(context);
     }
 
     @SellerDashboardScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
-        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context,
+                                                       DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(context, deleteShopInfoTomeUseCase);
     }
 
     @SellerDashboardScope
     @Provides
-    CacheApiClearAllUseCase provideCacheApiClearAllUseCase() {
-        return new CacheApiClearAllUseCase();
+    CacheApiClearAllUseCase provideCacheApiClearAllUseCase(@ApplicationContext Context context) {
+        return new CacheApiClearAllUseCase(context);
     }
 
     @SellerDashboardScope

@@ -45,7 +45,7 @@
                         android:id="@+id/imageOverlayTwo"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
-                        android:src="@drawable/rounded_image_product_add_overlay"/>
+                        app:srcCompat="@drawable/rounded_image_product_add_overlay"/>
                 </FrameLayout>
 
                 <FrameLayout
@@ -64,7 +64,7 @@
                     <ImageView
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
-                        android:src="@drawable/rounded_image_product_add_overlay"/>
+                        app:srcCompat="@drawable/rounded_image_product_add_overlay"/>
 
                     <TextView
                         android:id="@+id/textEditImage"

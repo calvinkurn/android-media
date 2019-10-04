@@ -4,12 +4,15 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderRefundViewModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -27,6 +30,7 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
     private AppCompatTextView tvArrivalCity;
     private AppCompatTextView tvOrderDetail;
     private FlightOrderRefundViewModel item;
+    private Ticker warningTicker;
 
     public FlightOrderRefundViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
         super(itemView);
@@ -41,6 +45,8 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
         tvOrderDetail = (AppCompatTextView) view.findViewById(R.id.tv_order_detail);
+        warningTicker = view.findViewById(R.id.cancellation_warning);
+
         tvOrderDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,11 +77,13 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
                     orderJourney.getArrivalCity()));
             renderDepartureSchedule(element.getOrderJourney());
         }
+
+        renderCancellationStatus(element);
     }
 
     @Override
     protected void onHelpOptionClicked() {
-        adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
+        adapterInteractionListener.onHelpOptionClicked(item.getContactUsUrl());
     }
 
     @Override
@@ -95,5 +103,33 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
         } else {
             adapterInteractionListener.onDetailOrderClicked(item.getId());
         }
+    }
+
+    private void renderCancellationStatus(FlightOrderRefundViewModel element) {
+        if (element.getCancellationInfo().length() > 0) {
+            showCancellationStatus(element.getCancellationInfo());
+        } else {
+            hideCancellationStatus();
+        }
+    }
+
+    private void showCancellationStatus(String cancellationInfo) {
+        warningTicker.setHtmlDescription(cancellationInfo);
+        warningTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(CharSequence charSequence) {
+                RouteManager.route(itemView.getContext(), charSequence.toString());
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
+        warningTicker.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCancellationStatus() {
+        warningTicker.setVisibility(View.GONE);
     }
 }

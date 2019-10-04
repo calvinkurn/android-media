@@ -9,11 +9,11 @@
     <string name="status_colon">Status:</string>
     <string name="see">Lihat</string>
     <string name="terms_and_conditions">Syarat &amp; Ketentuan</string>
-    <string name="voucher_title_x_x">%1$s %2$s</string>
+    <string name="voucher_title_x_x">%1$s\n%2$s</string>
     <string name="title_cashback">Cashback</string>
     <string name="discount">Diskon</string>
     <string name="free_ongkir">Gratis Ongkir</string>
-    <string name="min_spend_x">*Min. Pembelian %1$s</string>
+    <string name="min_spend_x">min. pembelian %1$s</string>
     <string name="run_out">Habis</string>
     <string name="in_use">Diterapkan</string>
     <string name="no_min_spend" tools:ignore="ExtraTranslation">Tidak ada minimum pembelian</string>
@@ -34,4 +34,6 @@
     <string name="code_voucher_blank_warning">Kode promo harus diisi</string>
     <string name="general_warning">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="module_merchant_voucher_label_detail_promo">Detail Promo</string>
+    <string name="applied">Terpasang</string>
+    <string name="use_promo">Gunakan</string>
 </resources>

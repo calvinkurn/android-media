@@ -42,6 +42,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var llPoi: LinearLayout
     private lateinit var llLoading: LinearLayout
     private lateinit var llSubtitle: LinearLayout
+    private lateinit var mDisabledGps: View
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
@@ -114,6 +115,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llPoi = view.findViewById(R.id.ll_poi)
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
+        mDisabledGps = view.findViewById(R.id.layout_gps_disabled)
         etSearch = view.findViewById(R.id.et_search)
         icCloseBtn = view.findViewById(R.id.ic_close)
 
@@ -156,6 +158,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                         }
                         doLoadAutocompleteGeocode()
                     } else {
+                        // When user does not enable location
+                        showGpsDisabledNotification()
                         rlCurrentLocation.setOnClickListener {
                             AddNewAddressUtils.hideKeyboard(etSearch, context)
                             showLocationInfoBottomSheet()
@@ -264,6 +268,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
         llLoading.visibility = View.GONE
+        rvPoiList.visibility = View.VISIBLE
+        mDisabledGps.visibility = View.GONE
         if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
             llSubtitle.visibility = View.VISIBLE
             llPoi.visibility = View.VISIBLE
@@ -276,6 +282,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
+        rvPoiList.visibility = View.VISIBLE
+        mDisabledGps.visibility = View.GONE
         if (dataUiModel.listPredictions.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
@@ -297,5 +305,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
         locationInfoBottomSheetFragment.show(fragmentManager, "")
         dismiss()
+    }
+
+    private fun showGpsDisabledNotification()  {
+        mDisabledGps.visibility = View.VISIBLE
+        rvPoiList.visibility = View.GONE
     }
 }

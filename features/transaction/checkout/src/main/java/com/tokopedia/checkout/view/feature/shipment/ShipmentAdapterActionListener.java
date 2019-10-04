@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -20,11 +20,13 @@ public interface ShipmentAdapterActionListener {
 
     void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
 
-    void onCartDataEnableToCheckout();
+    void onCancelVoucherLogisticClicked(String pslCode, int position);
+
+    void onDataEnableToCheckout();
 
     void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
 
-    void onCartDataDisableToCheckout(String message);
+    void onDataDisableToCheckout(String message);
 
     void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
@@ -64,11 +66,13 @@ public interface ShipmentAdapterActionListener {
 
     void onNeedUpdateViewItem(int position);
 
-    void onSubTotalCartItemClicked(int position);
+    void onSubTotalItemClicked(int position);
 
     void onInsuranceTncClicked();
 
     void onPriorityTncClicker();
+
+    void onOntimeDeliveryClicked(String url);
 
     void onNeedUpdateRequestData();
 

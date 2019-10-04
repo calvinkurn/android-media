@@ -139,15 +139,15 @@ public class SellerInfoModel implements ItemType {
 
     public static class Section {
 
-        private long sectionId;
+        private String sectionId;
         private String name;
         private String iconUrl;
 
-        public long getSectionId() {
+        public String getSectionId() {
             return sectionId;
         }
 
-        public void setSectionId(long sectionId) {
+        public void setSectionId(String sectionId) {
             this.sectionId = sectionId;
         }
 
@@ -174,7 +174,7 @@ public class SellerInfoModel implements ItemType {
 
             Section section = (Section) o;
 
-            if (sectionId != section.sectionId) return false;
+            if (sectionId != null ? !sectionId.equals(section.sectionId) : section.sectionId != null) return false;
             if (name != null ? !name.equals(section.name) : section.name != null) return false;
             return iconUrl != null ? iconUrl.equals(section.iconUrl) : section.iconUrl == null;
 
@@ -182,8 +182,9 @@ public class SellerInfoModel implements ItemType {
 
         @Override
         public int hashCode() {
-            int result = (int) (sectionId ^ (sectionId >>> 32));
+            int result = 0;
             result = 31 * result + (name != null ? name.hashCode() : 0);
+            result = 31 * result + (sectionId != null ? sectionId.hashCode() : 0);
             result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
             return result;
         }

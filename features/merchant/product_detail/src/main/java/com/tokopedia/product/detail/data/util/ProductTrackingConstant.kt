@@ -6,18 +6,34 @@ object ProductTrackingConstant {
     object Category {
         const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
+        const val PDP_AFTER_ATC = "product detail page after atc"
+        const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
+
     }
 
     object Action {
         const val CLICK = "click"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_VIEW = "productView"
+        const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_SHIPPING = "click - shipping"
         const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
+        const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
+        const val CLICK_APPLY_LEASING = "click - ajukan kredit"
+        const val VIEW_HELP_POP_UP_WHEN_ATC = "view help pop up when atc"
+        const val CLICK_REPORT_ON_HELP_POP_UP_ATC = "click report on help pop up atc"
+        const val CLICK_CLOSE_ON_HELP_POP_UP_ATC = "click close on help pop up atc"
+        const val CLICK_SEARCH_BOX = "click search box"
 
+    }
+
+    object Label {
+        const val EMPTY_LABEL = ""
+        const val CLICK = "click"
     }
 
     object Report {
@@ -28,6 +44,8 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_VIEW_PDP = "viewPDP"
+        const val EVENT_CLICK_TOP_NAV = "clickTopNav"
     }
 
     object Affiliate {

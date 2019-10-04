@@ -4,17 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.customadapter.TroubleCategorySpinnerAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
-
-import butterknife.BindView;
-import butterknife.OnItemSelected;
 
 /**
  * Created on 8/24/16.
@@ -23,8 +22,7 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
 
     private static final String TAG = EditCategorySectionView.class.getSimpleName();
 
-    @BindView(R2.id.spinner_trouble_category)
-    Spinner categoryTroubleSpinner;
+    private Spinner categoryTroubleSpinner;
 
     private TroubleCategorySpinnerAdapter adapter;
 
@@ -74,7 +72,6 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
         }
     }
 
-    @OnItemSelected(R2.id.spinner_trouble_category)
     public void onTroubleCategorySelected() {
         if (categoryTroubleSpinner.getSelectedItemPosition() != 0) {
             listener.getPresenter().setOnCategoryTroubleSelected(getTroubleCategoryChoosen());
@@ -91,6 +88,25 @@ public class EditCategorySectionView extends BaseView<EditResCenterFormData, Buy
 
     public EditResCenterFormData.TroubleCategoryData getTroubleCategoryChoosen() {
         return (EditResCenterFormData.TroubleCategoryData) categoryTroubleSpinner.getItemAtPosition(categoryTroubleSpinner.getSelectedItemPosition() - 1);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        categoryTroubleSpinner = view.findViewById(R.id.spinner_trouble_category);
+        categoryTroubleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onTroubleCategorySelected();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 }

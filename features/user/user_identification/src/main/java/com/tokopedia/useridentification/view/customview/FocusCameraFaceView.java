@@ -14,14 +14,25 @@ import android.view.View;
  * @author by alvinatin on 07/11/18.
  */
 
-public class FocusCameraFaceView extends View{
+public class FocusCameraFaceView extends View {
 
-    private final static int LEFT_DIMEN_DIVIDER = 20;
-    private final static double TOP_DIMEN_DIVIDER = 3.55;
-    private final static int RIGHT_DIMEN_DIVIDER = 20;
-    private final static double BOTTOM_DIMEN_DIVIDER = 4.73;
+
+    private final static float LEFT_DIMEN_DIVIDER_KK = 20;
+    private final static double TOP_DIMEN_DIVIDER_KK = 3.55;
+    private final static float RIGHT_DIMEN_DIVIDER_KK = 20;
+    private final static double BOTTOM_DIMEN_DIVIDER_KK = 4.73;
+
+    private final static float LEFT_DIMEN_DIVIDER = 1.4f;
+    private final static double TOP_DIMEN_DIVIDER = 1.25;
+    private final static float RIGHT_DIMEN_DIVIDER = 1.4f;
+    private final static double BOTTOM_DIMEN_DIVIDER = 2.75;
     private final static int CONST_RADIUS = 20;
     private final static int CONST_STROKE_WIDTH = 10;
+
+    private float LEFT_OVAL_DIMEN_DIVIDER = 1.3f;
+    private double TOP_OVAL_DIMEN_DIVIDER = 1.7;
+    private float RIGHT_OVAL_DIMEN_DIVIDER = 1.3f;
+    private double BOTTOM_OVAL_DIMEN_DIVIDER = 1.25;
 
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
@@ -59,10 +70,10 @@ public class FocusCameraFaceView extends View{
         mPath.reset();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
-                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
-                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
-                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+            mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER_KK,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER_KK),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER_KK,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER_KK),
                     Path.Direction.CW);
         } else {
             mPath.addRoundRect(
@@ -74,14 +85,20 @@ public class FocusCameraFaceView extends View{
                     CONST_RADIUS,
                     Path.Direction.CW
             );
+
+            mPath.addOval(getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_OVAL_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_OVAL_DIMEN_DIVIDER),
+                    Path.Direction.CW);
         }
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
-                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
-                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
-                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+            canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER_KK,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER_KK),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER_KK,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER_KK),
                     mTransparentPaint);
         } else {
             canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
@@ -90,6 +107,12 @@ public class FocusCameraFaceView extends View{
                     (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     CONST_RADIUS,
                     CONST_RADIUS,
+                    mTransparentPaint);
+
+            canvas.drawOval(getLeft() + (getRight() - getLeft()) / LEFT_OVAL_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_OVAL_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_OVAL_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_OVAL_DIMEN_DIVIDER),
                     mTransparentPaint);
         }
 

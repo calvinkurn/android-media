@@ -44,7 +44,6 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
     private static final String PHOTO_ID_IMAGE_PATH = "photoIdImagePath";
     private RelativeLayout idPhotoViewRelativeLayout, accountViewRelativeLayout;
     private ImageView idPhotoView, accountPhotoView;
-    private ImagePickerBuilder imagePickerBuilder;
 
     public static Fragment getInstance() {
         return new SelectImageNewPhoneFragment();
@@ -130,7 +129,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
     private View.OnClickListener onUploadPhotoId() {
         return v -> {
-            ImagePickerBuilder builder = getImagePickerBuilder();
+            ImagePickerBuilder builder = getImagePickerBuilder(getString(R.string.foto_ktp_title));
             Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
             startActivityForResult(intent, REQUEST_CODE_PHOTO_ID);
         };
@@ -138,21 +137,17 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
     private View.OnClickListener onUploadAccountBook() {
         return v -> {
-            ImagePickerBuilder builder = getImagePickerBuilder();
+            ImagePickerBuilder builder = getImagePickerBuilder(getString(R.string.foto_payment_title));
             Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
             startActivityForResult(intent, REQUEST_CODE_PAYMENT_PROOF);
         };
     }
 
-    private ImagePickerBuilder getImagePickerBuilder() {
-        if (imagePickerBuilder == null) {
-
-            imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
-                    DEFAULT_MIN_RESOLUTION, null, true,
-                    null, null);
-        }
-        return imagePickerBuilder;
+    private ImagePickerBuilder getImagePickerBuilder(String title) {
+        return new ImagePickerBuilder(title,
+                new int[]{ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
     }
 
     @Override

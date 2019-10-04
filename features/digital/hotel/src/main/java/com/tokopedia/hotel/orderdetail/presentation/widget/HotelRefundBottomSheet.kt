@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.orderdetail.presentation.widget
 
 import android.app.Dialog
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -38,4 +37,6 @@ class HotelRefundBottomSheet: BottomSheets(){
     }
 
     override fun title(): String = getString(R.string.hotel_order_detail_refund_sheet_title)
+
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }

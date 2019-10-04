@@ -8,10 +8,17 @@ query SearchProduct(
         source
         shareUrl
         isFilter
+        response_code
         count
         count_text
         additional_params
         isQuerySafe
+        autocomplete_applink
+        errorMessage
+        default_view
+        redirection {
+            redirect_applink
+        }
         suggestion {
             currentKeyword
             suggestion
@@ -100,7 +107,7 @@ query SearchProduct(
         }
     }
 
-    quick_filter(query: $query) {
+    quick_filter(query: $query, extraParams: $params) {
         filter {
             options {
                 name

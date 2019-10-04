@@ -30,7 +30,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.ProgressBarWithTimer;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
@@ -255,8 +256,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
-                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                    RouteManager.route(getContext(), ApplinkConst.WEBVIEW, voteInfoViewModel.getVoteInfoUrl());
+
                     if(getActivity() instanceof GroupChatActivity) {
                         analytics.eventActionClickVoteInfo
                                 (String.format("%s - %s"
@@ -409,8 +410,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void redirectToLogin() {
         canVote = true;
-        startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                .getLoginIntent(getActivity()), REQUEST_LOGIN);
+        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_LOGIN);
     }
 
     @Override

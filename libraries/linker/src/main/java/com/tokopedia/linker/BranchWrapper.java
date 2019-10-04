@@ -18,6 +18,9 @@ import com.tokopedia.linker.requests.LinkerShareRequest;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
@@ -27,6 +30,7 @@ import io.branch.referral.util.LinkProperties;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
+    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
 
     @Override
     public void init(Context context) {
@@ -227,8 +231,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
-                desktopUrl = ((LinkerRouter) context.getApplicationContext())
-                        .getDesktopLinkGroupChat();
+                desktopUrl = DESKTOP_GROUPCHAT_URL;
                 linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
@@ -287,6 +290,11 @@ public class BranchWrapper implements WrapperInterface {
 
             String temp = String.format(LinkerConstants.STRING_FORMAT_UTM,
                     linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags);
+            try {
+                temp = URLEncoder.encode(temp, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                temp = temp.replace(" ","");
+            }
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, String.format(LinkerConstants.STRING_FORMAT_DESKTOP_URL, desktopUrl, temp));
             linkProperties.addControlParameter(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH, renderedUrl);
             linkProperties.addControlParameter(LinkerConstants.KEY_IOS_DEEPLINK_PATH, renderedUrl);

@@ -64,8 +64,8 @@
     <string name="saldo_return">Penghasilan</string>
     <string name="saldo_exceeding_total_value_seller">Nilai melebihi total Saldo Penghasilan</string>
     <string name="saldo_exceeding_total_value_buyer">Nilai melebihi total Saldo Refund</string>
-    <string name="show_case_title">Penarikan Saldo</string>
-    <string name="show_case_desc">Pilih sumber dana yang ingin ditarik. Kamu dapat menarik dana dari refund atau dari penghasilan.</string>
+    <string name="saldo_withdraw_show_case_title">Penarikan Saldo</string>
+    <string name="saldo_withdraw_show_case_desc">Pilih sumber dana yang ingin ditarik. Kamu dapat menarik dana dari refund atau dari penghasilan.</string>
     <string name="refund_saldo_inactive">Saat ini kamu tidak memiliki Saldo Refund</string>
     <string name="refund_saldo_less_min">Saldo Refund kurang dari minimum penarikan, Rp10.000</string>
     <string name="seller_saldo_inactive">Saat ini kamu tidak memiliki Saldo Penghasilan</string>
@@ -80,6 +80,6 @@
     <string name="process_time_withdraw_title">Waktu Proses Penarikan</string>
     <string name="process_time_withdraw_body_one">BCA, BRI, BNI, CIMB, Mandiri paling lama 24 jam</string>
     <string name="process_time_withdraw_body_two">Bank lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/Libur)</string>
-
+    <string name="saldolock_info_text">Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini</string>
 
 </resources>

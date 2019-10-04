@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
@@ -15,7 +14,6 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -252,19 +250,28 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
 
-            String errorDescription = data.getShopGroupData().getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
-                tickerError.setTextDescription(errorDescription);
+            if (!TextUtils.isEmpty(data.getShopGroupData().getErrorTitle())) {
+                String errorDescription = data.getShopGroupData().getErrorDescription();
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTickerTitle(null);
+                    tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
+                }
+                tickerError.setTickerType(Ticker.TYPE_ERROR);
+                tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+                tickerError.setCloseButtonVisibility(View.GONE);
+                tickerError.setVisibility(View.VISIBLE);
+                tickerError.post(() -> {
+                    tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    tickerError.requestLayout();
+                });
+                layoutError.setVisibility(View.VISIBLE);
             } else {
-                tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
+                layoutError.setVisibility(View.GONE);
             }
-            tickerError.setTickerType(Ticker.TYPE_ERROR);
-            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerError.setCloseButtonVisibility(View.GONE);
-            tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
-
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
@@ -283,12 +290,18 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerWarning.setTickerTitle(data.getShopGroupData().getWarningTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
+                tickerWarning.setTickerTitle(null);
                 tickerWarning.setTextDescription(data.getShopGroupData().getWarningTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
+            tickerWarning.post(() -> {
+                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerWarning.requestLayout();
+            });
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);
@@ -314,6 +327,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                         if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
                             isAllSelected = false;
+                            break;
                         }
                     }
                     cartShopHolderData.setAllSelected(isAllSelected);

@@ -12,10 +12,10 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsSwitcher;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -28,7 +28,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener, TopAdsSwitcher {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_item_ads;
+    public static final int LAYOUT = R.layout.search_result_item_top_ads;
 
     private TopAdsWidgetView adsWidgetView;
     private Context context;
@@ -57,7 +57,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                         : 1;
             }
 
-            int spacing = context.getResources().getDimensionPixelSize(R.dimen.dp_16);
+            int spacing = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16);
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {

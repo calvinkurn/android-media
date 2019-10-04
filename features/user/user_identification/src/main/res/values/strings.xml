@@ -14,6 +14,9 @@
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan dan terlindungi dengan aman di dalam sistem Tokopedia.</string>
     <string name="kyc_verified_button">Info Selengkapnya</string>
+    
+    <string name="kyc_blacklist_button">Kembali</string>
+    <string name="kyc_blacklist_text">KTP anda tidak memenuhi syarat dan ketentuan untuk melakukan verifikasi.</string>
 
     <string name="ktp_title">Foto Bagian Depan KTP</string>
     <string
@@ -44,6 +47,7 @@
     <string name="title_kyc_info">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
+    <string name="error_text_image_cant_be_accessed">Foto tidak dapat diakses</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_face">2. Foto Diri &amp; KTP</string>

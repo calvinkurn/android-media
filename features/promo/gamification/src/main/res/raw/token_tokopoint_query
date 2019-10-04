@@ -36,7 +36,7 @@
       countingMessage
       tokenSourceMessage
       tokensUser {
-        tokenUserID
+        tokenUserIDstr
         campaignID
         title
         unixTimestampFetch
@@ -59,6 +59,18 @@
           imagev2Urls
           tokenSourceUrl
         }
+      }
+      homeActionButton{
+          backgroundColor
+          text
+          appLink
+          url
+          type
+      }
+      homeSmallButton{
+          imageURL
+          appLink
+          url
       }
     }
   }

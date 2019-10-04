@@ -10,15 +10,21 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 public class WishlistTopAdsViewModel implements Visitable<WishlistTypeFactory> {
 
     private String query = "";
+    private String title = "";
     private TopAdsModel topAdsModel;
 
-    public WishlistTopAdsViewModel(TopAdsModel topAdsModel, String query) {
+    public WishlistTopAdsViewModel(TopAdsModel topAdsModel, String query, String title) {
         this.query = query;
         this.topAdsModel = topAdsModel;
+        this.title = title;
     }
 
     public String getQuery() {
         return query;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public TopAdsModel getTopAdsModel() {

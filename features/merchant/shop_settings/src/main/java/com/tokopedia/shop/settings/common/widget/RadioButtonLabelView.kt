@@ -63,14 +63,14 @@ class RadioButtonLabelView : FrameLayout {
 
     private fun init(attrs: AttributeSet?) {
         applyAttrs(attrs)
-        val view = LayoutInflater.from(context).inflate(R.layout.widget_label_view_radio_button,
+        val view = LayoutInflater.from(context).inflate(com.tokopedia.design.R.layout.widget_label_view_radio_button,
                 this, true)
-        titleTextView = view.findViewById(R.id.text_view_title)
+        titleTextView = view.findViewById(com.tokopedia.design.R.id.text_view_title)
         titleTextView!!.text = titleText
         titleTextView!!.setTypeface(null, titleTextStyleValue)
         titleTextView!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
         titleTextView!!.setTextColor(titleColorValue)
-        radioButton = view.findViewById(R.id.radio_button)
+        radioButton = view.findViewById(com.tokopedia.design.R.id.radio_button)
         radioButton!!.setOnCheckedChangeListener { _, isChecked ->
             if (onRadioButtonLabelViewListener != null) {
                 onRadioButtonLabelViewListener!!.onChecked(isChecked)
@@ -87,9 +87,9 @@ class RadioButtonLabelView : FrameLayout {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.RadioButtonLabelView)
         try {
             titleText = styledAttributes.getString(R.styleable.RadioButtonLabelView_rblv_title)
-            titleColorValue = styledAttributes.getColor(R.styleable.RadioButtonLabelView_rblv_title_color, ContextCompat.getColor(context, R.color.font_black_primary_70))
+            titleColorValue = styledAttributes.getColor(R.styleable.RadioButtonLabelView_rblv_title_color, ContextCompat.getColor(context, com.tokopedia.design.R.color.font_black_primary_70))
             titleTextStyleValue = styledAttributes.getInt(R.styleable.RadioButtonLabelView_rblv_title_text_style, Typeface.NORMAL)
-            titleTextSize = styledAttributes.getDimension(R.styleable.RadioButtonLabelView_rblv_title_text_size, resources.getDimension(R.dimen.sp_16))
+            titleTextSize = styledAttributes.getDimension(R.styleable.RadioButtonLabelView_rblv_title_text_size, resources.getDimension(com.tokopedia.design.R.dimen.sp_16))
         } finally {
             styledAttributes.recycle()
         }
@@ -100,7 +100,7 @@ class RadioButtonLabelView : FrameLayout {
         if (enabled) {
             titleTextView!!.setTextColor(titleColorValue)
         } else {
-            titleTextView!!.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
+            titleTextView!!.setTextColor(ContextCompat.getColor(context,  com.tokopedia.design.R.color.font_black_disabled_38))
         }
     }
 

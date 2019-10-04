@@ -55,6 +55,8 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
     override fun title(): String = getString(R.string.hotel_bottom_sheets_room_guest_title)
 
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
+
     interface HotelGuestListener {
 
         fun onSaveGuest(room: Int, adult: Int)

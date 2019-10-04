@@ -323,7 +323,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (orderDetail.contactUs.helpText.isNotBlank()){
             val helpLabel = TextViewCompat(context)
             helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
-            helpLabel.setTextColor(resources.getColor(R.color.light_primary))
+            helpLabel.setTextColor(resources.getColor(com.tokopedia.design.R.color.light_primary))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -333,7 +333,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
             helpLabel.gravity = Gravity.CENTER
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+            params.bottomMargin = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
             helpLabel.layoutParams = params
 
             order_detail_footer_layout.addView(helpLabel)
@@ -346,12 +346,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             buttonCompat.isAllCaps = false
 
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.topMargin = resources.getDimensionPixelSize(R.dimen.dp_8)
+            params.topMargin = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
             buttonCompat.layoutParams = params
 
             if (button.weight == 1) {
-                buttonCompat.background = resources.getDrawable(R.drawable.rect_white_rounded_stroke_gray)
-                buttonCompat.setTextColor(resources.getColor(R.color.grey_500))
+                buttonCompat.background = resources.getDrawable(com.tokopedia.design.R.drawable.rect_white_rounded_stroke_gray)
+                buttonCompat.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_500))
             } else if (button.weight == 2) {
                 buttonCompat.buttonCompatType = ButtonCompat.TRANSACTION
             }
@@ -382,7 +382,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = resources.getColor(R.color.green_250) // specific color for this link
+                    ds.color = resources.getColor(com.tokopedia.design.R.color.green_250) // specific color for this link
                 }
             }, hyperlinkIndex, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (resId != 0) {

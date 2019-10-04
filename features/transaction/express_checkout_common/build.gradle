@@ -15,7 +15,18 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
+
+project.ext {
+    artifactId = 'express-checkout-common'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "1.0.0"
+    artifactName = "express_checkout_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

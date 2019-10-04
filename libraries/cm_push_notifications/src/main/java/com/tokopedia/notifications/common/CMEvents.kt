@@ -33,6 +33,7 @@ object IrisAnalyticsEvents {
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
+    private const val EVENT_MESSAGE_ID = "message_id"
     private const val CAMPAIGN_ID = "campaign_id"
     private const val NOTIFICATION_ID = "notification_id"
     private const val SOURCE = "source"
@@ -45,33 +46,35 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             values[EVENT_NAME] = PUSH_RECEIVED
-            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp.toString()
+            values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
             values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
             values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
             values[SOURCE] = CMNotificationUtils.getApplicationName(context)
             values[PARENT_ID] = baseNotificationModel.parentId.toString()
-            values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type } ?: ""
+            values[PUSH_TYPE] = baseNotificationModel.type?.let { baseNotificationModel.type } ?: ""
             values[IS_SILENT] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
 
         }
-       //todo irisAnalytics.sendEvent(values)
+       irisAnalytics.sendEvent(values)
 
     }
 
-    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String) {
+    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String?) {
         val values = HashMap<String, Any>()
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             values[EVENT_NAME] = eventName
-            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp.toString()
+            values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
             values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
             values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
             values[SOURCE] = CMNotificationUtils.getApplicationName(context)
             values[PARENT_ID] = baseNotificationModel.parentId.toString()
-            values[PUSH_TYPE] = pushType
+            values[PUSH_TYPE] = pushType?.let { pushType } ?: ""
             values[IS_SILENT] = false
         }
-       //todo irisAnalytics.saveEvent(values)
+       irisAnalytics.saveEvent(values)
 
     }
 }

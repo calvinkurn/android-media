@@ -25,9 +25,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -74,6 +75,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
+    public static final String EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH";
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
@@ -85,7 +87,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
-    private static final int REQUEST_CODE_LOGIN = 6;
 
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
@@ -119,7 +120,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return new FlightDashboardFragment();
     }
 
-    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger, String extrasChildPassenger, String extrasInfantPassenger, String extrasClass) {
+    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger,
+                                                      String extrasChildPassenger, String extrasInfantPassenger,
+                                                      String extrasClass, String extrasAutoSearch) {
         FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TRIP, extrasTrip);
@@ -127,6 +130,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bundle.putString(EXTRA_CHILD, extrasChildPassenger);
         bundle.putString(EXTRA_INFANT, extrasInfantPassenger);
         bundle.putString(EXTRA_CLASS, extrasClass);
+        bundle.putString(EXTRA_AUTO_SEARCH, extrasAutoSearch);
         flightDashboardFragment.setArguments(bundle);
         return flightDashboardFragment;
     }
@@ -310,7 +314,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_ADULT, null)) &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_CHILD, null)) &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_INFANT, null)) &&
-                !TextUtils.isEmpty(getArguments().getString(EXTRA_CLASS, null));
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_CLASS, null)) &&
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_AUTO_SEARCH, null));
     }
 
     @Override
@@ -336,6 +341,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public String getClassArguments() {
         return getArguments().getString(EXTRA_CLASS);
+    }
+
+    @Override
+    public Boolean isAutoSearch() {
+        return getArguments().getString(EXTRA_AUTO_SEARCH, "0").equals("1");
     }
 
     @Override
@@ -544,20 +554,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            stopTrace();
-            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
-    }
-
-    @Override
-    public void closePage() {
-        getActivity().finish();
-    }
-
-    @Override
     public void renderBannerView(List<BannerDetail> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
@@ -596,7 +592,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
             startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
                     getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
         } else {
@@ -632,12 +628,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
-                case REQUEST_CODE_LOGIN:
-                    presenter.onLoginResultReceived();
-                    break;
             }
-        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
-            presenter.onLoginResultReceived();
         }
     }
 
@@ -689,8 +680,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                         && ((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), url) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getBannerWebViewIntent(getActivity(), url));
+                    RouteManager.route(getContext(), url);
                 }
             }
         }

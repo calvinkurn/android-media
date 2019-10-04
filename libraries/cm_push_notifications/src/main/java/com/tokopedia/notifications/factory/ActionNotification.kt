@@ -29,14 +29,14 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         val builder = notificationBuilder
         val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseData(collapsedView, baseNotificationModel, true)
-        collapsedView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel, requestCode))
         var expandedView = RemoteViews(context.applicationContext.packageName,
                 R.layout.cm_layout_big_image)
         if (baseNotificationModel.media == null) {
             expandedView = RemoteViews(context.applicationContext.packageName,
                     R.layout.cm_layout_action_button)
         }
-
+        collapsedView.setOnClickPendingIntent(R.id.collapseMainView,
+                createMainPendingIntent(baseNotificationModel, requestCode))
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
@@ -45,13 +45,14 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         baseNotificationModel.media?.let {
             it.mediumQuality.isBlank().let { isBlank ->
                 if (!isBlank) {
+                    expandedView.setOnClickPendingIntent(R.id.img_big,
+                            createMainPendingIntent(baseNotificationModel, requestCode))
                     expandedView.setViewVisibility(R.id.img_big, View.VISIBLE)
                     expandedView.setImageViewBitmap(R.id.img_big,
                             CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
-                    baseNotificationModel.actionButton.let { buttonList ->
-                        if (buttonList.isNotEmpty()) {
+                    baseNotificationModel.actionButton.isNotEmpty().let { isNonEmpty ->
+                        if (isNonEmpty)
                             expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
-                        }
                     }
                 }
             }
@@ -60,12 +61,10 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
             addActionButton(baseNotificationModel.actionButton, expandedView)
         }
-
         setCollapseData(expandedView, baseNotificationModel, false)
 
         return builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
                 .build()
-
     }
 
     private fun setCollapseData(remoteView: RemoteViews, baseNotificationModel: BaseNotificationModel, isCollapsed: Boolean) {

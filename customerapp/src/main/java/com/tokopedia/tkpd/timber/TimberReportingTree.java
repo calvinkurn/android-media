@@ -1,9 +1,13 @@
 package com.tokopedia.tkpd.timber;
 
+import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,13 +35,16 @@ public class TimberReportingTree extends Timber.DebugTree {
     public @Nullable
     List<Boolean> priorityList;
 
+    private UserSession userSession;
+
     public TimberReportingTree(@Nullable List<Boolean> priorityList) {
         this.priorityList = priorityList;
     }
 
     @Override
     protected void log(int logPriority, String tag, @NonNull String message, Throwable t) {
-        if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG) {
+        if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG ||
+                LogWrapper.instance == null) {
             return;
         }
         int serverSeverity = NO_SEVERITY;
@@ -50,6 +57,7 @@ public class TimberReportingTree extends Timber.DebugTree {
                 message = message.replaceFirst(P2, "");
                 serverSeverity = SEVERITY_MEDIUM;
             } else if (priorityList.get(2) && message.startsWith(P3)) {
+                message = message.replaceFirst(P3, "");
                 serverSeverity = SEVERITY_LOW;
             } else {
                 serverSeverity = NO_SEVERITY;
@@ -58,7 +66,54 @@ public class TimberReportingTree extends Timber.DebugTree {
         if (serverSeverity != NO_SEVERITY) {
             // throwable is concatenated to message. This will be fixed in Timber next major release
             // https://github.com/JakeWharton/timber/issues/142
-            LogWrapper.log(serverSeverity, logPriority, tag + " " + message);
+            LogWrapper.log(serverSeverity,
+                    logToString(logPriority) + " " +
+                            buildUserMessage(LogWrapper.instance.getApplication()) + " " +
+                            tag + " " + message.replace("\n", " - "));
+        }
+    }
+
+    public @NonNull
+    UserSession getUserSession(@NonNull Context context) {
+        if (userSession == null) {
+            userSession = new UserSession(context);
+        }
+        return userSession;
+    }
+
+    public @NonNull
+    String buildUserMessage(@NonNull Context context) {
+        UserSession userSession = getUserSession(context);
+        StringBuilder stringBuilder = new StringBuilder();
+        String userId = userSession.getUserId();
+        if (userId != null) {
+            stringBuilder.append("uid=")
+                    .append(userId)
+                    .append("#");
+        }
+        stringBuilder.append("vernm=")
+                .append(GlobalConfig.VERSION_NAME)
+                .append("#");
+        stringBuilder.append("vercd=")
+                .append(GlobalConfig.VERSION_CODE)
+                .append("#");
+        stringBuilder.append("os=")
+                .append(Build.VERSION.RELEASE)
+                .append("#");
+        stringBuilder.append("device=")
+                .append(Build.MODEL)
+                .append("#");
+        return stringBuilder.toString();
+    }
+
+    private String logToString(int logPriority) {
+        switch (logPriority) {
+            case Log.ERROR:
+                return "SEVR";
+            case Log.WARN:
+                return "WARN";
+            default:
+                return "INFO";
         }
     }
 

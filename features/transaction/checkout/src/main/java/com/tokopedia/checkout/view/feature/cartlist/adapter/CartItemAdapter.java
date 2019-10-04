@@ -54,6 +54,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        ((CartItemViewHolder) holder).clear();
+    }
+
+    @Override
     public int getItemCount() {
         return cartItemHolderDataList.size();
     }
@@ -115,5 +121,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemShowTickerPriceDecrease(String productId);
 
         void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId);
+
+        void onCartItemShowTickerOutOfStock(String productId);
+
+        void onCartItemSimilarProductUrlClicked(String similarProductUrl);
     }
 }

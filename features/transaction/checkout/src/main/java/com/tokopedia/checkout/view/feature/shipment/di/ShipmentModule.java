@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
@@ -27,32 +28,35 @@ import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
-import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
+import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -206,6 +210,7 @@ public class ShipmentModule {
                                                         CodCheckoutUseCase codCheckoutUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                                                        SubmitHelpTicketUseCase submitHelpTicketUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
                                                         UserSessionInterface userSessionInterface,
                                                         IVoucherCouponMapper voucherCouponMapper,
@@ -217,7 +222,7 @@ public class ShipmentModule {
             getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-               codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
+               codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
             shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
             analyticsPurchaseProtection, codAnalytics, checkoutAnalytics);
     }
@@ -252,5 +257,12 @@ public class ShipmentModule {
     @ShipmentScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
         return new TrackingPromoCheckoutUtil();
+    }
+
+    @Provides
+    @ShipmentScope
+    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
+    String provideSubmitHelpTicketUseCaseQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.transaction.common.R.raw.submit_help_ticket);
     }
 }

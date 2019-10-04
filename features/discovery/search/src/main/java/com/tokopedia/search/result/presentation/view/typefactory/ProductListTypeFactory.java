@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
@@ -16,6 +17,8 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(TopAdsViewModel topAdsViewModel);
 
     int type(RelatedSearchViewModel relatedSearchModel);
+
+    int type(GlobalNavViewModel globalNavViewModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

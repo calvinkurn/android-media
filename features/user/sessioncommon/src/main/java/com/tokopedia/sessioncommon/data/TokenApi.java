@@ -1,6 +1,5 @@
 package com.tokopedia.sessioncommon.data;
 
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 
 import java.util.Map;

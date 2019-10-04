@@ -32,6 +32,10 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         return data;
     }
 
+    public List<ItemType> getDataItemType() {
+        return (List<ItemType>) data;
+    }
+
     public void setCallback(Callback<T> callback) {
         this.callback = callback;
     }

@@ -4,13 +4,13 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_media_tag.view.*
 
 class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf(),

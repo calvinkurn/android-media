@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'common_promo'
-    groupId = 'com.tokopedia.common_promo'
-    versionName = "${tkpdPromoApplyVersion}"
-    artifactName = "common_promo-release"
-}
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -22,14 +15,27 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.miscDependencies.multiDex
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = 'promo_common'
+    groupId = 'com.tokopedia.im'
+    versionName = "1.0.0"
+    artifactName = "common_promo-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -14,9 +15,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -28,17 +28,14 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.gm.resource.GMConstant;
-import com.tokopedia.gm.subscribe.tracking.GMTracking;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -70,17 +67,15 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-    private RemoteConfig remoteConfig;
-
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
                               LocalCacheHandler drawerCache) {
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
-        shopName = (TextView) activity.findViewById(R.id.label);
-        shopLabel = (TextView) activity.findViewById(R.id.sublabel);
-        shopIcon = (ImageView) activity.findViewById(R.id.icon);
+        shopName = activity.findViewById(R.id.label);
+        shopLabel = activity.findViewById(R.id.sublabel);
+        shopIcon = activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
 
@@ -148,7 +143,6 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     private DrawerItem getSellerMenu() {
@@ -342,9 +336,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
                     if (context.getApplication() instanceof TkpdCoreRouter) {
-                        TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-                        tkpdCoreRouter.goToManageProduct(context);
-                        tkpdCoreRouter.goToAddProduct(context);
+                        Intent manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
+                        Intent addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+                        TaskStackBuilder.create(context)
+                                .addNextIntent(manageProductIntent)
+                                .addNextIntent(addProductIntent)
+                                .startActivities();
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:
@@ -387,20 +384,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
-                    if (context.getApplication() instanceof FlashSaleRouter) {
-                        intent = ((FlashSaleRouter) context.getApplication()).getFlashSaleDashboardIntent(context);
-                        context.startActivity(intent);
-                    }
+                    RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
-                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
-                        intent = new Intent(context, GMFeaturedProductActivity.class);
-                        context.startActivity(intent);
-                    } else {
-                        showDialogActionGoToGMSubscribe();
-                        isNeedToCloseActivity = false;
-                    }
+                    eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+                    intent = new Intent(context, GMFeaturedProductActivity.class);
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
@@ -504,7 +493,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void sendGMAnalyticDialogEvent(boolean isSubscribing) {
-        if (context.getApplication() instanceof AbstractionRouter){
+        if (context.getApplication() instanceof AbstractionRouter) {
             new GMTracking().sendClickManageProductDialogEvent(isSubscribing);
         }
     }

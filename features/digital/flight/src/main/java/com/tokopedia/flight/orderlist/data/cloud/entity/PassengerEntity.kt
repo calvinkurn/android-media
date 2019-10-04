@@ -37,4 +37,7 @@ class PassengerEntity(
         val passportExpiry: String = "",
         @SerializedName("amenities")
         @Expose
-        val amenities: List<PassengerAmentityEntity>)
+        val amenities: List<PassengerAmentityEntity>,
+        @SerializedName("cancel_status")
+        @Expose
+        val cancelStatus: List<CancellationStatusEntity> = arrayListOf())

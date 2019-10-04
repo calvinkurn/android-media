@@ -7,8 +7,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".feature.dashboard.view.activity.DashboardActivity"
+            android:name=".feature.dashboard.view.activity.AffiliateDashboardActivity"
             android:label="@string/title_af_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.dashboard.view.activity.AffiliateCuratedProductActivity"
+            android:label="@string/posted_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.dashboard.view.activity.CommissionDetailActivity"
+            android:label="@string/title_af_dashboard_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />

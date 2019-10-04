@@ -1,11 +1,6 @@
 package com.tokopedia.tkpd.home.wishlist.adapter.factory;
 
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptySearchViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptyViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.*;
 
 /**
  * Author errysuprayogi on 25,July,2019

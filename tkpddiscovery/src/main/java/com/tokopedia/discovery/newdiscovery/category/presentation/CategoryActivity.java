@@ -1,10 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,12 +14,12 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
+import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
@@ -31,8 +29,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
-import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.discovery.common.manager.AdultManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +40,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
+
+    private static final String EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID";
+    private static final String EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME";
 
     public static final int TAB_SHOP_CATALOG = 1;
     public static final int TAB_PRODUCT = 0;
@@ -97,11 +96,19 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
                               boolean removeAnimation,
                               String trackerAttribution) {
         if (context != null) {
-            Intent intent = new Intent(context, CategoryActivity.class);
-            intent.putExtra(EXTRA_CATEGORY_HEADER_VIEW_MODEL, categoryHeaderModel);
-            intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
-            if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            context.startActivity(intent);
+            if (CategoryNavActivity.isCategoryRevampEnabled(context)) {
+                Intent intent = new Intent(context, CategoryNavActivity.class);
+                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, categoryHeaderModel.getDepartementId());
+                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryHeaderModel.getHeaderModel().getCategoryName());
+                if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, CategoryActivity.class);
+                intent.putExtra(EXTRA_CATEGORY_HEADER_VIEW_MODEL, categoryHeaderModel);
+                intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+                if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
+            }
         }
     }
 
@@ -121,6 +128,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         loadInitialData();
         categorySectionPagerAdapter.clear();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

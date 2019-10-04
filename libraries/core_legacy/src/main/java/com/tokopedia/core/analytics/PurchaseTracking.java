@@ -53,7 +53,8 @@ public class PurchaseTracking extends TrackingUtils {
                 Purchase.USER_ID, purchase.getUserId(),
                 Purchase.CURRENT_SITE, purchase.getCurrentSite(),
                 AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                        Purchase.PURCHASE, purchase.getPurchase()
+                        Purchase.PURCHASE, purchase.getPurchase(),
+                        Purchase.CURRENCY_CODE, purchase.getCurrency()
                 )
         ));
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);

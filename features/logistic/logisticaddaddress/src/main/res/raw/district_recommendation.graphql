@@ -1,6 +1,5 @@
-{
-  kero_district_recommendation(query:"#keyQuery", page:"#numPage") {
-    next_available
+query GetDistrictRecommendation($query: String, $page: String){
+  kero_district_recommendation(query: $query, page: $page) {
     district {
       district_id
       district_name
@@ -10,5 +9,6 @@
       province_name
       zip_code
     }
+    next_available
   }
 }

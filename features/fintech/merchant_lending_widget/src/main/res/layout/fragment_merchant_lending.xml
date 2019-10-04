@@ -51,9 +51,9 @@
             android:padding="@dimen/dp_2"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/text_title"
-            app:layout_constraintStart_toEndOf="@id/text_title"
-            app:layout_constraintTop_toTopOf="@id/text_title"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title"
+            app:layout_constraintStart_toEndOf="@+id/text_title"
+            app:layout_constraintTop_toTopOf="@+id/text_title"
             tools:text="New" />
 
 
@@ -67,7 +67,7 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/text_title"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_title"
             tools:text="Side Text"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/text_title"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_title"
             tools:visibility="visible" />

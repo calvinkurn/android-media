@@ -31,6 +31,10 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
         return fragment
     }
 
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.clear()
         if (shouldShowOptionMenu()) {

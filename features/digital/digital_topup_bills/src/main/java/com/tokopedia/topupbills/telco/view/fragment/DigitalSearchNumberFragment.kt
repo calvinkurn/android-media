@@ -40,7 +40,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private lateinit var clientNumbers: List<TelcoFavNumber>
     private lateinit var clientNumberType: String
 
-    private var number: String? = null
+    private var number: String = ""
     private lateinit var inputNumberActionType: InputNumberActionType
 
     @Inject
@@ -106,7 +106,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         }
 
         editTextSearchNumber.setText(number)
-        editTextSearchNumber.setSelection(number!!.length)
+        editTextSearchNumber.setSelection(number.length)
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
         rvNumberList.layoutManager = LinearLayoutManager(activity)

@@ -43,6 +43,8 @@ class HotelMenuBottomSheets : BottomSheets() {
 
     override fun title(): String = ""
 
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
+
     interface HotelMenuListener {
 
         fun onOrderListClicked()

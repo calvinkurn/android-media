@@ -147,6 +147,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                     val intent = RouteManager.getIntent(activity, url)
                     intent.putExtra(PARAM_URL, URLGenerator.generateURLSessionLogin(
                         if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
+
                         getUserSession().deviceId,
                         getUserSession().userId))
                     intent.putExtra(IS_CHAT_BOT, true)
@@ -155,9 +156,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
                 RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 else -> {
-                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
-                    applinkRouter.goToApplinkActivity(activity,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                            url))
                 }
             }
         }
@@ -250,6 +250,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun showChatMenu() {
+        if(bottomChatMenu.isAdded) {
+            return
+        }
         bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
     }
 

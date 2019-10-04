@@ -63,6 +63,7 @@ class DatePicker: FrameLayout{
             override fun onValueChange(oldVal: String, newVal: String) {
                 tempDate.timeInMillis = currentDate.timeInMillis
                 currentDate.set(tempDate.get(Calendar.YEAR), tempDate.get(Calendar.MONTH), newVal.toInt())
+                setDate(currentDate.timeInMillis)
             }
         })
 
@@ -72,6 +73,7 @@ class DatePicker: FrameLayout{
                 tempDate.timeInMillis = currentDate.timeInMillis
                 val months = DateFormatSymbols.getInstance(LocaleUtils.getIDLocale()).months
                 currentDate.set(tempDate.get(Calendar.YEAR), months.indexOf(newVal), tempDate.get(Calendar.DAY_OF_MONTH))
+                setDate(currentDate.timeInMillis)
             }
         })
 
@@ -80,6 +82,7 @@ class DatePicker: FrameLayout{
                 clampDaysByMonth()
                 tempDate.timeInMillis = currentDate.timeInMillis
                 currentDate.set(newVal.toInt(), tempDate.get(Calendar.MONTH), tempDate.get(Calendar.DAY_OF_MONTH))
+                setDate(currentDate.timeInMillis)
             }
         })
 

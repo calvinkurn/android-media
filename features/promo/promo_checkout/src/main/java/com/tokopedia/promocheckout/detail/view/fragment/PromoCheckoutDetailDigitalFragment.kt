@@ -6,16 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -28,12 +22,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     @Inject
     lateinit var promoCheckoutDetailDigitalPresenter: PromoCheckoutDetailDigitalPresenter
 
-    @Inject
-    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
     lateinit var promoDigitalModel: PromoDigitalModel
-    var pageTracking: Int = 1
-    lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +48,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickCancel() {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
-        }
+        super.onClickCancel()
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
@@ -71,36 +56,13 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         activity?.finish()
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
-        }
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    override fun onErrorValidatePromo(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromo(e)
-    }
-
-    override fun onErrorValidatePromoStacking(e: Throwable) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
-        }
-        super.onErrorValidatePromoStacking(e)
     }
 
     override fun initInjector() {
@@ -112,28 +74,13 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         promoCheckoutDetailDigitalPresenter.attachView(this)
     }
 
-    override fun hideProgressLoading() {
-        progressDialog?.hide()
-    }
-
-    override fun showProgressLoading() {
-        try {
-            progressDialog?.show()
-        } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
-        }
-    }
-
     override fun onDestroy() {
         promoCheckoutDetailDigitalPresenter.detachView()
         super.onDestroy()
     }
 
     companion object {
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
-        val EXTRA_IS_USE = "EXTRA_IS_USE"
         val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
-        val PAGE_TRACKING = "PAGE_TRACKING"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()

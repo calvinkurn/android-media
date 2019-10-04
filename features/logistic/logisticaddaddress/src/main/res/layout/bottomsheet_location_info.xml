@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_60"
+            android:layout_marginBottom="@dimen/dp_24"
             android:foreground="?selectableItemBackground"
             android:text="@string/activate_location_service"
             android:textAllCaps="false"

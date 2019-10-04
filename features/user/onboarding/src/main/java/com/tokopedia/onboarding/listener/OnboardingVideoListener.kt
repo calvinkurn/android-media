@@ -4,4 +4,6 @@ interface OnboardingVideoListener {
 
     fun onPageSelected(position: Int)
 
+    fun onPageUnSelected()
+
 }

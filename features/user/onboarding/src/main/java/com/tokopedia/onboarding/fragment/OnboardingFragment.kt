@@ -1,6 +1,7 @@
 package com.tokopedia.onboarding.fragment
 
 import android.app.Activity
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -23,7 +24,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-
 /**
  * @author by stevenfredian on 14/05/19.
  */
@@ -32,14 +32,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         OnboardingVideoListener {
 
     companion object {
-        val VIEW_DEFAULT = 100
-        val VIEW_ENDING = 101
 
         val ARG_TITLE = "title"
         val ARG_VIDEO_PATH = "video_path"
         val ARG_DESC = "desc"
         val ARG_BG_COLOR = "bg_color"
-        val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
         val ARG_DESCKEY = "desc_key"
         val ARG_TTLKEY = "ttl_key"
@@ -72,6 +69,8 @@ class OnboardingFragment : BaseDaggerFragment(),
     private var descKey: String = ""
     private var ttlKey: String = ""
     private var remoteConfig: RemoteConfig? = null
+
+    private var isVideoPrepared: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -122,12 +121,40 @@ class OnboardingFragment : BaseDaggerFragment(),
 
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
-        videoView?.setOnErrorListener { p0, p1, p2 -> true }
-        videoView?.setOnPreparedListener {
-            it.isLooping = true
-        }
+        videoView?.setOnErrorListener { _, _, _ -> true }
+
+        videoView?.setOnPreparedListener(onPreparedListener)
+
+        videoView?.requestFocus();
 
         return defaultView
+    }
+
+    var onPreparedListener: MediaPlayer.OnPreparedListener = MediaPlayer.OnPreparedListener { m ->
+        var mediaPlayer = m
+        try {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+                mediaPlayer.release()
+                mediaPlayer = MediaPlayer()
+            }
+            mediaPlayer.isLooping = true
+            mediaPlayer.start()
+            isVideoPrepared = true
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoView?.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        videoView?.stopPlayback()
+        videoView = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -137,11 +164,25 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        playAnimationTitleDesc()
+        try {
+            videoView?.let {
+                if (!it.isPlaying && isVideoPrepared) {
+                    videoView?.start()
+                    isVideoPrepared = false
+                }
+            }
+        } catch (e: Exception) {}
     }
 
-    private fun playAnimationTitleDesc() {
-        videoView?.start()
+    override fun onPageUnSelected() {
+        try {
+            videoView?.let {
+                if (it.isPlaying && isVideoPrepared) {
+                    it.pause()
+                    isVideoPrepared = false
+                }
+            }
+        } catch (e: Exception) {}
     }
 
     private fun getTitleMsg(): String {

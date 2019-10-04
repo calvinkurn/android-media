@@ -18,6 +18,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -25,13 +26,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
+import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
+import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -62,6 +65,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     var hotelBookingPageModel = HotelBookingPageModel()
 
     lateinit var progressDialog: ProgressDialog
+
+    lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
 
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
@@ -116,6 +121,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
+
+        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -129,9 +138,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     ?: HotelBookingPageModel()
         }
         initProgressDialog()
+        initGuestInfoEditText()
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,7 +152,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.run {
-                        hotelBookingPageModel.contactData = this.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                        hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
                     }
                 }
@@ -167,6 +178,18 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    fun initGuestInfoEditText() {
+        context?.let {
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+                    arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return til_guest.editText.text.toString()
+                }
+            })
+            (til_guest.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+        }
     }
 
     private fun initProgressDialog() {
@@ -207,7 +230,8 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
-                val payAtHotelString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
+                var payAtHotelString = if (property.rooms.first().isCCRequired) SpannableString(getString(R.string.hotel_booking_pay_at_hotel_cc_required_label))
+                else SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
                 payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 tv_booking_room_info_pay_at_hotel.text = payAtHotelString
             }
@@ -240,7 +264,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
                     policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
-                    policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(R.dimen.dp_16))
+                    policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(com.tokopedia.design.R.dimen.dp_16))
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }
             }
@@ -292,11 +316,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         renderContactData()
 
-        iv_edit_contact.setOnClickListener {
-            context?.run {
-                startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+            override fun onClickEdit() {
+                context?.run {
+                    startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData,
+                            TravelContactDataActivity.HOTEL),
+                            REQUEST_CODE_CONTACT_DATA)
+                }
             }
-        }
+
+        })
 
         if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
             radio_button_contact_guest.isChecked = true
@@ -321,11 +350,11 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun renderContactData() {
         val contactData = hotelBookingPageModel.contactData
-        tv_contact_name.text = contactData.name
-        tv_contact_email.text = contactData.email
-        tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
-                contactData.phoneCode, contactData.phone)
-        user_contact_info.invalidate()
+        widget_traveller_info.setContactName(contactData.name)
+        widget_traveller_info.setContactEmail(contactData.email)
+        widget_traveller_info.setContactPhoneNum(getString(R.string.hotel_booking_contact_detail_phone_number,
+                contactData.phoneCode, contactData.phone))
+        widget_traveller_info.invalidate()
     }
 
     private fun toggleShowGuestForm(value: Boolean) {
@@ -381,7 +410,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = price
-        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, R.color.orange_607)) }
+        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_607)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -400,7 +429,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.green_200)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_200)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 

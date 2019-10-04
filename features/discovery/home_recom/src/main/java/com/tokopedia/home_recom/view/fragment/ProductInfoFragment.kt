@@ -31,26 +31,28 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_info.product_card
-import kotlinx.android.synthetic.main.fragment_product_info.buy_now
-import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
-import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
-import kotlinx.android.synthetic.main.fragment_product_info.product_name
-import kotlinx.android.synthetic.main.fragment_product_info.product_price
-import kotlinx.android.synthetic.main.fragment_product_info.product_discount
-import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
-import kotlinx.android.synthetic.main.fragment_product_info.review_count
-import kotlinx.android.synthetic.main.fragment_product_info.rating
-import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
-import kotlinx.android.synthetic.main.fragment_product_info.location
-import kotlinx.android.synthetic.main.fragment_product_info.badge
-import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
-import kotlinx.android.synthetic.main.fragment_product_info.product_image
-import kotlinx.android.synthetic.main.fragment_product_info.bg_product_info
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
+/**
+ * Created by Lukas 25/06/2019
+ *
+ * A Fragment class for Primary Product
+ *
+ * @property viewModelFactory the factory for ViewModel provide by Dagger.
+ * @property trackingQueue the queue util for handle tracking.
+ * @property ref the ref code for know source page.
+ * @property viewModelProvider the viewModelProvider by Dagger
+ * @property primaryProductViewModel the viewModel for Primary Product.
+ * @property productView the view for Primary Product.
+ * @property productDataModel the model for Primary Product.
+ * @property recommendationItem the model for handle tracker.
+ * @property menu the menu of this activity.
+ * @property WIHSLIST_STATUS_IS_WISHLIST the const value for get extras `isWhislist` from ActivityFromResult ProductDetailActivity.
+ * @property REQUEST_CODE_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
+ * @property REQUEST_CODE_LOGIN the const value for set request calling startActivityForResult LoginActivity.
+ * @constructor Creates an empty recommendation.
+ */
 class ProductInfoFragment : BaseDaggerFragment() {
 
     private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -65,6 +67,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private val primaryProductViewModel by lazy { viewModelProvider.get(PrimaryProductViewModel::class.java) }
 
     private lateinit var trackingQueue: TrackingQueue
+
+    private lateinit var ref: String
 
     private lateinit var productDataModel: ProductInfoDataModel
 
@@ -82,8 +86,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     companion object{
-        fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
+        fun newInstance(dataModel: ProductInfoDataModel, ref: String) = ProductInfoFragment().apply {
             this.productDataModel = dataModel
+            this.ref = ref
         }
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -110,7 +115,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         if(this::productDataModel.isInitialized && productDataModel != null) {
             product_name.text = productDataModel.productDetailData.name
             handleDiscount()
-            bg_product_info.setImageResource(R.drawable.background_product_info)
             product_price.text = productDataModel.productDetailData.price
             location.text = productDataModel.productDetailData.shop.location
             if (productDataModel.productDetailData.badges.isNotEmpty()) {
@@ -132,31 +136,30 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [onProductImpression] it will handle impression image tracking
+     */
     private fun onProductImpression(){
         product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
             override fun onViewHint() {
-                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
-                if(productDataModel.productDetailData.isTopads){
-                    onImpressionTopAds(recommendationItem)
-                }else {
-                    onImpressionOrganic(recommendationItem)
-                }
+                RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(recommendationItem, "0", ref)
             }
         })
     }
 
+    /**
+     * [goToCart] it will handle routing to cart page
+     */
     private fun goToCart(){
         RouteManager.route(context, ApplinkConst.CART)
     }
 
+    /**
+     * [onClickProductCard] it will handle product click
+     */
     private fun onClickProductCard(){
         product_card.setOnClickListener {
-            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
-            if (productDataModel.productDetailData.isTopads) {
-                onClickTopAds(recommendationItem)
-            } else {
-                onClickOrganic(recommendationItem)
-            }
+            RecommendationPageTracking.eventClickPrimaryProductWithProductId(recommendationItem, "0", ref)
             val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -165,6 +168,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [onClickAddToCart] it will handle click add to cart
+     */
     private fun onClickAddToCart(){
         add_to_cart.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
@@ -172,13 +178,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 addToCart(
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID] as Int
-                            RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
+                            RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
                                 showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
-                                    RecommendationPageTracking.eventUserClickSeeToCart()
+                                    RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
                                     goToCart()
                                 }
                             }
@@ -190,7 +196,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 )
             } else {
                 context?.let {
-                    RecommendationPageTracking.eventUserAddToCartNonLogin()
+                    RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref)
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
                 }
@@ -198,6 +204,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [onClickBuyNow] it will handle click buy now
+     */
     private fun onClickBuyNow(){
         buy_now.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()){
@@ -208,7 +217,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
-                                RecommendationPageTracking.eventUserClickBuy(recommendationItem)
+                                RecommendationPageTracking.eventUserClickBuyWithProductId(recommendationItem, ref)
                                 goToCart()
                             }
                         },
@@ -218,7 +227,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         }
                 )
             } else {
-                RecommendationPageTracking.eventUserClickBuyNonLogin()
+                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref)
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
@@ -227,10 +236,14 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+
+    /**
+     * [onClickWishlist] it will handle click wishlist icon
+     */
     private fun onClickWishlist(){
         fab_detail.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(!it.isActivated)
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref)
                 if (it.isActivated) {
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.removeWishList(it.toString(),
@@ -246,12 +259,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref)
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
     }
 
+    /**
+     * [addToCart] it will handle click add to cart
+     * @param success success callback
+     * @param error error calback
+     */
     private fun addToCart(
             success: (Map<String, Any>) -> Unit,
             error: (Throwable) -> Unit
@@ -265,10 +283,18 @@ class ProductInfoFragment : BaseDaggerFragment() {
         primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
     }
 
+    /**
+     * [onErrorRemoveWishList] it will error when remove wishlist
+     * @param errorMessage the error message will show at toaster
+     */
     private fun onErrorRemoveWishList(errorMessage: String?) {
         showToastError(MessageErrorException(errorMessage))
     }
 
+    /**
+     * [onSuccessRemoveWishlist] it will handle show toaster success when remove wishlist success
+     * @param productId the product id of primary product
+     */
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         updateWishlist(false)
@@ -276,6 +302,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     }
 
+    /**
+     * [sendIntentResusltWishlistChange] it will handle send result when wishlist success / error
+     */
     private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
                 .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
@@ -284,16 +313,29 @@ class ProductInfoFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_CANCELED, resultIntent)
     }
 
+    /**
+     * [onErrorAddWishList] it will handle show error when addWishlist failed
+     */
     private fun onErrorAddWishList(errorMessage: String?) {
         showToastError(MessageErrorException(errorMessage))
     }
 
+    /**
+     * [onSuccessAddWishlist] it will handle show success when addWishlist success
+     * and update icon wishlist
+     */
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         updateWishlist(true)
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
+    /**
+     * [showToastSuccessWithAction] it will handle toaster with success background and show action
+     * @param message it will be show at toaster
+     * @param actionString the action text
+     * @param action the action callback when action clicked
+     */
     private fun showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
         activity?.run {
             Toaster.showNormalWithAction(
@@ -308,6 +350,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [showToastError] it will handle toaster with error background
+     * @param throwable the throwable error
+     */
     private fun showToastError(throwable: Throwable) {
         activity?.run {
             Toaster.showError(
@@ -317,6 +363,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [showToastSuccess] it will handle toaster with success background
+     * @param message it will be show at toaster
+     */
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.showNormal(
@@ -326,6 +376,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [setRatingReviewCount] it will set rating and review when available
+     * @param ratingValue the value for rating
+     * @param review the count of review
+     */
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
         if (ratingValue in 1..5) {
             rating.setImageResource(getRatingDrawable(ratingValue))
@@ -336,6 +391,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [getRatingDrawable] it will checking rating and return drawable resource
+     * @return drawable resource
+     */
     private fun getRatingDrawable(rating: Int): Int {
         return when (rating) {
             0 -> R.drawable.ic_star_none
@@ -348,11 +407,18 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [setSplashedText] it will handle splashed text
+     */
     private fun setSplashedText(text: String){
         product_slashed_price.text = text
         product_slashed_price.paintFlags = product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
+    /**
+     * [updateWishlist] it will handle update ui wishlist
+     * @param wishlisted boolean true or false
+     */
     private fun updateWishlist(wishlisted: Boolean) {
         context?.let {
             if (wishlisted) {
@@ -365,6 +431,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * [mapToRecommendationItem] it will handle mapping from productDataModel to RecommendationItem
+     * @return [RecommendationItem]
+     */
     private fun mapToRecommendationItem() = RecommendationItem(
             productId = productDataModel.productDetailData.id,
             position = 0,
@@ -401,6 +471,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             type = ""
     )
 
+    /**
+     * [handleDiscount] for handle discount ui if discount percentage available it will show
+     */
     private fun handleDiscount(){
         if(productDataModel.productDetailData.discountPercentage > 0){
             product_discount.visibility = View.VISIBLE
@@ -413,38 +486,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onImpressionOrganic(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
-        } else {
-            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
-        }
-    }
-
-    private fun onImpressionTopAds(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
-        } else {
-            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
-        }
-    }
-
-    private fun onClickTopAds(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString())
-        }else{
-            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString())
-        }
-    }
-
-    private fun onClickOrganic(item: RecommendationItem) {
-        if(primaryProductViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString())
-        }else{
-            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString())
-        }
-    }
-
+    /**
+     * [onActivityResult] override from [BaseDaggerFragment]
+     * this void for handle request from PDP to update wishlist icon
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PDP) {

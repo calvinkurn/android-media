@@ -101,6 +101,10 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     override fun initView(view: View) {
         bottomsheetView = view
 
@@ -219,7 +223,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         context?.let {
             merchantVoucherViewModel.run {
-                this.status = MerchantVoucherStatusTypeDef.TYPE_RUN_OUT
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
@@ -326,7 +329,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
     }
 
     private fun hideKeyboard() {

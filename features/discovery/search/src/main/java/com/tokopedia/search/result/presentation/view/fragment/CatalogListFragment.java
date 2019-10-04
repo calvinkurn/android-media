@@ -15,15 +15,17 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.CatalogListAdapter;
@@ -75,7 +77,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
-    protected ProgressBar loadingView;
 
     protected CatalogListAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -189,18 +190,22 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         initView(view);
         prepareView();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.CATALOG);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         catalogAdapter.onSaveInstanceState(outState);
         saveDataToBundle(outState);
@@ -222,7 +227,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {
@@ -267,19 +271,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public String getUserId() {
         return userSession.getUserId();
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-        if(getActivity() == null) return;
-
-        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(appLink)) {
-            router.goToApplinkActivity(getActivity(), appLink);
-        } else if (!TextUtils.isEmpty(appLink)) {
-            router.actionOpenGeneralWebView(getActivity(), appLink);
-        }
     }
 
     @Override
@@ -366,7 +357,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
         requestCatalogList();
     }
 
@@ -524,10 +514,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        if(getActivity() == null) return;
-
-        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        RouteManager.route(getActivity(), ApplinkConst.SHOP, shop.getId());
     }
 
     @Override
@@ -594,5 +581,15 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
+    }
+
+    @Override
+    public void removeLoading() {
+        removeSearchPageLoading();
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_CATALOG;
     }
 }

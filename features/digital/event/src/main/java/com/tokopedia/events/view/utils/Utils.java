@@ -55,12 +55,17 @@ import rx.schedulers.Schedulers;
  */
 
 public class Utils {
+
+    public static int MAX_ITEMS_FOR_GA = 5;
     private static Utils singleInstance;
     private List<CategoryItemsViewModel> topEvents;
     private HashSet<Integer> likedEventSet;
     private HashSet<Integer> unLikedEventSet;
     public static final String DEFAULT_FORMAT = "EEEE, d MMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    public static final String NSQ_SERVICE = "Recommendation_For_You";
+    public static final String NSQ_USE_CASE = "23";
+
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)

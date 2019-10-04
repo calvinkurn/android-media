@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -47,6 +49,10 @@ interface TopChatContract {
         fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
 
         fun notifyAttachmentsSent()
+
+        fun getShopName(): String
+
+        fun sendAnalyticAttachmentSent(attachment: PreviewViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -68,6 +74,8 @@ interface TopChatContract {
                 onError: (Throwable) -> Unit,
                 onSuccessGetMessageId: (String) -> Unit
         )
+
+        fun startCompressImages(it: ImageUploadViewModel)
 
         fun startUploadImages(it: ImageUploadViewModel)
 
@@ -114,5 +122,7 @@ interface TopChatContract {
         fun clearAttachmentPreview()
 
         fun initInvoicePreview(savedInstanceState: Bundle?)
+
+        fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
     }
 }

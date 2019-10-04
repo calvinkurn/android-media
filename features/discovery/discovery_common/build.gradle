@@ -4,13 +4,25 @@ apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation rootProject.ext.miscDependencies.gson
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.applink)
+
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discovery_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

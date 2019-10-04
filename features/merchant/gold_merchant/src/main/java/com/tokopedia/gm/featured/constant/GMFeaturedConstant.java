@@ -7,6 +7,7 @@ package com.tokopedia.gm.featured.constant;
 public interface GMFeaturedConstant {
     String GET_FEATURED_PRODUCT_URL = "/v1/mobile/featured_product/{id}?json=1";
     String POST_FEATURED_PRODUCT_URL = "/v1/product/manage/featured";
+    String IMG_URL_NO_FEATURED_PRODUCT = "https://ecs7.tokopedia.net/img/android/gold_merchant/no_featured_product.png";
 }
 
 

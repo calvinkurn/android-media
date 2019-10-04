@@ -5,6 +5,7 @@ object RawQueryKeyConstant {
     const val QUERY_SHOP_BADGE = "query_shop_badge"
     const val QUERY_SHOP_COMMITMENT = "query_shop_commitment"
     const val QUERY_PRODUCT_INFO = "query_product_info"
+    const val QUERY_PRODUCT_CATALOG = "query_product_catalog"
     const val QUERY_VARIANT = "query_variant"
     const val QUERY_WISHLIST_STATUS = "query_is_wishlisted"
     const val QUERY_PRODUCT_RATING = "product_rating"
@@ -26,4 +27,5 @@ object RawQueryKeyConstant {
     const val QUERY_PRODUCT_PP = "query_ppGetItemDetailPage"
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val QUERY_SHOP_FEATURE = "query_shop_feature"
+    const val MUTATION_AFFILIATE_TRACKING = "mutation_af_tracking"
 }

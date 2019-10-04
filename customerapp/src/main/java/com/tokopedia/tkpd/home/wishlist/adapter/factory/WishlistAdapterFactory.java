@@ -6,18 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.presenter.WishListView;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistEmptySearchViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistEmptyViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistProductListViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistRecomTitleViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistRecomendationViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistTopAdsListViewHolder;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptySearchViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptyViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.*;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.*;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 
 import org.jetbrains.annotations.NotNull;

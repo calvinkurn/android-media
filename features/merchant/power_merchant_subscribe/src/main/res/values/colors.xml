@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ticker_yellow">#fffae6</color>
     <color name="ticker_blue">#ebf6f6</color>
     <color name="pm_start_gradient">#ffffff</color>
     <color name="pm_end_gradient">#ebffef</color>

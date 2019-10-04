@@ -71,7 +71,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     }
 
     @Override
-    public void crackToken(long tokenUserId, long campaignId) {
+    public void crackToken(String tokenUserId, long campaignId) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);

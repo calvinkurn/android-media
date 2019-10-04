@@ -45,7 +45,7 @@
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/ic_sticker_toped" />
+                app:srcCompat="@drawable/ic_sticker_toped" />
 
             <TextView
                 android:id="@+id/tv_cashback"

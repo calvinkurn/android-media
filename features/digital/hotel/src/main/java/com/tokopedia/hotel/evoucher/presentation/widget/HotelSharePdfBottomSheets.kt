@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Patterns
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
@@ -45,7 +44,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
             evError = ev_error_email
             containerEmail = container_add_email
 
-            evError.setTextColor(ContextCompat.getColor(context, R.color.red_500))
+            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.red_500))
 
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = layoutManager
@@ -99,6 +98,8 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
     }
 
     override fun title(): String = getString(R.string.hotel_share_as_pdf)
+
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 
     override fun onDelete(email: String) {
         emailList.remove(email)

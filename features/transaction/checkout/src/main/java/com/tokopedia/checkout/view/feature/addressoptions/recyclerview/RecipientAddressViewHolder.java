@@ -6,8 +6,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.shipment.util.Utils;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.checkout.view.common.utils.Utils;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**

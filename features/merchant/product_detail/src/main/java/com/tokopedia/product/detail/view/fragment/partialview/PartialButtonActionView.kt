@@ -1,6 +1,10 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
+import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
+import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -31,7 +35,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
-    var isSpecialPrize: Boolean = false
+    var isLeasing: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
     companion object {
@@ -85,9 +89,16 @@ class PartialButtonActionView private constructor(private val view: View,
                     }
                 })
             btn_buy_now.visibility = View.VISIBLE
-            if (isSpecialPrize) btn_add_to_cart.gone()
-            else btn_add_to_cart.visible()
-
+            btn_add_to_cart.visible()
+            if(isLeasing){
+                btn_apply_leasing.visibility  = View.VISIBLE
+                btn_add_to_cart.visibility = View.GONE
+                btn_buy_now.visibility = View.GONE
+                changeTopChatLayoutParamsToHandleLeasingLayout()
+            }else{
+                btn_apply_leasing.visibility  = View.GONE
+                resetTopChatLayoutParams()
+            }
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
                 buyNowClick?.invoke()
@@ -97,7 +108,31 @@ class PartialButtonActionView private constructor(private val view: View,
                 addToCartClick?.invoke()
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
+            btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         }
+    }
+
+    private fun resetTopChatLayoutParams() {
+        with(view){
+            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
+            topChatParams.startToEnd = btn_byme.id
+            topChatParams.startToStart = UNSET
+            topChatParams.rightToLeft = btn_buy_now.id
+            topChatParams.endToStart = btn_buy_now.id
+            btn_topchat.layoutParams = topChatParams
+        }
+    }
+
+    private fun changeTopChatLayoutParamsToHandleLeasingLayout() {
+        with(view){
+            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
+            topChatParams.startToEnd = UNSET
+            topChatParams.startToStart = PARENT_ID
+            topChatParams.rightToLeft = btn_apply_leasing.id
+            topChatParams.endToStart = btn_apply_leasing.id
+            btn_topchat.layoutParams = topChatParams
+        }
+
     }
 
     private fun showShopManageButton() {
@@ -162,5 +197,13 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_byme.visible()
             } else btn_byme.gone()
         }
+    }
+
+    fun setBackground(resource: Int) {
+        view.base_btn_action.setBackgroundResource(resource)
+    }
+
+    fun setBackground(drawable: Drawable) {
+        view.base_btn_action.background = drawable
     }
 }

@@ -11,10 +11,10 @@
         android:layout_height="@dimen/dp_0"
         android:background="@drawable/bg_body"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/text_body_content"
+        app:layout_constraintBottom_toBottomOf="@+id/text_body_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_body_title" />
+        app:layout_constraintTop_toTopOf="@+id/text_body_title" />
 
     <TextView
         android:id="@+id/text_body_title"

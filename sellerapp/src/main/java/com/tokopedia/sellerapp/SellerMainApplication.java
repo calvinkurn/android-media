@@ -7,8 +7,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.webkit.URLUtil;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -18,10 +20,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -43,7 +45,6 @@ import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
-import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
@@ -74,6 +75,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override
@@ -156,8 +161,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        Analytics.initDB(getApplicationContext());
 
+        PersistentCacheManager.init(this);
+
+        PersistentCacheManager.init(this);
 
         super.onCreate();
 
@@ -168,6 +175,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         NetworkClient.init(this);
         InstabugInitalize.init(this);
         TokopediaUrl.Companion.init(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        SplitCompat.install(this);
     }
 
     private void setVersionCode() {
@@ -188,21 +201,24 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     public void initDbFlow() {
-        super.initDbFlow();
         try {
             FlowManager.getConfig();
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
-        FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
+                .build());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(
+                CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext()))));
+                String.valueOf(getCurrentVersion(getApplicationContext())))
+        );
     }
 
     @Override
@@ -213,11 +229,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return null;
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
         return null;
     }
 

@@ -15,8 +15,8 @@ public class TokensUser {
     private String mState;
     @SerializedName("title")
     private String mTitle;
-    @SerializedName("tokenUserID")
-    private long mTokenUserID;
+    @SerializedName("tokenUserIDstr")
+    private String mTokenUserID;
 
     @Expose(serialize = false, deserialize = false)
     private boolean isEmptyState;
@@ -45,11 +45,11 @@ public class TokensUser {
         mTitle = title;
     }
 
-    public long getTokenUserID() {
+    public String getTokenUserID() {
         return mTokenUserID;
     }
 
-    public void setTokenUserID(long tokenUserID) {
+    public void setTokenUserID(String tokenUserID) {
         mTokenUserID = tokenUserID;
     }
 

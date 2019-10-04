@@ -35,7 +35,7 @@
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.887"
-            app:layout_constraintStart_toEndOf="@id/tv_description"
+            app:layout_constraintStart_toEndOf="@+id/tv_description"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>

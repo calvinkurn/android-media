@@ -1,5 +1,6 @@
 package com.tokopedia.shop.feed.di
 
+import com.tokopedia.feedcomponent.di.FeedComponentModule
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import dagger.Component
@@ -9,8 +10,8 @@ import dagger.Component
  */
 @FeedShopScope
 @Component(
-        modules = arrayOf(FeedShopModule::class),
-        dependencies = arrayOf(KolComponent::class)
+        modules = [FeedShopModule::class, FeedComponentModule::class],
+        dependencies = [KolComponent::class]
 )
 interface FeedShopComponent {
     fun inject(fragment: FeedShopFragment)

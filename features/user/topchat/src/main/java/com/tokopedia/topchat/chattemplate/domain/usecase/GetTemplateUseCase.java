@@ -28,8 +28,9 @@ public class GetTemplateUseCase extends UseCase<GetTemplateViewModel> {
         return templateRepository.getTemplate(requestParams.getParameters());
     }
 
-    public static RequestParams generateParam() {
+    public static RequestParams generateParam(Boolean isSeller) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean("is_seller", isSeller);
         return requestParams;
     }
 }

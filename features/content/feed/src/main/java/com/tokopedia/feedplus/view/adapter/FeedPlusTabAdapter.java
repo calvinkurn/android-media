@@ -11,17 +11,21 @@ import android.view.ViewGroup;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
+import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
+
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.KEY_TRENDING;
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.TYPE_CUSTOM;
 
 /**
  * @author by milhamj on 09/08/18.
  */
 
 public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
-    private static final String TYPE_FEEDS = "feeds";
-    private static final String TYPE_EXPLORE = "explore";
 
     private List<FeedTabs.FeedData> itemList;
     private Bundle bundle;
@@ -36,10 +40,12 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         FeedTabs.FeedData data = itemList.get(position);
-        if (data.getType().equals(TYPE_FEEDS)){
-            return FeedPlusFragment.newInstance(bundle);
-        } else if (data.getType().equals(TYPE_EXPLORE)){
+        if (data.getType().equals(FeedTabs.TYPE_FEEDS)){
+            return FeedPlusFragment.Companion.newInstance(bundle);
+        } else if (data.getType().equals(FeedTabs.TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
+        } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
+            return DynamicFeedFragment.Companion.newInstance(data.getKey());
         } else {
             /* Will be override for next to handle custom tab */
             return new Fragment();
@@ -75,16 +81,34 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
+    public void setItemList(List<FeedTabs.FeedData> itemList) {
+        this.itemList = itemList;
+        notifyDataSetChanged();
+    }
+
     public Fragment getRegisteredFragment(int pos){
         return registeredFragment.get(pos);
     }
 
-    public ContentExploreFragment getContentExplorer() {
-        for (int i = 0; i < getCount(); ++i){
-            if (itemList.get(i).getType().equals(TYPE_EXPLORE)){
-                return (ContentExploreFragment) getRegisteredFragment(i);
-            }
+    @Nullable
+    public ContentExploreFragment getContentExplore() {
+        int index = getContentExploreIndex();
+        if (getRegisteredFragment(index) instanceof ContentExploreFragment) {
+            return (ContentExploreFragment) getRegisteredFragment(index);
         }
         return null;
+    }
+
+    public int getContentExploreIndex() {
+        for (int i = 0; i < getCount(); ++i) {
+            if (itemList.get(i).getType().equals(FeedTabs.TYPE_EXPLORE)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public boolean isContextExploreExist() {
+        return getContentExplore() != null;
     }
 }

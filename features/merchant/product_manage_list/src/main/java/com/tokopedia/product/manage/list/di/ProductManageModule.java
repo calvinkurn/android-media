@@ -248,5 +248,4 @@ public class ProductManageModule {
                 R.raw.gql_popup_manager
         );
     }
-
 }

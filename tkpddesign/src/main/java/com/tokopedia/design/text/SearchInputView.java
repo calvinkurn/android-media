@@ -41,6 +41,10 @@ public class SearchInputView extends BaseCustomView {
 
     }
 
+    public interface FocusChangeListener {
+        void onFocusChanged(boolean hasFocus);
+    }
+
     public interface ResetListener {
         void onSearchReset();
     }
@@ -56,6 +60,7 @@ public class SearchInputView extends BaseCustomView {
     private long delayTextChanged;
     private Listener listener;
     private ResetListener reset;
+    private FocusChangeListener focusChangeListener;
 
     public EditText getSearchTextView() {
         return searchTextView;
@@ -67,6 +72,10 @@ public class SearchInputView extends BaseCustomView {
 
     public void setResetListener(ResetListener listener) {
         this.reset = listener;
+    }
+
+    public void setFocusChangeListener(FocusChangeListener focusChangeListener) {
+        this.focusChangeListener = focusChangeListener;
     }
 
     public SearchInputView(Context context) {
@@ -121,6 +130,15 @@ public class SearchInputView extends BaseCustomView {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        searchTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (focusChangeListener != null) {
+                    focusChangeListener.onFocusChanged(hasFocus);
+                }
             }
         });
         searchTextView.addTextChangedListener(getSearchTextWatcher());

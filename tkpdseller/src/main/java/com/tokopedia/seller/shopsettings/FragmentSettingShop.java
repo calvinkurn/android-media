@@ -12,13 +12,13 @@ import android.widget.ListView;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 
 import java.util.ArrayList;
@@ -74,7 +74,8 @@ public class FragmentSettingShop extends TkpdFragment {
                 switch (pos) {
                     case 0:
                         UnifyTracking.eventManageShopInfo(getActivity());
-                        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS), 0);
+                        startActivityForResult(RouteManager.getIntent(FragmentSettingShop.this.getActivity(),
+                                ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO), 0);
                         break;
                     case 1:
                         intent = new Intent(getActivity(), EditShippingActivity.class);
@@ -83,15 +84,15 @@ public class FragmentSettingShop extends TkpdFragment {
                         break;
                     case 2:
                         UnifyTracking.eventManageShopEtalase(getActivity());
-                        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
+                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
                         break;
                     case 3:
                         UnifyTracking.eventManageShopNotes(getActivity());
-                        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
+                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES);
                         break;
                     case 4:
                         UnifyTracking.eventManageShopLocation(getActivity());
-                        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS);
+                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS);
                         break;
                 }
             }
@@ -106,4 +107,5 @@ public class FragmentSettingShop extends TkpdFragment {
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
+
 }

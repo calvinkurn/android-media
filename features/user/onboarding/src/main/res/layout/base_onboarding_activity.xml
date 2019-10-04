@@ -36,16 +36,6 @@
         tools:ignore="ContentDescription"
         tools:text="Lewati"/>
 
-    <TextView
-        android:id="@+id/bottom_separator"
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="#55000000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/indicator_container"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
     <LinearLayout
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
@@ -54,7 +44,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
-        android:layout_marginBottom="@dimen/dp_48"
+        android:layout_marginBottom="@dimen/margin_bottom_indicator"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 

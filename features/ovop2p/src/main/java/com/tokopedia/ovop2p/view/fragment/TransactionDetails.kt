@@ -62,8 +62,8 @@ class TransactionDetails : BaseDaggerFragment(){
     }
 
     private fun setRcvrUserData(){
-        rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
-        rcvrNum.text = arguments?.getString(Constants.Keys.RECIEVER_PHONE)
+        rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.destination.name
+        rcvrNum.text = Constants.Prefixes.OVO+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.destination.phone
     }
 
     companion object{

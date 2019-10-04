@@ -12,6 +12,7 @@ public class EmptySearchViewModel implements Visitable<SearchSectionTypeFactory>
     private String title;
     private String content;
     private String buttonText;
+    private boolean bannerAdsAllowed = true;
 
     public int getImageRes() {
         return imageRes;
@@ -43,6 +44,14 @@ public class EmptySearchViewModel implements Visitable<SearchSectionTypeFactory>
 
     public void setButtonText(String buttonText) {
         this.buttonText = buttonText;
+    }
+
+    public boolean isBannerAdsAllowed() {
+        return bannerAdsAllowed;
+    }
+
+    public void setBannerAdsAllowed(boolean bannerAdsAllowed) {
+        this.bannerAdsAllowed = bannerAdsAllowed;
     }
 
     @Override

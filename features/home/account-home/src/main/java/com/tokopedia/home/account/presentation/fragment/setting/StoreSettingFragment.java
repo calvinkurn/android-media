@@ -91,11 +91,11 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
                     break;
                 case SettingConstant.SETTING_SHOP_NOTE_ID:
                     accountAnalytics.eventClickShopSetting(NOTES);
-                    RouteManager.route(getContext(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
+                    RouteManager.route(getContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES);
                     break;
                 case SettingConstant.SETTING_SHOP_INFO_ID:
                     accountAnalytics.eventClickShopSetting(INFORMATION);
-                    RouteManager.route(getContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS);
+                    RouteManager.route(getContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO);
                     break;
                 case SettingConstant.SETTING_SHOP_PRODUCT_ID:
                     accountAnalytics.eventClickShopSetting(PRODUCT);

@@ -55,6 +55,8 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        scanUrl = getIntent().getStringExtra("scanUrl");
+        scanCodeDataPresenter.getScanData(scanUrl);
     }
 
     @Override
@@ -92,10 +94,6 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
         mainContent = findViewById(R.id.main_content);
         progressBar = findViewById(R.id.prog_bar);
         ticketRedeemDate = ticketFailureLayout.findViewById(R.id.ticket_redeem_date);
-        scanUrl = getIntent().getStringExtra("scanUrl");
-
-
-        scanCodeDataPresenter.getScanData(scanUrl);
 
 
         closeTicket.setOnClickListener(this);

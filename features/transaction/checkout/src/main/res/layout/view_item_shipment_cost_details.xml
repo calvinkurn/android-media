@@ -52,6 +52,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_toEndOf="@id/tv_total_item"
         android:layout_toRightOf="@id/tv_total_item"
+        android:layout_marginBottom="@dimen/dp_16"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -60,10 +61,42 @@
         tools:text="Rp1.400.000" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_booking_fee_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_total_item_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/booking_fee_label"
+        tools:ignore="HardcodedText"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_booking_fee_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_total_item_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        tools:text="Rp100.000"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_fee_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_total_item_label"
+        android:layout_below="@id/tv_booking_fee_label"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
@@ -76,7 +109,7 @@
         android:id="@+id/tv_shipping_fee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_total_item_label"
+        android:layout_below="@id/tv_booking_fee_price"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/dp_16"

@@ -3,8 +3,10 @@ package com.tokopedia.feedcomponent.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
+import com.tokopedia.feedcomponent.data.pojo.feed.CardHighlight
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
@@ -14,6 +16,8 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -47,6 +51,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val TYPE_CARDRECOM = "cardrecom"
         private const val TYPE_CARDPOST = "cardpost"
         private const val TYPE_CARDBANNER = "cardbanner"
+        private const val TYPE_CARDHIGHLIGHT = "cardhighlight"
 
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_YOUTUBE = "youtube"
@@ -89,6 +94,11 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardPost(posts, feed, templateData.template)
+                        }
+                    }
+                    TYPE_CARDHIGHLIGHT -> {
+                        if (feed.activity != ACTIVITY_TOPADS) {
+                            mapCardHighlight(posts, feed, templateData.template)
                         }
                     }
                 }
@@ -433,5 +443,49 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
+    }
+
+    private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
+        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed, feed.content.cardHighlight, template)
+        if (shouldAddHighlightSection(contentList)) {
+            posts.add(HighlightViewModel(
+                    feed.id.toString(),
+                    feed.content.cardHighlight.title,
+                    contentList,
+                    template
+            ))
+        }
+    }
+
+    private fun shouldAddHighlightSection(contentList: MutableList<HighlightCardViewModel>): Boolean {
+        return contentList.isNotEmpty()
+    }
+
+    private fun mapHighlightContent(feed: Feed, cardHighlight: CardHighlight, template: Template): MutableList<HighlightCardViewModel> {
+        val list: MutableList<HighlightCardViewModel> = ArrayList()
+        for (item in cardHighlight.items) {
+            if (item.media.isNotEmpty()) {
+                val media = item.media[0]
+                list.add(HighlightCardViewModel(
+                        feed.id,
+                        0,
+                        media.thumbnail,
+                        media.appLink,
+                        media.type,
+                        item.header,
+                        item.footer,
+                        template,
+                        mapTrackingData(convertTempTrackingToList(item.tracking)),
+                        media.videoList.firstOrNull()?.durationFmt ?: ""
+                ))
+            }
+        }
+        return list
+    }
+
+    private fun convertTempTrackingToList(tracking: Tracking): List<Tracking> {
+        var list:MutableList<Tracking> = ArrayList()
+        list.add(tracking)
+        return list
     }
 }

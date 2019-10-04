@@ -111,36 +111,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_20"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/product_info_label"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/product_info_label"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_10"
                 android:background="@color/white"
                 android:orientation="vertical">
@@ -150,10 +120,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/detail_label"
+                    android:text="@string/detail_label_digital"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 
@@ -185,6 +155,34 @@
                     android:layout_marginBottom="@dimen/dp_16"
                     android:orientation="vertical"
                     android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recommend_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/recommend_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    tools:text="top_up"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recommendation_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_blue"
+                    android:padding="@dimen/dp_8"
+                    />
+
             </LinearLayout>
 
             <View

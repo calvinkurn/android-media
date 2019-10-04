@@ -6,11 +6,13 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
@@ -24,6 +26,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,11 +36,14 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -45,6 +51,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -62,13 +69,18 @@ import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import kotlinx.android.synthetic.main.partial_shop_page_header.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -92,11 +104,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
     lateinit var tabItemFeed: View
-
+    lateinit var stickyLoginTextView: StickyLoginView
     private lateinit var titles: Array<String>
 
     private var tabPosition = 0
     lateinit var remoteConfig: RemoteConfig
+    private lateinit var cartLocalCacheHandler: LocalCacheHandler
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -122,6 +135,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
+        private const val REQUEST_CODE_USER_LOGIN_CART = 102
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
@@ -129,6 +143,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         private const val PAGE_LIMIT = 2
 
         private const val SOURCE_SHOP = "shop"
+
+        private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
+
+        private const val CART_LOCAL_CACHE_NAME = "CART"
+        private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
@@ -190,6 +209,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         GraphqlClient.init(this)
         initInjector()
         remoteConfig = FirebaseRemoteConfigImpl(this)
+        cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(this))
@@ -210,6 +230,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 is Success -> onSuccessGetShopInfo(it.data)
                 is Fail -> onErrorGetShopInfo(it.throwable)
             }
+        })
+
+        shopViewModel.shopFavourite.observe(this, Observer {
+            shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
 
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking, this)
@@ -263,7 +287,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
             }
         })
-        swipeToRefresh.setOnRefreshListener { refreshData() }
+
+        swipeToRefresh.setOnRefreshListener {
+            refreshData()
+            updateStickyState()
+        }
 
         mainLayout.requestFocus()
 
@@ -288,6 +316,63 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
 
         getShopInfo()
+
+        stickyLoginTextView = findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            updateStickyState()
+        }
+        stickyLoginTextView.setOnClickListener {
+            stickyLoginTextView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
+        }
+        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
+            stickyLoginTextView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
+        })
+
+        shopViewModel.getStickyLoginContent(
+            onSuccess = {
+                stickyLoginTextView.setContent(it)
+            },
+            onError = {
+                stickyLoginTextView.hide()
+            }
+        )
+        updateStickyState()
+        initSearchInputView()
+    }
+
+    private fun initSearchInputView() {
+        searchInputView.searchTextView.movementMethod = null
+        searchInputView.searchTextView.keyListener = null
+        searchInputView.setOnClickListener {
+            shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE)
+            (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                saveShopInfoModelToCacheManager(it)?.let {
+                    redirectToShopSearchProduct(it)
+                }
+            }
+        }
+    }
+
+    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
+        val cacheManager = SaveInstanceCacheManager(this, true)
+        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7))
+        return cacheManager.id
+    }
+
+    private fun redirectToShopSearchProduct(cacheManagerId: String) {
+        startActivity(ShopSearchProductActivity.createIntent(
+                this,
+                "",
+                cacheManagerId,
+                shopAttribution
+        ))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateStickyState()
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
@@ -343,9 +428,33 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val userSession = UserSession(this)
+        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
+            menu?.removeItem(R.id.action_cart)
+        } else if (userSession.isLoggedIn) {
+            showCartBadge(menu)
+        }
+        return true
+    }
+
+    private fun showCartBadge(menu: Menu?) {
+        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
+        if (drawable is LayerDrawable) {
+            val countDrawable = CountDrawable(this)
+            val cartCount = cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
+            countDrawable.setCount(cartCount.toString())
+            drawable.mutate()
+            drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
+            menu?.findItem(R.id.action_cart)?.icon = drawable
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_share) {
             onShareShop()
+        } else if (item.itemId == R.id.action_cart) {
+            onClickCart()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -371,6 +480,26 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     }
 
+    private fun onClickCart() {
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickCartButton(shopViewModel.isMyShop(it.shopCore.shopID),
+                    CustomDimensionShopPage.create(it.shopCore.shopID,
+                            it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
+            goToCart()
+        }
+    }
+
+    private fun goToCart() {
+        val userSession = UserSession(this)
+        if (userSession.isLoggedIn) {
+            startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_CART)
+        }
+    }
+
     override fun onBackPressed() {
         if (isTaskRoot) {
             val applink = if (GlobalConfig.isSellerApp()) ApplinkConst.SellerApp.SELLER_APP_HOME else ApplinkConst.HOME
@@ -392,38 +521,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        setViewState(VIEW_CONTENT)
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
             updateUIByShopName(shopCore.name)
-            searchInputView.setListener(object : SearchInputView.Listener {
-                override fun onSearchSubmitted(text: String?) {
-                    if (TextUtils.isEmpty(text)) {
-                        return
-                    }
-                    val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
-                            ?: return
-
-                    val etalaseId: String? = if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
-                        null
-                    } else {
-                        (fragment as ShopProductListLimitedFragment).selectedEtalaseId
-                    }
-
-                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
-                            shopCore.shopID, text, etalaseId, shopAttribution))
-                    //reset the search, since the result will go to another activity.
-                    searchInputView.searchTextView.text = null
-
-                }
-
-                override fun onSearchTextChanged(text: String?) {}
-
-            })
-
-            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
+            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
             if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
                 productListFragment.displayProduct(this)
             }
@@ -490,6 +593,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
         }
+        setViewState(VIEW_CONTENT)
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
     }
 
@@ -551,6 +655,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
             }
+        } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToCart()
+            }
         }
     }
 
@@ -559,7 +667,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
-        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
         if (feedfragment != null && feedfragment is FeedShopFragment) {
             feedfragment.setRefresh()
         }
@@ -652,7 +760,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun openShop() {
         shopPageTracking.sendOpenShop();
-        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
 
@@ -692,4 +800,26 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun getShopInfoPosition(): Int = shopPageViewPagerAdapter.count - 1
 
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
+
+    private fun updateStickyState() {
+        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
+        if (!isCanShowing) {
+            stickyLoginTextView.visibility = View.GONE
+            return
+        }
+
+        val userSession = UserSession(this)
+        if (userSession.isLoggedIn) {
+            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
+        } else {
+            stickyLoginTextView.show(StickyLoginConstant.Page.SHOP)
+            stickyLoginTextView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            viewPager.setPadding(0, 0, 0, stickyLoginTextView.height)
+        } else {
+            viewPager.setPadding(0, 0, 0, 0)
+        }
+    }
 }

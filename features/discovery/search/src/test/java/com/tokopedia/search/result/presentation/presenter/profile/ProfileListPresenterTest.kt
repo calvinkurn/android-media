@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.profile
 
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kolcommon.model.FollowResponseModel
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.domain.usecase.TestErrorUseCase

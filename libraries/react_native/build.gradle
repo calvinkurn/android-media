@@ -15,50 +15,54 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'reactnative'
-    groupId = 'com.tokopedia.tkpdreactnative'
-    versionName = "${tkpdReactNativeVersion}"
-    artifactName ="react_native-release"
-}
-
 dependencies {
 
-    implementation project(":libraries:akamai_bot_lib")
-
-    implementation project(rootProject.ext.libraries.url)
-    implementation rootProject.ext.miscDependencies.reactNative
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-
-    implementation project(rootProject.ext.features.core)
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.banner)
+    implementation project(rootProject.ext.libraries.track)
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.miscDependencies.codePushReactNative
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation project(rootProject.ext.libraries.config)
-    
-    implementation project(rootProject.ext.libraries.track)
-
     implementation 'com.facebook.fresco:fresco:1.10.0'
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.1'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+}
+
+project.ext {
+    artifactId = 'react-native'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "react_native-release"
 }
 
 apply from: '../../publish_local.gradle'

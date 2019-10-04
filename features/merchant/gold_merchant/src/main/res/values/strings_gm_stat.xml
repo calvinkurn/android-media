@@ -24,7 +24,7 @@
 
     <string name="gm_statistic_no_market_insight_in_this_period">Belum ada data wawasan pasar di toko Anda</string>
     <string name="gm_statistic_plus_add_product">+ Tambah Produk</string>
-    <string name="gm_statistic_get_access_to_see_gm_stat">Dapatkan akses untuk melihat data lengkap statistik produk</string>
+    <string name="gm_statistic_get_access_to_see_gm_stat">Pantau perkembangan tokomu dengan Wawasan Pasar, khusus Power Merchant.</string>
     <string name="gm_statistic_upgrade_to_gold_merchant">Upgrade ke %1$s</string>
     <string name="gm_statistic_buyer_data">Data Pembeli</string>
     <string name="gm_statistic_buyer_count">Jumlah Pembeli</string>
@@ -69,4 +69,9 @@
     <string name="gm_statistic_see_topads">Lihat TopAds</string>
     <string name="gm_statistic_transaction_table_no_data">Tidak ada data produk terjual pada periode ini</string>
     <string name="gm_statistic_sort">Sort</string>
+    <string name="gm_statistic_upgrade_shop">Upgrade Tokomu</string>
+    <string name="gm_statistic_read_more">Selengkapnya</string>
+    <string name="gm_statistic_improve_performance">Cara Tingkatkan Performa</string>
+    <string name="gm_statistic_feature_name">Wawasan Pasar</string>
+
 </resources>
