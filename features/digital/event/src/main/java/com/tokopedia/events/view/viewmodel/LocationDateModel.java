@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class LocationDateModel implements Parcelable {
     private String mLocation;
-    private Date date;
+    private String date;
 
     protected LocationDateModel(Parcel in) {
         mLocation = in.readString();
@@ -40,11 +40,11 @@ public class LocationDateModel implements Parcelable {
         this.mLocation = mLocation;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

@@ -26,10 +26,13 @@ import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Date;
 import java.util.List;
 
 public class EventBookTicketActivity
-        extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView, View.OnClickListener {
+        extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView, View.OnClickListener, SelectEventDateBottomSheet.SelectedDates {
 
 
     View buttonPayTickets;
@@ -49,6 +52,7 @@ public class EventBookTicketActivity
     EventBookTicketContract.BookTicketPresenter bookTicketPresenter;
     private String title;
     EventsAnalytics eventsAnalytics;
+    EventsDetailsViewModel eventsDetailsViewModel;
 
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
@@ -105,6 +109,7 @@ public class EventBookTicketActivity
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
         if (detailsViewModel != null) {
+            eventsDetailsViewModel = detailsViewModel;
             toolbar.setTitle(detailsViewModel.getTitle());
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
             title = detailsViewModel.getTitle();
@@ -244,6 +249,17 @@ public class EventBookTicketActivity
 
     public void openCalender(List<LocationDateModel> models) {
         SelectEventDateBottomSheet selectEventDateBottomSheet = SelectEventDateBottomSheet.Companion.getInstance(models);
+        selectEventDateBottomSheet.setSelectedDatesListener(this);
         selectEventDateBottomSheet.show(getSupportFragmentManager(), "");
+    }
+
+    @Override
+    public void selectedScheduleDate(@NotNull Date date) {
+        for(SchedulesViewModel model : eventsDetailsViewModel.getSchedulesViewModels()) {
+//            if(model.getStartDate() == date){
+//                setLocationDate(model.);
+//            }
+        }
+
     }
 }

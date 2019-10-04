@@ -19,11 +19,11 @@
         android:id="@+id/select_date_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
         android:text="Pilih tanggal kunjungan"
         android:textColor="@color/clr_f531353b"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/sp_14"
         android:layout_margin="16dp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="parent" />
 

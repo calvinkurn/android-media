@@ -299,18 +299,12 @@ public class Utils {
     }
 
 
-    public Date convertEpochToSelectedDateFormat(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+    public String convertEpochToSelectedDateFormat(int time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);
-        Date date2 = null;
-        try {
-            date2 = sdf.parse(sdf.format(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date2;
+        return sdf.format(date);
     }
 
     public String convertLongEpoch(long epoch) {

@@ -41,6 +41,7 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.customview.SelectEventDateBottomSheet;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
@@ -261,6 +262,12 @@ public class EventModule {
     @EventScope
     ScanCodeContract.ScanPresenter providesScanCodePresenter(ScanBarCodeUseCase scanBarCodeUseCase, RedeemTicketUseCase redeemTicketUseCase) {
         return new ScanCodeDataPresenter(scanBarCodeUseCase, redeemTicketUseCase);
+    }
+
+    @Provides
+    @EventScope
+    SelectEventDateBottomSheet providesSelectEventDateBottomSheet() {
+        return new SelectEventDateBottomSheet();
     }
 
 }
