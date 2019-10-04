@@ -28,16 +28,16 @@ class FollowRecomPresenter @Inject constructor(
 ) : BaseDaggerPresenter<FollowRecomContract.View>(), FollowRecomContract.Presenter {
 
     override fun getFollowRecommendationList(interestIds: IntArray, cursor: String) {
-        if (cursor == "") view.showLoading()
+        if (cursor == "") view.showListLoading()
         getFollowRecommendationUseCase.apply {
             setRequestParams(GetFollowRecommendationUseCase.getRequestParams(interestIds, cursor))
             execute (onSuccess = {
                 view.onGetFollowRecommendationList(getRecommendationCardList(it.feedUserOnboardingRecommendations), it.feedUserOnboardingRecommendations.meta.nextCursor)
                 view.onGetFollowRecommendationInfo(getRecommendationInfo(it.feedUserOnboardingRecommendations))
-                view.hideLoading()
+                view.hideListLoading()
             }, onError = {
                 view.onGetError(it)
-                view.hideLoading()
+                view.hideListLoading()
             })
         }
     }
