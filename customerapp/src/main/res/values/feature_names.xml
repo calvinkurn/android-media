@@ -8,6 +8,10 @@
     <string name="hotel_e_voucher">E-voucher</string>
     <string name="title_digital_topup">Digital Topup</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
+    <string name="title_flight_travel">Tiket Pesawat</string>
+    <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
+    <string name="flight_order_list">Daftar Transaksi</string>
+    <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
 
     <!--Profile completion-->
     <string name="title_module_setting_profile">Data Diri Module</string>

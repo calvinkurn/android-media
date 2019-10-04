@@ -22,6 +22,7 @@
     <string name="path_flight_phone_verification" translatable="false">/phone-verification</string>
 
     <string name="title_hotel">Hotel</string>
+    <string name="title_flight">Tiket Pesawat</string>
     <string name="title_travel_homepage">Travel &amp; Entertainment</string>
 
     <string name="path_flight_dashboard" translatable="false">/dashboard</string>
