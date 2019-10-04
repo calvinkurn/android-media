@@ -116,6 +116,8 @@ class FollowRecomPresenter @Inject constructor(
                 enabledFollowText = data.header.followCta.textFalse,
                 disabledFollowText = data.header.followCta.textTrue,
                 isFollowed = data.header.followCta.isFollow,
+                textFollowTrue = data.header.followCta.textTrue,
+                textFollowFalse = data.header.followCta.textFalse,
                 followInstruction = if (AuthorType.findTypeByString(data.header.followCta.authorType) == AuthorType.SHOP) query.meta.assets.shopDescription else query.meta.assets.profileDescription,
                 authorId = data.header.followCta.authorID
         )
