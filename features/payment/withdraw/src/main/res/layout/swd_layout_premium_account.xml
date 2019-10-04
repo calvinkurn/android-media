@@ -11,7 +11,7 @@
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:src="@drawable/swd_ic_premium"
+        android:src="@drawable/swd_icon_premium"
         app:layout_constraintBottom_toBottomOf="@+id/tv_briProgramDescription"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_rekeningTitle" />

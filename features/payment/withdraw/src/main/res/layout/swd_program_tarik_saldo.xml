@@ -54,7 +54,7 @@
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
             android:layout_gravity="center"
-            android:src="@drawable/swd_program_withdrawal" />
+            android:src="@drawable/swd_prgrm_withdrawal" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_wdProgramTitle"
