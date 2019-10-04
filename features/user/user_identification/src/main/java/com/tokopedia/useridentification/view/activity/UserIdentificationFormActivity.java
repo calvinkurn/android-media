@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFaceFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormKtpFragment;
@@ -25,11 +26,12 @@ import java.util.List;
  */
 
 public class UserIdentificationFormActivity extends BaseStepperActivity {
-    public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
+
+    public static String PARAM_PROJECTID = "PROJECT_ID";
 
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
-    private int tradeinProject;
+    private int projectId;
 
     public interface Listener {
         void trackOnBackPressed();
@@ -49,7 +51,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         } else {
             stepperModel = createNewStepperModel();
         }
-        tradeinProject = getIntent().getIntExtra(PARAM_PROJECTID_TRADEIN,-1);
+        projectId = getIntent().getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID,-1);
         super.onCreate(savedInstanceState);
     }
 
@@ -70,7 +72,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             fragmentList = new ArrayList<>();
             fragmentList.add(UserIdentificationFormKtpFragment.createInstance());
             fragmentList.add(UserIdentificationFormFaceFragment.createInstance());
-            fragmentList.add(UserIdentificationFormFinalFragment.createInstance(tradeinProject));
+            fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId));
             return fragmentList;
         } else {
             return fragmentList;
