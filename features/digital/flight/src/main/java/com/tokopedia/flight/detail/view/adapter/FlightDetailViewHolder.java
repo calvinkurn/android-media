@@ -16,13 +16,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailViewHolder extends AbstractViewHolder<FlightOrderDetailRouteViewModel> {
+public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRouteViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_flight_detail;
 
@@ -80,7 +80,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightOrderDetail
     }
 
     @Override
-    public void bind(FlightOrderDetailRouteViewModel route) {
+    public void bind(FlightDetailRouteViewModel route) {
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         setRefundableInfo(route);
@@ -132,7 +132,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightOrderDetail
         }
     }
 
-    private void setDepartureInfo(FlightOrderDetailRouteViewModel route) {
+    private void setDepartureInfo(FlightDetailRouteViewModel route) {
         if (!TextUtils.isEmpty(route.getDepartureAirportCity())) {
             departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirportCode()));
             departureAirportDesc.setText(route.getDepartureAirportName());
@@ -142,7 +142,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightOrderDetail
         }
     }
 
-    private void setArrivalInfo(FlightOrderDetailRouteViewModel route) {
+    private void setArrivalInfo(FlightDetailRouteViewModel route) {
         if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
             arrivalAirportDesc.setText(route.getArrivalAirportName());
             arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
@@ -177,7 +177,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightOrderDetail
         }
     }
 
-    private void setRefundableInfo(FlightOrderDetailRouteViewModel route) {
+    private void setRefundableInfo(FlightDetailRouteViewModel route) {
         if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
         } else {

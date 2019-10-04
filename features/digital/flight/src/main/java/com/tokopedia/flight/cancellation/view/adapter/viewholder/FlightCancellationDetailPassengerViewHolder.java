@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightAmenityType;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
 
     private List<SimpleViewModel> transformToSimpleModelPassenger(FlightCancellationListPassengerViewModel passengerViewModel) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-        for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : passengerViewModel.getAmenities()) {
+        for (FlightOrderAmenityViewModel flightBookingAmenityViewModel : passengerViewModel.getAmenities()) {
             if (flightBookingAmenityViewModel.getDepartureId().equals(passengerViewModel.getDepartureAiportId()) &&
                     flightBookingAmenityViewModel.getArrivalId().equals(passengerViewModel.getArrivalAirportId())) {
                 SimpleViewModel simpleViewModel = new SimpleViewModel();
