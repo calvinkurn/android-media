@@ -47,7 +47,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     @Inject
-    private lateinit var feedAnalyticTracker: FeedAnalyticTracker
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
 
     private var selectedIdList: List<Int> = arrayListOf()
 

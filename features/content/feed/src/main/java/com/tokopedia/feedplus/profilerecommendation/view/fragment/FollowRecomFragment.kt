@@ -37,7 +37,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_autocomplete_text_double_row.*
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -286,10 +285,6 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
             RouteManager.route(context, ApplinkConst.FEED)
         }
-//        activity?.let{
-//            it.setResult(Activity.RESULT_OK, Intent())
-//            it.finish()
-//        }
     }
 
     private fun followAllRecommendation() {
