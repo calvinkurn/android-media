@@ -61,7 +61,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
     private fun getSubCategoryPath(path: String, id: String): String {
         if (path.isNotEmpty()) {
             val m = path.split("/p/")
-            return "category" + m[1] + "-" + id
+            return "category/" + m[1] + " - " + id
         }
         return ""
     }

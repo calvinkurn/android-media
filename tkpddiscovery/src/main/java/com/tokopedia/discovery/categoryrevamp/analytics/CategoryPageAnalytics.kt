@@ -132,7 +132,7 @@ class CategoryPageAnalytics {
                 KEY_EVENT, "promoClick",
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, "click subcategory",
-                KEY_EVENT_LABEL, "$sub_category_id-$creative_name",
+                KEY_EVENT_LABEL, "$sub_category_id - $creative_name",
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
