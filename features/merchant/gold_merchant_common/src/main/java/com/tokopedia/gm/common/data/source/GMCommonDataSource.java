@@ -39,23 +39,4 @@ public class GMCommonDataSource {
                 });
     }
 
-    public Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId) {
-        List<Long> productIdsLong = new ArrayList<>();
-        for(String productId : productIdList){
-            productIdsLong.add(Long.parseLong(productId));
-        }
-        RequestGetCashbackModel.DataRequestGetCashback dataRequestGetCashback = new RequestGetCashbackModel.DataRequestGetCashback(productIdsLong, Long.parseLong(shopId));
-        List<RequestGetCashbackModel.DataRequestGetCashback> requestGetCashbackModelList = new ArrayList<>();
-        requestGetCashbackModelList.add(dataRequestGetCashback);
-        RequestGetCashbackModel requestGetCashbackModel = new RequestGetCashbackModel(requestGetCashbackModelList);
-        return gmCommonCloudDataSource.getCashbackList(requestGetCashbackModel)
-                .map(new DataResponseMapper<>())
-                .map(dataCashbackModels -> {
-                    if(dataCashbackModels == null){
-                        return new ArrayList<>();
-                    }else{
-                        return dataCashbackModels;
-                    }
-                });
-    }
 }

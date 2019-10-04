@@ -22,9 +22,6 @@ public interface GMCommonApi {
     @POST(GMCommonUrl.SET_CASHBACK_PRODUCTS)
     Observable<Response<DataResponse<String>>> setCashback(@Body RequestCashbackModel cashback);
 
-    @POST(GMCommonUrl.GET_CASHBACK_PRODUCTS)
-    Observable<Response<DataResponse<List<GMGetCashbackModel>>>> getCashbackList(@Body RequestGetCashbackModel requestGetCashbackModel);
-
     @GET(GMCommonUrl.SHOPS_SCORE_STATUS + "{shopId}")
     Observable<Response<DataResponse<ShopScoreResult>>> getShopScoreDetail(@Path("shopId") String shopId);
 

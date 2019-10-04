@@ -30,8 +30,4 @@ public class GMCommonCloudDataSource {
     public Observable<Response<DataResponse<String>>> setCashback(RequestCashbackModel requestCashbackModel) {
         return gmCommonApi.setCashback(requestCashbackModel);
     }
-
-    public Observable<Response<DataResponse<List<GMGetCashbackModel>>>> getCashbackList(RequestGetCashbackModel requestGetCashbackModel) {
-        return gmCommonApi.getCashbackList(requestGetCashbackModel);
-    }
 }
