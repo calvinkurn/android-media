@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.profilerecommendation.domain.usecase.SetOnboarding
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -47,4 +48,8 @@ class FollowRecomModule {
     @Named(SetOnboardingStatusUseCase.MUTATION_SET_ONBOARDING_STATUS)
     fun provideSetOnboardingStatusMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_set_onboarding_status)
+
+    @FollowRecomScope
+    @Provides
+    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }
