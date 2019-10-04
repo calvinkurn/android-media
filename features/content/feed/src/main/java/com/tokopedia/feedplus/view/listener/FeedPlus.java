@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.listener;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -75,6 +76,8 @@ public interface FeedPlus {
         }
 
         void setLastCursorOnFirstPage(String lastCursor);
+
+        void setFirstPageCursor(@NonNull String firstPageCursor);
 
         void onInfoClicked();
 

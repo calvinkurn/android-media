@@ -339,6 +339,7 @@ public class FeedPlusPresenter
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
+                            getView().setFirstPageCursor(model.getFirstPageCursor());
                             getView().onSuccessGetFeedFirstPage(
                                     new ArrayList<>(model.getPostList())
                             );

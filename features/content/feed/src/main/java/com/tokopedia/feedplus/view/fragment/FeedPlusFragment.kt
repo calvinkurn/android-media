@@ -351,6 +351,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun setFirstPageCursor(firstPageCursor: String) {
+//        activity?.applicationContext?.let {
+//            val cache = LocalCacheHandler(it, KEY_FEED)
+//            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
+//            cache.applyEditor()
+//        }
+    }
+
     override fun onInfoClicked() {
         infoBottomSheet.show()
     }
