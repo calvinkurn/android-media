@@ -24,13 +24,19 @@ interface FollowRecomContract {
 
         fun onFinishSetOnboardingStatus()
 
+        fun onErrorSetOnboardingStatus(throwable: Throwable)
+
         fun onGetError(error: Throwable)
 
         fun onGetError(error: String)
 
         fun showLoading()
 
+        fun showListLoading()
+
         fun hideLoading()
+
+        fun hideListLoading()
     }
 
     interface Presenter {
