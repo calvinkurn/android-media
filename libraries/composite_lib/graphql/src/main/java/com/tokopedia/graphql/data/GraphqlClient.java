@@ -39,7 +39,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
-            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
             tkpdOkHttpBuilder.addInterceptor(chain -> {

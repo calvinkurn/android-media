@@ -16,7 +16,7 @@ ext {
     coroutineVersion = '1.0.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.4.0'
-    okHttpVersion = '3.12.1'
+    okHttpVersion = '3.12.5'
     glideVersion = '4.9.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '4.1.0'

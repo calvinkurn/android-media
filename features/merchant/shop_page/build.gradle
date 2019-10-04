@@ -76,6 +76,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     
     implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.unifyDependencies.components
+
 }
 
 project.ext {

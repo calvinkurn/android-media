@@ -1231,7 +1231,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     it.basic.id.toString(),
                     productName,
                     productImageUrl,
-                    it.variant.isVariant
+                    it.variant.isVariant,
+                    it.freeOngkir.isFreeOngkirActive,
+                    it.freeOngkir.freeOngkirImgUrl
             )
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -1357,7 +1359,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             productInfo.basic.weight,
                             productInfo.basic.weightUnit,
                             if (productInfoViewModel.multiOrigin.isFulfillment)
-                                productInfoViewModel.multiOrigin.origin else null
+                                productInfoViewModel.multiOrigin.origin else null,
+                            productInfo.freeOngkir.isFreeOngkirActive
                     ))
                 }
             }

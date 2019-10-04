@@ -390,7 +390,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name
+                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name,it.freeOngkir.isActive
                 )
             }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
@@ -473,7 +473,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     selectedEtalaseName,
                     CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
-                    shopProductViewModel, productPosition, shopId, it.shopCore.name)
+                    shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
         //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)

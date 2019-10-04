@@ -192,7 +192,7 @@
                                 android:layout_marginTop="@dimen/dp_16"
                                 android:lineSpacingExtra="@dimen/sp_4"
                                 android:text="@string/saldo_withdrawal_all"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/unify_G500"
                                 android:textSize="@dimen/sp_12" />
 
                             <com.tokopedia.design.text.TkpdHintTextInputLayout

@@ -15,11 +15,13 @@ public class ShopPageTrackingConstant {
     public static final String PROMO_CLICK = "promoClick";
     public static final String CLICK_SHOP_MANAGE = "clickManageShop";
     public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
+    public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
     public static final String SHOP_PAGE_BUYER = "shop page - buyer";
     public static final String SHOP_PAGE = "shop page";
+    public static final String MEMBERSHIP_SHOP_PAGE = "membership - shop page";
 
     //ACTION
     public static final String TOP_SECTION = "top section";
@@ -74,6 +76,10 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_DISCUSSION = "click discussion";
     public static final String CLICK_MANAGE_SHOP = "click manage shop";
     public static final String SHOP_INFO = "Shop Info";
+    public static final String MEMBERSHIP_CLICK_MEMBER = "click daftar jadi member";
+    public static final String MEMBERSHIP_DETAIL_PAGE = "click membership detail page";
+    public static final String MEMBERSHIP_COUPON_CLAIM = "click klaim kupon";
+    public static final String MEMBERSHIP_COUPON_CHECK = "click cek kupon saya";
 
     //key
     public static final String EVENT = "event";
@@ -111,4 +117,7 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
     public static final String PROMOTIONS = "promotions";
+    public static final String DIMENSION83 = "dimension83";
+    public static final String FREE_ONGKIR = "bebas ongkir";
+    public static final String NONE_OR_OTHER = "none / other";
 }

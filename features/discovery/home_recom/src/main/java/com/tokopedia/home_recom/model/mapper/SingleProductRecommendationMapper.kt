@@ -36,6 +36,7 @@ object SingleProductRecommendationMapper {
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    "",
                     index,
                     data.shop?.id ?: -1,
                     "",
@@ -47,8 +48,9 @@ object SingleProductRecommendationMapper {
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
                     data.badges?.map { it.imageUrl } ?: emptyList(),
-                    layoutType ?: ""
-
+                    layoutType ?: "",
+                    data.freeOngkirInformation?.isActive?:false,
+                    data.freeOngkirInformation?.imageUrl?:""
             )
          } ?: emptyList()
     }

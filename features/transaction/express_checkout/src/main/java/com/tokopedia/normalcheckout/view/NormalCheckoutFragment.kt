@@ -774,7 +774,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
                         viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
-                        getPageReference()
+                        getPageReference(),
+                        freeOngkir.isFreeOngkirActive
                 )
             }
         }, onRetryWhenError = {

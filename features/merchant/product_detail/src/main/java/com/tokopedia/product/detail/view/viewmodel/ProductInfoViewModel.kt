@@ -50,6 +50,7 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -72,6 +73,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
+import rx.Subscriber
 import rx.Subscription
 import javax.inject.Inject
 import javax.inject.Named
@@ -83,6 +85,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                               private val getRecommendationUseCase: GetRecommendationUseCase,
                                                private val stickyLoginUseCase: StickyLoginUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
@@ -587,28 +590,23 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } else null
 
             topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
+                loadTopAdsProduct.value = Loaded(Success((it.data as? Success)?.data?: return@launch))
             }
             lazyNeedForceUpdate = false
         }
     }
 
     private fun doLoadTopAdsProductAsync(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val topadsParams = generateTopAdsParams(productInfo)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
-        else CacheType.CACHE_FIRST).build()
-
         try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
-        } catch (t: Throwable) {
-            t.debugTrace()
-            Loaded(Fail(t))
+            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                    pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                    pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                    productIds = arrayListOf(productInfo.basic.id.toString())
+            )).toBlocking()
+            Loaded(Success(data.first()?: emptyList()))
+        } catch (e: Throwable) {
+            e.debugTrace()
+            Loaded(Fail(e))
         }
     }
 
@@ -655,9 +653,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
-                    onSuccess.invoke(it.response.tickers[0])
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            return@execute
+                        }
+                    }
+                    onError?.invoke(Throwable(""))
                 } else {
-                    onError?.invoke(Throwable("Data not found"))
+                    onError?.invoke(Throwable(""))
                 }
             },
             onError = {

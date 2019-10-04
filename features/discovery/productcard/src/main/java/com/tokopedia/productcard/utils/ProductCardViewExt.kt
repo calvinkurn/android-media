@@ -61,3 +61,14 @@ private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean
         View.GONE
     }
 }
+
+fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+    if (this == null) return
+
+    if (shouldShow) {
+        this.visibility = View.VISIBLE
+        action(this)
+    } else {
+        this.visibility = View.GONE
+    }
+}

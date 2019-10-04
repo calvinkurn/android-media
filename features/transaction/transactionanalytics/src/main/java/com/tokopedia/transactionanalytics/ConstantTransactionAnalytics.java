@@ -175,6 +175,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
         String VIEW_CART_LIST = "view cart list";
+        String VIEW_CART_PAGE = "view cart page";
         String VIEW_CHECKOUT_PAGE = "view checkout page";
         String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";

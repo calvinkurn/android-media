@@ -326,19 +326,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
         })
 
-        shopViewModel.getStickyLoginContent(
-            onSuccess = {
-                stickyLoginTextView.setContent(it)
-            },
-            onError = {
-                stickyLoginTextView.hide()
-            }
-        )
+        updateStickyContent()
         updateStickyState()
     }
 
     override fun onResume() {
         super.onResume()
+        updateStickyContent()
         updateStickyState()
     }
 
@@ -491,7 +485,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
-            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
+            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
             searchInputView.setListener(object : SearchInputView.Listener {
                 override fun onSearchSubmitted(text: String?) {
@@ -783,6 +777,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun getShopInfoPosition(): Int = shopPageViewPagerAdapter.count - 1
 
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
+
+    private fun updateStickyContent() {
+        shopViewModel.getStickyLoginContent(
+            onSuccess = {
+                stickyLoginTextView.setContent(it)
+            },
+            onError = {
+                stickyLoginTextView.hide()
+            }
+        )
+    }
 
     private fun updateStickyState() {
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
