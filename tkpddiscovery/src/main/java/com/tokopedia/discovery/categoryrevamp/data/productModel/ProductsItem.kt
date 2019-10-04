@@ -100,13 +100,13 @@ data class ProductsItem(
         var isTopAds: Boolean = false,
 
         @field:SerializedName("productImpTrackingUrl")
-        var productImpTrackingUrl: String? = "",
+        var productImpTrackingUrl: String = "",
 
         @field:SerializedName("productClickTrackingUrl")
-        var productClickTrackingUrl: String? = "",
+        var productClickTrackingUrl: String = "",
 
         @field:SerializedName("productWishlistTrackingUrl")
-        var productWishlistTrackingUrl: String? = ""
+        var productWishlistTrackingUrl: String = ""
 
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
