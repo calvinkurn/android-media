@@ -356,7 +356,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight() {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT)
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT);
         viewListener.goToPage(intent);
     }
 
