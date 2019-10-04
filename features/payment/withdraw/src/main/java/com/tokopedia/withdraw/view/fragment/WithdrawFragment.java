@@ -141,8 +141,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private ImageView ivLockButton;
     TabLayout tabLayout;
 
-    private boolean buttonSellerSaldoStatus = false;
-    //private LinearLayout withdrawButtonWrapper;
 
     private CompositeSubscription subscription;
     private AlertDialog alertDialog;
@@ -250,12 +248,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
-        // saldoTypeCV.setVisibility(View.VISIBLE);
-        //new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
-
-        /*bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
-                "bank rakyat indonesia");
-*/
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
@@ -895,80 +887,4 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bottomSheet.show();
     }
 
-    enum ProgramStatus {
-        Pending_In(0), Pending_Out(1), In_Progress_In(2), In_Progress_Out(3), Approved_In(4),
-        Approved_Out(5), Rejected(6);
-        int status;
-
-        ProgramStatus(int status) {
-            this.status = status;
-        }
-    }
 }
-
-/*
-
-    private void enableBuyerSaldoView() {
-        withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.white));
-        withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
-
-        withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.grey_300));
-        withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_grey_border_radius_16));
-
-        saldoTitleTV.setText(getString(R.string.saldo_refund));
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
-    }
-
-    private void enableSellerSaldoView() {
-        withdrawBuyerSaldoTV.setTextColor(getResources().getColor(R.color.grey_300));
-        withdrawBuyerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_grey_border_radius_16));
-
-        withdrawSellerSaldoTV.setTextColor(getResources().getColor(R.color.white));
-        withdrawSellerSaldoTV.setBackground(getResources().getDrawable(R.drawable.bg_green_filled_radius_16));
-
-        saldoTitleTV.setText(getString(R.string.saldo_seller));
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
-    }
-*/
-
-   /* private void startShowCase() {
-        if (!ShowCasePreference.hasShown(getContext(), WithdrawFragment.class.getName())) {
-            ShowCasePreference.setShown(getContext(), WithdrawFragment.class.getName(), true);
-            createShowCaseDialog().show(getActivity(),
-                    WithdrawFragment.class.getName(),
-                    getShowCaseObjectListForBuyerSaldo()
-            );
-        }
-    }*/
-
-    /*private ArrayList<ShowCaseObject> getShowCaseObjectListForBuyerSaldo() {
-        ArrayList<ShowCaseObject> showCaseObjects = new ArrayList<>();
-
-        showCaseObjects.add(new ShowCaseObject(
-                withdrawBuyerSaldoTV,
-                getString(R.string.saldo_withdraw_show_case_title),
-                getString(R.string.saldo_withdraw_show_case_desc),
-                ShowCaseContentPosition.BOTTOM,
-                Color.WHITE));
-
-        return showCaseObjects;
-    }
-
-    @SuppressLint("PrivateResource")
-    public ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
-                .finishStringRes(R.string.label_next)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .useSkipWord(false)
-                .build();
-    }*/

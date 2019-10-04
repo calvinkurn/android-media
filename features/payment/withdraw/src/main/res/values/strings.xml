@@ -26,6 +26,7 @@
     <string name="title_close">Tutup</string>
     <string name="title_add_account_bank">Tambah Rekening</string>
     <string name="title_set_account_bank">Atur Rekening</string>
+    <string name="title_set_rekening_utama">Rekening Utama</string>
 
 
     <string name="title_info_withdrawal_1">Minimum Penarikan</string>

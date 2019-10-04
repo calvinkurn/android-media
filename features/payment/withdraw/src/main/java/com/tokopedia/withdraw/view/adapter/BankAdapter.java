@@ -18,6 +18,8 @@ import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -31,6 +33,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
     public static final int REFUND = 0;
     public static final int PENGHASILAN = 1;
+    public static final int MAX_BANK_DISPLAY_COUNT = 3;
 
     private int currentTab = 0;
 
@@ -42,6 +45,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     private final List<BankAccount> listBank;
+    private final List<BankAccount> masterBankList;
 
     private int isEmpty = 0;
     private WithdrawContract.View context;
@@ -55,6 +59,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         this.selectedBankId = "";
         this.selectedItem = -1;
         this.accountButton = new BankAccount();
+        this.masterBankList = new ArrayList<>();
         this.analytics = analytics;
     }
 
@@ -63,12 +68,23 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public void setList(List<BankAccount> listBank) {
+
+        masterBankList.clear();
+        masterBankList.addAll(listBank);
+        Collections.sort(masterBankList, (o1, o2) -> {
+            if (o1.getIsDefaultBank() < o2.getIsDefaultBank()) {
+                return 1;
+            }
+            return 0;
+        });
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                 new Callback(new ArrayList<>(this.listBank), new ArrayList<>(listBank)));
         diffResult.dispatchUpdatesTo(this);
-
         this.listBank.clear();
-        this.listBank.addAll(listBank);
+        for (int i = 0; i <= MAX_BANK_DISPLAY_COUNT; i++) {
+            if (masterBankList.size() > i)
+                this.listBank.add(masterBankList.get(i));
+        }
         this.listBank.add(accountButton);
     }
 
@@ -153,10 +169,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case 1:
-                if (listBank.size() < 4) {
+                if (listBank.size()-1 < 3) {
                     holder.text.setText(context.getStringResource(R.string.title_add_account_bank));
-                } else {
+                } else if (listBank.size()-1 == 3) {
                     holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
+                } else {
+                    holder.text.setText(context.getStringResource(R.string.title_set_rekening_utama));
                 }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +195,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 Context context = viewHolder.itemView.getContext();
                 BankAccount thisItem = listBank.get(position);
 
-                if (currentTab == 1) {
+                if (thisItem.getAdminFee() > 0) {
                     String adminFeeStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(thisItem.getAdminFee(), false);
                     viewHolder.adminFee.setText(context.getString(R.string.swd_admin_fee, adminFeeStr));
                     viewHolder.adminFee.setVisibility(View.VISIBLE);
@@ -185,6 +203,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     viewHolder.adminFee.setText("");
                     viewHolder.adminFee.setVisibility(View.GONE);
                 }
+
                 View.OnClickListener l = (View v) -> {
                     analytics.eventClickAccountBank();
                     changeItemSelected(position);
