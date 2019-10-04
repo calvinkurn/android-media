@@ -17,7 +17,8 @@
         android:layout_marginTop="@dimen/dp_18"
         android:text="@string/same_day"
         app:typographyWeight="bold"
-        app:typographyType="body_2"/>
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_96"/>
 
     <CheckBox
         android:id="@+id/cb_filter"

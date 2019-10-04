@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_seller" translatable="false">seller</string>
+    <string name="host_order" translatable="false">order</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"

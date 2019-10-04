@@ -23,8 +23,10 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
@@ -46,7 +48,9 @@ import kotlin.collections.HashMap
 /**
  * Created by fwidjaja on 2019-08-23.
  */
-class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, SearchInputView.Listener, SearchInputView.ResetListener {
+class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
+        SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -111,6 +115,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler = RefreshHandler(activity, view, this)
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
+        somListItemAdapter.setActionListener(this)
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
@@ -369,5 +374,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
         }
+    }
+
+    override fun onListItemClicked(orderId: String) {
+        val intentDetail = Intent(activity, SomDetailActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+        }
+        startActivity(intentDetail)
     }
 }

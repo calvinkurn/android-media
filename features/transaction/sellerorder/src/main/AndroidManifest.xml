@@ -59,6 +59,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".detail.presentation.activity.SomDetailActivity"
+            android:label="@string/title_som_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>
 

@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.app.ActionBar
+import android.content.Intent
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
+import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.som_list_item.view.*
 
@@ -25,6 +27,13 @@ import kotlinx.android.synthetic.main.som_list_item.view.*
  * Created by fwidjaja on 2019-08-26.
  */
 class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>() {
+
+    private lateinit var actionListener: ActionListener
+
+    interface ActionListener {
+        fun onListItemClicked(orderId: String)
+    }
+
     var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,6 +68,10 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         if (somItemList[position].listOrderLabel.isNotEmpty()) {
             createOrderLabelList(holder, position)
         }
+
+        holder.itemView.setOnClickListener {
+            actionListener.onListItemClicked(somItemList[position].orderId)
+        }
     }
 
     @SuppressLint("Range", "InflateParams")
@@ -91,4 +104,8 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    fun setActionListener(fragment: SomListFragment) {
+        this.actionListener = fragment
+    }
 }
