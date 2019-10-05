@@ -176,6 +176,7 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_guarantee"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/discount_timer_holder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
