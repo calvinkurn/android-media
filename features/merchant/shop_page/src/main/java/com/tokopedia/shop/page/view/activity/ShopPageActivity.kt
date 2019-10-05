@@ -36,6 +36,7 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -50,6 +51,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -67,6 +69,7 @@ import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
@@ -77,6 +80,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import kotlinx.android.synthetic.main.partial_shop_page_header.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -335,6 +339,35 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         )
         updateStickyState()
+        initSearchInputView()
+    }
+
+    private fun initSearchInputView() {
+        searchInputView.searchTextView.movementMethod = null
+        searchInputView.searchTextView.keyListener = null
+        searchInputView.setOnClickListener {
+            shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE)
+            (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                saveShopInfoModelToCacheManager(it)?.let {
+                    redirectToShopSearchProduct(it)
+                }
+            }
+        }
+    }
+
+    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
+        val cacheManager = SaveInstanceCacheManager(this, true)
+        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7))
+        return cacheManager.id
+    }
+
+    private fun redirectToShopSearchProduct(cacheManagerId: String) {
+        startActivity(ShopSearchProductActivity.createIntent(
+                this,
+                "",
+                cacheManagerId,
+                shopAttribution
+        ))
     }
 
     override fun onResume() {
@@ -493,22 +526,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
             updateUIByShopName(shopCore.name)
-            searchInputView.setListener(object : SearchInputView.Listener {
-                override fun onSearchSubmitted(text: String?) {
-                    if (TextUtils.isEmpty(text)) {
-                        return
-                    }
-                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
-                            shopCore.shopID, text, "", shopAttribution))
-                    //reset the search, since the result will go to another activity.
-                    searchInputView.searchTextView.text = null
-
-                }
-
-                override fun onSearchTextChanged(text: String?) {}
-
-            })
-
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
             if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
                 productListFragment.displayProduct(this)

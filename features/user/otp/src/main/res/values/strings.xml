@@ -37,5 +37,14 @@
     <string name="btn_cancel">Batal</string>
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
+    
+    <string name="cotp_miscall_onboarding_title">Minta kode verifikasi lewat Missed Call</string>
+    <string name="cotp_miscall_send_call">Telpon saya</string>
+    <string name="cotp_miscall_point_1">1</string>
+    <string name="cotp_miscall_point_2">2</string>
+    <string name="cotp_miscall_step_1">Kamu akan menerima &lt;b&gt;panggilan telepon.&lt;/b&gt; Panggilan tidak perlu diangkat.</string>
+    <string name="cotp_miscall_step_2">Masukkan &lt;b&gt;6 digit terakhir&lt;/b&gt; dari nomor tersebut.</string>
+    <string name="cotp_miscall_verification">Masukkan 6 digit angka terakhir nomor telepon</string>
+    <string name="cotp_miscall_phone_code">021–75</string>
 
 </resources>
