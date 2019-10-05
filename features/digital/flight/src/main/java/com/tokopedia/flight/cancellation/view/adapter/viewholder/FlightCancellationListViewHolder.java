@@ -56,19 +56,19 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
             case 0 : break;
             case FlightCancellationStatus.REQUESTED:
                 txtCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_process));
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 break;
             case FlightCancellationStatus.REFUNDED:
                 txtCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
-                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_success));
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_success));
                 break;
             case FlightCancellationStatus.ABORTED:
                 txtCancellationStatus.setTextAppearance(context, R.style.CardFailedStatusStyle);
-                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_failed));
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_failed));
                 break;
             default:
                 txtCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_process));
+                txtCancellationStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
         }
     }
 

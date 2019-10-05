@@ -94,7 +94,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         setArrivalInfo(route);
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.ic_airline_default)
+                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
         );
         if (onFlightDetailListener != null) {
             bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());

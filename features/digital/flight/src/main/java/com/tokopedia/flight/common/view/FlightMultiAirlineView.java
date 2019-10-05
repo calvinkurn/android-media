@@ -55,13 +55,13 @@ public class FlightMultiAirlineView extends LinearLayout {
         } else if (airlineLogoList.size() > 1) {
             View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.flight.R.layout.view_airline_logo, this, false);
             ImageView ivAirline = view.findViewById(com.tokopedia.flight.R.id.iv_airline_logo);
-            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_multi_airlines));
+            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.flight_ic_multi_airlines));
             addView(ivAirline);
         } else if (airlineLogoList.size() == 1) {
             View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.flight.R.layout.view_airline_logo, this, false);
             ImageView ivAirline = view.findViewById(com.tokopedia.flight.R.id.iv_airline_logo);
             ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList.get(0),
-                    ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_airline_default)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
             );
             addView(view);
         }

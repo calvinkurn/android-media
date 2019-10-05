@@ -43,7 +43,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @Override
     public void bind(AirlineStat airlineStat) {
         super.bind(airlineStat);
-        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.ic_airline_default));
+        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default));
         tvTitle.setText(airlineStat.getAirlineDB().getName());
         tvDesc.setText(getString(com.tokopedia.flight.R.string.start_from_x, airlineStat.getMinPriceString()));
         itemView.setOnClickListener(this);

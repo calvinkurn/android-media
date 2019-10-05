@@ -67,7 +67,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.ic_airline_default)
+                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
         );
         setRefundableInfo(route);
     }

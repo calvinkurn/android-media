@@ -100,24 +100,24 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             case FlightCancellationStatus.REQUESTED:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
             case FlightCancellationStatus.PENDING:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
             case FlightCancellationStatus.REFUNDED:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_success));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_success));
                 return true;
             case FlightCancellationStatus.ABORTED:
                 return false;
             default:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
         }
     }
