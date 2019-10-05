@@ -66,7 +66,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
         journeyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageJourney.startAnimation(AnimationUtils.loadAnimation(layoutView.getContext(), R.anim.rotate_reverse));
+                imageJourney.startAnimation(AnimationUtils.loadAnimation(layoutView.getContext(), R.anim.flight_rotate_reverse));
                 toggleFlightInfo();
             }
         });

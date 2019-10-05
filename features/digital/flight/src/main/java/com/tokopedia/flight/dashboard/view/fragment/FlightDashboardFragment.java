@@ -25,8 +25,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
@@ -235,7 +235,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             @Override
             public void onClick(View v) {
                 presenter.onReverseAirportButtonClicked();
-                Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
+                Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.flight_rotate);
                 shake.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {

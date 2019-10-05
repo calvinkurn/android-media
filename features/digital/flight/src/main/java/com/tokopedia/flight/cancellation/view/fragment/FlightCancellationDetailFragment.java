@@ -111,7 +111,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
+                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.flight_rotate_reverse));
                 togglePassengerInfo();
             }
         });

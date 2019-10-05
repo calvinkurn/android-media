@@ -199,7 +199,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     public void replaceFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .setCustomAnimations(R.anim.flight_enter_from_right, R.anim.flight_exit_to_left, R.anim.flight_enter_from_left, R.anim.flight_exit_to_right)
                 .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
     }
