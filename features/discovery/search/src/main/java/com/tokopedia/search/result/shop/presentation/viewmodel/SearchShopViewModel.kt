@@ -7,36 +7,34 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.*
-import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
 
 class SearchShopViewModel(
-        dispatcher: CoroutineDispatcher,
+        dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: Repository<Map<String, Any>, SearchShopModel>,
-        private val searchShopLoadMoreUseCase: Repository<Map<String, Any>, SearchShopModel>,
-        private val getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
+        private val searchShopFirstPageRepository: Repository<SearchShopModel>,
+        private val searchShopLoadMoreRepository: Repository<SearchShopModel>,
+        private val dynamicFilterRepository: Repository<DynamicFilterModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val emptySearchCreator: EmptySearchCreator,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher.ui()) {
 
     companion object {
         const val START_ROW_FIRST_TIME_LOAD = 0
@@ -101,7 +99,7 @@ class SearchShopViewModel(
     private suspend fun trySearchShop() {
         updateSearchShopLiveDataStateToLoading()
 
-        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
+        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageRepository)
 
         searchShopFirstPageSuccess(searchShopModel)
 
@@ -112,31 +110,30 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Loading())
     }
 
-    private suspend fun requestSearchShopModel(startRow: Int, searchShopUseCase: SearchUseCase<SearchShopModel>): SearchShopModel? {
+    private suspend fun requestSearchShopModel(startRow: Int, searchShopRepository: Repository<SearchShopModel>): SearchShopModel? {
         setSearchParameterStartRow(startRow)
 
         val requestParams = createSearchShopParam()
-        searchShopUseCase.setRequestParams(requestParams.parameters)
 
-        return searchShopUseCase.executeOnBackground()
+        return searchShopRepository.getResponse(requestParams)
     }
 
-    private fun createSearchShopParam(): RequestParams {
-        val requestParams = RequestParams.create()
+    private fun createSearchShopParam(): Map<String, Any> {
+        val requestParams = mutableMapOf<String, Any>()
 
-        putRequestParamsOtherParameters(requestParams)
+        putRequestParamsParameters(requestParams)
         requestParams.putAll(searchParameter)
 
         return requestParams
     }
 
-    private fun putRequestParamsOtherParameters(requestParams: RequestParams) {
-        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
-        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
-        requestParams.putString(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
-        requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
-        requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
+    private fun putRequestParamsParameters(requestParams: MutableMap<String, Any>) {
+        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+        requestParams[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+        requestParams[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
+        requestParams[SearchApiConst.IMAGE_SIZE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE
+        requestParams[SearchApiConst.IMAGE_SQUARE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE
     }
 
     private fun searchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
@@ -170,11 +167,7 @@ class SearchShopViewModel(
     private fun createEmptySearchViewModel(): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val emptySearchViewModel = emptySearchCreator.createEmptySearchViewModel(
-                getSearchParameterQuery(),
-                false,
-                SHOP_TAB_TITLE
-        )
+        val emptySearchViewModel = EmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), false)
 
         visitableList.add(emptySearchViewModel)
 
@@ -273,25 +266,25 @@ class SearchShopViewModel(
     private suspend fun tryGetDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        getDynamicFilterUseCase.setRequestParams(requestParams.parameters)
-        getDynamicFilterUseCase.executeOnBackground()
+        dynamicFilterRepository.getResponse(requestParams)
     }
 
-    private fun createGetDynamicFilterParams(): RequestParams {
-        val requestParams = RequestParams.create()
+    private fun createGetDynamicFilterParams(): Map<String, Any> {
+        val requestParams = mutableMapOf<String, Any>()
+
         requestParams.putAll(searchParameter)
-        requestParams.putAllString(generateParamsNetwork(requestParams))
-        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP)
-        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+        requestParams.putAll(generateParamsNetwork(requestParams))
+        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP
+        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 
         return requestParams
     }
 
-    private fun generateParamsNetwork(requestParams: RequestParams): Map<String, String> {
+    private fun generateParamsNetwork(requestParams: MutableMap<String, Any>): Map<String, String> {
         return AuthHelper.generateParamsNetwork(
-                        userSession.userId,
-                        userSession.deviceId,
-                        requestParams.paramsAllValueInString)
+                userSession.userId,
+                userSession.deviceId,
+                requestParams.convertValuesToString().toMutableMap())
     }
 
     private fun catchGetDynamicFilterError(e: Throwable?) {
@@ -318,7 +311,7 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchMoreShop() {
-        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
+        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreRepository)
 
         searchShopLoadMoreSuccess(searchShopModel)
     }

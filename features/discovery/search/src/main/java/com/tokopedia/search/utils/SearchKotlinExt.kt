@@ -11,3 +11,15 @@ fun <T> List<T>?.secondToLast(): List<T> {
 
     return this.subList(1, this.size)
 }
+
+fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
+    if (this == null) return mapOf()
+
+    val mapValuesInString = mutableMapOf<String, String>()
+
+    this.forEach { originalMap ->
+        mapValuesInString[originalMap.key] = originalMap.value.toString()
+    }
+
+    return mapValuesInString
+}

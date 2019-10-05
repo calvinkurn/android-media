@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
 data class ShopViewModel(
         val source: String = "",

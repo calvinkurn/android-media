@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.shop
+package com.tokopedia.search.result.shop.presentation.viewholder
 
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView

@@ -24,7 +24,7 @@ class SearchShopRepositoryModule {
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
     fun provideSearchShopFirstPageRepository(
             @ApplicationContext context: Context
-    ): Repository<Map<String, Any>, SearchShopModel> {
+    ): Repository<SearchShopModel> {
 
         return SearchShopFirstPageRepository(
                 GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop_first_page),
@@ -38,7 +38,7 @@ class SearchShopRepositoryModule {
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
     fun provideSearchShopLoadMoreRepository(
             @ApplicationContext context: Context
-    ): Repository<Map<String, Any>, SearchShopModel> {
+    ): Repository<SearchShopModel> {
 
         return SearchShopLoadMoreRepository(
                 GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop_load_more),

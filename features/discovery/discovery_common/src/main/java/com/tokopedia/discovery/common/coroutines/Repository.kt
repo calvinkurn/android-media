@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.common.coroutines
 
-interface Repository<I, O> {
+interface Repository<T> {
 
-    suspend fun getResponse(inputParameter: I): O
+    suspend fun getResponse(inputParameter: Map<String, Any>): T
 }

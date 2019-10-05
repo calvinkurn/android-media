@@ -14,7 +14,7 @@ class SearchShopLoadMoreRepository(
         private val queryString: String,
         private val graphqlCacheStrategy: GraphqlCacheStrategy,
         private val graphqlRepository: GraphqlRepository
-): Repository<Map<String, Any>, SearchShopModel> {
+): Repository<SearchShopModel> {
 
     override suspend fun getResponse(inputParameter: Map<String, Any>): SearchShopModel {
         val graphqlRequest = GraphqlRequest(

@@ -4,30 +4,27 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
+import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.common.EmptySearchCreator
-import com.tokopedia.search.result.common.EmptySearchCreatorModule
-import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
+import com.tokopedia.search.result.data.repository.dynamicfilter.DynamicFilterCoroutineRepositoryModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.domain.usecase.SearchShopCoroutineUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.repository.SearchShopRepositoryModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @SearchScope
 @Module(includes = [
-    SearchShopCoroutineUseCaseModule::class,
+    SearchShopRepositoryModule::class,
     ShopViewModelMapperModule::class,
-    EmptySearchCreatorModule::class,
-    GetDynamicFilterCoroutineUseCaseModule::class,
+    DynamicFilterCoroutineRepositoryModule::class,
     GCMLocalCacheHandlerModule::class
 ])
 class SearchShopViewModelFactoryModule(
@@ -39,27 +36,25 @@ class SearchShopViewModelFactoryModule(
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
-            searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
+            searchShopFirstPageRepository: Repository<SearchShopModel>,
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
-            searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
-            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-            getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
+            searchShopLoadMoreRepository: Repository<SearchShopModel>,
+            @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY)
+            dynamicFilterRepository: Repository<DynamicFilterModel>,
             shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-            emptySearchCreator: EmptySearchCreator,
             userSession: UserSessionInterface,
             @Named(SearchConstant.GCM.GCM_LOCAL_CACHE)
             localCacheHandler: LocalCacheHandler
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
-                Dispatchers.Main,
+                ProductionDispatcherProvider(),
                 searchParameter,
-                searchShopFirstPageUseCase,
-                searchShopLoadMoreUseCase,
-                getDynamicFilterUseCase,
+                searchShopFirstPageRepository,
+                searchShopLoadMoreRepository,
+                dynamicFilterRepository,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
-                emptySearchCreator,
                 userSession,
                 localCacheHandler
         )

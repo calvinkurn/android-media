@@ -1,22 +1,27 @@
-package com.tokopedia.search.result.presentation.view.typefactory
+package com.tokopedia.search.result.shop.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopHeaderViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopItemViewHolder
+import com.tokopedia.search.result.shop.presentation.viewholder.ShopHeaderViewHolder
+import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
+import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactoryImpl
+import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 
 class ShopListTypeFactoryImpl(
         private val shopListener: ShopListener,
         private val emptyStateListener: EmptyStateListener,
         private val bannerAdsListener: BannerAdsListener
 ) : SearchSectionTypeFactoryImpl(), ShopListTypeFactory {
+
+    override fun type(emptySearchViewModel: com.tokopedia.search.result.presentation.model.EmptySearchViewModel?): Int {
+        return EmptySearchViewHolder.LAYOUT
+    }
 
     override fun type(shopHeader: ShopHeaderViewModel): Int {
         return ShopHeaderViewHolder.LAYOUT
@@ -26,7 +31,7 @@ class ShopListTypeFactoryImpl(
         return ShopItemViewHolder.LAYOUT
     }
 
-    override fun type(emptySearchModel: EmptySearchViewModel): Int {
+    override fun type(emptySearchViewModel: EmptySearchViewModel): Int {
         return EmptySearchViewHolder.LAYOUT
     }
 

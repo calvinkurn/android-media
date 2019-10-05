@@ -21,8 +21,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel

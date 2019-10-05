@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCallback
 import java.util.ArrayList
 

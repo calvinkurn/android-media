@@ -32,7 +32,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
