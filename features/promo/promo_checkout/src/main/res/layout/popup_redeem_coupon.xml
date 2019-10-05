@@ -26,7 +26,7 @@
             tools:text="tittlr" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:textColor="@color/promo_popup_description_color"
+            android:textColor="#000000"
             android:id="@+id/tv_contentpopup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
