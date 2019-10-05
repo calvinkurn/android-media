@@ -9,7 +9,7 @@
     android:paddingBottom="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
@@ -99,6 +99,6 @@
             android:adjustViewBounds="true"
             android:scaleType="fitXY" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
