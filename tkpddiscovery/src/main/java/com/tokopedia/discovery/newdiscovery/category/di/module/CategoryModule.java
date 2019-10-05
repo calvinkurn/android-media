@@ -3,8 +3,6 @@ package com.tokopedia.discovery.newdiscovery.category.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
-import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.category.di.scope.CategoryScope;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.ProductPresenter;
@@ -28,7 +26,6 @@ import dagger.Provides;
         ApiModule.class,
         BannerModule.class,
         AttributeModule.class,
-        ImageSearchModule.class,
         CatalogModule.class,
         CategoryHeaderModule.class
 })
@@ -43,8 +40,12 @@ public class CategoryModule {
     @CategoryScope
     @Provides
     CategoryPresenter provideCategoryPresenter(@ApplicationContext Context context,
-                                               GetProductUseCase getProductUseCase,
-                                               GetImageSearchUseCase getImageSearchUseCase) {
-        return new CategoryPresenter(context, getProductUseCase, getImageSearchUseCase);
+                                               GetProductUseCase getProductUseCase) {
+        return new CategoryPresenter(context, getProductUseCase);
+    }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

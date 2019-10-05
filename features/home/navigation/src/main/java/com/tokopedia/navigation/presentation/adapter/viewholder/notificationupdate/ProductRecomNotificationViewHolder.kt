@@ -42,7 +42,7 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
     override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         itemView.setOnClickListener {
             val context = it.context
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
             RouteManager.route(
                     context,

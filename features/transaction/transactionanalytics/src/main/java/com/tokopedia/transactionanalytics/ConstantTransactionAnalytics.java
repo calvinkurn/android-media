@@ -284,6 +284,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
+        String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";

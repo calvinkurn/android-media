@@ -11,32 +11,21 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Token implements Parcelable {
+    @SerializedName("ut")
+    @Expose
+    private int ut;
+
     @SerializedName("district_recommendation")
     @Expose
     private String districtRecommendation;
-    @SerializedName("ut")
-    @Expose
-    private int unixTime;
 
-    public Token() {
+    public int getUt() {
+        return ut;
     }
 
-    protected Token(Parcel in) {
-        districtRecommendation = in.readString();
-        unixTime = in.readInt();
+    public void setUt(int ut) {
+        this.ut = ut;
     }
-
-    public static final Creator<Token> CREATOR = new Creator<Token>() {
-        @Override
-        public Token createFromParcel(Parcel in) {
-            return new Token(in);
-        }
-
-        @Override
-        public Token[] newArray(int size) {
-            return new Token[size];
-        }
-    };
 
     public String getDistrictRecommendation() {
         return districtRecommendation;
@@ -46,14 +35,6 @@ public class Token implements Parcelable {
         this.districtRecommendation = districtRecommendation;
     }
 
-    public int getUnixTime() {
-        return unixTime;
-    }
-
-    public void setUnixTime(int unixTime) {
-        this.unixTime = unixTime;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -61,7 +42,27 @@ public class Token implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(districtRecommendation);
-        dest.writeInt(unixTime);
+        dest.writeInt(this.ut);
+        dest.writeString(this.districtRecommendation);
     }
+
+    public Token() {
+    }
+
+    protected Token(Parcel in) {
+        this.ut = in.readInt();
+        this.districtRecommendation = in.readString();
+    }
+
+    public static final Creator<Token> CREATOR = new Creator<Token>() {
+        @Override
+        public Token createFromParcel(Parcel source) {
+            return new Token(source);
+        }
+
+        @Override
+        public Token[] newArray(int size) {
+            return new Token[size];
+        }
+    };
 }

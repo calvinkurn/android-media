@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'travel_homepage'
-    groupId = 'com.tokopedia.travel.homepage'
-    versionName = "2.22"
-    artifactName = "travelhomepage-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,48 +13,48 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.resourcesCommon)
-
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.bannerDynamic)
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.icon
-    implementation rootProject.ext.unifyDependencies.banner
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
-
     implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
+}
+
+project.ext {
+    artifactId = 'homepage'
+    groupId = 'com.tokopedia.travel'
+    versionName = "1.0.0"
+    artifactName = "travel_homepage-release"
 }
 
 apply from: '../../../publish_local.gradle'

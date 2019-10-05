@@ -27,8 +27,8 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerDiscoveryComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DiscoveryComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
@@ -144,7 +144,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     protected void initInjector() {
-        SearchComponent component = DaggerSearchComponent.builder()
+        DiscoveryComponent component = DaggerDiscoveryComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
         component.inject(this);
@@ -621,5 +621,10 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     @Override
     public SearchParameter getSearchParameter() {
         return new SearchParameter();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        return getDepartmentId() != null ? getDepartmentId() : "";
     }
 }

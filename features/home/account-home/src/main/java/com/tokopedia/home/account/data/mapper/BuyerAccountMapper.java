@@ -3,7 +3,7 @@ package com.tokopedia.home.account.data.mapper;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -106,7 +106,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
                     (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
 
-            tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
+            tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);
 
         } else {

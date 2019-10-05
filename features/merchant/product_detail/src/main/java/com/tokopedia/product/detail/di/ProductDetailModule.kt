@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
@@ -36,7 +37,7 @@ class ProductDetailModule {
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
-  
+
     @ProductDetailScope
     @Provides
     fun provideProductDetailTracking(trackingQueue: TrackingQueue) = ProductDetailTracking(trackingQueue)
@@ -44,4 +45,10 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @ProductDetailScope
+    @Provides
+    fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
+        return StickyLoginUseCase(context.resources, graphqlRepository)
+    }
 }

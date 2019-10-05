@@ -90,6 +90,7 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                     product.priceInt ?: 0,
                     product.isTopads ?: false,
                     position + 1,
+                    product.labelGroup,
                     product.labels,
                     product.badges,
                     product.shop.city,

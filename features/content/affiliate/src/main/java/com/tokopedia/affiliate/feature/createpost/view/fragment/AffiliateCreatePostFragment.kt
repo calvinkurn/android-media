@@ -8,8 +8,10 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.affiliate.feature.createpost.TOKEN
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import java.lang.Exception
 
 /**
  * @author by milhamj on 01/03/19.
@@ -69,9 +71,14 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         if (TextUtils.isEmpty(cache)) {
             super.initVar(savedInstanceState)
         } else {
-            viewModel = gson.fromJson(cache, CreatePostViewModel::class.java)
-            initProductIds()
-            isAddingProduct = false
+            try {
+                viewModel = gson.fromJson(cache, CreatePostViewModel::class.java)
+                initProductIds()
+                isAddingProduct = false
+            } catch (e: Exception) {
+                clearCache()
+                super.initVar(savedInstanceState)
+            }
         }
     }
 
@@ -91,6 +98,11 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
             )
         }
         super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
+    }
+
+    override fun fetchProductSuggestion(onSuccess: (List<ProductSuggestionItem>) -> Unit,
+                                        onError: (Throwable) -> Unit) {
+        presenter.fetchProductSuggestion(ProductSuggestionItem.TYPE_AFFILIATE, onSuccess, onError)
     }
 
     fun clearCache() {

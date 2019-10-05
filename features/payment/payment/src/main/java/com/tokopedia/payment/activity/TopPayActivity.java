@@ -1,6 +1,7 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -265,6 +266,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     public void navigateToActivity(Intent intent) {
         startActivity(intent);
+        setResult(Activity.RESULT_OK);
         finish();
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -39,6 +38,7 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.data.util.NotifPreference;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
@@ -53,14 +53,21 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
@@ -79,10 +86,14 @@ import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECK
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
+    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
+
     @Inject
     LogoutPresenter presenter;
     @Inject
     WalletPref walletPref;
+    @Inject
+    NotifPreference notifPreference;
 
     private View loadingView;
     private View baseSettingView;
@@ -254,6 +265,30 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
     }
 
+    private void sendNotif(){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
+        boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
+        if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
+            notifPreference.setDisplayedGimmickNotif(true);
+            presenter.sendNotif(
+                    notifCenterSendNotifData -> {
+                        doLogout();
+                        return null;
+                    },
+                    throwable -> {
+                        doLogout();
+                        if(getView() != null){
+                            String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
+                            Toaster.Companion.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
+                        }
+                        return null;
+                    });
+        }else {
+            doLogout();
+        }
+    }
+
     private void goToPlaystore() {
 
         Uri uri = Uri.parse("market://details?id=" + getActivity().getApplication().getPackageName());
@@ -276,7 +311,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         dialog.setBtnCancel(getString(R.string.account_home_label_cancel));
         dialog.setOnOkClickListener(v -> {
             dialog.dismiss();
-            doLogout();
+            sendNotif();
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
         dialog.show();

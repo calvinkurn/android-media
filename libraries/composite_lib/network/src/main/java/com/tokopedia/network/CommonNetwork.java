@@ -40,7 +40,6 @@ public class CommonNetwork {
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
-
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(new StringResponseConverter())

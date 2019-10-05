@@ -1,0 +1,61 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12"
+    android:background="@drawable/interactive_adapter_template_chat">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        tools:src="@drawable/empty_chat" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buyer_empty_chat_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thumbnail"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:textColor="@color/Neutral_N700_96"
+        android:paddingStart="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24"
+        app:typographyType="heading_2"
+        app:typographyWeight="reguler"
+        android:gravity="center"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seller_empty_chat_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
+
+
+</android.support.constraint.ConstraintLayout>
