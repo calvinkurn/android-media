@@ -99,7 +99,7 @@
         app:layout_constraintStart_toStartOf="@+id/product_name"
         app:layout_constraintTop_toBottomOf="@id/layout_official_store">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_guarantee" />
@@ -257,7 +257,7 @@
             app:layout_constraintStart_toEndOf="@+id/text_title_discount_timer"
             app:layout_constraintTop_toTopOf="@+id/text_title_discount_timer" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/product_name"
