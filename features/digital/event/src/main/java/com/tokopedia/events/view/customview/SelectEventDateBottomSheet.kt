@@ -2,21 +2,19 @@ package com.tokopedia.events.view.customview
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.events.R
-import com.tokopedia.events.di.DaggerEventComponent
-import com.tokopedia.events.di.EventComponent
-import com.tokopedia.events.di.EventModule
+import com.tokopedia.events.di.*
 import com.tokopedia.events.view.viewmodel.LocationDateModel
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,8 +30,7 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var holidayViewModel: HolidayViewModel
+    var holidayViewModel: HolidayViewModel? = null
     private var selectedDatesListener: SelectedDates? = null
 
     var minDate: Date? = null
@@ -46,17 +43,15 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        component.selectDateBottomSheet
+        component.selectEventDateBottomSheet
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            holidayViewModel = viewModelProvider.get(HolidayViewModel::class.java)
+            holidayViewModel = ViewModelProviders.of(this, viewModelFactory).get(HolidayViewModel::class.java)
         }
     }
 
     override fun getComponent(): EventComponent
-            = DaggerEventComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            = DaggerEventComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .eventModule(EventModule(context))
             .build()
 
@@ -70,10 +65,10 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        holidayViewModel.getTravelHolidayDate()
+        holidayViewModel?.getTravelHolidayDate()
 
 
-        holidayViewModel.holidayResult.observe(this, android.arch.lifecycle.Observer {
+        holidayViewModel?.holidayResult?.observe(this, android.arch.lifecycle.Observer {
 
             when (it) {
                 is Success -> {

@@ -269,5 +269,4 @@ public class EventModule {
     SelectEventDateBottomSheet providesSelectEventDateBottomSheet() {
         return new SelectEventDateBottomSheet();
     }
-
 }
