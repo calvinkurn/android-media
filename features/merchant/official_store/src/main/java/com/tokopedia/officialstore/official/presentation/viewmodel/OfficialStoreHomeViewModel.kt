@@ -7,7 +7,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
+import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase,
         private val getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase,
+        private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
@@ -29,6 +32,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreFeaturedShopResult
     }
 
+    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>> by lazy {
+        _officialStoreDynamicChannelResult
+    }
+
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
     }
@@ -37,13 +44,17 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
+    private val _officialStoreDynamicChannelResult by lazy {
+        MutableLiveData<Result<DynamicChannel>>()
+    }
+
     fun loadFirstData(category: Category?) {
         launchCatchError(block = {
 //            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-
-            // TODO get dynamic channel & product recommendation
+            _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
+            // TODO get product recommendation
 
         }) {
             // TODO just ignore or handle?
@@ -84,5 +95,19 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    private fun getOfficialStoreDynamicChannel(channelType: String): Deferred<DynamicChannel> {
+        return async(Dispatchers.IO) {
+            var dynamicChannel = DynamicChannel()
 
+            try {
+                getOfficialStoreDynamicChannelUseCase.params = GetOfficialStoreDynamicChannelUseCase
+                        .setupParams(channelType)
+                dynamicChannel = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
+            } catch (t: Throwable) {
+                _officialStoreDynamicChannelResult.value = Fail(t)
+            }
+
+            dynamicChannel
+        }
+    }
 }

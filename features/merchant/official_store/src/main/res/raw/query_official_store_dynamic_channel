@@ -1,0 +1,20 @@
+query dynamicHomeChannel($type: String) {
+    dynamicHomeChannel {
+        channels(type: $type) {
+            id
+            name
+            layout
+            header {
+                id
+                name
+                applink
+            }
+            grids {
+                id
+                name
+                applink
+                imageUrl
+            }
+        }
+    }
+}

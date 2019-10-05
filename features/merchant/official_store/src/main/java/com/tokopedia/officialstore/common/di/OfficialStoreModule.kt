@@ -1,7 +1,6 @@
 package com.tokopedia.officialstore.common.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.officialstore.common.di.OfficialStoreScope
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,5 +17,4 @@ class OfficialStoreModule {
     @OfficialStoreScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
 }

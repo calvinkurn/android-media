@@ -8,5 +8,7 @@ interface OfficialHomeTypeFactory {
 
     fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int
 
+    fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
+
     fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int
 }
