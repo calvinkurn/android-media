@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +73,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeFeaturedShop()
+        observeDynamicChannel()
         refreshData()
         setListener()
     }
@@ -110,6 +110,17 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                         it.throwable.printStackTrace()
                 }
 
+            }
+        })
+    }
+
+    private fun observeDynamicChannel() {
+        viewModel.officialStoreDynamicChannelResult.observe(this, Observer {
+            if (it is Success) {
+                swipeRefreshLayout?.isRefreshing = false
+                OfficialHomeMapper.mappingDynamicChannel(it.data, adapter)
+            } else if (it is Fail) {
+                it.throwable.printStackTrace()
             }
         })
     }
@@ -177,5 +188,4 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     override fun onDestroy() {
         super.onDestroy()
     }
-
 }
