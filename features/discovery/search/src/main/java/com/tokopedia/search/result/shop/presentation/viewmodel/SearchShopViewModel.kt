@@ -13,18 +13,24 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.search.result.common.Event
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.*
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.exists
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 
-class SearchShopViewModel(
+internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
         private val searchShopFirstPageRepository: Repository<SearchShopModel>,
@@ -32,6 +38,7 @@ class SearchShopViewModel(
         private val dynamicFilterRepository: Repository<DynamicFilterModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
+        private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
 ) : BaseViewModel(dispatcher.ui()) {
@@ -39,6 +46,7 @@ class SearchShopViewModel(
     companion object {
         const val START_ROW_FIRST_TIME_LOAD = 0
         const val SHOP_TAB_TITLE = "Toko"
+        const val SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab"
     }
 
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
@@ -47,6 +55,9 @@ class SearchShopViewModel(
     private val loadingMoreModel = LoadingMoreModel()
     private var hasLoadData = false
     private var hasNextPage = false
+    private var dynamicFilterModel: DynamicFilterModel? = null
+    private val filterController = FilterController()
+    private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         setSearchParameterUniqueId()
@@ -101,7 +112,7 @@ class SearchShopViewModel(
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageRepository)
 
-        searchShopFirstPageSuccess(searchShopModel)
+        processSearchShopFirstPageSuccess(searchShopModel)
 
         getDynamicFilter()
     }
@@ -136,7 +147,7 @@ class SearchShopViewModel(
         requestParams[SearchApiConst.IMAGE_SQUARE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE
     }
 
-    private fun searchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
+    private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
         updateIsHasNextPage(searchShopModel)
@@ -153,7 +164,7 @@ class SearchShopViewModel(
 
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
         return if (isSearchShopListEmpty(searchShopModel)) {
-            createEmptySearchViewModel()
+            createVisitableListWithEmptySearchViewModel(false)
         }
         else {
             createSearchShopListWithHeader(searchShopModel)
@@ -164,10 +175,10 @@ class SearchShopViewModel(
         return searchShopModel.aceSearchShop.shopList.isEmpty()
     }
 
-    private fun createEmptySearchViewModel(): List<Visitable<*>> {
+    private fun createVisitableListWithEmptySearchViewModel(isFilterActive: Boolean): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val emptySearchViewModel = EmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), false)
+        val emptySearchViewModel = EmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), isFilterActive)
 
         visitableList.add(emptySearchViewModel)
 
@@ -259,14 +270,52 @@ class SearchShopViewModel(
         launchCatchError(block = {
             tryGetDynamicFilter()
         }, onError = {
-            catchGetDynamicFilterError(it)
+            catchGetDynamicFilterException(it)
         })
     }
 
     private suspend fun tryGetDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        dynamicFilterRepository.getResponse(requestParams)
+        dynamicFilterModel = dynamicFilterRepository.getResponse(requestParams)
+        dynamicFilterEventLiveData.postValue(Event(true))
+
+        saveDynamicFilterModel()
+        processFilterData()
+    }
+
+    private fun saveDynamicFilterModel() {
+        dynamicFilterModel?.let {
+            searchLocalCacheHandler.saveDynamicFilterModelLocally(SCREEN_SEARCH_PAGE_SHOP_TAB, it)
+        }
+    }
+
+    private fun processFilterData() {
+        dynamicFilterModel?.data?.filter?.let { filterList ->
+            initializeFilterController(filterList)
+
+            if (shouldUpdateEmptySearchViewModel()) {
+                updateEmptySearchViewModelWithFilter(filterController.isFilterActive())
+            }
+        }
+    }
+
+    private fun initializeFilterController(filterList: List<Filter>) {
+        val initializedFilterList = FilterHelper.initializeFilterList(filterList)
+        filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
+    }
+
+    private fun shouldUpdateEmptySearchViewModel(): Boolean {
+        return searchShopMutableList.exists<EmptySearchViewModel>()
+                && filterController.isFilterActive()
+    }
+
+    private fun updateEmptySearchViewModelWithFilter(isFilterActive: Boolean) {
+        clearSearchShopList()
+
+        val visitableList = createVisitableListWithEmptySearchViewModel(isFilterActive)
+        updateSearchShopListWithNewData(visitableList)
+        updateSearchShopLiveDataStateToSuccess()
     }
 
     private fun createGetDynamicFilterParams(): Map<String, Any> {
@@ -287,13 +336,19 @@ class SearchShopViewModel(
                 requestParams.convertValuesToString().toMutableMap())
     }
 
-    private fun catchGetDynamicFilterError(e: Throwable?) {
+    private fun catchGetDynamicFilterException(e: Throwable?) {
         if (e is CancellationException) {
-            e.printStackTrace()
+            catchCancellationException(e)
         }
         else {
-            e?.printStackTrace()
+            catchGetDynamicFilterError(e)
         }
+    }
+
+    private fun catchGetDynamicFilterError(e: Throwable?) {
+        e?.printStackTrace()
+
+        dynamicFilterEventLiveData.postValue(Event(false))
     }
 
     fun onViewLoadMore(isViewVisible: Boolean) {
@@ -313,14 +368,14 @@ class SearchShopViewModel(
     private suspend fun trySearchMoreShop() {
         val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreRepository)
 
-        searchShopLoadMoreSuccess(searchShopModel)
+        processSearchMoreShopSuccess(searchShopModel)
     }
 
     private fun getTotalShopItemCount(): Int {
         return searchShopMutableList.count { it is ShopViewModel.ShopItem }
     }
 
-    private fun searchShopLoadMoreSuccess(searchShopModel: SearchShopModel?) {
+    private fun processSearchMoreShopSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
         updateIsHasNextPage(searchShopModel)
@@ -391,6 +446,10 @@ class SearchShopViewModel(
 
     fun getHasNextPage(): Boolean {
         return hasNextPage
+    }
+
+    fun getDynamicFilterEventLiveData(): LiveData<Event<Boolean>> {
+        return dynamicFilterEventLiveData
     }
 
     override fun onCleared() {

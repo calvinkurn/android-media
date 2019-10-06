@@ -10,6 +10,8 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.data.repository.dynamicfilter.DynamicFilterCoroutineRepositoryModule
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
@@ -25,6 +27,7 @@ import javax.inject.Named
     SearchShopRepositoryModule::class,
     ShopViewModelMapperModule::class,
     DynamicFilterCoroutineRepositoryModule::class,
+    SearchLocalCacheHandlerModule::class,
     GCMLocalCacheHandlerModule::class
 ])
 class SearchShopViewModelFactoryModule(
@@ -43,6 +46,7 @@ class SearchShopViewModelFactoryModule(
             dynamicFilterRepository: Repository<DynamicFilterModel>,
             shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
+            searchLocalCacheHandler: SearchLocalCacheHandler,
             userSession: UserSessionInterface,
             @Named(SearchConstant.GCM.GCM_LOCAL_CACHE)
             localCacheHandler: LocalCacheHandler
@@ -55,6 +59,7 @@ class SearchShopViewModelFactoryModule(
                 dynamicFilterRepository,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
+                searchLocalCacheHandler,
                 userSession,
                 localCacheHandler
         )

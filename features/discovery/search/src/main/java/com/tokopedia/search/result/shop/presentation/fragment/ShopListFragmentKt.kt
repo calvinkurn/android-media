@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
+import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -35,7 +36,6 @@ class ShopListFragmentKt:
         BannerAdsListener {
 
     companion object {
-        private const val SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab"
 
         @JvmStatic
         fun newInstance(): ShopListFragmentKt {
@@ -131,6 +131,10 @@ class ShopListFragmentKt:
         searchShopViewModel?.getSearchShopLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
         })
+
+        searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessGetDynamicFilter ->
+            handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
+        })
     }
 
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
@@ -185,6 +189,14 @@ class ShopListFragmentKt:
         return searchShopLiveData.data?.size == 0
     }
 
+    private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
+        activity?.let { activity ->
+            if (!isSuccessGetDynamicFilter) {
+                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
+            }
+        }
+    }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
@@ -192,7 +204,7 @@ class ShopListFragmentKt:
     }
 
     override fun getScreenName(): String {
-        return SCREEN_SEARCH_PAGE_SHOP_TAB
+        return SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB
     }
 
     override fun initInjector() {

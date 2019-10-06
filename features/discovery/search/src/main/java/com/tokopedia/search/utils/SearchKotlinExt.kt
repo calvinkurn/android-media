@@ -23,3 +23,13 @@ fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
 
     return mapValuesInString
 }
+
+inline fun <reified T> List<Any>?.exists(): Boolean {
+    if (this == null) return false
+
+    this.forEach {
+        if (it is T) return true
+    }
+
+    return false
+}

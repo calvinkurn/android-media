@@ -1,9 +1,8 @@
 package com.tokopedia.search.utils
 
-import org.assertj.core.data.MapEntry
+import com.tokopedia.search.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import kotlin.math.exp
 
 class SearchKotlinExtTest: Spek({
 
@@ -162,6 +161,44 @@ class SearchKotlinExtTest: Spek({
                 mapValuesInString.shouldHaveKeyValue("integer", "1")
                 mapValuesInString.shouldHaveKeyValue("boolean", "false")
                 mapValuesInString.shouldHaveKeyValue("double", "1.0")
+            }
+        }
+    }
+
+    Feature("List exists item of certain type") {
+
+        Scenario("Original list is null") {
+            val originalList: List<Any>? = null
+            val exists = false
+
+            When("check exists") {
+                originalList.exists<String>()
+            }
+
+            Then("exists should be false") {
+                exists shouldBe false
+            }
+        }
+
+        val originalList by memoized { mutableListOf<Any>() }
+        var exists = false
+
+        class Dummy
+
+        Scenario("Original list exists item of type") {
+
+            Given("original list has Dummy instance") {
+                originalList.add(Dummy())
+                originalList.add("")
+                originalList.add(1)
+            }
+
+            When("check if Dummy class exists") {
+                exists = originalList.exists<Dummy>()
+            }
+
+            Then("exists should be true") {
+                exists shouldBe true
             }
         }
     }
