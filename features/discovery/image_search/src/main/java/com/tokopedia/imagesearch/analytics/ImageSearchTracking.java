@@ -187,4 +187,12 @@ public class ImageSearchTracking {
         String action = isWishlisted ? "add" : "remove";
         return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
+
+    public static void trackEventProductLongPress(String keyword, String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickSearchResult",
+                "search result",
+                "click - long press product",
+                String.format("Keyword: %s - product id: %s", keyword, productId));
+    }
 }

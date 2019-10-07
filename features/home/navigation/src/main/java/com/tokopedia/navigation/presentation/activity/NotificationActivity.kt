@@ -20,16 +20,22 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
+import com.tokopedia.navigation.listener.NotificationActivityListener
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.navigation.util.NotifPreference
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
 /**
@@ -45,6 +51,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
+    @Inject
+    lateinit var notifPreference: NotifPreference
+
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
     private var updateCounter = 0L
@@ -55,6 +64,28 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
+
+        baseContext?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(it)
+            val redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false)
+            val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
+            if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
+                notifPreference.isDisplayedGimmickNotif = true
+                presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+            }
+        }
+    }
+
+    private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit {
+        return {
+            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
+        }
+    }
+
+    private fun onErrorSendNotif(): (Throwable) -> Unit {
+        return {
+            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
+        }
     }
 
     fun initInjector() {
@@ -122,11 +153,53 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
+                showOnBoarding(tab.position)
             }
         })
 
         val tab = tabLayout.getTabAt(initialIndexPage)
         tab?.select()
+    }
+
+    private fun showOnBoarding(position: Int) {
+        val tag = javaClass.name + ".OnBoarding"
+
+        if (position != INDEX_NOTIFICATION_UPDATE || hasBeenShown(tag)) return
+
+        val coachMarkItems = getCoachMarkItems()
+        getNotificationUpdate()?.showOnBoarding(coachMarkItems, tag)
+    }
+
+    private fun hasBeenShown(tag: String): Boolean {
+        return CoachMarkPreference.hasShown(this, tag)
+    }
+
+    private fun getNotificationUpdate(): NotificationActivityListener? {
+        val notificationUpdateFragment = tabList[INDEX_NOTIFICATION_UPDATE].fragment
+        if (notificationUpdateFragment is NotificationActivityListener) {
+            return notificationUpdateFragment
+        }
+        return null
+    }
+
+    private fun getCoachMarkItems(): ArrayList<CoachMarkItem> {
+        val notificationSettingIcon = getNotificationSettingIconView()
+        return arrayListOf(
+                CoachMarkItem(
+                        tabLayout,
+                        getString(R.string.coachicon_title_tabs),
+                        getString(R.string.coachicon_description_tabs)
+                ),
+                CoachMarkItem(
+                        notificationSettingIcon,
+                        getString(R.string.coachicon_title_notification_setting),
+                        getString(R.string.coachicon_description_notification_setting)
+                )
+        )
+    }
+
+    private fun getNotificationSettingIconView(): View {
+        return findViewById(R.id.notif_settting)
     }
 
     private fun clearNotifCounter(position: Int) {
@@ -229,6 +302,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1
+        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)

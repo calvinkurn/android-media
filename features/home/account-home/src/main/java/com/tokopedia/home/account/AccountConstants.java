@@ -124,6 +124,9 @@ public class AccountConstants {
         public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
         public static final String ITEM_POWER_MERCHANT = "Power Merchant";
 
+        public static final String JUAL = "jual";
+        public static final String BELI = "beli";
+
     }
 
     public interface VccStatus {

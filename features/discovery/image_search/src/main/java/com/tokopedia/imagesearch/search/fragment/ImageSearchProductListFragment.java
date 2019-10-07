@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -21,8 +22,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
@@ -414,6 +413,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
+        adapter.showEmpty();
     }
 
     @Override
@@ -526,8 +526,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {
-        SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item.getProductID());
+        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID());
+        startSimilarSearch(item.getProductID());
     }
+
+    public void startSimilarSearch(String productId) {
+        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    }
+
     public void onWishlistButtonClicked(ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }

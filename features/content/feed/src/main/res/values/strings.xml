@@ -12,6 +12,7 @@
     <string name="title_copy">Salin</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Detail Feed</string>
+    <string name="title_feed_onboarding">Topik Favorit</string>
     <string name="see_shop">Kunjungi Toko</string>
     <string name="see_promo">Lihat Promo</string>
     <string name="see_all">Lihat Semua</string>
@@ -84,7 +85,19 @@
     <string name="create_post_as">Buat Sebagai</string>
     <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
     <string name="feed_create_post_shop">Buat Post Toko</string>
+
+    <string name="recommendation_for_you">Rekomendasi Untukmu</string>
+
+    <string name="feed_open_feed">Buka Feed</string>
+    <string name="feed_finish_follow_recommendation">Yeay, updatenya siap dilihat!</string>
     <string name="feed_delete_post">Hapus Post</string>
     <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
     <string name="feed_post_deleted">Post berhasil dihapus</string>
+
+    <!-- Onboarding -->
+    <string name="feed_onboarding_create_post_title">Coba post di Feed, yuk!</string>
+    <string name="feed_onboarding_create_post_detail">Post barang rekomendasimu ke pengguna lain atau promosiin tokomu secara gratis.</string>
+    <string name="feed_see_inspiration">Lihat Inspirasi Untukmu</string>
+    <string name="feed_choose_topic_you_like">Pilih %s topik yang kamu suka:</string>
+    <string name="feed_onboarding_name_format">Hai, %s</string>
 </resources>

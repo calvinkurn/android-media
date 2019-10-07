@@ -38,7 +38,7 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                                 mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 
-                        mProductCount.value = searchProduct.totalData.toString()
+                        mProductCount.value = searchProduct.countText
                     }
                 }
 

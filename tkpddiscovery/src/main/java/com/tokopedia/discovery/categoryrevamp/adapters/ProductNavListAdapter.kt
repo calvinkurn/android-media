@@ -5,22 +5,19 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.BigListShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.GridListShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.ListShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ProductCardViewHolder
-import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 
 
 class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             val visitables: ArrayList<Visitable<ProductTypeFactory>>,
-                            onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+                            val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel  by lazy { LoadingMoreModel() }
 
@@ -139,6 +136,11 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             if (visitables.get(i) is ProductsItem) {
                 val model = visitables.get(i) as ProductsItem
                 if (productId == model.id) {
+                    if (isEnabled && model.isTopAds) {
+                        model.productWishlistTrackingUrl?.let {
+                            onItemChangeView.wishListEnabledTracker(it)
+                        }
+                    }
                     model.isWishListEnabled = isEnabled
                     notifyItemChanged(i)
                     break
@@ -153,14 +155,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
-                val item = visitables[position] as ProductsItem
-                catAnalyticsInstance.eventProductListImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
-                        item.name,
-                        item.id.toString(),
-                        CurrencyFormatHelper.convertRupiahToInt(item.price),
-                        position,
-                        getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
-                        item.categoryBreadcrumb ?: "")
+                onItemChangeView.onListItemImpressionEvent(visitables[position] as Visitable<Any>,position)
             }
 
         }

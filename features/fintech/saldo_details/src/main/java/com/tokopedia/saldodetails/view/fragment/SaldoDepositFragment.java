@@ -35,7 +35,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.saldodetails.R;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -45,7 +45,6 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -59,6 +58,8 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
+
+//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -104,8 +105,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private float sellerSaldoBalance;
-    private float buyerSaldoBalance;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
     private float totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
@@ -127,8 +128,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final int MCL_STATUS_BLOCK1 = 700;
     private static final int MCL_STATUS_BLOCK2 = 701;
     private static final int MCL_STATUS_BLOCK3 = 999;
-
+    private static final String IS_SELLER = "is_seller";
     private boolean showMclBlockTickerFirebaseFlag = false;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     public SaldoDepositFragment() {
     }
@@ -145,7 +147,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_deposit, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_deposit, container, false);
         initViews(view);
         return view;
     }
@@ -153,9 +155,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initRemoteConfig();
         initialVar();
         initListeners();
         startShowCase();
+    }
+
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     private void startShowCase() {
@@ -176,12 +183,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.intro_seller_saldo_finish_string)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .nextStringRes(com.tokopedia.design.R.string.intro_seller_saldo_finish_string)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
@@ -194,15 +201,15 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (isSellerEnabled && getActivity() instanceof SaldoDepositActivity) {
             list.add(new ShowCaseObject(
                     buyerSaldoBalanceRL,
-                    getString(R.string.saldo_total_balance_buyer),
-                    getString(R.string.saldo_balance_buyer_desc),
+                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
+                    getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc),
                     ShowCaseContentPosition.BOTTOM,
                     Color.WHITE));
 
             list.add(new ShowCaseObject(
                     sellerSaldoBalanceRL,
-                    getString(R.string.saldo_total_balance_seller),
-                    getString(R.string.saldo_intro_description_seller),
+                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
+                    getString(com.tokopedia.saldodetails.R.string.saldo_intro_description_seller),
                     ShowCaseContentPosition.BOTTOM,
                     Color.WHITE));
 
@@ -228,36 +235,36 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         expandLayout = isSellerEnabled;
 
-        totalBalanceTitle = view.findViewById(R.id.saldo_deposit_text);
-        totalBalanceInfo = view.findViewById(R.id.saldo_deposit_text_info);
+        totalBalanceTitle = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text);
+        totalBalanceInfo = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text_info);
 
-        buyerBalanceInfoIcon = view.findViewById(R.id.saldo_buyer_deposit_text_info);
-        sellerBalanceInfoIcon = view.findViewById(R.id.saldo_seller_deposit_text_info);
-        totalBalanceTV = view.findViewById(R.id.total_balance);
-        drawButton = view.findViewById(R.id.withdraw_button);
-        topSlideOffBar = view.findViewById(R.id.deposit_header);
-        holdBalanceLayout = view.findViewById(R.id.hold_balance_layout);
-        amountBeingReviewed = view.findViewById(R.id.amount_review);
-        checkBalanceStatus = view.findViewById(R.id.check_balance);
-        saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
-        merchantCreditFrameLayout = view.findViewById(R.id.merchant_credit_line_widget);
-        tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
-        tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
-        tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
-        buyerBalanceTV = view.findViewById(R.id.buyer_balance);
-        sellerBalanceTV = view.findViewById(R.id.seller_balance);
-        buyerSaldoBalanceRL = view.findViewById(R.id.saldo_buyer_balance_rl);
-        sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
-        saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
-        saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
-        merchantDetailsExpandIV = view.findViewById(R.id.merchant_detail_layout_expand);
-        saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
-        merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
-        merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_arrow_up_grey));
-        layoutTicker = view.findViewById(R.id.layout_holdwithdrawl_dialog);
-        tvTickerMessage = view.findViewById(R.id.tv_desc_info);
-        ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
+        buyerBalanceInfoIcon = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_buyer_deposit_text_info);
+        sellerBalanceInfoIcon = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_seller_deposit_text_info);
+        totalBalanceTV = view.findViewById(com.tokopedia.saldodetails.R.id.total_balance);
+        drawButton = view.findViewById(com.tokopedia.saldodetails.R.id.withdraw_button);
+        topSlideOffBar = view.findViewById(com.tokopedia.saldodetails.R.id.deposit_header);
+        holdBalanceLayout = view.findViewById(com.tokopedia.saldodetails.R.id.hold_balance_layout);
+        amountBeingReviewed = view.findViewById(com.tokopedia.saldodetails.R.id.amount_review);
+        checkBalanceStatus = view.findViewById(com.tokopedia.saldodetails.R.id.check_balance);
+        saldoFrameLayout = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_prioritas_widget);
+        merchantCreditFrameLayout = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget);
+        tickerMessageRL = view.findViewById(com.tokopedia.saldodetails.R.id.ticker_message_layout);
+        tickeRMessageTV = view.findViewById(com.tokopedia.saldodetails.R.id.ticker_message_text);
+        tickerMessageCloseButton = view.findViewById(com.tokopedia.saldodetails.R.id.close_ticker_message);
+        buyerBalanceTV = view.findViewById(com.tokopedia.saldodetails.R.id.buyer_balance);
+        sellerBalanceTV = view.findViewById(com.tokopedia.saldodetails.R.id.seller_balance);
+        buyerSaldoBalanceRL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_buyer_balance_rl);
+        sellerSaldoBalanceRL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_seller_balance_rl);
+        saldoBalanceSeparator = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_balance_separator);
+        saldoDepositExpandIV = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_layout_expand);
+        merchantDetailsExpandIV = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_detail_layout_expand);
+        saldoTypeLL = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_type_ll);
+        merchantDetailLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_details_ll);
+        merchantStatusLL = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_status_ll);
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.design.R.drawable.ic_arrow_up_grey));
+        layoutTicker = view.findViewById(com.tokopedia.saldodetails.R.id.layout_holdwithdrawl_dialog);
+        tvTickerMessage = view.findViewById(com.tokopedia.design.R.id.tv_desc_info);
+        ivDismissTicker = view.findViewById(com.tokopedia.design.R.id.iv_dismiss_ticker);
 
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
@@ -273,7 +280,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             merchantDetailLL.setVisibility(View.GONE);
         }
 
-        saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
+        saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(com.tokopedia.saldodetails.R.id.saldo_history_layout);
     }
 
     private void initListeners() {
@@ -321,8 +328,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         checkBalanceStatus.setOnClickListener(v -> {
             try {
-                Intent intent = ((SaldoDetailsRouter) Objects.requireNonNull(getActivity()).getApplication())
-                        .getInboxTicketCallingIntent(context);
+                Intent intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET);
                 startActivity(intent);
             } catch (Exception e) {
 
@@ -380,31 +386,35 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private void showMustVerify() {
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
-                .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
-                .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
+                .setTitle(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
+                .setMessage(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
+                .setPositiveButton(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                     startActivity(intent);
                     dialog.dismiss();
                 })
-                .setNegativeButton(getActivity().getString(R.string.sp_alert_not_verified_yet_negative), (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_negative), (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }
 
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
-            Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.WITHDRAW);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(IS_SELLER, isSellerEnabled());
+            intent.putExtras(bundle);
             saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock, mclLateCount, showMclBlockTickerFirebaseFlag);
         }
     }
 
     private void showSaldoWarningDialog() {
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
-                .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
+                .setTitle(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
+                .setMessage(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
                 .setPositiveButton(
-                        getActivity().getString(R.string.sp_saldo_withdraw_warning_positiv_button),
+                        getActivity().getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button),
                         (dialog, which) -> goToWithdrawActivity())
                 .setCancelable(true)
                 .show();
@@ -412,7 +422,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     protected void initialVar() {
         saldoDetailsPresenter.setSeller(isSellerEnabled);
-        totalBalanceTitle.setText(getResources().getString(R.string.total_saldo_text));
+        totalBalanceTitle.setText(getResources().getString(com.tokopedia.saldodetails.R.string.total_saldo_text));
         totalBalanceInfo.setVisibility(View.GONE);
         buyerSaldoBalanceRL.setVisibility(View.VISIBLE);
         sellerSaldoBalanceRL.setVisibility(View.VISIBLE);
@@ -423,32 +433,35 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         sellerBalanceInfoIcon.setOnClickListener(v -> showBottomSheetInfoDialog(true));
 
-        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
-            if (((SaldoDetailsRouter) getActivity().getApplication())
-                    .isSaldoNativeEnabled() && ((SaldoDetailsRouter) getActivity().getApplication())
-                    .isMerchantCreditLineEnabled()) {
+        if (getActivity() != null) {
+            if (isSaldoNativeEnabled() && isMerchantCreditLineEnabled()) {
                 saldoDetailsPresenter.getUserFinancialStatus();
             } else {
 
-                if (((SaldoDetailsRouter) getActivity().getApplication())
-                        .isSaldoNativeEnabled()) {
+                if (isSaldoNativeEnabled()) {
                     saldoDetailsPresenter.getMerchantSaldoDetails();
                 } else {
                     hideSaldoPrioritasFragment();
                 }
 
-                if (((SaldoDetailsRouter) getActivity().getApplication())
-                        .isMerchantCreditLineEnabled()) {
+                if (isMerchantCreditLineEnabled()) {
                     saldoDetailsPresenter.getMerchantCreditLineDetails();
                 } else {
                     hideMerchantCreditLineFragment();
                 }
             }
-        } else {
-            hideUserFinancialStatusLayout();
         }
+    }
 
+    private boolean isSaldoNativeEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    private boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
+                true);
     }
 
     @Override
@@ -461,14 +474,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 new UserStatusInfoBottomSheet(context);
 
         if (isSellerClicked) {
-            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_seller_desc));
-            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_seller));
+            userStatusInfoBottomSheet.setBody(getResources().getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller));
         } else {
-            userStatusInfoBottomSheet.setBody(getResources().getString(R.string.saldo_balance_buyer_desc));
-            userStatusInfoBottomSheet.setTitle(getResources().getString(R.string.saldo_total_balance_buyer));
+            userStatusInfoBottomSheet.setBody(getResources().getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc));
+            userStatusInfoBottomSheet.setTitle(getResources().getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer));
         }
 
-        userStatusInfoBottomSheet.setButtonText(getString(R.string.sp_saldo_withdraw_warning_positiv_button));
+        userStatusInfoBottomSheet.setButtonText(getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button));
         userStatusInfoBottomSheet.show();
     }
 
@@ -503,37 +516,35 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public float getSellerSaldoBalance() {
+    public long getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public float getBuyerSaldoBalance() {
+    public long getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
     @Override
     public void showWithdrawalNoPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getResources().getString(R.string.sp_error_deposit_no_password_title));
-        builder.setMessage(getResources().getString(R.string.sp_error_deposit_no_password_content));
-        builder.setPositiveButton(getResources().getString(R.string.sp_error_no_password_yes), (dialogInterface, i) -> {
+        builder.setTitle(getResources().getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title));
+        builder.setMessage(getResources().getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content));
+        builder.setPositiveButton(getResources().getString(com.tokopedia.saldodetails.R.string.sp_error_no_password_yes), (dialogInterface, i) -> {
             intentToAddPassword(context);
             dialogInterface.dismiss();
         });
-        builder.setNegativeButton(getString(R.string.sp_cancel), (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setNegativeButton(getString(com.tokopedia.saldodetails.R.string.sp_cancel), (dialogInterface, i) -> dialogInterface.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, R.color.black_54));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_54));
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 
     private void intentToAddPassword(Context context) {
-        context.startActivity(
-                ((SaldoDetailsRouter) context.getApplicationContext())
-                        .getAddPasswordIntent(context));
+        context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD));
     }
 
     @Override
@@ -553,7 +564,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (state) {
             drawButton.setTextColor(Color.WHITE);
         } else {
-            drawButton.setTextColor(getResources().getColor(R.color.black_26));
+            drawButton.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black_26));
         }
         drawButton.setEnabled(state);
         drawButton.setClickable(state);
@@ -568,7 +579,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void showHoldWarning(String text) {
         holdBalanceLayout.setVisibility(View.VISIBLE);
-        amountBeingReviewed.setText(String.format(getResources().getString(R.string.saldo_hold_balance_text), text));
+        amountBeingReviewed.setText(String.format(getResources().getString(com.tokopedia.saldodetails.R.string.saldo_hold_balance_text), text));
         amountBeingReviewed.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
@@ -607,10 +618,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showTicker() {
 
         if (showMclBlockTickerFirebaseFlag) {
-            String tickerMsg = getString(R.string.saldolock_tickerDescription);
+            String tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription);
             int startIndex = tickerMsg.indexOf("Bayar Sekarang");
             String late = Integer.toString(mclLateCount);
-            tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
+            tickerMsg = String.format(getResources().getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);
 
             tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -627,7 +638,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                     public void updateDrawState(@NonNull TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                        ds.setColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
                     }
                 }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -666,13 +677,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(float balance, String text) {
+    public void setBuyerSaldoBalance(long balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(float amount, String formattedAmount) {
+    public void setSellerSaldoBalance(long amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }
@@ -691,7 +702,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
+                    .replace(com.tokopedia.saldodetails.R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
                     .commit();
         } else {
             hideSaldoPrioritasFragment();
@@ -733,7 +744,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
                 .commit();
     }
 
@@ -752,7 +763,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showEmptyState() {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> saldoDetailsPresenter.getSaldoBalance());
         try {
-            View retryLoad = getView().findViewById(R.id.main_retry);
+            View retryLoad = getView().findViewById(com.tokopedia.abstraction.R.id.main_retry);
             retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
         } catch (NullPointerException e) {
             e.printStackTrace();

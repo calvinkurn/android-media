@@ -36,6 +36,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public interface ShipmentContract {
         void renderErrorPage(String message);
 
         void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
+
+        void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -139,7 +142,7 @@ public interface ShipmentContract {
 
         void stopTrace();
 
-        void onSuccessClearPromoStack(int shopIndex);
+        void onSuccessClearPromoStack(int shopIndex, String voucherType);
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
@@ -157,9 +160,11 @@ public interface ShipmentContract {
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId);
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
+
+        boolean isInsuranceEnabled();
     }
 
     interface AnalyticsActionListener {
@@ -257,7 +262,7 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
+        void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String lesingId);
 
         void processVerifyPayment(String transactionId);
 
@@ -296,10 +301,6 @@ public interface ShipmentContract {
 
         void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
 
-        CheckoutData getCheckoutData();
-
-        void setCheckoutData(CheckoutData checkoutData);
-
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
 
         void setPromoCodeCartShipmentRequestData(
@@ -320,7 +321,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon(String variant);
 
-        void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
+        void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse, String voucherType);
 
         void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
 
@@ -359,13 +360,16 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
+        void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 
         Token getKeroToken();
 
         boolean isShowOnboarding();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step, String eventAction, String eventLabel, String leasingId);
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                           boolean hasInsurance,
+                                                           String step, String eventAction,
+                                                           String eventLabel, String leasingId);
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 
@@ -374,6 +378,10 @@ public interface ShipmentContract {
         boolean isIneligbilePromoDialogEnabled();
 
         void processSubmitHelpTicket(CheckoutData checkoutData);
+
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, boolean hasInsurance, CheckPromoParam checkPromoParam, int isDonation, String leasingId);
+
+        void getInsuranceTechCartOnCheckout();
     }
 
 }

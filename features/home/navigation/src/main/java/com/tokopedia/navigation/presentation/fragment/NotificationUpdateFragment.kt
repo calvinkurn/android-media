@@ -23,12 +23,14 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
+import com.tokopedia.navigation.listener.NotificationActivityListener
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
@@ -44,6 +46,7 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateIt
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.navigation.widget.ChipFilterItemDivider
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 /**
@@ -51,7 +54,8 @@ import javax.inject.Inject
  */
 class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         , NotificationUpdateContract.View, NotificationUpdateItemListener,
-        NotificationUpdateFilterAdapter.FilterAdapterListener {
+        NotificationUpdateFilterAdapter.FilterAdapterListener,
+        NotificationActivityListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -61,10 +65,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var longerTextDialog: BottomSheetDialogFragment
-    private val filterAdapter = NotificationUpdateFilterAdapter(
-            NotificationUpdateFilterSectionTypeFactoryImpl(),
-            this
-    )
+    private var filterAdapter: NotificationUpdateFilterAdapter? = null
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -86,6 +87,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         if (context is NotificationUpdateListener) {
             notificationUpdateListener = context
         }
+
+        filterAdapter = NotificationUpdateFilterAdapter(
+                NotificationUpdateFilterSectionTypeFactoryImpl(),
+                this,
+                UserSession(context?.applicationContext)
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -139,6 +146,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         filterRecyclerView = view.findViewById(R.id.filter_list)
         filterRecyclerView.adapter = filterAdapter
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
+    }
+
+    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
+        coachMarkItems.add(
+                1 ,
+                CoachMarkItem(
+                        filterRecyclerView,
+                        getString(R.string.coachicon_title_filter),
+                        getString(R.string.coachicon_description_filter)
+                )
+        )
+        val coachMark = CoachMarkBuilder().build()
+        coachMark.show(activity, tag, coachMarkItems)
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
@@ -223,7 +243,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit {
         return {
-            filterAdapter.updateData(it)
+            filterAdapter?.updateData(it)
         }
     }
 

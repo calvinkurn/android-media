@@ -47,6 +47,7 @@
     <string name="title_kyc_info">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
+    <string name="error_text_image_cant_be_accessed">Foto tidak dapat diakses</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_face">2. Foto Diri &amp; KTP</string>

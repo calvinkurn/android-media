@@ -1,17 +1,13 @@
 package com.tokopedia.loginregister.common.analytics
 
 import android.content.Context
-
 import com.tokopedia.analytics.TrackAnalytics
-import com.tokopedia.analytics.cashshield.CashShield
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.HashMap
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -19,7 +15,6 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1CBXovkdWu7NMkxrHIOJihMyfuRWNZvxgJd36KxLS25I/edit#gid=471355800
  */
 class RegisterAnalytics @Inject constructor() {
-    private var cashShield: CashShield? = null
 
     companion object {
 
@@ -69,6 +64,8 @@ class RegisterAnalytics @Inject constructor() {
         private val ACTION_CLICK_TICKER_LINK = "click ticker link"
         private val ACTION_CLICK_ON_BUTTON_CLOSE_TICKER = "click on button close ticker"
         private val ACTION_CLICK_PHONE_NUMBER_SUGGESTION = "click phone number suggestion"
+        private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
+        private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
 
         private val LABEL_EMPTY = ""
         private val LABEL_CLICK = "click"
@@ -501,11 +498,7 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(context: Context?, loginMethod: String) {
-        context?.let {
-            getCashShield(it).send()
-        }
-
+    fun trackSuccessRegister(loginMethod: String) {
         when(loginMethod){
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
@@ -589,24 +582,29 @@ class RegisterAnalytics @Inject constructor() {
         ))
     }
 
-    private fun getCashShield(context: Context): CashShield {
-        if(cashShield == null) {
-            cashShield = CashShield(context)
-        }
-
-        return cashShield!!
-    }
-
-    fun onDestroy() {
-        cashShield?.cancel()
-        cashShield = null
-    }
-
     fun trackClickPhoneNumberSuggestion(){
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_PHONE_NUMBER_SUGGESTION,
+                ""
+        ))
+    }
+
+    fun trackClickSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_SOCMED,
+                ""
+        ))
+    }
+
+    fun trackClickCloseSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
         ))
     }

@@ -26,7 +26,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class PartialHeaderView private constructor(private val view: View,
-                                            private val activity: Activity? = null){
+                                            private val activity: Activity? = null) {
 
     var onRefreshHandler: (() -> Unit)? = null
     var backToHomeHandler: (() -> Unit)? = null
@@ -37,7 +37,7 @@ class PartialHeaderView private constructor(private val view: View,
         fun build(_view: View, _activity: Activity?) = PartialHeaderView(_view, _activity)
     }
 
-    fun showOfficialStore(goldOs: ShopInfo.GoldOS){
+    fun showOfficialStore(goldOs: ShopInfo.GoldOS) {
         val imageIc: ImageSpan
         val colorIc: Int
         val labelIc: String
@@ -98,17 +98,24 @@ class PartialHeaderView private constructor(private val view: View,
                 text_cashback.visibility = View.GONE
 
             val campaign = data.campaign
-            if (campaign.isActive){
+            if (campaign.isActive) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         campaign.discountedPrice.getCurrencyFormatted())
+                text_title_discount_timer.text =  data.campaign.name
+                if (campaign.hideGimmick) {
+                    text_original_price.visibility = View.GONE
+                    text_discount.visibility = View.GONE
+                } else {
+                    text_original_price.visibility = View.VISIBLE
+                    text_discount.visibility = View.VISIBLE
+                }
+
                 text_original_price.text = context.getString(R.string.template_price, "",
                         campaign.originalPrice.getCurrencyFormatted())
 
                 text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentage.numberFormatted())
 
-                text_original_price.visibility = View.VISIBLE
-                text_discount.visibility = View.VISIBLE
                 sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 if (campaign.activeAndHasId) {

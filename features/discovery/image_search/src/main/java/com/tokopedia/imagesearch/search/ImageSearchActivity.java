@@ -20,13 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -35,6 +33,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchEventTracking;
+import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.search.fragment.ImageSearchProductListFragment;
@@ -56,8 +55,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -81,7 +78,6 @@ public class ImageSearchActivity extends BaseActivity
     public MenuItem searchItem;
 
     protected View root;
-
 
     private String imagePath = "";
     private boolean isFromCamera = false;
@@ -174,7 +170,8 @@ public class ImageSearchActivity extends BaseActivity
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.image_search_action_search) {
-            return false;
+            moveToAutoCompletePage();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -381,15 +378,6 @@ public class ImageSearchActivity extends BaseActivity
 
         if (requestCode == REQUEST_CODE_IMAGE) {
             handleResultFromImagePicker(resultCode, data);
-        } else if (requestCode == AUTO_COMPLETE_ACTIVITY_REQUEST_CODE) {
-            handleResultFromAutoCompleteActivity(resultCode);
-        }
-    }
-
-    private void handleResultFromAutoCompleteActivity(int resultCode) {
-        if (resultCode == AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY) {
-            finish();
-            overridePendingTransition(0, 0);
         }
     }
 
@@ -472,6 +460,9 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
+        if (productViewModel.getProductList() == null || productViewModel.getProductList().size() == 0) {
+            return;
+        }
         sendGTMEventSuccessImageSearch();
         sendAppsFlyerEventSuccessImageSearch(productViewModel);
     }
@@ -587,10 +578,6 @@ public class ImageSearchActivity extends BaseActivity
         this.imagePath = imagePath;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(KEY_IMAGE_PATH, imagePath);
@@ -610,39 +597,14 @@ public class ImageSearchActivity extends BaseActivity
     @Override
     public void moveToAutoCompletePage() {
         if (!TextUtils.isEmpty(lastQuery)) {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + lastQuery);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + lastQuery);
         } else {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE);
         }
     }
 
     private void startActivityWithApplink(String applink, String... parameter) {
         Intent intent = RouteManager.getIntent(this, applink, parameter);
-        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
-
-        startActivityForResult(intent, startActivityForResultRequestCode);
-    }
-
-    private int getStartActivityForResultRequestCode(String applink) {
-        if(isApplinkToAutoCompleteActivity(applink)) {
-            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-        }
-
-        return -1;
-    }
-
-    private boolean isApplinkToAutoCompleteActivity(String applink) {
-        Uri uri = Uri.parse(applink);
-        String applinkTarget = constructApplinkTarget(uri);
-
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
-    }
-
-    private String constructApplinkTarget(@NonNull Uri uri) {
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        String path = uri.getEncodedPath();
-
-        return scheme + "://" + host + path;
+        startActivity(intent);
     }
 }
