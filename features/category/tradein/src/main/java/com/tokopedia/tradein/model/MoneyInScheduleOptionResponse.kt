@@ -18,7 +18,7 @@ data class MoneyInScheduleOptionResponse(
 
         data class GetPickupScheduleOption(
                 @SerializedName("ScheduleDate")
-                val scheduleDate: ArrayList<ScheduleDate>
+                val scheduleDate: ArrayList<ScheduleDate>?
         ) : Parcelable {
             constructor(parcel: Parcel) : this(parcel.createTypedArrayList(ScheduleDate))
 
@@ -26,7 +26,7 @@ data class MoneyInScheduleOptionResponse(
                     @SerializedName("DateFmt")
                     val dateFmt: String?,
                     @SerializedName("ScheduleTime")
-                    val scheduleTime: ArrayList<ScheduleTime>
+                    val scheduleTime: ArrayList<ScheduleTime>?
             ) : Parcelable {
                 constructor(parcel: Parcel) : this(
                         parcel.readString() ?: "",

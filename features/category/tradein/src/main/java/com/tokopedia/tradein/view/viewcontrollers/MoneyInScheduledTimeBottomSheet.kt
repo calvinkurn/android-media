@@ -83,7 +83,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         courierButton?.setOnClickListener {
             scheduleDate.forEach {
                 if (it.dateFmt == currentDate) {
-                    it.scheduleTime.forEach { time ->
+                    it.scheduleTime?.forEach { time ->
                         if (time.timeFmt == currentTime) {
                             actionListener?.onScheduleButtonClick(time, it.dateFmt)
                             dismiss()
@@ -97,7 +97,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
 
     private fun changeTimeByDate() {
         scheduleDate.forEach {
-            if (it.dateFmt == currentDate) {
+            if (it.dateFmt == currentDate && it.scheduleTime != null) {
                 timeAdapter.time.clear()
                 for (time in it.scheduleTime)
                     if (time.timeFmt != null)

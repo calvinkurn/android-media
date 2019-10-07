@@ -118,7 +118,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     if (!it.data.scheduleDate.isNullOrEmpty())
-                        setScheduleBottomSheet(it.data.scheduleDate)
+                        setScheduleBottomSheet(it.data.scheduleDate!!)
                 }
             }
         })
