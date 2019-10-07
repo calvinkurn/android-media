@@ -78,17 +78,6 @@ constructor(
                                     pageName: String,
                                     categoryIds: String): RequestParams {
         val params = RequestParams.create()
-//        val categoryIdsString = TextUtils.join(",", categoryIds)
-
-        if (userSession.isLoggedIn) {
-            params.putInt(USER_ID, userSession.userId.toInt())
-        } else {
-            params.putInt(USER_ID, 0)
-        }
-//        val xDevice = "android"
-//        val xSource = "recentview"
-//        val os = true
-//        val userID = 5299884
 
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(CATEGORY_IDS, categoryIds)
