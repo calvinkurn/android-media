@@ -51,6 +51,10 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -230,14 +234,14 @@ public class ShipmentModule {
                                                         CheckoutAnalyticsCourierSelection checkoutAnalytics,
                                                         GetInsuranceCartUseCase getInsuranceCartUseCase) {
         return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-            checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
-            checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
-            getShipmentAddressFormOneClickShipementUseCase,
+                checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
+                getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-               codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
-            shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
-            analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase);
+                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
+                shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase);
     }
 
     @Provides

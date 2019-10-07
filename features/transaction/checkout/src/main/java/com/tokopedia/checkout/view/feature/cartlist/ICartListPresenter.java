@@ -11,6 +11,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHo
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
 import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;

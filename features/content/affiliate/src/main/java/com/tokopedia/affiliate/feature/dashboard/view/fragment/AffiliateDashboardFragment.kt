@@ -13,9 +13,7 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,6 +29,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboa
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.calendar.CalendarPickerView
