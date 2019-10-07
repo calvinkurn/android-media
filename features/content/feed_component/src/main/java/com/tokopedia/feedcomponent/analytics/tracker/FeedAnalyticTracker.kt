@@ -20,20 +20,24 @@ class FeedAnalyticTracker
     private companion object {
         private const val USER_ID = "user_id"
         const val ECOMMERCE = "ecommerce"
+        const val DATA = "data"
         const val PRODUCTS = "products"
+        const val ACTION_FIELD = "actionField"
 
         const val PROMOTIONS = "promotions"
+        const val LIST = "list"
     }
 
     private object Event {
         const val CLICK_FEED = "clickFeed"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
+        const val ADD_TO_CART = "addToCart"
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
         const val ACTION_FIELD = "actionField"
-        const val LIST = "list"
+
         const val ADD = "add"
     }
 
@@ -70,6 +74,8 @@ class FeedAnalyticTracker
         const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
+
+        const val USER_PROFILE_PAGE_POSTED_PRODUCT = "/user profile page - produk di post"
     }
 
     private object Promotion {
@@ -78,6 +84,7 @@ class FeedAnalyticTracker
         const val CREATIVE = "creative"
         const val POSITION = "position"
     }
+
     private object Product {
         const val ID = "id"
         const val NAME = "name"
@@ -119,6 +126,7 @@ class FeedAnalyticTracker
                 Action.CLICK_AVATAR,
                 activityId)
     }
+
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -133,6 +141,7 @@ class FeedAnalyticTracker
                 Action.CLICK_SEE,
                 activityId)
     }
+
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -140,7 +149,7 @@ class FeedAnalyticTracker
      *
      * @param productId - productId
      */
-    fun eventMediaDetailClickBuy(role:String,
+    fun eventMediaDetailClickBuy(role: String,
                                  productId: String,
                                  productName: String,
                                  price: String,
@@ -158,17 +167,17 @@ class FeedAnalyticTracker
                 productId,
                 DataLayer.mapOf(
                         Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                        Event.ADD, getAddData(
-                            role,
-                            getProductsData(listOf(
-                                    getProductData(
-                                            productId,
-                                            productName,
-                                            formatPriceToInt(price),
-                                            quantity,
-                                            shopId,
-                                            shopName)))
-                        )
+                        Event.ADD, getMediaPreviewAddData(
+                        role,
+                        getProductsDataList(listOf(
+                                getProductData(
+                                        productId,
+                                        productName,
+                                        formatPriceToInt(price),
+                                        quantity,
+                                        shopId,
+                                        shopName)))
+                )
                 )
         )
     }
@@ -381,10 +390,10 @@ class FeedAnalyticTracker
      */
     fun eventHashtagPageClickNameAvatar(id: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
-            Category.CONTENT_HASHTAG,
-            Action.CLICK_AVATAR,
-            id
+                Event.CLICK_FEED,
+                Category.CONTENT_HASHTAG,
+                Action.CLICK_AVATAR,
+                id
         )
     }
 
@@ -422,6 +431,43 @@ class FeedAnalyticTracker
      */
     fun eventOpenHashtagScreen() {
         trackOpenScreenEvent(Screen.HASHTAG)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     *
+     * @param productId - productId
+     */
+    fun eventProfileAddToCart(productId: String,
+                              productName: String,
+                              price: String,
+                              quantity: Int,
+                              shopId: Int,
+                              shopName: String) {
+
+        trackEnhancedEcommerceEvent(
+                Event.ADD_TO_CART,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                Action.CLICK_BUY,
+                productId,
+                eCommerceData = getCurrencyData() +
+                        getAddData(
+                                getActionFieldData(getListData(Screen.USER_PROFILE_PAGE_POSTED_PRODUCT)) +
+                                        getProductsData(
+                                                listOf(
+                                                        getProductData(
+                                                                productId,
+                                                                productName,
+                                                                formatPriceToInt(price),
+                                                                quantity,
+                                                                shopId,
+                                                                shopName
+                                                        )
+                                                )
+                                        )
+                        )
+        )
     }
 
     /**
@@ -527,7 +573,7 @@ class FeedAnalyticTracker
             EVENT_CATEGORY, eventCategory,
             EVENT_ACTION, eventAction,
             EVENT_LABEL, eventLabel,
-            USER_ID,  userSessionInterface.userId
+            USER_ID, userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
@@ -546,25 +592,36 @@ class FeedAnalyticTracker
             creative: String,
             position: Int
     ): Map<String, Any> = DataLayer.mapOf(
-        Promotion.ID, id,
-        Promotion.NAME, name,
-        Promotion.CREATIVE, creative,
-        Promotion.POSITION, position
+            Promotion.ID, id,
+            Promotion.NAME, name,
+            Promotion.CREATIVE, creative,
+            Promotion.POSITION, position
     )
 
+    private fun getAddData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.ADD, data)
 
-    private fun getAddData(
+    private fun getActionFieldData(data: Any): Map<String, Any> = DataLayer.mapOf(ACTION_FIELD, data)
+
+    private fun getListData(data: Any): Map<String, Any> = DataLayer.mapOf(LIST, data)
+
+    private fun getCurrencyData(): Map<String, Any> = DataLayer.mapOf(Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR)
+
+    private fun getMediaPreviewAddData(
             role: String,
             productDataList: List<Any>
-    ): Map<String, Any> =  DataLayer.mapOf(
-            Event.ACTION_FIELD, getActionFieldData(role),
+    ): Map<String, Any> = DataLayer.mapOf(
+            Event.ACTION_FIELD, getMediaPreviewActionFieldData(role),
             PRODUCTS, productDataList
-            )
+    )
 
-    private fun getActionFieldData(role: String
-    ): Map<String, Any> = DataLayer.mapOf(Event.LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG,role))
+    private fun getMediaPreviewActionFieldData(role: String
+    ): Map<String, Any> = DataLayer.mapOf(LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG, role))
 
     private fun getProductsData(
+            productDataList: List<Any>
+    ): Map<String, Any> = DataLayer.mapOf(PRODUCTS, productDataList)
+
+    private fun getProductsDataList(
             productDataList: List<Any>
     ): List<Any> = DataLayer.listOf(productDataList)
 
@@ -583,6 +640,7 @@ class FeedAnalyticTracker
             Product.SHOP_ID, shopId,
             Product.SHOP_NAME, shopName
     )
+
     private fun formatPriceToInt(price: String): Int {
         var result = 0
         try {
