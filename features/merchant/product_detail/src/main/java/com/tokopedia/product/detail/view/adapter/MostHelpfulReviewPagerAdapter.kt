@@ -56,7 +56,7 @@ class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onRev
                         review.imageAttachments
                                 .map { ImageReviewItem(review.reviewId.toString(), review.reviewCreateTime,
                                         review.user.fullName, it.imageThumbnailUrl, it.imageUrl, review.productRating)
-                                }.toMutableList(), false, null, onImageReviewClick)
+                                }.toMutableList(), false, null)
                 rv_review_attachment.visible()
                 text_review.maxLines = 2
             }

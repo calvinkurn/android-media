@@ -58,6 +58,7 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -159,7 +160,8 @@ import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
 
-class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
+class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener, BottomSheetImageReviewSlider.Callback {
+
     private var productId: String? = null
     private var warehouseId: String? = null
     private var productKey: String? = null
@@ -260,6 +262,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val CART_ANIMATION_DURATION = 700L
 
         private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
+
+        const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
+        const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -790,7 +795,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             attributeInfoView = PartialAttributeInfoView.build(base_attribute)
 
         if (!::imageReviewViewView.isInitialized)
-            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onImageReviewClick)
+            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onSeeAllReviewClick, this::onImageReviewClick)
 
         if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
@@ -823,14 +828,24 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
-        val productId = productInfo?.basic?.id ?: return
-        if (isSeeAll) {
-            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
-        } else {
-            productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
+
+
+    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position:Int) {
+        context?.let{
+            val productId = productInfo?.basic?.id ?: return
+            productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview[position].reviewId)
+            val listOfImage: List<String> = imageReview.map {
+                it.imageUrlLarge ?: ""
+            }
+
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImage), position)
         }
+    }
+
+    private fun onSeeAllReviewClick(){
         context?.let {
+            val productId = productInfo?.basic?.id ?: return
+            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
             RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
         }
     }
@@ -2288,5 +2303,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
             drawable?.let { actionButtonView.setBackground(it) }
         }
+    }
+
+    override val isAllowLoadMore: Boolean
+        get() = false
+
+    override fun onRequestLoadMore(page: Int) {
+    }
+
+    override fun onButtonBackPressed() {
     }
 }

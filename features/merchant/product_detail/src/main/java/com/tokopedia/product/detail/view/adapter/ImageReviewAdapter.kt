@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_image_review.view.*
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
-                         private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null,
+                         private val onImageReviewClick:((List<ImageReviewItem>, Int) -> Unit)? = null,
                          private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
@@ -24,7 +24,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     override fun getItemCount(): Int = imageReviews.size
 
     override fun onBindViewHolder(holder: ImageReviewViewHolder, position: Int) {
-        holder.bind(imageReviews[position], getItemViewType(position), imageReviews.size)
+        holder.bind(imageReviews[position], getItemViewType(position),imageReviews)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -33,7 +33,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
 
     inner class ImageReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: ImageReviewItem, type: Int, imageSize: Int) {
+        fun bind(item: ImageReviewItem, type: Int, listItem:List<ImageReviewItem>) {
             with(itemView) {
                 ImageHandler.loadImageAndCache(image_review, item.imageUrlThumbnail)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
@@ -44,7 +44,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     txt_see_all.gone()
                 }
                 setOnClickListener {
-                    onImageClickListener?.invoke(item, type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER)
+                    onImageReviewClick?.invoke(listItem, adapterPosition)
                     onImageHelpfulReviewClick?.invoke(imageReviews.mapNotNull { it.imageUrlLarge }, adapterPosition,
                             item.reviewId)
                 }
