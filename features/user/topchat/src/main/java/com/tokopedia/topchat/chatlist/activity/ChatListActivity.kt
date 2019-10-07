@@ -199,10 +199,17 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun determineFragmentByTag(tag: String?): ChatListFragment {
+        if (isBuyerOnly()) {
+            return fragmentAdapter.getItem(0) as ChatListFragment
+        }
         return when (tag) {
             "User" -> fragmentAdapter.getItem(0) as ChatListFragment
             else -> fragmentAdapter.getItem(1) as ChatListFragment
         }
+    }
+
+    private fun isBuyerOnly(): Boolean {
+        return tabList.size == 1
     }
 
 
