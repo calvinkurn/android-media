@@ -3,7 +3,7 @@ package com.tokopedia.graphql.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
@@ -36,7 +36,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
-            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 

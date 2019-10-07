@@ -100,6 +100,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPriceChanges;
     private TextView tvInvenageText;
     private RelativeLayout rlInvenageText;
+    private ImageView imgFreeShipping;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -151,6 +152,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
         this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
+        this.imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -337,41 +339,14 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), parentPosition, data));
         this.tvProductName.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), parentPosition, data));
 
-        if (data.getCartItemData().getOriginData().isFreeReturn()) {
-            this.ivIconFreeReturn.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageRounded2(
-                    this.itemView.getContext(), this.ivIconFreeReturn,
-                    data.getCartItemData().getOriginData().getFreeReturnLogo()
-            );
-        } else {
-            this.ivIconFreeReturn.setVisibility(View.GONE);
-        }
-
-        if (data.getCartItemData().getOriginData().isPreOrder()) {
-            this.tvInfoPreOrder.setText(data.getCartItemData().getOriginData().getPreOrderInfo());
-            this.tvInfoPreOrder.setVisibility(View.VISIBLE);
-        } else {
-            this.tvInfoPreOrder.setVisibility(View.GONE);
-        }
-
-        this.tvCodBadge.setVisibility(
-                data.getCartItemData().getOriginData().isCod() ? View.VISIBLE : View.GONE
-        );
-
-        this.tvInfoCashBack.setVisibility(
-                data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
-        );
-
-        this.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
-
-        if (data.getCartItemData().getOriginData().isCashBack() ||
-                data.getCartItemData().getOriginData().isPreOrder() ||
-                data.getCartItemData().getOriginData().isFreeReturn() ||
-                data.getCartItemData().getOriginData().isCod()) {
-            productProperties.setVisibility(View.VISIBLE);
-        } else {
-            productProperties.setVisibility(View.GONE);
-        }
+        renderProductPropertiesFreereturn(data);
+        renderProductPropertiesPreOrder(data);
+        renderProductPropertiesCod(data);
+        renderProductPropertiesCashback(data);
+        renderProductPropertiesLayout(data);
+        renderProductPropertiesPriceChanges(data);
+        renderProductPropertiesInvenage(data);
+        renderProductPropertiesFreeShipping(data);
 
         btnDelete.setOnClickListener(view -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION) {
@@ -381,6 +356,67 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
 
+    }
+
+    private void renderProductPropertiesCashback(CartItemHolderData data) {
+        this.tvInfoCashBack.setVisibility(
+                data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
+        );
+
+        this.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
+    }
+
+    private void renderProductPropertiesCod(CartItemHolderData data) {
+        this.tvCodBadge.setVisibility(
+                data.getCartItemData().getOriginData().isCod() ? View.VISIBLE : View.GONE
+        );
+    }
+
+    private void renderProductPropertiesPreOrder(CartItemHolderData data) {
+        if (data.getCartItemData().getOriginData().isPreOrder()) {
+            this.tvInfoPreOrder.setText(data.getCartItemData().getOriginData().getPreOrderInfo());
+            this.tvInfoPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            this.tvInfoPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertiesFreereturn(CartItemHolderData data) {
+        if (data.getCartItemData().getOriginData().isFreeReturn()) {
+            this.ivIconFreeReturn.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageRounded2(
+                    this.itemView.getContext(), this.ivIconFreeReturn,
+                    data.getCartItemData().getOriginData().getFreeReturnLogo()
+            );
+        } else {
+            this.ivIconFreeReturn.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertiesLayout(CartItemHolderData data) {
+        if (data.getCartItemData().getOriginData().isCashBack() ||
+                data.getCartItemData().getOriginData().isPreOrder() ||
+                data.getCartItemData().getOriginData().isFreeReturn() ||
+                data.getCartItemData().getOriginData().isCod()) {
+            productProperties.setVisibility(View.VISIBLE);
+        } else {
+            productProperties.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertiesFreeShipping(CartItemHolderData data) {
+        if (data.getCartItemData().getOriginData().isFreeShipping() &&
+                !TextUtils.isEmpty(data.getCartItemData().getOriginData().getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                    imgFreeShipping, data.getCartItemData().getOriginData().getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertiesPriceChanges(CartItemHolderData data) {
         String priceChangesText = data.getCartItemData().getOriginData().getPriceChangesDesc();
         int priceChangesState = data.getCartItemData().getOriginData().getPriceChangesState();
         if (priceChangesText.isEmpty() || priceChangesState >= 0) {
@@ -390,7 +426,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tvPriceChanges.setText(priceChangesText);
             actionListener.onCartItemShowTickerPriceDecrease(data.getCartItemData().getOriginData().getProductId());
         }
+    }
 
+    private void renderProductPropertiesInvenage(CartItemHolderData data) {
         if (!data.getCartItemData().getOriginData().getProductInvenageByUserText().isEmpty()) {
             this.rlInvenageText.setVisibility(View.VISIBLE);
             String completeText = data.getCartItemData().getOriginData().getProductInvenageByUserText();

@@ -95,4 +95,5 @@ public interface ICartListPresenter {
 
     Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty);
 
+    Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList, String step);
 }

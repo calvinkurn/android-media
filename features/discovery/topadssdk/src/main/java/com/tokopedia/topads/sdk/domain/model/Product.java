@@ -44,6 +44,7 @@ public class Product implements Parcelable {
     private static final String KEY_IMAGE_PRODUCT = "image_product";
     private static final String KEY_CAMPAIGN = "campaign";
     private static final String KEY_LABEL_GROUP = "label_group";
+    private static final String KEY_FREE_ONGKIR = "free_ongkir";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -144,6 +145,10 @@ public class Product implements Parcelable {
     @SerializedName(KEY_LABEL_GROUP)
     @Expose
     private List<LabelGroup> labelGroupList = new ArrayList<>();
+
+    @SerializedName(KEY_FREE_ONGKIR)
+    @Expose
+    private FreeOngkir freeOngkir = new FreeOngkir();
 
     private String categoryBreadcrumb = "";
 
@@ -247,6 +252,9 @@ public class Product implements Parcelable {
                 labelGroupList.add(new LabelGroup(arr.getJSONObject(i)));
             }
         }
+        if(!object.isNull(KEY_FREE_ONGKIR)) {
+            setFreeOngkir(new FreeOngkir(object.getJSONObject(KEY_FREE_ONGKIR)));
+        }
     }
 
     protected Product(Parcel in) {
@@ -277,6 +285,7 @@ public class Product implements Parcelable {
         imageProduct = in.readParcelable(ImageProduct.class.getClassLoader());
         campaign = in.readParcelable(Campaign.class.getClassLoader());
         labelGroupList = in.createTypedArrayList(LabelGroup.CREATOR);
+        freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
     }
 
     @Override
@@ -308,6 +317,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(imageProduct, flags);
         dest.writeParcelable(campaign, flags);
         dest.writeTypedList(labelGroupList);
+        dest.writeParcelable(freeOngkir, flags);
     }
 
     @Override
@@ -573,5 +583,13 @@ public class Product implements Parcelable {
 
     public List<LabelGroup> getLabelGroupList() {
         return this.labelGroupList;
+    }
+
+    public void setFreeOngkir(FreeOngkir freeOngkir) {
+        this.freeOngkir = freeOngkir;
+    }
+
+    public FreeOngkir getFreeOngkir() {
+        return this.freeOngkir;
     }
 }
