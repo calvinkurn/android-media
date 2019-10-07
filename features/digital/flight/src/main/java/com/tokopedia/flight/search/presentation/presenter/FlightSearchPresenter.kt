@@ -71,7 +71,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Subscriber<Long>() {
+                .subscribe(object : Subscriber<Long>() {
                     override fun onNext(t: Long?) {
                         view.hideHorizontalProgress()
                     }
@@ -236,7 +236,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe (object: Subscriber<Long>() {
+                    .subscribe(object : Subscriber<Long>() {
                         override fun onNext(t: Long?) {
                             fetchSearchDataCloud(passDataViewModel, airportCombineModel)
                         }
@@ -293,7 +293,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                     override fun onNext(flightSearchMetaViewModel: FlightSearchMetaViewModel?) {
                         if (flightSearchMetaViewModel != null) {
-                            if (!flightSearchMetaViewModel.isNeedRefresh) {
+                            if (!flightSearchMetaViewModel.isNeedRefresh || airportCombineModel.noOfRetry > flightSearchMetaViewModel.maxRetry) {
                                 callCounter++
                             }
 
