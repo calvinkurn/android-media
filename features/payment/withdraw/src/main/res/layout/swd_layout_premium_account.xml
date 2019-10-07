@@ -40,7 +40,7 @@
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@id/tv_rekeningTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_rekeningTitle" />
 
     <TextView
         android:id="@+id/tv_briProgramButton"

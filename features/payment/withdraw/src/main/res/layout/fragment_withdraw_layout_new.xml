@@ -124,7 +124,7 @@
             android:id="@+id/view_divider2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:layout_below="@id/saldo_title"
+            android:layout_below="@+id/saldo_title"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_200"
             app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +135,7 @@
             android:id="@+id/view_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_below="@id/saldo_title"
+            android:layout_below="@+id/saldo_title"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
@@ -150,7 +150,7 @@
             android:id="@+id/recycler_view_bank"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title_choose_bank"
+            android:layout_below="@+id/title_choose_bank"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
             app:layout_constraintTop_toBottomOf="@+id/view_divider3" />
@@ -163,7 +163,7 @@
             android:paddingBottom="@dimen/dp_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
-            app:layout_constraintTop_toBottomOf="@id/layout_premium_account"
+            app:layout_constraintTop_toBottomOf="@+id/layout_premium_account"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -256,7 +256,7 @@
             android:id="@+id/withdrawal_all_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view_divider"
+            android:layout_below="@+id/view_divider"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="right|end"
@@ -309,7 +309,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/layout_ticker"/>
+            app:layout_constraintTop_toBottomOf="@+id/layout_ticker"/>
 
         <include
             android:id="@+id/loading_layout"
@@ -342,7 +342,7 @@
             android:paddingStart="@dimen/dp_16"
             app:layout_constraintEnd_toEndOf="@+id/tab_withdraw"
             app:layout_constraintStart_toStartOf="@+id/tab_withdraw"
-            app:layout_constraintTop_toBottomOf="@id/iv_emptySaldo"
+            app:layout_constraintTop_toBottomOf="@+id/iv_emptySaldo"
             app:typographyType="heading_2" />
 
         <android.support.constraint.Group
