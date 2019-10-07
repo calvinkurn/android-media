@@ -13,12 +13,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements View.OnClickListener{
 
@@ -30,6 +33,9 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
     private TextView backToAppShopping;
     private TextView adminFees;
 
+    @Inject
+    WithdrawAnalytics analytics;
+
     @Override
     protected void initInjector() {
         WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
@@ -40,7 +46,13 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
 
     @Override
     protected String getScreenName() {
-        return null;
+        return WithdrawAnalytics.SCREEN_WITHDRAW_SUCCESS_PAGE;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        analytics.sendScreen(getActivity(), getScreenName());
     }
 
     @Nullable
@@ -84,12 +96,14 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
             if(getActivity() != null){
                 Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE);
                 getActivity().finish();
+                analytics.eventClickBackToSaldoPage();
             }
         }
         else if(id == R.id.backto_shop){
             if(getActivity() != null){
                 Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE);
                 getActivity().finish();
+                analytics.eventClicGoToHomePage();
             }
         }
     }

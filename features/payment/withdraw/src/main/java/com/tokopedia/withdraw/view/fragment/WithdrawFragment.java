@@ -121,7 +121,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private boolean isSeller = false;
     private boolean sellerWithdrawal;
     private TextView saldoTitleTV;
-    // private CardView saldoTypeCV;
     private TextView saldoValueTV;
     private TextView saldoWithdrawHintTV;
     private static final String IS_WITHDRAW_LOCK = "is_lock";
@@ -266,6 +265,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     totalWithdrawal.getText().toString(),
                     bankAdapter.getSelectedBank()
             );
+            analytics.eventClickTarikSaldo();
         });
 
 
@@ -663,6 +663,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                             } else {
                                 alertDialog.cancel();
                             }
+                            analytics.eventClickContinueBtn();
                         }
                     }).create();
             alertDialog.show();
@@ -731,6 +732,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     .setText(getString(R.string.swd_program_tarik_saldo_description));
             ((TextView) view.findViewById(R.id.wdProgramContinue))
                     .setText(getString(R.string.swd_program_tarik_btn));
+            analytics.eventClickInfo();
         } else {
             ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
                     .setText(getString(R.string.swd_rekening_premium));
@@ -738,16 +740,17 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     .setText(getString(R.string.swd_rekening_premium_description));
             ((TextView) view.findViewById(R.id.wdProgramContinue))
                     .setText(getString(R.string.swd_rekening_premium_btn));
+            analytics.eventClickJoinNow();
         }
 
         view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
             briProgramBottomSheet.dismiss();
             RouteManager.route(getContext(), String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
+            analytics.eventClickGotoDashboard();
         });
         briProgramBottomSheet.setContentView(view);
         briProgramBottomSheet.show();
-
     }
 
     public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
@@ -856,6 +859,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
+                analytics.eventClickTANDC();
                 openTermsAndConditionBottomSheet();
             }
 
