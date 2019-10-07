@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,12 +20,16 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -47,6 +52,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -68,13 +74,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
 
-
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var viewState: ChatListViewState
 
     private var activityContract: ChatListContract.Activity? = null
 
@@ -85,6 +92,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
 
+    private lateinit var broadCastButton: FloatingActionButton
 
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
@@ -136,6 +144,32 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         setUpRecyclerView(view)
         initView(view)
         setObserver()
+        setupSellerBroadcast()
+    }
+
+    private fun setupSellerBroadcast() {
+        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
+        setupSellerBroadcastButton()
+        chatItemListViewModel.loadChatBlastSellerMetaData()
+    }
+
+    private fun isSellerBroadcastRemoteConfigOn(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
+    }
+
+    private fun setupSellerBroadcastButton() {
+        chatItemListViewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
+            when (visibility) {
+                true -> broadCastButton.show()
+                false -> broadCastButton.hide()
+            }
+        })
+        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
+            if (url.isNullOrEmpty()) return@Observer
+            broadCastButton.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+            }
+        })
     }
 
     private fun tryViewCreatedFirstSight() {
@@ -146,7 +180,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun initView(view: View) {
         showLoading()
-        viewState = ChatListViewStateImpl(view)
+        broadCastButton = view.findViewById(R.id.fab_broadcast)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -337,7 +371,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         activity?.let {
             with(chatListAnalytics) {
                 eventClickChatList(
-                        if (sightTag == PARAM_TAB_SELLER) ChatListActivity.SELLER_ANALYTICS_LABEL
+                        if (isTabSeller()) ChatListActivity.SELLER_ANALYTICS_LABEL
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
 
@@ -462,6 +496,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         activityContract?.loadNotificationCounter()
+    }
+
+    private fun isTabSeller(): Boolean {
+        return sightTag == PARAM_TAB_SELLER
     }
 
     companion object {
