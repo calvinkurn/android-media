@@ -151,6 +151,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
             List<FlightAirlineViewModel> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
             flightMultiAirlineView.setAirlineLogos(null);
+            tvAirline.setText("");
             int airlineIndex = 0;
             for (FlightAirlineViewModel airline : flightAirlineDBs) {
                 if (airlineIndex < flightAirlineDBs.size() - 1) {
