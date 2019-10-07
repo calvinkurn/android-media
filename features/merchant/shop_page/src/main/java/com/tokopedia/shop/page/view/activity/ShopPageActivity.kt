@@ -126,6 +126,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
+        const val TAB_POSITION_OS_HOME = -1
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
@@ -190,6 +191,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
+        }
+
+        @DeepLink(ApplinkConst.SHOP_HOME)
+        @JvmStatic
+        fun getCallingIntentHomeSelected(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, ShopPageActivity::class.java)
+                    .setData(uri.build())
+                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_OS_HOME)
         }
     }
 
@@ -592,6 +604,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
+        }else if(isOfficialStore && tabPosition == TAB_POSITION_OS_HOME){
+            tabPosition = 0
         }
         setViewState(VIEW_CONTENT)
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
