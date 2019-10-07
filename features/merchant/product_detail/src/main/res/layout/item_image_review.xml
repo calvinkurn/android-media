@@ -33,7 +33,7 @@
             android:id="@+id/txt_see_all"
             android:layout_width="@dimen/dp_44"
             android:layout_height="wrap_content"
-            android:text="@string/label_see_all_with_counter"
+            android:text="@string/label_see_all"
             android:layout_gravity="center"
             android:gravity="center"
             android:visibility="gone"

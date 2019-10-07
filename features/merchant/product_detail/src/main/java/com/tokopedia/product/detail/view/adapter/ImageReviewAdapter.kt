@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_image_review.view.*
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
                          private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null,
-                         private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null):
+                         private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -24,25 +24,19 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     override fun getItemCount(): Int = imageReviews.size
 
     override fun onBindViewHolder(holder: ImageReviewViewHolder, position: Int) {
-        holder.bind(imageReviews[position], getItemViewType(position))
+        holder.bind(imageReviews[position], getItemViewType(position), imageReviews.size)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (showSeeAll && position == imageReviews.size - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
+        return if (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
     }
 
-    fun replaceImages(list: List<ImageReviewItem>){
-        imageReviews.clear()
-        imageReviews.addAll(list)
-        notifyDataSetChanged()
-    }
+    inner class ImageReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    inner class ImageReviewViewHolder(view: View): RecyclerView.ViewHolder(view){
-
-        fun bind(item: ImageReviewItem, type: Int){
-            with(itemView){
+        fun bind(item: ImageReviewItem, type: Int, imageSize: Int) {
+            with(itemView) {
                 ImageHandler.loadImageAndCache(image_review, item.imageUrlThumbnail)
-                if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
+                if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
                     txt_see_all.visible()
                 } else {
@@ -61,5 +55,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     companion object {
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
+        private const val TOTAL_REVIEW_IMAGE_VISIBLE = 4
     }
 }

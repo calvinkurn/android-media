@@ -23,11 +23,12 @@ class PartialImageReviewView private constructor(private val view: View,
         }
     }
 
-    fun renderData(imageReviews: List<ImageReviewItem>, rating:Rating) {
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), true, onImageClick)
+    fun renderData(imageReviews: List<ImageReviewItem>, rating: Rating) {
+        val showSeeAll = imageReviews.first().hasNext
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, onImageClick)
         with(view) {
-            review_count.text = context.getString(R.string.review_counter,rating.totalRating)
-            review_rating.text = context.getString(R.string.counter_pattern, 4, 5)
+            review_count.text = context.getString(R.string.review_counter, rating.totalRating)
+            review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
             if (imageReviews.isNotEmpty())
                 visible()
             else
