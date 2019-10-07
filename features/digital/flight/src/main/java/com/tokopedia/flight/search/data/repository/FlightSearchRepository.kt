@@ -197,13 +197,19 @@ open class FlightSearchRepository @Inject constructor(
 
     private fun getRouteAirlineByIdAndAirports(route: Route, included: List<Included<AttributesInc>>):
             Observable<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>? {
-        return getAirlineById(route.airline, included)
-                .zipWith(getAirlineById(route.operatingAirline, included)) { flightAirline, flightOperatingAirline ->
-                    Pair(flightAirline, flightOperatingAirline)
-                }.zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) {
-                    airline: Pair<FlightAirlineViewModel, FlightAirlineViewModel>, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
-                    Pair(airline, airport)
-                }
+        if (route.operatingAirline != null && route.operatingAirline.isNotEmpty()) {
+            return getAirlineById(route.airline, included)
+                    .zipWith(getAirlineById(route.operatingAirline, included)) { flightAirline, flightOperatingAirline ->
+                        Pair(flightAirline, flightOperatingAirline)
+                    }.zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) { airline: Pair<FlightAirlineViewModel, FlightAirlineViewModel>, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
+                        Pair(airline, airport)
+                    }
+        } else {
+            return getAirlineById(route.airline, included)
+                    .zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) { airline: FlightAirlineViewModel, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
+                        Pair(Pair(airline, FlightAirlineViewModel("", "", "", "")), airport)
+                    }
+        }
     }
 
     private fun getAirports(departureAirport: String, arrivalAirport: String, included: List<Included<AttributesInc>>):
@@ -243,7 +249,7 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun getComboKey(onwardJourneyId: String, returnJourneyId: String) :  Observable<String> =
+    fun getComboKey(onwardJourneyId: String, returnJourneyId: String): Observable<String> =
             flightSearchCombinedDataDbSource.getComboData(onwardJourneyId, returnJourneyId)
                     .map {
                         if (it.isNotEmpty()) {
