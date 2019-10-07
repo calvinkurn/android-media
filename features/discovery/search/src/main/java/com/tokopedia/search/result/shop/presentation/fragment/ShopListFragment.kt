@@ -3,6 +3,8 @@ package com.tokopedia.search.result.shop.presentation.fragment
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
@@ -11,26 +13,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.manager.FilterSortManager
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.search.R
 import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
-import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
-import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
+import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
-class ShopListFragmentKt:
-        BaseDaggerFragment(),
+class ShopListFragment:
+        TkpdBaseV4Fragment(),
         ShopListener,
         EmptyStateListener,
         BannerAdsListener {
@@ -38,8 +46,8 @@ class ShopListFragmentKt:
     companion object {
 
         @JvmStatic
-        fun newInstance(): ShopListFragmentKt {
-            return ShopListFragmentKt()
+        fun newInstance(): ShopListFragment {
+            return ShopListFragment()
         }
     }
 
@@ -49,6 +57,28 @@ class ShopListFragmentKt:
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
+    private var searchNavigationListener: SearchNavigationListener? = null
+    private val filterTrackingData by lazy {
+        FilterTrackingData(
+                FilterEventTracking.Event.CLICK_SEARCH_RESULT,
+                FilterEventTracking.Category.FILTER_SHOP,
+                "",
+                FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
+        )
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        castContextToSearchNavigationListener(context)
+    }
+
+    // TODO:: Remove context casting, once SearchActivity already using ViewModel
+    private fun castContextToSearchNavigationListener(context: Context?) {
+        if (context is SearchNavigationListener) {
+            searchNavigationListener = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.search_result_shop_fragment_layout, null)
@@ -60,11 +90,13 @@ class ShopListFragmentKt:
         initViewModel()
         initViews()
         observeViewModelData()
+
+        searchShopViewModel?.onViewCreated()
     }
 
     private fun initViewModel() {
-        activity?.let {
-            searchShopViewModel = ViewModelProviders.of(it).get(SearchShopViewModel::class.java)
+        activity?.let { activity ->
+            searchShopViewModel = ViewModelProviders.of(activity).get(SearchShopViewModel::class.java)
         }
     }
 
@@ -99,7 +131,7 @@ class ShopListFragmentKt:
         activity?.let { activity ->
             initShopListAdapter()
 
-            recyclerView = view?.findViewById(R.id.recyclerview)
+            recyclerView = view?.findViewById(R.id.recyclerViewSearchShop)
             recyclerView?.layoutManager = gridLayoutManager
             recyclerView?.adapter = shopListAdapter
             recyclerView?.addItemDecoration(createShopItemDecoration(activity))
@@ -134,6 +166,10 @@ class ShopListFragmentKt:
 
         searchShopViewModel?.getDynamicFilterEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessGetDynamicFilter ->
             handleEventGetDynamicFilter(isSuccessGetDynamicFilter)
+        })
+
+        searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessOpenFilterPage ->
+            handleEventOpenFilterPage(isSuccessOpenFilterPage)
         })
     }
 
@@ -174,14 +210,16 @@ class ShopListFragmentKt:
     }
 
     private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
-        val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
-            searchShopViewModel?.onViewClickRetry()
-        }
+        activity?.let { activity ->
+            val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
+                searchShopViewModel?.onViewClickRetry()
+            }
 
-        if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
-            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+            if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
+                NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+            } else {
+                NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+            }
         }
     }
 
@@ -197,19 +235,64 @@ class ShopListFragmentKt:
         }
     }
 
+    private fun handleEventOpenFilterPage(isSuccessOpenFilterPage: Boolean) {
+        if (isSuccessOpenFilterPage) {
+            FilterSortManager.openFilterPage(
+                    filterTrackingData,
+                    this,
+                    screenName,
+                    HashMap(searchShopViewModel?.getSearchParameter().convertValuesToString()))
+        }
+        else {
+            activity?.let { activity ->
+                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
+            }
+        }
+    }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
+        setupSearchNavigation()
+
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
+    }
+
+    private fun setupSearchNavigation() {
+        searchNavigationListener?.setupSearchNavigation(
+                object : SearchNavigationListener.ClickListener {
+                    override fun onFilterClick() { openFilterPage() }
+
+                    override fun onSortClick() { }
+
+                    override fun onChangeGridClick() { }
+                },
+                false)
+    }
+
+    private fun openFilterPage() {
+        searchShopViewModel?.onViewOpenFilterPage()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
+            override fun onFilterResult(queryParams: Map<String, String>?,
+                                        selectedFilters: Map<String, String>?,
+                                        selectedOptions: List<Option>?) {
+                FilterTracking.eventApplyFilter(filterTrackingData, screenName, selectedFilters)
+                searchShopViewModel?.onViewApplyFilter(queryParams)
+            }
+
+            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String) { }
+        })
     }
 
     override fun getScreenName(): String {
         return SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB
     }
 
-    override fun initInjector() {
-
-    }
     override fun onItemClicked(shopItem: ShopViewModel.ShopItem) {
 
     }

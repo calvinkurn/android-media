@@ -31,7 +31,7 @@ import com.tokopedia.search.utils.exists
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 
-internal class SearchShopViewModel(
+class SearchShopViewModel(
         dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
         private val searchShopFirstPageRepository: Repository<SearchShopModel>,
@@ -59,6 +59,7 @@ internal class SearchShopViewModel(
     private var dynamicFilterModel: DynamicFilterModel? = null
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         setSearchParameterUniqueId()
@@ -95,6 +96,7 @@ internal class SearchShopViewModel(
 
     fun onViewCreated() {
         if (shouldLoadDataOnViewCreated() && !hasLoadData) {
+            hasLoadData = true
             searchShop()
         }
     }
@@ -105,6 +107,7 @@ internal class SearchShopViewModel(
 
     fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible && isViewAdded && !hasLoadData) {
+            hasLoadData = true
             searchShop()
         }
     }
@@ -118,7 +121,6 @@ internal class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
-        updateHasLoadDataToTrue()
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageRepository)
@@ -126,10 +128,6 @@ internal class SearchShopViewModel(
         processSearchShopFirstPageSuccess(searchShopModel)
 
         getDynamicFilter()
-    }
-
-    private fun updateHasLoadDataToTrue() {
-        hasLoadData = true
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -259,6 +257,8 @@ internal class SearchShopViewModel(
     }
 
     private fun catchSearchShopException(e: Throwable?) {
+        hasNextPage = false
+
         if (e is CancellationException) {
             catchCancellationException(e)
         }
@@ -451,6 +451,25 @@ internal class SearchShopViewModel(
         searchShopMutableList.clear()
     }
 
+    fun onViewOpenFilterPage() {
+        if (isFilterDataAvailable()) {
+            openFilterPageEventLiveData.postValue(Event(true))
+        }
+        else {
+            openFilterPageEventLiveData.postValue(Event(false))
+        }
+    }
+
+    private fun isFilterDataAvailable(): Boolean {
+        return dynamicFilterModel?.data?.filter?.size ?: 0 > 0
+    }
+
+    fun onViewApplyFilter(queryParameters: Map<String, String>?) {
+
+    }
+
+    fun getSearchParameter() = searchParameter.toMap()
+
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
 
     fun getSearchParameterStartRow() = (searchParameter[SearchApiConst.START] ?: "").toString().toIntOrNull() ?: 0
@@ -465,6 +484,10 @@ internal class SearchShopViewModel(
 
     fun getDynamicFilterEventLiveData(): LiveData<Event<Boolean>> {
         return dynamicFilterEventLiveData
+    }
+
+    fun getOpenFilterPageEventLiveData(): LiveData<Event<Boolean>> {
+        return openFilterPageEventLiveData
     }
 
     override fun onCleared() {

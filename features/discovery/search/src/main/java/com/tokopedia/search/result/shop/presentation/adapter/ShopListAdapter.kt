@@ -5,11 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCallback
-import java.util.ArrayList
+import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
+import java.util.*
 
 open class ShopListAdapter(
         private val shopListTypeFactory: ShopListTypeFactory
@@ -31,9 +30,9 @@ open class ShopListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         @Suppress("UNCHECKED_CAST")
-        val data = list[position] as Visitable<AdapterTypeFactory>
+        val data = list[position] as Visitable<ShopListTypeFactory>
 
-        return data.type(shopListTypeFactory as AdapterTypeFactory)
+        return data.type(shopListTypeFactory)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {

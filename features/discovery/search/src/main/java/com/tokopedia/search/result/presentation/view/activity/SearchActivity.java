@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -53,6 +55,8 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -61,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -104,11 +109,12 @@ public class SearchActivity extends BaseActivity
     private String profileTabTitle;
     private String autocompleteApplink;
 
-    @Inject
-    SearchTracking searchTracking;
+    @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
-    @Inject LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchShopViewModelFactory;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -120,14 +126,19 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
 
+        getExtrasFromIntent(getIntent());
         initActivityOnCreate();
         proceed();
-        handleIntent(getIntent());
+        handleIntent();
     }
 
     @Override
     public void startPerformanceMonitoring() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+    }
+
+    private void getExtrasFromIntent(Intent intent) {
+        searchParameter = getSearchParameterFromIntentUri(intent);
     }
 
     private void initActivityOnCreate() {
@@ -138,7 +149,9 @@ public class SearchActivity extends BaseActivity
     private void initInjector() {
         SearchViewComponent searchComponent = DaggerSearchViewComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .searchShopViewModelFactoryModule(new SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
                 .build();
+
         searchComponent.inject(this);
     }
 
@@ -242,7 +255,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initViewPager() {
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -352,9 +365,8 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void handleIntent(Intent intent) {
+    private void handleIntent() {
         initResources();
-        getExtrasFromIntent(intent);
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
@@ -364,10 +376,6 @@ public class SearchActivity extends BaseActivity
         catalogTabTitle = getString(R.string.catalog_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
-    }
-
-    private void getExtrasFromIntent(Intent intent) {
-        searchParameter = getSearchParameterFromIntentUri(intent);
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -447,6 +455,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private void loadSection() {
+        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
+
         List<String> searchFragmentTitles = new ArrayList<>();
         addFragmentTitlesToList(searchFragmentTitles);
         initTabLayout();
@@ -464,6 +474,7 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(catalogTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
+        searchSectionItemList.add(shopTabTitle);
     }
 
     private void initTabLayout() {

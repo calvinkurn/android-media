@@ -309,6 +309,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
+
+            Then("assert has next page is true") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe true
+            }
         }
 
         Scenario("Search Shop First Page Successful Without Next Page") {
@@ -332,6 +338,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
+            }
         }
 
         Scenario("Search Shop First Page Error") {
@@ -354,6 +366,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldBeInstanceOf<Error<*>>()
                 searchShopState.shouldBeNullOrEmpty()
             }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
+            }
         }
 
         Scenario("Search Shop with Empty Result") {
@@ -375,6 +393,12 @@ internal class SearchShopViewModelTest : Spek({
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldOnlyHaveEmptySearchModel()
+            }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
             }
         }
     }
@@ -651,6 +675,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
+
+            Then("assert has next page is true") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe true
+            }
         }
 
         Scenario("Search Shop Successful and Search More Shop Successful Without Next Page") {
@@ -679,6 +709,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
             }
         }
 
@@ -709,6 +745,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldBeInstanceOf<Error<*>>()
                 searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+
+            Then("assert has next page is false") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe false
             }
         }
     }
@@ -826,6 +868,100 @@ internal class SearchShopViewModelTest : Spek({
             }
         }
     }
+
+    Feature("Handle view open filter page") {
+        createTestInstance()
+
+        Scenario("Open Filter Page successfully") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view get dynamic filter successfully") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view open filter page") {
+                searchShopViewModel.onViewOpenFilterPage()
+            }
+
+            Then("should post event success open filter page") {
+                val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
+
+                openFilterPageEvent?.peekContent() shouldBe true
+            }
+        }
+
+        Scenario("Open Filter Page but Filter Data does not exists") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view get dynamic filter successfully without filter data") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+
+                val dynamicFilterModelWithoutFilterData = DynamicFilterModel()
+                dynamicFilterModelWithoutFilterData.data = DataValue()
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModelWithoutFilterData)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view open filter page") {
+                searchShopViewModel.onViewOpenFilterPage()
+            }
+
+            Then("should show error message indicating no filter data exists") {
+                val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
+
+                openFilterPageEvent?.peekContent() shouldBe false
+            }
+        }
+    }
+
+//    Feature("Handle view applying filter") {
+//        createTestInstance()
+//
+//        Scenario("Apply filter with query parameters") {
+//            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+//            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+//            val searchShopViewModel by memoized<SearchShopViewModel>()
+//            val queryParametersFromFilter = mutableMapOf<String, String>()
+//
+//            Given("search shop and dynamic filter API call will be successful") {
+//                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+//                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+//            }
+//
+//            Given("Query parameters from filter") {
+//                queryParametersFromFilter[SearchApiConst.Q] = "samsung"
+//                queryParametersFromFilter[SearchApiConst.FCITY] = "1,2,3"
+//            }
+//
+//            When("handle view applying filter") {
+//                searchShopViewModel.onViewApplyFilter(queryParametersFromFilter)
+//            }
+//
+//            Then("") {
+//
+//            }
+//        }
+//
+//        Scenario("Apply filter with null query parameters") {
+//            val searchShopViewModel by memoized<SearchShopViewModel>()
+//
+//            When("handle view applying filter") {
+//                searchShopViewModel.onViewApplyFilter(null)
+//            }
+//
+//            Then("should not error or do reload anything") {
+//
+//            }
+//        }
+//    }
 })
 
 private fun Repository<*>.stubGetResponse(): MockKStubScope<Any?, Any?> {
