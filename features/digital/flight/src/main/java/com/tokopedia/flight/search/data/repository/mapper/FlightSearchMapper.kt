@@ -19,21 +19,23 @@ class FlightSearchMapper @Inject constructor() {
     fun createCompleteJourneyAndRoutes(journeyResponse: FlightSearchData,
                                        journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel>,
                                        journeyAirlines: List<FlightAirlineViewModel>,
-                                       routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
+                                       routesAirlinesAndAirports: List<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
                                        isReturn: Boolean): JourneyAndRoutes {
         val isRefundable = isRefundable(journeyResponse.attributes.routes)
         val flightJourneyTable = createFlightJourneyTable(journeyResponse.id, journeyResponse.attributes,
                 isRefundable, isReturn)
         val routesAirlines = arrayListOf<FlightAirlineViewModel>()
+        val routesOperatingAirlines = arrayListOf<FlightAirlineViewModel>()
         val routesAirports = arrayListOf<Pair<FlightAirportViewModel, FlightAirportViewModel>>()
         for (routeAirlineAndAirport in routesAirlinesAndAirports) {
-            routesAirlines.add(routeAirlineAndAirport.first)
+            routesAirlines.add(routeAirlineAndAirport.first.first)
+            routesOperatingAirlines.add(routeAirlineAndAirport.first.second)
             routesAirports.add(Pair(routeAirlineAndAirport.second.first, routeAirlineAndAirport.second.second))
         }
         val completeJourney = createJourneyWithAirportAndAirline(
                 flightJourneyTable, journeyAirports, journeyAirlines)
         val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id, routesAirports,
-                routesAirlines)
+                routesAirlines, routesOperatingAirlines)
         return JourneyAndRoutes(completeJourney, routes)
     }
 
@@ -91,11 +93,13 @@ class FlightSearchMapper @Inject constructor() {
 
     private fun createRoutes(routes: List<Route>, journeyId: String,
                              routesAirports: List<Pair<FlightAirportViewModel, FlightAirportViewModel>>,
-                             routesAirlines: List<FlightAirlineViewModel>): List<FlightRouteTable> {
+                             routesAirlines: List<FlightAirlineViewModel>,
+                             routesOperatingAirlines: ArrayList<FlightAirlineViewModel>): List<FlightRouteTable> {
         val gson = Gson()
-        return routes.zip(routesAirports).zip(routesAirlines).map { it ->
-            val (route, pairOfAirport) = it.first
-            val routeAirline = it.second
+        return routes.zip(routesAirports).zip(routesAirlines).zip(routesOperatingAirlines).map {
+            val (route, pairOfAirport) = it.first.first
+            val routeAirline = it.first.second
+            val routeOperatingAirline = it.second
             val routeDepartureAirport = pairOfAirport.first
             val routeArrivalAirport = pairOfAirport.second
             with(route) {
@@ -121,7 +125,7 @@ class FlightSearchMapper @Inject constructor() {
                         gson.toJson(amenities),
                         stops,
                         gson.toJson(stopDetails),
-                        operatingAirline
+                        routeOperatingAirline.name
                 )
             }
         }

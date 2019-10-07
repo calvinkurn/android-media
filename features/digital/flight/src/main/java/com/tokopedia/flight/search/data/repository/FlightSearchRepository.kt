@@ -31,12 +31,12 @@ open class FlightSearchRepository @Inject constructor(
         return Observable.from(journeyResponse.attributes.routes)
                 .flatMap { route -> getRouteAirlineByIdAndAirports(route, included) }
                 .toList()
-                .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport, included)) { routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
+                .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport, included)) { routesAirlinesAndAirports: List<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
                                                                                                                                           journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
                     val journeyAirlines = arrayListOf<FlightAirlineViewModel>()
                     for (routeAirline in routesAirlinesAndAirports) {
-                        if (!journeyAirlines.contains(routeAirline.first)) {
-                            journeyAirlines.add(routeAirline.first)
+                        if (!journeyAirlines.contains(routeAirline.first.first)) {
+                            journeyAirlines.add(routeAirline.first.first)
                         }
                     }
                     flightSearchMapper.createCompleteJourneyAndRoutes(journeyResponse, journeyAirports,
@@ -196,9 +196,12 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     private fun getRouteAirlineByIdAndAirports(route: Route, included: List<Included<AttributesInc>>):
-            Observable<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>? {
+            Observable<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>? {
         return getAirlineById(route.airline, included)
-                .zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) { airline: FlightAirlineViewModel, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
+                .zipWith(getAirlineById(route.operatingAirline, included)) { flightAirline, flightOperatingAirline ->
+                    Pair(flightAirline, flightOperatingAirline)
+                }.zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) {
+                    airline: Pair<FlightAirlineViewModel, FlightAirlineViewModel>, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
                     Pair(airline, airport)
                 }
     }
