@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.util;
+package com.tokopedia.date.util;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.view.Window;
 import android.widget.DatePicker;
 
-import com.tokopedia.saldodetails.R;
+import com.tokopedia.design.R;
 
 import java.util.Calendar;
 

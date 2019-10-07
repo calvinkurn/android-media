@@ -164,4 +164,7 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
+
+    public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
+
 }
