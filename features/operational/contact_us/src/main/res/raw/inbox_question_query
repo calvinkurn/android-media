@@ -14,6 +14,7 @@ chipGetInboxDetail(caseID: $caseID) {
               id
               create_time
               message
+              message_plaintext
               created_by{
                 name
                 picture

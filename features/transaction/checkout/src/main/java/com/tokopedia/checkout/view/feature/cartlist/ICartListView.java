@@ -16,8 +16,11 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -104,8 +107,6 @@ public interface ICartListView extends IBaseView {
 
     void hideItemLoading();
 
-    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
-
     void notifyBottomCartParent();
 
     void setHasTriedToLoadWishList();
@@ -113,4 +114,12 @@ public interface ICartListView extends IBaseView {
     void setHasTriedToLoadRecentView();
 
     void setHasTriedToLoadRecommendation();
+
+    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
+
+    void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation);
+
+    ArrayList<InsuranceCartDigitalProduct> getInsuranceCartShopData();
+
+    void removeInsuranceProductItem(List<Long> productId);
 }

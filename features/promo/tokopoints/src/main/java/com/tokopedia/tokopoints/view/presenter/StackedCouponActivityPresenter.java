@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.contract.CouponActivityContract;
 import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract;
 import com.tokopedia.tokopoints.view.model.CouponFilterBase;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class StackedCouponActivityPresenter extends BaseDaggerPresenter<StackedC
 
             @Override
             public void onError(Throwable e) {
-                getView().onError(e.getLocalizedMessage());
+                getView().onError(e.getLocalizedMessage(), NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
             }
 
             @Override

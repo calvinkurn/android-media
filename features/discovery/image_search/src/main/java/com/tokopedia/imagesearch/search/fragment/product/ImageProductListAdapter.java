@@ -1,6 +1,7 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 
@@ -12,6 +13,11 @@ public class ImageProductListAdapter extends BaseAdapter<ImageProductListTypeFac
 
     public ImageProductListAdapter(ImageProductListTypeFactory adapterTypeFactory) {
         super(adapterTypeFactory);
+    }
+
+    public void showEmpty() {
+        visitables.add(new EmptyModel());
+        notifyDataSetChanged();
     }
 
     public void updateWishlistStatus(String productId, boolean isWishlisted) {
