@@ -58,3 +58,9 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
     this[index1] = this[index2]
     this[index2] = tmp
 }
+
+fun <T> MutableList<T>.goToFirst(index: Int) {
+    val tmp = this[index]
+    this.removeAt(index)
+    this.add(0, tmp)
+}

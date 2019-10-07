@@ -174,7 +174,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
-        if (adapter.list.size < 1 && adapter.list[0] is LoadingModel) {
+        if (adapter.list.size <= 1 && adapter.list[0] is LoadingModel) {
             return
         } else if (adapter.list.size == 0) {
             return
@@ -207,23 +207,27 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
             //found on list, not the first
             index > 0 -> {
-                val existingThread: Visitable<Any>? = adapter.list[index]
-                (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
-                existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
-                existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
-                existingThread.attributes?.lastReplyTimeStr = newChat.time
-                adapter.list.swap(index, 0)
+                updateChatPojo(index, newChat)
+                adapter.list.goToFirst(index)
                 adapter.notifyItemMoved(index, 0)
                 animateWhenOnTop()
             }
             //found on list, and the first item
             else -> {
-                val existingThread: Visitable<Any>? = adapter.list[index]
-                (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
-                existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
-                existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
-                existingThread.attributes?.lastReplyTimeStr = newChat.time
+                updateChatPojo(index, newChat)
                 adapter.notifyItemChanged(0)
+            }
+        }
+    }
+
+    private fun updateChatPojo(index: Int, newChat: IncomingChatWebSocketModel) {
+        if (index >= adapter.list.size) return
+        adapter.list[index].apply {
+            if (this is ItemChatListPojo) {
+                attributes?.lastReplyMessage = newChat.message
+                attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
+                attributes?.lastReplyTimeStr = newChat.time
             }
         }
     }
