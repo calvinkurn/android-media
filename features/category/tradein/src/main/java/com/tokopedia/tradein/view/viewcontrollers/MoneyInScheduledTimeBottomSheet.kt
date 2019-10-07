@@ -49,7 +49,8 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {
-            dateAdapter.date.add(date.dateFmt)
+            if (date.dateFmt != null)
+                dateAdapter.date.add(date.dateFmt)
         }
         dateAdapter.date.add("") //Added empty element for better UX
         dateSpinner = view?.findViewById(R.id.date_spinner)
@@ -99,7 +100,8 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
             if (it.dateFmt == currentDate) {
                 timeAdapter.time.clear()
                 for (time in it.scheduleTime)
-                    timeAdapter.time.add(time.timeFmt)
+                    if (time.timeFmt != null)
+                        timeAdapter.time.add(time.timeFmt)
                 timeAdapter.time.add("") //Added empty element for better UX
             }
         }
@@ -133,6 +135,6 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     }
 
     interface ActionListener {
-        fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt:String)
+        fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt:String?)
     }
 }

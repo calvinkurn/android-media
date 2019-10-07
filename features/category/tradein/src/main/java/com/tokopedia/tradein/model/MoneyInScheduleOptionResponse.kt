@@ -24,7 +24,7 @@ data class MoneyInScheduleOptionResponse(
 
             data class ScheduleDate(
                     @SerializedName("DateFmt")
-                    val dateFmt: String,
+                    val dateFmt: String?,
                     @SerializedName("ScheduleTime")
                     val scheduleTime: ArrayList<ScheduleTime>
             ) : Parcelable {
@@ -39,7 +39,7 @@ data class MoneyInScheduleOptionResponse(
                         @SerializedName("MinTimeUnix")
                         val minTimeUnix: Int,
                         @SerializedName("TimeFmt")
-                        val timeFmt: String
+                        val timeFmt: String?
                 ) : Parcelable {
                     constructor(parcel: Parcel) : this(
                             parcel.readInt(),
