@@ -177,6 +177,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
+    private var afterRefresh: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -375,6 +376,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onRefresh() {
         newFeed.visibility = View.GONE
         feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+        afterRefresh = true
     }
 
     override fun onDestroyView() {
@@ -1593,7 +1595,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun fetchFirstPage() {
-        presenter.fetchFirstPage(getFirstPageCursor())
+        val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
+        presenter.fetchFirstPage(firstPageCursor)
+        afterRefresh = false
     }
 
     private fun getFirstPageCursor(): String {
