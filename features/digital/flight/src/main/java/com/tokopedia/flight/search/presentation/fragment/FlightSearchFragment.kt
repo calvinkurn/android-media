@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.fragment
+package com.tokopedia.flight.search.presentation.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -31,16 +31,15 @@ import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.di.FlightSearchComponent
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.activity.FlightSearchFilterActivity
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder.Callback
+import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel
-import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
