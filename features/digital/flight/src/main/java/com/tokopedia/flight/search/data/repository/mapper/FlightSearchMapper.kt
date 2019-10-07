@@ -2,13 +2,13 @@ package com.tokopedia.flight.search.data.repository.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.flight.search.data.api.single.response.*
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.search.data.db.FlightComboTable
 import com.tokopedia.flight.search.data.db.FlightJourneyTable
 import com.tokopedia.flight.search.data.db.FlightRouteTable
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import javax.inject.Inject
 
 /**
@@ -120,7 +120,8 @@ class FlightSearchMapper @Inject constructor() {
                         refundable,
                         gson.toJson(amenities),
                         stops,
-                        gson.toJson(stopDetails)
+                        gson.toJson(stopDetails),
+                        operatingAirline
                 )
             }
         }
