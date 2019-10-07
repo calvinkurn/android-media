@@ -45,6 +45,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setAmenities(route.getAmenities());
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails()));
+            flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
         }
         return flightDetailRouteViewModel;
     }
