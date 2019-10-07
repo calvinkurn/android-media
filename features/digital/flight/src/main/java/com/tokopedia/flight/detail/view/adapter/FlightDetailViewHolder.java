@@ -134,7 +134,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             arrivalTerminal.setVisibility(View.GONE);
         }
 
-        if (route.getOperatingAirline().length() > 0) {
+        if (route.getOperatingAirline() !=  null && route.getOperatingAirline().length() > 0) {
             airlineOperatingBy.setText(getString(R.string.flight_detail_operating_by, route.getOperatingAirline()));
             airlineOperatingBy.setVisibility(View.VISIBLE);
         } else {
