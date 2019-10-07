@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -106,8 +105,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private float sellerSaldoBalance;
-    private float buyerSaldoBalance;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
     private float totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
@@ -517,12 +516,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public float getSellerSaldoBalance() {
+    public long getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public float getBuyerSaldoBalance() {
+    public long getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
@@ -678,13 +677,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(float balance, String text) {
+    public void setBuyerSaldoBalance(long balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(float amount, String formattedAmount) {
+    public void setSellerSaldoBalance(long amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }

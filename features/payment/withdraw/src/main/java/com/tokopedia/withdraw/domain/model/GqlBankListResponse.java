@@ -7,27 +7,27 @@ import java.util.List;
 
 public class GqlBankListResponse {
 
-    @SerializedName("error")
-    @Expose
-    private String bankAccount;
 
-    @SerializedName("accounts")
+    @SerializedName("status")
+    @Expose
+    private int status;
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    @SerializedName("data")
     @Expose
     private List<BankAccount> bankAccountList;
 
-    public String getBankAccount() {
-        return bankAccount;
+    public int getStatus() {
+        return status;
     }
 
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
+    public String getMessage() {
+        return message;
     }
 
     public List<BankAccount> getBankAccountList() {
         return bankAccountList;
-    }
-
-    public void setBankAccountList(List<BankAccount> bankAccountList) {
-        this.bankAccountList = bankAccountList;
     }
 }
