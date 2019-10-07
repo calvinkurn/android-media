@@ -6,11 +6,8 @@ import java.net.UnknownHostException;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * @author Angga.Prasetiyo on 23/12/2015.
@@ -41,13 +38,7 @@ public class TkpdBaseInterceptor implements Interceptor {
             }
             return response;
         } catch (Error e) {
-            return new Response.Builder()
-                    .code(418) //Whatever code
-                    .body(ResponseBody.create(MediaType.get("text/html; charset=utf-8"), ""))
-                    .protocol(Protocol.HTTP_2)
-                    .message("There is an error. Please try again")
-                    .request(chain.request())
-                    .build();
+            throw new UnknownHostException();
         }
     }
 
