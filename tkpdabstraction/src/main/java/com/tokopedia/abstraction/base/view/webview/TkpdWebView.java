@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
+import android.webkit.WebSettings;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.R;
