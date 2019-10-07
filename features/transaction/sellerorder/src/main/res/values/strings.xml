@@ -45,4 +45,11 @@
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
     <string name="catatan">Catatan</string>
+    <string name="terima_pesanan">Terima Pesanan</string>
+    <string name="informasi_pembayaran">Informasi Pembayaran</string>
+    <string name="product_price_label">Harga</string>
+    <string name="shipping_price_label">Total Ongkos Kirim</string>
+    <string name="insurance_price_label">Asuransi</string>
+    <string name="additional_price_label">Biaya Tambahan Penjual</string>
+    <string name="total_price_label">Total Pembayaran</string>
 </resources>

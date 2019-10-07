@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
@@ -141,9 +142,21 @@ class SomDetailFragment : BaseDaggerFragment() {
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
                 notesValue)
 
+        val dataPayments = SomDetailPayments(
+                detailResponse.paymentSummary.productsPriceText,
+                detailResponse.paymentSummary.totalItem,
+                detailResponse.paymentSummary.totalWeightText,
+                detailResponse.paymentSummary.shippingPriceText,
+                detailResponse.paymentSummary.insurancePrice,
+                detailResponse.paymentSummary.insurancePriceText,
+                detailResponse.paymentSummary.additionalPrice,
+                detailResponse.paymentSummary.additionalPriceText,
+                detailResponse.paymentSummary.totalPriceText)
+
         listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
         listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
+        listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()

@@ -262,9 +262,17 @@ data class SomDetailOrder (
                     @Expose
                     val shippingPriceText: String = "",
 
+                    @SerializedName("insurance_price")
+                    @Expose
+                    val insurancePrice: Int = 0,
+
                     @SerializedName("insurance_price_text")
                     @Expose
                     val insurancePriceText: String = "",
+
+                    @SerializedName("additional_price")
+                    @Expose
+                    val additionalPrice: Int = 0,
 
                     @SerializedName("additional_price_text")
                     @Expose
@@ -276,7 +284,11 @@ data class SomDetailOrder (
 
                     @SerializedName("total_weight_text")
                     @Expose
-                    val totalWeightText: String = "")
+                    val totalWeightText: String = "",
+
+                    @SerializedName("total_price_text")
+                    @Expose
+                    val totalPriceText: String = "")
 
             data class Button(
                     @SerializedName("key")

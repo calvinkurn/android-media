@@ -11,6 +11,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
 
@@ -42,6 +43,10 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_shipping_item, parent, false)
                 SomDetailShippingViewHolder(view)
             }
+            LAYOUT_PAYMENTS -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.detail_payments_item, parent, false)
+                SomDetailPaymentsViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -60,6 +65,9 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
                 holder.bind(element, position)
             }
             is SomDetailShippingViewHolder -> {
+                holder.bind(element, position)
+            }
+            is SomDetailPaymentsViewHolder -> {
                 holder.bind(element, position)
             }
         }

@@ -200,21 +200,20 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                         }
                     })*/
-                    adapter.setDescriptionClickEvent(object: TickerCallback {
-                        override fun onDescriptionViewClick(link: CharSequence?) {
+                    adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             // changed to open bottomsheet
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                             // showTickerBottomSheet(listTickerData[])
                         }
 
-                        override fun onDismiss() {}
                     })
                     ticker_info?.addPagerView(adapter, listTickerData)
                 }
             } else {
                 tickerList.first().let {
                     ticker_info?.visibility = View.VISIBLE
-                    ticker_info?.setHtmlDescription(it.shortDesc)
+                    ticker_info?.setHtmlDescription(it.body)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {

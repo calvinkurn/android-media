@@ -5,7 +5,7 @@ package com.tokopedia.sellerorder.common.util
  */
 object SomConsts {
     const val PARAM_SELLER = "seller"
-    const val PARAM_CLIENT = "desktop"
+    const val PARAM_CLIENT = "android"
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
