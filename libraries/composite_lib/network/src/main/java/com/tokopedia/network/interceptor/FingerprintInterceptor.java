@@ -8,8 +8,11 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * @author ricoharisin .
@@ -36,10 +39,20 @@ public class FingerprintInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request.Builder newRequest = chain.request().newBuilder();
-        newRequest = addFingerPrint(newRequest);
+        try {
+            Request.Builder newRequest = chain.request().newBuilder();
+            newRequest = addFingerPrint(newRequest);
 
-        return chain.proceed(newRequest.build());
+            return chain.proceed(newRequest.build());
+        }catch (Exception e){
+            return new Response.Builder()
+                    .code(418) //Whatever code
+                    .body(ResponseBody.create(MediaType.get("text/html; charset=utf-8"), ""))
+                    .protocol(Protocol.HTTP_2)
+                    .message("There is an error. Please try again")
+                    .request(chain.request())
+                    .build();
+        }
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
