@@ -49,8 +49,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {
-            if (date.dateFmt != null)
-                dateAdapter.date.add(date.dateFmt)
+            dateAdapter.date.add(date.dateFmt)
         }
         dateAdapter.date.add("") //Added empty element for better UX
         dateSpinner = view?.findViewById(R.id.date_spinner)
@@ -83,7 +82,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         courierButton?.setOnClickListener {
             scheduleDate.forEach {
                 if (it.dateFmt == currentDate) {
-                    it.scheduleTime?.forEach { time ->
+                    it.scheduleTime.forEach { time ->
                         if (time.timeFmt == currentTime) {
                             actionListener?.onScheduleButtonClick(time, it.dateFmt)
                             dismiss()
@@ -97,11 +96,10 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
 
     private fun changeTimeByDate() {
         scheduleDate.forEach {
-            if (it.dateFmt == currentDate && it.scheduleTime != null) {
+            if (it.dateFmt == currentDate) {
                 timeAdapter.time.clear()
                 for (time in it.scheduleTime)
-                    if (time.timeFmt != null)
-                        timeAdapter.time.add(time.timeFmt)
+                    timeAdapter.time.add(time.timeFmt)
                 timeAdapter.time.add("") //Added empty element for better UX
             }
         }
@@ -135,6 +133,6 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     }
 
     interface ActionListener {
-        fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt:String?)
+        fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt:String)
     }
 }

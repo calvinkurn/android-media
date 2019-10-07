@@ -118,7 +118,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     if (!it.data.scheduleDate.isNullOrEmpty())
-                        setScheduleBottomSheet(it.data.scheduleDate!!)
+                        setScheduleBottomSheet(it.data.scheduleDate)
                 }
             }
         })
@@ -258,7 +258,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInScheduledTimeBottomSheet.setActionListener(this)
     }
 
-    override fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt: String?) {
+    override fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt: String) {
         this.scheduleTime = scheduleTime
         val retrieverTimeLabel = findViewById<Typography>(R.id.retriever_time_label) as Typography
         val retrieverTime = findViewById<Typography>(R.id.retriever_time) as Typography
