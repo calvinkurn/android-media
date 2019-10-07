@@ -1037,6 +1037,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             model.setMessage(voucherOrdersItemUiModel.getMessage());
                             model.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
                             model.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemUiModel.getDiscountAmount()));
+                            model.setCouponAmountRaw(voucherOrdersItemUiModel.getDiscountAmount());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                         }
                         notifyItemChanged(i);

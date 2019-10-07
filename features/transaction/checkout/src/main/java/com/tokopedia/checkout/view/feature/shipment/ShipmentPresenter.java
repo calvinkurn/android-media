@@ -1074,7 +1074,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code) {
         Promo generatedPromo = null;
         if (getView() != null) {
-            getView().showLoading();
             // Cleaning all codes except logistic promo code
             generatedPromo = getView().generateCheckPromoFirstStepParam();
             generatedPromo.setCodes(new ArrayList<>());
@@ -1104,7 +1103,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 e.printStackTrace();
                 if (getView() != null) {
                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                    getView().hideLoading();
                     getView().showToastError(e.getMessage());
                     getView().resetCourier(cartPosition);
                 }
@@ -1113,7 +1111,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (getView() != null) {
-                    getView().hideLoading();
                     checkPromoStackingCodeMapper.setFinal(false);
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                     String errMessage = "";

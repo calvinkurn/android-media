@@ -4,7 +4,7 @@ import android.content.Context;
 
 import android.content.res.Resources;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;

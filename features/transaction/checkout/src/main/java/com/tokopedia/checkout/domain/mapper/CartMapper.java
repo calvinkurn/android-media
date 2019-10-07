@@ -97,7 +97,7 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
-        if (!cartDataListResponse.getTickers().isEmpty()) {
+        if (cartDataListResponse.getTickers() != null && !cartDataListResponse.getTickers().isEmpty()) {
             Ticker ticker = cartDataListResponse.getTickers().get(0);
             cartListData.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
         }
