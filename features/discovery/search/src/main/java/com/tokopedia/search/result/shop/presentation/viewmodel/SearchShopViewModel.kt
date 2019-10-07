@@ -326,7 +326,7 @@ class SearchShopViewModel(
     }
 
     private fun updateEmptySearchViewModelWithFilter(isFilterActive: Boolean) {
-        clearSearchShopList()
+        searchShopMutableList.clear()
 
         val visitableList = createVisitableListWithEmptySearchViewModel(isFilterActive)
         updateSearchShopListWithNewData(visitableList)
@@ -442,13 +442,15 @@ class SearchShopViewModel(
     }
 
     private suspend fun tryReloadSearchShop() {
-        clearSearchShopList()
+        clearDataBeforeReload()
 
         trySearchShop()
     }
 
-    private fun clearSearchShopList() {
+    private fun clearDataBeforeReload() {
         searchShopMutableList.clear()
+
+        dynamicFilterModel = null
     }
 
     fun onViewOpenFilterPage() {
@@ -465,7 +467,16 @@ class SearchShopViewModel(
     }
 
     fun onViewApplyFilter(queryParameters: Map<String, String>?) {
+        if (queryParameters == null) return
 
+        applyFilterToSearchParameters(queryParameters)
+
+        onViewReloadData()
+    }
+
+    private fun applyFilterToSearchParameters(queryParameters: Map<String, String>) {
+        searchParameter.clear()
+        searchParameter.putAll(queryParameters)
     }
 
     fun getSearchParameter() = searchParameter.toMap()

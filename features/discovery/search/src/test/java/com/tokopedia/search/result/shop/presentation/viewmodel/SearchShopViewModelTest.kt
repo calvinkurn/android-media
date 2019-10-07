@@ -27,6 +27,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.betweenFirstAndLast
+import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.secondToLast
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -859,6 +860,10 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopLoadMoreRepository.isExecuted()
             }
 
+            Then("verify dynamic filter API is called once") {
+                dynamicFilterRepository.isExecuted(2)
+            }
+
             Then("assert search shop state success after reload") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
 
@@ -869,7 +874,7 @@ internal class SearchShopViewModelTest : Spek({
         }
     }
 
-    Feature("Handle view open filter page") {
+    Feature("Handle View Open Filter Page") {
         createTestInstance()
 
         Scenario("Open Filter Page successfully") {
@@ -920,48 +925,118 @@ internal class SearchShopViewModelTest : Spek({
                 openFilterPageEvent?.peekContent() shouldBe false
             }
         }
+
+        Scenario("Open Filter Page after Get Dynamic Filter Successful and then Failed") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view get dynamic filter successfully") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Given("view get dynamic filter failed on second try") {
+                val exception = Exception("Mock exception for dynamic filter API")
+
+                dynamicFilterRepository.stubGetResponse().throws(exception)
+
+                searchShopViewModel.onViewReloadData()
+            }
+
+            When("handle view open filter page") {
+                searchShopViewModel.onViewOpenFilterPage()
+            }
+
+            Then("should show error message indicating no filter data exists") {
+                val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
+
+                openFilterPageEvent?.peekContent() shouldBe false
+            }
+        }
     }
 
-//    Feature("Handle view applying filter") {
-//        createTestInstance()
-//
-//        Scenario("Apply filter with query parameters") {
-//            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-//            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-//            val searchShopViewModel by memoized<SearchShopViewModel>()
-//            val queryParametersFromFilter = mutableMapOf<String, String>()
-//
-//            Given("search shop and dynamic filter API call will be successful") {
-//                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-//                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
-//            }
-//
-//            Given("Query parameters from filter") {
-//                queryParametersFromFilter[SearchApiConst.Q] = "samsung"
-//                queryParametersFromFilter[SearchApiConst.FCITY] = "1,2,3"
-//            }
-//
-//            When("handle view applying filter") {
-//                searchShopViewModel.onViewApplyFilter(queryParametersFromFilter)
-//            }
-//
-//            Then("") {
-//
-//            }
-//        }
-//
-//        Scenario("Apply filter with null query parameters") {
-//            val searchShopViewModel by memoized<SearchShopViewModel>()
-//
-//            When("handle view applying filter") {
-//                searchShopViewModel.onViewApplyFilter(null)
-//            }
-//
-//            Then("should not error or do reload anything") {
-//
-//            }
-//        }
-//    }
+    Feature("Handle View Applying Filter") {
+        createTestInstance()
+
+        Scenario("Apply filter with query parameters") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+            val queryParametersFromFilter = mutableMapOf<String, String>()
+
+            Given("search shop and dynamic filter API call will be successful") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("Query parameters from filter, simulate remove and add filter") {
+                queryParametersFromFilter.putAll(searchShopViewModel.getSearchParameter().convertValuesToString())
+                queryParametersFromFilter.remove(SearchApiConst.OFFICIAL)
+                queryParametersFromFilter[SearchApiConst.FCITY] = "1,2,3"
+            }
+
+            When("handle view applying filter") {
+                searchShopViewModel.onViewApplyFilter(queryParametersFromFilter)
+            }
+
+            Then("Search Parameter should be updated with query params from filter (Except START value)") {
+                val searchParameterWithoutStart = searchShopViewModel.getSearchParameter().toMutableMap()
+                searchParameterWithoutStart.remove(SearchApiConst.START)
+                val queryParametersFromFilterWithoutStart = queryParametersFromFilter.toMutableMap()
+                queryParametersFromFilterWithoutStart.remove(SearchApiConst.START)
+
+                searchParameterWithoutStart shouldBe queryParametersFromFilterWithoutStart
+            }
+
+            Then("assert Search Parameter START parameter is 0") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter[SearchApiConst.START] shouldBe 0
+            }
+
+            Then("verify search shop and get dynamic filter API is called") {
+                searchShopFirstPageRepository.isExecuted()
+                dynamicFilterRepository.isExecuted()
+            }
+
+            Then("assert search shop state success after reload") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Apply filter with null query parameters") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+            lateinit var initialSearchParameter: Map<String, Any>
+
+            Given("search shop and dynamic filter API call will be successful") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("retrieve initial search parameter") {
+                initialSearchParameter = searchShopViewModel.getSearchParameter()
+            }
+
+            When("handle view applying filter") {
+                searchShopViewModel.onViewApplyFilter(null)
+            }
+
+            Then("Search Parameter does not get updated") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter shouldBe initialSearchParameter
+            }
+        }
+    }
 })
 
 private fun Repository<*>.stubGetResponse(): MockKStubScope<Any?, Any?> {
