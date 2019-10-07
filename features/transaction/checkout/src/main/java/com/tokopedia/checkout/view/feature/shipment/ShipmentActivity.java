@@ -11,7 +11,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -68,12 +67,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return intent;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        GraphqlClient.init(this);
     }
 
     @Override

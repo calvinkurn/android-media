@@ -21,11 +21,11 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
-import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldTieringData;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
@@ -105,7 +105,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     egoldTieringModel.setBasisAmount(data.getBasisAmount());
                     egoldTieringModel.setMaxAmount(data.getMaxAmount());
                     egoldTieringModel.setMinAmount(data.getMinAmount());
-                    egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
+                    egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
                     egoldTieringModelArrayList.add(egoldTieringModel);
                 }
                 egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);

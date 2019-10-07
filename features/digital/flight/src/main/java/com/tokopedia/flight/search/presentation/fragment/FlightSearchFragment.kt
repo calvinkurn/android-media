@@ -22,11 +22,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
@@ -267,7 +268,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             showLoading()
         }
 
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true,  fromCombo)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, fromCombo)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -759,16 +760,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
             val dateInput = flightSearchPassData.getDate(isReturning())
             val date = FlightDateUtil.stringToDate(dateInput)
-            val travelCalendarBottomSheet = TravelCalendarBottomSheet.Builder()
-                    .setShowHoliday(true)
-                    .setMinDate(minDate)
-                    .setMaxDate(maxDate)
-                    .setTitle(title)
-                    .setSelectedDate(date)
-                    .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
-                    .build()
-            travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
-                override fun onClickDate(dateSelected: Date) {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date),
+                    flightSearchPassData.departureAirport.airportCode,
+                    flightSearchPassData.arrivalAirport.airportCode,
+                    flightSearchPassData.flightClass.id)
+            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+                override fun onDateSelected(dateSelected: Date) {
                     val calendar = FlightDateUtil.getCurrentCalendar()
                     calendar.time = dateSelected
                     flightSearchPresenter.resetCounterCall()
@@ -776,7 +776,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                             calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
                 }
             })
-            travelCalendarBottomSheet.show(activity!!.supportFragmentManager, "travel calendar")
+            flightCalendarDialog.show(activity!!.supportFragmentManager, "travel calendar")
         }
     }
 

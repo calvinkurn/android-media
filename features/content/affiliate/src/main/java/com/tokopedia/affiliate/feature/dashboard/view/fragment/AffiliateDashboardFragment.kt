@@ -13,7 +13,9 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -29,7 +31,6 @@ import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboa
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.calendar.CalendarPickerView
@@ -295,7 +296,7 @@ class AffiliateDashboardFragment :
         else {
             calendarView = initCalendarView()
             calendarBottomSheet = initCalendarBottomSheet()
-            unifyCalendar.calendarPickerView.scrollToDate(startDate ?: getCurrentDate())
+            unifyCalendar.calendarPickerView?.scrollToDate(startDate ?: getCurrentDate())
             tempStartDate = null
             tempEndDate = null
             calendarBottomSheet.show()
@@ -336,11 +337,15 @@ class AffiliateDashboardFragment :
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
         val maxDate = getMaxDate()
-        val calendarPickerView = pickerView.init(getMinDate(), maxDate, holidayList)
-                .inMode(CalendarPickerView.SelectionMode.RANGE)
-        pickerView.setOnDateSelectedListener(getOnSelectedDateListener())
+        val calendarPickerView = pickerView?.init(getMinDate(), maxDate, holidayList)
+                ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+        pickerView?.setOnDateSelectedListener(getOnSelectedDateListener())
 
-        if (startDate != null && endDate != null) calendarPickerView.withSelectedDates(listOf(startDate, endDate))
+        startDate?.let { startDate ->
+            endDate?.let { endDate ->
+                if (startDate != null && endDate != null) calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
+            }
+        }
     }
 
     private fun getMinDate(): Date {
