@@ -8,6 +8,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
@@ -24,7 +25,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CommonNetwork {
 
-
     /**
     method to create retrofit object for general purpose
      */
@@ -38,6 +38,7 @@ public class CommonNetwork {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)

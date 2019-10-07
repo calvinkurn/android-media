@@ -29,6 +29,7 @@ import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeTo
 
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
+    private static final int PICTURE_QUALITY = 60;
 
     protected TkpdWebView webView;
     private ProgressBar progressBar;
@@ -148,7 +149,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
-            String base64 = encodeToBase64(imagePath);
+            String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
@@ -179,8 +180,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }
                 }
             }
-            uploadMessageAfterLolipop.onReceiveValue(results);
-            uploadMessageAfterLolipop = null;
+            if(uploadMessageAfterLolipop != null) {
+                uploadMessageAfterLolipop.onReceiveValue(results);
+                uploadMessageAfterLolipop = null;
+            }
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == uploadMessageBeforeLolipop) return;

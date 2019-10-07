@@ -42,6 +42,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
+        String VIEW_SOM = "viewSOM";
+        String CLICK_RECOMMENDATION = "clickRecommendation";
     }
 
     interface EventCategory {
@@ -59,6 +61,7 @@ public interface ConstantTransactionAnalytics {
         String WISHLIST_PAGE = "wishlist page";
         String RECENT_VIEW = "recent view";
         String RECOMMENDATION_PAGE = "recommendation page";
+        String TRACK_SOM = "track seller order management";
     }
 
     interface EventAction {
@@ -178,6 +181,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
         String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
         String CLICK_MORE_LIKE_THIS = "click more like this";
+        String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
+        String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -189,6 +194,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
         String VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER = "view ticker stock decrease and already atc by other user";
         String VIEW_TICKER_OUT_OF_STOCK = "view ticker out of stock";
+        String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view information and warning ticker in cart";
 
         //PHASE 2
         String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
@@ -278,6 +284,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
+        String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
@@ -289,6 +296,18 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
+        String CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT = "click add wishlist on primary product";
+        String CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT = "click remove wishlist on primary product";
+
+        //Retry Pickup
+        String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";
+        String VIEW_BUTTON_CARI_DRIVER = "view button cari driver";
+        String CLICK_BUTTON_CARI_DRIVER = "click button cari driver";
+
+        //Error Popup
+        String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
+        String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
+        String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
     }
 
     interface EventLabel {
@@ -333,6 +352,8 @@ public interface ConstantTransactionAnalytics {
         String PROMO = "promo";
         String NON_PROMO = "non promo";
         String COD = "cod";
+
+        String SOURCE_CART = "source: cart";
     }
 
     interface ScreenName {

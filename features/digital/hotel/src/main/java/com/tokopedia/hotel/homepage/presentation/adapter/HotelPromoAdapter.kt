@@ -26,11 +26,11 @@ class HotelPromoAdapter(private var viewModels: List<HotelPromoEntity>) : Recycl
     override fun getItemCount(): Int = viewModels.size
 
     override fun onBindViewHolder(holder: HotelPromoViewHolder, position: Int) {
-        holder.bind(viewModels[position], promoClickListener)
+        holder.bind(viewModels[position], promoClickListener, position)
     }
 
     interface PromoClickListener {
-        fun onPromoClicked(promo: HotelPromoEntity)
+        fun onPromoClicked(promo: HotelPromoEntity, position: Int)
     }
 
 }

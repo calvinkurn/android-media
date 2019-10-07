@@ -30,9 +30,9 @@ class ErrorHandlerHotel {
 
         fun getErrorImage(e: Throwable?): Int {
             if (e == null) {
-                return R.drawable.ic_server_error
-            } else if (e is UnknownHostException) return R.drawable.ic_no_internet_connection
-            else return R.drawable.ic_server_error
+                return R.drawable.hotel_ic_server_error
+            } else if (e is UnknownHostException) return R.drawable.hotel_ic_no_internet_connection
+            else return R.drawable.hotel_ic_server_error
         }
     }
 }

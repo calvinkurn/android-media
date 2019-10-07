@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'tools/quality.gradle'
-
+apply from: 'tools/version/version_module.gradle'
 
 buildscript {
     ext.jacocoVersion = '0.8.2'
@@ -62,7 +62,6 @@ allprojects {
             }
         }
         maven { url "https://www.jitpack.io" }
-        maven { url 'https://hansel.io/maven' }
     }
 }
 
@@ -88,6 +87,7 @@ afterEvaluate {
     }
 }
 
+
 subprojects {
     project.configurations.all {
         resolutionStrategy {
@@ -112,6 +112,35 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
+            }
+        }
+    }
+}
+
+task projectDependencyGraph {
+    doLast {
+        def rootProjects = []
+        def queue = [rootProject]
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0)
+            rootProjects.add(project)
+            queue.addAll(project.childProjects.values())
+        }
+
+        def projects = new LinkedHashSet<Project>()
+
+        queue = [rootProject]
+        while (!queue.isEmpty()) {
+            def project = queue.remove(0)
+            queue.addAll(project.childProjects.values())
+            project.configurations.all { config ->
+                config.dependencies.each { dependency ->
+                    projects.add(project)
+                    projects.add(dependency)
+                    rootProjects.remove(dependency)
+
+                    println " ${project.path} -> ${dependency.group} "
+                }
             }
         }
     }

@@ -27,12 +27,13 @@ object PersistentEvent {
 }
 
 object IrisAnalyticsEvents {
-    const val PUSH_RECEIVED = "pushReceived"
+    public const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
+    private const val EVENT_MESSAGE_ID = "message_id"
     private const val CAMPAIGN_ID = "campaign_id"
     private const val NOTIFICATION_ID = "notification_id"
     private const val SOURCE = "source"
@@ -64,6 +65,7 @@ object IrisAnalyticsEvents {
 
     fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
+
         values[EVENT_NAME] = eventName
         values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
         values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
@@ -75,6 +77,7 @@ object IrisAnalyticsEvents {
         if (CMConstant.NotificationType.SILENT_PUSH != baseNotificationModel.type) {
             values[IS_SILENT] = false
         }
+        values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
 
         return values
 

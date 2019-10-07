@@ -17,6 +17,7 @@ public class PaymentData {
     public String marketType = "";
     public String itemPrice = "";
     public boolean newBuyer;
+    public boolean monthlyNewBuyer;
 
     public boolean isNewBuyer() {
         return newBuyer;
@@ -24,6 +25,14 @@ public class PaymentData {
 
     public void setNewBuyer(boolean newBuyer) {
         this.newBuyer = newBuyer;
+    }
+
+    public boolean isMonthlyNewBuyer() {
+        return monthlyNewBuyer;
+    }
+
+    public void setMonthlyNewBuyer(boolean monthlyNewBuyer) {
+        this.monthlyNewBuyer = monthlyNewBuyer;
     }
 
     public String getPaymentId() {

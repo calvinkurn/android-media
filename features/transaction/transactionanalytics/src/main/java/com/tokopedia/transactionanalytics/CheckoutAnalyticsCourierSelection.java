@@ -1,8 +1,10 @@
 package com.tokopedia.transactionanalytics;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -342,6 +344,31 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    // GTM v5 EE Step 2 - 4
+    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
+                                                int step,
+                                                String checkoutOption,
+                                                String transactionId,
+                                                boolean isTradeIn,
+                                                String eventAction,
+                                                String eventLabel) {
+        String eventCategory = EventCategory.COURIER_SELECTION;
+        if (isTradeIn) {
+            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
+        }
+
+        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
+        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, checkoutOption);
+        eCommerceBundle.putString("eventCategory", eventCategory);
+        eCommerceBundle.putString("eventAction", eventAction);
+        eCommerceBundle.putString("eventLabel", eventLabel);
+
+        if (!TextUtils.isEmpty(transactionId)) {
+            eCommerceBundle.putString("payment_id", transactionId);
+        }
+        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
@@ -724,6 +751,14 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventCancelPromoStackingLogistic() {
+        sendEventCategoryAction(
+            "",
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
+        );
+    }
+
     public void eventViewDetailMerchantVoucher(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
@@ -867,11 +902,36 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
     public void eventViewCourierImpressionErrorCourierNoAvailable() {
         sendEventCategoryAction(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
+        );
+    }
+
+    public void eventViewHelpPopUpAfterErrorInCheckout() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
+        );
+    }
+
+    public void eventClickReportOnHelpPopUpInCheckout() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
+        );
+    }
+
+    public void eventClickCloseOnHelpPopUpInCheckout() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
         );
     }
 }

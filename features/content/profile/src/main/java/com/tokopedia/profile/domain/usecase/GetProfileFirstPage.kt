@@ -7,9 +7,10 @@ import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
 import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
-import com.tokopedia.profile.data.pojo.profileheader.Profile
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.usecase.RequestParams

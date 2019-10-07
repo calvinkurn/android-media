@@ -47,7 +47,6 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     private var productWeightUnit: String = LABEL_GRAM
     private var productWeight: Float = 0f
     private var origin: String? = null
-    private var forDeliveryInfo: Boolean = false
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -87,7 +86,6 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
             origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
-            forDeliveryInfo = it.getBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -145,7 +143,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
-        if (ratesEstimationModel.isBlackbox || forDeliveryInfo) {
+        if (ratesEstimationModel.isBlackbox) {
             (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
             if (recycler_view.itemDecorationCount > 0)
                 recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)
@@ -156,23 +154,19 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         adapter.isBlackbox = ratesEstimationModel.isBlackbox
         adapter.updateShippingServices(ratesEstimation.services)
         setViewState(VIEW_CONTENT)
-        if (forDeliveryInfo) {
-            app_bar_layout.visibility = View.GONE
-        }
     }
 
     companion object {
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, forDeliveryInfo: Boolean) =
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null) =
                 RatesEstimationDetailFragment().apply {
                     arguments = Bundle().apply {
                         putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                         putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
-                        putBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, forDeliveryInfo)
                     }
                 }
     }

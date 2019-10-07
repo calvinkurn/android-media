@@ -8,22 +8,25 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.design.banner.BannerPagerAdapter
-import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.R
-import kotlinx.android.synthetic.main.layout_slider_banner_design_card.view.*
 import android.graphics.Point
+import android.support.v7.widget.CardView
 import android.view.WindowManager
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 
 class CardBannerPagerAdapter(bannerImageUrls : List<String>,
                              onPromoClickListener : BannerView.OnPromoClickListener ) :
-        BannerPagerAdapter(bannerImageUrls, onPromoClickListener) {
+        BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
+
+    private lateinit var bannerCard: CardView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val itemView = inflater.inflate(R.layout.layout_slider_banner_design_card, parent, false)
+        bannerCard = itemView.findViewById(R.id.banner_card)
 
-        val layoutParams = itemView.getLayoutParams()
+        val layoutParams = itemView.layoutParams
 
         if (parent.width != 0 ) {
             layoutParams.width = (parent.width * 0.9).toInt()
@@ -39,13 +42,13 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
         }
 
         itemView.layoutParams = layoutParams
-        itemView.banner_card.visibility = View.VISIBLE
+        bannerCard.visibility = View.VISIBLE
 
         return BannerViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        if (bannerImageUrls[position] != null && bannerImageUrls[position].length > 0) {
+        if (bannerImageUrls[position] != null && bannerImageUrls[position].isNotEmpty()) {
             holder.bannerImage.setOnClickListener(
                     getBannerImageOnClickListener(position)
             )

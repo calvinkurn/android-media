@@ -7,7 +7,9 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -45,26 +47,31 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
-import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.normalcheckout.constant.ATC_ONLY
-import com.tokopedia.normalcheckout.constant.ProductAction
-import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
+import com.tokopedia.normalcheckout.constant.*
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
+import com.tokopedia.normalcheckout.model.Fail
+import com.tokopedia.normalcheckout.model.InsuranceRecommendationContainer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
+import com.tokopedia.normalcheckout.model.ProductInfoAndVariantContainer
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.transactiondata.insurance.entity.request.*
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
@@ -72,6 +79,13 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
+    private var isInsuranceSelected: Boolean = false
+
+    private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
+
+    private var insuranceEnabled: Boolean = false
+    private var productPrice: Float? = 0f
+    private var insuranceRecommendationRequest = InsuranceRecommendationRequest()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
@@ -86,13 +100,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private lateinit var router: NormalCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
 
+    private var insuranceViewModel = InsuranceRecommendationViewModel()
     var shopId: String? = null
+    var categoryId: String? = null
     lateinit var productId: String
+    lateinit var productTitle: String
+    var categoryName: String? = ""
     var notes: String? = null
     var quantity: Int = 0
     var tempQuantity = quantity
     var isTradeIn = 0
     var isOcs = true
+    var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -109,7 +128,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     val currencyLabel = "IDR"
 
 
+    private var condition: String? = ""
+    private val page = "pdp"
+    private val clientVersion = Build.VERSION.SDK_INT.toString()
+
     companion object {
+        const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_CART_ID = "cart_id"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
@@ -120,9 +144,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
         const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+        const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 565
 
-        fun createInstance(shopId: String?, productId: String?,
-                           notes: String? = "", quantity: Int? = 0,
+        fun createInstance(shopId: String?, categoryId: String?, categoryName: String?, productId: String?,
+                           productTitle: String?, productPrice: Float? = 0f, condition: String?, notes: String? = "", quantity: Int? = 0,
                            selectedVariantId: String? = null,
                            @ProductAction action: Int = ATC_AND_BUY,
                            placeholderProductImage: String?,
@@ -132,6 +157,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
+                           isLeasing: Boolean,
+                           reference: String?,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -141,17 +168,25 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity ?: 0)
                     putInt(ApplinkConst.Transaction.EXTRA_ACTION, action)
                     putString(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE, placeholderProductImage)
-                    putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
-                    putString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution ?: "")
+                    putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId
+                            ?: "")
+                    putString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution
+                            ?: "")
                     putString(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName ?: "")
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName ?: "")
                     putBoolean(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
                     putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    putString(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, categoryId)
+                    putString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, categoryName)
+                    putString(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, productTitle)
+                    putFloat(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, productPrice!!)
+                    putString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, condition)
+                    putBoolean(EXTRA_IS_LEASING, isLeasing)
+                    putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                 }
             }
-
             return fragment
         }
     }
@@ -170,7 +205,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         super.onActivityCreated(savedInstanceState)
         viewModel.productInfoResp.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessGetProductInfo(it.data)
+                is ProductInfoAndVariantContainer -> onSuccessGetProductInfo(it.productInfoAndVariant)
+                is InsuranceRecommendationContainer -> onSuccessInsuranceRecommendation(it.insuranceRecommendation)
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
         })
@@ -280,6 +316,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     tv_trade_in.setOnClickListener(null)
                     doCheckoutAction(TRADEIN_BUY)
                 }
+                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT -> {
+                    goToApplyLeasing()
+                }
             }
         }
     }
@@ -383,6 +422,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
             }
+            if (isLeasing) {
+                button_cart.gone()
+                button_buy_partial.gone()
+                btn_apply_leasing.visible()
+            }
         } else { // sellerapp or warehouse product or owner
             showFullButton(!productInfo.basic.isActive(), productInfo.isPreorderActive, false)
         }
@@ -465,6 +509,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onCreate(savedInstanceState: Bundle?) {
         val argument = arguments
         if (argument != null) {
+
+            categoryId = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_ID)
+            categoryName = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME)
+            productTitle = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE) ?: ""
+            productPrice = argument.getFloat(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE) ?: 0f
+            condition = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION)
+
+
             shopId = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_ID)
             productId = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID) ?: ""
             notes = argument.getString(ApplinkConst.Transaction.EXTRA_NOTES)
@@ -477,6 +529,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             shopName = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME)
             tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
+            isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -487,6 +540,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             notes = savedInstanceState.getString(ApplinkConst.Transaction.EXTRA_NOTES)
             quantity = savedInstanceState.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
         }
+
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        insuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
 
         super.onCreate(savedInstanceState)
         viewModel.parseDataFrom(arguments)
@@ -525,6 +581,21 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             doCheckoutAction(action)
         }
+        btn_apply_leasing.setOnClickListener {
+            if (!viewModel.isUserSessionActive()) {
+                context?.run {
+                    //do tracking
+                    if (action == APPLY_CREDIT) {
+                        startActivityForResult(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT
+                        )
+                    }
+                }
+                return@setOnClickListener
+            }
+            goToApplyLeasing()
+        }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
             if (hasError()) {
@@ -542,9 +613,62 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
+    private fun goToApplyLeasing() {
+        val urlApplyLeasingWithProductId = String.format(
+                URL_APPLY_LEASING,
+                productId
+        )
+        val webViewUrl = String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                urlApplyLeasingWithProductId
+        )
+        RouteManager.route(context, webViewUrl)
+    }
+
     override fun onDestroy() {
         viewModel.unsubscribe()
         super.onDestroy()
+    }
+
+    private fun generateInsuranceRequest() {
+
+
+        insuranceRecommendationRequest = InsuranceRecommendationRequest()
+        insuranceRecommendationRequest.page = page
+        insuranceRecommendationRequest.clientVersion = clientVersion
+
+        val insuranceShopsDataArrayList = ArrayList<InsuranceShopsData>()
+
+        val insuranceShopsData = InsuranceShopsData()
+        insuranceShopsData.shopId = java.lang.Long.parseLong(shopId)
+
+        val insuranceShopsArrayList = java.util.ArrayList<InsuranceShops>()
+        val insuranceShops: InsuranceShops
+
+        val insurnaceShopCategory = InsuranceShopCategory()
+
+        insurnaceShopCategory.categoryId = categoryId.toLongOrZero()
+        insurnaceShopCategory.categoryName = categoryName!!
+
+        insuranceShops = InsuranceShops()
+        insuranceShops.productId = productId.toLong()
+        insuranceShops.productQuantity = quantity
+        insuranceShops.categoryId = categoryId.toLongOrZero()
+        insuranceShops.productTitle = productTitle
+        insuranceShops.productPrice = productPrice?.toLong()!!
+        insuranceShops.condition = condition!!.toLowerCase()
+
+        insuranceShops.shopCategory = insurnaceShopCategory
+        insuranceShopsArrayList.add(insuranceShops)
+
+
+        insuranceShopsData.shopItems = insuranceShopsArrayList
+        insuranceShopsDataArrayList.add(insuranceShopsData)
+
+        insuranceRecommendationRequest.shopsArrayList = insuranceShopsDataArrayList
+
+
     }
 
     private fun doCheckoutAction(action: Int) {
@@ -632,14 +756,23 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun sendBranchAddToCardEvent(){
-        if(selectedProductInfo != null) {
+    private fun onFinishError(errorModel: AddToCartDataModel) {
+        activity?.run {
+            setResult(RESULT_CODE_ERROR_TICKET, Intent().apply {
+                putExtra(RESULT_TICKET_DATA, errorModel)
+            })
+            finish()
+        }
+    }
+
+    private fun sendBranchAddToCardEvent() {
+        if (selectedProductInfo != null) {
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
                     (UserSession(activity)).userId)))
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData {
         var linkerData = LinkerData()
         linkerData.id = productInfo?.basic?.id.toString()
         linkerData.price = productInfo?.basic?.price?.toInt().toString()
@@ -674,7 +807,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     val cartUriString = ApplinkConstInternalMarketplace.CART
                     val intent = RouteManager.getIntent(this, cartUriString)
                     intent?.run {
-                        putExtra(EXTRA_CART_ID, cartId)
+                        putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
                         startActivity(intent)
                     }
                 }
@@ -707,10 +840,25 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun addToCart() {
-        tempQuantity = quantity
-        isTradeIn = 0
-        addToCart(false, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+
+        if (isInsuranceSelected &&
+                !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
+                !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
+
+            if (isErrorInInsurance()) {
+                return
+            }
+        }
+
+        addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
+
+            hideLoadingDialog()
+            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                    selectedProductInfo?.basic?.price.toString(),
+                    quantity,
+                    selectedProductInfo?.basic?.name ?: "",
+                    selectedProductInfo?.category?.name ?: "")
+
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
                         originalProduct,
@@ -718,11 +866,131 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
+                        getPageReference()
+                )
             }
-        }, onRetryWhenError = {
-            addToCart()
+            onFinishAddToCart(message)
+        }, onRetryWhenError = { message: String ->
+            hideLoadingDialog()
+            var toastMessage = if (message.isNullOrBlank()) {
+                getString(R.string.default_request_error_unknown_short)
+            } else {
+                message
+            }
+            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(toastMessage)
+        }, onGqlError = { e: Throwable? ->
+            hideLoadingDialog()
+            showToastError(e) {
+                addToCart()
+            }
         })
+
+    }
+
+    private fun isErrorInInsurance(): Boolean {
+
+        for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
+            for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
+                for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
+                    for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
+                        if (applicationDetail.isError) {
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun addToInsuranceCart(onFinish: ((message: String?, cartId: String?) -> Unit),
+                                   onRetryWhenError: ((message: String) -> Unit), onGqlError: ((e: Throwable?) -> Unit)) {
+        val selectedVariant = selectedVariantId
+        val selectedWarehouseId = viewModel.selectedwarehouse?.warehouseInfo?.id?.toLong() ?: 0
+        showLoadingDialog()
+        //initiate add to insurance cart
+
+        normalCheckoutTracking.eventAppsFlyerInitiateCheckout(productId,
+                selectedProductInfo?.basic?.price.toString(),
+                quantity,
+                selectedProductInfo?.basic?.name ?: "",
+                selectedProductInfo?.category?.name ?: "")
+
+        val addMarketPlaceToCartRequest = AddMarketPlaceToCartRequest()
+        addMarketPlaceToCartRequest.notes = notes ?: ""
+        addMarketPlaceToCartRequest.productId = if (selectedVariant != null && selectedVariant.toInt() > 0) {
+            selectedVariant.toLong()
+        } else {
+            productId.toLong()
+        }
+        addMarketPlaceToCartRequest.quantity = quantity
+        addMarketPlaceToCartRequest.shoppId = shopId?.toLong() ?: 0
+        addMarketPlaceToCartRequest.warehouseID = selectedWarehouseId
+
+        val addInsuranceProductToCartRequest = AddInsuranceProductToCartRequest()
+
+
+        if (isInsuranceSelected) {
+            addInsuranceProductToCartRequest.page = page
+            addInsuranceProductToCartRequest.clientVersion = clientVersion
+            addInsuranceProductToCartRequest.clientType = "android"
+            addInsuranceProductToCartRequest.clientLanguage = "bhasa"
+
+            val addInsuranceProductDataList = ArrayList<AddInsuranceProductData>()
+
+            for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
+                val model = AddInsuranceProductData()
+                model.shopId = insuranceCartShopsViewModel.shopId
+                val addInsuranceProductItemList = ArrayList<AddInsuranceProductItems>()
+
+                for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
+                    val addShopItem = AddInsuranceProductItems()
+
+                    addShopItem.productId = shopItem.productId
+                    addShopItem.productQuantity = 1
+
+                    val digitalProductList = ArrayList<AddInsuranceProduct>()
+
+                    for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
+
+                        val digitalProduct = AddInsuranceProduct()
+                        digitalProduct.typeId = insuranceCartDigitalProduct.typeId
+                        digitalProduct.digitalProductId = insuranceCartDigitalProduct.digitalProductId
+                        val applicationDetailList = ArrayList<AddInsuranceProductApplicationDetails>()
+
+                        for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
+                            val addApplicationDetail = AddInsuranceProductApplicationDetails()
+                            addApplicationDetail.id = applicationDetail.id
+                            addApplicationDetail.value = applicationDetail.value
+                            applicationDetailList.add(addApplicationDetail)
+                        }
+
+                        digitalProduct.applicationDetails = applicationDetailList
+                        digitalProductList.add(digitalProduct)
+
+                    }
+
+                    addShopItem.digitalProductList = digitalProductList
+                    addInsuranceProductItemList.add(addShopItem)
+                }
+
+                model.shopItems = addInsuranceProductItemList
+                addInsuranceProductDataList.add(model)
+            }
+
+            addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
+        }
+
+
+        viewModel.addInsuranceProductToCart(addInsuranceProductToCartRequest,
+                addMarketPlaceToCartRequest, onFinish, onRetryWhenError, onGqlError)
+
+    }
+
+    private fun getPageReference(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_REFERENCE, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
@@ -782,6 +1050,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         selectedProductInfo?.basic?.name ?: "",
                         selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
+            } else if (addToCartDataModel.errorReporter.eligible) {
+                onFinishError(addToCartDataModel)
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])
@@ -845,7 +1115,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-        viewModel.getProductInfo(ProductParams(productId, null, null), resources)
+
+        if (viewModel.isUserSessionActive()) {
+            generateInsuranceRequest()
+        }
+
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceEnabled, insuranceRecommendationRequest)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -913,10 +1188,26 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
+            if (insuranceViewModel.cartShopsList.isNotEmpty()) {
+                adapter.addSingleDataViewModel(insuranceViewModel)
+            }
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
         }
+    }
+
+    private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
+        Handler().postDelayed({
+            selectedProductInfo?.let {
+                insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
+                fragmentViewModel.viewModels.add(insuranceViewModel)
+                adapter.addSingleDataViewModel(insuranceViewModel)
+                adapter.notifyDataSetChanged()
+                renderActionButton(it)
+                renderTotalPrice(it, viewModel.selectedwarehouse)
+            }
+        }, 600)
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
@@ -975,6 +1266,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
         outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
+    }
+
+    override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {
+        this.selectedInsuranceProduct = element ?: InsuranceRecommendationViewModel()
+        isInsuranceSelected = isSelected
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */

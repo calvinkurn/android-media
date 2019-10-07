@@ -38,9 +38,12 @@ import java.util.List;
 public class CMNotificationFactory {
 
     private static final String TAG = CMNotificationFactory.class.getSimpleName();
-    
+
     @Nullable
     public static BaseNotification getNotification(Context context, Bundle bundle) {
+        if (context == null || bundle == null) {
+            return null;
+        }
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
 
         IrisAnalyticsEvents.INSTANCE.sendPushEvent(context,IrisAnalyticsEvents.PUSH_RECEIVED,baseNotificationModel);
@@ -88,6 +91,9 @@ public class CMNotificationFactory {
 
                 case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
                     return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
+
+                case CMConstant.NotificationType.BIG_IMAGE_BANNER:
+                    return new BannerNotification(context.getApplicationContext(), baseNotificationModel);
 
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
@@ -143,7 +149,7 @@ public class CMNotificationFactory {
             model.setActionButton(actionButtonList);
         model.setPersistentButtonList(getPersistentNotificationData(data));
         model.setVideoPushModel(getVideoNotificationData(data));
-        model.setCustomValues(getCustomValues(data));
+        model.setCustomValues(data.getString(CMConstant.PayloadKeys.CUSTOM_VALUE, ""));
         List<Carousel> carouselList = getCarouselList(data);
         if (carouselList != null) {
             model.setCarouselList(carouselList);
@@ -151,14 +157,16 @@ public class CMNotificationFactory {
         }
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false));
-
         List<Grid> gridList = getGridList(data);
         if (gridList != null)
             model.setGridList(gridList);
-        model.setProductInfoList(getProductInfoList(data));
+        List<ProductInfo> productInfoList = getProductInfoList(data);
+        if (productInfoList != null)
+            model.setProductInfoList(productInfoList);
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
         model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));
+        model.setCampaignUserToken(data.getString(CMConstant.PayloadKeys.CAMPAIGN_USER_TOKEN,""));
         return model;
     }
 
@@ -177,19 +185,6 @@ public class CMNotificationFactory {
     }
 
     @Nullable
-    private static JSONObject getCustomValues(Bundle extras) {
-        String values = extras.getString(CMConstant.PayloadKeys.CUSTOM_VALUE);
-        if (TextUtils.isEmpty(values)) {
-            return null;
-        }
-        try {
-            return new JSONObject(values);
-        } catch (Exception e) {
-            Log.e(TAG, "CM-getCustomValues", e);
-        }
-        return null;
-    }
-    @Nullable
     private static List<ActionButton> getActionButtons(Bundle extras) {
         String actions = extras.getString(CMConstant.PayloadKeys.ACTION_BUTTON);
         if (TextUtils.isEmpty(actions)) {
@@ -206,6 +201,7 @@ public class CMNotificationFactory {
         }
         return null;
     }
+
     @Nullable
     private static List<PersistentButton> getPersistentNotificationData(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.PayloadKeys.PERSISTENT_DATA);

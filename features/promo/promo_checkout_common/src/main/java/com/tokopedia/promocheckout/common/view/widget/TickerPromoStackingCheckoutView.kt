@@ -75,6 +75,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         when (variant) {
             Variant.GLOBAL -> setViewGlobal()
             Variant.MERCHANT -> setViewMerchant()
+            Variant.LOGISTIC -> setViewLogistic()
         }
 
         titleCouponGlobal?.text = title
@@ -179,6 +180,11 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 
+    private fun setViewLogistic() {
+        ic_button_coupon.visibility = View.GONE
+        layout_counter_coupons.visibility = View.GONE
+    }
+
     private fun setViewDisabled() {
         if (variant != Variant.GLOBAL) {
             val nonActiveTextColor = ContextCompat.getColor(context, R.color.promo_checkout_grey_nonactive_text)
@@ -223,7 +229,8 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     enum class Variant(val id: Int) : Parcelable {
 
         GLOBAL(0),
-        MERCHANT(1);
+        MERCHANT(1),
+        LOGISTIC(2);
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(id)

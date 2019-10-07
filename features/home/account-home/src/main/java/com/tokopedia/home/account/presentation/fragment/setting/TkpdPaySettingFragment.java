@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -32,7 +33,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
                     if (userSession.hasPassword()) {
-                        startActivity(router.getSettingBankIntent(getActivity()));
+                        startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
                     } else {
                         showNoPasswordDialog();
                     }
@@ -153,7 +153,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                             router.goToSaldo(getActivity());
                         } else {
                             pvtUserSession.setSaldoIntroPageStatus(true);
-                            RouteManager.route(getContext(), ApplinkConst.SALDO_INTRO);
+                            RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
                         }
                     } else {
                         RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
@@ -216,9 +216,9 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     }
 
     private void intentToAddPassword() {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+        if (getActivity() != null) {
+            startActivityForResult(RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_CHANGE_PASSWORD);
         }
     }
 }

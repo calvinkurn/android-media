@@ -24,10 +24,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.unifycomponents.ticker.Ticker;
-import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
-
-import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -185,7 +182,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerPromoStackingCheckoutView.enableView();
                     if (disabledItem > 0) {
                         if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
-                            cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
+                                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
                             actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                             tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
                             tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
@@ -253,25 +250,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
             llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
 
-            String similarProductUrl = data.getShopGroupData().getSimilarProductUrl();
-            if (!TextUtils.isEmpty(similarProductUrl)) {
-                tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
-                tickerError.setDescriptionClickEvent(new TickerCallback() {
-                    @Override
-                    public void onDescriptionViewClick(CharSequence url) {
-                        actionListener.onSimilarProductUrlClicked(url.toString());
-                    }
-
-                    @Override
-                    public void onDismiss() {
-
-                    }
-                });
-                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
-                List<CartItemHolderData> cartItemDataList = data.getShopGroupData().getCartItemDataList();
-                String lastProductId = cartItemDataList.get(cartItemDataList.size() - 1).getCartItemData().getOriginData().getProductId();
-                actionListener.onShowTickerOutOfStock(lastProductId);
-            } else {
+            if (!TextUtils.isEmpty(data.getShopGroupData().getErrorTitle())) {
                 String errorDescription = data.getShopGroupData().getErrorDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
                     tickerError.setTickerTitle(data.getShopGroupData().getErrorTitle());
@@ -280,13 +259,19 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerError.setTickerTitle(null);
                     tickerError.setTextDescription(data.getShopGroupData().getErrorTitle());
                 }
+                tickerError.setTickerType(Ticker.TYPE_ERROR);
+                tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+                tickerError.setCloseButtonVisibility(View.GONE);
+                tickerError.setVisibility(View.VISIBLE);
+                tickerError.post(() -> {
+                    tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    tickerError.requestLayout();
+                });
+                layoutError.setVisibility(View.VISIBLE);
+            } else {
+                layoutError.setVisibility(View.GONE);
             }
-            tickerError.setTickerType(Ticker.TYPE_ERROR);
-            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerError.setCloseButtonVisibility(View.GONE);
-            tickerError.setVisibility(View.VISIBLE);
-            tickerError.requestLayout();
-            layoutError.setVisibility(View.VISIBLE);
             renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
@@ -312,7 +297,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            tickerWarning.requestLayout();
+            tickerWarning.post(() -> {
+                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerWarning.requestLayout();
+            });
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);
@@ -341,6 +330,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                             break;
                         }
                     }
+
                     cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         actionListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);

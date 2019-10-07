@@ -12,17 +12,20 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.utils.Utils;
 
-public class CategoryDetailActivity extends DealsBaseActivity {
+public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener {
 
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
     public static final String CATEGORIES_DATA = "CATEGORIES_DATA";
     public static final String FROM_HOME = "FROM_HOME";
     private String categoryName;
+    private boolean isLocationUpdated;
+    private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_CATEGORY})
     public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
@@ -62,7 +65,8 @@ public class CategoryDetailActivity extends DealsBaseActivity {
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(R.string.text_deals);
-        return CategoryDetailHomeFragment.createInstance(getIntent().getExtras());
+        categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
+        return categoryDetailHomeFragment;
     }
 
     @Override
@@ -71,5 +75,11 @@ public class CategoryDetailActivity extends DealsBaseActivity {
         if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
             overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         }
+    }
+
+    @Override
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
+        categoryDetailHomeFragment.refreshPage(isLocationUpdated);
     }
 }

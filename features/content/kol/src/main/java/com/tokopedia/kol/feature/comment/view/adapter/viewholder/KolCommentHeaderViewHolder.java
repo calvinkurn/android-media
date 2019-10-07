@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -60,16 +61,30 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         avatar.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(element.getUrl())) {
                 viewListener.openRedirectUrl(element.getUrl());
+            } else {
+                viewListener.openRedirectUrl(constructProfileApplink(element.getUserId()));
             }
         });
 
-        badge.setVisibility(View.VISIBLE);
+        badge.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(element.getUserBadges())) {
+            badge.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCircle2(badge.getContext(), badge, element.getUserBadges());
+        }
+
+        String caption;
+        if (badge.getVisibility() == View.VISIBLE) {
+            caption = SPACE + getCommentText(element);
+        } else {
+            caption = getCommentText(element);
+        }
+
         if (!TextUtils.isEmpty(element.getTagsLink())) {
             UrlUtil.setTextWithClickableTokopediaUrl(comment,
-                    SPACE + getCommentText(element),
+                    caption,
                     getUrlClickableSpan(element));
         } else {
-            UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
+            UrlUtil.setTextWithClickableTokopediaUrl(comment, caption);
         }
 
         if (element.isCanLoadMore())
@@ -95,6 +110,10 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " "
                 + element.getReview().toString().replaceAll("(\r\n|\n)", "<br />");
+    }
+
+    private String constructProfileApplink(String userId) {
+        return ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId);
     }
 
     private ClickableSpan getUrlClickableSpan(KolCommentHeaderViewModel element) {

@@ -28,12 +28,12 @@ data class Media(
         var element_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(fallbackUrl)

@@ -214,7 +214,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         items.add(menuList);
 
         menuTitle = new MenuTitleViewModel();
-        menuTitle.setTitle(context.getString(R.string.title_menu_help));
+        menuTitle.setTitle(context.getString(R.string.tokopedia_care));
         items.add(menuTitle);
 
         menuList = new MenuListViewModel();

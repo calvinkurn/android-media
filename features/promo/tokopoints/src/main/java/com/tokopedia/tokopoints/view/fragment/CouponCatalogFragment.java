@@ -7,49 +7,42 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
-import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
-import com.tokopedia.tokopoints.view.customview.SwipeCardView;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
-import com.tokopedia.tokopoints.view.util.TabUtil;
-import com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager;
+import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.webview.TkpdWebView;
 
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -65,19 +58,18 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
-    private static final int CONTAINER_SWIPE = 1;
+    private static final String UTF_ENCODING = "UTF-8";
+    private static final String COUPON_MIME_TYPE = "text/html";
+    private static final String LIST_TAG_START = "<li>";
+    private static final String LIST_TAG_END = "</li>";
+    private static final int MAX_POINTS_TO_SHOW = 4;
     private ViewFlipper mContainerMain;
+    private ServerErrorView serverErrorView;
     private Subscription mSubscriptionCouponTimer;
     private Subscription mSubscriptionCatalogTimer;
     private int mRefreshRepeatCount = 0;
-    private String mCouponRealCode;
     private String mCouponName;
     public CountDownTimer mTimer;
-    private SwipeCardView mSwipeCardView;
-    private TextView mBtnQrCode;
-    private TextView mBtnBarCode;
-    private View mViewCodeSeparator;
-    private TextView mTextSwipeNote;
     private PerformanceMonitoring fpmDetailTokopoint;
 
     @Inject
@@ -93,6 +85,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     public void onCreate(Bundle savedInstanceState) {
         fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT);
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
     }
 
     @Nullable
@@ -102,6 +96,26 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         View view = inflater.inflate(R.layout.tp_fragment_coupon_catalog, container, false);
         initViews(view);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_coupon_catalog, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == R.id.action_menu_share) {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE));
+            startActivity(Intent.createChooser(sharingIntent, null));
+            return true;
+        }
+        return true;
     }
 
     @Override
@@ -118,19 +132,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         String code = getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE);
-        if (code == null || code.isEmpty()) {
-            code = getArguments().getString(CommonConstant.EXTRA_COUPON_CODE);
-            if (code == null || code.isEmpty()) {
-                if (getActivity() != null) {
-                    getActivity().finish();
-                }
-
-                return;
-            }
-            mPresenter.getCouponDetail(code);
-        } else {
-            mPresenter.getCatalogDetail(code);
-        }
+        mPresenter.getCatalogDetail(code);
     }
 
     @Override
@@ -170,8 +172,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void showError() {
+    public void showError(boolean hasInternet) {
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        serverErrorView.showErrorUi(hasInternet);
     }
 
     @Override
@@ -187,11 +190,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void populateDetail(CatalogsValueEntity data) {
         setCatalogToUi(data);
-    }
-
-    @Override
-    public void populateDetail(CouponValueEntity data) {
-        setCouponToUi(data);
     }
 
     @Override
@@ -223,15 +221,14 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
+        serverErrorView = view.findViewById(R.id.server_error_view);
+
     }
 
     private void initListener() {
         if (getView() == null) {
             return;
         }
-
-        getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
-        getView().findViewById(R.id.text_my_coupon).setOnClickListener(this);
     }
 
     @Override
@@ -422,7 +419,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        TextView textUserPoint = getView().findViewById(R.id.text_point_value);
+        Typography textUserPoint = getView().findViewById(R.id.text_point_value);
         textUserPoint.setText(point);
     }
 
@@ -437,13 +434,11 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
-        ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
+        Typography btnAction2 = getView().findViewById(R.id.button_action_2);
 
         if (realCode != null && !realCode.isEmpty()) {
             btnAction2.setText(R.string.tp_label_use);
             btnAction2.setEnabled(true);
-            progressBar.setVisibility(View.GONE);
             mSubscriptionCouponTimer.unsubscribe();
             return;
         }
@@ -451,7 +446,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
             btnAction2.setText(R.string.tp_label_refresh_repeat);
             btnAction2.setEnabled(true);
-            progressBar.setVisibility(View.GONE);
             btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
             mSubscriptionCouponTimer.unsubscribe();
         }
@@ -463,11 +457,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
-        ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
+        Typography btnAction2 = getView().findViewById(R.id.button_action_2);
         btnAction2.setText(R.string.tp_label_refresh_repeat);
         btnAction2.setEnabled(true);
-        progressBar.setVisibility(View.GONE);
         mSubscriptionCouponTimer.unsubscribe();
     }
 
@@ -477,15 +469,15 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        TextView quota = getView().findViewById(R.id.text_quota_count);
-        TextView pointValue = getView().findViewById(R.id.text_point_value_coupon);
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
+        Typography quota = getView().findViewById(R.id.text_quota_count);
+        Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
+        Typography btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
 
         btnAction2.setEnabled(!data.isDisabledButton());
 
         if (data.isDisabledButton()) {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.black_12));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.disabled_color));
         } else {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
         }
@@ -510,11 +502,11 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled()) {
             ImageUtil.dimImage(imgBanner);
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.black_54));
         } else {
             ImageUtil.unDimImage(imgBanner);
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.orange_red));
         }
+
+        pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.Yellow_Y500));
     }
 
     @Override
@@ -554,51 +546,49 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         mCouponName = data.getTitle();
-        TextView quota = getView().findViewById(R.id.text_quota_count);
-        TextView description = getView().findViewById(R.id.text_description);
-        TextView pointValue = getView().findViewById(R.id.text_point_value_coupon);
-        TextView timeLabel = getView().findViewById(R.id.text_time_label);
-        TextView timeValue = getView().findViewById(R.id.text_time_value);
-        TextView disabledError = getView().findViewById(R.id.text_disabled_error);
-        TextView btnAction1 = getView().findViewById(R.id.button_action_1);
-        btnAction1.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_tp_gift), null, null , null);
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
+        Typography quota = getView().findViewById(R.id.text_quota_count);
+        Typography description = getView().findViewById(R.id.text_description);
+        Typography disabledError = getView().findViewById(R.id.text_disabled_error);
+        ConstraintLayout giftSectionMainLayout = getView().findViewById(R.id.gift_section_main_layout);
+        Typography giftImage = getView().findViewById(R.id.gift_image);
+        Typography giftButton = getView().findViewById(R.id.gift_btn);
+        View bottomSeparator = getView().findViewById(R.id.bottom_separator);
+        giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_catalog_gift_btn), null, null, null);
+        Typography btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
-        ImageView imgTime = getView().findViewById(R.id.img_time);
-        ImageView imgPoint = getView().findViewById(R.id.img_points_stack_coupon);
-        TextView labelPoint = getView().findViewById(R.id.text_point_label);
-        TextView textDiscount = getView().findViewById(R.id.text_point_discount);
+        Typography labelPoint = getView().findViewById(R.id.text_point_label);
+        Typography textDiscount = getView().findViewById(R.id.text_point_discount);
 
         btnAction2.setVisibility(View.VISIBLE);
         btnAction2.setEnabled(!data.isDisabledButton());
         description.setText(data.getTitle());
         btnAction2.setText(data.getButtonStr());
-        btnAction2.setBackgroundResource(R.drawable.bg_button_orange);
+        btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange);
 
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
-        //setting points info if exist in response
+
+        TkpdWebView tvHowToUse = getView().findViewById(R.id.how_to_use_content);
+        TkpdWebView tvTnc = getView().findViewById(R.id.tnc_content);
+        Typography tncSeeMore = getView().findViewById(R.id.tnc_see_more);
+        Typography howToUseSeeMore = getView().findViewById(R.id.how_to_use_see_more);
+
+        tvTnc.loadData(getLessDisplayData(data.getTnc(), tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+        tvHowToUse.loadData(getLessDisplayData(data.getHowToUse(), howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+
+        tncSeeMore.setOnClickListener(v -> {
+            loadWebViewInBottomsheet(data.getTnc(), getString(R.string.tnc_coupon_catalog));
+        });
+        howToUseSeeMore.setOnClickListener(v -> {
+            loadWebViewInBottomsheet(data.getHowToUse(), getString(R.string.how_to_use_coupon_catalog));
+        });
+
+        Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
         if (data.getPointsStr() == null || data.getPointsStr().isEmpty()) {
             pointValue.setVisibility(View.GONE);
-            imgPoint.setVisibility(View.GONE);
         } else {
-            imgPoint.setVisibility(View.VISIBLE);
             pointValue.setVisibility(View.VISIBLE);
             pointValue.setText(data.getPointsStr());
-        }
-
-        //setting expiry time info if exist in response
-        if (data.getExpiredLabel() == null || data.getExpiredLabel().isEmpty()) {
-            timeLabel.setVisibility(View.GONE);
-            timeValue.setVisibility(View.GONE);
-            imgTime.setVisibility(View.GONE);
-        } else {
-            timeLabel.setVisibility(View.VISIBLE);
-            timeValue.setVisibility(View.VISIBLE);
-            imgTime.setVisibility(View.VISIBLE);
-            timeLabel.setText(data.getExpiredLabel());
-            timeValue.setText(data.getExpiredStr());
-            timeValue.setTextColor(ContextCompat.getColor(getAppContext(), R.color.black_70));
         }
 
         //Quota text handling
@@ -636,8 +626,10 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         if (data.isDisabledButton()) {
+            giftSectionMainLayout.setVisibility(View.GONE);
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.black_12));
         } else {
+            giftSectionMainLayout.setVisibility(View.VISIBLE);
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
         }
 
@@ -657,13 +649,18 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         if (data.getIsGift() == 1) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnAction1.getLayoutParams();
-            layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
-            btnAction1.setVisibility(View.VISIBLE);
-            btnAction1.setText(R.string.tp_label_send);
-            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+            if (data.isDisabledButton()) {
+                giftSectionMainLayout.setVisibility(View.GONE);
+                bottomSeparator.setVisibility(View.GONE);
+            } else {
+                giftSectionMainLayout.setVisibility(View.VISIBLE);
+                bottomSeparator.setVisibility(View.VISIBLE);
+                giftButton.setText(R.string.tp_label_send);
+                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(), data.getImageUrlMobile()));
+            }
         } else {
-            btnAction1.setVisibility(View.GONE);
+            giftSectionMainLayout.setVisibility(View.GONE);
+            bottomSeparator.setVisibility(View.GONE);
         }
 
         btnAction2.setOnClickListener(v -> {
@@ -677,7 +674,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                     mCouponName);
         });
 
-        setupInfoPager(data.getHowToUse(), data.getTnc(), true);
 
         //start catalog status timer
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
@@ -708,319 +704,51 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 mCouponName);
     }
 
-    private void setCouponToUi(CouponValueEntity data) {
-        if (getView() == null) {
-            return;
-        }
-
-        getView().findViewById(R.id.layout_point).setVisibility(View.GONE);
-
-        mCouponName = data.getTitle();
-        TextView description = getView().findViewById(R.id.text_description);
-        TextView label = getView().findViewById(R.id.text_time_label);
-        TextView value = getView().findViewById(R.id.text_time_value);
-        TextView btnAction1 = getView().findViewById(R.id.button_action_1);
-        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
-        ImageView imgBanner = getView().findViewById(R.id.img_banner);
-        ImageView imgLabel = getView().findViewById(R.id.img_time);
-        TextView textMinExchangeValue = getView().findViewById(R.id.text_min_exchange_value);
-        TextView textMinExchangeLavel = getView().findViewById(R.id.text_min_exchange);
-        ImageView imgMinExchange = getView().findViewById(R.id.img_min_exchange);
-        ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
-        ViewFlipper actionContainer = getView().findViewById(R.id.lin_container_button);
-
-        description.setText(data.getTitle());
-        ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
-
-        btnAction1.setVisibility(View.GONE);
-        btnAction2.setBackgroundResource(R.drawable.bg_button_green);
-
-        if (data.getUsage() != null) {
-            imgLabel.setImageResource(R.drawable.ic_tp_time);
-            label.setVisibility(View.VISIBLE);
-            label.setText(data.getUsage().getText());
-            value.setVisibility(View.VISIBLE);
-            imgLabel.setVisibility(View.VISIBLE);
-            value.setText(data.getUsage().getUsageStr());
-
-            if (data.getUsage().getBtnUsage() != null) {
-                if (data.getUsage().getBtnUsage().getType().equalsIgnoreCase("invisible")) {
-                    btnAction2.setVisibility(View.GONE);
-                } else {
-                    btnAction2.setVisibility(View.VISIBLE);
-                }
+    private String getLessDisplayData(String data, Typography seeMore) {
+        String[] totalString = data.split(LIST_TAG_START);
+        String displayString = totalString[0] + LIST_TAG_START;
+        if (totalString.length > MAX_POINTS_TO_SHOW + 1) {
+            for (int i = 1; i < MAX_POINTS_TO_SHOW; i++) {
+                displayString = displayString.concat(totalString[i] + LIST_TAG_START);
             }
-        }
-
-        if (TextUtils.isEmpty(data.getMinimumUsageLabel())) {
-            textMinExchangeLavel.setVisibility(View.GONE);
-            imgMinExchange.setVisibility(View.GONE);
+            displayString = displayString.concat(totalString[MAX_POINTS_TO_SHOW]);
+            String lastString = totalString[totalString.length - 1];
+            if (lastString.contains(LIST_TAG_END)) {
+                displayString = displayString + LIST_TAG_END + totalString[totalString.length - 1].split(LIST_TAG_END)[1];
+            }
         } else {
-            imgMinExchange.setVisibility(View.VISIBLE);
-            textMinExchangeLavel.setVisibility(View.VISIBLE);
-            textMinExchangeLavel.setText(data.getMinimumUsageLabel());
+            displayString = data;
+            seeMore.setVisibility(View.GONE);
         }
-
-        if (TextUtils.isEmpty(data.getMinimumUsage())) {
-            textMinExchangeValue.setVisibility(View.GONE);
-        } else {
-            textMinExchangeValue.setVisibility(View.VISIBLE);
-            textMinExchangeValue.setText(data.getMinimumUsage());
-        }
-
-        imgLabel.setVisibility(View.VISIBLE);
-        imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
-        btnAction2.setOnClickListener(v -> {
-            if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
-                mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
-
-                AnalyticsTrackerUtil.sendEvent(getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                        mCouponName);
-            } else {
-                if (getArguments() != null && getArguments().getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
-                    btnAction2.setEnabled(false);
-                    progressBar.setVisibility(View.VISIBLE);
-                    btnAction2.setText("");
-                    mPresenter.reFetchRealCode(getArguments().getString(CommonConstant.EXTRA_COUPON_CODE));
-                }
-            }
-        });
-        setupInfoPager(data.getHowToUse(), data.getTnc(), false);
-
-        if (data.getRealCode() != null && !data.getRealCode().isEmpty()) {
-            mCouponRealCode = data.getRealCode();
-            btnAction2.setText(R.string.tp_label_use);
-            btnAction2.setEnabled(true);
-            progressBar.setVisibility(View.GONE);
-        } else {
-            //check for real_code and start rxjava-timer
-            btnAction2.setEnabled(false);
-            progressBar.setVisibility(View.VISIBLE);
-
-            mSubscriptionCouponTimer = Observable.interval(CommonConstant.COUPON_RE_FETCH_DELAY_S, CommonConstant.COUPON_RE_FETCH_DELAY_S, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Long>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Long aLong) {
-                            if (getArguments() != null && getArguments().getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
-                                mPresenter.reFetchRealCode(getArguments().getString(CommonConstant.EXTRA_COUPON_CODE));
-                                mRefreshRepeatCount++;
-                            }
-                        }
-                    });
-        }
-
-        addCountDownTimer(data, value, btnAction2);
-
-        if (data.getSwipe() != null && data.getSwipe().isNeedSwipe()) {
-            actionContainer.setDisplayedChild(CONTAINER_SWIPE);
-
-            mSwipeCardView = getView().findViewById(R.id.card_swipe);
-            mBtnBarCode = getView().findViewById(R.id.btn_barcode);
-            mBtnQrCode = getView().findViewById(R.id.btn_qrcode);
-            mViewCodeSeparator = getView().findViewById(R.id.view_code_separator);
-            mTextSwipeNote = getView().findViewById(R.id.text_swipe_note);
-            mSwipeCardView.setTitle(data.getSwipe().getText());
-            mSwipeCardView.setOnSwipeListener(new SwipeCardView.OnSwipeListener() {
-                @Override
-                public void onComplete() {
-                    if (data.getSwipe().getPin().isPinRequire()) {
-                        showPinPage(data.getRealCode(), data.getSwipe().getPin().getText());
-                    } else {
-                        mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
-                    }
-                }
-
-                @Override
-                public void onPartialSwipe() {
-
-                }
-            });
-
-            if (!data.getSwipe().getNote().isEmpty()) {
-                mTextSwipeNote.setText(data.getSwipe().getNote());
-                mTextSwipeNote.setVisibility(View.VISIBLE);
-                mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_70));
-            }
-
-            if (data.getSwipe().getPartnerCode() != null
-                    && !data.getSwipe().getPartnerCode().isEmpty()) {
-                mSwipeCardView.setCouponCode(data.getSwipe().getPartnerCode());
-            }
-        }
-
-        //Coupon impression ga
-        AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON_DETAIL,
-                mCouponName);
+        return displayString;
     }
 
-    private void setupInfoPager(String info, String tnc, boolean isCatalog) {
-        if (getView() == null) {
-            return;
-        }
+    private void loadWebViewInBottomsheet(String data, String title) {
+        CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
+        WebView webView = view.findViewById(R.id.catalog_webview);
+        ImageView closeBtn = view.findViewById(R.id.close_button);
+        Typography titleView = view.findViewById(R.id.title_closeable);
 
-        CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
-        WrapContentHeightViewPager pager = getView().findViewById(R.id.view_pager_info);
-
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    AnalyticsTrackerUtil.sendEvent(getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            isCatalog ? AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL : AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_KETENTUAN,
-                            mCouponName);
-                } else {
-                    AnalyticsTrackerUtil.sendEvent(getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            isCatalog ? AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL : AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_CARA_PAKAI,
-                            mCouponName);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
-        pager.setAdapter(adapter);
-        pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
-
-        //excluding extra padding from tabs
-        TabUtil.wrapTabIndicatorToTitle(tabs,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+        webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING);
+        closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
+        titleView.setText(title);
+        bottomSheet.setCustomContentView(view, title, false);
+        bottomSheet.show();
     }
 
     @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr) {
+    public void gotoSendGiftPage(int id, String title, String pointStr, String banner) {
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
-    }
+        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner);
 
-    private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
-        if (mTimer != null || getView() == null) {
-            mTimer.cancel();
-        }
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
 
-        if (item.getUsage().getActiveCountDown() < 1) {
-            if (item.getUsage().getExpiredCountDown() > 0
-                    && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                ProgressBar progressBar = getView().findViewById(R.id.progress_timer);
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
-                mTimer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
-                    @Override
-                    public void onTick(long l) {
-                        label.setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
-                        item.getUsage().setExpiredCountDown(l / 1000);
-                        int seconds = (int) (l / 1000) % 60;
-                        int minutes = (int) ((l / (1000 * 60)) % 60);
-                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        label.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        progressBar.setProgress((int) l / 1000);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        progressBar.setVisibility(View.GONE);
-                        label.setText("00 : 00 : 00");
-                        btnContinue.setText("Expired");
-                        btnContinue.setEnabled(false);
-                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));
-                    }
-                }.start();
-            } else {
-                btnContinue.setText(item.getUsage().getBtnUsage().getText());
-                btnContinue.setEnabled(true);
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
-            }
-        } else {
-            if (item.getUsage().getActiveCountDown() > 0) {
-                btnContinue.setEnabled(false);
-                if (item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                    mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
-                        @Override
-                        public void onTick(long l) {
-                            item.getUsage().setActiveCountDown(l / 1000);
-                            int seconds = (int) (l / 1000) % 60;
-                            int minutes = (int) ((l / (1000 * 60)) % 60);
-                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                            btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            btnContinue.setEnabled(true);
-                            btnContinue.setText(item.getUsage().getBtnUsage().getText());
-                        }
-                    }.start();
-                }
-            } else {
-                btnContinue.setText(item.getUsage().getUsageStr());
-                btnContinue.setEnabled(true);
-            }
-        }
-    }
-
-    public void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink) {
-        mSwipeCardView.setCouponCode(data.getPartnerCode());
-
-        if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
-            mBtnQrCode.setVisibility(View.VISIBLE);
-            mViewCodeSeparator.setVisibility(View.VISIBLE);
-        }
-
-        if (barCodeLink != null && !barCodeLink.isEmpty()) {
-            mBtnBarCode.setVisibility(View.VISIBLE);
-        }
-
-        if (data.getNote() != null && !data.getNote().isEmpty()) {
-            mTextSwipeNote.setVisibility(View.VISIBLE);
-            mTextSwipeNote.setText(data.getNote());
-            mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_38));
-        } else {
-            mTextSwipeNote.setVisibility(View.GONE);
-        }
-    }
-
-    public void onSwipeError(String errorMessage) {
-        mSwipeCardView.reset();
-        SnackbarManager.make(mSwipeCardView, errorMessage, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

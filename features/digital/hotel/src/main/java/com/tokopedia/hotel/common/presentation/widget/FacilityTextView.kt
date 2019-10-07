@@ -18,7 +18,7 @@ class FacilityTextView(context: Context) : BaseCustomView(context) {
     }
 
     fun setIconAndText(iconUrl: String, text: String) {
-        facility_icon.loadImage(iconUrl, R.drawable.ic_loading_image)
+        facility_icon.loadImage(iconUrl, com.tokopedia.design.R.drawable.ic_loading_image)
         facility_text_view.text = text
     }
 

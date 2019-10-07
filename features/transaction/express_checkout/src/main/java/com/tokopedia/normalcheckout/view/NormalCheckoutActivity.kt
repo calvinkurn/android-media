@@ -18,8 +18,9 @@ import com.tokopedia.tradein.model.TradeInParams
 
 open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
+        const val EXTRA_IS_LEASING = "is_leasing"
         private var tradeInParams: TradeInParams? = null
-        private var normalCheckoutFragment : NormalCheckoutFragment? = null
+        private var normalCheckoutFragment: NormalCheckoutFragment? = null
 
         /**
          * shopID: mandatory
@@ -27,8 +28,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
          *
          */
         @JvmStatic
-        fun getIntent(context: Context, shopId: String, productId: String,
-                      notes: String? = "", quantity: Int? = 0,
+        fun getIntent(context: Context, shopId: String, categoryId: String, categoryName: String, productId: String,
+                      productTitle: String?, productPrice: Float?, condition: String, notes: String? = "", quantity: Int? = 0,
                       selectedVariantId: String? = null,
                       @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = "",
@@ -36,10 +37,16 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                       trackerListName: String? = "",
                       shopType: String? = "",
                       shopName: String? = "",
-                      isOneClickShipment:Boolean): Intent {
+                      isOneClickShipment: Boolean,
+                      isLeasing: Boolean): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
                 putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
+                putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, categoryId)
+                putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, categoryName)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, productTitle)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, productPrice)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, condition)
                 putExtra(ApplinkConst.Transaction.EXTRA_NOTES, notes)
                 putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
                 putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -50,6 +57,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType)
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
                 putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
+                putExtra(EXTRA_IS_LEASING, isLeasing)
             }
         }
     }
@@ -66,7 +74,12 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         bundle?.run {
             normalCheckoutFragment = NormalCheckoutFragment.createInstance(
                     getString(ApplinkConst.Transaction.EXTRA_SHOP_ID),
+                    getString(ApplinkConst.Transaction.EXTRA_CATEGORY_ID),
+                    getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME),
                     getString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID),
+                    getString(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE),
+                    getFloat(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE),
+                    getString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION),
                     getString(ApplinkConst.Transaction.EXTRA_NOTES),
                     getInt(ApplinkConst.Transaction.EXTRA_QUANTITY),
                     getString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID),
@@ -78,6 +91,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME),
                     getBoolean(ApplinkConst.Transaction.EXTRA_OCS),
                     getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH),
+                    getBoolean(EXTRA_IS_LEASING),
+                    getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
                     tradeInParams
             )
             return normalCheckoutFragment!!

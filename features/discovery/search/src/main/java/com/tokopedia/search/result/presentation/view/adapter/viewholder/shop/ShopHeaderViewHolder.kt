@@ -4,6 +4,7 @@ import android.support.annotation.DimenRes
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintSet
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -46,7 +47,7 @@ class ShopHeaderViewHolder(
         if(shopHeaderViewModel == null) return
 
         initCpmModel(shopHeaderViewModel)
-        initTextViewShopCount(shopHeaderViewModel)
+        initTextViewShopTotalCount(shopHeaderViewModel)
     }
 
     private fun initCpmModel(shopHeaderViewModel: ShopHeaderViewModel) {
@@ -55,11 +56,57 @@ class ShopHeaderViewHolder(
         }
     }
 
-    private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel) {
+    private fun initTextViewShopTotalCount(shopHeaderViewModel: ShopHeaderViewModel) {
+        val isShopCountTextVisible = shopHeaderViewModel.totalShopCount > 0
+
+        initTextViewShopCountQuery(shopHeaderViewModel, isShopCountTextVisible)
+        initTextViewShopCountFoundIn(isShopCountTextVisible)
+        initTextViewShopCount(shopHeaderViewModel, isShopCountTextVisible)
+        initTextViewShopCountShop(isShopCountTextVisible)
+    }
+
+    private fun initTextViewShopCountQuery(shopHeaderViewModel: ShopHeaderViewModel, isShopCountTextVisible: Boolean) {
+        itemView.textViewShopCountQuery?.let { textViewShopCountQuery ->
+            textViewShopCountQuery.shouldShowWithAction(isShopCountTextVisible) {
+                setTextViewShopCountQueryText(textViewShopCountQuery, shopHeaderViewModel)
+                setTextViewShopCountMargins(textViewShopCountQuery)
+            }
+        }
+    }
+
+    private fun setTextViewShopCountQueryText(textViewShopCountQuery: TextView, shopHeaderViewModel: ShopHeaderViewModel) {
+        textViewShopCountQuery.text = getQueryWithQuotes(shopHeaderViewModel.query)
+    }
+
+    private fun getQueryWithQuotes(query: String): String {
+        return "\"$query\""
+    }
+
+    private fun initTextViewShopCountFoundIn(isShopCountTextVisible: Boolean) {
+        itemView.textViewShopCountFoundIn?.let { textViewShopCountFoundIn ->
+            textViewShopCountFoundIn.shouldShowWithAction(isShopCountTextVisible) {
+                setTextViewShopCountMargins(textViewShopCountFoundIn)
+            }
+        }
+    }
+
+    private fun initTextViewShopCount(shopHeaderViewModel: ShopHeaderViewModel, isShopCountTextVisible: Boolean) {
         itemView.textViewShopCount?.let { textViewShopCount ->
-            textViewShopCount.shouldShowWithAction(shopHeaderViewModel.totalShopCount > 0) {
-                textViewShopCount.text = context.getString(R.string.shop_total_count, shopHeaderViewModel.query, shopHeaderViewModel.totalShopCount.toString())
+            textViewShopCount.shouldShowWithAction(isShopCountTextVisible) {
+                setTextViewShopCountText(textViewShopCount, shopHeaderViewModel)
                 setTextViewShopCountMargins(textViewShopCount)
+            }
+        }
+    }
+
+    private fun setTextViewShopCountText(textViewShopCount: TextView, shopHeaderViewModel: ShopHeaderViewModel) {
+        textViewShopCount.text = shopHeaderViewModel.totalShopCount.toString()
+    }
+
+    private fun initTextViewShopCountShop(isShopCountTextVisible: Boolean) {
+        itemView.textViewShopCountShop.let { textViewShopCountShop ->
+            textViewShopCountShop.shouldShowWithAction(isShopCountTextVisible) {
+                setTextViewShopCountMargins(textViewShopCountShop)
             }
         }
     }
@@ -79,7 +126,7 @@ class ShopHeaderViewHolder(
 
     @DimenRes
     private fun getTextViewShopCountMarginTop(): Int {
-        return if (isAdsBannerViewVisible()) R.dimen.dp_0 else R.dimen.dp_16
+        return if (isAdsBannerViewVisible()) com.tokopedia.design.R.dimen.dp_0 else com.tokopedia.design.R.dimen.dp_16
     }
 
     private fun isAdsBannerViewVisible(): Boolean {

@@ -13,8 +13,6 @@ public interface PhoneVerificationRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getIntentCreateShop(Context context);
-
     Interceptor getChuckInterceptor();
 
 }

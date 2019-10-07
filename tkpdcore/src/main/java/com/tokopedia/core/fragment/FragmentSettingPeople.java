@@ -14,8 +14,7 @@ import android.widget.ListView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.Router;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -23,12 +22,12 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.ManageConstant;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.transaction.common.TransactionRouter;
 
 import java.util.ArrayList;
@@ -84,20 +83,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
             ResID.add(R.drawable.ic_set_notifications);
             ResID.add(R.drawable.ic_menu_general_setting);
             lvManage.setOnItemClickListener(onSellerSettingMenuClickedListener());
-        } else {
-            Name.add(getString(R.string.title_personal_profile));
-            Name.add(getString(R.string.title_address));
-            Name.add(getString(R.string.title_bank));
-            Name.add(getString(R.string.title_payment_menu));
-            Name.add(getString(R.string.title_notification));
-            Name.add(getString(R.string.title_password));
-            ResID.add(R.drawable.ic_set_profile);
-            ResID.add(R.drawable.ic_set_address);
-            ResID.add(R.drawable.ic_set_bank);
-            ResID.add(R.drawable.ic_set_payment);
-            ResID.add(R.drawable.ic_set_notifications);
-            ResID.add(R.drawable.ic_menu_general_setting);
-            lvManage.setOnItemClickListener(onSettingMenuClickedListener());
         }
         return mainView;
     }
@@ -122,57 +107,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
         }
     }
 
-    private OnItemClickListener onSettingMenuClickedListener() {
-        return new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = null;
-                switch (position) {
-                    case 0:
-                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
-                        startActivityForResult(intent, 0);
-                        break;
-                    case 1:
-                        intent = new Intent(getActivity(), ManagePeopleAddressActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                                    .getSettingBankIntent(getActivity());
-                            startActivity(intent);
-                        } else {
-                            showNoPasswordDialog();
-                        }
-                        break;
-                    case 3:
-                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
-                            ((TransactionRouter) getActivity().getApplication())
-                                    .goToUserPaymentList(getActivity());
-                        }
-                        break;
-                    case 4:
-                        intent = new Intent(getActivity(), ManageNotificationActivity.class);
-                        startActivityForResult(intent, MANAGE_NOTIFICATION);
-                        break;
-                /*case 4:
-                    intent = new Intent(getActivity(), ManagePrivacy.class);
-					startActivityForResult(intent, 1);
-					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
-					break;*/
-                    case 5:
-                        if (sessionHandler.isHasPassword()) {
-                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
-                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
-                        } else {
-                            intentToAddPassword();
-                        }
-                        break;
-                }
-            }
-        };
-    }
-
     private OnItemClickListener onSellerSettingMenuClickedListener() {
         return new OnItemClickListener() {
             @Override
@@ -190,8 +124,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                                    .getSettingBankIntent(getActivity());
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();
@@ -207,11 +140,6 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         intent = new Intent(getActivity(), ManageNotificationActivity.class);
                         startActivityForResult(intent, MANAGE_NOTIFICATION);
                         break;
-                /*case 4:
-                    intent = new Intent(getActivity(), ManagePrivacy.class);
-					startActivityForResult(intent, 1);
-					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
-					break;*/
                     case 5:
                         if (sessionHandler.isHasPassword()) {
                             intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
@@ -226,9 +154,10 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     }
 
     private void intentToAddPassword() {
-        startActivityForResult(
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
+        if (getActivity() != null) {
+            startActivityForResult(RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_ADD_PASSWORD);
+        }
     }
 
     private void showNoPasswordDialog() {

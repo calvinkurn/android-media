@@ -3,23 +3,21 @@ package com.tokopedia.inbox.rescenter.edit.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RadioGroup;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;
-
-import butterknife.BindView;
 
 /**
  * Created on 8/25/16.
  */
 public class EditPackageStatusView extends BaseView<DetailResCenterData, BuyerEditResCenterListener> {
 
-    @BindView(R2.id.radioGroup)
-    RadioGroup radioGroup;
+    private RadioGroup radioGroup;
 
     public EditPackageStatusView(Context context) {
         super(context);
@@ -75,5 +73,13 @@ public class EditPackageStatusView extends BaseView<DetailResCenterData, BuyerEd
                 listener.getPresenter().setOnRadioPackageStatus(false);
             }
         }
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        radioGroup = view.findViewById(R.id.radioGroup);
     }
 }

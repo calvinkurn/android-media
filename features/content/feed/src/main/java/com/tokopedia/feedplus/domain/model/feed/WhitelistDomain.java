@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.model.feed;
 
-import com.tokopedia.kolcommon.data.pojo.Author;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
 
 import java.util.ArrayList;
 

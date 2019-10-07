@@ -2,14 +2,12 @@ package com.tokopedia.challenges.data;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.challenges.data.model.IndiTokenModel;
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;

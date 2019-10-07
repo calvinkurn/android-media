@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="image_search_app_name">imagesearch</string>
+    <string name="image_not_supported">Ukuran gambar tidak didukung</string>
+    <string name="title_image_search" >Pencarian Gambar</string>
+    <string name="image_search_hint">Cari produk atau Toko</string>
+    <string name="image_search_error_gallery_valid">Gambar tidak valid</string>
+    <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
+    <string name="image_search_msg_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="image_search_msg_add_wishlist">Sukses menambah wishlist</string>
+</resources>

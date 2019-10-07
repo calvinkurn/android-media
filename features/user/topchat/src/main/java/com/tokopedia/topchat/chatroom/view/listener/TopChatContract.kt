@@ -75,6 +75,8 @@ interface TopChatContract {
                 onSuccessGetMessageId: (String) -> Unit
         )
 
+        fun startCompressImages(it: ImageUploadViewModel)
+
         fun startUploadImages(it: ImageUploadViewModel)
 
         fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)

@@ -22,28 +22,28 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     }
 
     public void changeListView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT);
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
         itemChangeView.onChangeList();
     }
 
     public void changeDoubleGridView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2);
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
         itemChangeView.onChangeDoubleGrid();
     }
 
     public void changeSingleGridView() {
-        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1);
+        getTypeFactory().setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
         itemChangeView.onChangeSingleGrid();
     }
 
 
     public int getTitleTypeRecyclerView() {
         switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
+            case SearchConstant.RecyclerView.VIEW_LIST:
                 return R.string.list;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
                 return R.string.grid;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
                 return R.string.grid;
             default:
                 return R.string.grid;
@@ -52,27 +52,27 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
 
     public int getIconTypeRecyclerView() {
         switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
+            case SearchConstant.RecyclerView.VIEW_LIST:
                 return R.drawable.search_ic_list;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
                 return R.drawable.search_ic_grid;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
                 return R.drawable.search_ic_big_list;
             default:
                 return R.drawable.search_ic_grid;
         }
     }
 
-    public SearchConstant.GridType getCurrentLayoutType() {
+    public SearchConstant.ViewType getCurrentLayoutType() {
         switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return SearchConstant.GridType.GRID_1;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return SearchConstant.GridType.GRID_2;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return SearchConstant.GridType.GRID_3;
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return SearchConstant.ViewType.LIST;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return SearchConstant.ViewType.SMALL_GRID;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return SearchConstant.ViewType.BIG_GRID;
             default:
-                return SearchConstant.GridType.GRID_2;
+                return SearchConstant.ViewType.SMALL_GRID;
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
 
     protected EmptySearchViewModel mappingEmptySearch(Context context, String query, boolean isFilterActive, String sectionTitle) {
         EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search);
+        emptySearchViewModel.setImageRes(com.tokopedia.design.R.drawable.ic_empty_search);
         if (isFilterActive) {
             emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchViewModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));

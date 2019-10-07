@@ -74,7 +74,8 @@ public class AccessTokenRefresh {
             }
 
             if(model.getRefreshToken()!= null && !model.getRefreshToken().trim().isEmpty()) {
-                userSession.setRefreshToken(model.getRefreshToken());
+                userSession.setRefreshToken( EncoderDecoder.Encrypt(model.getRefreshToken(),
+                        userSession.getRefreshTokenIV()));
             }
         }
 

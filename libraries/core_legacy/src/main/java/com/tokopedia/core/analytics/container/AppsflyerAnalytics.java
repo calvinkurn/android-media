@@ -173,6 +173,13 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
         AppsFlyerLib.getInstance().setGCMProjectNumber(GCM_PROJECT_NUMBER);
+        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+            AppsFlyerLib.getInstance().setPreinstallAttribution(
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_SITE
+            );
+        }
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
     }
 

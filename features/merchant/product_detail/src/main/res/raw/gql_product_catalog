@@ -1,0 +1,20 @@
+query productCatalogQuery($catalogId: String!){
+  ProductCatalogQuery(catalog_id:$catalogId) {
+    header {
+      process_time
+      status
+    }
+    data{
+      catalog{
+        id
+        specification{
+          name
+          row{
+            key
+            value
+          }
+        }
+      }
+    }
+  }
+}

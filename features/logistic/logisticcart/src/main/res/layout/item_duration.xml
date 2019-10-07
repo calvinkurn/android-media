@@ -7,23 +7,10 @@
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground">
 
-    <TextView
-        android:id="@+id/tv_duration_header_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:fontFamily="sans-serif-medium"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:text="@string/label_hardcoded_shipping_duration_info"
-        android:textColor="@color/shipping_duration_info_black"
-        android:textSize="@dimen/sp_11" />
-
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_duration_header_info"
         android:background="@color/white"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
@@ -34,9 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:lineSpacingExtra="4sp"
-            tools:text="4 Jam"
             app:typographyType="body_2"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold"
+            tools:text="4 Jam" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_potency"
@@ -53,9 +40,9 @@
             android:text="@string/label_text_promo_potency"
             android:textColor="@color/text_promo_potency"
             android:visibility="gone"
-            tools:visibility="visible"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_price"
@@ -63,9 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_duration"
             android:layout_marginTop="4dp"
-            tools:text="Mulai dari Rp10.000"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:text="Mulai dari Rp10.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_text_desc"
@@ -73,9 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_price"
             android:layout_marginTop="@dimen/dp_4"
-            tools:text="(Direkomendasikan untuk berat di atas 5kg)"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cod_availability"
@@ -83,9 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="4dp"
-            tools:text="(Tersedia Bayar di Tempat)"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:text="(Tersedia Bayar di Tempat)" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_order_prioritas"
@@ -93,9 +80,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_cod_availability"
             android:layout_marginTop="4dp"
-            tools:text="Tersedia layanan Order Prioritas"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:text="Tersedia layanan Order Prioritas" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error"
@@ -104,9 +91,9 @@
             android:layout_below="@+id/tv_order_prioritas"
             android:layout_marginTop="4dp"
             android:textColor="@color/text_courier_error_red"
-            tools:text="Jarak melebihi batas maksimum kurir"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler"
+            tools:text="Jarak melebihi batas maksimum kurir" />
 
         <ImageView
             android:id="@+id/img_check"

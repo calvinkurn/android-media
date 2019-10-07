@@ -13,13 +13,12 @@ import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.model.CatalogDetailOuter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponDetailOuter;
-import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter;
 import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +107,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
 
-                if (validateCoupon!=null && validateCoupon.getValidateCoupon() != null) {
+                if (validateCoupon != null && validateCoupon.getValidateCoupon() != null) {
                     validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS;
                     message = validateCoupon.getValidateCoupon().getMessageSuccess();
                     title = validateCoupon.getValidateCoupon().getMessageTitle();
@@ -179,7 +178,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
             @Override
             public void onNext(GraphqlResponse response) {
                 RedeemCouponBaseEntity redeemCouponBaseEntity = response.getData(RedeemCouponBaseEntity.class);
-                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem()!=null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -199,44 +198,6 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
 
                     }
                 }
-            }
-        });
-    }
-
-    @Override
-    public void getCouponDetail(String uniqueCouponCode) {
-        getView().showLoader();
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(CommonConstant.GraphqlVariableKeys.CODE, uniqueCouponCode);
-
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_coupon_detail),
-                CouponDetailOuter.class,
-                variables, false);
-        mGetCouponDetail.clearRequest();
-        mGetCouponDetail.addRequest(request);
-
-        GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),
-                TokoPointDetailEntity.class, false);
-        mGetCouponDetail.addRequest(graphqlRequestPoints);
-        mGetCouponDetail.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-                getView().hideLoader();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                getView().hideLoader();
-                CouponDetailOuter data = response.getData(CouponDetailOuter.class);
-                getView().populateDetail(data.getDetail());
-                handlePointQuery(response.getData(TokoPointDetailEntity.class));
             }
         });
     }
@@ -270,6 +231,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (getView() != null) {
                     getView().hideLoader();
                     getView().onFinishRendering();
+                    getView().showError(NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
                 }
             }
 
@@ -282,37 +244,6 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                     handlePointQuery(response.getData(TokoPointDetailEntity.class));
                     getView().onFinishRendering();
                 }
-            }
-        });
-    }
-
-    @Override
-    public void reFetchRealCode(String uniqueCouponCode) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(CommonConstant.GraphqlVariableKeys.CODE, uniqueCouponCode);
-
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_refetch_real_code),
-                CouponDetailOuter.class,
-                variables, false);
-        mGetCouponDetail.clearRequest();
-        mGetCouponDetail.addRequest(request);
-
-        mGetCouponDetail.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().onRealCodeReFreshError();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                CouponDetailOuter data = response.getData(CouponDetailOuter.class);
-                getView().onRealCodeReFresh(data.getDetail().getRealCode());
             }
         });
     }
@@ -376,7 +307,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
     }
 
     @Override
-    public void startSendGift(int id, String title, String pointStr) {
+    public void startSendGift(int id, String title, String pointStr, String banner) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
@@ -404,7 +335,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (data != null
                         && data.getPreValidateRedeem() != null
                         && data.getPreValidateRedeem().getIsValid() == 1) {
-                    getView().gotoSendGiftPage(id, title, pointStr);
+                    getView().gotoSendGiftPage(id, title, pointStr, banner);
                 } else {
                     //show error
                     List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);
@@ -423,44 +354,6 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                     }
 
                     getView().onPreValidateError(errorTitle, errorMessage);
-                }
-            }
-        });
-    }
-
-    public void swipeMyCoupon(String partnerCode, String pin) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(CommonConstant.GraphqlVariableKeys.CODE, partnerCode);
-        variables.put(CommonConstant.GraphqlVariableKeys.PIN, pin);
-
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_swipe_coupon),
-                CouponSwipeUpdateOuter.class,
-                variables, false);
-        mStartSendGift.clearRequest();
-        mStartSendGift.addRequest(request);
-        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                CouponSwipeUpdateOuter data = response.getData(CouponSwipeUpdateOuter.class);
-                if (data != null && data.getSwipeCoupon() != null) {
-                    if (data.getSwipeCoupon().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                        getView().onSwipeResponse(data.getSwipeCoupon(), null, null);
-                    } else {
-                        if (data.getSwipeCoupon().getResultStatus().getMessages().size() > 0) {
-                            getView().onSwipeError(data.getSwipeCoupon().getResultStatus().getMessages().get(0));
-                        }
-                    }
                 }
             }
         });

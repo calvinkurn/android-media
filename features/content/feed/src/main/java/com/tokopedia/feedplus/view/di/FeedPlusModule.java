@@ -2,20 +2,27 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
-import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.feedplus.view.listener.DynamicFeedContract;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -34,6 +41,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -87,10 +96,7 @@ public class FeedPlusModule {
     @FeedPlusChuckQualifier
     @Provides
     Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof FeedModuleRouter) {
-            return ((FeedModuleRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + FeedModuleRouter.class.getSimpleName());
+        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
     @FeedPlusScope
@@ -115,6 +121,14 @@ public class FeedPlusModule {
                 addWishlistUseCase,
                 removeWishlistUseCase,
                 userSession);
+    }
+
+    @FeedPlusScope
+    @Provides
+    DynamicFeedContract.Presenter provideDynamicFeedPresenter(UserSessionInterface userSession,
+                                                              GetDynamicFeedUseCase getDynamicFeedUseCase,
+                                                              LikeKolPostUseCase likeKolPostUseCase) {
+        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase);
     }
 
     //SHOP COMMON
@@ -190,5 +204,18 @@ public class FeedPlusModule {
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GraphqlRepository provideGraphQlRepository(@ApplicationContext Context context) {
+        GraphqlClient.init(context);
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @Provides
+    @FeedPlusScope
+    CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
     }
 }

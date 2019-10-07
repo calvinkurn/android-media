@@ -38,12 +38,12 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     public void execute(String query,
                         int codHistory,
                         boolean isCorner,
-                        ShippingParam shippingParam,
-                        int selectedSpId,
-                        int selectedServiceId,
+                        boolean isLeasing,
+                        String pslCode, int selectedSpId, int selectedServiceId,
                         List<ShopShipment> shopShipments,
-                        Subscriber<ShippingRecommendationData> subscriber) {
-        query = getQueryWithParams(query, codHistory, isCorner, shopShipments, shippingParam);
+                        Subscriber<ShippingRecommendationData> subscriber,
+                        ShippingParam shippingParam) {
+        query = getQueryWithParams(query, codHistory, isCorner, isLeasing, pslCode, shopShipments, shippingParam);
         executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
     }
 
@@ -89,7 +89,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, selectedSpId, ratesId, selectedServiceId, blackboxInfo));
+                                                shopShipments, selectedSpId, ratesId, selectedServiceId,
+                                                blackboxInfo, isPromoStackingApplied(data)));
                                 shippingRecommendationData.setLogisticPromo(
                                         shippingDurationConverter.convertToPromoModel(
                                                 data.getRatesData().getRatesDetailData().getPromoStacking()));
@@ -101,7 +102,15 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, int codHistory, boolean isCorner, List<ShopShipment> shopShipmentList, ShippingParam shippingParam) {
+    private boolean isPromoStackingApplied(GetRatesCourierRecommendationData data) {
+        if (data.getRatesData().getRatesDetailData().getPromoStacking() == null) return false;
+        return data.getRatesData().getRatesDetailData().getPromoStacking().getIsApplied() == 1;
+    }
+
+    private String getQueryWithParams(String query, int codHistory, boolean isCorner,
+                                      boolean isLeasing, String promoCode,
+                                      List<ShopShipment> shopShipmentList,
+                                      ShippingParam shippingParam) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
@@ -165,6 +174,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
         queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(shippingParam.getIsPreorder() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(shippingParam.isTradein() ? 1 : 0));
+        queryStringBuilder = setParam(queryStringBuilder, Param.VEHICLE_LEASING, String.valueOf(isLeasing ? 1 : 0));
+        queryStringBuilder = setParam(queryStringBuilder, Param.PSL_CODE, (promoCode != null) ? promoCode : "");
 
         return queryStringBuilder.toString();
     }
@@ -196,6 +207,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";
         static final String IS_TRADEIN = "$trade_in";
+        static final String VEHICLE_LEASING = "$vehicle_leasing";
+        static final String PSL_CODE = "$psl_code";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

@@ -26,13 +26,16 @@ public class EditTemplateUseCase extends UseCase<EditTemplateViewModel> {
 
     @Override
     public Observable<EditTemplateViewModel> createObservable(RequestParams requestParams) {
-        return templateRepository.editTemplate(requestParams.getInt("index", 0), requestParams.getParameters());
+        return templateRepository.editTemplate(requestParams.getInt("index", 0)
+                                                , requestParams.getParameters()
+                                                , requestParams.getBoolean("is_seller", false));
     }
 
-    public static RequestParams generateParam(int index, String value) {
+    public static RequestParams generateParam(int index, String value, Boolean isSeller) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("value", value);
         requestParams.putInt("index", index);
+        requestParams.putBoolean("is_seller", isSeller);
         return requestParams;
     }
 }

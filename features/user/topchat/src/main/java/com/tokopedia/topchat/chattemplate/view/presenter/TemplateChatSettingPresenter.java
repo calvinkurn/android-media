@@ -25,18 +25,13 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
     private final SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase;
     private GetTemplateUseCase getTemplateUseCase;
+    private boolean isSeller;
 
     @Inject
     TemplateChatSettingPresenter(GetTemplateUseCase getTemplateUseCase,
                                  SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase) {
         this.getTemplateUseCase = getTemplateUseCase;
         this.setAvailabilityTemplateUseCase = setAvailabilityTemplateUseCase;
-    }
-
-    @Override
-    public void attachView(TemplateChatContract.View view) {
-        super.attachView(view);
-        getTemplate();
     }
 
     @Override
@@ -48,7 +43,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
     public void getTemplate() {
         getView().showLoading();
-        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(), new Subscriber<GetTemplateViewModel>() {
+        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(isSeller), new Subscriber<GetTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -82,7 +77,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     public void switchTemplateAvailability(final boolean enabled) {
         JsonArray array = null;
         getView().showLoading();
-        setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled), new Subscriber<GetTemplateViewModel>() {
+        setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled, isSeller), new Subscriber<GetTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -110,7 +105,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
         JsonArray array = null;
         if (arrayList != null) array = toJsonArray(arrayList);
         getView().showLoading();
-        setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled), new Subscriber<GetTemplateViewModel>() {
+        setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled, isSeller), new Subscriber<GetTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -143,5 +138,9 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     public void reloadTemplate() {
         getView().showLoading();
         getTemplate();
+    }
+
+    public void setMode(Boolean isSeller) {
+        this.isSeller = isSeller;
     }
 }

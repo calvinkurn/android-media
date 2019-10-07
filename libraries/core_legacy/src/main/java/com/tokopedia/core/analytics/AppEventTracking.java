@@ -899,6 +899,8 @@ public interface AppEventTracking {
         String UTM_CONTENT = "utm_content";
         String UTM_TERM = "utm_term";
         String UTM_GCLID = "gclid";
+        String X_CLID = "xClientId";
+        String X_ATTR = "xAttribution";
 
         String UTM_SOURCE_APPEND = "&" + UTM_SOURCE + "=";
         String UTM_MEDIUM_APPEND = "&" + UTM_MEDIUM + "=";

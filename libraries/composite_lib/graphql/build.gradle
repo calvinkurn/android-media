@@ -1,16 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-    }
-}
+
 android {
     configurations {
         all {
@@ -31,19 +22,19 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1"
+    versionName = "1.0.10-release"
     artifactName = "graphql"
 }
 
-
-
 dependencies {
-    implementation "com.tokopedia.usecase:usecase:2.23"
+    implementation "com.tokopedia.akamai:akamai_bot_lib:1.0.2-release"
+    implementation "com.tokopedia.usecase:usecase:1.0.2"
     implementation rootProject.ext.miscDependencies.gson
-    implementation "com.tokopedia.url:url:1"
-    implementation "com.tokopedia.user.session:user_session:1"
-    implementation "com.tokopedia.config:global_config:1"
-    implementation "com.tokopedia.network:network:1"
+    implementation "com.tokopedia.url:url:1.0.2"
+    implementation "com.tokopedia.user.session:user_session:1.0.7"
+    implementation "com.tokopedia.config:global_config:1.0.3"
+    implementation "com.tokopedia.network:network:1.0.5"
+    implementation "com.tokopedia.authentication:authentication:1.0.0"
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler

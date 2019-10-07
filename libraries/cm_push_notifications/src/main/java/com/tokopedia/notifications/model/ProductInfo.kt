@@ -29,21 +29,22 @@ data class ProductInfo(
         var productButtonMessage: String,
 
         @SerializedName("appLink")
-        var appLink: String,
+        var appLink: String? = null,
 
         @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
         var element_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "")
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productTitle)

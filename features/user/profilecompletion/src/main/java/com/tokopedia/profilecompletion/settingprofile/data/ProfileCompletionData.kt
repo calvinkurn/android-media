@@ -21,5 +21,7 @@ data class ProfileCompletionData(
     var phone: String = "",
     @SerializedName("isMsisdnVerified")
     var isPhoneVerified: Boolean = false,
+    @SerializedName("isEmailDone")
+    var isEmailDone: Boolean = false,
     var profilePicture: String = ""
 )

@@ -29,9 +29,9 @@ public interface SaldoDetailContract {
 
         void setRetry(String error);
 
-        float getSellerSaldoBalance();
+        long getSellerSaldoBalance();
 
-        float getBuyerSaldoBalance();
+        long getBuyerSaldoBalance();
 
         void showWithdrawalNoPassword();
 
@@ -41,7 +41,7 @@ public interface SaldoDetailContract {
 
         void showHoldWarning(String warningText);
 
-        void setBuyerSaldoBalance(float amount, String text);
+        void setBuyerSaldoBalance(long amount, String text);
 
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
@@ -57,11 +57,15 @@ public interface SaldoDetailContract {
 
         void hideTickerMessage();
 
+        void setLateCount(int count);
+
+        void hideWithdrawTicker();
+
         boolean isSellerEnabled();
 
         void showSellerSaldoRL();
 
-        void setSellerSaldoBalance(float amount, String formattedAmount);
+        void setSellerSaldoBalance(long amount, String formattedAmount);
 
         void showBuyerSaldoRL();
 
@@ -78,6 +82,8 @@ public interface SaldoDetailContract {
 
         void getMerchantCreditLineDetails();
 
-        void onDrawClicked(Intent intent);
+        void onDrawClicked(Intent intent, int statusWithDrawLock,int mclLateCount,boolean showMclBlockTickerFirebaseFlag);
+
+        void getMCLLateCount();
     }
 }

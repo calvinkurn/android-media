@@ -27,7 +27,7 @@ interface FlightSearchContract {
 
         fun fetchFlightSearchData()
 
-        fun fetchSortAndFilterData()
+        fun fetchSortAndFilterData(fromCombo: Boolean = false)
 
         fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean)
 
@@ -110,7 +110,7 @@ interface FlightSearchContract {
 
         fun fetchSearchDataCloud(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int = -1)
 
-        fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean)
+        fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, fromCombo: Boolean = false)
 
         fun fetchTickerData()
 

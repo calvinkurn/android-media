@@ -112,7 +112,7 @@ class AddBodFragment: BaseDaggerFragment(){
         btnSave.setOnClickListener {
             if(selectedDate.isNotBlank()) {
                 showLoading()
-                addBodViewModel.editBodUserProfile(selectedDate)
+                addBodViewModel.editBodUserProfile(context!!, selectedDate)
             }
         }
 

@@ -26,10 +26,9 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerDiscoveryComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DiscoveryComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
@@ -39,7 +38,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -56,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -63,7 +65,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, BrowseSectionGeneralAdapter.OnItemChangeView {
 
-    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
+    public static final String CATEGORY_CATALOG_TAB = "Category - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -89,6 +91,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     CatalogPresenter presenter;
     @Inject
     UserSessionInterface userSession;
+    private List<Option> selectedOptions;
 
     public static CategoryCatalogFragment createInstanceByQuery(String query) {
         CategoryCatalogFragment fragment = new CategoryCatalogFragment();
@@ -136,12 +139,12 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return CATEGORY_CATALOG_TAB;
     }
 
     @Override
     protected void initInjector() {
-        SearchComponent component = DaggerSearchComponent.builder()
+        DiscoveryComponent component = DaggerDiscoveryComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
         component.inject(this);
@@ -243,7 +246,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
+        DiscoveryTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -272,13 +275,21 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        DiscoveryTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
     @Override
     public List<Option> getSelectedFilterAsOptionList() {
-        return null;
+        return OptionHelper.combinePriceFilterIfExists(selectedOptions,
+                getResources().getString(R.string.empty_state_selected_filter_price_name));
+    }
+
+    @Override
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        super.handleFilterResult(queryParams, selectedFilters, selectedOptions);
+        this.selectedOptions = selectedOptions;
     }
 
     protected void setupAdapter() {
@@ -382,8 +393,8 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getString(R.string.catalog_tab_title).toLowerCase());
+            DiscoveryTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -483,7 +494,6 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:
@@ -611,5 +621,10 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     @Override
     public SearchParameter getSearchParameter() {
         return new SearchParameter();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        return getDepartmentId() != null ? getDepartmentId() : "";
     }
 }

@@ -1,122 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/dp_80"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:baselineAligned="false"
     android:id="@+id/vgVoucherView"
-    android:gravity="center_vertical">
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="@integer/merchant_scallop_position_left_weight"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_12"
-        android:layout_gravity="center_vertical"
-        android:paddingStart="@dimen/dp_12">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:id="@+id/ivVoucherLogo"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                tools:src="@mipmap/ic_launcher"
-                android:scaleType="centerInside"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_gravity="center_vertical"/>
-            <TextView
-                android:id="@+id/tvVoucherTitle"
-                android:singleLine="true"
-                style="@style/TextView.Title.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                tools:text="Cashback20Rb"/>
-        </LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/dp_50"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
-        <TextView
-            android:id="@+id/tvVoucherSubtitle"
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_8">
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@color/clr_ae31353b"
-            android:visibility="gone"
-            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center_vertical"
+            android:singleLine="false"
+            android:textColor="@color/Neutral_N700"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Gratis Ongkir\n20rb" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherSubtitle"
             style="@style/TextView.Micro10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvVoucherTitle"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/Neutral_N700"
+            android:visibility="gone"
+            app:typographyType="small"
             tools:text="Next Day (Rp 25.000)" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvVoucherDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            style="@style/TextView.Micro.BlackSecondary"
-            tools:text="*Min Pembelian 250Rb"/>
+            android:layout_below="@id/tvVoucherSubtitle"
+            android:layout_marginTop="@dimen/dp_3"
+            android:textColor="@color/Neutral_N700"
+            android:textSize="@dimen/sp_10"
+            app:typographyType="small"
+            tools:text="*Min Pembelian 300Rb" />
 
-        <TextView
-            android:id="@+id/tvVoucherDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            tools:text="Detail Promo"
-            android:visibility="gone"/>
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="@integer/merchant_scallop_position_right_weight"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/tvCode"
-            style="@style/TextView.Title.OrangeRed.Bold"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_voucher_type"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
-            tools:text="CASHBACKLEB123123123"
-            android:gravity="center_horizontal"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:scaleType="fitXY" />
 
-        <Button
-            android:id="@+id/btnUseVoucher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Button.Submit"
-            android:textSize="@dimen/sp_12"
-            android:textColor="@color/tkpd_main_green"
-            android:background="@drawable/button_border_green"
-            android:text="@string/use_voucher"
-            android:minWidth="@dimen/dp_60"
-            android:minHeight="@dimen/dp_8"
-            android:padding="@dimen/dp_8"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_8">
 
-        <TextView
-            android:id="@+id/tvVoucherStatus"
-            style="@style/TextView.Micro.BlackSecondary.Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_11"
-            tools:text="@string/run_out"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingBottom="@dimen/dp_2"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:gravity="center"
-            android:background="@drawable/bg_rect_rounded_light_gray"/>
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnUseVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bg_voucher_button"
+                android:minWidth="@dimen/dp_76"
+                android:minHeight="@dimen/dp_24"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_4"
+                android:text="@string/use_voucher"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color_voucher_button"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="end"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="LGOFFICIFO" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

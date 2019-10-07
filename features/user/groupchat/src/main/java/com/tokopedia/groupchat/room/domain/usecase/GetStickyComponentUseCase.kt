@@ -2,6 +2,7 @@ package com.tokopedia.groupchat.room.domain.usecase
 
 import com.tokopedia.groupchat.chatroom.domain.source.ChannelInfoSource
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -13,9 +14,9 @@ import javax.inject.Inject
 
 class GetStickyComponentUseCase @Inject constructor(private val channelInfoSource:
                                                     ChannelInfoSource) :
-        UseCase<StickyComponentViewModel>() {
+        UseCase<StickyComponentsViewModel>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<StickyComponentViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<StickyComponentsViewModel> {
         return channelInfoSource.getStickyComponent(requestParams.getString(
                 GetStickyComponentUseCase.PARAM_CHANNEL_UUID, ""),
                 getRequestParamsWithoutPath(requestParams))

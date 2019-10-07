@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public interface CouponCatalogContract {
     interface View extends CustomerView {
         void showLoader();
 
-        void showError();
+        void showError(boolean hasInternet);
 
         void onEmptyCatalog();
 
@@ -26,8 +25,6 @@ public interface CouponCatalogContract {
         void hideLoader();
 
         void populateDetail(CatalogsValueEntity data);
-
-        void populateDetail(CouponValueEntity data);
 
         Context getActivityContext();
 
@@ -55,11 +52,7 @@ public interface CouponCatalogContract {
 
         void onPreValidateError(String title, String message);
 
-        void gotoSendGiftPage(int id, String title, String pointStr);
-
-        void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink);
-
-        void onSwipeError(String errorMessage);
+        void gotoSendGiftPage(int id, String title, String pointStr, String banner);
 
         void onFinishRendering();
     }
@@ -67,16 +60,10 @@ public interface CouponCatalogContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getCouponDetail(String uniqueCouponCode);
-
         void getCatalogDetail(String uniqueCatalogCode);
-
-        void reFetchRealCode(String uniqueCatalogCode);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
 
-        void swipeMyCoupon(String partnerCode, String pin);
-
-        void startSendGift(int id, String title, String pointStr);
+        void startSendGift(int id, String title, String pointStr, String banner);
     }
 }

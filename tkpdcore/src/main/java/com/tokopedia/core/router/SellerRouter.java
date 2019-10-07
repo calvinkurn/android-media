@@ -12,11 +12,6 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class SellerRouter {
 
-    public static Intent getActivityShopCreateEdit(Context context){
-        return RouterUtils.getRouterFromContext(context).getIntentCreateShop(context);
-    }
-
-
     public static Intent getActivityManageShop(Context context) {
         return RouterUtils.getRouterFromContext(context).getIntentManageShop(context);
     }

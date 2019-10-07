@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Search</string>
+    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="search_result_app_name">search</string>
 
     <string name="product_tab_title">Produk</string>
     <string name="catalog_tab_title">Katalog</string>
@@ -7,6 +8,7 @@
 
     <string name="title_category">Kategori</string>
     <string name="title_share">Bagikan</string>
+    <string name="title_profile">Profil</string>
 
     <string name="grid">Grid</string>
 
@@ -28,6 +30,8 @@
     <string name="label_follow_shop">Follow</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
+    <string name="shop_total_count_found_in">\u0020ditemukan di\u0020</string>
+    <string name="shop_total_count_shop">\u0020toko</string>
     <string name="shop_total_count">%1$s ditemukan di %2$s toko</string>
     <string name="shop_has_no_product">Toko belum ada produk</string>
     <string name="shop_total_transaction">%s terjual</string>
@@ -40,6 +44,7 @@
     <string name="shop_status_moderated">Dalam Pengawasan</string>
     <string name="shop_status_inactive">Toko Sudah Tidak Aktif</string>
     <string name="shop_voucher_cashback_rb">%srb</string>
+    <string name="shop_see_shop_button">Lihat Toko</string>
 
     <string name="title_total_prods">Produk</string>
 
@@ -51,4 +56,17 @@
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
+    <string name="post_count_value">%1$s post</string>
+    <string name="btn_following_text">Following</string>
+    <string name="btn_follow_text">Follow</string>
+    <string name="sort">Sort</string>
+    <string name="filter">Filter</string>
+    <string name="list">List</string>
+    <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
+    <string name="related_search_title">Mungkin maksud Anda :</string>
+    <string name="value_status_followed">\u2022 Following</string>
+    <string name="image_product_desc">Produk</string>
+    <string name="global_nav_see_all_text">Lihat Semua</string>
+    <string name="search_hint">Cari produk atau Toko</string>
+    <string name="search_title">Pencarian</string>
 </resources>

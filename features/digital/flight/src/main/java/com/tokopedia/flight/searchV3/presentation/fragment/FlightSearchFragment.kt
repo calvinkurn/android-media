@@ -22,11 +22,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
@@ -41,7 +42,6 @@ import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel
 import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchPresenter
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
@@ -262,13 +262,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.fetchSearchData(flightSearchPassData, flightAirportCombineModelList)
     }
 
-    override fun fetchSortAndFilterData() {
+    override fun fetchSortAndFilterData(fromCombo: Boolean) {
         setUpProgress()
         if (adapter.itemCount == 0) {
             showLoading()
         }
 
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, fromCombo)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -409,9 +409,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         val departureAirport = flightSearchMetaViewModel.departureAirport
         val arrivalAirport = flightSearchMetaViewModel.arrivalAirport
         val flightAirportCombineModel = flightAirportCombineModelList.getData(departureAirport, arrivalAirport)
-        val localListAirline = flightAirportCombineModel.airlines
-        localListAirline.addAll(flightSearchMetaViewModel.airlines)
-        flightAirportCombineModel.airlines = localListAirline
+        val localAirlines = flightAirportCombineModel.airlines
+        localAirlines.addAll(flightSearchMetaViewModel.airlines)
+        flightAirportCombineModel.airlines = localAirlines
         val size: Int = flightAirportCombineModelList.data.size
         val halfProgressAmount: Int = divideTo(divideTo(MAX_PROGRESS, size), 2)
         if (!flightAirportCombineModel.isHasLoad) {
@@ -760,16 +760,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
             val dateInput = flightSearchPassData.getDate(isReturning())
             val date = FlightDateUtil.stringToDate(dateInput)
-            val travelCalendarBottomSheet = TravelCalendarBottomSheet.Builder()
-                    .setShowHoliday(true)
-                    .setMinDate(minDate)
-                    .setMaxDate(maxDate)
-                    .setTitle(title)
-                    .setSelectedDate(date)
-                    .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
-                    .build()
-            travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
-                override fun onClickDate(dateSelected: Date) {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date),
+                    flightSearchPassData.departureAirport.airportCode,
+                    flightSearchPassData.arrivalAirport.airportCode,
+                    flightSearchPassData.flightClass.id)
+            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+                override fun onDateSelected(dateSelected: Date) {
                     val calendar = FlightDateUtil.getCurrentCalendar()
                     calendar.time = dateSelected
                     flightSearchPresenter.resetCounterCall()
@@ -777,7 +776,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                             calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
                 }
             })
-            travelCalendarBottomSheet.show(activity!!.supportFragmentManager, "travel calendar")
+            flightCalendarDialog.show(activity!!.supportFragmentManager, "travel calendar")
         }
     }
 
@@ -801,8 +800,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
         private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
         private val PADDING_SEARCH_LIST = 60
-        private val FLIGHT_SEARCH_P1_TRACE = "mp_flight_search_p1"
-        private val FLIGHT_SEARCH_P2_TRACE = "mp_flight_search_p2"
+        private val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
         private val MAX_DATE_ADDITION_YEAR = 1
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {

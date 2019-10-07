@@ -64,6 +64,6 @@
     <string name="discovery_home_snackbar_geolocation_granted_permission">Lokasi aktif. Untuk mengubah izin akses lokasi, buka Pengaturan -> Lokasi di HP-mu</string>
     <string name="discovery_home_snackbar_geolocation_declined_permission">Kamu bisa izinkan akses lokasi di Pengaturan -> Lokasi di HP-mu</string>
     <string name="discovery_home_snackbar_geolocation_setting">Atur</string>
-    <string name="discovery_mau_akses_semua_fitur">Mau akses semua fitur?</string>
-    <string name="discovery_masuk_yuk">Masuk yuk</string>
+
+    <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -35,49 +36,42 @@ class ShareSocmedHandler(val activity: Activity) {
 
         val EXCLUSION = "EXCLUSION"
     }
-    fun ShareData(context: Activity?, packageName: String, targetType: String, shareTxt: String, ProductUri: String, image: Bitmap?, altUrl: String?) {
-        var Resolved = false
-        val share = Intent(Intent.ACTION_SEND)
-        share.type = targetType
-        var f: File? = null
-        if (image != null)
+
+    fun shareData(context: Activity?, packageName: String, targetType: String, shareTxt: String, ProductUri: String, image: Bitmap?, altUrl: String?) {
+        val share = Intent(Intent.ACTION_SEND).setType(targetType)
+        if (image != null) {
+            val bytes = ByteArrayOutputStream()
+            checkTempDirectory()
+            val file = File(Environment.getExternalStorageDirectory().toString() + File.separator + "tkpdtemp" + File.separator + uniqueCode() + ".jpg")
+                    .apply { createNewFile() }
+            image.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+            val fo = FileOutputStream(file)
             try {
-                val bytes = ByteArrayOutputStream()
-                CheckTempDirectory()
-                f = File(Environment.getExternalStorageDirectory().toString() + File.separator + "tkpdtemp" + File.separator + uniqueCode() + ".jpg")
-                image.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-                f.createNewFile()
-                val fo = FileOutputStream(f)
                 fo.write(bytes.toByteArray())
             } catch (e: IOException) {
                 e.printStackTrace()
+                fo.close()
             }
 
-        if (image != null) {
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f))
+                    .putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, file))
         }
+
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri)
-        share.putExtra(Intent.EXTRA_TEXT, shareTxt)
+                .putExtra(Intent.EXTRA_TEXT, shareTxt)
 
         if (context != null) {
-            if (context.packageManager != null) {
-                val resInfo = context.packageManager.queryIntentActivities(share, 0)
-
-                for (info in resInfo) {
-                    if (info.activityInfo.packageName == packageName) {
-                        Resolved = true
-                        share.setPackage(info.activityInfo.packageName)
+            val resolveInfo = context.packageManager?.queryIntentActivities(share, 0)
+                    ?.firstOrNull { it.activityInfo.packageName == packageName }
+                    ?.apply {
+                        share.`package` = activityInfo.packageName
                     }
-                }
-            }
 
-            if (Resolved) {
-                context.startActivity(share)
-            } else if (altUrl != null) {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)))
-            } else
-                Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show()
+            when {
+                resolveInfo != null -> context.startActivity(share)
+                altUrl != null -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)))
+                else -> Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -94,11 +88,11 @@ class ShareSocmedHandler(val activity: Activity) {
      * Cek direktori temporari untuk menyimpan gambar ada atau tidak
      */
 
-    fun CheckTempDirectory() {
+    private fun checkTempDirectory() {
         val path = Environment.getExternalStorageDirectory().toString() + File.separator + "tkpdtemp" + File.separator
         val f = File(path)
         if (f.exists() && f.isDirectory) {
-            Log.v("FILES", "EXIST")
+            Timber.tag("Files").v("Exist")
             val fs = f.listFiles()
             if (fs != null && fs.size > 5)
             // Hapus jika jumlah gambar temporary > 5
@@ -106,12 +100,12 @@ class ShareSocmedHandler(val activity: Activity) {
                     file.delete()
                 }
         } else {
-            Log.v("FILES", "DONT EXIST")
+            Timber.tag("Files").v("Not Exist")
             f.mkdir() // create directory jika direktori tidak ada
         }
     }
 
-    fun uniqueCode(): String {
+    private fun uniqueCode(): String {
         val IDunique = UUID.randomUUID().toString()
         val id = IDunique.replace("-".toRegex(), "")
         return id.substring(0, 16)
@@ -120,7 +114,7 @@ class ShareSocmedHandler(val activity: Activity) {
     fun ShareIntentImage(context: Activity, title: String, shareTxt: String,
                          ProductUri: String, icon: Bitmap?) {
         val bytes = ByteArrayOutputStream()
-        CheckTempDirectory()
+        checkTempDirectory()
         val f = File(Environment.getExternalStorageDirectory().toString() + File.separator
                 + "tkpdtemp" + File.separator + uniqueCode() + ".jpg")
         if (icon != null)

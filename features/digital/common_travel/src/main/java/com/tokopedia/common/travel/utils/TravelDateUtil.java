@@ -17,6 +17,9 @@ public class TravelDateUtil {
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
     public static final String VIEW_FORMAT_WITHOUT_YEAR = "dd MMM";
+    public static final String YYYYMMDD = "yyyyMMdd";
+    public static final String YYYY = "yyyy";
+    public static final String MM = "MM";
 
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);

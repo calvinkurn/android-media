@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
@@ -543,10 +543,14 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
+            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
             getViewToShowEmptySearch(productViewModel);
         } else {
+            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
             getViewToShowProductList(productViewModel);
         }
 
@@ -582,6 +586,15 @@ final class ProductListPresenter
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
         return productViewModel;
+    }
+
+    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+        }
+        else {
+            getView().hideErrorMessage();
+        }
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {

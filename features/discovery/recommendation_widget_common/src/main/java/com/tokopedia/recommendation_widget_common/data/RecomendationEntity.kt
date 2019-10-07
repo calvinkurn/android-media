@@ -116,6 +116,8 @@ class RecomendationEntity {
         var pageName: String? = ""
         @SerializedName("layoutType")
         var layoutType: String? = ""
+        @SerializedName("seeMoreAppLink")
+        var seeMoreAppLink: String? = ""
         @SerializedName("pagination")
         var pagination: Pagination = Pagination()
         @SerializedName("recommendation")

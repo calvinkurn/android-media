@@ -22,7 +22,7 @@ public class InstagramConstant {
     public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
     public static final String URL_API_INSTAGRAM = "https://api.instagram.com";
     public static final java.lang.String URL_LOGIN_INSTAGRAM = "https://api.instagram.com/oauth/authorize/?client_id="
-            + CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=code&scope=basic+public_content";
+            + CLIENT_ID + "&redirect_uri=" + CALLBACK_URL + "&response_type=code&scope=basic";
     public static final int SPAN_COUNT = 3;
     public static final int SPAN_LOOK_UP = 1;
     public static final String URL_PATH_GET_LIST_MEDIA = "/v1/users/self/media/recent";

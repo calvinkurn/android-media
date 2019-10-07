@@ -1,5 +1,6 @@
 package com.tokopedia.notifications
 
+import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
@@ -11,6 +12,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.factory.CMNotificationFactory
+import com.tokopedia.notifications.inApp.CMInAppManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -42,13 +44,18 @@ class CMPushNotificationManager : CoroutineScope {
     private val isPushEnable: Boolean
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
 
+    private val isInAppEnable: Boolean
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
+                false) || BuildConfig.DEBUG
+
     /**
      * initialization of push notification library
      *
      * @param context
      */
-    fun init(context: Context) {
-        this.applicationContext = context.applicationContext
+    fun init(application: Application) {
+        this.applicationContext = application.applicationContext
+        CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
     }
 
@@ -67,9 +74,9 @@ class CMPushNotificationManager : CoroutineScope {
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                if(isForce ==null){
+                if (isForce == null) {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
-                }else{
+                } else {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
                 }
             }
@@ -91,9 +98,9 @@ class CMPushNotificationManager : CoroutineScope {
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                if(isForce ==null){
+                if (isForce == null) {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
-                }else{
+                } else {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
                 }
             }
@@ -111,7 +118,8 @@ class CMPushNotificationManager : CoroutineScope {
         try {
             if (null != extras && extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
                 val confirmationValue = extras[CMConstant.PayloadKeys.SOURCE]
-                return confirmationValue == CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE
+                return confirmationValue == CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE ||
+                        confirmationValue == CMConstant.PayloadKeys.SOURCE_VALUE
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform", e)
@@ -126,8 +134,6 @@ class CMPushNotificationManager : CoroutineScope {
      * @param remoteMessage
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
-        if (!isPushEnable)
-            return
         if (null == remoteMessage)
             return
 
@@ -136,13 +142,21 @@ class CMPushNotificationManager : CoroutineScope {
 
         try {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
+                val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
                 val bundle = convertMapToBundle(remoteMessage.data)
-                launchCatchError(
-                        block = {
-                            handleNotificationBundle(bundle)
-                        }, onError = {
-                    Log.e(TAG, "CMPushNotificationManager: handleNotificationBundle ", it)
-                })
+                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
+                    CMInAppManager.getInstance().handlePushPayload(remoteMessage)
+                } else {
+                    launchCatchError(
+                            block = {
+                                if (isPushEnable)
+                                    handleNotificationBundle(bundle)
+                            }, onError = {
+                        Log.e(TAG, "CMPushNotificationManager: handleNotificationBundle ", it)
+                    })
+                }
+
+
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)

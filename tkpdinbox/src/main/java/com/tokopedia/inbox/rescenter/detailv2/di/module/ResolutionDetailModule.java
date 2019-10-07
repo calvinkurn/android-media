@@ -51,7 +51,6 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageV2Use
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
@@ -99,33 +98,6 @@ public class ResolutionDetailModule {
         this.trackShippingFragment = viewListener;
     }
 
-    @ResolutionDetailScope
-    @Provides
-    DetailResCenterFragmentImpl provideDetailResCenterFragmentPresenter(
-            GetResCenterDetailUseCase getResCenterDetailUseCase,
-            GetResCenterDetailV2UseCase getResCenterDetailV2UseCase,
-            TrackAwbReturProductUseCase trackAwbReturProductUseCase,
-            CancelResolutionUseCase cancelResolutionUseCase,
-            AskHelpResolutionUseCase askHelpResolutionUseCase,
-            FinishResolutionUseCase finishResolutionUseCase,
-            AcceptAdminSolutionUseCase acceptAdminSolutionUseCase,
-            AcceptSolutionUseCase acceptSolutionUseCase,
-            InputAddressUseCase inputAddressUseCase,
-            EditAddressUseCase editAddressUseCase) {
-        return new DetailResCenterFragmentImpl(
-                viewListener,
-                getResCenterDetailUseCase,
-                getResCenterDetailV2UseCase,
-                trackAwbReturProductUseCase,
-                cancelResolutionUseCase,
-                askHelpResolutionUseCase,
-                finishResolutionUseCase,
-                acceptAdminSolutionUseCase,
-                acceptSolutionUseCase,
-                inputAddressUseCase,
-                editAddressUseCase
-        );
-    }
     @ResolutionDetailScope
     @Provides
     GetResCenterDetailUseCase provideGetResCenterDetailUseCase(

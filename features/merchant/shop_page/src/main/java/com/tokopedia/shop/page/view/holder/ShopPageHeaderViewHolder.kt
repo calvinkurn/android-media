@@ -38,15 +38,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopFavourited = TextApiUtils.isValueTrue(shopInfo.favoriteData.alreadyFavorited.toString())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
-        if (shopInfo.favoriteData.totalFavorite > 1) {
-            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
-                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
-        } else { // if 0 or 1, only print as follower (without s)
-            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
-        }
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.shopAssets.avatar)
         when {
@@ -64,6 +56,19 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         } else {
             displayAsBuyer()
         }
+    }
+
+    fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData){
+        isShopFavourited = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        if (favoriteData.totalFavorite > 1) {
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
+                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
+        } else { // if 0 or 1, only print as follower (without s)
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
+                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
+        }
+
+        updateFavoriteButton()
     }
 
     fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {

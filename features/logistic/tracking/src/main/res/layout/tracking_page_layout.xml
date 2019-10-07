@@ -302,23 +302,42 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/live_tracking_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/tkpd_main_green"
-                android:gravity="center">
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/label_live_tracking"
+                android:visibility="visible"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
-                    android:gravity="center"
-                    android:text="@string/label_live_tracking"
-                    android:textColor="@color/white" />
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/retry_pickup_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/find_new_driver"
+                android:visibility="gone"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
 
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_retry_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:text="Tunggu xx:xx untuk mencari driver baru"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

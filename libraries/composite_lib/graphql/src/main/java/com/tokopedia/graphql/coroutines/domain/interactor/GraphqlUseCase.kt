@@ -49,7 +49,11 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
                             cacheStrategy.isSessionIncluded))
 
                 }
-            }.subscribeOn(Schedulers.io()).subscribeIgnoreError()
+            }.subscribeOn(Schedulers.io()).subscribe({
+                //no op
+            }, {
+                //ignore error
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -11,17 +11,22 @@ import android.view.ViewGroup;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
+import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.KEY_TRENDING;
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.TYPE_CUSTOM;
+
 /**
  * @author by milhamj on 09/08/18.
  */
 
 public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
+
     private List<FeedTabs.FeedData> itemList;
     private Bundle bundle;
     private SparseArrayCompat<Fragment> registeredFragment = new SparseArrayCompat<>();
@@ -36,9 +41,11 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         FeedTabs.FeedData data = itemList.get(position);
         if (data.getType().equals(FeedTabs.TYPE_FEEDS)){
-            return FeedPlusFragment.newInstance(bundle);
+            return FeedPlusFragment.Companion.newInstance(bundle);
         } else if (data.getType().equals(FeedTabs.TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
+        } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
+            return DynamicFeedFragment.Companion.newInstance(data.getKey());
         } else {
             /* Will be override for next to handle custom tab */
             return new Fragment();

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -18,7 +19,6 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -30,6 +30,10 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
@@ -55,6 +59,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private lateinit var promoAdapter: HotelPromoAdapter
     private var promoDataList: List<HotelPromoEntity> = listOf()
 
+    private lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,6 +78,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
 
     }
 
@@ -92,7 +100,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.promoData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.size > 0) {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.size > 0) {
                         promoDataList = it.data
                         renderHotelPromo(promoDataList)
                     } else {
@@ -185,7 +193,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
-        activity?.overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in,
+                com.tokopedia.common.travel.R.anim.travel_anim_stay)
     }
 
     private fun configAndRenderCheckInDate() {
@@ -305,27 +314,32 @@ class HotelHomepageFragment : HotelBaseFragment(),
             rv_hotel_homepage_promo.setHasFixedSize(true)
             rv_hotel_homepage_promo.isNestedScrollingEnabled = false
             rv_hotel_homepage_promo.adapter = promoAdapter
+            if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
             rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
-                                ?: "")
+                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
+                                ?: HotelPromoEntity(), position)
                     }
                 }
             })
-        } else {
-            promoAdapter.updateItem(promoDataList)
-        }
+        } else promoAdapter.updateItem(promoDataList)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener {
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, 1, 30,
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label))
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
+            }
+        }
+        hotelCalendarDialog.listenerMaxRange = object : SelectionRangeCalendarWidget.OnNotifyMaxRange {
+            override fun onNotifyMax() {
+                Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
         hotelCalendarDialog.show(fragmentManager, "test")
@@ -339,8 +353,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    override fun onPromoClicked(promo: HotelPromoEntity) {
-        trackingHotelUtil.hotelClickBanner(promo.promoId)
+    override fun onPromoClicked(promo: HotelPromoEntity, position: Int) {
+        trackingHotelUtil.hotelClickBanner(promo, position)
     }
 
     companion object {

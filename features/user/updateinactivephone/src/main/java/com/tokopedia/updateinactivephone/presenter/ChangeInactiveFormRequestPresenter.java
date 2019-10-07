@@ -101,7 +101,7 @@ public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<Chan
         params.putInt(RESOLUTION, 215);
         params.putString(PHONE, phone);
         params.putString(EMAIL, email);
-        params.putInt(USER_ID, Integer.valueOf(userId));
+        params.putInt(USER_ID, userId.isEmpty()? 0 : Integer.valueOf(userId));
         params.putString(TOKEN, "tokopedia-lite-inactive-phone");
 
         setParamUploadIdImage(params);
