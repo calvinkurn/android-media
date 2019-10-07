@@ -46,6 +46,9 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +58,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
+import rx.Subscriber
 import javax.inject.Inject
 
 
@@ -69,6 +73,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
         val item = element as ProductsItem
 
+        if (item.isTopAds) {
+            ImpresionTask().execute(item.productImpTrackingUrl)
+        }
         catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
                 item.name,
                 item.id.toString(),
@@ -125,6 +132,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
+
+    @Inject
+    lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
 
     lateinit var userSession: UserSession
 
@@ -210,7 +220,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
@@ -241,7 +251,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun setQuickFilterAdapter(productCount:String){
+    private fun setQuickFilterAdapter(productCount: String) {
         quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
@@ -523,14 +533,15 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-        if (!item.isTopAds) {
-            catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                    mDepartmentId,
-                    item.name,
-                    CurrencyFormatHelper.convertRupiahToInt(item.price),
-                    adapterPosition,
-                    getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
+        if (item.isTopAds) {
+            ImpresionTask().execute(item.productClickTrackingUrl)
         }
+        catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                mDepartmentId,
+                item.name,
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                adapterPosition,
+                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
 
     }
 
@@ -634,6 +645,21 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                 selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+        val params = RequestParams.create()
+        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishListTrackerUrl)
+        topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onNext(wishlistModel: WishlistModel) {
+            }
+        })
     }
 
 }

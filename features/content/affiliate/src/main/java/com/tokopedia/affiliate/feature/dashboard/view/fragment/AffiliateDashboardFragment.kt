@@ -31,6 +31,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMePro
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
@@ -273,8 +274,8 @@ class AffiliateDashboardFragment :
     }
 
     private fun onCheckBalanceClicked() {
-        if (RouteManager.isSupportApplink(context, ApplinkConst.DEPOSIT)) {
-            RouteManager.route(context, ApplinkConst.DEPOSIT)
+        if (RouteManager.isSupportApplink(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
         }
     }
 

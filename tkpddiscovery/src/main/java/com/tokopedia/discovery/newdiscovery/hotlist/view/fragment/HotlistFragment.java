@@ -68,6 +68,7 @@ import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1178,5 +1179,14 @@ public class HotlistFragment extends BrowseSectionFragment
                 eventLabel
         ).getEvent());
         reloadData();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        if (getQueryModel() != null && getQueryModel().getCategoryID() != null) {
+            return getQueryModel().getCategoryID();
+        } else {
+            return "";
+        }
     }
 }
