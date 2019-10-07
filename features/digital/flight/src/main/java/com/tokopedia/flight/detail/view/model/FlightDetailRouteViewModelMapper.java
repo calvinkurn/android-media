@@ -52,8 +52,8 @@ public class FlightDetailRouteViewModelMapper {
     private List<FlightStopOverViewModel> transform(List<StopDetailEntity> stopDetails) {
         List<FlightStopOverViewModel> details = new ArrayList<>();
         FlightStopOverViewModel viewModel = null;
-        if (stopDetails != null){
-            for (StopDetailEntity entity : stopDetails){
+        if (stopDetails != null) {
+            for (StopDetailEntity entity : stopDetails) {
                 viewModel = transform(entity);
                 if (viewModel != null)
                     details.add(viewModel);
@@ -64,7 +64,7 @@ public class FlightDetailRouteViewModelMapper {
 
     private FlightStopOverViewModel transform(StopDetailEntity entity) {
         FlightStopOverViewModel viewModel = null;
-        if (entity != null){
+        if (entity != null) {
             viewModel = new FlightStopOverViewModel();
             viewModel.setAirportCode(entity.getCode());
             viewModel.setCityName(entity.getCity());
@@ -109,6 +109,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
             flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetailEntities()));
+            flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
 
             if (route.getDepartureTerminal() != null && route.getDepartureTerminal().length() > 0) {
                 flightDetailRouteViewModel.setDepartureTerminal(route.getDepartureTerminal());
@@ -137,9 +138,9 @@ public class FlightDetailRouteViewModelMapper {
 
     private int getIndexFromId(List<FlightAirlineViewModel> airlineDBList, String id) {
         int index = -1;
-        for(FlightAirlineViewModel airlineDB : airlineDBList) {
+        for (FlightAirlineViewModel airlineDB : airlineDBList) {
             index++;
-            if(airlineDB.getId().equals(id)) {
+            if (airlineDB.getId().equals(id)) {
                 break;
             }
         }
