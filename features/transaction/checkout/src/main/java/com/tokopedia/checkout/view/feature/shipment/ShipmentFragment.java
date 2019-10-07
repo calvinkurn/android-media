@@ -1716,25 +1716,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void sendEEStep3() {
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                    shipmentCartItemModel.getCartString(),
-                    String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getServiceId()),
-                    String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
-                    String.valueOf(shipmentCartItemModel.getSpId())
-            );
-            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
-        }
-        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
-        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                dataCheckoutRequests,
-                EnhancedECommerceActionField.STEP_3,
-                ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
-                "",
-                getCheckoutLeasingId());
 
-        sendEESGTMv5(dataCheckoutRequests, 3, "data validation", "",
-                ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED, ConstantTransactionAnalytics.EventLabel.SUCCESS);
+        // if one of courier reseted because of apply promo logistic (PSL) and eventually not eligible after hit validate use, don't send EE
+        boolean courierHasReseted = false;
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                        shipmentCartItemModel.getCartString(),
+                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getServiceId()),
+                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
+                        String.valueOf(shipmentCartItemModel.getSpId())
+                );
+                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
+            } else {
+                courierHasReseted = true;
+                break;
+            }
+        }
+
+        if (!courierHasReseted) {
+            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+            shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequests,
+                    EnhancedECommerceActionField.STEP_3,
+                    ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
+                    "",
+                    getCheckoutLeasingId());
+
+            sendEESGTMv5(dataCheckoutRequests, 3, "data validation", "",
+                    ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED, ConstantTransactionAnalytics.EventLabel.SUCCESS);
+        }
     }
 
     @Override
