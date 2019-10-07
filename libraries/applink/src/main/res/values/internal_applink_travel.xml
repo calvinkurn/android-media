@@ -16,6 +16,7 @@
     <string name="path_hotel_order" translatable="false">/order</string>
     <string name="path_hotel_order_detail" translatable="false">/order/.*\</string>
     <string name="title_hotel">Hotel</string>
+    <string name="title_travel_homepage">Travel &amp; Entertainment</string>
 
     <string name="path_travel_entertainment_home" translatable="false">/home</string>
 

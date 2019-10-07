@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -210,6 +212,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
                     ratingThumbsDown.setVisibility(View.GONE);
                     mPresenter.onClick(true, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventHelpful);
                 }
             });
 
@@ -218,9 +221,17 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful);
                 }
             });
 
+        }
+
+        private void sendGTMEvent(String eventLabel) {
+            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+                    InboxTicketTracking.Category.EventHelpMessageInbox,
+                    InboxTicketTracking.Action.EventClickCsatPerReply,
+                    eventLabel);
         }
 
         private boolean isRoleAgent(CommentsItem item) {

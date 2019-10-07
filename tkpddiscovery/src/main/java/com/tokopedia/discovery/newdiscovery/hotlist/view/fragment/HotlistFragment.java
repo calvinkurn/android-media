@@ -47,7 +47,6 @@ import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -69,6 +68,7 @@ import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1179,5 +1179,14 @@ public class HotlistFragment extends BrowseSectionFragment
                 eventLabel
         ).getEvent());
         reloadData();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        if (getQueryModel() != null && getQueryModel().getCategoryID() != null) {
+            return getQueryModel().getCategoryID();
+        } else {
+            return "";
+        }
     }
 }

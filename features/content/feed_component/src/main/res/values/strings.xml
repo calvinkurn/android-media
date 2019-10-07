@@ -52,5 +52,14 @@
     <string name="share_instagram_feed">Instagram Feed</string>
     <string name="share_instagram_story">Instagram Story</string>
 
+    <!-- Share profile-->
+    <string name="profile_share_title">Bagikan Postmu untuk raih Komisi!</string>
+    <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
+    <string name="profile_share_profile">Bagikan Profil</string>
+    <string name="profile_share_this_profile">Bagikan Profile Ini</string>
+    <string name="profile_other_share_title">Suka profil ini? Share, yuk!</string>
 
+    <!--Create Post-->
+    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
+    <string name="feed_create_post_shop">Buat Post Toko</string>
 </resources>

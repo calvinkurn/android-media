@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
-class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TelcoRecommendation>) :
+class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRecommendation>) :
         RecyclerView.Adapter<DigitalRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
@@ -43,31 +42,31 @@ class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TelcoRecommenda
         private val textClientNumber: TextView = itemView.findViewById(R.id.text_client_number)
         private val textProductName: TextView = itemView.findViewById(R.id.text_product_name)
 
-        private lateinit var telcoRecommendation: TelcoRecommendation
+        private lateinit var topupBillsRecommendation: TopupBillsRecommendation
 
         init {
             itemView.setOnClickListener {
-                listener.onClickRecentNumber(telcoRecommendation, adapterPosition)
+                listener.onClickRecentNumber(topupBillsRecommendation, adapterPosition)
             }
         }
 
-        fun bind(telcoRecommendation: TelcoRecommendation) {
-            this.telcoRecommendation = telcoRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(iconOperator, telcoRecommendation.iconUrl,
+        fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
+            this.topupBillsRecommendation = topupBillsRecommendation
+            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
                     ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
-            if (telcoRecommendation.description.isEmpty()) {
-                textClientNumber.text = telcoRecommendation.clientNumber
+            if (topupBillsRecommendation.description.isEmpty()) {
+                textClientNumber.text = topupBillsRecommendation.clientNumber
             } else {
-                textClientNumber.text = telcoRecommendation.description
+                textClientNumber.text = topupBillsRecommendation.description
             }
-            textProductName.text = telcoRecommendation.title
+            textProductName.text = topupBillsRecommendation.title
         }
 
     }
 
     interface ActionListener {
-        fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, position: Int)
+        fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int)
     }
 
 }

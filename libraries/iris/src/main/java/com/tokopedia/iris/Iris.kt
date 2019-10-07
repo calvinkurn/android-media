@@ -24,8 +24,6 @@ interface Iris {
 
     fun setService(config: Configuration)
 
-    fun resetService(config: Configuration)
-
     /**
      * save event to persistence storage,
      * the events will be sent to server periodically
@@ -41,5 +39,7 @@ interface Iris {
     fun setUserId(userId: String)
 
     fun setDeviceId(deviceId: String)
+
+    fun setAlarm(isTurnOn: Boolean)
 
 }

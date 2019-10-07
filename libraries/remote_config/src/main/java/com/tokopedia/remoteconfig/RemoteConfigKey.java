@@ -89,7 +89,6 @@ public class RemoteConfigKey {
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
-    public static final String SHOP_ETALASE_TOGGLE = "android_shop_etalase_toggle";
 
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
@@ -137,6 +136,7 @@ public class RemoteConfigKey {
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
+    public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 
@@ -158,4 +158,13 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
+    public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
+
+    public static final String APP_ENABLE_CATALOG_REVAMP = "app_enable_catalog_revamp";
+    public static final String TOPCHAT_OLD = "android_topchat_old";
+    public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
+    public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
+
+    public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
+
 }

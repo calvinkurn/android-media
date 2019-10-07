@@ -49,6 +49,7 @@ class SimilarProductRecommendationItemViewHolder (
             setRating(element.productItem.rating)
             mapBadges(element.productItem.badgesUrl)
             setShopLocationText(element.productItem.location)
+            setShopNameText(element.productItem.shopName)
             realignLayout()
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {

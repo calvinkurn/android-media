@@ -334,6 +334,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
 
                         if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
+                        else if (lastPosition == 0 && !needRefresh) onProductViewImpression(flightJourneyViewModelList)
+
                         lastPosition = flightJourneyViewModelList.size
                     }
                 }
@@ -398,7 +400,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     }
 
     private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyViewModel>) {
-        flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
+        if (listJourneyViewModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
+        else flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
     }
 
     override fun unsubscribeAll() {

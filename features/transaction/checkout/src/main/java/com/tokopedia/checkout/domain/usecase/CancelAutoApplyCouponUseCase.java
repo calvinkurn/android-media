@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -33,7 +33,7 @@ public class CancelAutoApplyCouponUseCase extends UseCase<String> {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
 
-        return cartRepository.cancelAutoApplyCoupon(AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE, param);
+        return cartRepository.cancelAutoApplyCoupon(AuthConstant.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE, param);
     }
 
 }

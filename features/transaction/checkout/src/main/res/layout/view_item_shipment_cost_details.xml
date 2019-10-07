@@ -131,7 +131,7 @@
         android:text="@string/checkout_module_label_asuransi"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_insurance_fee"
@@ -143,26 +143,26 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
-        tools:text="-"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="-" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_trade_in_label"
+        android:id="@+id/tv_macro_insurance_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_insurance_fee_label"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/checkout_module_label_trade_in"
+        android:text="@string/checkout_module_label_macro_insurance"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_trade_in"
+        android:id="@+id/tv_macro_insurance_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_insurance_fee_label"
@@ -171,10 +171,38 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="end"
-        tools:text="-"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp22.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_trade_in_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_macro_insurance_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/checkout_module_label_trade_in"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_trade_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_macro_insurance_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp10.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_purchase_protection_label"
@@ -184,10 +212,10 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        tools:text="Proteksi Produk (3 Barang)"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Proteksi Produk (3 Barang)" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_purchase_protection_fee"
@@ -200,10 +228,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        tools:text="-"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="-" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_seller_cost_addition"
@@ -230,10 +258,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        tools:text="Rp100.000"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo_or_coupon_label"
@@ -244,11 +272,11 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/label_promo"
-        android:visibility="gone"
-        tools:ignore="HardcodedText"
         android:textColor="@color/text_black"
+        android:visibility="gone"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo"
@@ -261,11 +289,11 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        android:visibility="gone"
-        tools:text="Rp100.000"
         android:textColor="@color/price_label"
+        android:visibility="gone"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_donation_label"
@@ -276,10 +304,10 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/label_donation"
-        tools:ignore="HardcodedText"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_donation_price"
@@ -294,10 +322,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        tools:text="Rp100.000"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_emas_label"
@@ -309,10 +337,10 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/label_emas"
-        tools:ignore="HardcodedText"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_emas_price"
@@ -326,10 +354,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        tools:text="Rp100.000"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_order_prioritas_label"
@@ -341,10 +369,10 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/order_prioritas_label"
-        tools:ignore="HardcodedText"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_order_prioritas_price"
@@ -358,10 +386,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
-        tools:text="Rp100.000"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
 
     <RelativeLayout
         android:id="@+id/rl_total_promo"
@@ -387,10 +415,10 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_total_nilai_promo"
-            tools:ignore="HardcodedText"
             android:textColor="@color/text_black"
             app:typographyType="body_2"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold"
+            tools:ignore="HardcodedText" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_promo_amount"
@@ -406,9 +434,9 @@
             android:layout_toLeftOf="@+id/iv_total_info"
             android:gravity="end"
             android:textColor="@color/total_benefit"
-            tools:text="Rp100.000"
             app:typographyType="body_2"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold"
+            tools:text="Rp100.000" />
 
         <ImageView
             android:id="@+id/iv_total_info"

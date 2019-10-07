@@ -179,7 +179,6 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             enableOrDisableImages(holder, item);
         } else if (pHolder instanceof HeaderViewHolder) {
-            
         }
 
     }

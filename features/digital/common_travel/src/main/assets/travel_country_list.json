@@ -2,6 +2,14 @@
   "data": [
     {
       "attributes": {
+        "phone_code": 62,
+        "cities": [],
+        "name": "Indonesia"
+      },
+      "id": "ID"
+    },
+    {
+      "attributes": {
         "phone_code": 375,
         "cities": [],
         "name": "Andorra"
@@ -775,14 +783,6 @@
         "name": "Hungary"
       },
       "id": "HU"
-    },
-    {
-      "attributes": {
-        "phone_code": 62,
-        "cities": [],
-        "name": "Indonesia"
-      },
-      "id": "ID"
     },
     {
       "attributes": {

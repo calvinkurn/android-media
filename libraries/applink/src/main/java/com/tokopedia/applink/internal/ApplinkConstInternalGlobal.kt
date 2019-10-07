@@ -70,6 +70,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
+    // AddPasswordActivity
+    // tokopedia-android-internal://global/add-password
+    @JvmField
+    val ADD_PASSWORD = "$INTERNAL_GLOBAL/add-password"
+
     // ProfileCompletionActivity
     // tokopedia-android-internal://global/profile-completion
     @JvmField
@@ -107,6 +112,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_BOD = "$INTERNAL_GLOBAL/add-bod"
 
+    // AddPinActivity
+    // tokopedia-android-internal://global/add-pin
+    @JvmField
+    val ADD_PIN = "$INTERNAL_GLOBAL/add-pin"
+
+    // PinOnboardingActivity
+    // tokopedia-android-internal://global/add-pin-onboarding
+    @JvmField
+    val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField
@@ -137,6 +152,18 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
+
+    // SaldoDepositActivity
+    // tokopedia-android-internal://global/saldo
+    @JvmField
+    val SALDO_DEPOSIT = "$INTERNAL_GLOBAL/saldo"
+
+    // SaldoIntroActivity
+    // tokopedia-android-internal://global/saldo-intro
+    @JvmField
+    val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
+
+
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
     @JvmField

@@ -16,7 +16,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.TabBusinessViewPagerAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.TabBusinessViewPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -117,7 +117,7 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
         addChildTabLayout(homeWidget.tabBusinessList)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, positionWidget)
+        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader.backColor, positionWidget)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
         viewPager.setCanScrollHorizontal(false)

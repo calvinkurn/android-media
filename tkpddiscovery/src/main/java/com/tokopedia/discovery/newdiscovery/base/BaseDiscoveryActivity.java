@@ -73,59 +73,7 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleResponseHotlist(String url, String query) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
-        finish();
-    }
-
-    @Override
-    public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-    }
-
-    @Override
-    public void onHandleImageSearchResponseError() { }
-
-    @Override
-    public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId, isPausing());
-        overridePendingTransition(0, 0);
-        finish();
-    }
-
-    @Override
-    public void onHandleResponseCatalog(String url) {
-        URLParser urlParser = new URLParser(url);
-        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias(), isPausing()));
-        finish();
-    }
-
-    @Override
-    public void onHandleResponseUnknown() {
-        throw new RuntimeException("not yet handle unknown response");
-    }
-
-    @Override
     public void onHandleResponseError() {
-
-    }
-
-    @Override
-    public void onHandleInvalidImageSearchResponse() {
-
-    }
-
-    @Override
-    public void showErrorNetwork(String message) {
-
-    }
-
-    @Override
-    public void showTimeoutErrorNetwork(String message) {
-
-    }
-
-    @Override
-    public void showImageNotSupportedError() {
 
     }
 

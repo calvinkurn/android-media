@@ -5,6 +5,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
 
 /**
@@ -18,7 +19,7 @@ class TitleViewHolder(private val view: View) : AbstractViewHolder<TitleDataMode
 
     override fun bind(element: TitleDataModel) {
         title.text = element.title
-        seeMore.setOnClickListener { RouteManager.route(view.context, element.appLinkSeeMore) }
+        seeMore.setOnClickListener { element.listener.onClickSeeMore(pageName = element.pageName, seeMoreAppLink = element.seeMoreAppLink) }
     }
 
 }

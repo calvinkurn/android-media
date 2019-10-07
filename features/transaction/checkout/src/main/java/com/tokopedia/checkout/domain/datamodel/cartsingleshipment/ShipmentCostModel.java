@@ -29,6 +29,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
     private int TotalDiscWithoutCashback;
+    private long macroInsurancePrice;
+    private String macroInsurancePriceLabel;
     private int bookingFee;
 
     public int getTotalItem() {
@@ -179,6 +181,22 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
 
     public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
 
+    public long getMacroInsurancePrice() {
+        return macroInsurancePrice;
+    }
+
+    public void setMacroInsurancePrice(long macroInsurancePrice) {
+        this.macroInsurancePrice = macroInsurancePrice;
+    }
+
+    public String getMacroInsurancePriceLabel() {
+        return macroInsurancePriceLabel;
+    }
+
+    public void setMacroInsurancePriceLabel(String macroInsurancePriceLabel) {
+        this.macroInsurancePriceLabel = macroInsurancePriceLabel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -201,6 +219,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.tradeInPrice);
         dest.writeInt(this.totalPromoStackAmount);
         dest.writeInt(this.bookingFee);
+        dest.writeLong(this.macroInsurancePrice);
+        dest.writeString(this.macroInsurancePriceLabel);
     }
 
     public ShipmentCostModel() {
@@ -222,6 +242,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.tradeInPrice = in.readDouble();
         this.totalPromoStackAmount = in.readInt();
         this.bookingFee = in.readInt();
+        this.macroInsurancePrice = in.readLong();
+        this.macroInsurancePriceLabel = in.readString();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterDetailRatingAdapter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class DynamicFilterRatingActivity extends DynamicFilterDetailGeneralActiv
                               boolean isSearchable,
                               String searchHint,
                               boolean isUsingTracking,
-                              String trackingPrefix) {
+                              FilterTrackingData trackingData) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterRatingActivity.class);
@@ -36,7 +37,7 @@ public class DynamicFilterRatingActivity extends DynamicFilterDetailGeneralActiv
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
-            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
+            intent.putExtra(EXTRA_TRACKING_DATA, trackingData);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

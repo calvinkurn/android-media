@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common.network.data.model.CacheType;
 import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -12,7 +13,6 @@ import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.common.network.util.RestConstant;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -65,7 +65,7 @@ public class GetEmailNotifUseCase extends RestRequestSupportInterceptorUseCase {
     private Map<String,Object> getQueryParams(){
         Map<String, String> param = new HashMap<>();
         param.put(PARAM_SESSION_ID, userSession.getUserId());
-        Map<String, String> tmp = AuthUtil.generateParamsNetwork(userSession.getUserId(),
+        Map<String, String> tmp = AuthHelper.generateParamsNetwork(userSession.getUserId(),
                 userSession.getDeviceId(), param);
         tmp.remove(PARAM_DEVICE_TIME);
 

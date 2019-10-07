@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.similarsearch">
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:label="@string/similar_search_app_name"
+        android:largeHeap="true"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".view.SimilarSearchActivity"
+            android:label="@string/title_similar_search"
+            android:theme="@style/noAnimTheme">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_discovery"
+                    android:pathPattern="@string/path_similar_search_result"/>
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
