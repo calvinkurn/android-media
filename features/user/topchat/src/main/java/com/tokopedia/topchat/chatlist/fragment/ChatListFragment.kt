@@ -395,16 +395,16 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             data?.extras?.let { extras ->
                 itemPositionLongClicked = extras.getInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, -1)
                 when (resultCode) {
-//                    Activity.RESULT_OK -> {
-//                        val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
-//                        if(moveToTop) {
-//                            val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
-//                            lastItem?.let {
-//                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, lastItem.replyTime)
-//                                updateItemOnIndex(itemPositionLongClicked, model)
-//                            }
-//                        }
-//                    }
+                    Activity.RESULT_OK -> {
+                        val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
+                        if(moveToTop) {
+                            val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
+                            lastItem?.let {
+                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, lastItem.replyTime)
+                                updateItemOnIndex(itemPositionLongClicked, model)
+                            }
+                        }
+                    }
                     TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
                         adapter.deleteItem(itemPositionLongClicked)
                     }
