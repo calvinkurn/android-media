@@ -174,7 +174,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     }
 
     @Override
-    public void payTicketsClick(String title) {
+    public void payTicketsClick(String title, String selectedPackageDate, String locationName) {
         eventTitle = title;
         selectedPackageViewModel.setTimeRange(selectedPackageDate);
         ValidateShow validateShow = new ValidateShow();
@@ -316,7 +316,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
     public void onClickLocationDate(LocationDateModel model, int index) {
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
-        mView.setLocationDate(model.getmLocation(), model.getDate().toString(), selectedSchedule);
+        mView.setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
             selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;

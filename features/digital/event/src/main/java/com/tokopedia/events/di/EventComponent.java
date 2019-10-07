@@ -23,7 +23,7 @@ import dagger.Component;
  */
 
 @EventScope
-@Component(modules = {EventModule.class, OmsModule.class, EventViewModelModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
 
     VerifyCartWrapper getVerifyCartWrapper();
@@ -47,7 +47,5 @@ public interface EventComponent {
     SeatSelectionContract.SeatSelectionPresenter getSeatSelectionPresenter();
 
     ScanCodeContract.ScanPresenter getScanCodePresenter();
-
-    SelectEventDateBottomSheet getSelectEventDateBottomSheet();
 
 }

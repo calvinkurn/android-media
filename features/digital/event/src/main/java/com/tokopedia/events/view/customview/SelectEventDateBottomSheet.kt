@@ -2,8 +2,8 @@ package com.tokopedia.events.view.customview
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +20,16 @@ import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragmen
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.select_event_date_bottomsheet.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasComponent<EventComponent> {
+class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasComponent<EventViewModelComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -37,23 +40,17 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
     var maxDate: Date? = null
     var locationModels = ArrayList<LocationDateModel>()
     val selectedDates = ArrayList<Date>()
-    val dateFormatArg = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+    val dateFormatArg = SimpleDateFormat("dd-MM-yyyy", Locale("in", "ID", ""))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        component.selectEventDateBottomSheet
-
-        activity?.run {
-            holidayViewModel = ViewModelProviders.of(this, viewModelFactory).get(HolidayViewModel::class.java)
-        }
     }
 
-    override fun getComponent(): EventComponent
-            = DaggerEventComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .eventModule(EventModule(context))
-            .build()
+    override fun getComponent(): EventViewModelComponent {
+     return DaggerEventViewModelComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+             .build()
+     }
 
     fun setSelectedDatesListener(selectedDates: SelectedDates) {
         selectedDatesListener = selectedDates
@@ -65,6 +62,20 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        component.inject(this)
+
+
+
+//        if (this::viewModelFactory.isInitialized) {
+            Log.d("Naveen", "done")
+            activity?.run {
+                val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+                holidayViewModel = viewModelProvider.get(HolidayViewModel::class.java)
+            }
+//        } else {
+//            Log.d("Naveen", "Something wrong")
+//        }
         holidayViewModel?.getTravelHolidayDate()
 
 
@@ -82,6 +93,7 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
                 }
             }
         })
+//        renderCalender(arrayListOf())
         btn_close.setOnClickListener({ view1 -> dismissAllowingStateLoss() })
     }
 
@@ -113,11 +125,14 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 selectedDatesListener?.selectedScheduleDate(date)
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+                GlobalScope.launch {
+                    delay(300)
+                    dismissAllowingStateLoss()
+                }
             }
 
             override fun onDateUnselected(date: Date) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         })
     }

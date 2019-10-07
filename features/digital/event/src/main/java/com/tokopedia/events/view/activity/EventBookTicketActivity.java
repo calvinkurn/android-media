@@ -240,7 +240,7 @@ public class EventBookTicketActivity
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.pay_tickets) {
-            bookTicketPresenter.payTicketsClick(title);
+            bookTicketPresenter.payTicketsClick(title, tvDate.getText().toString(), tvLocation.getText().toString());
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
             if (bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
                 openCalender(bookTicketPresenter.getLocationDateModels());
@@ -256,9 +256,9 @@ public class EventBookTicketActivity
     @Override
     public void selectedScheduleDate(@NotNull Date date) {
         for(SchedulesViewModel model : eventsDetailsViewModel.getSchedulesViewModels()) {
-//            if(model.getStartDate() == date){
-//                setLocationDate(model.);
-//            }
+            if(model.getStartDate() == (date.getTime()/1000)){
+                setLocationDate(model.getCityName(), Utils.getSingletonInstance().convertEpochToString(model.getStartDate()), model);
+            }
         }
 
     }

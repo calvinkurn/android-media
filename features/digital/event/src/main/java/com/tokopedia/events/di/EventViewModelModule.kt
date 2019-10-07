@@ -2,6 +2,7 @@ package com.tokopedia.events.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.events.di.scope.EventScope
 import com.tokopedia.events.view.customview.HolidayViewModel
@@ -11,15 +12,14 @@ import dagger.multibindings.IntoMap
 
 @Module
 @EventScope
-abstract class EventViewModelModule {
+internal abstract class EventViewModelModule {
+
+    @EventScope
+    @Binds
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(HolidayViewModel::class)
-    abstract fun bindHolidayViewModel(holidayViewModel: HolidayViewModel) : ViewModel
-
-    @Binds
-    abstract fun bindViewModelFactory( factory: ViewModelFactory):
-            ViewModelProvider.Factory
-
+    internal abstract fun holidayViewModel(holidayViewModel: HolidayViewModel) : ViewModel
 }
