@@ -36,7 +36,18 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.miscDependencies.lottie
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
     implementation rootProject.ext.playServicesDependencies.phone
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true

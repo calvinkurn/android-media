@@ -28,6 +28,9 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
+    override fun onClickRedeemCoupon(catalog_id: Int,slug:String?) {
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
