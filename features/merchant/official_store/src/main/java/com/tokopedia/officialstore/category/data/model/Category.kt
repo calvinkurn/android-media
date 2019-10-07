@@ -14,9 +14,12 @@ data class Category(
         @SerializedName("url")
         val slug: String = "",
         @SerializedName("fullUrl")
-        val fullUrl: String = ""
+        val fullUrl: String = "",
+        @SerializedName("categories")
+        val categories: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -29,6 +32,7 @@ data class Category(
         parcel.writeString(icon)
         parcel.writeString(slug)
         parcel.writeString(fullUrl)
+        parcel.writeString(categories)
     }
 
     override fun describeContents(): Int {

@@ -48,6 +48,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreDynamicChannelResult
     }
 
+    val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>> by lazy {
+        _officialStoreProductRecommendation
+    }
+
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
     }
@@ -70,8 +74,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categoryId?: "").await())
-            // TODO get product recommendation
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "").await())
 
         }) {
             // TODO just ignore or handle?
