@@ -43,14 +43,24 @@ public class TkpdWebView extends WebView {
 
     public TkpdWebView(Context context) {
         super(context);
+        init();
     }
 
     public TkpdWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public TkpdWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init(){
+        //set custom tracking, helpful for GA
+        WebSettings webSettings = getSettings();
+        String userAgent = String.format("%s - %s]","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+        webSettings.setUserAgentString(userAgent);
     }
 
     public void loadUrlWithFlags(String url) {

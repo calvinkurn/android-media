@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
@@ -28,17 +29,28 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String USER_AGENT_STRING = "Tokopedia Android";
 
     public TkpdWebView(Context context) {
         super(context);
+        init();
     }
 
     public TkpdWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public TkpdWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init(){
+        //set custom tracking, helpful for GA
+        WebSettings webSettings = getSettings();
+        String userAgent = String.format("%s - %s]","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+        webSettings.setUserAgentString(userAgent);
     }
 
     public void loadUrlWithFlags(String url) {
