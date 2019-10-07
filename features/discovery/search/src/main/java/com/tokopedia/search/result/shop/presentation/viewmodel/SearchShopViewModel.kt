@@ -10,6 +10,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -92,9 +93,18 @@ internal class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
+    fun onViewCreated() {
+        if (shouldLoadDataOnViewCreated() && !hasLoadData) {
+            searchShop()
+        }
+    }
+
+    private fun shouldLoadDataOnViewCreated(): Boolean {
+        return searchParameter[SearchApiConst.ACTIVE_TAB] == SearchConstant.ActiveTab.SHOP
+    }
+
     fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible && isViewAdded && !hasLoadData) {
-            hasLoadData = true
             searchShop()
         }
     }
@@ -108,6 +118,7 @@ internal class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
+        updateHasLoadDataToTrue()
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageRepository)
@@ -115,6 +126,10 @@ internal class SearchShopViewModel(
         processSearchShopFirstPageSuccess(searchShopModel)
 
         getDynamicFilter()
+    }
+
+    private fun updateHasLoadDataToTrue() {
+        hasLoadData = true
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
