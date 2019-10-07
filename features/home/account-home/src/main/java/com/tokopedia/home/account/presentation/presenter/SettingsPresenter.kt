@@ -1,12 +1,13 @@
 package com.tokopedia.home.account.presentation.presenter
 
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.preference.PreferenceManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.util.NetworkClient
-import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -24,13 +25,26 @@ import kotlin.coroutines.CoroutineContext
 
 class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOptionsView>(), CoroutineScope {
     private lateinit var userSession: UserSessionInterface
-    private val savedSettingValue: Boolean
-        get() {
-            val settings = PreferenceManager.getDefaultSharedPreferences(context)
-            return settings.getBoolean(context?.getString((R.string.pref_safe_mode)), false)
-        }
 
-    var adultAgeVerified: Boolean = false
+    var adultAgeVerifiedLiveData: MutableLiveData<Boolean>? = MutableLiveData()
+    var savedSafeModeValue: MutableLiveData<Boolean>? = MutableLiveData()
+
+    init {
+        adultAgeVerifiedLiveData?.postValue(false)
+        adultAgeVerifiedLiveData?.observe(context as LifecycleOwner, Observer {
+            view.refreshSettingOptionsList()
+            if(it!!)
+                getAndSaveSafeModeValue()
+        })
+
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val savedSettingValue =  settings.getBoolean(context?.getString((R.string.pref_safe_mode)), false)
+
+        savedSafeModeValue?.postValue(savedSettingValue)
+        savedSafeModeValue?.observe(context as LifecycleOwner, Observer {
+            view.refreshSafeSearchOption()
+        })
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -46,10 +60,6 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
             val query = GraphqlHelper.loadRawString(context?.resources, R.raw.query_user_age)
             val userProfileDobResponse = getGQLData(query, UserProfileDobResponse::class.java, requestParams) as UserProfileDobResponse
             processUserDOB(userProfileDobResponse)
-            if (adultAgeVerified) {
-                view.refreshSettingOptionsList()
-                getAndSaveSafeModeValue()
-            }
         }, onError = {
             it.printStackTrace()
         })
@@ -58,8 +68,9 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
     private fun processUserDOB(userProfileDobResponse: UserProfileDobResponse) {
         userProfileDobResponse.userProfileDob.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 21)
-                    adultAgeVerified = true
+                if (it.isAdult || it.age >= 21) {
+                    adultAgeVerifiedLiveData?.postValue(true)
+                }
             }
         }
     }
@@ -70,7 +81,7 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
             val query = GraphqlHelper.loadRawString(context?.resources, R.raw.query_user_safe_mode)
             val userProfileSettingResponse = getGQLData(query, UserProfileSettingResponse::class.java, requestParams) as UserProfileSettingResponse
             saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, userProfileSettingResponse.userProfileSetting.safeMode)
-            view.refreshSafeSearchOption()
+            savedSafeModeValue?.postValue(userProfileSettingResponse.userProfileSetting.safeMode)
         }, onError = {
             it.printStackTrace()
         })
@@ -84,7 +95,7 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
     }
 
     fun onClickAcceptButton() {
-        val savedValue = !savedSettingValue
+        val savedValue = !savedSafeModeValue?.value!!
         launchCatchError(block = {
             val requestParams = java.util.HashMap<String, Any>()
             requestParams[PARAM_SAFE_MODE] = savedValue
@@ -92,7 +103,7 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
             val userProfileSettingResponse = getGQLData(query, SetUserProfileSettingResponse::class.java, requestParams) as SetUserProfileSettingResponse
             if (userProfileSettingResponse.userProfileSettingUpdate.isSuccess) {
                 saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, savedValue)
-                view.refreshSafeSearchOption()
+                savedSafeModeValue?.postValue(savedValue)
             }
         }, onError = {
             it.printStackTrace()
