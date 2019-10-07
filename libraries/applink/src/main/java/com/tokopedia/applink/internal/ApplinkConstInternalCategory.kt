@@ -16,6 +16,4 @@ object ApplinkConstInternalCategory {
     val TRADEIN = "$INTERNAL_CATEGORY/tradein"
     val MONEYIN = "money_in/"
     val DEVICE_VALIDATION = "device_validation"
-    val IM_CHALLENGES = "$INTERNAL_CATEGORY/im_challenges"
-
 }

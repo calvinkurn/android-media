@@ -31,5 +31,5 @@
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_details" translatable="false">/challenge/{challenge-id}</string>
     <string name="path_submission" translatable="false">/submission</string>
-    <string name="path_challenge" translatable="false">/challenge</string>
+    <string name="path_challenge" translatable="false">/challenges</string>
 </resources>

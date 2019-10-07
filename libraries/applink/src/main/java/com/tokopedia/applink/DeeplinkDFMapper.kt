@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.IM_CHALLENGES
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -85,7 +84,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
-            add(DFP({ it.startsWith(IM_CHALLENGES) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
+            add(DFP({ it.startsWith(CHALLENGE) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
         }
     }
 

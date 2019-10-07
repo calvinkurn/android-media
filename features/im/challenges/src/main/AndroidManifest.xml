@@ -33,9 +33,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_challenge"
+                    android:host="@string/path_challenge"
                     android:scheme="@string/internal_scheme" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/path_challenge"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -51,10 +60,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/path_challenge"
                     android:pathPattern="@string/path_details"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/path_challenge"
+                    android:pathPattern="@string/path_details"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+
         </activity>
 
         <activity
@@ -64,7 +85,6 @@
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
