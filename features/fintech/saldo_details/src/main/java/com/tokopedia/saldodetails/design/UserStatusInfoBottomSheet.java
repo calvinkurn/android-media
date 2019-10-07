@@ -22,7 +22,7 @@ public class UserStatusInfoBottomSheet extends BottomSheetView {
 
     @Override
     protected int getLayout() {
-        return R.layout.user_info_bottom_sheet;
+        return com.tokopedia.saldodetails.R.layout.user_info_bottom_sheet;
     }
 
     @Override
@@ -35,11 +35,11 @@ public class UserStatusInfoBottomSheet extends BottomSheetView {
         setContentView(bottomSheetView);
 
 
-        titleTV = bottomSheetView.findViewById(R.id.title_text_view);
-        bodyTV = bottomSheetView.findViewById(R.id.body_text_view);
-        actionButtonTV = bottomSheetView.findViewById(R.id.action_button_text_view);
+        titleTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.title_text_view);
+        bodyTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.body_text_view);
+        actionButtonTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.action_button_text_view);
 
-        bottomSheetView.findViewById(R.id.action_button_text_view).setOnClickListener(view -> dismiss());
+        bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.action_button_text_view).setOnClickListener(view -> dismiss());
     }
 
     public void setTitle(String title) {

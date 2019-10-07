@@ -24,13 +24,14 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.constant.TravelSortOption;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
@@ -48,9 +49,6 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter;
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -659,25 +657,21 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
             final String dateInput = passDataViewModel.getDate(isReturning());
             Date date = FlightDateUtil.stringToDate(dateInput);
-            TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
-                    .setShowHoliday(true)
-                    .setMinDate(minDate)
-                    .setMaxDate(maxDate)
-                    .setTitle(title)
-                    .setSelectedDate(date)
-                    .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
-                    .build();
-            travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
-                @Override
-                public void onClickDate(@NotNull Date dateSelected) {
-                    Calendar calendar = FlightDateUtil.getCurrentCalendar();
-                    calendar.setTime(dateSelected);
-                    flightSearchPresenter.resetCounterCall();
-                    flightSearchPresenter.onSuccessDateChanged(calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-                }
+            FlightCalendarOneWayWidget flightCalendarDialog = FlightCalendarOneWayWidget.Companion.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date),
+                    passDataViewModel.getDepartureAirport().getAirportCode(),
+                    passDataViewModel.getArrivalAirport().getAirportCode(),
+                    passDataViewModel.getFlightClass().getId());
+            flightCalendarDialog.setListener(dateSelected -> {
+                Calendar calendar = FlightDateUtil.getCurrentCalendar();
+                calendar.setTime(dateSelected);
+                flightSearchPresenter.resetCounterCall();
+                flightSearchPresenter.onSuccessDateChanged(calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
             });
-            travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), "travel calendar");
+            flightCalendarDialog.show(getActivity().getSupportFragmentManager(), "travel calendar");
         }
     }
 

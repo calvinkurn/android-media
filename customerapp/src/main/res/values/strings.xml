@@ -157,4 +157,8 @@
     <string name="title_homepage_digital">Digital</string>
     <string name="title_im_challenges">Challenges</string>
 
+    <string name="title_saldo_deposit">Saldo Deposit</string>
+
+    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+    <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
 </resources>
