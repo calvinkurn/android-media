@@ -85,6 +85,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(CHALLENGE) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
+            add(DFP({ it.startsWithPattern(CHALLENGE) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
         }
     }
 
