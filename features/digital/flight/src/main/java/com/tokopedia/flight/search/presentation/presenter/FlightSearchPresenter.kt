@@ -293,7 +293,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                     override fun onNext(flightSearchMetaViewModel: FlightSearchMetaViewModel?) {
                         if (flightSearchMetaViewModel != null) {
-                            if (!flightSearchMetaViewModel.isNeedRefresh || airportCombineModel.noOfRetry > flightSearchMetaViewModel.maxRetry) {
+                            if (!flightSearchMetaViewModel.isNeedRefresh || (airportCombineModel.noOfRetry + 1) > flightSearchMetaViewModel.maxRetry) {
                                 callCounter++
                             }
 
