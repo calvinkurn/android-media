@@ -14,7 +14,8 @@
     <string name="branding">Powered by</string>
 
     <string name="label_browse_file">Browse File</string>
-    <string name="label_see_all">Lihat Semua</string>
+    <string name="label_see_all">Lihat semua</string>
+    <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
     <string name="upld_fail_retry">Gagal mengupload foto. Silahkan ulangi kembali</string>
     <string name="oke">OKE</string>
 
@@ -32,6 +33,7 @@
     <string name="empty_search_result_content_template">Hasil pencarian untuk \"$1\" tidak ditemukan</string>
 
     <string name="counter_pattern">%1$d / %2$d</string>
+    <string name="review_counter">%1$d ulasan</string>
     <string name="checkbox_use_promo_code">Gunakan Kode Promo Tokopedia</string>
     <string name="title_success_get_voucher">Anda mendapatkan promo:</string>
     <string name="button_cancel_voucher">Batalkan</string>
