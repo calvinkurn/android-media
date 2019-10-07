@@ -13,7 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.GoalQRThanks;
@@ -86,7 +87,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickKembaliTidakBerhasil,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
+            startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.HOME));
         });
         tryAgain.setOnClickListener(view1 -> {
             OvoPayByQrTrackerUtil.sendEvent(getActivity(),

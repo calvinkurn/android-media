@@ -45,7 +45,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -245,7 +244,6 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.ovop2p.OvoP2pRouter;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -289,7 +287,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
-import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -471,7 +468,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NormalCheckoutRouter,
         TradeInRouter,
         ProductDetailRouter,
-        OvoPayWithQrRouter,
         OvoP2pRouter,
         KYCRouter {
 
@@ -1013,18 +1009,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public long getMinAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
-    }
-
-    @Override
-    public long getMaxAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
     }
 
     @Override

@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -139,7 +141,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
             cacheManager.put(QR_RESPONSE, barcodeData);
-            Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY);
             intent.putExtra(QR_DATA, cacheManager.getId());
             intent.putExtra(IMEI, imeiNumber);
             startActivity(intent);

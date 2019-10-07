@@ -26,7 +26,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.BarcodeResponseData;
@@ -34,6 +33,8 @@ import com.tokopedia.ovo.model.ImeiConfirmResponse;
 import com.tokopedia.ovo.model.Wallet;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryContract;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryPresenterImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -78,6 +79,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     private TextView pointCash;
     private Wallet wallet;
     private SaveInstanceCacheManager cacheManager;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
@@ -119,11 +121,16 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
+        initRemoteConfig();
         initViews(view);
         setDataAndListeners();
-        MAX_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
-        MIN_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
+        MAX_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
+        MIN_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
         return view;
+    }
+
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private void initViews(View view) {
@@ -208,8 +215,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                     cacheManager.put(TRANSFER_ID, response.getTransferId());
                     localCacheHandler.putString(CACHE_ID, cacheManager.getId());
                     localCacheHandler.applyEditor();
-                    Intent intent = OvoWebViewActivity
-                            .getWebViewIntent(getActivity(), URLDecoder.decode(
+                    Intent intent = OvoWebViewActivity.getWebViewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
 
                     startActivity(intent);

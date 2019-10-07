@@ -163,6 +163,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
+    // SaldoIntroActivity
+    // tokopedia-android-internal://global/ovo-pay-with-qr
+    @JvmField
+    val OVO_PAY_WITH_QR_ENTRY = "$INTERNAL_GLOBAL/ovo-pay-with-qr"
+
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
