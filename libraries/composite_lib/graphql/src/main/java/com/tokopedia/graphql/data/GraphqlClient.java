@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
