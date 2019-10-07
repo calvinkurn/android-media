@@ -1,9 +1,9 @@
-package com.tokopedia.common.travel.data
+package com.tokopedia.travelcalendar.data
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.cachemanager.CacheManager
-import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class TravelCalendarHolidayRepository @Inject constructor(private val cacheManag
     fun saveHolidayResults(travelHolidayData: TravelCalendarHoliday.HolidayData) {
         if (travelHolidayData.data.isNotEmpty()) {
             val jsonString = CacheUtil.convertModelToString(travelHolidayData,
-                    object : TypeToken<TravelCalendarHoliday.HolidayData>(){}.type)
+                    object : TypeToken<TravelCalendarHoliday.HolidayData>() {}.type)
             cacheManager.put(KEY_CALENDAR_HOLIDAY, jsonString, DURATION_SAVE_TO_CACHE)
         }
     }

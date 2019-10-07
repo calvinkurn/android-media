@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.data.entity
+package com.tokopedia.travelcalendar.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

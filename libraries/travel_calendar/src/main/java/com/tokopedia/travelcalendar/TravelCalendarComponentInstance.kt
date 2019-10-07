@@ -1,4 +1,4 @@
-package com.tokopedia.travelcalendar.view
+package com.tokopedia.travelcalendar
 
 import android.app.Application
 
