@@ -15,11 +15,11 @@ import rx.Observable;
  */
 
 public interface MarketplaceTrackerApi {
-//    @POST("graphql")
+    @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<PaymentGraphql>>> getTrackingData(@Body String requestBody);
 
-//    @POST("graphql")
+    @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<OrderGraphql>>> getOrderTrackingData(@Body String requestBody);
 }
