@@ -578,11 +578,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun loadMore() {
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
+        loadTopAdsProduct.value = Loading
         launch(Dispatchers.IO) {
-
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
-                loadTopAdsProduct.value = Loading
                 try {
                     val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                             pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
