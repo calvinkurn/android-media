@@ -1,13 +1,19 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.unifycomponents.Toaster
+
 
 class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 
@@ -43,7 +49,30 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
                             )
                     )
             )
+
+            setOnClickListener {
+
+            }
+
+            setButtonWishlistOnClickListener {
+
+            }
         }
+    }
+
+    private fun showSuccessAddWishlist(view: View, message: String) {
+        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
+                "Lihat Wishlist", View.OnClickListener {
+            RouteManager.route(view.context, ApplinkConst.WISHLIST)
+        })
+    }
+
+    private fun showSuccessRemoveWishlist(view: View, message: String) {
+        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
+    }
+
+    private fun showError(view: View, throwable: Throwable?) {
+        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }
