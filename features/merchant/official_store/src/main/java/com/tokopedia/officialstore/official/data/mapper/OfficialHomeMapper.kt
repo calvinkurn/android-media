@@ -37,7 +37,7 @@ class OfficialHomeMapper {
             val pageName = "official-store"
             val pageNumber = 1
 
-            adapter?.addElement(3, ProductRecommendationViewModel(productRecommendation))
+            adapter?.addElement(3, ProductRecommendationViewModel(productRecommendation.recommendationItemList.get(0)))
             adapter?.notifyItemInserted(3)
         }
     }
