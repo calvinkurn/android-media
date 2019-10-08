@@ -154,4 +154,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+
+    // TODO clear job & observer
 }
