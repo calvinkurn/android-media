@@ -63,8 +63,6 @@ class ChatListActivity : BaseTabActivity()
     lateinit var webSocketViewModel: WebSocketViewModel
     lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
 
-    val TAG_ONBOARDING = javaClass.name + ".OnBoarding"
-
     private var fragmentViewCreated = false
 
     private fun initInjector() {
@@ -383,6 +381,7 @@ class ChatListActivity : BaseTabActivity()
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
         const val TAG = "ChatListActivity"
+        private val TAG_ONBOARDING = ChatListActivity::class.java.name + ".OnBoarding"
         fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
     }
 
