@@ -9,7 +9,8 @@
 
     <include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error" />
+        layout="@layout/layout_item_warning_and_error"
+        tools:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fl_cart_item_container"
@@ -22,10 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_16"
             android:paddingLeft="-1dp"
+            android:paddingTop="@dimen/dp_14"
             android:paddingRight="-1dp"
-            android:paddingTop="@dimen/dp_14">
+            android:paddingBottom="@dimen/dp_16">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,21 +38,22 @@
                     android:id="@+id/cb_select_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_8"
-                    android:theme="@style/TransactionCheckbox" />
+                    android:layout_marginTop="14dp"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_10"
+                    android:button="@drawable/ic_cart_check_box" />
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/iv_product_card"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
-                    android:layout_toRightOf="@+id/cb_select_item"
+                    android:layout_margin="@dimen/dp_5"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginEnd="@dimen/dp_20"
                     android:layout_marginRight="@dimen/dp_20"
-                    app:cardCornerRadius="6dp"
-                    app:cardElevation="@dimen/dp_0"
-                    android:layout_margin="5dp">
+                    android:layout_toRightOf="@+id/cb_select_item"
+                    app:cardCornerRadius="@dimen/dp_6"
+                    app:cardElevation="@dimen/dp_0">
 
                     <ImageView
                         android:id="@+id/iv_image_product"
@@ -88,26 +90,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_product_name"
-                        android:layout_marginTop="4dp" />
+                        android:layout_marginTop="@dimen/dp_4" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_price_changes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/product_properties"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:background="@drawable/bg_price_changes"
                         android:paddingStart="@dimen/dp_4"
                         android:paddingLeft="@dimen/dp_4"
-                        android:paddingRight="@dimen/dp_5"
-                        android:paddingEnd="@dimen/dp_5"
                         android:paddingTop="@dimen/dp_3"
+                        android:paddingEnd="@dimen/dp_5"
+                        android:paddingRight="@dimen/dp_5"
                         android:paddingBottom="@dimen/dp_3"
-                        android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/price_changes_color_text"
-                        android:background="@drawable/bg_price_changes"
-                        android:layout_below="@id/product_properties"
+                        android:visibility="gone"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        android:visibility="gone"
-                        tools:visibility="visible"/>
+                        tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
@@ -126,19 +128,19 @@
                     android:id="@+id/rl_invenage_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_invenage_text"
                     android:layout_below="@id/rl_product_info"
                     android:layout_marginTop="@dimen/dp_24"
+                    android:background="@drawable/bg_invenage_text"
                     android:visibility="gone"
                     tools:visibility="visible">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        app:srcCompat="@drawable/ic_yellow_ticker"/>
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        app:srcCompat="@drawable/ic_yellow_ticker" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_invenage_text"
@@ -146,14 +148,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_8"
                         android:lineSpacingMultiplier="1.5"
                         android:textColor="@color/invenage_text_color"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                 </RelativeLayout>
 
@@ -161,9 +163,9 @@
                     android:id="@+id/rl_product_action"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_invenage_text"
                     android:layout_toEndOf="@id/iv_product_card"
                     android:layout_toRightOf="@id/iv_product_card"
-                    android:layout_below="@id/rl_invenage_text"
                     android:paddingLeft="@dimen/dp_8">
 
                     <LinearLayout
@@ -183,16 +185,16 @@
                                 android:id="@+id/img_wishlist"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:layout_marginRight="@dimen/dp_18"
                                 android:layout_marginEnd="@dimen/dp_18"
+                                android:layout_marginRight="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
                             <ImageView
                                 android:id="@+id/btn_delete_cart"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
-                                android:layout_marginRight="@dimen/dp_18"
                                 android:layout_marginEnd="@dimen/dp_18"
+                                android:layout_marginRight="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_delete_cart"
                                 tools:ignore="ContentDescription" />
 
@@ -248,6 +250,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/ll_shop_note_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_14"
@@ -262,7 +265,7 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_label_form_remark"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:text="@string/label_note_for_seller"
@@ -276,9 +279,9 @@
                         android:layout_height="wrap_content"
                         android:maxLength="20"
                         android:maxLines="1"
-                        tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
+                        tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
                         tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -288,11 +291,11 @@
                         android:layout_marginLeft="@dimen/dp_2"
                         android:text="@string/label_ellipsize"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_label_remark_option"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:layout_weight="2"
@@ -301,7 +304,7 @@
                         android:textColor="@color/tkpd_main_green"
                         android:textStyle="normal"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"/>
+                        app:typographyWeight="reguler" />
 
                 </LinearLayout>
 
@@ -310,8 +313,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_label_form_remark"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginRight="-4dp"
+                    android:layout_marginLeft="@dimen/dp_minus4"
+                    android:layout_marginRight="@dimen/dp_minus4"
                     android:fontFamily="sans-serif"
                     android:imeActionLabel="@string/action_label_done"
                     android:imeOptions="actionDone"
@@ -333,12 +336,12 @@ barangnya gan!" />
                     android:id="@+id/tv_error_form_remark_validation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/et_remark"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/et_remark"
                     android:maxLines="1"
-                    android:paddingLeft="@dimen/dp_4"
                     android:paddingStart="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_4"
                     android:textColor="@color/text_cart_item_error_red"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
@@ -353,22 +356,58 @@ barangnya gan!" />
                     android:id="@+id/tv_note_char_counter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/et_remark"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/et_remark"
                     android:layout_gravity="end"
                     android:lineSpacingExtra="0sp"
                     android:visibility="gone"
-                    tools:text="60/140"
-                    tools:visibility="visible"
                     app:typographyType="body_3"
-                    app:typographyWeight="reguler"/>
+                    app:typographyWeight="reguler"
+                    tools:text="60/140"
+                    tools:visibility="visible" />
 
             </LinearLayout>
 
         </LinearLayout>
 
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_product_action_on_cart_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:gravity="right|end|center_vertical">
+
+        <ImageView
+            android:id="@+id/btn_delete_on_cart_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:tint="@color/unify_G500"
+            app:srcCompat="@drawable/ic_delete_cart"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/v_devider_on_cart_error"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_24"
+            android:background="@color/unify_N75" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_similar_product_on_cart_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|end"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:textColor="@color/unify_G500"
+            app:typographyType="heading_6"
+            app:typographyWeight="reguler"
+            tools:text="Lihat Produk Serupa" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/holder_item_cart_divider"

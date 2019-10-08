@@ -70,7 +70,7 @@ ext {
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             mitraToppers                    : ":features:fintech:mitra_toppers",
-            saldodetails                  : ":features:fintech:saldo_details",
+            saldodetails                    : ":features:fintech:saldo_details",
 //            saldodetails                    : ":features:fintech:saldo_details_no_op",
             tokoCash                        : ":features:fintech:tokocash",
 //            tokoCash                      : ":features:fintech:tokocash_no_op",
