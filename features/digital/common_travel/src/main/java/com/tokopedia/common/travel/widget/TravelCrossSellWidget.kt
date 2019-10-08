@@ -30,7 +30,6 @@ class TravelCrossSellWidget @JvmOverloads constructor(context: Context, attrs: A
         adapter = TravelCrossSellAdapter()
         adapter.setItem(travelCrossSelling.items)
         cross_selling_rv.adapter = adapter
-
     }
 
 
