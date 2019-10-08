@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -58,6 +59,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +117,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        voucherGameExtraParam.categoryId.toIntOrNull()?.let {
+            // TODO: Add categoryName
+            rechargeAnalytics.eventDigitalCategoryScreenLaunch("", it.toString())
+            rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
+        }
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
