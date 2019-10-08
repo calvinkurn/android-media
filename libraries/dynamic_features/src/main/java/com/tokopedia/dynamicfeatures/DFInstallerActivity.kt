@@ -50,7 +50,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
     private var imageUrl: String? = null
-    private var initialDownloading = false
+    private var moduleSize = 0L
+
+    private var errorList:MutableList<String> = mutableListOf()
+    private var downloadTimes = 0
+    private var successInstall = false
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -90,7 +94,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                DFInstaller.logStatus(this, "Download Module {launch}", moduleName)
+                downloadTimes++
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -126,7 +130,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
-            DFInstaller.logStatus(this, "Download Module {button}", moduleName)
+            downloadTimes++
             loadAndLaunchModule(moduleName)
         }
         closeButton.setOnClickListener {
@@ -151,7 +155,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun loadAndLaunchModule(name: String) {
-        initialDownloading = true
+        moduleSize = 0
         displayProgress()
         progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
@@ -174,18 +178,18 @@ class DFInstallerActivity : BaseSimpleActivity() {
                 sessionId = it
             }
         }.addOnFailureListener { exception ->
-            val errorCode = (exception as SplitInstallException).errorCode
+            val errorCode = (exception as? SplitInstallException)?.errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message, errorCode)
+            showFailedMessage(message, errorCode?.toString() ?: exception.toString())
         }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        DFInstaller.logStatus(this, "Installed Module", moduleName)
+        successInstall = manager.installedModules.contains(moduleName)
         progressGroup.visibility = View.INVISIBLE
-        if (launch && manager.installedModules.contains(moduleName)) {
+        if (launch && successInstall) {
             launchAndForwardIntent(applink)
         }
         this.finish()
@@ -214,9 +218,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
-                if (initialDownloading) {
-                    initialDownloadStatus(names, state.totalBytesToDownload())
-                    initialDownloading = false
+                if (moduleSize == 0L) {
+                    moduleSize = state.totalBytesToDownload()
                 }
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
@@ -239,17 +242,19 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message, state.errorCode())
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String, errorCode: Int = 0) {
-        DFInstaller.logStatus(this, "Failed Module", moduleName, 0, errorCode.toString())
+    private fun showFailedMessage(message: String, errorCode: String = "") {
+        errorList.add(errorCode)
         val userMessage: String
-        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE == errorCode) {
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
+        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
+            userMessage = getString(R.string.msg_no_connection)
         } else {
             userMessage = message
         }
@@ -272,10 +277,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressText.text = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
-    }
-
-    private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
-        DFInstaller.logStatus(this, "Downloading Module", moduleName, moduleSize)
     }
 
     private fun displayProgress() {
@@ -302,6 +303,13 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DFInstallerLogUtil.logStatus(this, "DFM",
+            moduleName, moduleSize,
+            errorList, downloadTimes, successInstall)
     }
 
 }
