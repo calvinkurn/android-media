@@ -142,7 +142,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
 
         vForceCrash.setOnClickListener(v -> {
-            Intent startIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.detik.com"));
+            Intent startIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.m.tokopedia.com/nisie"));
             if (startIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(startIntent);
             }
