@@ -44,22 +44,27 @@ class CategoryAnalytics {
     // 53
 
     fun eventPromoClick(product: ChildItem, position: Int) {
-        val tracker = getTracker()
-        val map = DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "click banner inside kategori pilihan",
-                "eventLabel", product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", String.format(nameWithPageName, product.parentCategoryname),
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", position + 1)))
-        ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoClick",
+                        "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
+                        "eventAction", "click banner inside kategori pilihan",
+                        "eventLabel", product.name,
+                        "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                        "promotions", DataLayer.listOf(
+                        DataLayer.mapOf(
+                                "id", product.id.toString(),
+                                "name", String.format(nameWithPageName, product.parentCategoryname),
+                                "creative", product.name,
+                                "creative_url", product.iconImageUrl,
+                                "position", (position + 1).toString()
+                        )
+                )
+                )
+                )
+                )
+        )
     }
 
     // 54
@@ -75,11 +80,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, product.parentCategoryname),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -96,11 +101,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "side bar"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -117,11 +122,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "side bar"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -148,16 +153,16 @@ class CategoryAnalytics {
         val map = DataLayer.mapOf(
                 "event", "promoClick",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "click banner inside category level 1",
+                "eventAction", "click lihat semua category level 1",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "inside category level 1"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -174,11 +179,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "inside category level 1"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -196,11 +201,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "inside category level 2"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -218,11 +223,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, "inside category level 2"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -240,11 +245,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, product.parentName),
                 "creative", product.title,
                 "creative_url", product.imgSquare,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
 
@@ -263,11 +268,11 @@ class CategoryAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
+                "id", product.id.toString(),
                 "name", String.format(nameWithPageName, product.parentName),
                 "creative", product.title,
                 "creative_url", product.imgSquare,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
 
