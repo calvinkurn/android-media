@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="156dp"
     android:layout_height="156dp"
     android:background="@drawable/tp_ic_lihat_semua_kupon"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:lineSpacingExtra="@dimen/dp_2"
-        android:padding="@dimen/dp_16"
-        android:text="@string/tp_label_my_coupon_new_card"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
-        tools:text="Lihat Semua\nKupon Saya" />
-
-</FrameLayout>
+    android:orientation="vertical" />

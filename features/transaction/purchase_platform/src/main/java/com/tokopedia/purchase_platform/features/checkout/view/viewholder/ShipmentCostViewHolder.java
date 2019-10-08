@@ -45,6 +45,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvOrderPrioritasFee;
     private TextView mTvBookingFeeLabel;
     private TextView mTvBookingFee;
+    private TextView mTvMacroInsuranceLabel;
+    private TextView mTvMacroInsurancePrice;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -78,6 +80,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvOrderPrioritasFee = itemView.findViewById(R.id.tv_order_prioritas_price);
         mTvBookingFeeLabel = itemView.findViewById(R.id.tv_booking_fee_label);
         mTvBookingFee = itemView.findViewById(R.id.tv_booking_fee_price);
+        mTvMacroInsuranceLabel = itemView.findViewById(R.id.tv_macro_insurance_label);
+        mTvMacroInsurancePrice = itemView.findViewById(R.id.tv_macro_insurance_price);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -91,7 +95,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel,mTvOrderPrioritasFee,shipmentCost.getPriorityFee()));
+        mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel, mTvOrderPrioritasFee, shipmentCost.getPriorityFee()));
         mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
         mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
         mTvPromoDiscount.setText(String.format(mTvPromoDiscount.getContext().getString(R.string.promo_format),
@@ -99,6 +103,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
         mTvEmasPrice.setText(getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.getEmasPrice()));
+        mTvMacroInsurancePrice.setText(getPriceFormat(mTvMacroInsuranceLabel, mTvMacroInsurancePrice, shipmentCost.getMacroInsurancePrice()));
+        if (mTvMacroInsuranceLabel.getVisibility() == View.VISIBLE) {
+            mTvMacroInsuranceLabel.setText(shipmentCost.getMacroInsurancePriceLabel());
+        }
         mTvTradeInPrice.setText(String.format(mTvTradeInPrice.getContext().getString(R.string.promo_format),
                 getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.getTradeInPrice())));
 

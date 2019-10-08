@@ -43,6 +43,10 @@ open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantAction
         return InsuranceViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: InsuranceRecommendationViewModel): Int {
+        return InsuranceRecommendationViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel): Int {
         return LoadingViewHolder.LAYOUT
     }
@@ -56,6 +60,7 @@ open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantAction
             SummaryViewHolder.LAYOUT -> SummaryViewHolder(view, listener)
             TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listener)
             InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(view, listener)
+            InsuranceRecommendationViewHolder.LAYOUT -> InsuranceRecommendationViewHolder(view, listener)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

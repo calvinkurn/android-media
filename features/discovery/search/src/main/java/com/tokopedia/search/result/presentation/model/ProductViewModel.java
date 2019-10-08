@@ -20,6 +20,7 @@ public class ProductViewModel implements Parcelable {
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
+    private String errorMessage;
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
@@ -155,6 +156,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public SuggestionViewModel getSuggestionModel() {

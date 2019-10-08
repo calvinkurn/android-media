@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -41,7 +42,6 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -209,7 +209,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(String userId, String deviceId, Map<String, String> param) {
-        return AuthUtil.generateParamsNetwork(userId, deviceId, param);
+        return AuthHelper.generateParamsNetwork(userId, deviceId, param);
     }
 
     @Override

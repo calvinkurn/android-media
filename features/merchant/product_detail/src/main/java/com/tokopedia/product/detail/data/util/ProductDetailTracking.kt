@@ -864,6 +864,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickSearchBar() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
+                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
+                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
+                ""
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
@@ -893,7 +902,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CATEGORY = "category"
         private const val LIST_DEFAULT = "/product - "
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc - "
+        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc"
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }

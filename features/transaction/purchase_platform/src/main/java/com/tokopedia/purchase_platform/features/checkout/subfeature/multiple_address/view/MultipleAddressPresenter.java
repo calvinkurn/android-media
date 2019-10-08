@@ -141,7 +141,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         param.put("carts", dataArray.toString());
         RequestParams requestParam = RequestParams.create();
 
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);
@@ -267,14 +267,10 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
-                ?
-                AuthUtil.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>()
-                )
-                :
-                AuthUtil.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams
-                );
+                ? AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
+                : AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
     }
 
 }

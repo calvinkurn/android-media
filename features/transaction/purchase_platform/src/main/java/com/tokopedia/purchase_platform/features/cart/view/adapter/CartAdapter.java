@@ -44,6 +44,10 @@ import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSe
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,8 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -59,10 +65,15 @@ import rx.subscriptions.CompositeSubscription;
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ActionListener actionListener;
     private final PromoActionListener promoActionListener;
+    private final InsuranceItemActionListener insuranceItemActionlistener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
+    private ArrayList<InsuranceCartShops> allInsuranceProductsList = new ArrayList<>();
+
+    private ArrayList<InsuranceCartShops> insuranceRecommendationList = new ArrayList<>();
+    private ArrayList<InsuranceCartShops> insuranceCartList = new ArrayList<>();
     private CartEmptyHolderData cartEmptyHolderData;
     private CartLoadingHolderData cartLoadingHolderData;
     private CartWishlistAdapter cartWishlistAdapter;
@@ -71,11 +82,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Inject
     public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
-                       CartItemAdapter.ActionListener cartItemActionListener) {
+                       CartItemAdapter.ActionListener cartItemActionListener,
+                       InsuranceItemActionListener insuranceItemActionlistener) {
         this.cartDataList = new ArrayList<>();
         this.actionListener = actionListener;
         this.cartItemActionListener = cartItemActionListener;
         this.promoActionListener = promoActionListener;
+        this.insuranceItemActionlistener = insuranceItemActionlistener;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -108,6 +121,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartTickerViewHolder.Companion.getLAYOUT();
         } else if (object instanceof Boolean) {
             return CartSelectAllViewHolder.Companion.getLAYOUT();
+        } else if (object instanceof InsuranceCartShops) {
+            return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
         } else {
             return super.getItemViewType(position);
         }
@@ -168,7 +183,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerViewHolder.Companion.getLAYOUT(), parent, false);
             return new CartTickerViewHolder(view, actionListener);
+        } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false);
+            return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         }
+
         throw new RuntimeException("No view holder type found");
     }
 
@@ -229,6 +249,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final CartSelectAllViewHolder holderView = ((CartSelectAllViewHolder) holder);
             Boolean isAllSelected = (Boolean) cartDataList.get(position);
             holderView.bind(isAllSelected);
+        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
+            final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
+            insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CART);
         }
     }
 
@@ -520,6 +544,102 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
+    public void removeInsuranceDataItem(List<Long> productIdList) {
+        try {
+            for (Long productId : productIdList) {
+                int position = 0;
+                for (Object item : cartDataList) {
+                    position++;
+                    if (item instanceof InsuranceCartShops) {
+                        for (InsuranceCartShopItems insuranceCartShopItems : ((InsuranceCartShops) item).getShopItemsList()) {
+                            if (insuranceCartShopItems.getProductId() == productId) {
+                                cartDataList.remove(item);
+                                notifyItemRemoved(position);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addInsuranceDataList(InsuranceCartShops insuranceCartShops, boolean isRecommendation) {
+        allInsuranceProductsList.clear();
+        allInsuranceProductsList.add(insuranceCartShops);
+
+        if (isRecommendation) {
+            insuranceRecommendationList.clear();
+            insuranceRecommendationList.add(insuranceCartShops);
+        } else {
+            insuranceCartList.clear();
+            insuranceCartList.add(insuranceCartShops);
+        }
+
+        int insuranceIndex = 0;
+
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData) {
+                insuranceIndex = cartDataList.indexOf(item);
+            }
+        }
+
+        if (insuranceCartShops != null) {
+            cartDataList.add(++insuranceIndex, insuranceCartShops);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
+
+        List<InsuranceCartShops> insuranceCartShopsList = new ArrayList<>();
+        for (InsuranceCartShops insuranceCartShops : insuranceRecommendationList) {
+
+            if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopItemsList().size() > 0 &&
+                    insuranceCartShops.getShopItemsList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().size() > 0 &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
+                    insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
+
+                insuranceCartShopsList.add(insuranceCartShops);
+            }
+        }
+        return insuranceCartShopsList;
+    }
+
+    public ArrayList<InsuranceCartDigitalProduct> isInsuranceCartProductUnSelected() {
+
+        ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
+        for (InsuranceCartShops insuranceCartShops : insuranceCartList) {
+
+            if (insuranceCartShops != null &&
+                    !insuranceCartShops.getShopItemsList().isEmpty()) {
+                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                    if (insuranceCartShopItems.getDigitalProductList() != null &&
+                            !insuranceCartShopItems.getDigitalProductList().isEmpty()) {
+                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                            if (!insuranceCartDigitalProduct.getOptIn()) {
+                                insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return insuranceCartDigitalProductArrayList;
+    }
+
+    public ArrayList<InsuranceCartShops> getInsuranceCartShops() {
+        return allInsuranceProductsList;
+    }
+
     public void resetData() {
         cartDataList.clear();
         notifyDataSetChanged();
@@ -575,7 +695,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
-                    item instanceof ShipmentSellerCashbackModel) {
+                    item instanceof ShipmentSellerCashbackModel ||
+                    item instanceof InsuranceCartShops) {
                 recentViewIndex = cartDataList.indexOf(item);
             }
         }
@@ -591,7 +712,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
                     item instanceof ShipmentSellerCashbackModel ||
-                    item instanceof CartRecentViewHolderData) {
+                    item instanceof CartRecentViewHolderData ||
+                    item instanceof InsuranceCartShops) {
+
                 wishlistIndex = cartDataList.indexOf(item);
             }
         }
@@ -609,7 +732,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     item instanceof ShipmentSellerCashbackModel ||
                     item instanceof CartRecentViewHolderData ||
                     item instanceof CartWishlistHolderData ||
-                    item instanceof CartRecommendationItemHolderData) {
+                    item instanceof CartRecommendationItemHolderData ||
+                    item instanceof InsuranceCartShops) {
                 recommendationIndex = cartDataList.indexOf(item);
             }
         }

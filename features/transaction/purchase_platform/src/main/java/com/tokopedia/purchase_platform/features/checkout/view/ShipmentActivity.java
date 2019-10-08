@@ -58,12 +58,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        GraphqlClient.init(this);
-    }
-
-    @Override
     protected void initInjector() {
 
     }

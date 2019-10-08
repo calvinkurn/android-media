@@ -16,15 +16,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
-import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;
@@ -145,8 +144,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 params.put("address", locationPass.getDistrictName()
                         + ", "
                         + locationPass.getCityName());
-                params = AuthUtil
-                        .generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), params);
+                params = AuthHelper.generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), params);
                 mRepository.generateLatLngGeoCode(
                         params,
                         latLongListener(this, locationPass)

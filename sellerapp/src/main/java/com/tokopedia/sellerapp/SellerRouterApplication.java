@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -215,7 +216,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
-        SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
         CharacterPerMinuteInterface,
@@ -431,7 +431,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAddPasswordIntent(Context context) {
-        return AddPasswordActivity.newInstance(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
     }
 
     @Override
@@ -846,7 +846,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void startSaldoDepositIntent(Context context) {
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
-            SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
@@ -1128,11 +1128,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
-
-    @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
@@ -1240,22 +1235,11 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
     public void onLoginSuccess() {
     }
 
     @Override
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
-    }
-
-    @Override
-    public boolean isMerchantCreditLineEnabled() {
-        return false;
     }
 
     public String getDeviceId(Context context) {

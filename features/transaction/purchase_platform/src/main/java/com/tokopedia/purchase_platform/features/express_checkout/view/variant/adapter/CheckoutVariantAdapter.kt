@@ -14,4 +14,8 @@ class CheckoutVariantAdapter(adapterTypeFactory: CheckoutVariantAdapterTypeFacto
         visitables.addAll(visitableList)
     }
 
+    fun addSingleDataViewModel(visitableList: Visitable<*>) {
+        visitables.add(visitableList)
+    }
+
 }

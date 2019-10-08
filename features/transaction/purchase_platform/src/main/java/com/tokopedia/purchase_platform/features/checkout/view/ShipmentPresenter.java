@@ -27,7 +27,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCa
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
@@ -146,6 +145,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
+    private final GetInsuranceCartUseCase getInsuranceCartUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -198,7 +198,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics,
-                             CheckoutAnalyticsCourierSelection checkoutAnalytics) {
+                             CheckoutAnalyticsCourierSelection checkoutAnalytics,
+                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
@@ -219,6 +220,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.userSessionInterface = userSessionInterface;
         this.mTrackerCod = codAnalytics;
         this.mTrackerShipment = checkoutAnalytics;
+        this.getInsuranceCartUseCase = getInsuranceCartUseCase;
     }
 
     @Override
@@ -348,7 +350,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        if (valueTOCheck == 0 || basisAmount == 0) {
+        if (basisAmount == 0) {
             return 0;
         }
 
@@ -392,13 +394,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                              boolean hasInsurance,
                                                               String step,
                                                               String eventAction,
                                                               String eventLabel,
                                                               String leasingId) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, checkPromoParam,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
@@ -488,6 +491,45 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return isIneligbilePromoDialogEnabled;
     }
 
+
+    @Override
+    public void getInsuranceTechCartOnCheckout() {
+        getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
+    }
+
+    private Subscriber<GraphqlResponse> getSubscriberInsuranceCart() {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null) {
+                    getView().renderInsuranceCartData(null);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (getView() == null) return;
+
+                InsuranceCartGqlResponse insuranceCartGqlResponse = null;
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
+                    insuranceCartGqlResponse =
+                            graphqlResponse.getData(InsuranceCartGqlResponse.class);
+                    getView().renderInsuranceCartData(insuranceCartGqlResponse.getData());
+                } else {
+                    getView().renderInsuranceCartData(null);
+                }
+
+            }
+        };
+    }
+
     @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
@@ -536,6 +578,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+
+        if (getView().isInsuranceEnabled()) {
+            getInsuranceTechCartOnCheckout();
+        }
+
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
@@ -693,18 +740,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
-                ?
-                AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
-                :
-                AuthUtil.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams
-                );
+                ? AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
+                : AuthHelper.generateParamsNetwork(
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
     }
 
     @Override
-    public void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+    public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
         removeErrorShopProduct();
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
@@ -1125,9 +1170,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
-                                                   CheckPromoParam checkPromoParam,
-                                                   int isDonation,
-                                                   String leasingId) {
+                                                    boolean hasInsurance,
+                                                    CheckPromoParam checkPromoParam,
+                                                    int isDonation,
+                                                    String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
@@ -1150,6 +1196,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .isDonation(isDonation)
+                .hasInsurance(hasInsurance)
                 .data(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList)
                 .egoldData(egoldData);
 
@@ -1562,7 +1609,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
 
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);
@@ -1704,8 +1751,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
+    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
         getView().showLoading();

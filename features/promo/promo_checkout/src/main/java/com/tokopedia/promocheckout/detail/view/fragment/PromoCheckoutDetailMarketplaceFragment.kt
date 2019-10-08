@@ -14,6 +14,7 @@ import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import javax.inject.Inject
@@ -24,14 +25,26 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     private var isOneClickShipment: Boolean = false
     var promo: Promo? = null
+    lateinit var codeslug:String
+    lateinit var promoCheckoutDetailComponent:PromoCheckoutDetailComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initView()
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT, false) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
+    }
+
+    fun initView(){
+        DaggerPromoCheckoutDetailComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .promoCheckoutDetailModule(PromoCheckoutDetailModule())
+                .build()
+                .inject(this)
+                promoCheckoutDetailPresenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,22 +76,16 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         super.onClashCheckPromo(clasingInfoDetailUiModel)
     }
 
-    override fun initInjector() {
-        DaggerPromoCheckoutDetailComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutDetailModule(PromoCheckoutDetailModule())
-                .build()
-                .inject(this)
-        promoCheckoutDetailPresenter.attachView(this)
-    }
-
     override fun onDestroy() {
         promoCheckoutDetailPresenter.detachView()
         super.onDestroy()
     }
 
     companion object {
+        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+        val EXTRA_IS_USE = "EXTRA_IS_USE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
+        val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,

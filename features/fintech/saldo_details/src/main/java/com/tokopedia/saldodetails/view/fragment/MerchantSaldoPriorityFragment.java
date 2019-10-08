@@ -76,7 +76,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_prioritas, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_prioritas, container, false);
         Bundle bundle = getArguments();
         sellerDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_SELLER_DETAILS) : null;
         initViews(view);
@@ -102,17 +102,17 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     private void initViews(View view) {
-        spTitle = view.findViewById(R.id.sp_title);
-        spNewTitle = view.findViewById(R.id.sp_new_title);
-        spDescription = view.findViewById(R.id.sp_description);
-        spKYCStatusLayout = view.findViewById(R.id.sp_kyc_status);
-        spKYCShortDesc = view.findViewById(R.id.sp_kyc_short_desc);
-        spKYCLongDesc = view.findViewById(R.id.sp_kyc_long_desc);
-        spDetailListLinearLayout = view.findViewById(R.id.sp_detail_list);
-        spActionListLinearLayout = view.findViewById(R.id.sp_action_list);
-        spEnableSwitchCompat = view.findViewById(R.id.sp_enable_switch);
-        spRightArrow = view.findViewById(R.id.sp_right_arrow);
-        spStatusInfoIcon = view.findViewById(R.id.sp_status_info_icon);
+        spTitle = view.findViewById(com.tokopedia.saldodetails.R.id.sp_title);
+        spNewTitle = view.findViewById(com.tokopedia.saldodetails.R.id.sp_new_title);
+        spDescription = view.findViewById(com.tokopedia.saldodetails.R.id.sp_description);
+        spKYCStatusLayout = view.findViewById(com.tokopedia.saldodetails.R.id.sp_kyc_status);
+        spKYCShortDesc = view.findViewById(com.tokopedia.saldodetails.R.id.sp_kyc_short_desc);
+        spKYCLongDesc = view.findViewById(com.tokopedia.saldodetails.R.id.sp_kyc_long_desc);
+        spDetailListLinearLayout = view.findViewById(com.tokopedia.saldodetails.R.id.sp_detail_list);
+        spActionListLinearLayout = view.findViewById(com.tokopedia.saldodetails.R.id.sp_action_list);
+        spEnableSwitchCompat = view.findViewById(com.tokopedia.saldodetails.R.id.sp_enable_switch);
+        spRightArrow = view.findViewById(com.tokopedia.saldodetails.R.id.sp_right_arrow);
+        spStatusInfoIcon = view.findViewById(com.tokopedia.saldodetails.R.id.sp_status_info_icon);
     }
 
     private void initListeners() {
@@ -124,21 +124,21 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             }
 
             final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-            dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
+            dialog.getTitleTextView().setTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
             dialog.getTitleTextView().setTypeface(null, Typeface.BOLD);
             if (isChecked) {
-                dialog.setTitle(getResources().getString(R.string.sp_enable_title));
-                dialog.setDesc(getResources().getString(R.string.sp_enable_desc));
-                dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_enable));
+                dialog.setTitle(getResources().getString(com.tokopedia.saldodetails.R.string.sp_enable_title));
+                dialog.setDesc(getResources().getString(com.tokopedia.saldodetails.R.string.sp_enable_desc));
+                dialog.setBtnOk(getResources().getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_enable));
             } else {
-                dialog.setTitle(getResources().getString(R.string.sp_disable_title));
+                dialog.setTitle(getResources().getString(com.tokopedia.saldodetails.R.string.sp_disable_title));
                 if (sellerDetails.getStatus() == 5) {
-                    dialog.setDesc(getResources().getString(R.string.sp_disable_desc_long));
+                    dialog.setDesc(getResources().getString(com.tokopedia.saldodetails.R.string.sp_disable_desc_long));
                 } else {
-                    dialog.setDesc(Html.fromHtml(getResources().getString(R.string.sp_disable_desc)));
+                    dialog.setDesc(Html.fromHtml(getResources().getString(com.tokopedia.saldodetails.R.string.sp_disable_desc)));
                 }
 
-                dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_disable));
+                dialog.setBtnOk(getResources().getString(com.tokopedia.saldodetails.R.string.sp_btn_ok_disable));
             }
 
             dialog.setOnOkClickListener(v -> {
@@ -146,15 +146,15 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
                 saldoDetailsPresenter.updateSellerSaldoStatus(isChecked);
             });
 
-            dialog.setBtnCancel(getResources().getString(R.string.sp_btn_cancel));
+            dialog.setBtnCancel(getResources().getString(com.tokopedia.saldodetails.R.string.sp_btn_cancel));
             dialog.setOnCancelClickListener(v -> {
                 dialog.dismiss();
                 spEnableSwitchCompat.setChecked(!isChecked);
             });
 
             dialog.show();
-            dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
-            dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
+            dialog.getBtnCancel().setTextColor(getResources().getColor(com.tokopedia.design.R.color.black_38));
+            dialog.getBtnOk().setTextColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
         });
 
         if (sellerDetails.isBoxShowPopup()) {
@@ -241,14 +241,14 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             spStatusInfoIcon.setVisibility(View.GONE);
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
-            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_green));
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.sp_bg_rounded_corners_green));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_info_icon_green));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
-            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_yellow));
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_info_icon_yellow));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_warning));
         } else if (boxType.equalsIgnoreCase(DANGER)) {
-            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_red));
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_danger));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_info_icon_red));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_danger));
         }
     }
 
@@ -264,8 +264,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
             GqlSpAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
             if (gqlAnchorListResponse != null) {
-                View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
-                TextView anchorLabel = view.findViewById(R.id.anchor_label);
+                View view = layoutInflater.inflate(com.tokopedia.saldodetails.R.layout.layout_anchor_list, null);
+                TextView anchorLabel = view.findViewById(com.tokopedia.saldodetails.R.id.anchor_label);
 
                 anchorLabel.setText(gqlAnchorListResponse.getLabel());
                 anchorLabel.setTag(gqlAnchorListResponse.getUrl());
@@ -273,7 +273,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
                 try {
                     anchorLabel.setTextColor(Color.parseColor(gqlAnchorListResponse.getColor()));
                 } catch (Exception e) {
-                    anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                    anchorLabel.setTextColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
                 }
 
                 anchorLabel.setOnClickListener(v -> {
@@ -297,9 +297,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
         for (GqlInfoListResponse infoList1 : infoList) {
 
-            View view = layoutInflater.inflate(R.layout.layout_info_list, null);
-            TextView infoLabel = view.findViewById(R.id.info_label_text_view);
-            TextView infoValue = view.findViewById(R.id.info_value_text_view);
+            View view = layoutInflater.inflate(com.tokopedia.saldodetails.R.layout.layout_info_list, null);
+            TextView infoLabel = view.findViewById(com.tokopedia.saldodetails.R.id.info_label_text_view);
+            TextView infoValue = view.findViewById(com.tokopedia.saldodetails.R.id.info_value_text_view);
 
             infoLabel.setText(infoList1.getLabel());
             infoValue.setText(infoList1.getValue());
@@ -352,7 +352,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     public void onSaldoStatusUpdateSuccess(boolean newState) {
         originalSwitchState = newState;
         NetworkErrorHelper.showGreenSnackbarShort(getActivity(),
-                getResources().getString(R.string.saldo_status_updated_success));
+                getResources().getString(com.tokopedia.saldodetails.R.string.saldo_status_updated_success));
     }
 
     public static Fragment newInstance(Bundle bundle) {

@@ -29,7 +29,7 @@ class ManualAdsConfirmationSheet {
     private fun setupView(context: Context) {
         dialog!!.setOnShowListener { dialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
-            val frameLayout = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val frameLayout = dialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
             if (frameLayout != null) {
                 val behavior = BottomSheetBehavior.from(frameLayout)
                 behavior.isHideable = false

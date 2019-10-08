@@ -47,7 +47,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
@@ -67,7 +67,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
 
     }
@@ -88,7 +88,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.name}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
@@ -108,7 +108,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.name}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
 
     }

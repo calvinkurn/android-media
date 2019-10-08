@@ -2,12 +2,18 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -18,7 +24,7 @@ project.ext {
     artifactId = 'flashsale-management-common'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName ="discoveryflashsalemanagementcommon-release"
+    artifactName ="flashsale_management_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

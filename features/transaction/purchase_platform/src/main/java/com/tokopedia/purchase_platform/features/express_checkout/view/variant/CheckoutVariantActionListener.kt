@@ -47,5 +47,7 @@ interface CheckoutVariantActionListener {
 
     fun onVariantGuidelineClick(variantGuideline: String)
 
+    fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean)
+
     fun onGetCompositeSubscriber(): CompositeSubscription?
 }

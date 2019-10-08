@@ -7,6 +7,8 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigati
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
+import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -28,6 +30,10 @@ object DeeplinkMapper {
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
                 return getRegisteredNavigationDigital(context, deeplink)
+            } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
+                return getRegisteredNavigationSearch(deeplink)
+            } else if (deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT)) {
+                return getRegisteredNavigationMarketplace(deeplink)
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
@@ -61,17 +67,14 @@ object DeeplinkMapper {
      * for example: tokopedia://product/{id} conflicts with tokopedia://product/add
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when {
-            deeplink.equals(ApplinkConst.PRODUCT_ADD, false) -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
-            deeplink.equals(ApplinkConst.SETTING_PROFILE, false) -> return ApplinkConstInternalGlobal.SETTING_PROFILE
-            deeplink.equals(ApplinkConst.DISCOVERY_SEARCH, false) -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
-            deeplink.equals(ApplinkConst.SETTING_NOTIFICATION, false) -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            deeplink.equals(ApplinkConst.KYC, false) -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            deeplink.equals(ApplinkConst.SETTING_BANK, false) -> return ApplinkConstInternalGlobal.SETTING_BANK
-            deeplink.equals(ApplinkConst.CART, false) -> return ApplinkConstInternalMarketplace.CART
-            deeplink.contains(ApplinkConst.CHECKOUT) -> {
-                return deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
-            }
+        return when (deeplink) {
+            ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
+            ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
+            ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
             else -> ""
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -49,6 +50,11 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter, CharacterPerMinuteInterface {
+
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     public void onCreate() {
