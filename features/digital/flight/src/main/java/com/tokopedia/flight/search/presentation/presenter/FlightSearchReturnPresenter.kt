@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.presenter
+package com.tokopedia.flight.search.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
@@ -6,10 +6,10 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.domain.usecase.FlightGetComboKeyUseCase
 import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
+import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
+import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract
 import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchReturnContract
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers

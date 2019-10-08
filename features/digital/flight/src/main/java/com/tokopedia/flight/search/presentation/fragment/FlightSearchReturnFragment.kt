@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.fragment
+package com.tokopedia.flight.search.presentation.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -10,15 +10,15 @@ import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
+import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
+import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
+import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
+import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_PRICE_VIEW_MODEL
+import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_PRICE_VIEW_MODEL
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchReturnContract
-import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchReturnPresenter
+import com.tokopedia.flight.search.presentation.presenter.FlightSearchReturnPresenter
 import kotlinx.android.synthetic.main.fragment_search_return.*
 import javax.inject.Inject
 

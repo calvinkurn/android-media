@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.contract
+package com.tokopedia.flight.search.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.common.travel.constant.TravelSortOption

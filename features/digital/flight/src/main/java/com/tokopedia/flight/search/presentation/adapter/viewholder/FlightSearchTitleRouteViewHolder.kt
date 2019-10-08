@@ -1,10 +1,10 @@
-package com.tokopedia.flight.searchV3.presentation.adapter.viewholder
+package com.tokopedia.flight.search.presentation.adapter.viewholder
 
 import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchTitleRouteViewModel
 
 /**
  * @author by furqan on 18/01/19
