@@ -226,7 +226,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             renderInsurance(flightBookingCartData, isFromSavedInstance);
 
             if (!isFromSavedInstance) {
-                flightAnalytics.eventAddToCart(getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass(), flightBookingCartData, resultTotalPrice, flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+                flightAnalytics.eventAddToCart(getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass(),
+                        flightBookingCartData, resultTotalPrice, flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip(),
+                        getComboKey());
             }
         } else {
             initialize();

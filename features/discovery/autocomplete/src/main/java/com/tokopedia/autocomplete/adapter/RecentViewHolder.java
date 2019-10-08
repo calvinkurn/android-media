@@ -38,7 +38,7 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build();
-        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_8);
+        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8);
         recyclerView.addItemDecoration(new SpacingItemDecoration(staticDimen8dp));
         recyclerView.setLayoutManager(layoutManager);
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR);
