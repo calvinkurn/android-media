@@ -288,7 +288,7 @@ public class SearchTracking {
         bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         bundle.putParcelableArrayList("items", products);
 
-        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
     }
 
     private static int getPageNumberFromFirstItem(List<ProductItemViewModel> itemList) {
