@@ -115,7 +115,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                               String contactName, String country, String email, String phone,
                               List<FlightInsuranceViewModel> insurances) {
         getView().showCheckoutLoading();
-        flightAnalytics.eventReviewNextClick(getView().getCurrentBookingReviewModel());
+        flightAnalytics.eventReviewNextClick(getView().getCurrentBookingReviewModel(), getView().getComboKey());
         List<String> insuranceIds = new ArrayList<>();
         for (FlightInsuranceViewModel insurance : insurances) {
             insuranceIds.add(insurance.getId());

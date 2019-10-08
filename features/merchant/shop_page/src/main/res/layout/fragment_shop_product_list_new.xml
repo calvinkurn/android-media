@@ -79,8 +79,6 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:paddingBottom="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </android.support.design.widget.CoordinatorLayout>
 

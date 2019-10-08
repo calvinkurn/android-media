@@ -48,7 +48,7 @@ public class GetAllTransactionUsecase {
         graphqlUseCase.clearRequest();
         setRequesting(true);
         GraphqlRequest graphqlRequest;
-        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_all_transaction);
+        String query = GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.saldodetails.R.raw.query_deposit_all_transaction);
 
         graphqlRequest = new GraphqlRequest(query, GqlCompleteTransactionResponse.class,
                 variables, GET_SUMMARY_DEPOSIT, false);

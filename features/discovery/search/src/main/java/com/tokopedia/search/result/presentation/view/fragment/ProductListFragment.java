@@ -33,6 +33,7 @@ import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1141,5 +1142,10 @@ public class ProductListFragment
         if (relativeLayoutErrorMessageContainer != null) {
             relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_PRODUCT;
     }
 }

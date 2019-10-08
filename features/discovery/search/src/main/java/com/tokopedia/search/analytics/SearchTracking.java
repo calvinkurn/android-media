@@ -569,19 +569,28 @@ public class SearchTracking {
 
     public void eventActionClickCartButton(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.EventSearchResult,
-                SearchEventTracking.Action.CLICK_CART_BUTTON,
+                SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
+                SearchEventTracking.Action.CLICK_CART_BUTTON_SEARCH_RESULT,
+                keyword
+        );
+    }
+
+    public void eventActionClickHomeButton(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
+                SearchEventTracking.Action.CLICK_HOME_BUTTON_SEARCH_RESULT,
                 keyword
         );
     }
 
     public static void trackEventProductLongPress(String keyword, String productId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                "clickSearchResult",
-                "search result",
-                "click - long press product",
-                String.format("Keyword: %s - product id: %s", keyword, productId));
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.LONG_PRESS_PRODUCT,
+                String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId));
     }
 
     public static void trackEventClickSearchBar() {
