@@ -26,6 +26,8 @@ public class EventsUrl {
 
     public static final String EVENT_SCAN_TICKET_URL="v1/api/redeem/role/validate";
 
+    public static final String NSQ_EVENT_URL = "v1/api/tracking";
+
     public interface AppLink {
 
         String Events = "events";

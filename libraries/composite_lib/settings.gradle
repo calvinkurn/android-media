@@ -1,3 +1,4 @@
+
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -21,4 +22,6 @@ include ":user_session"
 include ":global_config"
 include ":network"
 include ":graphql"
+include ":authentication"
 include ":akamai_bot_lib"
+include ":authentication_common"

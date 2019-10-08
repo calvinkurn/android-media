@@ -46,6 +46,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -103,8 +104,11 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
+import com.tokopedia.product.detail.view.widget.PictureScrollingView
+import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
+import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -117,6 +121,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
@@ -180,7 +186,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
-    lateinit var stickyLoginTextView: StickyTextView
+    lateinit var stickyLoginView: StickyLoginView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -458,8 +464,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-        et_search.setOnClickListener { v ->
-            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        et_search.setOnClickListener {
+            productDetailTracking.eventClickSearchBar()
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
@@ -486,6 +493,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         refreshLayout?.setOnRefreshListener {
             loadProductData(true)
             updateStickyState()
+            updateStickyContent()
         }
 
         if (isAffiliate) {
@@ -624,20 +632,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         loadProductData()
 
-        stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+        stickyLoginView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             updateStickyState()
         }
-        stickyLoginTextView.setOnClickListener {
-            productDetailTracking.eventClickOnStickyLogin(true)
+        stickyLoginView.setOnClickListener {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
         }
-        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
-            productDetailTracking.eventClickOnStickyLogin(false)
-            stickyLoginTextView.dismiss()
+        stickyLoginView.setOnDismissListener(View.OnClickListener {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
+            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
             updateStickyState()
         })
 
+        updateStickyContent()
         updateStickyState()
     }
 
@@ -653,7 +662,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onResume() {
         super.onResume()
-
+        updateStickyContent()
         updateStickyState()
     }
 
@@ -681,7 +690,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
+                        category.id,
+                        category.name,
                         parentProductId,
+                        basic.name,
+                        productInfo?.basic?.price,
+                        basic.condition,
                         userInputNotes,
                         userInputQuantity,
                         userInputVariant,
@@ -693,7 +707,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType,
                         isLeasing)
-                if(::tradeInParams.isInitialized) {
+                if (::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -706,7 +720,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
-                val warehouseId: Int = productInfoViewModel.multiOrigin.id.toInt()
+                val warehouseId: Int = productInfoViewModel.multiOrigin.id.toIntOrZero()
                 val atcRequestParam = AtcRequestParam()
                 atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
                 atcRequestParam.setProductId(productInfo.productInfo.basic.id)
@@ -840,7 +854,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onApplyLeasingClicked(){
+    private fun onApplyLeasingClicked() {
         productInfo?.run {
             productDetailTracking.eventClickApplyLeasing(
                     parentProductId,
@@ -913,15 +927,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
-        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-        if (appShowSearchPDP) {
-            initShowSearchPDP()
-        } else {
-            initCollapsingToolBar()
-        }
+        initShowSearchPDP()
         varToolbar.show()
         varPictureImage.show()
-        collapsing_toolbar.title = ""
         varToolbar.title = ""
         activity?.let {
             varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
@@ -953,6 +961,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
+        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener{
+            override fun onViewHint() {
+                varPictureImage.stopVideo()
+            }
+        })
+
         initToolBarMethod = ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
         nested_scroll.viewTreeObserver.addOnScrollChangedListener {
@@ -968,15 +982,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         }
-
-    }
-
-    private fun initCollapsingToolBar() {
-        collapsing_toolbar.show()
-        varToolbar = toolbar
-        varPictureImage = view_picture
-        initToolBarMethod = ::initToolbarTransparent
-        fab_detail.setAnchor(R.id.view_picture)
 
     }
 
@@ -997,8 +1002,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
                 varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
@@ -1022,26 +1025,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
-            }
-        }
-    }
-
-    private fun initToolbarTransparent() {
-        activity?.run {
-            if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
-                (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
-                menu?.let {
-                    if (it.size() > 2) {
-                        it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
-                        val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_light
-                        setBadgeMenuCart(menuCart)
-                    }
-                }
-                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }
@@ -1163,7 +1146,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showAddToCartDoneBottomSheet(successMessage)
-                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1259,6 +1241,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"
             )
@@ -1391,7 +1377,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         p2ShopData.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
-            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
+            productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toIntOrZero()))
             val data = productInfo ?: return
 
             actionButtonView.renderData(!data.basic.isActive(),
@@ -1552,7 +1538,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1600,17 +1586,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 isHandPhone = true
                 val handfone = 24
                 categoryId = if (detail.id.isNotEmpty())
-                    detail.id.toInt()
+                    detail.id.toIntOrZero()
                 else
                     handfone
 
             }
         }
         tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
+        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
-            productInfoViewModel.userId.toInt()
+            productInfoViewModel.userId.toIntOrZero()
         else
             0
         tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
@@ -1893,7 +1879,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
-        return ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
+        return ArrayList(productInfo?.run {
+            media.map {
+                if(it.type == "image") {
+                    it.urlOriginal
+                } else {
+                    it.urlThumbnail
+                }
+            }
+        } ?: listOf())
     }
 
     private fun onVariantClicked() {
@@ -2251,33 +2245,48 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun updateStickyContent() {
+        productInfoViewModel.getStickyLoginContent(
+            onSuccess = {
+                stickyLoginView.setContent(it)
+            },
+            onError = {
+                stickyLoginView.hide()
+            }
+        )
+    }
+
     private fun updateStickyState() {
-        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
         if (!isCanShowing) {
-            stickyLoginTextView.visibility = View.GONE
+            stickyLoginView.visibility = View.GONE
             return
         }
 
         val userSession = UserSession(activity)
         if (userSession.isLoggedIn) {
-            stickyLoginTextView.dismiss()
+            stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
         } else {
-            stickyLoginTextView.show()
-            productDetailTracking.eventViewLoginStickyWidget()
+            stickyLoginView.show(StickyLoginConstant.Page.PDP)
+            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
         }
 
         val tv = TypedValue()
         var paddingBottom = 0
-        if (context!!.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        val theme = context?.theme
+        if (theme != null) {
+            if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+                paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            }
         }
 
-        if (stickyLoginTextView.isShowing()) {
+        if (stickyLoginView.isShowing()) {
             actionButtonView.setBackground(R.color.white)
-            nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginTextView.height)
+            nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginView.height)
         } else {
             nested_scroll.setPadding(0, 0, 0, paddingBottom)
-            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
+            val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
+            drawable?.let { actionButtonView.setBackground(it) }
         }
     }
 }

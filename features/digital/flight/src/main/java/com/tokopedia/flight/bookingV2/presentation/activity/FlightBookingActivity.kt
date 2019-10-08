@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
@@ -14,12 +16,16 @@ import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
 
     lateinit var flightPassengerDeleteAllListUseCase: FlightPassengerDeleteAllListUseCase
+        @Inject set
+
+    lateinit var userSession: UserSessionInterface
         @Inject set
 
     private lateinit var flightBookingFragment: FlightBookingFragment
@@ -47,6 +53,10 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         super.onCreate(savedInstanceState)
         component.inject(this)
         deleteAllPassengerList(false)
+
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
     }
 
     override fun onBackPressed() {
@@ -77,11 +87,21 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         )
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_LOGIN -> if (userSession.isLoggedIn) recreate() else finish()
+        }
+    }
+
     companion object {
-        private val EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA"
-        private val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
-        private val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
-        private val EXTRA_PRICE = "EXTRA_PRICE"
+        private const val EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA"
+        private const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
+        private const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
+        private const val EXTRA_PRICE = "EXTRA_PRICE"
+
+        private const val REQUEST_CODE_LOGIN = 6
 
         fun getCallingIntent(activity: Activity,
                              passDataViewModel: FlightSearchPassDataViewModel,

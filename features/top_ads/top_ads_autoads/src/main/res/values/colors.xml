@@ -8,4 +8,6 @@
     <color name="ads_active_bg">#d6ffde</color>
     <color name="ads_inprogress_bg">#fff0b3</color>
     <color name="ads_deactive_bg">#f3f4f5</color>
+    <color name="selected_image_overlay">#99000000</color>
+    <color name="auto_ads_grey">#888888</color>
 </resources>

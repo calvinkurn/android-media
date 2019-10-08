@@ -21,6 +21,7 @@ class NotificationUpdateItemViewModel(
         var hasShop: Boolean = false,
         var typeLink: Int = 0,
         var totalProduct: Int = 0,
+        var btnText: String = "",
         var products: List<ProductData> = emptyList()
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 

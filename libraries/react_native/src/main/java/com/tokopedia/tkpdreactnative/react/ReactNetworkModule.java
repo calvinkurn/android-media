@@ -13,9 +13,10 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
@@ -23,6 +24,7 @@ import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,21 +154,35 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     public void getAuthHeader(ReadableMap reactParam, Promise promise) {
         Map<String, Object> param = reactParam.toHashMap();
         String contentType = APPLICATION_JSON_CHARSET_UTF_8;
-        if(param.containsKey(CONTENT_TYPE) && TextUtils.isEmpty(String.valueOf(param.get(CONTENT_TYPE)))) {
+
+        if (param.containsKey(CONTENT_TYPE) && TextUtils.isEmpty(String.valueOf(param.get(CONTENT_TYPE)))) {
             contentType = String.valueOf(param.get(CONTENT_TYPE));
         }
 
-        Map<String, String> headers = AuthUtil.getAuthHeaderReact(
-                context,
+        UserSession userSession = new UserSession(context);
+
+        String fingerprintHash = "";
+        if (context.getApplicationContext() != null &&
+            context.getApplicationContext() instanceof NetworkRouter) {
+            fingerprintHash = ((NetworkRouter) context.getApplicationContext())
+                    .getFingerprintModel()
+                    .getFingerprintHash();
+        }
+
+        Map<String, String> headers = AuthHelper.getAuthHeaderReact(
+                userSession,
                 param.containsKey(PATH) ? String.valueOf(param.get(PATH)) : "",
                 param.containsKey(PARAM) ? String.valueOf(param.get(PARAM)) : "",
                 param.containsKey(METHOD) ? String.valueOf(param.get(METHOD)) : METHOD_GET,
-                contentType
+                contentType,
+                fingerprintHash
         );
+
         WritableMap writableMap = Arguments.createMap();
-        for(Map.Entry<String, String> item : headers.entrySet()) {
+        for (Map.Entry<String, String> item : headers.entrySet()) {
            writableMap.putString(item.getKey(), item.getValue());
         }
+
         promise.resolve(writableMap);
     }
 

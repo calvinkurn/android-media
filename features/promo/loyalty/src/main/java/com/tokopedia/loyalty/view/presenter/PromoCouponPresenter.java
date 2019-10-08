@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,6 +9,7 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
@@ -23,7 +23,6 @@ import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -79,7 +78,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, platform);
 
         promoCouponInteractor.getCouponList(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
@@ -137,7 +136,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
@@ -197,7 +196,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         promoCouponInteractor.submitDigitalVoucher(
                 couponData.getTitle(),
                 couponData.getCode(),
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param
+                AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param
                 ), makeDigitalCouponSubscriber(couponData));
     }
 

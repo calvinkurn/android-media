@@ -45,9 +45,6 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_VIEW_LOGIN_STICKY_WIDGET;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
@@ -497,36 +494,5 @@ public class ShopPageTrackingUser {
         }else{
             return "official store shop page - brand";
         }
-    }
-
-    public void eventClickOnStickyLogin(boolean isOnSticky) {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        CLICK_SHOP_PAGE,
-                        SHOP_PAGE,
-                        EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET,
-                        "click"
-                );
-            } else {
-                tracker.sendGeneralEvent(
-                        CLICK_SHOP_PAGE,
-                        SHOP_PAGE,
-                        EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
-                        ""
-                );
-            }
-        }
-    }
-
-    public void eventViewLoginStickyWidget() {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        tracker.sendGeneralEvent(
-                VIEW_SHOP_PAGE,
-                SHOP_PAGE,
-                EVENT_VIEW_LOGIN_STICKY_WIDGET,
-                ""
-        );
     }
 }

@@ -1,7 +1,14 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
+import android.graphics.Color
+import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,6 +16,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -32,14 +42,21 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
     protected val body: TextView = itemView.findViewById(R.id.body)
 
     override fun bind(element: NotificationUpdateItemViewModel) {
-        bindBackgroundColor(element)
+        bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
     }
 
-    protected open fun bindBackgroundColor(element: NotificationUpdateItemViewModel) {
+    override fun bind(element: NotificationUpdateItemViewModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isEmpty()) return
+        when (payloads[0]) {
+            PAYLOAD_CHANGE_BACKGROUND -> bindNotificationBackgroundColor(element)
+        }
+    }
+
+    protected open fun bindNotificationBackgroundColor(element: NotificationUpdateItemViewModel) {
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
@@ -57,16 +74,44 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     protected open fun bindNotificationContent(element: NotificationUpdateItemViewModel) {
         title.text = element.title
-        body.text = element.body
+        if(element.body.length > MAX_CONTENT_LENGTH) {
+            var shorten = element.body.take(MAX_CONTENT_LENGTH)
+            val inFull = getStringResource(R.string.in_full)
+            shorten = "$shorten... $inFull"
+            val spannable = SpannableString(shorten)
+
+            val color = getColorResource(R.color.Green_G500)
+            spannable.setSpan(
+                    ForegroundColorSpan(color),
+                    shorten.indexOf(inFull),
+                    shorten.indexOf(inFull)+ inFull.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            spannable.setSpan(
+                    StyleSpan(BOLD),
+                    shorten.indexOf(inFull),
+                    shorten.indexOf(inFull)+ inFull.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            body.text = spannable
+        } else {
+            body.text = element.body
+        }
     }
 
     abstract fun bindNotificationPayload(element: NotificationUpdateItemViewModel)
 
     protected open fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         container.setOnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            RouteManager.route(itemView.context, element.appLink)
+            if (element.body.length > MAX_CONTENT_LENGTH) {
+                listener.showTextLonger(element)
+            } else {
+                RouteManager.route(itemView.context, element.appLink)
+            }
         }
     }
 
@@ -101,12 +146,16 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         }
     }
 
-    private fun getStringResource(stringId: Int): String? {
-        return itemView.context?.getString(stringId)
+    private fun getStringResource(stringId: Int): String {
+        return itemView.context?.getString(stringId).toEmptyStringIfNull()
     }
 
     private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
     }
 
+    companion object {
+        val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
+        val MAX_CONTENT_LENGTH = 110
+    }
 }

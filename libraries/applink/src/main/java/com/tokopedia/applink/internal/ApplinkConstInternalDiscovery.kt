@@ -23,6 +23,9 @@ object ApplinkConstInternalDiscovery {
     val SEARCH_RESULT = "$INTERNAL_DISCOVERY/search-result"
 
     @JvmField
+    val AUTOCOMPLETE = "$INTERNAL_DISCOVERY/autocomplete"
+
+    @JvmField
     val IMAGE_SEARCH_RESULT = "$INTERNAL_DISCOVERY/image-search-result"
 
     @JvmField

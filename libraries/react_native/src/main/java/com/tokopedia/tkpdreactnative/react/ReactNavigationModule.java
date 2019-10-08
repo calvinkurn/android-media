@@ -19,9 +19,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
@@ -204,7 +204,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void getGraphQLRequestHeader(Promise promise) {
-        promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
+        UserSession userSession = new UserSession(context);
+
+        promise.resolve(AuthHelper.getHeaderRequestReactNative(userSession));
     }
 
     @ReactMethod
