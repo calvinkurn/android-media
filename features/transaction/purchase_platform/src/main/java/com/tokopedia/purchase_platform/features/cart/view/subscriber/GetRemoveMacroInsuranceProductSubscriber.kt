@@ -1,10 +1,10 @@
-package com.tokopedia.checkout.view.feature.cartlist.subscriber
+package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.transactiondata.insurance.entity.response.RemoveInsuranceProductGqlResponse
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.RemoveInsuranceProductGqlResponse
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,

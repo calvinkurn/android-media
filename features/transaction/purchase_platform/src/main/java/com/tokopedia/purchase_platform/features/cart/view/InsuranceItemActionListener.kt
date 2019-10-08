@@ -1,8 +1,8 @@
-package com.tokopedia.checkout.view.feature.cartlist
+package com.tokopedia.purchase_platform.features.cart.view
 
-import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops
 import java.util.ArrayList
 
 interface InsuranceItemActionListener {

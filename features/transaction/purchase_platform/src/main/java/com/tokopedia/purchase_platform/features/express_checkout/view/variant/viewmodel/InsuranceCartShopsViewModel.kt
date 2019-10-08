@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.view.variant.viewmodel
+package com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable

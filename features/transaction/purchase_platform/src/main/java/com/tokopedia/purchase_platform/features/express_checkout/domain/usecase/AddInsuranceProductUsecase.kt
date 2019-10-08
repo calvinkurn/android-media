@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.domain.usecase
+package com.tokopedia.purchase_platform.features.express_checkout.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.transactiondata.R
-import com.tokopedia.transactiondata.insurance.entity.request.AddInsuranceProductToCartRequest
-import com.tokopedia.transactiondata.insurance.entity.request.AddMarketPlaceToCartRequest
-import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddInsuranceProductToCartRequest
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddMarketPlaceToCartRequest
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

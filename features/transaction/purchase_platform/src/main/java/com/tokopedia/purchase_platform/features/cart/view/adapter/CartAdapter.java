@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSelectAllViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
@@ -44,10 +46,9 @@ import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSe
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
 import java.util.List;

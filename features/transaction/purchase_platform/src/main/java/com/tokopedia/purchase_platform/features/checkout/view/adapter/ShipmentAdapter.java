@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
@@ -57,12 +59,9 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1194,7 +1193,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (Object item : shipmentDataList) {
             if (item instanceof ShipmentNotifierModel ||
                     item instanceof PromoStackingData ||
-                    item instanceof CartPromoSuggestion ||
+                    item instanceof CartPromoSuggestionHolderData ||
                     item instanceof ShipmentCartItemModel ||
                     item instanceof ShipmentSellerCashbackModel) {
                 insuranceIndex = shipmentDataList.indexOf(item);

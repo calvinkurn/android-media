@@ -11,10 +11,9 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlist
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
-import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.tokopedia.transactiondata.insurance.entity.response
+package com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response
 
 import android.os.Parcel
 import android.os.Parcelable

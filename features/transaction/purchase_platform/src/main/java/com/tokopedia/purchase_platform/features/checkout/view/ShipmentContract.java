@@ -35,13 +35,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
 
 import java.util.ArrayList;
 import java.util.List;

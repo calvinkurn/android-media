@@ -67,6 +67,11 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
@@ -118,7 +123,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.applink.ApplinkConst.Transaction.EXTRA_SHOP_ID;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
@@ -1322,10 +1326,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 cartAdapter.addDataList(cartListData.getShopGroupDataList());
 
-                if (cartListData.getAdsModel() != null) {
-                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-                }
-
                 if (cartListData.getShopGroupDataList() != null &&
                         !cartListData.getShopGroupDataList().isEmpty() &&
                         isInsuranceEnabled) {
@@ -1733,21 +1733,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
-    }
-
-
-    @Override
-    public void onProductItemClicked(int position, Product product) {
-        navigateToActivityRequest(getProductIntent(product.getId()), NAVIGATION_PDP);
-    }
-
-    @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(shop.getId()));
-    }
-
-    @Override
-    public void onAddFavorite(int position, Data shopData) {
     }
 
     @Override
@@ -2363,11 +2348,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onInsuranceSelectStateChanges() {
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
-    }
-
-    @Override
-    public PromoStackingData getPromoStackingGlobalData() {
-        return cartAdapter.getPromoStackingGlobalData();
     }
 
     @Override

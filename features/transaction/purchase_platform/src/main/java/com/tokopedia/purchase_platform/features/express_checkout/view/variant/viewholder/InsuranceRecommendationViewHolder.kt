@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.view.variant.viewholder
+package com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder
 
 import android.app.Activity
 import android.text.Editable
@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceApplicationValueViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.InsuranceRecommendationViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceApplicationValueViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.transaction.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*

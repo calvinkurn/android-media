@@ -9,14 +9,12 @@ import com.tokopedia.product.detail.common.data.model.product.Picture
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.ACTIVE
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.WAREHOUSE
-import com.tokopedia.product.detail.common.data.model.product.Picture
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.transactiondata.insurance.entity.response.*
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.*
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
 import kotlin.math.roundToInt
 

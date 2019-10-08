@@ -24,12 +24,10 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -50,6 +48,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.*
 import com.tokopedia.purchase_platform.features.atc_variant.di.DaggerNormalCheckoutComponent
 import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.purchase_platform.features.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
@@ -70,8 +69,7 @@ import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.transactiondata.insurance.entity.request.*
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject

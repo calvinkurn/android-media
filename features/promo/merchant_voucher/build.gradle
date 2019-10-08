@@ -18,7 +18,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)

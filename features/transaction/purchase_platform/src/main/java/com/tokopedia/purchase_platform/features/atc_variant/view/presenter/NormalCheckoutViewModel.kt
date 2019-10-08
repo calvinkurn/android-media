@@ -10,7 +10,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.expresscheckout.domain.usecase.AddInsuranceProductUsecase
+import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.AddInsuranceProductUsecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -19,12 +19,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.atc_variant.di.RawQueryKeyConstant
-import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariant
-import com.tokopedia.normalcheckout.di.RawQueryKeyConstant
-import com.tokopedia.normalcheckout.model.InsuranceRecommendationContainer
-import com.tokopedia.normalcheckout.model.InsuranceRecommendationState
-import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
-import com.tokopedia.normalcheckout.model.ProductInfoAndVariantContainer
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
@@ -33,11 +27,12 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.transaction.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
-import com.tokopedia.transactiondata.insurance.entity.request.AddInsuranceProductToCartRequest
-import com.tokopedia.transactiondata.insurance.entity.request.AddMarketPlaceToCartRequest
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceRecommendationRequest
-import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddInsuranceProductToCartRequest
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddMarketPlaceToCartRequest
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.InsuranceRecommendationRequest
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.AddInsuranceProductToCartGqlResponse
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.features.atc_variant.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -126,7 +121,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
 
             }
         }) {
-            productInfoResp.value = com.tokopedia.normalcheckout.model.Fail(it)
+            productInfoResp.value = Fail(it)
         }
 
         launchCatchError(block = {

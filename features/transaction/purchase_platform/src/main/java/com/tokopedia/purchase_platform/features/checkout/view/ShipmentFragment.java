@@ -95,6 +95,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottom
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
@@ -121,22 +122,11 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.transactionanalytics.CornerAnalytics;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
-import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 
 import org.jetbrains.annotations.NotNull;
 

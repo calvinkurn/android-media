@@ -1,6 +1,6 @@
-package com.tokopedia.normalcheckout.model
+package com.tokopedia.purchase_platform.features.atc_variant.model
 
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
 
 sealed class InsuranceRecommendationState
 

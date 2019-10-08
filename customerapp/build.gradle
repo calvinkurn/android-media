@@ -413,7 +413,6 @@ dependencies {
     implementation project(rootProject.ext.features.ovop2p)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.tradeIn)
-    implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)

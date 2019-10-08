@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.cartlist.viewholder
+package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
@@ -9,18 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.transaction.insurance.utils.*
-import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceProductApplicationDetails
 import java.util.*
 
 

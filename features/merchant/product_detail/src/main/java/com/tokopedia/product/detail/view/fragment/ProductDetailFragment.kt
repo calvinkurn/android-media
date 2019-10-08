@@ -405,7 +405,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         })
-        warehouseId?.let{
+        warehouseId?.let {
             productInfoViewModel.warehouseId = it
         }
     }
@@ -690,11 +690,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
                         ?: false
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                    basic.name,
-                    productInfo?.basic?.price,
-                    basic.condition,
-                    category.id,
-                    category.name,
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, basic.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, productInfo?.basic?.price)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, basic.condition)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, category.id)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, category.name)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, basic.shopID.toString())
                     putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, parentProductId)
                     putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
@@ -962,7 +962,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
-        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener{
+        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener {
             override fun onViewHint() {
                 varPictureImage.stopVideo()
             }
@@ -1885,7 +1885,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun getImageURIPaths(): ArrayList<String> {
         return ArrayList(productInfo?.run {
             media.map {
-                if(it.type == "image") {
+                if (it.type == "image") {
                     it.urlOriginal
                 } else {
                     it.urlThumbnail
@@ -2253,12 +2253,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun updateStickyContent() {
         productInfoViewModel.getStickyLoginContent(
-            onSuccess = {
-                stickyLoginView.setContent(it)
-            },
-            onError = {
-                stickyLoginView.hide()
-            }
+                onSuccess = {
+                    stickyLoginView.setContent(it)
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
         )
     }
 

@@ -1,9 +1,9 @@
-package com.tokopedia.expresscheckout.view.variant.viewmodel
+package com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 data class InsuranceRecommendationViewModel(
 
