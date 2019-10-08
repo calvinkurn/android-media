@@ -53,6 +53,8 @@ class FeedAnalyticTracker
         const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
+        const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
+
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
     }
@@ -73,6 +75,7 @@ class FeedAnalyticTracker
             object List {
                 const val POSTED_PRODUCT = "produk di post"
                 const val USER_PROFILE_PAGE_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
+                const val USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE_DETAIL} - $POSTED_PRODUCT"
                 const val FEED_POSTED_PRODUCT = "${Screen.FEED} - $POSTED_PRODUCT"
             }
         }
@@ -86,6 +89,7 @@ class FeedAnalyticTracker
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
 
         const val USER_PROFILE_PAGE = "/user profile page"
+        const val USER_PROFILE_PAGE_DETAIL = "$USER_PROFILE_PAGE detail"
     }
 
     private object Promotion {
@@ -445,9 +449,14 @@ class FeedAnalyticTracker
 
     /**
      *
-     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=53652256
      *
-     * @param productId - productId
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
      */
     fun eventProfileAddToCart(productId: String,
                               productName: String,
@@ -472,7 +481,13 @@ class FeedAnalyticTracker
      *
      * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
      *
-     * @param productId - productId
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
+     * @param author - type of the post author (usually user or shop)
      */
     fun eventFeedAddToCart(productId: String,
                            productName: String,
@@ -485,6 +500,38 @@ class FeedAnalyticTracker
         eventAddToCart(
                 Category.CONTENT_FEED_TIMELINE,
                 "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
+                productId,
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     *
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
+     * @param author - type of the post author (usually user or shop)
+     */
+    fun eventContentDetailAddToCart(productId: String,
+                                    productName: String,
+                                    price: String,
+                                    quantity: Int,
+                                    shopId: Int,
+                                    shopName: String,
+                                    author: String) {
+
+        eventAddToCart(
+                Category.CONTENT_DETAIL,
+                "${Action.Field.List.USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT} - $author",
                 productId,
                 productName,
                 price,
@@ -704,12 +751,11 @@ class FeedAnalyticTracker
     )
 
     private fun formatPriceToInt(price: String): Int {
-        var result = 0
-        try {
-            var rex = Regex(REGEX_NUMERIC)
-            result = rex.replace(price, "").toInt()
+        return try {
+            val rex = Regex(REGEX_NUMERIC)
+            rex.replace(price, "").toInt()
         } catch (e: Exception) {
+            0
         }
-        return result
     }
 }
