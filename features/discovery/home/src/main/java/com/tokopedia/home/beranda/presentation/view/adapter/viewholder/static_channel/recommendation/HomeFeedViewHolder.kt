@@ -51,10 +51,10 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                     labelCredibility = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
                 }
                 LABEL_POSITION_PROMO -> {
-                    labelPromo = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelPromo
+                    labelPromo = ProductCardModel.Label(label.title, label.type)
                 }
                 LABEL_POSITION_OFFERS -> {
-                    labelOffers = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelOffers
+                    labelOffers = ProductCardModel.Label(label.title, label.type)
                 }
             }
         }
