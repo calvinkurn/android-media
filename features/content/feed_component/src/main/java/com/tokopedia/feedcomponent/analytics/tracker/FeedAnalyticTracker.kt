@@ -7,6 +7,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.HashMap
+import kotlin.collections.List
 
 /**
  * Created by jegul on 2019-08-28.
@@ -67,15 +68,24 @@ class FeedAnalyticTracker
         const val CLICK_AVATAR = "click avatar"
 
         const val IMPRESSION_POST = "impression post"
+
+        object Field {
+            object List {
+                const val POSTED_PRODUCT = "produk di post"
+                const val USER_PROFILE_PAGE_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
+                const val FEED_POSTED_PRODUCT = "${Screen.FEED} - $POSTED_PRODUCT"
+            }
+        }
     }
 
     object Screen {
-        const val MEDIA_PREVIEW = "/feed/media-preview"
-        const val TRENDING = "/feed/trending-tab"
-        const val HASHTAG = "/feed/hashtag"
+        const val FEED = "/feed"
+        const val MEDIA_PREVIEW = "$FEED/media-preview"
+        const val TRENDING = "$FEED/trending-tab"
+        const val HASHTAG = "$FEED/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
 
-        const val USER_PROFILE_PAGE_POSTED_PRODUCT = "/user profile page - produk di post"
+        const val USER_PROFILE_PAGE = "/user profile page"
     }
 
     private object Promotion {
@@ -446,27 +456,41 @@ class FeedAnalyticTracker
                               shopId: Int,
                               shopName: String) {
 
-        trackEnhancedEcommerceEvent(
-                Event.ADD_TO_CART,
+        eventAddToCart(
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.CLICK_BUY,
+                Action.Field.List.USER_PROFILE_PAGE_POSTED_PRODUCT,
                 productId,
-                eCommerceData = getCurrencyData() +
-                        getAddData(
-                                getActionFieldData(getListData(Screen.USER_PROFILE_PAGE_POSTED_PRODUCT)) +
-                                        getProductsData(
-                                                listOf(
-                                                        getProductData(
-                                                                productId,
-                                                                productName,
-                                                                formatPriceToInt(price),
-                                                                quantity,
-                                                                shopId,
-                                                                shopName
-                                                        )
-                                                )
-                                        )
-                        )
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     *
+     * @param productId - productId
+     */
+    fun eventFeedAddToCart(productId: String,
+                           productName: String,
+                           price: String,
+                           quantity: Int,
+                           shopId: Int,
+                           shopName: String,
+                           author: String) {
+
+        eventAddToCart(
+                Category.CONTENT_FEED_TIMELINE,
+                "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
+                productId,
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
         )
     }
 
@@ -523,6 +547,44 @@ class FeedAnalyticTracker
                 eventCategory = eventCategory,
                 eventAction = "${Action.CLICK_HASHTAG} - $activityName - $mediaType",
                 eventLabel = "$activityId - $hashtag"
+        )
+    }
+
+    /**
+     * Base track addToCart
+     */
+
+    private fun eventAddToCart(
+            eventCategory: String,
+            actionField: String,
+            productId: String,
+            productName: String,
+            price: String,
+            quantity: Int,
+            shopId: Int,
+            shopName: String
+    ) {
+        trackEnhancedEcommerceEvent(
+                Event.ADD_TO_CART,
+                eventCategory,
+                Action.CLICK_BUY,
+                productId,
+                eCommerceData = getCurrencyData() +
+                        getAddData(
+                                getActionFieldData(getListData(actionField)) +
+                                        getProductsData(
+                                                listOf(
+                                                        getProductData(
+                                                                productId,
+                                                                productName,
+                                                                formatPriceToInt(price),
+                                                                quantity,
+                                                                shopId,
+                                                                shopName
+                                                        )
+                                                )
+                                        )
+                        )
         )
     }
 

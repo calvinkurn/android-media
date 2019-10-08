@@ -982,7 +982,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
         val shop = postTagItem.shop.firstOrNull()
         feedAnalytics.eventProfileAddToCart(
                 postTagItem.id,
