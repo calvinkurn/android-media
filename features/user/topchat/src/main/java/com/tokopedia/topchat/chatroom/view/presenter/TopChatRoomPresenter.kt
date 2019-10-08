@@ -92,6 +92,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private var mSubscription: CompositeSubscription
+    private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
 
     private lateinit var webSocketUrl: String
@@ -105,6 +106,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     init {
         mSubscription = CompositeSubscription()
+        compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
     }
@@ -278,7 +280,7 @@ class TopChatRoomPresenter @Inject constructor(
     override fun startCompressImages(it: ImageUploadViewModel) {
         if (validateImageAttachment(it.imageUrl)) {
             it.imageUrl?.let { it1 ->
-                compressImageUseCase.compressImage(it1)
+                val subscription = compressImageUseCase.compressImage(it1)
                         .subscribe(object : Subscriber<String>() {
                             override fun onNext(compressedImageUrl: String?) {
                                 it.imageUrl = compressedImageUrl
@@ -292,6 +294,7 @@ class TopChatRoomPresenter @Inject constructor(
                                 view.showSnackbarError(view.getStringResource(R.string.error_compress_image))
                             }
                         })
+                compressImageSubscription?.add(subscription)
             }
         }
     }
@@ -553,6 +556,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
         }
+        compressImageSubscription.unsubscribe()
         super.detachView()
     }
 
