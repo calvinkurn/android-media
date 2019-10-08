@@ -1,44 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_260"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:layout_marginRight="@dimen/dp_8">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/item_image"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_4">
+        android:orientation="horizontal">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/item_title"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/item_image"
+            android:layout_width="@dimen/dp_56"
             android:layout_height="wrap_content"
-            tools:text="Sudah Punya tiket balik?"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:textColor="@color/Neutral_N700_96"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/item_subtitle"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Kalau belum, beli tiket pesawat ke Bali, yuk!"
-            android:textColor="@color/Neutral_N700_96"
-            app:typographyType="body_3"
-            />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/item_image"
+            app:layout_constraintRight_toRightOf="parent">
 
-</LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/item_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Sudah Punya tiket balik?"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:textColor="@color/Neutral_N700_96"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/item_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Kalau belum, beli tiket pesawat ke Bali, yuk!"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3"
+                />
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
