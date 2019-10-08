@@ -34,10 +34,11 @@
                 android:id="@+id/cb_select_shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-5dp"
-                android:layout_marginBottom="-5dp"
-                android:paddingRight="@dimen/dp_8"
-                android:theme="@style/TransactionCheckbox" />
+                android:layout_marginLeft="@dimen/dp_4"
+                android:paddingTop="@dimen/dp_4"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_12"
+                android:button="@drawable/ic_cart_check_box" />
 
             <LinearLayout
                 android:id="@+id/ll"

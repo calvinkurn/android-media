@@ -10,6 +10,9 @@ import com.tokopedia.session.addchangepassword.view.fragment.AddPasswordFragment
 
 /**
  * @author by yfsx on 23/03/18.
+ *
+ * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#ADD_PASSWORD}
  */
 
 public class AddPasswordActivity extends BaseSimpleActivity {
