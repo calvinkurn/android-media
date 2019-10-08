@@ -3,7 +3,9 @@
     package="com.tokopedia.salam.umrah">
 
     <application>
-        <activity android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity">
+        <activity
+            android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
