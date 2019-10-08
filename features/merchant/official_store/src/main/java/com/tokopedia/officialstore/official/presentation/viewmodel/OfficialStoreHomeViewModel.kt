@@ -133,21 +133,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private fun getOfficialStoreProductRecommendation(categoryId: String): Deferred<RecommendationWidget> {
         return async(Dispatchers.IO) {
-            var productRecommendation = RecommendationWidget(
-                    emptyList(),
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    1,
-                    0,
-                    0,
-                    true,
-                    "official-store"
-            )
+            var productRecommendation = RecommendationWidget(emptyList(),"", "", "", "", "", "",
+                    "", 1, 0, 0, true, "official-store")
 
             try {
                 val pageNumber = 1
