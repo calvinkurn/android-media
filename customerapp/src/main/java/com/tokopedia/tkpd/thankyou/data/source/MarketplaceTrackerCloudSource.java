@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.OrderGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderInfoGraphql;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
@@ -17,10 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by okasurya on 12/5/17.
@@ -56,10 +63,25 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
 //            graphqlResponseResponse.body().getData().getOrderInfoGraphql().getOrderData().addAll(graphqlResponseResponse2.body().getData().getOrderInfoGraphql().getOrderData());
 //            return graphqlResponseResponse;
 //        });
-        return Observable.zip(marketplaceTrackerApi.getTrackingData(getPaymentRequestPayload()), marketplaceTrackerApi.getOrderTrackingData(getOrderRequestPayload()), (paymentGraphqlResponse, orderGraphqlResponse) -> {
-            paymentGraphqlResponse.body().getData().getPayment().setOrders(orderGraphqlResponse.body().getData().getOrderInfoGraphql().getOrderData());
-            return paymentGraphqlResponse;
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        ArrayList<GraphqlRequest> requests = new ArrayList<>();
+        HashMap<String, Object> variables = new HashMap<>();
+        variables.put("paymentID", requestParams.getString(ThanksTrackerConst.Key.ID, "0"));
+        requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.payment_data_query), PaymentGraphql.class, variables));
+        requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.order_info_query), OrderGraphql.class, variables));
+        graphqlUseCase.addRequests(requests);
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(graphqlResponse -> {
+            PaymentGraphql paymentGraphql = graphqlResponse.getData(PaymentGraphql.class);
+            OrderGraphql orderGraphql = graphqlResponse.getData(OrderGraphql.class);
+            if (paymentGraphql != null && paymentGraphql.getPayment() != null && orderGraphql != null) {
+                paymentGraphql.getPayment().setOrders(orderGraphql.getOrderInfoGraphql().getOrderData());
+            }
+            return paymentGraphql;
         }).map(mapper);
+//        return Observable.zip(graphqlUseCase.addRequests();, marketplaceTrackerApi.getOrderTrackingData(getOrderRequestPayload()), (paymentGraphqlResponse, orderGraphqlResponse) -> {
+//            paymentGraphqlResponse.body().getData().getPayment().setOrders(orderGraphqlResponse.body().getData().getOrderInfoGraphql().getOrderData());
+//            return paymentGraphqlResponse;
+//        }).map(mapper);
 //        return marketplaceTrackerApi.getTrackingData(getRequestPayload()).flatMap(graphqlResponseResponse -> {
 //            return marketplaceTrackerApi.getOrderTrackingData(getRequestPayload()).map(graphqlResponseResponse1 -> {
 //                graphqlResponseResponse.body().getData().getPayment().setOrders(graphqlResponseResponse1.body().getData().getOrderInfoGraphql().getOrderData());
@@ -69,6 +91,7 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     }
 
     private String getPaymentRequestPayload() {
+//        new GraphqlRequest(loadRawString(context.getResources(), R.raw.payment_data_query), PaymentGraphql)
         return String.format(
                 loadRawString(context.getResources(), R.raw.payment_data_query),
                 requestParams.getString(ThanksTrackerConst.Key.ID, "0")

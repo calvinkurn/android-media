@@ -10,17 +10,18 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderInfoGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderLevel;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
@@ -46,7 +47,7 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
  * Created by okasurya on 12/7/17.
  */
 
-public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
+public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> {
 
     private static final String DEFAULT_SHOP_TYPE = "default";
     private static final String PAYMENT_TYPE_COD = "COD";
@@ -68,10 +69,11 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     @Override
-    public Boolean call(Response<GraphqlResponse<PaymentGraphql>> response) {
+    public Boolean call(PaymentGraphql response) {
         if (isResponseValid(response)) {
-            paymentData = response.body().getData().getPayment();
-            newBuyerFlag = response.body().getData().isNewBuyerFlag();
+//            PaymentGraphql paymentGraphql = (PaymentGraphql) response.getData(PaymentGraphql.class);
+            paymentData = response.getPayment();
+            newBuyerFlag = response.isNewBuyerFlag();
             String orderId = getOrderId(response);
             if(!TextUtils.isEmpty(orderId)) {
                 new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
@@ -85,11 +87,10 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return false;
     }
 
-    private String getOrderId(Response<GraphqlResponse<PaymentGraphql>> response){
-        if(response != null && response.body() != null && response.body().getData() != null &&
-        response.body().getData().getPayment() != null && response.body().getData().getPayment().getOrders() != null &&
-                response.body().getData().getPayment().getOrders().size() > 0){
-            return String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId());
+    private String getOrderId(PaymentGraphql response){
+        if(response != null && response.getPayment() != null && response.getPayment().getOrders() != null &&
+                response.getPayment().getOrders().size() > 0){
+            return String.valueOf(response.getPayment().getOrders().get(0).getOrderId());
         }
         else {
             return "";
@@ -120,7 +121,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     private Subscriber getMonthlyNewBuyerSubscriber(){
-        return new Subscriber<com.tokopedia.graphql.data.model.GraphqlResponse>() {
+        return new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -132,7 +133,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             }
 
             @Override
-            public void onNext(com.tokopedia.graphql.data.model.GraphqlResponse graphqlResponse) {
+            public void onNext(GraphqlResponse graphqlResponse) {
                 MonthlyBuyerBase monthlyNewBuyer = graphqlResponse.getData(MonthlyBuyerBase.class);
                 executeSendPaymentTracking("1".equalsIgnoreCase(monthlyNewBuyer.getMonthlyNewBuyer().getIsMonthlyFirstTransaction()));
             }
@@ -248,11 +249,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return s;
     }
 
-    private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
-        return graphqlResponse != null
-                && graphqlResponse.body() != null
-                && graphqlResponse.body().getData() != null
-                && graphqlResponse.body().getData().getPayment() != null;
+    private boolean isResponseValid(PaymentGraphql graphqlResponse) {
+        return graphqlResponse != null;
     }
 
     private String getShopId(OrderData orderData) {
