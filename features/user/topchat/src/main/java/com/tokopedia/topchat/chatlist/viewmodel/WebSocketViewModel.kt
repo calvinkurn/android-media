@@ -80,7 +80,7 @@ class WebSocketViewModel
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
         val message = responseData.message.censoredReply.trim()
-        val time = responseData.startTime
+        val time = responseData.message.timeStampUnix
 
         val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),

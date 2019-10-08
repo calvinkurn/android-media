@@ -180,6 +180,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             return
         } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
             return
+        } else if (chatItemListViewModel.hasBeenUpdated(newChat)) {
+            return
         }
 
         val existingThread = adapter.list.find {
@@ -188,11 +190,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
         val index = adapter.list.indexOf(existingThread)
 
-
         updateItemOnIndex(index, newChat)
     }
 
-    private fun updateItemOnIndex(index: Int, newChat: IncomingChatWebSocketModel) {
+    private fun updateItemOnIndex(
+            index: Int,
+            newChat: IncomingChatWebSocketModel,
+            readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
+    ) {
+        chatItemListViewModel.updateLastReply(newChat)
         when {
             //not found on list
             index == -1 -> {
@@ -207,26 +213,31 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
             //found on list, not the first
             index > 0 -> {
-                updateChatPojo(index, newChat)
+                updateChatPojo(index, newChat, readStatus)
                 adapter.list.goToFirst(index)
                 adapter.notifyItemMoved(index, 0)
+                adapter.notifyItemChanged(0)
                 animateWhenOnTop()
             }
             //found on list, and the first item
             else -> {
-                updateChatPojo(index, newChat)
+                updateChatPojo(index, newChat, readStatus)
                 adapter.notifyItemChanged(0)
             }
         }
     }
 
-    private fun updateChatPojo(index: Int, newChat: IncomingChatWebSocketModel) {
+    private fun updateChatPojo(
+            index: Int,
+            newChat: IncomingChatWebSocketModel,
+            readStatus: Int
+    ) {
         if (index >= adapter.list.size) return
         adapter.list[index].apply {
             if (this is ItemChatListPojo) {
                 attributes?.lastReplyMessage = newChat.message
                 attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
-                attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
+                attributes?.readStatus = readStatus
                 attributes?.lastReplyTimeStr = newChat.time
             }
         }
@@ -404,8 +415,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                         if(moveToTop) {
                             val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
                             lastItem?.let {
-                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, lastItem.replyTime)
-                                updateItemOnIndex(itemPositionLongClicked, model)
+                                val replyTimeStamp = chatItemListViewModel.getReplyTimeStampFrom(lastItem)
+                                val model = IncomingChatWebSocketModel(lastItem.messageId, lastItem.msg, replyTimeStamp)
+                                updateItemOnIndex(itemPositionLongClicked, model, ChatItemListViewHolder.STATE_CHAT_READ)
                             }
                         }
                     }

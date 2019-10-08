@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
@@ -20,10 +21,12 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
+import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -57,6 +60,8 @@ class ChatItemListViewModel @Inject constructor(
     private val _deleteChat = MutableLiveData<Result<ChatDelete>>()
     val deleteChat: LiveData<Result<ChatDelete>>
         get() = _deleteChat
+
+    private val recentMessage: HashMap<String, String> = hashMapOf()
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -137,5 +142,17 @@ class ChatItemListViewModel @Inject constructor(
         ) {
             result(Fail(it))
         }
+    }
+
+    fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
+        return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
+    }
+
+    fun updateLastReply(newChat: IncomingChatWebSocketModel) {
+        recentMessage[newChat.msgId] = newChat.time
+    }
+
+    fun hasBeenUpdated(newChat: IncomingChatWebSocketModel): Boolean {
+        return recentMessage[newChat.msgId] == newChat.time
     }
 }
