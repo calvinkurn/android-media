@@ -1124,7 +1124,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     // reset duration if getting red state
                                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
-                                        getView().showToastError(errMessage);
+                                        getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
                                         getView().resetCourier(cartPosition);
                                     } else {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);

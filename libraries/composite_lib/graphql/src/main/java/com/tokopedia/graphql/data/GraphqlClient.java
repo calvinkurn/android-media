@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
@@ -71,10 +71,7 @@ public class GraphqlClient {
     }
 
     public static GraphqlApi getApiInterface() {
-        if (sGraphqlApi == null) {
-            sGraphqlApi = getRetrofit().create(GraphqlApi.class);
-        }
-        return sGraphqlApi;
+        return getRetrofit().create(GraphqlApi.class);
     }
 
     public static synchronized FingerprintManager getFingerPrintManager() {
