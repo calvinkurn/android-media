@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.Pair;
 
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
@@ -40,7 +43,28 @@ public class PurchaseTracking extends TrackingUtils {
 
     public static final String USER_ID = "userId";
 
-    public static void marketplace(Context context, Purchase purchase) {
+    public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        Purchase purchase = purchaseBundlePair.getFirst();
+        Bundle bundle = new Bundle();
+        bundle.putString(AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory());
+        bundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
+        bundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
+        bundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
+        bundle.putString(Purchase.SHOP_ID, purchase.getShopId());
+        bundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
+        bundle.putString(Purchase.PAYMENT_TYPE, purchase.getPaymentType());
+        bundle.putString(Purchase.LOGISTIC_TYPE, purchase.getLogisticType());
+        bundle.putString(Purchase.USER_ID, purchase.getUserId());
+        bundle.putString(Purchase.CURRENT_SITE, purchase.getCurrentSite());
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(Purchase.CURRENCY_CODE, purchase.getCurrency());
+        bundle1.putBundle(Purchase.PURCHASE, purchaseBundlePair.getSecond());
+//        Map<String, Object> purchase1 = purchase.getPurchase();
+//        bundle1.putBundle(Purchase.PURCHASE, purchase1);
+        bundle.putBundle(AppEventTracking.ECOMMERCE, bundle1);
+        TrackApp.getInstance().getGTM().pushEECommerce(PurchaseTracking.TRANSACTION, bundle);
+        TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),

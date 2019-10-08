@@ -1,0 +1,190 @@
+payment(payment_id: Int!) {
+    create_time
+    customer_id
+    discount_amount
+    fee_amount
+    order_amount
+    overpaid_amount
+    partial {
+        amount
+        gateway {
+            gateway_fee
+            gateway_id
+            gateway_img_url
+            gateway_name
+            error
+        }
+        error
+    }
+    payment_amount
+    payment_date
+    payment_gateway {
+        gateway_fee
+        gateway_id
+        gateway_img_url
+        gateway_name
+        error
+    }
+    payment_id
+    payment_method {
+        defer {
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            payment_code
+        }
+        instant {
+            gateway_fee
+            gateway_id
+            gateway_img_url
+            gateway_name
+            error
+        }
+        method
+        transfer {
+            destination_account
+            destination_name
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            source_account
+            source_name
+        }
+        error
+    }
+    payment_ref_num
+    payment_status
+    payment_status_int
+    payment_type {
+        business_types
+        error
+    }
+    saldo_amount
+    stacked_promos {
+        benefits_by_orders {
+            global_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+            order_id
+            order_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+        }
+        benefits_by_products {
+            product_id
+            product_promos {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+            }
+        }
+        final_benefit_amount
+        final_cashback_amount
+        final_discount_amount
+        message
+        promo_code_id
+        error
+    }
+    update_time
+    voucher {
+        voucher_code
+        voucher_id
+        error
+    }
+}
+
+
+=========================================================================================================================================================
+
+
+payment(payment_id: Int!) {
+    fee_amount
+    payment_amount
+    payment_gateway {
+        gateway_fee
+        gateway_id
+        gateway_img_url
+        gateway_name
+        error
+    }
+    payment_id
+    payment_method {
+        defer {
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            payment_code
+        }
+        instant {
+            gateway_fee
+            gateway_id
+            gateway_img_url
+            gateway_name
+            error
+        }
+        method
+        transfer {
+            destination_account
+            destination_name
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            source_account
+            source_name
+        }
+    }
+    payment_ref_num
+    payment_type {
+        business_types
+    }
+    stacked_promos {
+        benefits_by_orders {
+            global_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+            order_id
+            order_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+        }
+        final_benefit_amount
+        promo_code_id
+    }
+    voucher {
+        voucher_code
+        voucher_id
+    }
+}

@@ -20,6 +20,9 @@ public class PaymentMethod {
     @SerializedName("method")
     @Expose
     private String method;
+//    @SerializedName("error")
+//    @Expose
+//    private String error;
 
     public Defer getDefer() {
         return defer;

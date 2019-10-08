@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Pair;
 import retrofit2.Response;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -181,8 +183,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
+    private Pair<Purchase, Bundle> getTrackignData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
         Purchase purchase = new Purchase();
+        Bundle actionField = new Bundle();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
@@ -192,22 +195,36 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
         purchase.setTransactionID(String.valueOf(orderData.getOrderId()));
+        actionField.putString("id", String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
+        actionField.putString(Purchase.SHIPPING_KEY, String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        actionField.putString(Purchase.REVENUE_KEY, String.valueOf(paymentData.getPaymentAmount()));
         purchase.setAffiliation(getShopName(orderData));
+        actionField.putString("affiliation", getShopName(orderData));
         purchase.setTax(tax);
+        actionField.putString("tax", tax);
         purchase.setCouponCode(couponCode);
+        actionField.putString(KEY_COUPON, couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
         purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
-        for (Product product : getProductList(orderData)) {
-            purchase.addProduct(product.getProduct());
+        Bundle bundle = new Bundle();
+        ArrayList<Bundle> bundles = new ArrayList<>();
+        for (Pair<Product, Bundle> productBundlePair : getProductBundleList(orderData)) {
+            purchase.addProduct(productBundlePair.getFirst().getProduct());
+            bundles.add(productBundlePair.getSecond());
         }
+        bundle.putBundle("actionField", actionField);
+        bundle.putParcelableArrayList("products", bundles);
+//        for (Product product : getProductList(orderData)) {
+//            purchase.addProduct(product.getProduct());
+//        }
 
-        return purchase;
+        return new Pair<>(purchase, bundle);
     }
 
     private String generateEventAction(String checkShopTypeForMarketplace, String paymentType) {
@@ -339,6 +356,29 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
 
             products.add(product);
+        }
+        return products;
+    }
+
+    private List<Pair<Product, Bundle>> getProductBundleList(OrderData orderData) {
+        List<Pair<Product, Bundle>> products = new ArrayList<>();
+        for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+            Product product = new Product();
+            Bundle bundle = new Bundle();
+            product.setProductID(String.valueOf(orderDetail.getProductId()));
+            bundle.putString(Product.KEY_ID, String.valueOf(orderDetail.getProductId()));
+            product.setProductName(getProductName(orderDetail));
+            bundle.putString(Product.KEY_NAME, getProductName(orderDetail));
+            product.setPrice(String.valueOf(orderDetail.getProductPrice()));
+            bundle.putString(Product.KEY_PRICE, String.valueOf(orderDetail.getProductPrice()));
+            product.setCategory(getProductCategory(orderDetail));
+            bundle.putString(Product.KEY_CAT, getProductCategory(orderDetail));
+            product.setQty(String.valueOf(orderDetail.getQuantity()));
+            bundle.putString(Product.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
+            product.setDimension54(getDimension54Value(orderData.isFulfillment()));
+            bundle.putString(Product.KEY_DIMENSION_54, getDimension54Value(orderData.isFulfillment()));
+
+            products.add(new Pair<>(product, bundle));
         }
         return products;
     }

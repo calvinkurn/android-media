@@ -9,44 +9,52 @@ import java.util.List;
  * Created by fwidjaja on 18/04/19.
  */
 public class StackedPromos {
-    @SerializedName("promo_code_id")
-    @Expose
-    private long promoCodeId;
-
-    @SerializedName("final_benefit_amount")
-    @Expose
-    private int finalBenefitAmount;
-
-    @SerializedName("final_benefit_discount_amount")
-    @Expose
-    private int finalBenefitDiscountAmount;
-
     @SerializedName("benefits_by_orders")
     @Expose
     private List<BenefitByOrder> listBenefitByOrders;
 
-    public long getPromoCodeId() {
+//    @SerializedName("benefits_by_products")
+//    @Expose
+//    private List<BenefitByProduct> listBenefitByProducts;
+
+    @SerializedName("final_benefit_amount")
+    @Expose
+    private float finalBenefitAmount;
+
+//    @SerializedName("final_cashback_amount")
+//    @Expose
+//    private float finalCashbackAmount;
+//
+//    @SerializedName("final_discount_amount")
+//    @Expose
+//    private float finalDiscountAmount;
+//
+//    @SerializedName("message")
+//    @Expose
+//    private String message;
+
+    @SerializedName("promo_code_id")
+    @Expose
+    private String promoCodeId;
+
+//    @SerializedName("error")
+//    @Expose
+//    private String error;
+
+    public String getPromoCodeId() {
         return promoCodeId;
     }
 
-    public void setPromoCodeId(long promoCodeId) {
+    public void setPromoCodeId(String promoCodeId) {
         this.promoCodeId = promoCodeId;
     }
 
-    public int getFinalBenefitAmount() {
+    public float getFinalBenefitAmount() {
         return finalBenefitAmount;
     }
 
-    public void setFinalBenefitAmount(int finalBenefitAmount) {
+    public void setFinalBenefitAmount(float finalBenefitAmount) {
         this.finalBenefitAmount = finalBenefitAmount;
-    }
-
-    public int getFinalBenefitDiscountAmount() {
-        return finalBenefitDiscountAmount;
-    }
-
-    public void setFinalBenefitDiscountAmount(int finalBenefitDiscountAmount) {
-        this.finalBenefitDiscountAmount = finalBenefitDiscountAmount;
     }
 
     public List<BenefitByOrder> getListBenefitByOrders() {

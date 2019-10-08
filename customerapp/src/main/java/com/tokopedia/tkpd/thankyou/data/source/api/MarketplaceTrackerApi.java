@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.source.api;
 
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.OrderGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 
 import retrofit2.Response;
@@ -14,7 +15,11 @@ import rx.Observable;
  */
 
 public interface MarketplaceTrackerApi {
-    @POST("graphql")
+//    @POST("graphql")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<PaymentGraphql>>> getTrackingData(@Body String requestBody);
+
+//    @POST("graphql")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<GraphqlResponse<OrderGraphql>>> getOrderTrackingData(@Body String requestBody);
 }

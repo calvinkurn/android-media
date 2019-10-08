@@ -10,7 +10,10 @@ public class Voucher {
     private String voucherCode;
     @SerializedName("voucher_id")
     @Expose
-    private Integer voucherId;
+    private String voucherId;
+//    @SerializedName("error")
+//    @Expose
+//    private String error;
 
     public String getVoucherCode() {
         return voucherCode;
@@ -20,11 +23,11 @@ public class Voucher {
         this.voucherCode = voucherCode;
     }
 
-    public Integer getVoucherId() {
+    public String getVoucherId() {
         return voucherId;
     }
 
-    public void setVoucherId(Integer voucherId) {
+    public void setVoucherId(String voucherId) {
         this.voucherId = voucherId;
     }
 }
