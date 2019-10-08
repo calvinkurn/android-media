@@ -10,7 +10,7 @@ open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
 
     init {
         delegatesManager
-                .addDelegate(LoadingMoreAdapterDelegate())
+                .addDelegate(LoadingMoreAdapterDelegate)
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {

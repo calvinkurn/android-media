@@ -1,18 +1,23 @@
 package com.tokopedia.feedcomponent.helper
 
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import java.lang.reflect.ParameterizedType
 
 /**
  * Created by jegul on 2019-10-01.
  */
-abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder> : AdapterDelegate<ST> {
+abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder>(@LayoutRes private val layoutRes: Int) : AdapterDelegate<ST> {
 
-    abstract val itemClass: Class<T>
+    @Suppress("UNCHECKED_CAST")
+    val itemClass: Class<T> = ((javaClass.genericSuperclass as ParameterizedType).actualTypeArguments.first() as Class<T>)
 
     abstract fun onBindViewHolder(item: T, holder: VH)
 
-    abstract fun onCreateViewHolder(parent: ViewGroup): VH
+    abstract fun onCreateViewHolder(parent: ViewGroup, view: View): VH
 
     override fun isForViewType(itemList: List<ST>, position: Int): Boolean {
         return itemList[position]::class.java == itemClass
@@ -24,6 +29,8 @@ abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return onCreateViewHolder(parent)
+        return onCreateViewHolder(parent, getView(parent))
     }
+
+    private fun getView(parent: ViewGroup): View = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
 }
