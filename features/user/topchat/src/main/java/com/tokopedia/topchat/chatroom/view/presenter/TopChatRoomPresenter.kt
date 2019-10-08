@@ -294,6 +294,7 @@ class TopChatRoomPresenter @Inject constructor(
                                 view.showSnackbarError(view.getStringResource(R.string.error_compress_image))
                             }
                         })
+                compressImageSubscription?.clear()
                 compressImageSubscription?.add(subscription)
             }
         }
