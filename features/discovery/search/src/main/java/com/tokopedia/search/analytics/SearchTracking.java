@@ -154,8 +154,9 @@ public class SearchTracking {
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(shopItemProductList.toArray(new Object[shopItemProductList.size()]))
-                        )
+                                "impressions", DataLayer.listOf(
+                                        shopItemProductList.toArray(new Object[shopItemProductList.size()])
+                                ))
                 )
         );
     }
@@ -169,7 +170,7 @@ public class SearchTracking {
                         ECOMMERCE, DataLayer.mapOf(
                                 "click", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf("list", "/searchproduct - shop productlist"),
-                                        "products", shopItemProduct
+                                        "products", DataLayer.listOf(shopItemProduct)
                                 )
                         )
                 )
