@@ -166,7 +166,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         float shipping = 0;
         for (OrderData orderData : orders) {
             orderIds.add(String.valueOf(orderData.getOrderId()));
-            shipping += orderData.getShippingPrice();
+            shipping += orderData.getOrderInfo().getShipping().getShippingPrice();
             price += orderData.getItemPrice();
             for (Product product : getProductList(orderData)) {
                 purchase.addProduct(product.getProduct());
@@ -199,8 +199,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         actionField.putString("id", String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
         purchase.setUserId(sessionHandler.getLoginID());
-        purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
-        actionField.putString(Purchase.SHIPPING_KEY, String.valueOf(orderData.getShippingPrice()));
+        purchase.setShipping(String.valueOf(orderData.getOrderInfo().getShipping().getShippingPrice()));
+        actionField.putString(Purchase.SHIPPING_KEY, String.valueOf(orderData.getOrderInfo().getShipping().getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
         actionField.putString(Purchase.REVENUE_KEY, String.valueOf(paymentData.getPaymentAmount()));
         purchase.setAffiliation(getShopName(orderData));
@@ -310,8 +310,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     }
 
     private String getLogisticType(OrderData orderData) {
-        if (orderData.getShipping() != null) {
-            return orderData.getShipping().getShippingName();
+        if (orderData.getOrderInfo().getShipping() != null) {
+            return orderData.getOrderInfo().getShipping().getShippingName();
         }
 
         return "";
@@ -344,7 +344,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
     private List<Product> getProductList(OrderData orderData) {
         List<Product> products = new ArrayList<>();
-        for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+        for (OrderDetail orderDetail : orderData.getOrderInfo().getOrderDetail()) {
             Product product = new Product();
             product.setProductID(String.valueOf(orderDetail.getProductId()));
             product.setProductName(getProductName(orderDetail));
@@ -360,7 +360,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
     private List<Pair<Product, Bundle>> getProductBundleList(OrderData orderData) {
         List<Pair<Product, Bundle>> products = new ArrayList<>();
-        for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+        for (OrderDetail orderDetail : orderData.getOrderInfo().getOrderDetail()) {
             Product product = new Product();
             Bundle bundle = new Bundle();
             product.setProductID(String.valueOf(orderDetail.getProductId()));
@@ -382,8 +382,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     }
 
     private String getProductName(OrderDetail orderDetail) {
-        if (orderDetail.getProduct() != null) {
-            return orderDetail.getProduct().getProductName();
+        if (orderDetail != null) {
+            return orderDetail.getProductName();
         }
 
         return "";
@@ -394,11 +394,11 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     }
 
     private String getProductCategory(OrderDetail orderDetail) {
-        if (orderDetail.getProduct() != null
-                && orderDetail.getProduct().getProductCategory() != null) {
-            return orderDetail.getProduct().getProductCategory().getCategoryNameLevel1()
-                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel2()
-                    + "/" + orderDetail.getProduct().getProductCategory().getCategoryNameLevel3();
+        if (orderDetail != null
+                && orderDetail.getProductCategory() != null) {
+            return orderDetail.getProductCategory().getCategoryNameLevel1()
+                    + "/" + orderDetail.getProductCategory().getCategoryNameLevel2()
+                    + "/" + orderDetail.getProductCategory().getCategoryNameLevel3();
         }
 
         return "";
@@ -430,13 +430,13 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
-        branchIOPayment.setShipping(String.valueOf((long)orderData.getShippingPrice()));
+        branchIOPayment.setShipping(String.valueOf((long)orderData.getOrderInfo().getShipping().getShippingPrice()));
         branchIOPayment.setRevenue(String.valueOf((long)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
         branchIOPayment.setNewBuyer(newBuyerFlag);
         branchIOPayment.setMonthlyNewBuyer(monthlyNewBuyerFlag);
-        for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+        for (OrderDetail orderDetail : orderData.getOrderInfo().getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
             product.put(LinkerConstants.NAME, getProductName(orderDetail));
@@ -444,7 +444,11 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
                     String.valueOf((long)orderDetail.getProductPrice()))));
             product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
-            product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
+            if (orderDetail.getProductCategory() != null) {
+                product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProductCategory().getCategoryName()));
+            } else {
+                product.put(LinkerConstants.CATEGORY, "");
+            }
 
             branchIOPayment.setProduct(product);
         }

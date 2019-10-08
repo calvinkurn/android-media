@@ -11,9 +11,12 @@ public class OrderDetail {
     @SerializedName("order_detail_id")
     @Expose
     private int orderDetailId;
-    @SerializedName("product")
+    @SerializedName("category")
     @Expose
-    private Product product;
+    private ProductCategory productCategory;
+    @SerializedName("product_name")
+    @Expose
+    private String productName;
     @SerializedName("product_id")
     @Expose
     private int productId;
@@ -36,13 +39,29 @@ public class OrderDetail {
         this.orderDetailId = orderDetailId;
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductCategory getProductCategory() {
+        return productCategory;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductCategory(ProductCategory productCategory) {
+        this.productCategory = productCategory;
     }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    //    public Product getProduct() {
+//        return product;
+//    }
+
+//    public void setProduct(Product product) {
+//        this.product = product;
+//    }
 
     public int getProductId() {
         return productId;

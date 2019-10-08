@@ -58,15 +58,15 @@ query GETORDERINFO($paymentID: Int!) {
       promo_code
       promo_amount
     }
-    # shop_info {
-    #   shop_owner_id
-    #   shop_owner_email
-    #   shop_owner_phone
-    #   shop_name
-    #   shop_domain
-    #   shop_id
-    #   last_login_at
-    # }
+    shop_info {
+      shop_owner_id
+      shop_owner_email
+      shop_owner_phone
+      shop_name
+      shop_domain
+      shop_id
+      last_login_at
+    }
     # preorder {
     #   order_id
     #   preorder_type

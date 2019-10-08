@@ -48,7 +48,6 @@ public class PurchaseTracking extends TrackingUtils {
         Bundle bundle = new Bundle();
         bundle.putString(AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory());
         bundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
-        bundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
         bundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
         bundle.putString(Purchase.SHOP_ID, purchase.getShopId());
         bundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
