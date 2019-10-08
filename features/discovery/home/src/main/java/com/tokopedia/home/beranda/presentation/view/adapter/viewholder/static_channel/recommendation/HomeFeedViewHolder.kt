@@ -48,13 +48,13 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
         for (label: LabelGroup in element.labelGroups){
             when(label.position){
                 LABEL_POSITION_CREDIBILITY -> {
-                    labelCredibility = ProductCardModel.Label(label.title, label.type)
+                    labelCredibility = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
                 }
                 LABEL_POSITION_PROMO -> {
-                    labelPromo = ProductCardModel.Label(label.title, label.type)
+                    labelPromo = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelPromo
                 }
                 LABEL_POSITION_OFFERS -> {
-                    labelOffers = ProductCardModel.Label(label.title, label.type)
+                    labelOffers = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelOffers
                 }
             }
         }
