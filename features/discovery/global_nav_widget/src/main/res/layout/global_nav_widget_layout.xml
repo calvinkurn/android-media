@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/globalNavContainerLayout"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -41,12 +42,14 @@
         android:id="@+id/globalNavPillRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/dp_8"
+        tools:itemCount="1" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/globalNavCardRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/dp_8"
+        tools:itemCount="1" />
 
 </LinearLayout>
