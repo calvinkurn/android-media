@@ -9,8 +9,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 
 class ProductRecommendationViewModel(
-        val productItem: RecommendationItem
-//        val listener: RecommendationListener
+        val productItem: RecommendationItem,
+        val listener: RecommendationListener
 ) : Visitable<OfficialHomeAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {

@@ -8,10 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 
 
@@ -50,13 +52,21 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
                     )
             )
 
+            setImageProductViewHintListener(element.productItem, object: ViewHintListener {
+                override fun onViewHint() {
+                    if (element.productItem.isTopAds) {
+                        // Implement Tracking?
+                    }
+                    // listener
+                }
+            })
+
             setOnClickListener {
-
+                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
+                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
             }
 
-            setButtonWishlistOnClickListener {
-
-            }
+            setButtonWishlistOnClickListener {}
         }
     }
 
