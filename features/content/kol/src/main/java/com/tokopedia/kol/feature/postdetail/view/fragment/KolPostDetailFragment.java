@@ -997,11 +997,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem) {
         RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
-        postTagAnalytics.trackClickPostTagBuyKol(
-                postTagItem,
-                positionInFeed,
-                dynamicPostViewModel.getHeader().getFollowCta().getAuthorType()
-        );
     }
 
     @Override

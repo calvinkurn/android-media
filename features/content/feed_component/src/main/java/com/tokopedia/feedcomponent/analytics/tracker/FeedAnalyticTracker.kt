@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -112,9 +114,6 @@ class FeedAnalyticTracker
         const val CURRENCY_CODE_IDR = "IDR"
     }
 
-
-    private val REGEX_NUMERIC = "[^\\d]"
-
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -187,7 +186,7 @@ class FeedAnalyticTracker
                                 getProductData(
                                         productId,
                                         productName,
-                                        formatPriceToInt(price),
+                                        price.getDigits().toZeroIfNull(),
                                         quantity,
                                         shopId,
                                         shopName)))
@@ -624,7 +623,7 @@ class FeedAnalyticTracker
                                                         getProductData(
                                                                 productId,
                                                                 productName,
-                                                                formatPriceToInt(price),
+                                                                price.getDigits().toZeroIfNull(),
                                                                 quantity,
                                                                 shopId,
                                                                 shopName
@@ -749,13 +748,4 @@ class FeedAnalyticTracker
             Product.SHOP_ID, shopId,
             Product.SHOP_NAME, shopName
     )
-
-    private fun formatPriceToInt(price: String): Int {
-        return try {
-            val rex = Regex(REGEX_NUMERIC)
-            rex.replace(price, "").toInt()
-        } catch (e: Exception) {
-            0
-        }
-    }
 }
