@@ -66,7 +66,7 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         ArrayList<GraphqlRequest> requests = new ArrayList<>();
         HashMap<String, Object> variables = new HashMap<>();
-        variables.put("paymentID", requestParams.getString(ThanksTrackerConst.Key.ID, "0"));
+        variables.put("paymentID", Integer.parseInt(requestParams.getString(ThanksTrackerConst.Key.ID, "0")));
         requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.payment_data_query), PaymentGraphql.class, variables));
         requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.order_info_query), OrderGraphql.class, variables));
         graphqlUseCase.addRequests(requests);
