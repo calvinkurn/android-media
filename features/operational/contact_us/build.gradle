@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-project.ext {
-    artifactId = 'contactus'
-    groupId = 'com.tokopedia.contactus'
-    versionName = "${tkpdContactUsVersion}"
-    artifactName = "contactus-release"
-}
 
 buildscript {
     repositories {
@@ -21,38 +15,52 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.inbox)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.applink)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.libraries.cameraview)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.unifyDependencies.components
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation rootProject.ext.viewDependencies.expandableTextview
-
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
 }
+
+project.ext {
+    artifactId = 'contact-us'
+    groupId = 'com.tokopedia.operational'
+    versionName = "1.0.0"
+    artifactName = "contact_us-release"
+}
+
+apply from: '../../../publish_local.gradle'

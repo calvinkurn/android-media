@@ -32,6 +32,8 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                priceInt
                shop {
                    id
+                   name
+                   city
                }
               departmentId
               labels {

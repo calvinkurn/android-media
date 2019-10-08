@@ -23,16 +23,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
 
-class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
+class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
     private var postId: String? = null
-
-    override fun invalidatePostMenu(isPostEnabled: Boolean) {
-        if (isPostEnabled){
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
-        } else {
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
-        }
-    }
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -77,6 +69,12 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         @JvmStatic
         fun getInstanceDraftContent(context: Context, bundle: Bundle): Intent {
             return getInstanceContent(context, bundle)
+        }
+
+        @DeepLink(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
+        @JvmStatic
+        fun getInstanceDefaultAffiliate(context: Context, bundle: Bundle): Intent {
+            return getInstanceAffiliate(context, bundle)
         }
     }
 
@@ -139,6 +137,14 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         shareTo.text = text
     }
 
+    override fun invalidatePostMenu(isPostEnabled: Boolean) {
+        if (isPostEnabled){
+            action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
+        } else {
+            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
+        }
+    }
+
     override fun onBackPressed() {
         val dialog = Dialog(this, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.af_leave_warning))
@@ -146,11 +152,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         dialog.setBtnOk(getString(R.string.af_leave_title))
         dialog.setBtnCancel(getString(R.string.af_continue))
         dialog.setOnOkClickListener{
-            (supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as? AffiliateCreatePostFragment)?.let {
-                it.clearCache()
-            }
+            (fragment as? AffiliateCreatePostFragment)?.clearCache()
             dialog.dismiss()
-            super.onBackPressed()
+            finish()
         }
         dialog.setOnCancelClickListener{
             dialog.dismiss()
@@ -160,8 +164,6 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
     }
 
     private fun openShareBottomSheetDialog() {
-        if (fragment is BaseCreatePostFragment) {
-            (fragment as BaseCreatePostFragment).openShareBottomSheetDialog()
-        }
+        (fragment as? BaseCreatePostFragment)?.openShareBottomSheetDialog()
     }
 }

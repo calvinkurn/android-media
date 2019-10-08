@@ -15,12 +15,14 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
@@ -69,10 +71,9 @@ public class ShopListFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         ShopListFragment shopListFragment = new ShopListFragment();
         shopListFragment.setArguments(args);
@@ -92,7 +93,6 @@ public class ShopListFragment
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
-            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -111,12 +111,11 @@ public class ShopListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
 
-        return inflater.inflate(R.layout.fragment_shop_list_search, null);
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         initListener();
         bindView(view);
         if (getUserVisibleHint()) {
@@ -131,14 +130,14 @@ public class ShopListFragment
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
 
-        recyclerView = rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerViewSearchShop);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
                 )
         );
 
@@ -170,6 +169,11 @@ public class ShopListFragment
                 && !isLoadingData
                 && !isRefreshing()
                 && isNextPageAvailable;
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.SHOP);
     }
 
     private void loadShopFirstTime() {
@@ -207,8 +211,8 @@ public class ShopListFragment
         if(userSession == null) return "";
 
         return userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId());
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId());
     }
 
     private void loadDataFromPresenter() {
@@ -344,7 +348,6 @@ public class ShopListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
         loadShopFirstTime();
     }
 
@@ -504,5 +507,15 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void removeLoading() {
+        removeSearchPageLoading();
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_SHOP;
     }
 }

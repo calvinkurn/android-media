@@ -12,12 +12,12 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorFromResources
-import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
-class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
+class DigitalPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
         RecyclerView.Adapter<DigitalPromoListAdapter.PromoItemViewHolder>() {
 
     private lateinit var context: Context
@@ -59,11 +59,11 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
         private val btnCopyPromo: TextView = itemView.findViewById(R.id.btn_copy_promo)
         private val promoCodeLayout: RelativeLayout = itemView.findViewById(R.id.layout_promo_code)
 
-        private lateinit var telcoPromo: TelcoPromo
+        private lateinit var topupBillsPromo: TopupBillsPromo
 
         init {
             container.setOnClickListener {
-                listener.onClickPromoItem(telcoPromo, adapterPosition)
+                listener.onClickPromoItem(topupBillsPromo, adapterPosition)
             }
 
             btnCopyPromo.setOnClickListener {
@@ -75,32 +75,32 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
                     }
                 }
 
-                telcoPromo.voucherCodeCopied = true
+                topupBillsPromo.voucherCodeCopied = true
                 notifyItemChanged(adapterPosition)
-                listener.onClickPromoCode(telcoPromo.id, telcoPromo.promoCode)
+                listener.onClickPromoCode(topupBillsPromo.id, topupBillsPromo.promoCode)
             }
         }
 
         fun bind() {
-            telcoPromo = digitalPromoList[adapterPosition]
-            description.text = telcoPromo.title
-            promoCode.text = telcoPromo.promoCode
+            topupBillsPromo = digitalPromoList[adapterPosition]
+            description.text = topupBillsPromo.title
+            promoCode.text = topupBillsPromo.promoCode
 
             var containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
             var btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_rounded)
-            if (telcoPromo.voucherCodeCopied) {
+            if (topupBillsPromo.voucherCodeCopied) {
                 btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
             } else {
                 containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
                 btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.tkpd_main_green))
             }
             container.background = containerBg
             btnCopyPromo.background = btnCopyBg
 
-            if (TextUtils.isEmpty(telcoPromo.promoCode)) {
+            if (TextUtils.isEmpty(topupBillsPromo.promoCode)) {
                 promoCodeLayout.visibility = View.GONE
             } else {
                 promoCodeLayout.visibility = View.VISIBLE
@@ -112,7 +112,7 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
     interface ActionListener {
         fun onClickPromoCode(promoId: Int, voucherCode: String)
 
-        fun onClickPromoItem(telcoPromo: TelcoPromo, position: Int)
+        fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int)
     }
 
 }

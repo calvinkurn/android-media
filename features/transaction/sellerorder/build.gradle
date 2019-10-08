@@ -24,10 +24,8 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -37,6 +35,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
@@ -49,7 +48,7 @@ project.ext {
     artifactId = "sellerorder"
     groupId = "com.tokopedia.sellerorder"
     versionName = "1.0.0"
-    artifactName = "transactionsellerorder-release"
+    artifactName = "sellerorder-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

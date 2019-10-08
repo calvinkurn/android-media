@@ -19,6 +19,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 
@@ -45,6 +46,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected static final String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
     protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
     protected static final String EXTRA_IS_USING_TRACKING = "EXTRA_IS_USING_TRACKING";
+    protected static final String EXTRA_TRACKING_DATA = "EXTRA_TRACKING_DATA";
 
     protected List<Option> optionList;
     protected T adapter;
@@ -66,6 +68,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private boolean isAutoTextChange = false;
     private Subscription subscription;
     private boolean isUsingTracking;
+    private FilterTrackingData trackingData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,6 +118,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
         isUsingTracking = getIntent().getBooleanExtra(EXTRA_IS_USING_TRACKING, false);
+        trackingData = getIntent().getParcelableExtra(EXTRA_TRACKING_DATA);
     }
 
     protected void bindView() {
@@ -148,7 +152,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             @Override
             public void onClick(View v) {
                 if (isUsingTracking) {
-                    FilterTracking.eventSearchResultApplyFilterDetail(getActivityContext(), pageTitle);
+                    FilterTracking.eventApplyFilterDetail(trackingData, pageTitle);
                 }
                 applyFilter();
             }
@@ -158,7 +162,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     @Override
     public void onBackPressed() {
         if (isUsingTracking) {
-            FilterTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
+            FilterTracking.eventBackFromFilterDetail(trackingData, pageTitle);
         }
         super.onBackPressed();
     }
@@ -232,7 +236,8 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
         if (isUsingTracking) {
-            FilterTracking.eventSearchResultFilterJourney(this, pageTitle, option.getName(), true, isChecked);
+            FilterTracking.eventFilterJourney(trackingData, pageTitle, option.getName(),
+                    true, isChecked, option.isAnnotation());
         }
     }
 

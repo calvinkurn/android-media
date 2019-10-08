@@ -1,4 +1,6 @@
 // Sort alphabetically by name
+includeDynamicFeatureIfEnabled("customerapp")
+
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
@@ -24,7 +26,9 @@ include "features:digital:common_travel"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:digitalproduct"
+include "features:digital:common_topup_bills"
 include "features:digital:digital_topup_bills"
+include "features:digital:voucher_game"
 include "features:digital:event"
 include "features:digital:flight"
 //include "features:digital:flight_no_op"
@@ -33,11 +37,15 @@ include "features:digital:imagepreviewslider"
 include "features:digital:train"
 //include "features:digital:train_no_op"
 include "features:digital:travel_homepage"
+include ":features:digital:digital_homepage"
 
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
 include 'features:discovery:filter'
+include 'features:discovery:image_search'
+include 'features:discovery:similarsearch'
+include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
@@ -49,12 +57,7 @@ include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
 
-include "dynamic-features:travel:hotel_travel"
-include "dynamic-features:user:profilecompletion"
-include "dynamic-features:merchant:shop_settings"
-
 include "features:fintech:home_credit"
-include "features:fintech:reksa_dana"
 include "features:digital:instant_debit_bca"
 include "features:fintech:instant_loan"
 //include "features:fintech:instant_loan_no_op"
@@ -75,16 +78,9 @@ include "features:im:referral"
 include "features:kyc"
 
 include "features:logistic:tracking"
-//include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
-include "features:logistic:logisticuploadawb"
-//include "features:logistic:logisticuploadawb_no_op"
-include "features:logistic:logisticinputreceiptshipment"
-//include 'features:logistic:logisticinputreceiptshipment_no_op'
-include "features:logistic:logisticlistaddress"
-//include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -150,11 +146,9 @@ include "features:transaction:express_checkout_common"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
-include "features:transaction:transactioninvoice"
 include "features:transaction:sellerorder"
 
 include "features:user:attachproduct"
-include "features:user:bankdb"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"
@@ -175,6 +169,7 @@ include 'features:user:profilecompletion'
 include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
+include "features:user:stickylogin"
 include "features:user:talk"
 include "features:user:topchat"
 //include "features:user:topchat_no_op"
@@ -186,7 +181,6 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 
-include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'

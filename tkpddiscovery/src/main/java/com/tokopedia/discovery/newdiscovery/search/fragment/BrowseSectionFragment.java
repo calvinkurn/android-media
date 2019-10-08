@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -23,7 +21,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
@@ -31,9 +29,10 @@ import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
-import com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.filter.newdynamicfilter.SortProductActivity;
-import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.filter.common.manager.FilterSortManager;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -41,6 +40,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.home.helper.ProductFeedHelper.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_MAIN;
@@ -59,8 +59,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
     private static final String EXTRA_FILTER = "EXTRA_FILTER";
     private static final String EXTRA_SORT = "EXTRA_SORT";
-    private static final String EXTRA_SELECTED_FILTER = "EXTRA_SELECTED_FILTER";
-    private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
@@ -75,12 +73,12 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
+    private FilterTrackingData filterTrackingData;
 
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
     protected HashMap<String, String> selectedFilter;
-    private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
     @Override
@@ -221,18 +219,18 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
+                DiscoveryTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
+                DiscoveryTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                DiscoveryTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -256,7 +254,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
             return;
         }
 
-        SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
+        DiscoveryTracking.eventSearchResultShare(getActivity(), getScreenName());
 
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.DISCOVERY_TYPE)
@@ -268,7 +266,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if(getActivity() instanceof HotlistActivity){
             shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
-            SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
+            DiscoveryTracking.eventSearchResultShare(getActivity(), getScreenName());
         }
         new DefaultShare(getActivity(), shareData).show();
     }
@@ -276,27 +274,44 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == getSortRequestCode()) {
-                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
-                clearDataFilterSort();
-                showBottomBarNavigation(false);
-                reloadData();
-            } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
-                showBottomBarNavigation(false);
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, new FilterSortManager.Callback() {
+            @Override
+            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                       List<Option> selectedOptions) {
+                handleFilterResult(queryParams, selectedFilters, selectedOptions);
             }
+
+            @Override
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+                handleSortResult(selectedSort, selectedSortName);
+            }
+        });
+    }
+
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName) {
+        setSelectedSort(new HashMap<>(selectedSort));
+        sendSortTracking(selectedSortName);
+        clearDataFilterSort();
+        showBottomBarNavigation(false);
+        reloadData();
+    }
+
+    protected void sendSortTracking(String selectedSortName) {
+        UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
+    }
+
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        setSelectedFilter(new HashMap<>(selectedFilters));
+        clearDataFilterSort();
+        if (getActivity() instanceof HotlistActivity) {
+            HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
+        } else {
+            FilterTracking.eventApplyFilter(getFilterTrackingData(),
+                    "category page - " + getCategoryId(), getSelectedFilter());
         }
+        showBottomBarNavigation(false);
+        reloadData();
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -356,14 +371,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         this.selectedFilter = selectedFilter;
     }
 
-    public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
-        this.flagFilterHelper = flagFilterHelper;
-    }
-
-    protected FilterFlagSelectedModel getFlagFilterHelper() {
-        return flagFilterHelper;
-    }
-
     public void clearDataFilterSort() {
         if (filters != null) {
             this.filters.clear();
@@ -385,12 +392,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if(getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<>());
         }
-
-        Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getSelectedFilter(), getFlagFilterHelper()
-        );
-        startActivityForResult(intent, getFilterRequestCode());
-        getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        FilterSortManager.openFilterPage(getFilterTrackingData(),this, getScreenName(), getSelectedFilter());
     }
 
     protected boolean isFilterDataAvailable() {
@@ -398,19 +400,9 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     }
 
     protected void openSortActivity() {
-        if (isSortDataAvailable()) {
-            Intent intent = SortProductActivity.createInstance(
-                    getActivity(), getSort(), getSelectedSort()
-            );
-            startActivityForResult(intent, getSortRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
-        } else {
+        if (!FilterSortManager.openSortActivity(this, sort, getSelectedSort())) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
         }
-    }
-
-    private boolean isSortDataAvailable() {
-        return sort != null && !sort.isEmpty();
     }
 
     @Override
@@ -466,11 +458,8 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
-        outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
-        outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
-        outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
     }
 
     public abstract void reloadData();
@@ -510,15 +499,8 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));
         setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
-        setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
-        setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
-    }
-
-    public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {
@@ -527,19 +509,12 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
 
         if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getFlagFilterHelper().setCategoryId("");
-            getFlagFilterHelper().setSelectedCategoryName("");
-            getFlagFilterHelper().setSelectedCategoryRootId("");
             getSelectedFilter().remove(Option.KEY_CATEGORY);
         } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
                 Option.KEY_PRICE_MAX.equals(optionKey)) {
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
             getSelectedFilter().remove(Option.KEY_PRICE_MIN);
             getSelectedFilter().remove(Option.KEY_PRICE_MAX);
         } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
-
             String mapValue = getSelectedFilter().get(optionKey);
             mapValue = removeValue(mapValue, optionValue);
 
@@ -563,4 +538,17 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     public void setOfficialSelected(Boolean officialSelectedFlag) {
 
     }
+
+    private FilterTrackingData getFilterTrackingData() {
+        if (filterTrackingData == null) {
+            filterTrackingData = new FilterTrackingData(FilterEventTracking.Event.CLICK_CATEGORY,
+                    FilterEventTracking.Category.FILTER_CATEGORY,
+                    getCategoryId(),
+                    FilterEventTracking.Category.PREFIX_CATEGORY_PAGE
+            );
+        }
+        return filterTrackingData;
+    }
+
+    protected abstract String getCategoryId();
 }

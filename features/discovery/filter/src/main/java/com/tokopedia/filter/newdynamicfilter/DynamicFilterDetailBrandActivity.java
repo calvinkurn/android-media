@@ -8,6 +8,7 @@ import com.tokopedia.design.list.widget.AlphabeticalSideBar;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterBrandAdapter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,8 @@ public class DynamicFilterDetailBrandActivity extends AbstractDynamicFilterDetai
                               List<Option> optionList,
                               boolean isSearchable,
                               String searchHint,
-                              boolean isUsingTracking) {
+                              boolean isUsingTracking,
+                              FilterTrackingData trackingData) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterDetailBrandActivity.class);
@@ -34,6 +36,7 @@ public class DynamicFilterDetailBrandActivity extends AbstractDynamicFilterDetai
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
+            intent.putExtra(EXTRA_TRACKING_DATA, trackingData);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

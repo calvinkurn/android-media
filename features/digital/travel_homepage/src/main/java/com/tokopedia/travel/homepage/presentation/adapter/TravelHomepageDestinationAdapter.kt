@@ -37,9 +37,9 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
                 val layoutParams = destination_container.layoutParams
                 if (position == 0) {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_145)
+                    layoutParams.height = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
                 } else {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_180)
+                    layoutParams.height = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
                 }
                 destination_container.layoutParams = layoutParams
 

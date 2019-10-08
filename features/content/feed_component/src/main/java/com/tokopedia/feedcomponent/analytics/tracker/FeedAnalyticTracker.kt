@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -12,11 +13,14 @@ import kotlin.collections.HashMap
  */
 class FeedAnalyticTracker
 @Inject constructor(
-        private val trackingQueue: TrackingQueue
+        private val trackingQueue: TrackingQueue,
+        private val userSessionInterface: UserSessionInterface
 ) {
 
     private companion object {
+        private const val USER_ID = "user_id"
         const val ECOMMERCE = "ecommerce"
+        const val PRODUCTS = "products"
 
         const val PROMOTIONS = "promotions"
     }
@@ -28,9 +32,16 @@ class FeedAnalyticTracker
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val ACTION_FIELD = "actionField"
+        const val LIST = "list"
+        const val ADD = "add"
     }
 
     private object Category {
+
+        //trending
+        const val CONTENT_EXPLORE_TRENDING = "explore page - trending"
+
         const val CONTENT_FEED_TIMELINE = "content feed timeline"
         const val FEED_DETAIL_PAGE = "feed detail page"
 
@@ -42,6 +53,10 @@ class FeedAnalyticTracker
     }
 
     private object Action {
+        const val CLICK_BUY = "click beli"
+        const val CLICK_SEE = "click lihat"
+        const val CLICK_MEDIA = "click media"
+        const val CLICK_SEE_ALL = "click lihat semua"
         const val CLICK_HASHTAG = "click hashtag"
         const val CLICK_READ_MORE = "click read more"
         const val CLICK_POST = "click post"
@@ -50,7 +65,9 @@ class FeedAnalyticTracker
         const val IMPRESSION_POST = "impression post"
     }
 
-    private object Screen {
+    object Screen {
+        const val MEDIA_PREVIEW = "/feed/media-preview"
+        const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
     }
@@ -60,6 +77,156 @@ class FeedAnalyticTracker
         const val NAME = "name"
         const val CREATIVE = "creative"
         const val POSITION = "position"
+    }
+    private object Product {
+        const val ID = "id"
+        const val NAME = "name"
+        const val PRICE = "price"
+        const val QTY = "quantity"
+        const val SHOP_ID = "shop_id"
+        const val SHOP_NAME = "shop_name"
+        const val MEDIA_PREVIEW = "/feed media preview - {role} post"
+        const val MEDIA_PREVIEW_TAG = "{role}"
+        const val CURRENCY_CODE = "currencyCode"
+        const val CURRENCY_CODE_IDR = "IDR"
+    }
+
+
+    private val REGEX_NUMERIC = "[^\\d]"
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 39
+     *
+     * @param activityId - postId
+     */
+    fun eventOpenMediaPreview() {
+        trackOpenScreenEvent(Screen.MEDIA_PREVIEW)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 31
+     *
+     * @param activityId - postId
+     */
+    fun eventMediaDetailClickAvatar(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_AVATAR,
+                activityId)
+    }
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 32
+     *
+     * @param activityId - postId
+     */
+    fun eventMediaDetailClickLihat(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_SEE,
+                activityId)
+    }
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 34
+     *
+     * @param productId - productId
+     */
+    fun eventMediaDetailClickBuy(role:String,
+                                 productId: String,
+                                 productName: String,
+                                 price: String,
+                                 quantity: Int,
+                                 shopId: Int,
+                                 shopName: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_BUY,
+                productId)
+        trackEnhancedEcommerceEvent(Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_BUY,
+                productId,
+                DataLayer.mapOf(
+                        Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
+                        Event.ADD, getAddData(
+                            role,
+                            getProductsData(listOf(
+                                    getProductData(
+                                            productId,
+                                            productName,
+                                            formatPriceToInt(price),
+                                            quantity,
+                                            shopId,
+                                            shopName)))
+                        )
+                )
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 42
+     *
+     * @param activityId - postId
+     */
+    fun eventOpenTrendingPage() {
+        trackOpenScreenEvent(Screen.TRENDING)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 35
+     *
+     * @param activityId - postId
+     */
+    fun eventTrendingClickMedia(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_EXPLORE_TRENDING,
+                Action.CLICK_MEDIA,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 3
+     *
+     * @param activityId - postId
+     */
+    fun eventTrendingClickSeeAll(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_EXPLORE_TRENDING,
+                Action.CLICK_SEE_ALL,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 3
+     *
+     * @param activityId - postId
+     */
+    fun eventTrendingClickProfile(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_EXPLORE_TRENDING,
+                Action.CLICK_AVATAR,
+                activityId)
     }
 
     /**
@@ -359,7 +526,8 @@ class FeedAnalyticTracker
             EVENT, eventName,
             EVENT_CATEGORY, eventCategory,
             EVENT_ACTION, eventAction,
-            EVENT_LABEL, eventLabel
+            EVENT_LABEL, eventLabel,
+            USER_ID,  userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
@@ -383,4 +551,45 @@ class FeedAnalyticTracker
         Promotion.CREATIVE, creative,
         Promotion.POSITION, position
     )
+
+
+    private fun getAddData(
+            role: String,
+            productDataList: List<Any>
+    ): Map<String, Any> =  DataLayer.mapOf(
+            Event.ACTION_FIELD, getActionFieldData(role),
+            PRODUCTS, productDataList
+            )
+
+    private fun getActionFieldData(role: String
+    ): Map<String, Any> = DataLayer.mapOf(Event.LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG,role))
+
+    private fun getProductsData(
+            productDataList: List<Any>
+    ): List<Any> = DataLayer.listOf(productDataList)
+
+    private fun getProductData(
+            id: String,
+            name: String,
+            price: Int,
+            quantity: Int,
+            shopId: Int,
+            shopName: String
+    ): Map<String, Any> = DataLayer.mapOf(
+            Product.ID, id,
+            Product.NAME, name,
+            Product.PRICE, price,
+            Product.QTY, quantity,
+            Product.SHOP_ID, shopId,
+            Product.SHOP_NAME, shopName
+    )
+    private fun formatPriceToInt(price: String): Int {
+        var result = 0
+        try {
+            var rex = Regex(REGEX_NUMERIC)
+            result = rex.replace(price, "").toInt()
+        } catch (e: Exception) {
+        }
+        return result
+    }
 }

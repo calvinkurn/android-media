@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -45,6 +46,11 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter {
+
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     public void onCreate() {

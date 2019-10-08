@@ -56,6 +56,9 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
@@ -80,6 +83,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                               private val stickyLoginUseCase: StickyLoginUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -88,11 +92,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val p2General = MutableLiveData<ProductInfoP2General>()
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
+    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
 
     val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
 
+    var warehouseId: String = ""
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-
     val userId: String
         get() = userSessionInterface.userId
 
@@ -131,8 +136,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 needRequestCod = it.shouldShowCod
             }
 
-            val p2ShopDeferred = getProductInfoP2ShopAsync(productInfoP1.productInfo.basic.shopID,
-                    productInfoP1.productInfo.basic.id.toString(), forceRefresh)
+            val p2ShopDeferred = getProductInfoP2ShopAsync(
+                    productInfoP1.productInfo.basic.shopID,
+                    productInfoP1.productInfo.basic.id.toString(),
+                    warehouseId,
+                    forceRefresh
+            )
 
             val p2GeneralDeferred = getProductInfoP2GeneralAsync(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
@@ -165,15 +174,17 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
                                                   forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async(Dispatchers.IO) {
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
 
-            val nearestWarehouseParam = mapOf("productIds" to listOf(productId))
+            val nearestWarehouseParam = mapOf(
+                    "productIds" to listOf(productId),
+                    "warehouseID" to warehouseId
+            )
             val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                     MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
@@ -206,6 +217,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
             p2Shop
         }
@@ -381,6 +393,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
             productInfoP2
         }
@@ -404,7 +417,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                     TopAdsPdpAffiliateResponse::class.java, affilateParams)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             try {
                 val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
                         affiliateRequest), cacheStrategy)
@@ -428,6 +441,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .getCartType.data.cartType
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
 
             p2Login
@@ -474,6 +488,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
                 ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
                 productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
+                productInfoP3.ratesModel = ratesEstModel?.rates
             }
 
 
@@ -483,7 +498,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
         } catch (t: Throwable) {
-            t.printStackTrace()
+            t.debugTrace()
         }
         productInfoP3
     }
@@ -550,7 +565,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
 
-    fun isUserSessionActive(): Boolean = userSessionInterface.userId.isNotEmpty()
+    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
     override fun clear() {
         super.clear()
@@ -592,6 +607,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
                     ?: emptyList()))
         } catch (t: Throwable) {
+            t.debugTrace()
             Loaded(Fail(t))
         }
     }
@@ -632,6 +648,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 submitTicketSubscription = null
             }
         })
+    }
+
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    onSuccess.invoke(it.response.tickers[0])
+                } else {
+                    onError?.invoke(Throwable("Data not found"))
+                }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
     }
 
     companion object {

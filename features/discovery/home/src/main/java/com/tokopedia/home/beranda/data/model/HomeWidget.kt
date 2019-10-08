@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 class HomeWidget(
@@ -15,7 +15,10 @@ class HomeWidget(
         val tabBusinessList: List<TabItem> = listOf(),
         @SerializedName("widget_grid")
         @Expose
-        val contentItemTabList: List<ContentItemTab> = listOf()
+        val contentItemTabList: List<ContentItemTab> = listOf(),
+        @SerializedName("widget_header")
+        @Expose
+        val widgetHeader: WidgetHeader = WidgetHeader("")
 ) {
 
     data class Data (
@@ -64,6 +67,14 @@ class HomeWidget(
                 return arrayOfNulls(size)
             }
         }
+    }
+
+    class WidgetHeader(
+            @SerializedName("back_color")
+            @Expose
+            val backColor: String)
+    {
+
     }
 
     class ContentItemTab(

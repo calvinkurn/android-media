@@ -19,10 +19,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -63,7 +63,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private EmptySearchViewModel boundedEmptySearchModel;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_empty_search_product;
+    public static final int LAYOUT = R.layout.search_list_empty_search_product;
 
     public EmptySearchViewHolder(View view, EmptyStateListener emptyStateListener,
                                  BannerAdsListener bannerAdsListener, Config topAdsConfig) {
@@ -91,8 +91,8 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
         selectedFilterRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 
@@ -265,7 +265,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
 
         @Override
         public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_filter_empty_state_selected_filter_item, parent, false);
             return new SelectedFilterItemViewHolder(view, clickListener);
         }
 

@@ -69,9 +69,6 @@ public interface ApplinkConst {
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE = "tokopedia://search-autocomplete?navsource={source}";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE = "tokopedia://search-autocomplete?navsource=shoppingnav";
-    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT = "tokopedia://search-autocomplete?navsource={source}&hint={hint}";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
@@ -88,12 +85,14 @@ public interface ApplinkConst {
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
+    String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
     String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
@@ -135,6 +134,8 @@ public interface ApplinkConst {
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
+    String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
+    String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -180,6 +181,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -195,8 +197,8 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
-    String DEPOSIT = "tokopedia://saldo";
-    String SALDO_INTRO = "tokopedia://saldointro";
+    String SALDO = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
@@ -214,6 +216,7 @@ public interface ApplinkConst {
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
+    String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";
@@ -228,7 +231,6 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC = "tokopedia://kyc";
-    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";

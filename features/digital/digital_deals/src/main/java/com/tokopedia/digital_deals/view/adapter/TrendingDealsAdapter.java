@@ -1,9 +1,11 @@
 package com.tokopedia.digital_deals.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,16 +16,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
+import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -46,10 +54,9 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
+public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements DealCategoryAdapterContract.View {
 
     private Context context;
-    private List<ProductItem> categoryItems;
     private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
     private DealsAnalytics dealsAnalytics;
     private INavigateToActivityRequest toActivityRequest;
@@ -63,10 +70,9 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
     private int homePosition;
     private Brand brand;
 
-    public TrendingDealsAdapter(Context context, List<ProductItem> categoryItems, AdapterCallback callback, INavigateToActivityRequest toActivityRequest, String url, String title, boolean brandPageCard, boolean isDealsHomeLayout, int homePosition) {
+    public TrendingDealsAdapter(Context context, AdapterCallback callback, INavigateToActivityRequest toActivityRequest, String url, String title, boolean brandPageCard, boolean isDealsHomeLayout, int homePosition) {
         super(callback);
         this.context = context;
-        this.categoryItems = categoryItems;
         this.toActivityRequest = toActivityRequest;
         this.url = url;
         this.title = title;
@@ -81,14 +87,18 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
         } else {
             dealType = DealsAnalytics.TRENDING_DEALS;
         }
+
+        DaggerDealsComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
+        ).build().inject(this);
     }
+
 
     @Override
     public void loadData(int currentPageIndex) {
         super.loadData(currentPageIndex);
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(DealsHomePresenter.TAG, url);
-        getCategoryDetailRequestUseCase.setRequestParams(url);
+        getCategoryDetailRequestUseCase.setCategoryUrl(url);
+        getCategoryDetailRequestUseCase.setRequestParams(getParams());
         getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -109,9 +119,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 CategoryDetailsResponse dealEntity = (CategoryDetailsResponse) dataResponse.getData();
-                if (dealEntity != null && dealEntity.getDealItems() != null) {
-                    loadCompleted(dealEntity.getDealItems(), dealEntity);
-                }
+                loadCompleted(dealEntity.getDealItems(), dealEntity);
                 if (dealEntity.getPage() == null || !URLUtil.isValidUrl(dealEntity.getPage().getUriNext())) {
                     setLastPage(true);
                 } else {
@@ -125,7 +133,43 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
     protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.deal_item_card, parent, false);
+        mPresenter.attachView(this);
+        mPresenter.initialize();
         return new TrendingDealsAdapter.ItemViewHolderNormal(itemView);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return (Activity) context;
+    }
+
+    @Override
+    public RequestParams getParams() {
+        RequestParams requestParams = RequestParams.create();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
+        return requestParams;
+    }
+
+    @Override
+    public void notifyDataSetChanged(int position) {
+
+    }
+
+    @Override
+    public void showLoginSnackbar(String message, int position) {
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
+                getActivity().getResources().getString(R.string.title_activity_login), v -> {
+                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
+                            getLoginIntent(getActivity());
+                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
+                }
+        ).show();
     }
 
 
@@ -234,8 +278,8 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
         }
 
         void setLikes(int likes, boolean isLiked) {
-            categoryItems.get(getIndex()).setLikes(likes);
-            categoryItems.get(getIndex()).setLiked(isLiked);
+            getItems().get(getIndex()).setLikes(likes);
+            getItems().get(getIndex()).setLiked(isLiked);
             if (likes > 0) {
                 tvLikes.setVisibility(View.VISIBLE);
                 tvLikes.setText(String.valueOf(likes));
@@ -266,22 +310,22 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
         }
 
         private String getShareLabel(int position) {
-            if (categoryItems.get(getIndex()).getBrand() == null)
+            if (getItems().get(getIndex()).getBrand() == null)
                 return "";
-            return String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
-                    , categoryItems.get(getIndex()).getDisplayName(),
+            return String.format("%s - %s - %s", getItems().get(getIndex()).getBrand().getTitle()
+                    , getItems().get(getIndex()).getDisplayName(),
                     position);
         }
 
         private String getFavouriteLabel(int position) {
             String str = LIKE;
-            if (categoryItems.get(getIndex()).isLiked())
+            if (getItems().get(getIndex()).isLiked())
                 str = UNLIKE;
-            if (categoryItems.get(getIndex()).getBrand() == null)
+            if (getItems().get(getIndex()).getBrand() == null)
                 return "";
             return String.format("%s - %s - %s - %s",
-                    categoryItems.get(getIndex()).getBrand().getTitle()
-                    , categoryItems.get(getIndex()).getDisplayName()
+                    getItems().get(getIndex()).getBrand().getTitle()
+                    , getItems().get(getIndex()).getDisplayName()
                     , position
                     , str);
         }
@@ -293,40 +337,44 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SHARE,
                         getShareLabel(position));
 
-                Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
-                        context, categoryItems.get(getIndex()).getDisplayName(),
-                        categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getDesktopUrl());
+                Utils.getSingletonInstance().shareDeal(getItems().get(getIndex()).getSeoUrl(),
+                        context, getItems().get(getIndex()).getDisplayName(),
+                        getItems().get(getIndex()).getImageWeb(), getItems().get(getIndex()).getDesktopUrl());
             } else if (v.getId() == R.id.iv_wish_list) {
-                ProductItem item = categoryItems.get(getIndex());
+                ProductItem item = getItems().get(getIndex());
                 boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());
                 if (isLoggedIn) {
                     dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
-                    if (categoryItems.get(getIndex()).isLiked()) {
-                        setLikes(categoryItems.get(getIndex()).getLikes() - 1, !categoryItems.get(getIndex()).isLiked());
+                    if (getItems().get(getIndex()).isLiked()) {
+                        setLikes(getItems().get(getIndex()).getLikes() - 1, !getItems().get(getIndex()).isLiked());
                     } else {
-                        setLikes(categoryItems.get(getIndex()).getLikes() + 1, !categoryItems.get(getIndex()).isLiked());
+                        setLikes(getItems().get(getIndex()).getLikes() + 1, !getItems().get(getIndex()).isLiked());
                     }
                 }
             } else if (v.getId() == R.id.cv_brand) {
                 Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
-                detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
+                detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, getItems().get(getIndex()).getBrand());
                 context.startActivity(detailsIntent);
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
-                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
+                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, getItems().get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
                 if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
-                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
+                    dealsAnalytics.sendTrendingDealClickEvent(getItems().get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)) {
-                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position, homePosition);
+                    dealsAnalytics.sendTrendingDealClickEvent(getItems().get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position, homePosition);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
-                    dealsAnalytics.sendCategoryDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_CATEGORY_DEALS);
+                    dealsAnalytics.sendCategoryDealClickEvent(getItems().get(getIndex()), position, DealsAnalytics.EVENT_CLICK_CATEGORY_DEALS);
                 } else {
-                    dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND);
+                    dealsAnalytics.sendDealClickEvent(getItems().get(getIndex()), position, DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND);
                 }
 
             }
         }
+    }
+
+    public void unsubscribeUseCase() {
+        mPresenter.onDestroy();
     }
 
 

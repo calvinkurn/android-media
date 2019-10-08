@@ -17,7 +17,7 @@ public interface SearchSectionContract {
 
         HashMap<String, String> getSelectedFilter();
 
-        void setSelectedFilter(HashMap<String, String> selectedFilter);
+        void refreshFilterController(HashMap<String, String> selectedFilter);
 
         void showRefreshLayout();
 

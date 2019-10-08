@@ -710,6 +710,8 @@ public class InboxDetailActivity extends InboxBaseActivity
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(true, commentPosition, item.getId());
                 helpFullBottomSheet.dismiss();
                 if(iscloseAllow){
+                    sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
+                            InboxTicketTracking.Action.EventRatingCsatOnSlider);
                     closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
                     closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
                     closeComplainBottomSheet.show();
@@ -718,13 +720,15 @@ public class InboxDetailActivity extends InboxBaseActivity
                 }
 
             } else {
+                sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
+                        InboxTicketTracking.Action.EventRatingCsatOnSlider);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(false, commentPosition, item.getId());
                 textToolbar.setVisibility(View.VISIBLE);
                 helpFullBottomSheet.dismiss();
             }
         }
 
-        @Override
+    @Override
         public void onSuccessSubmitOfRating ( int rating, int commentPosition){
             CommentsItem item = commentsItems.get(commentPosition);
             String rate = rating == INT_KEY_LIKED ? KEY_LIKED : KEY_DIS_LIKED;
@@ -735,10 +739,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         @Override
         public void onClickComplain (boolean agreed){
             if (agreed) {
+                sendGTmEvent(InboxTicketTracking.Label.EventYes,
+                        InboxTicketTracking.Action.EventClickCloseTicket);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
                 closeComplainBottomSheet.dismiss();
 
             } else {
+                sendGTmEvent(InboxTicketTracking.Label.EventNo,
+                        InboxTicketTracking.Action.EventClickCloseTicket);
                 viewReplyButton.setVisibility(View.GONE);
                 viewHelpRate.setVisibility(View.GONE);
                 textToolbar.setVisibility(View.VISIBLE);
@@ -775,7 +783,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void showMessage(String message) {
         super.showMessage(message);
-        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
     }
 
@@ -789,9 +797,16 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (isSendButtonEnabled){
             sendMessage();
         }else{
-            Toaster.Companion.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            Toaster.INSTANCE.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
             });
         }
+    }
+
+    private void sendGTmEvent(String eventLabel,String action) {
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+                InboxTicketTracking.Category.EventHelpMessageInbox,
+                action,
+                eventLabel);
     }
 }
 

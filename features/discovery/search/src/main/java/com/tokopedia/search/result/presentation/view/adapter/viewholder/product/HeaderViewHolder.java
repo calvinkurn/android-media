@@ -16,12 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
@@ -64,8 +64,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
@@ -88,8 +88,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
         quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 
@@ -256,9 +256,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
         private void setBackgroundResource(Option option) {
             if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+                itemContainer.setBackgroundResource(R.drawable.search_quick_filter_item_background_selected);
             } else {
-                itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+                itemContainer.setBackgroundResource(R.drawable.search_quick_filter_item_background_neutral);
             }
         }
     }
@@ -298,7 +298,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         @NonNull
         @Override
         public GuidedSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item_with_background, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_guided_search_item_with_background, parent, false);
             return new GuidedSearchViewHolder(view, guidedSearchListener);
         }
 
@@ -316,11 +316,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private static class GuidedSearchViewHolder extends RecyclerView.ViewHolder {
 
         private static final int[] BACKGROUND = {
-                R.drawable.guided_back_1,
-                R.drawable.guided_back_2,
-                R.drawable.guided_back_3,
-                R.drawable.guided_back_4,
-                R.drawable.guided_back_5,
+                R.drawable.search_guided_back_1,
+                R.drawable.search_guided_back_2,
+                R.drawable.search_guided_back_3,
+                R.drawable.search_guided_back_4,
+                R.drawable.search_guided_back_5,
         };
 
         TextView textView;

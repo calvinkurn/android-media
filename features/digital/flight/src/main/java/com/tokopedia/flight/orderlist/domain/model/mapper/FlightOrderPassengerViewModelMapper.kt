@@ -35,11 +35,13 @@ constructor() {
             return@map FlightOrderPassengerViewModel(
                     it.type,
                     if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].status else 0,
+                    if (it.cancelStatus.size > 1) it.cancelStatus[1].status else 0,
                     it.title,
                     it.firstName,
                     it.lastName,
                     transformAmenities(it.amenities),
-                    if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].statusStr else "")
+                    if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].statusStr else "",
+                    if (it.cancelStatus.size > 1) it.cancelStatus[1].statusStr else "")
         }
     }
 

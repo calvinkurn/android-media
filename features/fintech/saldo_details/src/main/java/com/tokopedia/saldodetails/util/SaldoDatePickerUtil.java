@@ -30,7 +30,7 @@ public class SaldoDatePickerUtil {
         this.activity = activity;
         dialog = new Dialog(activity);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_calendar);
+        dialog.setContentView(com.tokopedia.design.R.layout.dialog_calendar);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
@@ -41,7 +41,7 @@ public class SaldoDatePickerUtil {
         this.activity = activity;
         dialog = new Dialog(activity);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_calendar);
+        dialog.setContentView(com.tokopedia.design.R.layout.dialog_calendar);
         this.year = year;
         this.month = month;
         this.day = day;

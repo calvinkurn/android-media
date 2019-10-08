@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -17,8 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -35,7 +32,6 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -53,7 +49,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -76,10 +71,12 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
+
+import static com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -95,7 +92,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
-    private TetraDebugger tetraDebugger;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -106,7 +102,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         UIBlockDebugger.init(this);
-        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+        initAkamaiBotManager(this);
         setVersionCode();
 
         initializeSdk();
@@ -163,9 +159,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                     Crashlytics.logException(anrError);
                 }
             }).start();
-        } else {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
         }
 
         if (callback == null) {
@@ -184,13 +177,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     @Override
-    public void doLogoutAccount(Activity activity) {
-        super.doLogoutAccount(activity);
-        tetraDebugger.setUserId("");
-    }
-
-    @Override
     public void onTerminate() {
+        // this function is not reliable and will never be called in production
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();

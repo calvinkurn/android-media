@@ -30,6 +30,7 @@ class CashShieldScope(private val context: Context): CoroutineScope {
             try {
                 launch {
                     val cs = cashshieldclient()
+                    cs.dedi = true
                     cs.sendSignatureFDS(context, getSessionId(), context.getString(R.string.cashshield_token))
                 }
             } catch (ignored: Exception) {

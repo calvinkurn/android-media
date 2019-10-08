@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.hansel.preprocessor'
 
 kapt {
     correctErrorTypes = true
@@ -56,12 +57,14 @@ buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://maven.google.com" }
+        maven { url 'https://hansel.io/maven' }
         mavenCentral()
         jcenter()
     }
     dependencies{
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 android {
@@ -151,8 +154,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -164,14 +166,14 @@ dependencies {
 
     implementation (project(rootProject.ext.libraries.remoteConfig))
 
-//    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-//    implementation rootProject.ext.dbDependencies.dbFlowCore
-//    implementation rootProject.ext.dbDependencies.dbFlow
+    // annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    // implementation rootProject.ext.dbDependencies.dbFlowCore
+    // implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
@@ -195,6 +197,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 //    implementation project(rootProject.ext.libraries.cpm)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

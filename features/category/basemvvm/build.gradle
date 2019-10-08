@@ -1,21 +1,47 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 dependencies {
-    implementation project(rootProject.ext.features.transactioncommon)
-    implementation rootProject.ext.miscDependencies.viewModel
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.liveData
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 }
+
+project.ext {
+    artifactId = 'basemvvm'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="basemvvm-release"
+}
+
+apply from: '../../../publish_local.gradle'

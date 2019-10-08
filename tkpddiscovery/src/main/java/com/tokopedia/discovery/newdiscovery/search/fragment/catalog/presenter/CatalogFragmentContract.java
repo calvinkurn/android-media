@@ -4,7 +4,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 
 import java.util.List;
 

@@ -6,20 +6,20 @@ include "libraries:applink"
 //include "libraries:bottom_sheet_builder"
 include "libraries:cache_api"
 //include "libraries:camera_view"
-include "libraries:cameraview"
+//include "libraries:cameraview"
 //include "libraries:cm_push_notifications"
 include "libraries:common_network"
 //include "libraries:core_legacy"
 //include "libraries:core_network"
 //include 'libraries:date_picker_range'
-include "libraries:fingerprint"
+//include "libraries:fingerprint"
 include "libraries:global_config"
 //include "libraries:graphql"
 include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"
-include "libraries:image_picker"
-include "libraries:image_preview"
-include 'libraries:imageuploader'
+//include "libraries:image_picker"
+//include "libraries:image_preview"
+//include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 //include 'libraries:locationmanager'
@@ -27,10 +27,9 @@ include "libraries:logger"
 //include 'libraries:iris'
 //include 'libraries:iris_no_op'
 include "libraries:network"
-//include "libraries:pagination"
 //include "libraries:oms"
-include "libraries:push_notification"
-include 'libraries:permissionchecker'
+//include "libraries:push_notification"
+//include 'libraries:permissionchecker'
 //include "libraries:react_native"
 include "libraries:remote_config"
 //include "libraries:travel_calendar"
@@ -45,7 +44,6 @@ include "libraries:user_session"
 //include "libraries:youtubeutil"
 //include "libraries:sharecontent"
 include "libraries:track"
-include "libraries:trackinterface"
 //include "libraries:graph_view"
 //include 'libraries:cpm'
 include "libraries:linker"
@@ -53,7 +51,7 @@ include "libraries:webview"
 include "libraries:akamai_bot_lib"
 include "libraries:collapsing_tab_layout"
 
-include "libraries:videouploader"
+//include "libraries:videouploader"
 
 //include "libraries:unify:unify_compositions:banner"
 

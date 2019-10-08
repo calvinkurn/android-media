@@ -25,6 +25,16 @@ public class DeviceDiagInput {
     @SerializedName("DeviceReview")
     @Expose
     private List<String> deviceReview = null;
+    @SerializedName("TradeInType")
+    private int tradeInType;
+
+    public int getTradeInType() {
+        return tradeInType;
+    }
+
+    public void setTradeInType(int tradeInType) {
+        this.tradeInType = tradeInType;
+    }
 
     public String getDeviceId() {
         return deviceId;

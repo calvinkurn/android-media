@@ -23,19 +23,13 @@ public interface AccountHomeRouter {
 
     void goToManageShopProduct(Context context);
 
-    Intent getSettingBankIntent(Context context);
-
     void goToManageCreditCard(Context context);
-
-    void goToTokoCash(String applinkUrl, Activity activity);
 
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
 
     Fragment getFavoriteFragment();
-
-    void gotoTopAdsDashboard(Context context);
 
     String getStringRemoteConfig(String key, String defaultValue);
 
@@ -53,9 +47,5 @@ public interface AccountHomeRouter {
 
     boolean isEnableInterestPick();
   
-    Intent getMitraToppersActivityIntent(Context context);
-
-    Intent getAddPasswordIntent(Context context);
-
     void setNewsletterEmailPref(Boolean newValue);
 }

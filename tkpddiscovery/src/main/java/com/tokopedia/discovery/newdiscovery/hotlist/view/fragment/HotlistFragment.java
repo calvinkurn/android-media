@@ -27,6 +27,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -46,7 +47,6 @@ import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -68,9 +68,7 @@ import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.filter.newdynamicfilter.SortProductActivity;
-import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -591,29 +589,20 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == getSortRequestCode()) {
-                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
-                clearDataFilterSort();
-                showBottomBarNavigation(false);
-                reloadData();
-            } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
-                showBottomBarNavigation(false);
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
-                showSelectedFilters(getSelectedFilter());
-            }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
         onHandlingDataFromPDP(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void sendSortTracking(String selectedSortName) {
+        HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
+    }
+
+    @Override
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        super.handleFilterResult(queryParams, selectedFilters, selectedOptions);
+        showSelectedFilters(getSelectedFilter());
     }
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
@@ -1190,5 +1179,14 @@ public class HotlistFragment extends BrowseSectionFragment
                 eventLabel
         ).getEvent());
         reloadData();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        if (getQueryModel() != null && getQueryModel().getCategoryID() != null) {
+            return getQueryModel().getCategoryID();
+        } else {
+            return "";
+        }
     }
 }

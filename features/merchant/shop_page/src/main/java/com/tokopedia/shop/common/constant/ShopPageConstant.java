@@ -24,4 +24,11 @@ public class ShopPageConstant {
 
     public static final String MODERATE_STATUS_QUERY = "moderate_status_query";
     public static final String MODERATE_REQUEST_QUERY = "moderate_request_query";
+    public static final String SHOP_FAVORITE_QUERY = "shop_favorite_query";
+
+    public static final String GO_TO_MEMBERSHIP_DETAIL = "membership detail";
+    public static final String GO_TO_MEMBERSHIP_REGISTER = "membership register";
+    public static final String EMPTY_PRODUCT_SEARCH_IMAGE_URL =
+            "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png";
+
 }
