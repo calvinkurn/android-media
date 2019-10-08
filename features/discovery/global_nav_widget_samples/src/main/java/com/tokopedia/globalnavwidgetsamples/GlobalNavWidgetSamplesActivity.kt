@@ -13,8 +13,9 @@ class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_global_nav_widget)
 
-        globalNavWidgetWithNoInfo?.setData(globalNavWidgetModelItemNoInfo, this)
-        globalNavWidgetWithInfo?.setData(globalNavWidgetModelItemWithInfo, this)
+        globalNavWidgetPillWithNoInfo?.setData(globalNavWidgetPillModelItemNoInfo, this)
+        globalNavWidgetPillWithInfo?.setData(globalNavWidgetPillModelItemWithInfo, this)
+        globalNavWidgetPillWithoutSeeAllApplink?.setData(globalNavWidgetPillModelWithoutSeeAllApplink, this)
         globalNavWidgetCard?.setData(globalNavWidgetModelCard, this)
     }
 

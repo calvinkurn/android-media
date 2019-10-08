@@ -831,24 +831,6 @@ public class SearchProductModel {
         @SerializedName("background")
         private String background = "";
 
-        @SerializedName("logo_url")
-        private String logoUrl = "";
-
-        @SerializedName("reputation_url")
-        private String reputationUrl = "";
-
-        @SerializedName("icon_badge_url")
-        private String iconBadgeUrl = "";
-
-        @SerializedName("credibility")
-        private String credibility = "";
-
-        @SerializedName("isOfficial")
-        private Boolean isOfficial = false;
-
-        @SerializedName("isPowerMerchant")
-        private Boolean isPowerMerchant = false;
-
         @SerializedName("see_all_applink")
         private String seeAllApplink = "";
 
@@ -858,7 +840,7 @@ public class SearchProductModel {
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
 
-        private String getSource() { return source; }
+        public String getSource() { return source; }
 
         public String getTitle() {
             return title;
@@ -873,26 +855,6 @@ public class SearchProductModel {
         }
 
         public String getBackground() { return background; }
-
-        public String getLogoUrl() { return logoUrl; }
-
-        public String getReputationUrl() { return reputationUrl; }
-
-        public String getIconBadgeUrl() {
-            return iconBadgeUrl;
-        }
-
-        public String getCredibility() {
-            return credibility;
-        }
-
-        public Boolean getOfficial() {
-            return isOfficial;
-        }
-
-        public Boolean getPowerMerchant() {
-            return isPowerMerchant;
-        }
 
         public String getSeeAllApplink() {
             return seeAllApplink;

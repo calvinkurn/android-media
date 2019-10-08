@@ -24,25 +24,33 @@ class GlobalNavViewHolder(
 
     private fun createGlobalNavWidgetModel(element: GlobalNavViewModel): GlobalNavWidgetModel {
         return GlobalNavWidgetModel(
+                source = element.source,
                 keyword = element.keyword,
                 title = element.title,
+                navTemplate = element.navTemplate,
+                background = element.background,
                 clickSeeAllApplink = element.seeAllApplink,
                 clickSeeAllUrl = element.seeAllUrl,
                 itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
                     for(item in element.itemList) {
-                        it.add(convertGlobalNavWidgetItemModel(item))
+                        it.add(convertGlobalNavWidgetItemModel(element.source, item))
                     }
                 }
         )
     }
 
-    private fun convertGlobalNavWidgetItemModel(item: GlobalNavViewModel.Item): GlobalNavWidgetModel.Item {
+    private fun convertGlobalNavWidgetItemModel(source: String, item: GlobalNavViewModel.Item): GlobalNavWidgetModel.Item {
         return GlobalNavWidgetModel.Item(
+                source = source,
                 name = item.name,
                 info = item.info,
                 imageUrl = item.imageUrl,
                 clickItemApplink = item.applink,
                 clickItemUrl = item.url,
+                subtitle = item.subtitle,
+                strikethrough = item.strikethrough,
+                backgroundUrl = item.backgroundUrl,
+                logoUrl = item.logoUrl,
                 position = item.position
         )
     }
@@ -68,6 +76,10 @@ class GlobalNavViewHolder(
                 globalNavWidgetModelItem.imageUrl,
                 globalNavWidgetModelItem.clickItemApplink,
                 globalNavWidgetModelItem.clickItemUrl,
+                globalNavWidgetModelItem.subtitle,
+                globalNavWidgetModelItem.strikethrough,
+                globalNavWidgetModelItem.backgroundUrl,
+                globalNavWidgetModelItem.logoUrl,
                 globalNavWidgetModelItem.position
         )
     }

@@ -2,7 +2,7 @@ package com.tokopedia.globalnavwidgetsamples
 
 import com.tokopedia.globalnavwidget.GlobalNavWidgetModel
 
-internal val globalNavWidgetModelItemNoInfo = GlobalNavWidgetModel(
+internal val globalNavWidgetPillModelItemNoInfo = GlobalNavWidgetModel(
         keyword = "bali",
         title = "Beli Tiket",
         navTemplate = "pill",
@@ -34,7 +34,7 @@ internal val globalNavWidgetModelItemNoInfo = GlobalNavWidgetModel(
         }
 )
 
-internal val globalNavWidgetModelItemWithInfo = GlobalNavWidgetModel(
+internal val globalNavWidgetPillModelItemWithInfo = GlobalNavWidgetModel(
         source = "recharge",
         keyword = "pulsa simpati",
         title = "Beli Pulsa",
@@ -42,6 +42,56 @@ internal val globalNavWidgetModelItemWithInfo = GlobalNavWidgetModel(
         background = "https://ecs7.tokopedia.net/img/yellow-container.png",
         clickSeeAllApplink = "tokopedia://digital/form?category_id=1&operator_id=12",
         clickSeeAllUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12",
+        itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "1.000",
+                    info = "Rp 1.800",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=2227",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=2227",
+                    position = 1
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "20.000",
+                    info = "Rp 20.500",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=1126",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=1126",
+                    position = 2
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "50.000",
+                    info = "Rp 50.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=69",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=69",
+                    position = 3
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "500.000",
+                    info = "Rp 500.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=117",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=117",
+                    position = 4
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "30.000",
+                    info = "Rp 30.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=3445",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=3445",
+                    position = 5
+            ))
+        }
+)
+
+internal val globalNavWidgetPillModelWithoutSeeAllApplink = GlobalNavWidgetModel(
+        source = "recharge",
+        keyword = "pulsa simpati",
+        title = "Beli Pulsa",
+        navTemplate = "default template pill",
+        background = "https://ecs7.tokopedia.net/img/yellow-container.png",
         itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
             it.add(GlobalNavWidgetModel.Item(
                     name = "1.000",
@@ -96,6 +146,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
         clickSeeAllUrl = "https://www.tokopedia.com/deals/jakarta/t/asana-grove-hotel-yogyakarta-2566/",
         itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Hotel",
                     name = "Sebelum liburan, book hotelmu disini!",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
                     clickItemApplink = "tokopedia://deals/test-giftn-7419",
@@ -103,6 +154,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 1
             ))
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Deals",
                     name = "Inaya Putri Bali",
                     info = "Rp 1.500.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -112,6 +164,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 2
             ))
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Deals",
                     name = "Singapore River Safari",
                     info = "Rp 550.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -122,6 +175,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 3
             ))
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Tiket Event",
                     name = "DWPX - 10th Anniversary Event with a very looooong name and need to be ellipsize because it exceeds three lines",
                     info = "Rp 509.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -131,6 +185,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 4
             ))
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Deals",
                     name = "Jakarta (CGK) - Surabaya (SUB)",
                     info = "Rp 859.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -140,6 +195,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 5
             ))
             it.add(GlobalNavWidgetModel.Item(
+                    source = "Deals",
                     name = "Sample super long price",
                     info = "Rp 859.000.000.000.000.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
