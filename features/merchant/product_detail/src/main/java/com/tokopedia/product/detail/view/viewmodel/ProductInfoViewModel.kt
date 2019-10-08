@@ -578,7 +578,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun loadMore() {
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
-        launch {
+        launch(Dispatchers.IO) {
 
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
