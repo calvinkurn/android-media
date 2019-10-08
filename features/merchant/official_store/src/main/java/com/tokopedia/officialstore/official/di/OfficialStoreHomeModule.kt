@@ -3,10 +3,14 @@ package com.tokopedia.officialstore.official.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
+import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.officialstore.R
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -14,6 +18,10 @@ import javax.inject.Named
 @Module(includes = [OfficialStoreHomeViewModelModule::class])
 @OfficialStoreHomeScope
 class OfficialStoreHomeModule {
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @OfficialStoreHomeScope
     @Provides
@@ -35,4 +43,26 @@ class OfficialStoreHomeModule {
     fun provideQueryOfficialStoreDynamicChannel(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_dynamic_channel)
     }
+
+    @OfficialStoreHomeScope
+    @Provides
+    @Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION)
+    fun provideQueryOfficialStoreProductRecommendation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
+    }
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
+                                         graphqlUseCase: GraphqlUseCase,
+                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
+        return GetRecommendationUseCase(rawQueries.toString() ?: "",
+                graphqlUseCase,
+                userSessionInterface)
+    }
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
+
 }
