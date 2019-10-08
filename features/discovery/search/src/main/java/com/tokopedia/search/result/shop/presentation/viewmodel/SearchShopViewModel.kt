@@ -15,8 +15,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.search.result.common.Event
 import com.tokopedia.search.result.common.State
@@ -259,26 +261,11 @@ class SearchShopViewModel(
     private fun catchSearchShopException(e: Throwable?) {
         hasNextPage = false
 
-        if (e is CancellationException) {
-            catchCancellationException(e)
-        }
-        else {
-            catchSearchShopError(e)
-        }
-    }
-
-    private fun catchCancellationException(e: Throwable?) {
-        e?.printStackTrace()
-    }
-
-    private fun catchSearchShopError(e: Throwable?) {
         e?.printStackTrace()
 
-        updateSearchShopLiveDataStateToError()
-    }
-
-    private fun updateSearchShopLiveDataStateToError() {
-        searchShopLiveData.postValue(Error("", searchShopMutableList))
+        if (e !is CancellationException) {
+            searchShopLiveData.postValue(Error("", searchShopMutableList))
+        }
     }
 
     private fun getDynamicFilter() {
@@ -352,18 +339,11 @@ class SearchShopViewModel(
     }
 
     private fun catchGetDynamicFilterException(e: Throwable?) {
-        if (e is CancellationException) {
-            catchCancellationException(e)
-        }
-        else {
-            catchGetDynamicFilterError(e)
-        }
-    }
-
-    private fun catchGetDynamicFilterError(e: Throwable?) {
         e?.printStackTrace()
 
-        dynamicFilterEventLiveData.postValue(Event(false))
+        if (e !is CancellationException) {
+            dynamicFilterEventLiveData.postValue(Event(false))
+        }
     }
 
     fun onViewLoadMore(isViewVisible: Boolean) {
@@ -479,6 +459,16 @@ class SearchShopViewModel(
         searchParameter.putAll(queryParameters)
     }
 
+    fun onViewRemoveSelectedFilter(uniqueId: String?) {
+        if (uniqueId == null) return
+
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
+
+        onViewApplyFilter(filterController.getParameter())
+    }
+
     fun getSearchParameter() = searchParameter.toMap()
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
@@ -499,6 +489,10 @@ class SearchShopViewModel(
 
     fun getOpenFilterPageEventLiveData(): LiveData<Event<Boolean>> {
         return openFilterPageEventLiveData
+    }
+
+    fun getActiveFilterOptionList(): List<Option> {
+        return filterController.getActiveFilterOptionList()
     }
 
     override fun onCleared() {

@@ -7,7 +7,8 @@ import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
-interface ShopListTypeFactory : SearchSectionTypeFactory {
+interface ShopListTypeFactory: SearchSectionTypeFactory {
+
     fun type(shopHeader: ShopHeaderViewModel): Int
 
     fun type(shopItem: ShopViewModel.ShopItem): Int
@@ -15,4 +16,5 @@ interface ShopListTypeFactory : SearchSectionTypeFactory {
     fun type(emptySearchViewModel: EmptySearchViewModel): Int
 
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
+
 }

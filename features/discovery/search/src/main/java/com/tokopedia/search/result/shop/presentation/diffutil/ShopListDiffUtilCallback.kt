@@ -2,6 +2,7 @@ package com.tokopedia.search.result.shop.presentation.diffutil
 
 import android.support.v7.util.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 class ShopListDiffUtilCallback(
@@ -35,6 +36,13 @@ class ShopListDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
-        return true
+        if (oldPosition >= oldList.size) return false
+        if (newPosition >= newList.size) return false
+
+        val oldItem = oldList[oldPosition]
+        val newItem = newList[newPosition]
+
+        return if (oldItem is EmptySearchViewModel && newItem is EmptySearchViewModel) oldItem == newItem
+        else true
     }
 }

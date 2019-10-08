@@ -16,25 +16,26 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.manager.FilterSortManager
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.R
+import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.ShopListener
+import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
 class ShopListFragment:
@@ -44,6 +45,8 @@ class ShopListFragment:
         BannerAdsListener {
 
     companion object {
+
+        private const val SHOP = "shop"
 
         @JvmStatic
         fun newInstance(): ShopListFragment {
@@ -58,6 +61,7 @@ class ShopListFragment:
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
     private var searchNavigationListener: SearchNavigationListener? = null
+    private var redirectionListener: RedirectionListener? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -71,12 +75,20 @@ class ShopListFragment:
         super.onAttach(context)
 
         castContextToSearchNavigationListener(context)
+        castContextToRedirectionListener(context)
     }
 
     // TODO:: Remove context casting, once SearchActivity already using ViewModel
     private fun castContextToSearchNavigationListener(context: Context?) {
         if (context is SearchNavigationListener) {
             searchNavigationListener = context
+        }
+    }
+
+    // TODO:: Remove context casting, once SearchActivity already using ViewModel
+    private fun castContextToRedirectionListener(context: Context?) {
+        if (context is RedirectionListener) {
+            redirectionListener = context
         }
     }
 
@@ -294,23 +306,43 @@ class ShopListFragment:
     }
 
     override fun onItemClicked(shopItem: ShopViewModel.ShopItem) {
+        route(shopItem.applink)
+    }
 
+    private fun route(applink: String) {
+        activity?.let { activity ->
+            if (applink.isNotEmpty()) {
+                RouteManager.route(activity, applink)
+            }
+        }
     }
 
     override fun onProductItemClicked(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
-
+        route(shopItemProduct.applink)
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+        if (applink == null) return
 
+        trackBannerAdsClick(position, applink, data)
+        route(applink)
+    }
+
+    private fun trackBannerAdsClick(position: Int, applink: String, data: CpmData?) {
+        if (applink.contains(SHOP)) {
+            TopAdsGtmTracker.eventSearchResultPromoShopClick(activity, data, position)
+        } else {
+            TopAdsGtmTracker.eventSearchResultPromoProductClick(activity, data, position)
+        }
     }
 
     override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {
-
+        TopAdsGtmTracker.eventSearchResultPromoView(activity, data, position)
     }
 
     override fun onEmptyButtonClicked() {
-
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
+        redirectionListener?.showSearchInputView()
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
@@ -326,6 +358,10 @@ class ShopListFragment:
     }
 
     override fun getSelectedFilterAsOptionList(): MutableList<Option> {
-        return mutableListOf()
+        return searchShopViewModel?.let {
+            OptionHelper.combinePriceFilterIfExists(
+                    it.getActiveFilterOptionList(),
+                    resources.getString(R.string.empty_state_selected_filter_price_name))
+        } ?: mutableListOf()
     }
 }

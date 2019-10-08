@@ -2,16 +2,16 @@ package com.tokopedia.search.result.shop.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder
-import com.tokopedia.search.result.shop.presentation.viewholder.ShopHeaderViewHolder
-import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.viewholder.EmptySearchViewHolder
+import com.tokopedia.search.result.shop.presentation.viewholder.ShopHeaderViewHolder
+import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
 
 class ShopListTypeFactoryImpl(
         private val shopListener: ShopListener,
@@ -20,7 +20,7 @@ class ShopListTypeFactoryImpl(
 ) : SearchSectionTypeFactoryImpl(), ShopListTypeFactory {
 
     override fun type(emptySearchViewModel: com.tokopedia.search.result.presentation.model.EmptySearchViewModel?): Int {
-        return EmptySearchViewHolder.LAYOUT
+        return com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder.LAYOUT
     }
 
     override fun type(shopHeader: ShopHeaderViewModel): Int {
@@ -37,9 +37,11 @@ class ShopListTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            EmptySearchViewHolder.LAYOUT -> EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null)
+            EmptySearchViewHolder.LAYOUT -> EmptySearchViewHolder(view, emptyStateListener)
             ShopHeaderViewHolder.LAYOUT -> ShopHeaderViewHolder(view, bannerAdsListener)
             ShopItemViewHolder.LAYOUT -> ShopItemViewHolder(view, shopListener)
+            com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder.LAYOUT
+            -> com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -6,8 +6,6 @@ public interface SearchConstant {
 
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
-    String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
     int LANDSCAPE_COLUMN_MAIN = 3;
