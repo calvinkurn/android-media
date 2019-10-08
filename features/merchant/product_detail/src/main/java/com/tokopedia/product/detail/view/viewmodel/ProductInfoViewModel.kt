@@ -75,6 +75,7 @@ import kotlinx.coroutines.*
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -594,8 +595,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 }
             } else null
 
-            topAdsProductDef?.let {
-                loadTopAdsProduct.value = Loaded(Success((it.data as? Success)?.data?: return@launch))
+            withContext(Dispatchers.Main) {
+                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data !=null) {
+                    Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
+                } else {
+                    Loaded(Fail(RuntimeException()))
+                }
             }
             lazyNeedForceUpdate = false
         }
