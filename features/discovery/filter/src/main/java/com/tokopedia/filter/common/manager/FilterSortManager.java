@@ -10,6 +10,7 @@ import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ public class FilterSortManager {
     private static final int SORT_REQUEST_CODE = 1233;
     private static final int FILTER_REQUEST_CODE = 4320;
 
-    public static void openFilterPage(String trackingPrefix, Fragment fragment, String callerScreenName, HashMap<String, String> queryParams) {
+    public static void openFilterPage(FilterTrackingData trackingData, Fragment fragment, String callerScreenName, HashMap<String, String> queryParams) {
         if (fragment == null) return;
 
-        FilterTracking.eventSearchResultOpenFilterPage(trackingPrefix, callerScreenName);
+        FilterTracking.eventOpenFilterPage(trackingData);
 
         Intent intent = RouteManager.getIntent(fragment.getContext(), ApplinkConstInternalDiscovery.FILTER);
         intent.putExtra(EXTRA_CALLER_SCREEN_NAME, callerScreenName);

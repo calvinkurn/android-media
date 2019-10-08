@@ -25,6 +25,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TOP_NAV;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
@@ -36,6 +37,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_NAV;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
@@ -234,6 +237,15 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 SHOP_PAGE, CLICK_SEND_CHAT, "");
     }
 
+    public void clickSearchBox(String pageName) {
+        sendEvent(
+                CLICK_TOP_NAV,
+                String.format(TOP_NAV, pageName),
+                SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX,
+                "",
+                null
+        );
+    }
 
     public void sendEventMembership(String eventAction) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
