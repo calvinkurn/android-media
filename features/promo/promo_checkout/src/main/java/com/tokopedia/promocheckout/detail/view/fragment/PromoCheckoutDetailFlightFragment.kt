@@ -26,6 +26,7 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initView()
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         cartID = arguments?.getString(EXTRA_CART_ID, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
@@ -69,7 +70,7 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
         activity?.finish()
     }
 
-    override fun initInjector() {
+    fun initView(){
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .promoCheckoutDetailModule(PromoCheckoutDetailModule())
