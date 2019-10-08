@@ -4,7 +4,7 @@ object StickyLoginConstant {
 
     enum class Page {
         HOME {
-            override fun toString() = "home"
+            override fun toString() = "header"
         },
         PDP {
             override fun toString() = "pdp"
