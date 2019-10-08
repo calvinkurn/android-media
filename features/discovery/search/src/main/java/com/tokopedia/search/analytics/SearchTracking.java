@@ -569,7 +569,7 @@ public class SearchTracking {
     }
 
     public void eventActionClickCartButton(String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
                 SearchEventTracking.Action.CLICK_CART_BUTTON_SEARCH_RESULT,
@@ -578,7 +578,7 @@ public class SearchTracking {
     }
 
     public void eventActionClickHomeButton(String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
                 SearchEventTracking.Action.CLICK_HOME_BUTTON_SEARCH_RESULT,
