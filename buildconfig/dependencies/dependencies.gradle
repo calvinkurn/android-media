@@ -186,7 +186,7 @@ ext {
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:3.0.4+",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:1.0@aar"
+            cashshield : "com.cashshield.android:cashshield:2.4.1@aar"
     ]
 
     deeplinkDispatchDependencies = [
