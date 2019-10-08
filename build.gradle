@@ -28,7 +28,7 @@ buildscript {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
-        classpath('net.sf.proguard:proguard-gradle:5.2.1') {
+        classpath('net.sf.proguard:proguard-gradle:6.0') {
             force = true
         }
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
