@@ -74,6 +74,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         observeBannerData()
         observeFeaturedShop()
         observeDynamicChannel()
+        observeProductRecommendation()
         refreshData()
         setListener()
     }
@@ -121,6 +122,22 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                 OfficialHomeMapper.mappingDynamicChannel(it.data, adapter)
             } else if (it is Fail) {
                 it.throwable.printStackTrace()
+            }
+        })
+    }
+
+    private fun observeProductRecommendation() {
+        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter)
+                }
+                is Fail -> {
+                    if (BuildConfig.DEBUG) {
+                        it.throwable.printStackTrace()
+                    }
+                }
             }
         })
     }
