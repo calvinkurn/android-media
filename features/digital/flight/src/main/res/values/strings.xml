@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">flight</string>
 
     <string name="flight_search_one_way">Sekali Jalan</string>
@@ -361,6 +361,7 @@
     <string name="flight_passenger_update_cancel_button">Ya, batalkan</string>
     <string name="flight_detail_total_stop_over_label">%1$d kali berhenti</string>
     <string name="flight_detail_transit_label">Transit :</string>
+    <string name="flight_detail_operating_by" formatted="false">Dioperasikan oleh %s</string>
     <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 12 tahun saat waktu pemberangkatan</string>
     <string name="flight_search_discount_tag">HARGA KHUSUS</string>
     <string name="flight_search_filter_special_price">Harga Khusus</string>
@@ -480,4 +481,7 @@
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
     <string name="flight_terminal_info">Terminal %s*</string>
     <string name="flight_airport_less_than_three_keyword_error">Lengkapi nama kota atau bandara yang kamu cari</string>
+
+    <string name="flight_min_date_label">Pergi</string>
+    <string name="flight_max_date_label">Pulang</string>
 </resources>

@@ -7,9 +7,10 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboar
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetAffiliateDashboardSubscriber
 import com.tokopedia.calendar.Legend
-import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
-import com.tokopedia.common.travel.domain.TravelCalendarHolidayUseCase
-import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
+import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
@@ -68,7 +69,7 @@ class AffiliateDashboardPresenter
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
         for (holiday in holidayData.data) {
-            legendList.add(Legend(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, holiday.attribute.date),
+            legendList.add(Legend(holiday.attribute.date.stringToDate(TRAVEL_CAL_YYYY_MM_DD),
                     holiday.attribute.label))
         }
         return legendList
