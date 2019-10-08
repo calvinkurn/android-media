@@ -3,6 +3,7 @@ package com.tokopedia.developer_options.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -141,7 +142,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
 
         vForceCrash.setOnClickListener(v -> {
-            throw new RuntimeException("Throw Runtime Exception");
+            Intent startIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.detik.com"));
+            if (startIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(startIntent);
+            }
         });
 
         vDevOptionRN.setOnClickListener(v ->

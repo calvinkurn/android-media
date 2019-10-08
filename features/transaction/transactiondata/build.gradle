@@ -22,6 +22,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
