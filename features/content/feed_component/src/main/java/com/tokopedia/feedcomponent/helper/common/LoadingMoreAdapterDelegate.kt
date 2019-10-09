@@ -15,7 +15,7 @@ object LoadingMoreAdapterDelegate : TypedAdapterDelegate<LoadingMoreModel, Any, 
         holder.bind(item)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, view: View): LoadingMoreViewHolder {
-        return LoadingMoreViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): LoadingMoreViewHolder {
+        return LoadingMoreViewHolder(basicView)
     }
 }

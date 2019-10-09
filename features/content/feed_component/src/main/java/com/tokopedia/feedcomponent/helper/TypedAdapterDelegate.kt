@@ -17,7 +17,7 @@ abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder
 
     abstract fun onBindViewHolder(item: T, holder: VH)
 
-    abstract fun onCreateViewHolder(parent: ViewGroup, view: View): VH
+    abstract fun onCreateViewHolder(parent: ViewGroup, basicView: View): VH
 
     override fun isForViewType(itemList: List<ST>, position: Int): Boolean {
         return itemList[position]::class.java == itemClass
