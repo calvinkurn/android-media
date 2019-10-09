@@ -795,11 +795,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             attributeInfoView = PartialAttributeInfoView.build(base_attribute)
 
         if (!::imageReviewViewView.isInitialized)
-            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onSeeAllReviewClick, this::onImageReviewClick)
+            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onSeeAllReviewClick, this::onImageReviewClick, this::onReviewClicked)
 
         if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
-            mostHelpfulReviewView.onReviewClicked = this::onReviewClicked
             mostHelpfulReviewView.onImageReviewClicked = this::onImagehelpfulReviewClick
         }
 
@@ -1477,8 +1476,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
         imageReviewViewView.renderData(productInfoP2.imageReviews, productInfoP2.rating)
-        mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews, productInfo?.stats?.countReview
-                ?: 0)
+        mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 

@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.item_image_review.view.*
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
-                         private val onImageReviewClick:((List<ImageReviewItem>, Int) -> Unit)? = null,
-                         private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null) :
+                         private val onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)? = null,
+                         private val onSeeAllReviewClick: (() -> Unit)? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -24,29 +24,30 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     override fun getItemCount(): Int = imageReviews.size
 
     override fun onBindViewHolder(holder: ImageReviewViewHolder, position: Int) {
-        holder.bind(imageReviews[position], getItemViewType(position),imageReviews)
+        holder.bind(imageReviews[position], getItemViewType(position), imageReviews)
     }
 
     override fun getItemViewType(position: Int): Int {
         return if (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
     }
 
-    inner class ImageReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ImageReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: ImageReviewItem, type: Int, listItem:List<ImageReviewItem>) {
+        fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
             with(itemView) {
-                ImageHandler.loadImageAndCache(image_review, item.imageUrlThumbnail)
+                ImageHandler.loadImageRounded(view.context, image_review, item.imageUrlThumbnail, 16F)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
                     txt_see_all.visible()
+                    setOnClickListener {
+                        onSeeAllReviewClick?.invoke()
+                    }
                 } else {
                     overlay_see_all.gone()
                     txt_see_all.gone()
-                }
-                setOnClickListener {
-                    onImageReviewClick?.invoke(listItem, adapterPosition)
-                    onImageHelpfulReviewClick?.invoke(imageReviews.mapNotNull { it.imageUrlLarge }, adapterPosition,
-                            item.reviewId)
+                    setOnClickListener {
+                        onImageReviewClick?.invoke(listItem, adapterPosition)
+                    }
                 }
             }
         }
