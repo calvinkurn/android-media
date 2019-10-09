@@ -78,8 +78,6 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:includeFontPadding="false"
-                android:drawableEnd="@drawable/ic_dropdown_spinner_gray"
-                android:drawableRight="@drawable/ic_dropdown_spinner_gray"
                 app:typographyType="body_3"
                 tools:text="Follower saja"/>
 
