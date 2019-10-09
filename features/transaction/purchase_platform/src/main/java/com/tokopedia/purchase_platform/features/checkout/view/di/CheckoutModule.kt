@@ -15,7 +15,9 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.*
+import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
+import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.CheckoutRepository
@@ -106,7 +108,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  codAnalytics: CodAnalytics,
-                                 checkoutAnalytics: CheckoutAnalyticsCourierSelection): ShipmentContract.Presenter {
+                                 checkoutAnalytics: CheckoutAnalyticsCourierSelection,
+                                 getInsuranceCartUseCase: GetInsuranceCartUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
                 checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
@@ -115,12 +118,18 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 saveShipmentStateUseCase, getCourierRecommendationUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
                 shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics)
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
     }
 
     @Provides
     @CheckoutScope
     fun provideShipmentAdapterActionListener(): ShipmentAdapterActionListener {
+        return shipmentFragment
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideInsuranceItemActionListener(): InsuranceItemActionListener {
         return shipmentFragment
     }
 

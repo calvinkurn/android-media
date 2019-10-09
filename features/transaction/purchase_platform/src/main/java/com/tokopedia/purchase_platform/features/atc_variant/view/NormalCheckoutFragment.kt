@@ -70,6 +70,9 @@ import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.features.atc_variant.model.Fail
+import com.tokopedia.purchase_platform.features.atc_variant.model.InsuranceRecommendationContainer
+import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariantContainer
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject

@@ -17,6 +17,9 @@ import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
+import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
@@ -182,14 +185,18 @@ class CartModule {
                                   getRecentViewUseCase: GetRecentViewUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
-                                  addToCartUseCase: AddToCartUseCase): ICartListPresenter {
+                                  addToCartUseCase: AddToCartUseCase,
+                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
+                                  removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
+                                  updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase): ICartListPresenter {
         return CartListPresenter(getCartListUseCase, deleteCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                getRecommendationUseCase, addToCartUseCase)
+                getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase)
     }
 
 }
