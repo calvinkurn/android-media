@@ -121,6 +121,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -234,6 +235,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     var shopInfo: ShopInfo? = null
 
     private var refreshLayout: SwipeToRefresh? = null
+
+    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
@@ -464,7 +467,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-        et_search.setOnClickListener { v ->
+        et_search.setOnClickListener {
+            productDetailTracking.eventClickSearchBar()
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
@@ -491,7 +495,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) })
         refreshLayout?.setOnRefreshListener {
             loadProductData(true)
-            updateStickyState()
             updateStickyContent()
         }
 
@@ -646,7 +649,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
 
         updateStickyContent()
-        updateStickyState()
     }
 
     private fun scrollToTradeInWidget() {
@@ -662,7 +664,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     override fun onResume() {
         super.onResume()
         updateStickyContent()
-        updateStickyState()
     }
 
     private fun doBuy() {
@@ -689,7 +690,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
+                        category.id,
+                        category.name,
                         parentProductId,
+                        basic.name,
+                        productInfo?.basic?.price,
+                        basic.condition,
                         userInputNotes,
                         userInputQuantity,
                         userInputVariant,
@@ -1140,7 +1146,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showAddToCartDoneBottomSheet(successMessage)
-                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1238,6 +1243,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"
             )
@@ -2242,7 +2251,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun updateStickyContent() {
         productInfoViewModel.getStickyLoginContent(
             onSuccess = {
-                stickyLoginView.setContent(it)
+                this.tickerDetail = it
+                updateStickyState()
+                updateActionBarBackground()
             },
             onError = {
                 stickyLoginView.hide()
@@ -2251,20 +2262,29 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateStickyState() {
+        if (this.tickerDetail == null) {
+            stickyLoginView.hide()
+            return
+        }
+
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
         if (!isCanShowing) {
-            stickyLoginView.visibility = View.GONE
+            stickyLoginView.hide()
             return
         }
 
         val userSession = UserSession(activity)
         if (userSession.isLoggedIn) {
-            stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
-        } else {
-            stickyLoginView.show(StickyLoginConstant.Page.PDP)
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+            stickyLoginView.hide()
+            return
         }
 
+        this.tickerDetail?.let { stickyLoginView.setContent(it) }
+        stickyLoginView.show(StickyLoginConstant.Page.PDP)
+        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+    }
+
+    private fun updateActionBarBackground() {
         val tv = TypedValue()
         var paddingBottom = 0
         val theme = context?.theme

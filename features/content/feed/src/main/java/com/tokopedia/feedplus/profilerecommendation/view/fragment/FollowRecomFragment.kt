@@ -2,11 +2,12 @@ package com.tokopedia.feedplus.profilerecommendation.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.support.design.widget.Snackbar
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,8 +26,10 @@ import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -65,13 +68,17 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             setCancelable(false)
         }
     }
+
     private val interestIds: IntArray
         get() = arguments?.getIntArray(EXTRA_INTEREST_IDS) ?: intArrayOf()
+
+    private val actionFollowIdList: MutableList<String> = mutableListOf()
 
     private lateinit var followRecomAdapter: FollowRecomAdapter
     private lateinit var rvFollowRecom: RecyclerView
     private lateinit var btnAction: UnifyButton
     private lateinit var tvInfo: TextView
+    private lateinit var llShimmer: LinearLayout
     private lateinit var infoViewModel: FollowRecomInfoViewModel
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
@@ -120,21 +127,26 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction) {
-        presenter.followUnfollowRecommendation(authorId, actionToCall)
+        onFollowButtonClicked(authorId, actionToCall)
     }
 
     override fun onFollowStateChanged(followCount: Int) {
         setupInfo(infoViewModel, followCount)
     }
 
-    override fun onSuccessFollowRecommendation(id: String) {
-        followRecomAdapter.updateFollowState(id, FollowRecomAction.FOLLOW)
-        updateDialogIfApplicable(id)
+    override fun onSuccessFollowUnfollowRecommendation(id: String, action: FollowRecomAction) {
+        //Not updating follow state because it is updated before call
+        removeActionFollowId(id)
     }
 
-    override fun onSuccessUnfollowRecommendation(id: String) {
-        followRecomAdapter.updateFollowState(id, FollowRecomAction.UNFOLLOW)
+    override fun onFailedFollowUnfollowRecommendation(id: String, action: FollowRecomAction, t: Throwable) {
+        followRecomAdapter.updateFollowState(id, when (action) {
+            FollowRecomAction.FOLLOW -> FollowRecomAction.UNFOLLOW
+            FollowRecomAction.UNFOLLOW -> FollowRecomAction.FOLLOW
+        })
         updateDialogIfApplicable(id)
+        onGetError(t)
+        removeActionFollowId(id)
     }
 
     override fun onSuccessFollowAllRecommendation() {
@@ -143,6 +155,15 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 
     override fun onFinishSetOnboardingStatus() {
         openFeed()
+    }
+
+    override fun onErrorSetOnboardingStatus(throwable: Throwable) {
+        view?.let{
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG
+            )
+        }
     }
 
     override fun onGetError(error: Throwable) {
@@ -163,8 +184,16 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         view?.showLoadingTransparent()
     }
 
+    override fun showListLoading() {
+        llShimmer.visible()
+    }
+
     override fun hideLoading() {
         view?.hideLoadingTransparent()
+    }
+
+    override fun hideListLoading() {
+        llShimmer.gone()
     }
 
     override fun onCloseButtonClicked() {
@@ -172,7 +201,12 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, action: FollowRecomAction) {
-        presenter.followUnfollowRecommendation(authorId, action)
+        if (!actionFollowIdList.contains(authorId)) {
+            actionFollowIdList.add(authorId)
+            followRecomAdapter.updateFollowState(authorId, action)
+            updateDialogIfApplicable(authorId)
+            presenter.followUnfollowRecommendation(authorId, action)
+        }
     }
 
     override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel) {
@@ -188,6 +222,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             rvFollowRecom = findViewById(R.id.rv_follow_recom)
             btnAction = findViewById(R.id.btn_action)
             tvInfo = findViewById(R.id.tv_info)
+            llShimmer = findViewById(R.id.ll_shimmer)
         }
     }
 
@@ -230,6 +265,10 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
             RouteManager.route(context, ApplinkConst.FEED)
         }
+//        activity?.let{
+//            it.setResult(Activity.RESULT_OK, Intent())
+//            it.finish()
+//        }
     }
 
     private fun followAllRecommendation() {
@@ -249,9 +288,15 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
                     avatarUrl = model.avatar,
                     badgeUrl = model.badgeUrl,
                     instruction = model.followInstruction,
-                    isFollowed = model.isFollowed
+                    isFollowed = model.isFollowed,
+                    actionFalse = model.textFollowFalse,
+                    actionTrue = model.textFollowTrue
             )
             listener = this@FollowRecomFragment
         }
+    }
+
+    private fun removeActionFollowId(id: String) {
+        actionFollowIdList.remove(id)
     }
 }

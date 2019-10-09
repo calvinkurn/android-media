@@ -179,8 +179,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }
                 }
             }
-            uploadMessageAfterLolipop.onReceiveValue(results);
-            uploadMessageAfterLolipop = null;
+            if(uploadMessageAfterLolipop != null) {
+                uploadMessageAfterLolipop.onReceiveValue(results);
+                uploadMessageAfterLolipop = null;
+            }
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == uploadMessageBeforeLolipop) return;

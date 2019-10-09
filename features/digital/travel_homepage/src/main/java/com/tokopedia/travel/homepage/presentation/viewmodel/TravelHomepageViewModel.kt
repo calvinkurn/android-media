@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travel.homepage.data.*
@@ -21,7 +23,6 @@ import javax.inject.Inject
 
 class TravelHomepageViewModel @Inject constructor(
         val graphqlRepository: GraphqlRepository,
-        val userSessionInterface: UserSessionInterface,
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
@@ -29,17 +30,19 @@ class TravelHomepageViewModel @Inject constructor(
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
     private val mapper = TravelHomepageMapper()
 
-    fun getIntialList() {
-        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels()
+    fun getIntialList(isLoadFromCloud: Boolean) {
+        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
 
         travelItemList.value = list
     }
 
-    fun getBanner(rawQuery: String) {
+    fun getBanner(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageBannerModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageBannerModel.Response>()
 
             travelItemList.value?.let {
@@ -59,11 +62,13 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getCategories(rawQuery: String) {
+    fun getCategories(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageCategoryListModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageCategoryListModel.Response>()
 
             travelItemList.value?.let {
@@ -83,12 +88,14 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getOrderList(rawQuery: String) {
+    fun getOrderList(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageOrderListModel.Response>()
 
             travelItemList.value?.let {
@@ -108,11 +115,13 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRecentSearch(rawQuery: String) {
+    fun getRecentSearch(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecentSearchModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageRecentSearchModel.Response>()
 
             travelItemList.value?.let {
@@ -132,11 +141,13 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendation(rawQuery: String) {
+    fun getRecommendation(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageRecommendationModel.Response>()
 
             travelItemList.value?.let {
@@ -156,11 +167,13 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getDestination(rawQuery: String) {
+    fun getDestination(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageDestinationModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageDestinationModel.Response>()
 
             travelItemList.value?.let {

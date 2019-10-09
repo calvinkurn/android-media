@@ -3,12 +3,13 @@ package com.tokopedia.graphql.data;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
@@ -23,7 +24,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -78,11 +79,14 @@ public class GraphqlClient {
         return sGraphqlDatabase;
     }
 
+    @NonNull
     public static GraphqlApi getApiInterface() {
-        if (sGraphqlApi == null) {
-            sGraphqlApi = getRetrofit().create(GraphqlApi.class);
-        }
-        return sGraphqlApi;
+        return getRetrofit().create(GraphqlApi.class);
+    }
+
+    @NonNull
+    public static GraphqlApiSuspend getApi() {
+        return getRetrofit().create(GraphqlApiSuspend.class);
     }
 
     public static synchronized FingerprintManager getFingerPrintManager() {

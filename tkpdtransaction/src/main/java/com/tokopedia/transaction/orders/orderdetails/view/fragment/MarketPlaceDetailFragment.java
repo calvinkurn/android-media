@@ -496,7 +496,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
@@ -551,7 +551,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems();
+                        presenter.onBuyAgainAllItems(" - order");
                     }
                 });
             } else {
@@ -575,8 +575,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (!actionButton.getActionColor().getBorder().equals("")) {
                     shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
+                LinearLayout.LayoutParams stickyButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 stickyTextView.setBackground(shape);
-                stickyTextView.setLayoutParams(params);
+                stickyTextView.setLayoutParams(stickyButtonParams);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {
                     stickyTextView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
                 }
@@ -584,7 +585,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems();
+                            presenter.onBuyAgainAllItems(" - order");
                         }
                     });
                 } else {
@@ -709,7 +710,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
-                            Toaster.Companion.showErrorWithAction(mainView,
+                            Toaster.INSTANCE.showErrorWithAction(mainView,
                                     presenter.getCancelTime(),
                                     Snackbar.LENGTH_LONG,
                                     getResources().getString(R.string.title_ok), v -> {

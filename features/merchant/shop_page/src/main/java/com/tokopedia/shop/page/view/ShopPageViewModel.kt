@@ -209,6 +209,7 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()
         requestModerateShopUseCase.unsubscribe()
+        stickyLoginUseCase.cancelJobs()
     }
 
     companion object {

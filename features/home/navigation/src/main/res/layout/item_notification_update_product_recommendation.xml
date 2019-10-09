@@ -32,7 +32,6 @@
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_4"
-        android:maxLines="4"
         android:textColor="@color/charcoal_grey_40"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@+id/title"

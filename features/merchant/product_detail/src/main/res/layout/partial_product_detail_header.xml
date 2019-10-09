@@ -39,14 +39,15 @@
     <ImageView
         android:id="@+id/img_free_ongkir"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_10"
         android:visibility="gone"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@+id/tv_price_pdp"
         app:layout_constraintLeft_toRightOf="@+id/text_cashback"
-        app:layout_constraintTop_toTopOf="@+id/tv_price_pdp" />
+        app:layout_constraintTop_toTopOf="@+id/tv_price_pdp"
+        android:layout_marginStart="@dimen/dp_10" />
 
     <LinearLayout
         android:id="@+id/layout_official_store"

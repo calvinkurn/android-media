@@ -606,9 +606,9 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         val dimension83 = productInfo?.freeOngkir?.let {
             if (it.isFreeOngkirActive)
-                "Bebas Ongkir"
+                VALUE_BEBAS_ONGKIR
             else
-                "none / other"
+                VALUE_NONE_OTHER
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
@@ -879,6 +879,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickSearchBar() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
+                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
+                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
+                ""
         )
     }
 

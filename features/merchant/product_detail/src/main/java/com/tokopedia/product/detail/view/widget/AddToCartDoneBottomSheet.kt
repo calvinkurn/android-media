@@ -175,6 +175,7 @@ class AddToCartDoneBottomSheet :
     private fun goToCart() {
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            dismiss()
         }
     }
 
@@ -187,6 +188,7 @@ class AddToCartDoneBottomSheet :
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
+        dismiss()
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {

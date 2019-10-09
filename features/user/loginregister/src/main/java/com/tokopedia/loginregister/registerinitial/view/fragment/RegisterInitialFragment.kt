@@ -9,7 +9,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.support.v4.content.ContextCompat
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.SpannableString
@@ -36,6 +36,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.kotlin.util.getParamString
@@ -64,6 +66,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -105,13 +108,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     lateinit var optionTitle: TextView
+    lateinit var separator: View
     lateinit var partialRegisterInputView: PartialRegisterInputView
-    lateinit var registerContainer: LinearLayout
     lateinit var registerButton: LoginTextView
     lateinit var loginButton: TextView
     lateinit var container: ScrollView
     lateinit var progressBar: RelativeLayout
     lateinit var tickerAnnouncement: Ticker
+    private lateinit var socmedButton: ButtonCompat
+    private lateinit var bottomSheet: BottomSheetUnify
+    private lateinit var socmedButtonsContainer: LinearLayout
 
     private var phoneNumber: String? = ""
     private var source : String = ""
@@ -224,9 +230,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
+        separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
-        registerContainer = view.findViewById(R.id.register_container)
         registerButton = view.findViewById(R.id.register)
+        socmedButton = view.findViewById(R.id.socmed_btn)
         loginButton = view.findViewById(R.id.login_button)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
@@ -280,8 +287,25 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         presenter.getTickerInfo()
     }
 
+    @SuppressLint("RtlHardcoded")
     protected fun prepareView() {
         activity?.run {
+            val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
+            socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
+
+            bottomSheet = BottomSheetUnify()
+            bottomSheet.setTitle(getString(R.string.choose_social_media))
+            bottomSheet.setChild(viewBottomSheetDialog)
+            bottomSheet.setCloseClickListener {
+                registerAnalytics.trackClickCloseSocmedButton()
+                bottomSheet.dismiss()
+            }
+
+            socmedButton.setOnClickListener {
+                registerAnalytics.trackClickSocmedButton()
+                bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
+            }
+
             registerButton.visibility = View.GONE
             partialRegisterInputView.visibility = View.GONE
             partialRegisterInputView.setButtonValidator(true)
@@ -289,8 +313,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
-                optionTitle.typeface = Typeface.DEFAULT
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            }else{
+                separator.visibility = View.GONE
+                optionTitle.setText(R.string.register_now)
+                optionTitle.typeface = Typeface.DEFAULT_BOLD
+                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
+                layoutParams.setMargins(0, 32, 0, 0)
+                optionTitle.layoutParams = layoutParams
+                optionTitle.setPadding(0, 0, 0, 0)
+                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
             }
 
             registerButton.setColor(Color.WHITE)
@@ -490,9 +523,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) !is ProgressBar) {
-            registerContainer.addView(pb, registerContainer.childCount)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+            socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
     }
 
@@ -517,10 +550,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 resources.getDimensionPixelSize(R.dimen.dp_52))
-        val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f,
-                resources.displayMetrics).toInt()
+        layoutParams.setMargins(0, 10, 0, 10)
 
-        layoutParams.setMargins(0, topMargin, 0, 0)
+        socmedButtonsContainer.removeAllViews()
 
         for (i in listProvider.indices) {
             val item = listProvider[i]
@@ -534,7 +566,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
                 setDiscoverOnClickListener(item, loginTextView)
 
-                registerContainer.addView(loginTextView, registerContainer.childCount,
+                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
                         layoutParams)
             }
         }
@@ -552,6 +584,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterFacebookClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
             presenter.getFacebookCredential(this, callbackManager)
@@ -561,6 +594,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterGoogleClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             val intent = mGoogleSignInClient.signInIntent
@@ -570,9 +604,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun dismissLoadingDiscover() {
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) is ProgressBar) {
-            registerContainer.removeViewAt(registerContainer.childCount - 1)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+            socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
         }
     }
 

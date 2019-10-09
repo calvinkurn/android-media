@@ -3,11 +3,16 @@ package com.tokopedia.recommendation_widget_common.data.mapper
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 
 /**
  * Created by Lukas on 29/08/19
  */
 object SingleProductRecommendationMapper {
+    private const val LABEL_POSITION_OFFERS = "offers"
+    private const val LABEL_POSITION_PROMO = "promo"
+    private const val LABEL_POSITION_CREDIBILITY = "credibility"
+
     fun convertIntoRecommendationList(
             recommendations: List<SingleProductRecommendationEntity.Recommendation>?,
             title: String?,
@@ -15,6 +20,29 @@ object SingleProductRecommendationMapper {
             layoutType: String?
     ): List<RecommendationItem>{
         return recommendations?.mapIndexed { index, data ->
+            val labelCredibility = RecommendationLabel()
+            val labelPromo = RecommendationLabel()
+            val labelOffers = RecommendationLabel()
+
+            data.labelGroups?.let {
+                for (label: SingleProductRecommendationEntity.Recommendation.LabelGroup in it){
+                    when(label.position){
+                        LABEL_POSITION_CREDIBILITY -> {
+                            labelCredibility.title = label.title?:""
+                            labelCredibility.title = label.type?:""
+                        }
+                        LABEL_POSITION_PROMO -> {
+                            labelPromo.title = label.title?:""
+                            labelPromo.title = label.type?:""
+                        }
+                        LABEL_POSITION_OFFERS -> {
+                            labelOffers.title = label.title?:""
+                            labelOffers.title = label.type?:""
+                        }
+                    }
+                }
+            }
+
             RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -51,7 +79,10 @@ object SingleProductRecommendationMapper {
                     data.badges?.map { it.imageUrl } ?: emptyList(),
                     layoutType ?: "",
                     data.freeOngkirInformation?.isActive?:false,
-                    data.freeOngkirInformation?.imageUrl?:""
+                    data.freeOngkirInformation?.imageUrl?:"",
+                    labelPromo,
+                    labelOffers,
+                    labelCredibility
             )
          } ?: emptyList()
     }

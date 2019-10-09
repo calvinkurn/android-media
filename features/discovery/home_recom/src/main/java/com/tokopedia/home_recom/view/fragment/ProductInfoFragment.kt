@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_product_info.*
@@ -471,7 +472,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
             type = "",
             isFreeOngkirActive = false,
             freeOngkirImageUrl = "",
-            discountPercentage = ""
+            discountPercentage = "",
+            labelOffers = RecommendationLabel(),
+            labelCredibility = RecommendationLabel(),
+            labelPromo = RecommendationLabel()
     )
 
     /**

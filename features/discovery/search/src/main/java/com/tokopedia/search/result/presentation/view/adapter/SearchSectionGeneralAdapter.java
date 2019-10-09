@@ -109,7 +109,7 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
 
     protected EmptySearchViewModel mappingEmptySearch(Context context, String query, boolean isFilterActive, String sectionTitle) {
         EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.ic_empty_search);
+        emptySearchViewModel.setImageRes(com.tokopedia.design.R.drawable.ic_empty_search);
         if (isFilterActive) {
             emptySearchViewModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchViewModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));

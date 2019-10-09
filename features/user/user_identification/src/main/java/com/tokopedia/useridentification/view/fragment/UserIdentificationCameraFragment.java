@@ -49,7 +49,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     public static final int PARAM_VIEW_MODE_FACE = 2;
 
     private static final long DEFAULT_ONE_MEGABYTE = 1024;
-    private static final int MAX_FILE_SIZE = 10240;
+    private static final int MAX_FILE_SIZE = 15360;
 
     private CameraView cameraView;
     private ImageButton closeButton;
@@ -240,12 +240,16 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() != null) {
-                    if (isFileSizeQualified(imagePath)) {
-                        Intent intent = new Intent();
-                        intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
-                        getActivity().setResult(Activity.RESULT_OK, intent);
+                    if(isFileExists(imagePath)) {
+                        if (isFileSizeQualified(imagePath)) {
+                            Intent intent = new Intent();
+                            intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
+                            getActivity().setResult(Activity.RESULT_OK, intent);
+                        } else {
+                            getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                        }
                     } else {
-                        getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                        getActivity().setResult(KYCConstant.IS_FILE_IMAGE_NOT_EXIST);
                     }
                 }
                 sendAnalyticClickNext();
@@ -482,11 +486,14 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     private boolean isFileSizeQualified(String filePath) {
         File file = new File(filePath);
-        if (file.exists()) {
-            int fileSize = Integer.parseInt(String.valueOf(file.length() / DEFAULT_ONE_MEGABYTE));
-            return (fileSize <= MAX_FILE_SIZE);
-        } else
-            return false;
+        int fileSize = Integer.parseInt(String.valueOf(file.length() / DEFAULT_ONE_MEGABYTE));
+        return (fileSize <= MAX_FILE_SIZE);
+
+    }
+
+    private boolean isFileExists(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
     }
 
     public boolean isCameraVisible() {

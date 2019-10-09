@@ -79,8 +79,8 @@ abstract class ProductCardView: BaseCustomView {
     protected var imageViewRating5: ImageView? = null
     protected var textViewReviewCount: Typography? = null
     protected var labelCredibility: Label? = null
-    protected var labelOffers: Label? = null
     protected var imageFreeOngkirPromo: ImageView? = null
+    protected var labelOffers: Label? = null
     protected var imageTopAds: ImageView? = null
     protected var blankSpaceConfig = BlankSpaceConfig()
 
@@ -143,8 +143,8 @@ abstract class ProductCardView: BaseCustomView {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
-        labelOffers = inflatedView.findViewById(R.id.labelOffers)
         imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
+        labelOffers = inflatedView.findViewById(R.id.labelOffers)
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds)
     }
 
@@ -166,8 +166,8 @@ abstract class ProductCardView: BaseCustomView {
         setLocationMarginLeft()
         setLocationConstraintEnd()
         setReviewCountMarginLeft()
-        setLabelOffersConstraint()
         setImageFreeOngkirPromoConstraint()
+        setLabelOffersConstraint()
         setTopAdsTopConstraint()
     }
 
@@ -245,36 +245,6 @@ abstract class ProductCardView: BaseCustomView {
         else R.dimen.dp_8
     }
 
-    protected open fun setLabelOffersConstraint() {
-        labelOffers?.doIfVisible { labelOffers ->
-            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
-
-            labelOffersTopConstraintView?.let {
-                setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
-                )
-            }
-        }
-    }
-
-    protected open fun getLabelOffersTopConstraintView(): View? {
-        return when {
-            labelCredibility.isNotNullAndVisible -> {
-                labelCredibility
-            }
-            linearLayoutImageRating.isNotNullAndVisible -> {
-                linearLayoutImageRating
-            }
-            textViewReviewCount.isNotNullAndVisible -> {
-                textViewReviewCount
-            }
-            textViewShopLocation.isNotNullAndVisible -> {
-                textViewShopLocation
-            }
-            else -> null
-        }
-    }
-
     protected open fun setImageFreeOngkirPromoConstraint() {
         imageFreeOngkirPromo?.doIfVisible { imageFreeOngkirPromo ->
             val imageFreeOngkirPromoTopConstraintView = getImageFreeOngkirTopConstraintView()
@@ -289,10 +259,30 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun getImageFreeOngkirTopConstraintView(): View? {
         return when {
-            labelOffers.isNotNullAndVisible -> {
-                labelOffers
+            labelCredibility.isNotNullAndVisible -> labelCredibility
+            linearLayoutImageRating.isNotNullAndVisible -> linearLayoutImageRating
+            textViewReviewCount.isNotNullAndVisible -> textViewReviewCount
+            textViewShopLocation.isNotNullAndVisible -> textViewShopLocation
+            else -> null
+        }
+    }
+
+    protected open fun setLabelOffersConstraint() {
+        labelOffers?.doIfVisible { labelOffers ->
+            val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
+
+            labelOffersTopConstraintView?.let {
+                setViewConstraint(
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                )
             }
-            else -> getLabelOffersTopConstraintView()
+        }
+    }
+
+    protected open fun getLabelOffersTopConstraintView(): View? {
+        return when {
+            imageFreeOngkirPromo.isNotNullAndVisible -> imageFreeOngkirPromo
+            else -> getImageFreeOngkirTopConstraintView()
         }
     }
 
@@ -310,10 +300,8 @@ abstract class ProductCardView: BaseCustomView {
 
     private fun getImageTopAdsTopConstraintView(): View? {
         return when {
-            imageFreeOngkirPromo.isNotNullAndVisible -> {
-                imageFreeOngkirPromo
-            }
-            else -> getImageFreeOngkirTopConstraintView()
+            labelOffers.isNotNullAndVisible -> labelOffers
+            else -> getLabelOffersTopConstraintView()
         }
     }
 

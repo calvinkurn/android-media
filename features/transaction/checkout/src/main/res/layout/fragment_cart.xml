@@ -76,10 +76,9 @@
                             android:id="@+id/cb_select_all"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-5dp"
-                            android:layout_marginBottom="-5dp"
-                            android:paddingRight="@dimen/dp_8"
-                            android:theme="@style/TransactionCheckbox" />
+                            android:layout_marginLeft="@dimen/dp_4"
+                            android:paddingRight="@dimen/dp_10"
+                            android:button="@drawable/ic_cart_check_box" />
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="wrap_content"

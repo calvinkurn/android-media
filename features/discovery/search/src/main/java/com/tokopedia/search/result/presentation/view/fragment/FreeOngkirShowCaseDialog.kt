@@ -16,8 +16,10 @@ class FreeOngkirShowCaseDialog: Fragment() {
 
     companion object {
         @JvmStatic
-        fun show(activity: FragmentActivity, hasFreeOngkirBadge: Boolean) {
+        fun show(activity: FragmentActivity?, hasFreeOngkirBadge: Boolean) {
             try {
+                if (activity == null) return
+
                 tryShowFragment(activity, hasFreeOngkirBadge)
             }
             catch(e: Exception) {

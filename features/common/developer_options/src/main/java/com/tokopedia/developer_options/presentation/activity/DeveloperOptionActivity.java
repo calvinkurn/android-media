@@ -1,5 +1,7 @@
 package com.tokopedia.developer_options.presentation.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,6 +81,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
+    private TextView accessTokenView;
 
     @Override
     public String getScreenName() {
@@ -126,6 +129,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
+
+        accessTokenView = findViewById(R.id.access_token);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
@@ -255,6 +260,15 @@ public class DeveloperOptionActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        accessTokenView.setText("Access token : " + userSession.getAccessToken());
+        accessTokenView.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copied Text", userSession.getAccessToken());
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+            }
         });
     }
 

@@ -36,7 +36,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
 public class AutoCompleteActivity extends BaseActivity
@@ -183,7 +182,6 @@ public class AutoCompleteActivity extends BaseActivity
         Intent searchActivityIntent = createIntentToSearchResult();
 
         startActivity(searchActivityIntent);
-        setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY);
         finish();
     }
 

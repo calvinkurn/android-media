@@ -53,7 +53,7 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
             RouteManager.route(activity, url)
             return true
         }
-        return false
+        return super.shouldOverrideUrlLoading(webView, url)
     }
 
 

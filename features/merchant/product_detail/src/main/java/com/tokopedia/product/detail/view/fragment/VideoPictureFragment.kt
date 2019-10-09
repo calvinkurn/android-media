@@ -108,6 +108,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
+            volume_pdp.hide()
             img_pdp_video.show()
             video_player_pdp.hide()
             loading_pdp.hide()
@@ -132,6 +133,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
                 }
             }
         } else {
+            volume_pdp.show()
             video_player_pdp.show()
             loading_pdp.show()
             img_pdp_video.hide()

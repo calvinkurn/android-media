@@ -6,18 +6,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.saldodetails.view.fragment.SaldoIntroFragment;
 
 public class SaldoIntroActivity extends BaseSimpleActivity {
-
-    @SuppressWarnings("unused")
-    @DeepLink(ApplinkConst.SALDO_INTRO)
-    public static Intent getcallingIntent(Context context, Bundle extras) {
-        return SaldoIntroActivity.newInstance(context);
-    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SaldoIntroActivity.class);

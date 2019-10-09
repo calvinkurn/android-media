@@ -8,7 +8,7 @@
     android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/saldo_deposit_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:elevation="@dimen/dp_4"
@@ -55,10 +55,10 @@
 
 
     <FrameLayout
-        android:id="@+id/parent_view"
+        android:id="@+id/saldo_deposit_parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/saldo_deposit_toolbar" />
 
 
 </RelativeLayout>

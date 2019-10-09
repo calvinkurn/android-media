@@ -292,19 +292,6 @@
             tools:visibility="gone"
             tools:text="Credibility Label" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelOffers"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:visibility="visible"
-            tools:text="Offers Label" />
-
         <ImageView
             android:id="@+id/imageFreeOngkirPromo"
             android:layout_width="wrap_content"
@@ -317,8 +304,21 @@
             android:adjustViewBounds="true"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/labelOffers"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
             tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelOffers"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:visibility="visible"
+            tools:text="Offers Label" />
 
         <ImageView
             android:id="@+id/imageTopAds"

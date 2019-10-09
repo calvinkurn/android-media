@@ -266,7 +266,4 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getProfileUseCase.unsubscribe()
         tickerInfoUseCase.unsubscribe()
     }
-
-
-
 }

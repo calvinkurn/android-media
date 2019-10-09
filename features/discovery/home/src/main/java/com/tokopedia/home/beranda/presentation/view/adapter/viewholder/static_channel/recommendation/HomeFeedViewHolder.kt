@@ -64,6 +64,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                             )
                     )
             )
+            setLabelGroup(element.labelGroups)
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
                     homeFeedView.onProductImpression(element, adapterPosition)

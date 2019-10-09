@@ -67,8 +67,8 @@
                 <ImageView
                     android:id="@+id/img_free_ongkir"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:adjustViewBounds="true"
                     tools:visibility="visible"
                     android:scaleType="fitXY" />

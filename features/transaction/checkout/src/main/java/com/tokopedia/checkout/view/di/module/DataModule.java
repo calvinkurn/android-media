@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.content.Context;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -57,7 +57,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 /**
  * @author anggaprasetiyo on 29/01/18.
