@@ -21,7 +21,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.functions.Func1
 import java.util.*
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext private val context: Context,
                                                   private val graphqlUseCase: GraphqlUseCase,
                                                   private val remoteConfig: RemoteConfig,
-                                                  private val userSession: UserSession)
+                                                  private val userSession: UserSessionInterface)
     : UseCase<WalletBalanceModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<WalletBalanceModel> {
@@ -58,7 +58,7 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
                 })
     }
 
-    fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
+    private fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
         walletBalanceEntity?.let {
 
             val balanceTokoCash = WalletBalanceModel()

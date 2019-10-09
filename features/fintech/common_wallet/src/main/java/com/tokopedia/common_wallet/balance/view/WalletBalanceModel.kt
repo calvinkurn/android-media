@@ -27,8 +27,8 @@ class WalletBalanceModel(
         var cashBalance: String = "",
         var rawCashBalance: Int = 0,
         var walletType: String = "",
-        val pendingCashback: String = "",
-        val amountPendingCashback: Int = 0,
+        var pendingCashback: String = "",
+        var amountPendingCashback: Int = 0,
         var helpApplink: String = "",
         var tncApplink: String = "",
         var isShowAnnouncement: Boolean = false)

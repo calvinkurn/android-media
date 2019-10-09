@@ -123,11 +123,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public Observable<BalanceTokoCash> getBalanceTokoCash() {
-        return ((TokoCashRouter) getApplication()).getBalanceTokoCash();
-    }
-
-    @Override
     public void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash) {
         Intent intent = ((TokoCashRouter) getApplication()).getNominalActivityIntent(getApplicationContext(), qrcode, infoQrTokoCash);
         startActivityForResult(intent, REQUEST_CODE_NOMINAL);

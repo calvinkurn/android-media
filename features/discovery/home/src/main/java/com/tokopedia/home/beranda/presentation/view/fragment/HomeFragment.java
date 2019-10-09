@@ -1193,23 +1193,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     /**
-     * Tokocash & Tokopoint
+     * Tokopoint
      */
-    @Override
-    public Observable<HomeHeaderWalletAction> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
-            return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
-        }
-        return null;
-    }
-
-    @Override
-    public Observable<PendingCashback> getTokocashPendingCashback() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
-            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
-        }
-        return null;
-    }
 
     @Override
     public Observable<TokopointHomeDrawerData> getTokopoint() {

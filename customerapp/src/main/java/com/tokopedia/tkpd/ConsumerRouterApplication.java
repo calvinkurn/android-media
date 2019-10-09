@@ -320,7 +320,6 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
@@ -330,10 +329,8 @@ import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -851,11 +848,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<PendingCashback> getPendingCashbackUseCase() {
-        return tokoCashComponent.getPendingCasbackUseCase().createObservable(null);
-    }
-
-    @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }
@@ -1345,11 +1337,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public WalletUserSession getTokoCashSession() {
-        return new WalletUserSessionImpl(this);
-    }
-
-    @Override
     public Intent getWebviewActivityWithIntent(Context context, String url) {
         return SimpleWebViewWithFilePickerActivity.getIntent(context,
                 url);
@@ -1364,11 +1351,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getUserEmailProfil() {
         SessionHandler sessionHandler = new SessionHandler(this);
         return sessionHandler.getEmail();
-    }
-
-    @Override
-    public Fragment getTopupTokoCashFragment() {
-        return TopupTokoCashFragment.newInstance();
     }
 
     @Override
@@ -1548,10 +1530,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
 
+//TODO REMOVE TOKOCASH
     @Override
-    public Observable<TokoCashData> getTokoCashBalance() {
-        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
-                .processGetBalance();
+    public Fragment getTopupTokoCashFragment() {
+        return TopupTokoCashFragment.newInstance();
+    }
+
+    @Override
+    public WalletUserSession getTokoCashSession() {
+        return new WalletUserSessionImpl(this);
     }
 
     @Override
@@ -1565,21 +1552,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<BalanceTokoCash> getBalanceTokoCash() {
-        return tokoCashComponent.getBalanceTokoCashUseCase().createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
+    public Observable<InfoQrTokoCash> getInfoQrTokoCashUseCase(com.tokopedia.usecase.RequestParams requestParams) {
+        return tokoCashComponent.getInfoQrTokocashUseCase().createObservable(requestParams);
     }
-
-    @Override
-    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> getDigitalTokoCashBalance() {
-        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
-                .processDigitalGetBalance();
-    }
-
-    @Override
-    public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
-        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
-                .getWalletBalanceHomeHeader();
-    }
+//TODO REMOVE TOKOCASH
 
     @Override
     public void showForceLogoutDialog() {
@@ -1587,20 +1563,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<InfoQrTokoCash> getInfoQrTokoCashUseCase(com.tokopedia.usecase.RequestParams requestParams) {
-        return tokoCashComponent.getInfoQrTokocashUseCase().createObservable(requestParams);
-    }
-
-    @Override
     public String getExtraBroadcastReceiverWallet() {
         return "Broadcast Wallet";
-    }
-
-    @Override
-    public Observable<WalletModel> getTokoCashAccountBalance() {
-        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
-                tokoCashComponent.getPendingCasbackUseCase())
-                .getTokoCashAccountBalance();
     }
 
     @Override

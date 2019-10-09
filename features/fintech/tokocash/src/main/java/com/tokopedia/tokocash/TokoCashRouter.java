@@ -37,8 +37,6 @@ public interface TokoCashRouter {
 
     Interceptor getChuckInterceptor();
 
-    Observable<PendingCashback> getPendingCashbackUseCase();
-
     Intent getLoginIntent();
 
     String getStringRemoteConfig(String key);
@@ -50,8 +48,6 @@ public interface TokoCashRouter {
     String getExtraBroadcastReceiverWallet();
 
     Observable<InfoQrTokoCash> getInfoQrTokoCashUseCase(RequestParams requestParams);
-
-    Observable<BalanceTokoCash> getBalanceTokoCash();
 
     Intent getNominalActivityIntent(Context context, String qrCode, InfoQrTokoCash infoQrTokoCash);
 

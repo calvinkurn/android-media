@@ -36,8 +36,6 @@ public interface QrScannerContract {
 
         Observable<InfoQrTokoCash> getInfoQrTokoCash(RequestParams requestParams);
 
-        Observable<BalanceTokoCash> getBalanceTokoCash();
-
         void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash);
 
         void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData);

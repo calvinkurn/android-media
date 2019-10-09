@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -23,7 +25,6 @@ import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
 import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.network.exception.WalletException;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
@@ -67,10 +68,12 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private UserSessionInterface userSession;
     private LocalCacheHandler localCacheHandler;
     private CompositeSubscription compositeSubscription;
+    private GetWalletBalanceUseCase getWalletBalanceUseCase;
 
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               BranchIODeeplinkUseCase branchIODeeplinkUseCase,
+                              GetWalletBalanceUseCase getWalletBalanceUseCase,
                               @ApplicationContext Context context,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
     ) {
@@ -80,6 +83,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         this.localCacheHandler = localCacheHandler;
         this.branchIODeeplinkUseCase = branchIODeeplinkUseCase;
         this.compositeSubscription = new CompositeSubscription();
+        this.getWalletBalanceUseCase = getWalletBalanceUseCase;
     }
 
     @Override
@@ -247,11 +251,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private void getAbTagsForContinuingPayment(final String qrCode) {
         getView().showProgressDialog();
         compositeSubscription.add(
-                getView().getBalanceTokoCash()
+                getWalletBalanceUseCase.createObservable(RequestParams.EMPTY)
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<BalanceTokoCash>() {
+                        .subscribe(new Subscriber<WalletBalanceModel>() {
                             @Override
                             public void onCompleted() {
 
@@ -266,8 +270,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                             }
 
                             @Override
-                            public void onNext(BalanceTokoCash balanceTokoCash) {
-                                if (isContinuingPayment(balanceTokoCash.getAbTags())) {
+                            public void onNext(WalletBalanceModel walletBalanceModel) {
+                                if (isContinuingPayment(walletBalanceModel.getAbTags())) {
                                     getInfoQrWallet(qrCode);
                                 } else {
                                     getView().hideProgressDialog();
