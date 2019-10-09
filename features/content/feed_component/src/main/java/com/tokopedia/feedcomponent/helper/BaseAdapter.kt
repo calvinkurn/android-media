@@ -9,7 +9,7 @@ import android.view.ViewGroup
 abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     protected val delegatesManager = AdapterDelegatesManager<T>()
-    val itemList: MutableList<T> = mutableListOf()
+    protected val itemList: MutableList<T> = mutableListOf()
 
     fun setItems(itemList: List<T>) {
         this.itemList.clear()
@@ -19,6 +19,21 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     fun addItems(itemList: List<T>) {
         this.itemList.addAll(itemList)
     }
+
+    fun addItem(item: T) {
+        this.itemList.add(item)
+    }
+
+    fun clearAllItems() {
+        this.itemList.clear()
+    }
+
+    /**
+     * Needed to support easy migration from old Adapter
+     */
+    fun getData(): List<T> = itemList
+    fun addElement(item: T) { addItem(item) }
+    fun clearAllElements() { clearAllItems() }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RecyclerView.ViewHolder {
         return delegatesManager.onCreateViewHolder(parent, position)
