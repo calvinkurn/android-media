@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -47,13 +48,15 @@
         android:id="@+id/tv_header_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="gone"
         app:closeButtonVisibility="gone"
-        app:descriptionText="Testing Testing"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_status"
         app:tickerShapeType="loose"
-        app:tickerType="warning" />
+        app:tickerType="warning"
+        tools:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_header_detail"
@@ -62,5 +65,42 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header_info" />
+
+    <View
+        android:id="@+id/divider_status_detail"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@color/grey_250"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_header_detail" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_invoice_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineHeight="@dimen/dp_18"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_status_detail"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        tools:text="IVR/20170713/XVII/VII/16205811" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_invoice_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineHeight="@dimen/dp_18"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_status_detail"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="LIHAT" />
 
 </android.support.constraint.ConstraintLayout>
