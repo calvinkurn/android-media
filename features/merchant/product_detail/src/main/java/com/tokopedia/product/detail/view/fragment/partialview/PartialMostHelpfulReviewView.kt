@@ -11,13 +11,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.util.OnImageReviewClicked
 import com.tokopedia.product.detail.view.adapter.MostHelpfulReviewAdapter
 import com.tokopedia.product.detail.view.util.PaddingItemDecoration
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.view.*
 
 class PartialMostHelpfulReviewView private constructor(private val view: View) {
-    var onImageReviewClicked: ((List<String>, Int, String?) -> Unit)? = null
+    var onImageReviewClicked: OnImageReviewClicked? = null
 
     companion object {
         private const val LIKE_VISIBILITY_LIMIT = 3

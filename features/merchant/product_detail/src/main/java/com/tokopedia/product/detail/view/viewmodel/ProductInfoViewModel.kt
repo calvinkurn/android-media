@@ -685,7 +685,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status")
-
         private const val KEY_PARAM = "params"
 
         private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"

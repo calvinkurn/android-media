@@ -10,13 +10,14 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.review.ImageAttachment
+import com.tokopedia.product.detail.data.util.OnImageReviewClicked
 import kotlinx.android.synthetic.main.item_most_helpful_image.view.*
 
 
 class MostHelpfulReviewAdapter(private val imageList: List<ImageAttachment>,
                                private val reviewId: String,
                                private val moreItemCount: Int = 0,
-                               private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null) : RecyclerView.Adapter<MostHelpfulReviewAdapter.MostHelpfulReviewViewHolder>() {
+                               private val onImageHelpfulReviewClick: OnImageReviewClicked? = null) : RecyclerView.Adapter<MostHelpfulReviewAdapter.MostHelpfulReviewViewHolder>() {
 
     companion object {
         const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 122

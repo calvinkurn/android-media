@@ -7,12 +7,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.data.util.OnImageReviewClick
+import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
 import kotlinx.android.synthetic.main.partial_product_image_review.view.*
 
 class PartialImageReviewView private constructor(private val view: View,
-                                                 private val onSeeAllReviewClick: (() -> Unit)? = null,
-                                                 private val onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)? = null,
+                                                 private val onSeeAllReviewClick: OnSeeAllReviewClick? = null,
+                                                 private val onImageReviewClick: OnImageReviewClick? = null,
                                                  private val onReviewClicked: (() -> Unit)? = null) {
     companion object {
         fun build(_view: View, _onSeeAllReviewClick: (() -> Unit)?, _onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)?, _onReviewClicked: (() -> Unit)?) =

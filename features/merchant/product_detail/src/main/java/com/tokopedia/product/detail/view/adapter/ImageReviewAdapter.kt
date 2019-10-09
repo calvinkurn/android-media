@@ -9,12 +9,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.OnImageReviewClick
+import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import kotlinx.android.synthetic.main.item_image_review.view.*
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
-                         private val onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)? = null,
-                         private val onSeeAllReviewClick: (() -> Unit)? = null) :
+                         private val onOnImageReviewClick: OnImageReviewClick? = null,
+                         private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -40,13 +42,13 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     overlay_see_all.visible()
                     txt_see_all.visible()
                     setOnClickListener {
-                        onSeeAllReviewClick?.invoke()
+                        onOnSeeAllReviewClick?.invoke()
                     }
                 } else {
                     overlay_see_all.gone()
                     txt_see_all.gone()
                     setOnClickListener {
-                        onImageReviewClick?.invoke(listItem, adapterPosition)
+                        onOnImageReviewClick?.invoke(listItem, adapterPosition)
                     }
                 }
             }

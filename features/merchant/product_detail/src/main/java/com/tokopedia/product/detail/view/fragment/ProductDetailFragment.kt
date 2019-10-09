@@ -827,8 +827,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-
-
     private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position:Int) {
         context?.let{
             val productId = productInfo?.basic?.id ?: return
