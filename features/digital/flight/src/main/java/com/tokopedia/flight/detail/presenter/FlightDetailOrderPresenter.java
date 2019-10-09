@@ -80,7 +80,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData, String crossSellingQuery) {
         getView().showProgressDialog();
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
-        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
+        crossSellingUseCase.execute(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override
