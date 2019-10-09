@@ -100,7 +100,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
              * Requirement:
              * Only show `see all` button when it is exist
              */
-            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))) {
+            if (isHasSeeMoreApplink(channel)) {
                 seeAllButton.visibility = View.VISIBLE
                 seeAllButton.setOnClickListener {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
@@ -135,6 +135,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
+    }
+
+    fun isHasSeeMoreApplink(channel: DynamicHomeChannel.Channels): Boolean {
+        return !TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))
     }
 
     /**
