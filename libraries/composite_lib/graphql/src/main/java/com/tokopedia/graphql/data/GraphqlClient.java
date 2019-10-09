@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.graphql.BuildConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
@@ -49,7 +49,7 @@ public class GraphqlClient {
                 return chain.proceed(newRequest.build());
             });
 
-            if (BuildConfig.DEBUG) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context));
             }
 
