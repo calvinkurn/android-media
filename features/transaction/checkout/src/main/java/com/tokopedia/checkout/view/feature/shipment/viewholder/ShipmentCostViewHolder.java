@@ -151,6 +151,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCost.getShippingDiscountAmount() > 0) {
             if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
                 mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
+                mTvShippingDiscountPrice.setVisibility(View.GONE);
+                mTvShippingDiscountLabel.setVisibility(View.GONE);
             } else {
                 mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
             }
