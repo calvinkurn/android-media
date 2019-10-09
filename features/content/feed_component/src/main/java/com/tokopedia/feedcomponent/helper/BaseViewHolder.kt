@@ -9,7 +9,7 @@ import android.view.View
  */
 abstract class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    abstract fun onViewRecycled()
+    open fun onViewRecycled() {}
 
     protected fun getString(@StringRes stringRes: Int): String {
         return itemView.context.getString(stringRes)
