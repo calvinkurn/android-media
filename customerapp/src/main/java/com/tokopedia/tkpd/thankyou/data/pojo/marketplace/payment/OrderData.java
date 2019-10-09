@@ -22,7 +22,7 @@ public class OrderData {
 //    @SerializedName("order_detail")
 //    @Expose
 //    private List<OrderDetail> orderDetail;
-    @SerializedName("shop")
+    @SerializedName("shop_info")
     @Expose
     private Shop shop;
 //    @SerializedName("shipping")
