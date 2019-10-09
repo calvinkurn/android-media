@@ -960,6 +960,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
         String totalPPPItemLabel = String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem);
 
+        VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 !shipmentCartItemModel.isError()) {
@@ -977,6 +978,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
             subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
+            if (voucherLogisticItemUiModel != null) {
+                int discountedRate = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate();
+                subTotalPrice += (totalItemPrice + discountedRate + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
+            }
         } else {
             subTotalPrice = totalItemPrice;
         }
@@ -985,7 +990,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
         tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
-        VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
         if (voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
                 tvShippingFeePrice.setText(tvShippingFeePrice.getContext().getString(R.string.label_free_shipping));
