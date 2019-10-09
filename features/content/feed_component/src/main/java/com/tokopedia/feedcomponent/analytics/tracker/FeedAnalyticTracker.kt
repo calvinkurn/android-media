@@ -123,6 +123,8 @@ class FeedAnalyticTracker
         const val PROFILE_RECOM_SHOP_RECOM = "/feed profile recom - shop recommendation"
         const val PROFILE_FOLLOW_RECOM_SHOP_RECOM = "/feed follow recom - shop recommendation"
         const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
+        const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
+        const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
     }
 
 
@@ -201,62 +203,6 @@ class FeedAnalyticTracker
     fun eventOpenOnboardingProfileRecom() {
         trackOpenScreenEvent(Screen.ONBOARDING_PROFILE_RECOM)
     }
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Screenshot 16
-     *
-     */
-    fun eventViewShopRecommendationProduct(productId: String, name: String, price: Int, itemPos: Int) {
-        trackEnhancedEcommerceEvent(
-                Event.PRODUCT_VIEW,
-                Category.CONTENT_INTEREST_PICK,
-                Action.IMPRESSION_PRODUCT_RECOM,
-                productId,
-                getEcommerceData(
-                        getEcommerceView(
-                                getProductItemList(
-                                        productId.toIntOrZero(),
-                                        name,
-                                        price,
-                                        "",
-                                        "",
-                                        "",
-                                        ListSource.PROFILE_FOLLOW_RECOM_SHOP_RECOM,
-                                        itemPos
-                                )
-                        )
-                )
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Screenshot 16
-     *
-     */
-    fun eventClickShopRecommendationProduct(productId: String, name: String, price: Int, itemPos: Int) {
-        trackEnhancedEcommerceEvent(
-                Event.PRODUCT_CLICK,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_PRODUCT_RECOM,
-                productId,
-                getEcommerceData(
-                        getEcommerceClick(
-                                getProductItemList(
-                                        productId.toIntOrZero(),
-                                        name,
-                                        price,
-                                        "",
-                                        "",
-                                        "",
-                                        ListSource.PROFILE_FOLLOW_RECOM_SHOP_RECOM,
-                                        itemPos
-                                ),
-                                ListSource.PROFILE_RECOM_SHOP_RECOM
-                        )))
-    }
 
     /**
      *
@@ -264,7 +210,7 @@ class FeedAnalyticTracker
      * Screenshot 19
      *
      */
-    fun eventViewContentRecommendation(activityId: String, position: Int) {
+    fun eventViewContentRecommendation(activityId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
                 Event.PROMO_VIEW,
                 Category.CONTENT_INTEREST_PICK,
@@ -272,7 +218,7 @@ class FeedAnalyticTracker
                 activityId,
                 getPromoViewData(
                         getPromotionsData(
-                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_USER_RECOM, "", position))
+                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType), "", position))
                         )
                 )
         )
@@ -284,7 +230,7 @@ class FeedAnalyticTracker
      * Screenshot 19
      *
      */
-    fun eventClickContentRecommendation(activityId: String, position: Int) {
+    fun eventClickContentRecommendation(activityId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
                 Event.PROMO_CLICK,
                 Category.CONTENT_INTEREST_PICK,
@@ -292,7 +238,7 @@ class FeedAnalyticTracker
                 activityId,
                 getPromoClickData(
                         getPromotionsData(
-                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_USER_RECOM, "", position))
+                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType), "", position))
                         )
                 )
         )

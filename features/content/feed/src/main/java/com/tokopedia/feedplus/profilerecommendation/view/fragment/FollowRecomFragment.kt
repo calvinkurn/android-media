@@ -215,11 +215,9 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
+
         authorType?.let {
-            when(it) {
-                AuthorType.SHOP -> feedAnalyticTracker.eventClickShopRecommendationProduct(model.id, "",0, itemPos)
-                AuthorType.USER -> feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos)
-            }
+            feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos, it.typeString)
         }
         context?.let { ctx ->
             startActivity(
@@ -228,12 +226,9 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         }
     }
 
-    override fun onFirstTimeImageShown(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
-        authorType?.let {
-            when(it) {
-                AuthorType.SHOP -> feedAnalyticTracker.eventViewShopRecommendationProduct(model.id, "",0, itemPos)
-                AuthorType.USER -> feedAnalyticTracker.eventViewContentRecommendation(model.id, itemPos)
-            }
+    override fun onFirstTimeCardShown(element: FollowRecomCardViewModel, adapterPosition: Int) {
+        element.authorType?.let {
+            feedAnalyticTracker.eventViewContentRecommendation("", adapterPosition, it.typeString)
         }
     }
 

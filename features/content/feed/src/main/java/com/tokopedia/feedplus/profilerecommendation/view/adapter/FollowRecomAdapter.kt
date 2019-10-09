@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.profilerecommendation.view.adapter
 
+import android.support.constraint.ConstraintLayout
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -143,6 +144,7 @@ class FollowRecomAdapter(
         private val btnFollow = itemView.findViewById<UnifyButton>(R.id.btn_follow)
         private val ivBadge = itemView.findViewById<ImageView>(R.id.iv_badge)
         private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
+        private val layoutHolder: ConstraintLayout = itemView.findViewById(R.id.layouting)
 
         fun bind(element: FollowRecomCardViewModel, position: Int) {
             reset()
@@ -177,10 +179,7 @@ class FollowRecomAdapter(
                         imageView,
                         model.url
                 )
-                imageView.setOnClickListener { listener.onThumbnailClicked(model, index, element.authorType) }
-                imageView.addOnImpressionListener(model.impressHolder) {
-                    listener.onFirstTimeImageShown(model, index, element.authorType)
-                }
+                imageView.setOnClickListener { listener.onThumbnailClicked(model, position, element.authorType) }
             }
             tvName.text = element.title
             tvDescription.text = element.description
@@ -198,6 +197,9 @@ class FollowRecomAdapter(
 
             setBadge(element.badgeUrl)
             setButtonFollow(element.isFollowed)
+            layoutHolder.addOnImpressionListener(element.impressHolder) {
+                listener.onFirstTimeCardShown(element, position)
+            }
         }
 
         private fun initViewListener(element: FollowRecomCardViewModel) {
@@ -289,6 +291,6 @@ class FollowRecomAdapter(
         fun onFollowStateChanged(followCount: Int)
         fun onNameOrAvatarClicked(model: FollowRecomCardViewModel)
         fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?)
-        fun onFirstTimeImageShown(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?)
+        fun onFirstTimeCardShown(element: FollowRecomCardViewModel, adapterPosition: Int)
     }
 }
