@@ -144,15 +144,24 @@ class FollowRecomAdapter(
         private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
 
         fun bind(element: FollowRecomCardViewModel, position: Int) {
+            reset()
             initView(element, position)
             initViewListener(element)
         }
 
         fun onViewRecycled() {
+            reset()
+        }
+
+        private fun reset() {
             ivImage1.clearImage()
             ivImage2.clearImage()
             ivImage3.clearImage()
             ivProfile.clearImage()
+
+            ivImage1.setImageDrawable(null)
+            ivImage2.setImageDrawable(null)
+            ivImage3.setImageDrawable(null)
             resetListener()
         }
 
