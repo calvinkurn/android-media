@@ -12,7 +12,7 @@ data class GlobalNavWidgetModel(
 ) {
 
     data class Item(
-            val source: String = "",
+            val categoryName: String = "",
             val name: String = "",
             val info: String = "",
             val imageUrl: String = "",

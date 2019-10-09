@@ -146,7 +146,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
         clickSeeAllUrl = "https://www.tokopedia.com/deals/jakarta/t/asana-grove-hotel-yogyakarta-2566/",
         itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Hotel",
+                    categoryName = "Hotel",
                     name = "Sebelum liburan, book hotelmu disini!",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
                     clickItemApplink = "tokopedia://deals/test-giftn-7419",
@@ -154,7 +154,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 1
             ))
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Deals",
+                    categoryName = "Deals",
                     name = "Inaya Putri Bali",
                     info = "Rp 1.500.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -164,7 +164,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 2
             ))
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Deals",
+                    categoryName = "Deals",
                     name = "Singapore River Safari",
                     info = "Rp 550.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -175,7 +175,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 3
             ))
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Tiket Event",
+                    categoryName = "Tiket Event",
                     name = "DWPX - 10th Anniversary Event with a very looooong name and need to be ellipsize because it exceeds three lines",
                     info = "Rp 509.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -185,7 +185,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 4
             ))
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Deals",
+                    categoryName = "Deals",
                     name = "Jakarta (CGK) - Surabaya (SUB)",
                     info = "Rp 859.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
@@ -195,7 +195,7 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     position = 5
             ))
             it.add(GlobalNavWidgetModel.Item(
-                    source = "Deals",
+                    categoryName = "Deals",
                     name = "Sample super long price",
                     info = "Rp 859.000.000.000.000.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",

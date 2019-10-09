@@ -28,8 +28,8 @@ internal class GlobalNavWidgetCardViewHolder(
             ImageHandler.loadImageFitCenter(context, it, item.imageUrl)
         }
 
-        itemView.globalNavCardSource?.shouldShowWithAction(item.source.isNotEmpty()) {
-            itemView.globalNavCardSource?.text = item.source
+        itemView.globalNavCardSource?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
+            itemView.globalNavCardSource?.text = item.categoryName
         }
 
         itemView.globalNavCardTitle.shouldShowWithAction(item.name.isNotEmpty()) {
