@@ -29,7 +29,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
-import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.Constants;
@@ -233,7 +233,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         TradeInParams params = tradeInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
-        navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+        navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE);
     }
 
     private void getPriceFromSDK(Context context) {
@@ -377,7 +377,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+        if (requestCode == ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Activity.RESULT_OK, data);
                 finish();

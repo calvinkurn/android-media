@@ -5,6 +5,7 @@ ext {
             resourcesCommon                 : ":features:common:resources_common",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
+            commonTradein                   : ":features:common:common_tradein",
 
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",

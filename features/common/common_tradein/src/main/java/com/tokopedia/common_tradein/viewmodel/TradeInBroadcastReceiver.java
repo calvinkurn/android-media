@@ -1,10 +1,10 @@
-package com.tokopedia.tradein.viewmodel;
+package com.tokopedia.common_tradein.viewmodel;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.tradein.view.customview.TradeInTextView;
+import com.tokopedia.common_tradein.customviews.TradeInTextView;
 
 public class TradeInBroadcastReceiver extends BroadcastReceiver {
     private BroadcastListener broadcastListener;

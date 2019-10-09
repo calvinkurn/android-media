@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -64,9 +65,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
-import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
@@ -247,7 +246,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun goToHargaFinal() {
-        val intent = FinalPriceActivity.getHargaFinalIntent(context)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE, null)
 
         if (tradeInParams != null && selectedProductInfo != null) {
             tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
@@ -256,11 +255,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
-        startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
+        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
     }
 
     fun goToTradeInHome() {
-        val intent = TradeInHomeActivity.getIntent(context)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN, null)
 
         if (tradeInParams != null && selectedProductInfo != null) {
             tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
@@ -269,7 +268,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
-        startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
+        startActivityForResult(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)
     }
 
     fun trackClickTradeIn() {
@@ -306,9 +305,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                FinalPriceActivity.FINAL_PRICE_REQUEST_CODE -> if (data != null)
+                ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-                TradeInHomeActivity.TRADEIN_HOME_REQUEST -> if (data != null)
+                ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)

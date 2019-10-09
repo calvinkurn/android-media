@@ -8,6 +8,7 @@ import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Intent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

@@ -61,6 +61,8 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         Uri uri = intent.getData();
         if (uri != null && uri.toString().contains("money_in/device_validation")) {
             TRADEIN_TYPE = TRADEIN_MONEYIN;
+        } else if (uri != null && uri.toString().contains("trade_in/device_validation")) {
+            TRADEIN_TYPE = TRADEIN_MONEYIN;
         } else {
             if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE))
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);

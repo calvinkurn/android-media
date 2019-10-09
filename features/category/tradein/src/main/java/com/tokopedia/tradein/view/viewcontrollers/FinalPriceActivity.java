@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
@@ -25,7 +27,7 @@ import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.DeviceAttr;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
-import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
 import com.tokopedia.tradein_common.Constants;
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
@@ -33,12 +35,11 @@ import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import tradein_common.router.TradeInRouter;
-
 public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
+    public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
     private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     private FinalPriceViewModel viewModel;
     private String orderValue = "";
@@ -253,8 +254,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     private void goToKycActivity() {
-        TradeInRouter router = (TradeInRouter) getApplication();
-        Intent intent = router.getKYCIntent(this, 4);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,null);
+        intent.putExtra(PARAM_PROJECTID_TRADEIN, 4);
         startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 

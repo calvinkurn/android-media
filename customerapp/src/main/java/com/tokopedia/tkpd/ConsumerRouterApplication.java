@@ -369,6 +369,7 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -389,7 +390,6 @@ import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
 import tradein_common.TradeInUtils;
-import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -469,7 +469,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ExpressCheckoutRouter,
         ResolutionRouter,
         NormalCheckoutRouter,
-        TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
         OvoP2pRouter,
@@ -1719,14 +1718,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .deviceId(deviceid)
                 .build();
         return ShipmentActivity.createInstance(context, shipmentFormRequest);
-    }
-
-    @NonNull
-    @Override
-    public Intent getKYCIntent(Context context, int projectId) {
-        Intent intent = UserIdentificationFormActivity.getIntent(this);
-        intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
-        return intent;
     }
 
     public Observable<String> getAtcObsr() {

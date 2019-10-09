@@ -32,4 +32,5 @@
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_saldo_deposit">/saldo</string>
     <string name="path_saldo_intro">/saldo-intro</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
 </resources>

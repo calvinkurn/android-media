@@ -7,6 +7,8 @@ import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse

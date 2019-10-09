@@ -89,6 +89,12 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
     val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info"
+
+    // UserIdentificationFormActivity
+    // tokopedia-android-internal://global/user-identification-form
+    @JvmField
+    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form"
+
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
 
