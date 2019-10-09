@@ -305,7 +305,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 .promoCheckoutModule(new PromoCheckoutModule())
                 .build();
         cartListComponent.inject(this);
-        cartAdapter = new CartAdapter(this, this, this, this);
+        cartAdapter = new CartAdapter(this, this, this, this, this);
     }
 
     @Override
@@ -1529,7 +1529,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private void clearRecyclerView() {
         cartAdapter.unsubscribeSubscription();
         cartRecyclerView.setAdapter(null);
-        cartAdapter = new CartAdapter(null, null, null, null);
+        cartAdapter = new CartAdapter(null, null, null, null, null);
         cartRecyclerView.removeAllViews();
         cartRecyclerView.getRecycledViewPool().clear();
     }
@@ -1799,7 +1799,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (cartRecyclerView.getAdapter() == null) {
-            cartAdapter = new CartAdapter(this, this, this, this);
+            cartAdapter = new CartAdapter(this, this, this, this, this);
             cartRecyclerView.setAdapter(cartAdapter);
         }
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;

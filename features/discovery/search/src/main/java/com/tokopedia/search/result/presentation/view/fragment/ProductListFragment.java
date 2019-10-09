@@ -25,7 +25,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
@@ -409,8 +409,8 @@ public class ProductListFragment
 
     private String generateUniqueId() {
         return userSession.isLoggedIn() ?
-                AuthHelperJava.getMD5Hash(userSession.getUserId()) :
-                AuthHelperJava.getMD5Hash(getRegistrationId());
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId());
     }
 
     @Override
