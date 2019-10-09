@@ -14,7 +14,6 @@
         android:ellipsize="end"
         android:gravity="left"
         android:lineHeight="@dimen/dp_18"
-        android:textColor="@color/Neutral_N200"
         app:typographyType="body_3"
         tools:text="Tanggal Transaksi" />
 
