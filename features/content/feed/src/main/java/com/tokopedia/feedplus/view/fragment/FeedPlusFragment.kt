@@ -2,12 +2,16 @@ package com.tokopedia.feedplus.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.annotation.RestrictTo
+import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -107,17 +111,31 @@ import java.util.ArrayList
 import javax.inject.Inject
 
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
+import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
+import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
 import com.tokopedia.track.TrackApp
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_feed_plus.*
 
 /**
  * @author by nisie on 5/15/17.
@@ -141,7 +159,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        HighlightAdapter.HighlightListener {
+        HighlightAdapter.HighlightListener,
+        OnboardingAdapter.InterestPickItemListener{
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -158,6 +177,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
 
     @Inject
     @get:RestrictTo(RestrictTo.Scope.TESTS)
@@ -213,12 +236,35 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) GraphqlClient.init(activity!!)
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
+        }
         initVar()
         retainInstance = true
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        feedOnboardingPresenter.onboardingResp.observe(this, Observer {
+            hideAdapterLoading()
+            when (it) {
+                is Success -> onSuccessGetOnboardingData(it.data)
+                is Fail -> presenter.fetchFirstPage()
+            }
+        })
+
+        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
+            view?.hideLoadingTransparent()
+            when (it) {
+                is Success -> onSuccessSubmitInterestPickData(it.data)
+                is Fail  -> onErrorSubmitInterestPickData(it.throwable)
+            }
+        })
+    }
+
     private fun initVar() {
-        val typeFactory = FeedPlusTypeFactoryImpl(this, analytics, userSession)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession)
         adapter = FeedPlusAdapter(typeFactory)
         adapter.setOnLoadListener { totalCount ->
             val size = adapter.getlist().size
@@ -332,7 +378,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
-        presenter.refreshPage()
+        feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
     }
 
     override fun onDestroyView() {
@@ -381,6 +427,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
+        parentFragment?.let {
+            (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
+        }
+        swipe_refresh_layout.setEnabled(true);
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -536,6 +586,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     )
                 }
             }
+            OPEN_INTERESTPICK_DETAIL -> {
+                val selectedIdList = data.getIntegerArrayListExtra(FeedOnboardingFragment.EXTRA_SELECTED_IDS)
+                adapter.getlist().firstOrNull { it is OnboardingViewModel }?.let {
+                    (it as? OnboardingViewModel)?.dataList?.forEach {
+                        it.isSelected = selectedIdList.contains(it.id)
+                    }
+                }
+                adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
+
+            }
             else -> {
             }
         }
@@ -648,7 +708,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun loadData(isVisibleToUser: Boolean) {
         if (isVisibleToUser && isAdded && activity != null && presenter != null) {
             if (!isLoadedOnce) {
-                presenter.fetchFirstPage()
+                feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
             }
 
@@ -1519,6 +1579,66 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .show()
     }
 
+    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        activity?.let {
+            val bundle = Bundle()
+            bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))
+            startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, bundle), OPEN_INTERESTPICK_DETAIL)
+        }
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        view?.showLoadingTransparent()
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
+    }
+
+    private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
+        if (!data.isEnableOnboarding) {
+            presenter.fetchFirstPage()
+        } else {
+            finishLoading()
+            clearData()
+            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
+            feedOnboardingData.addAll(data.dataList)
+            data.dataList = feedOnboardingData
+            adapter.addItem(data)
+            parentFragment?.let {
+                (it as FeedPlusContainerFragment).hideAllFab(true)
+            }
+            swipe_refresh_layout.setRefreshing(false);
+            swipe_refresh_layout.setEnabled(false);
+        }
+    }
+
+
+    private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
+        context?.let {
+            when (data.source) {
+                FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
+                    startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, Bundle()), OPEN_INTERESTPICK_DETAIL)
+                }
+                FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
+                    startActivityForResult(FollowRecomActivity.createIntent(it, data.idList.toIntArray()), OPEN_INTERESTPICK_RECOM_PROFILE)
+                }
+
+            }
+        }
+    }
+
+    private fun onErrorSubmitInterestPickData(throwable: Throwable) {
+        view?.let{
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG
+            )
+        }
+
+    }
+
     private fun doShare(body: String, title: String) {
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
@@ -1735,6 +1855,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private val OPEN_KOL_PROFILE = 13
         private val OPEN_CONTENT_REPORT = 1310
         private val CREATE_POST = 888
+        private val OPEN_INTERESTPICK_DETAIL = 1234
+        private val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private val DEFAULT_VALUE = -1
         val REQUEST_LOGIN = 345
 

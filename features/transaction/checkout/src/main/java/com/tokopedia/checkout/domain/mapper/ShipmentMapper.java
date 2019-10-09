@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -28,6 +29,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldTieringData;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
+import com.tokopedia.transactiondata.entity.response.cartlist.Ticker;
 import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
@@ -71,6 +73,11 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
+        if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
+            Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
+            dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+        }
+
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
             cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
@@ -105,7 +112,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     egoldTieringModel.setBasisAmount(data.getBasisAmount());
                     egoldTieringModel.setMaxAmount(data.getMaxAmount());
                     egoldTieringModel.setMinAmount(data.getMinAmount());
-                    egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
+                    egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
                     egoldTieringModelArrayList.add(egoldTieringModel);
                 }
                 egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
@@ -448,6 +455,12 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
+                                        !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    productResult.setFreeShipping(true);
+                                    productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
+                                }
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     TradeInInfo tradeInInfo = new TradeInInfo();
