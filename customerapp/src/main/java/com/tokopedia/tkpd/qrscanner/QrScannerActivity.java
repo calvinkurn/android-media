@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -42,6 +44,8 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -65,6 +69,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private boolean isTorchOn;
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private boolean mNeedResult = false;
 
     public static Intent newInstance(Context context, boolean needResult) {
         Intent intent = new Intent(context, QrScannerActivity.class);
@@ -92,6 +97,21 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.QR_SCANNEER, uri);
+            if (!paths.isEmpty()) {
+                String param = paths.get(0);
+                mNeedResult = param.equals("1");
+            }
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (!mNeedResult) {
+                mNeedResult = extras.getBoolean(QR_NEED_RESULT, false);
+            }
+        }
+
         progressBar = findViewById(R.id.progress_bar_scanner);
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(
@@ -232,7 +252,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected void findResult(BarcodeResult barcodeResult) {
-        if (getIntent().getBooleanExtra(QR_NEED_RESULT, false)) {
+        if (mNeedResult) {
             Intent intent = new Intent();
             intent.putExtra("scanResult", barcodeResult.getText());
             setResult(RESULT_OK, intent);
