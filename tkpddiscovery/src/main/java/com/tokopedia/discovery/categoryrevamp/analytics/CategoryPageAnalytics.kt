@@ -187,6 +187,7 @@ class CategoryPageAnalytics {
                               productName: String,
                               price: Int,
                               position: Int,
+                              categoryNamePath:String,
                               pathList: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -204,6 +205,7 @@ class CategoryPageAnalytics {
                 KEY_ID, product_id,
                 "price", price,
                 "brand", "",
+                "category",categoryNamePath,
                 "variant", "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position,
