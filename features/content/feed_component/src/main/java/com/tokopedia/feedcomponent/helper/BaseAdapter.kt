@@ -35,4 +35,9 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         return delegatesManager.onBindViewHolder(itemList, position, holder)
     }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is BaseViewHolder) { holder.onViewRecycled() }
+    }
 }
