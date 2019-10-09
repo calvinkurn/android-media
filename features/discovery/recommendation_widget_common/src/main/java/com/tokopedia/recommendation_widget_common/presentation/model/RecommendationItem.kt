@@ -35,7 +35,8 @@ class RecommendationItem(val productId: Int,
                          val minOrder: Int,
                          val location: String,
                          val badgesUrl: List<String?>,
-                         val type: String): ImpressHolder(){
+                         val type: String,
+                         val isGold: Boolean): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }

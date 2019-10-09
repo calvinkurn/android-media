@@ -5,21 +5,9 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
-import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.model.*;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
@@ -107,6 +95,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
+    public int type(RecommendationTitleViewModel titleViewModel) {
+        return RecommendationTitleViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -129,6 +122,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
+        } else if(type == RecommendationTitleViewHolder.LAYOUT){
+            viewHolder = new RecommendationTitleViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

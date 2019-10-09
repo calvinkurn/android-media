@@ -3,16 +3,15 @@ package com.tokopedia.search.result.presentation.presenter.product;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
-import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.ProductViewModel;
+import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
+import com.tokopedia.search.result.presentation.model.*;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -37,11 +36,15 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
+import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
+
 final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
+    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "search_not_found";
+    private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
 
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
@@ -52,6 +55,8 @@ final class ProductListPresenter
     @Inject
     @Named(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL_USE_CASE)
     UseCase<Boolean> productWishlistUrlUseCase;
+    @Inject
+    GetRecommendationUseCase recommendationUseCase;
     @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
@@ -549,6 +554,7 @@ final class ProductListPresenter
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
             getViewToShowEmptySearch(productViewModel);
+            getViewToShowRecommendationItem();
         } else {
             getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
             getViewToShowProductList(productViewModel);
@@ -603,6 +609,35 @@ final class ProductListPresenter
         getView().removeLoading();
         getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
         getView().setTotalSearchResultCount("0");
+    }
+
+    private void getViewToShowRecommendationItem(){
+        getView().addLoading();
+        recommendationUseCase.execute(
+                recommendationUseCase.getRecomParams(1, DEFAULT_VALUE_X_SOURCE, SEARCH_PAGE_NAME_RECOMMENDATION, new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
+                    @Override
+                    public void onCompleted() {
+                        getView().removeLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null){
+                            ProductViewModel productViewModel = new RecommendationViewModelMapper().convertToProductViewModel(recommendationWidgets.get(0));
+                            List<Visitable> items = new ArrayList();
+                            items.add(new RecommendationTitleViewModel(recommendationWidgets.get(0).getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidgets.get(0).getTitle()));
+                            items.addAll(productViewModel.getProductList());
+                            getView().addRecommendationList(items);
+                        }
+                    }
+                }
+        );
     }
 
     private void getViewToShowProductList(ProductViewModel productViewModel) {

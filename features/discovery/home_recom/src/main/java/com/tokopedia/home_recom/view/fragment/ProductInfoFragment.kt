@@ -468,7 +468,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
             badgesUrl = listOf(),
-            type = ""
+            type = "",
+            isGold = false
     )
 
     /**

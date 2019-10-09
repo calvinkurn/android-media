@@ -39,6 +39,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.RecommendationTracking;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
@@ -343,6 +344,14 @@ public class ProductListFragment
         startShowCase();
     }
 
+    public void addRecommendationList(List<Visitable> list){
+        isListEmpty = false;
+
+        sendProductRecommendationImpressionTrackingEvent(list);
+
+        adapter.appendItems(list);
+    }
+
     private void stopSearchResultPagePerformanceMonitoring() {
         recyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -371,6 +380,20 @@ public class ProductListFragment
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey());
+    }
+
+    private void sendProductRecommendationImpressionTrackingEvent(List<Visitable> list) {
+        for (int i = 0; i < list.size(); i++) {
+            Object object = list.get(i);
+            if (object instanceof ProductItemViewModel) {
+                ProductItemViewModel item = (ProductItemViewModel) object;
+                if(userSession.isLoggedIn()){
+                    RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(i));
+                } else {
+                    RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(i));
+                }
+            }
+        }
     }
 
     private void loadMoreProduct(final int startRow) {

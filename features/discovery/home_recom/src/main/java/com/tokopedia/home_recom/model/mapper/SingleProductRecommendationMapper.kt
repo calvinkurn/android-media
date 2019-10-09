@@ -47,8 +47,8 @@ object SingleProductRecommendationMapper {
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
                     data.badges?.map { it.imageUrl } ?: emptyList(),
-                    layoutType ?: ""
-
+                    layoutType ?: "",
+                    false
             )
          } ?: emptyList()
     }

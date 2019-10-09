@@ -34,6 +34,8 @@ public interface ProductListSectionContract {
 
         void setProductList(List<Visitable> list);
 
+        void addRecommendationList(List<Visitable> list);
+
         void disableWishlistButton(String productId);
 
         void enableWishlistButton(String productId);
