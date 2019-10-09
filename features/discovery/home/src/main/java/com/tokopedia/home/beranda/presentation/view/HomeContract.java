@@ -38,7 +38,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag);
+        void setItems(List<Visitable> items, int repositoryFlag);
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
