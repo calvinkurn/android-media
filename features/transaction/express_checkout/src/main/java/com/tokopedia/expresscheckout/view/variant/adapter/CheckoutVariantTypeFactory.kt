@@ -25,6 +25,8 @@ interface CheckoutVariantTypeFactory {
 
     fun type(viewModel: InsuranceViewModel): Int
 
+    fun type(viewModel: InsuranceRecommendationViewModel): Int
+
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
 }

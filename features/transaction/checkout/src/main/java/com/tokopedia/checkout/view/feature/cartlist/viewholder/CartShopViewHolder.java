@@ -182,7 +182,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     tickerPromoStackingCheckoutView.enableView();
                     if (disabledItem > 0) {
                         if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
-                            cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
+                                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
                             actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                             tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
                             tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
@@ -330,6 +330,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                             break;
                         }
                     }
+
                     cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         actionListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);

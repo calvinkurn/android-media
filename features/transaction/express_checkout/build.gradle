@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.expressCheckoutCommon)

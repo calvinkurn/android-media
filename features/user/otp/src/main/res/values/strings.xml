@@ -11,12 +11,19 @@
     <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
     <string name="verification_for_security">Verifikasi untuk Keamanan</string>
     <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
+
+    <string name="pin_tokopedia_title">PIN Tokopedia</string>
+
     <string name="dialog_cancel">BATAL</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="not_received_code">Tidak menerima kode?</string>
     <string name="resend">Kirim ulang</string>
     <string name="or_small">atau</string>
+    <string name="or_small_with_space">atau</string>
+
     <string name="use_other_method">gunakan metode verifikasi lain</string>
+    <string name="other_method">Metode Verifikasi Lain</string>
+
     <string name="button_verify">Verifikasi</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
