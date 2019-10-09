@@ -40,6 +40,10 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.listener = listener;
     }
 
+    public void setSettingItems(List<SettingItemViewModel> settingItems) {
+        this.settingItems = settingItems;
+    }
+
     public void setListener(OnSettingItemClicked listener) {
         this.listener = listener;
     }

@@ -16,12 +16,12 @@ import com.tokopedia.home.account.domain.UserProfileDobUseCase
 import com.tokopedia.home.account.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOptionsView>(), CoroutineScope {
+class SettingsPresenter(var context: Context?,
+                        var userProfileSafeModeUseCase: UserProfileSafeModeUseCase?,
+                        var userProfileDobUseCase: UserProfileDobUseCase?,
+                        var setUserProfileSafeModeUseCase: SetUserProfileSafeModeUseCase?) : BaseDaggerPresenter<SettingOptionsView>() {
+
     private lateinit var userSession: UserSessionInterface
     private var graphqlRepository: GraphqlRepository
 
@@ -29,7 +29,6 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
     var savedSafeModeValue: MutableLiveData<Boolean>? = MutableLiveData()
 
     init {
-        adultAgeVerifiedLiveData?.postValue(false)
         adultAgeVerifiedLiveData?.observe(context as LifecycleOwner, Observer {
             view.refreshSettingOptionsList()
             if (it!!)
@@ -46,17 +45,13 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
         })
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
     fun verifyUserAge() {
         if (getUserLoginState().isLoggedIn)
             fetchUserDOB()
     }
 
     private fun fetchUserDOB() {
-        val userProfileDobUseCase = UserProfileDobUseCase(context, graphqlRepository)
-        userProfileDobUseCase.executeQuerySafeMode(
+        userProfileDobUseCase?.executeQuerySafeMode(
                 { (profileDobResponse) ->
                     processUserDOB(profileDobResponse)
                 },
@@ -76,8 +71,7 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
     }
 
     fun getAndSaveSafeModeValue() {
-        val userProfileSafeModeUseCase = UserProfileSafeModeUseCase(context, graphqlRepository)
-        userProfileSafeModeUseCase.executeQuerySafeMode(
+        userProfileSafeModeUseCase?.executeQuerySafeMode(
                 { (profileSettingResponse) ->
                     saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, profileSettingResponse.safeMode)
                     savedSafeModeValue?.postValue(profileSettingResponse.safeMode)
@@ -96,8 +90,7 @@ class SettingsPresenter(var context: Context?) : BaseDaggerPresenter<SettingOpti
 
     fun onClickAcceptButton() {
         val savedValue: Boolean = !savedSafeModeValue?.value!!
-        val setUserProfileSafeModeUseCase = SetUserProfileSafeModeUseCase(context, graphqlRepository)
-        setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
+        setUserProfileSafeModeUseCase?.executeQuerySetSafeMode(
                 { (userProfileSettingUpdate) ->
                     if (userProfileSettingUpdate.isSuccess) {
                         saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, savedValue)

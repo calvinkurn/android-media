@@ -17,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -43,6 +41,7 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.util.NotifPreference;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
+import com.tokopedia.home.account.di.module.SettingsModule;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
@@ -97,8 +96,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     WalletPref walletPref;
     @Inject
     NotifPreference notifPreference;
+    @Inject
+    SettingsPresenter settingsPresenter;
 
-    private SettingsPresenter settingsPresenter;
     private View loadingView;
     private View baseSettingView;
 
@@ -129,7 +129,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     private boolean hasLocationPermission() {
         if (getActivity() != null) {
             return permissionCheckerHelper.hasPermission(getActivity(),
-                            new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+                    new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
 
         }
         return false;
@@ -140,11 +140,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         AccountLogoutComponent component = DaggerAccountLogoutComponent.builder().baseAppComponent(
                 ((BaseMainApplication) getActivity().getApplication())
-                        .getBaseAppComponent()).build();
+                        .getBaseAppComponent()).settingsModule(new SettingsModule(getActivity())).build();
         component.inject(this);
         presenter.attachView(this);
-        settingsPresenter = new SettingsPresenter(getActivity());
         settingsPresenter.attachView(this);
+        settingsPresenter.verifyUserAge();
         return inflater.inflate(R.layout.fragment_general_setting, container, false);
     }
 
@@ -153,7 +153,6 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.logout_status);
         baseSettingView = view.findViewById(R.id.setting_layout);
-        settingsPresenter.verifyUserAge();
         adapter.setSwitchSettingListener(this);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
@@ -189,11 +188,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true));
 
-        if(settingsPresenter.getAdultAgeVerifiedLiveData()!=null
-                && settingsPresenter.getAdultAgeVerifiedLiveData().getValue()!=null
+        if (settingsPresenter.getAdultAgeVerifiedLiveData() != null
+                && settingsPresenter.getAdultAgeVerifiedLiveData().getValue() != null
                 && settingsPresenter.getAdultAgeVerifiedLiveData().getValue())
             settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
-                getString(R.string.title_safe_mode_setting),getString(R.string.subtitle_safe_mode_setting), true));
+                    getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -276,11 +275,11 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
     }
 
-    private void sendNotif(){
+    private void sendNotif() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
         boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
-        if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
+        if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
             notifPreference.setDisplayedGimmickNotif(true);
             presenter.sendNotif(
                     notifCenterSendNotifData -> {
@@ -289,13 +288,13 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                     },
                     throwable -> {
                         doLogout();
-                        if(getView() != null){
+                        if (getView() != null) {
                             String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
                             Toaster.Companion.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
                         }
                         return null;
                     });
-        }else {
+        } else {
             doLogout();
         }
     }
@@ -376,7 +375,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             case SettingConstant.SETTING_GEOLOCATION_ID:
                 return hasLocationPermission();
             case SettingConstant.SETTING_SAFE_SEARCH_ID:
-                return isItemSelected(getString(R.string.pref_safe_mode),false);
+                return isItemSelected(getString(R.string.pref_safe_mode), false);
             default:
                 return false;
         }
@@ -404,7 +403,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             case SettingConstant.SETTING_GEOLOCATION_ID:
                 createAndShowLocationAlertDialog(currentValue);
                 break;
-                case SettingConstant.SETTING_SAFE_SEARCH_ID:
+            case SettingConstant.SETTING_SAFE_SEARCH_ID:
                 createAndShowSafeModeAlertDialog(currentValue);
                 break;
         }
@@ -502,7 +501,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         String dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button);
         String dialogNegativeButton = getString(R.string.account_home_label_cancel);
 
-        if(currentValue){
+        if (currentValue) {
             dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title);
             dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg);
             dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button);
@@ -517,15 +516,17 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     }
 
     @Override
-    public void refreshSafeSearchOption(){
-        if(adapter!=null)
+    public void refreshSafeSearchOption() {
+        if (adapter != null)
             adapter.updateSettingItem(SettingConstant.SETTING_SAFE_SEARCH_ID);
     }
 
     @Override
     public void refreshSettingOptionsList() {
-        if(adapter!=null)
+        if (adapter != null) {
+            adapter.setSettingItems(getSettingItems());
             adapter.notifyDataSetChanged();
+        }
     }
 
     public void onClickAcceptButton() {
