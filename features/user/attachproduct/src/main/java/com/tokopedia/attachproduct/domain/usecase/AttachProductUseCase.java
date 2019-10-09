@@ -41,7 +41,7 @@ public class AttachProductUseCase extends UseCase<List<AttachProductItemViewMode
         RequestParams param = RequestParams.create();
         param.putString(KEYWORD_KEY, query);
         param.putString(SHOP_ID_KEY, shopId);
-        param.putString(PAGE_KEY, String.valueOf(page * 10));
+        param.putString(PAGE_KEY, String.valueOf((page-1) * 10));
         param.putString(SOURCE_KEY, "attach_product");
         param.putString(PER_PAGE_KEY, "11");
         param.putString(DEVICE_KEY, "android");

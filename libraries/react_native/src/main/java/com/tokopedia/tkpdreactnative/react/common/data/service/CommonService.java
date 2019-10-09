@@ -1,4 +1,4 @@
-package com.tokopedia.core.base.common.service;
+package com.tokopedia.tkpdreactnative.react.common.data.service;
 
 import java.util.HashMap;
 import java.util.Map;

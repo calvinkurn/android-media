@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdreactnative.react.data.datasource;
 
-import com.tokopedia.core.base.common.service.CommonService;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 
 import java.util.Map;
 

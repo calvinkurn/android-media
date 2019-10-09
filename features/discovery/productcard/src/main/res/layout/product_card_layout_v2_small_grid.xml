@@ -141,11 +141,11 @@
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
             app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:typographyType="small"
-            tools:text="9502834723847548950984923842-398748932748932759732989084327480327490849032749000"
             android:ellipsize="end"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:maxLines="1"
+            tools:text="Rp 99999999999999999999999999999999999999999999999999999999999999999999999999999999"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -166,7 +166,7 @@
             app:layout_constraintTop_toBottomOf="@id/labelDiscount"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="Rp 192389384938493849123121233244324236546456786447996"
+            tools:text="Rp 9999999999999999999999999999999999999999"
             tools:visibility="visible" />
 
         <LinearLayout
@@ -292,6 +292,21 @@
             tools:visibility="gone"
             tools:text="Credibility Label" />
 
+        <ImageView
+            android:id="@+id/imageFreeOngkirPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelOffers"
             android:layout_width="wrap_content"
@@ -300,7 +315,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             tools:visibility="visible"
             tools:text="Offers Label" />
@@ -313,7 +328,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:scaleType="fitXY"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/labelOffers"
+            app:layout_constraintTop_toTopOf="@id/imageFreeOngkirPromo"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
@@ -335,7 +350,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelOffers"
+            app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
             app:typographyType="heading_6"
             tools:visibility="visible" />
 
