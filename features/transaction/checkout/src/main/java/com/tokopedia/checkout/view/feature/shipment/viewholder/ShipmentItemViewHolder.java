@@ -967,11 +967,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
                     .getShipperPrice();
             if (voucherLogisticItemUiModel != null) {
-                if (shippingPrice - voucherLogisticItemUiModel.getCouponAmountRaw() <= 0) {
-                    shippingPrice = 0;
-                } else {
-                    shippingPrice = shippingPrice - voucherLogisticItemUiModel.getCouponAmountRaw();
-                }
+                shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate();
             }
             Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
             if (useInsurance != null && useInsurance) {
