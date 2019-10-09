@@ -150,4 +150,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    fun addWishlist() {}
+
+    fun removeWishlist() {}
+
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
+
 }

@@ -241,6 +241,10 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         // TO_DO: Implement Wishlist Click
-        Log.d("Test: ", "onWishlistClick")
+        if (viewModel.isLoggedIn()) {
+            Log.d("Test: ", "onWishlistClick is loggedin")
+        } else {
+            Log.d("Test: ", "onWishlistClick is not loggedin")
+        }
     }
 }
