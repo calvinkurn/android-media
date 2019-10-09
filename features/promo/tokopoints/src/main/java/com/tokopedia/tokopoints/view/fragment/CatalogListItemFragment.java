@@ -103,13 +103,13 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
-        mSwipeToRefresh = rootView.findViewById(R.id.swipe_refresh_layout);
+        mSwipeToRefresh = rootView.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
         if (getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
         } else {
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
         }
-        mContainer = rootView.findViewById(R.id.container);
+        mContainer = rootView.findViewById(com.tokopedia.design.R.id.container);
         return rootView;
     }
 
@@ -428,14 +428,14 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -546,9 +546,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         this.showFirstTimeLoader = showLoader;
         mAdapter = new CatalogListAdapter(mPresenter, getContext(), this, categoryId, subCategoryId, pointRange, false);
         if (mRecyclerViewCatalog.getItemDecorationCount() == 0) {
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)));
         }
         mRecyclerViewCatalog.setAdapter(mAdapter);
         mAdapter.startDataLoading();

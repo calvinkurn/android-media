@@ -17,9 +17,9 @@
     <string name="host_tokopoints">tokopoints</string>
     <string name="path_tokopoint_home">/home</string>
     <string name="path_tokopoints_coupon">/kupon-saya</string>
-    <string name="path_tokopoints_coupon_slug">/kupon-saya-slug/</string>
-    <string name="path_tokopoints_coupon_details">/kupon-saya-detail/</string>
-    <string name="path_tokopoints_catalog_details">/tukar-point-detail/</string>
-    <string name="path_tokopoints_catalog_listing">/tukar-point/</string>
-    <string name="tp_title_tokopoints">TokoPoints</string>
+    <string name="path_tokopoints_coupon_slug">/kupon-saya-slug</string>
+    <string name="path_tokopoints_coupon_details">/kupon-saya-detail</string>
+    <string name="path_tokopoints_catalog_details">/tukar-point-detail</string>
+    <string name="path_tokopoints_catalog_listing">/tukar-point</string>
+    <string name="title_tokopoints">TokoPoints</string>
 </resources>

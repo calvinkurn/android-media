@@ -93,7 +93,7 @@ public class TickerPagerAdapter extends PagerAdapter {
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(context.getResources().getColor(R.color.tkpd_main_green));
+                        ds.setColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
                     }
                 });
             } else {

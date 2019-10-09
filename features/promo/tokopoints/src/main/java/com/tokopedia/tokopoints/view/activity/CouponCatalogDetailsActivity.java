@@ -41,12 +41,10 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
 
     private void forDeeplink() {
         bundle = getIntent().getExtras();
-        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_VIEW) && getIntent().getData() != null){
-            List<String> list = UriUtil.destructureUri(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL,getIntent().getData());
-            if (list.size() > 0){
-                bundle = new Bundle();
-                bundle.putString("catalog_code",list.get(0));
-            }
+        if (bundle == null)
+            bundle = new Bundle();
+        if (getIntent().getData() != null){
+            UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL,getIntent().getData(),bundle);
         }
     }
 

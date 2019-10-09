@@ -60,7 +60,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(view);
             label = view.findViewById(R.id.text_time_label);
             value = view.findViewById(R.id.text_time_value);
-            imgBanner = view.findViewById(R.id.img_banner);
+            imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
             imgLabel = view.findViewById(R.id.img_time);
             ivMinTxn = view.findViewById(R.id.iv_rp);
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
@@ -154,7 +154,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             int minutes = (int) ((l / (1000 * 60)) % 60);
                             int hours = (int) ((l / (1000 * 60 * 60)) % 24);
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
                             holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
                                     holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -170,12 +170,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 } else {
                     holder.progressTimer.setVisibility(View.GONE);
                     holder.value.setPadding(0, 0, 0, 0);
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
 
                 }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
             }
 
             enableOrDisableImages(holder, item);
@@ -203,8 +203,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void enableImages(ViewHolder holder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(),  com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override

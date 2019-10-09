@@ -102,7 +102,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -699,11 +698,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-        AnalyticsTrackerUtil.sendEvent(getActivity(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
+
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                HomePageTracking.EVENT_TOKO_POINT,
+                HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
+                HomePageTracking.ACTION_CLICK_POINT,
+                HomePageTracking.LABEL_TOKOPOINTS));
     }
 
     @Override

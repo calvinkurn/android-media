@@ -164,7 +164,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
                         anim.setDuration(DELAY_BACK_MS);
                         anim.start();
-                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
+                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
                         mSwipeIcon.setVisibility(VISIBLE);
 
                         if (mOnSwipeListener != null) {
@@ -181,7 +181,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     private int getMaxSwipeWidth() {
-        return mView.getWidth() - getResources().getDimensionPixelOffset(R.dimen.dp_6);
+        return mView.getWidth() - getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
     }
 
     private boolean isLeftSwipe(float dx) {
@@ -210,7 +210,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
         anim.setDuration(DELAY_BACK_MS);
         anim.start();
-        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
+        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
 
         mCouponContainer.postDelayed(new Runnable() {
             @Override

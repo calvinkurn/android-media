@@ -64,7 +64,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         mContainerMain.setDisplayedChild(1);
 
         if (mRecyclerView.getItemDecorationCount() == 0) {
-            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_2), 0, 0));
+            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_2), 0, 0));
         }
 
         mAdapter = new PointHistoryListAdapter(getContext(), this);
@@ -208,6 +208,6 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
                 RouteManager.route(getContext(),CommonConstant.WebLink.INFO_EXPIRED_POINTS,getString(R.string.tp_title_tokopoints)));
         dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false);
         dialog.show();
-        view.findViewById(R.id.close_button).setOnClickListener(v -> dialog.dismiss());
+        view.findViewById(com.tokopedia.design.R.id.close_button).setOnClickListener(v -> dialog.dismiss());
     }
 }

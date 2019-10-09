@@ -58,7 +58,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         updateTitle(getString(R.string.tp_label_my_coupon));
         getComponent().inject(this);
         mPresenter.attachView(this);
-        mContainerMain = findViewById(R.id.container);
+        mContainerMain = findViewById(com.tokopedia.design.R.id.container);
         initViews();
         UserSessionInterface userSession = new UserSession(this);
 //        if (userSession.isLoggedIn()) {
@@ -78,17 +78,11 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
 //        } else {
 //            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
 //        }
-        List<String> list = new ArrayList<>();
-        if (getIntent() != null && getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_VIEW) && getIntent().getData() != null ) {
-            list = UriUtil.destructureUri(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, getIntent().getData());
+        Bundle bundle = new Bundle();
+        if ( getIntent().getData() != null ) {
+            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, getIntent().getData(),bundle);
         }
-        if (list.size() == 0 ) {
-            startActivity(CouponListingStackedActivity.getCallingIntent(this));
-        } else {
-            Bundle bundle = new Bundle();
-            bundle.putString("slug",list.get(0));
-            startActivity(CouponListingStackedActivity.getCallingIntent(this, bundle));
-        }
+        startActivity(CouponListingStackedActivity.getCallingIntent(this, bundle));
     }
 
     @Override

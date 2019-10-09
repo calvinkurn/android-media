@@ -264,7 +264,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private void slideUp() {
         if (bottomViewMembership.getVisibility() != View.VISIBLE) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.dp_90));
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_90));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
@@ -406,11 +406,11 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     private void initViews(@NonNull View view) {
-        coordinatorLayout = view.findViewById(R.id.container);
+        coordinatorLayout = view.findViewById(com.tokopedia.design.R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
         mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_arrow_right_grey), null);
+                (getActivity(), com.tokopedia.design.R.drawable.ic_arrow_right_grey), null);
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
@@ -422,7 +422,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom);
         mImgBackground = view.findViewById(R.id.img_bg_header);
-        appBarHeader = view.findViewById(R.id.app_bar);
+        appBarHeader = view.findViewById(com.tokopedia.abstraction.R.id.app_bar);
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         tickerContainer = view.findViewById(R.id.cons_ticker_container);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
@@ -474,14 +474,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 if (tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), com.tokopedia.session.R.color.green_50);
                 } else {
                     ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
                 }
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);
@@ -677,14 +677,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -795,9 +795,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             return;
         }
 
-        ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
+        ViewPager pager = getView().findViewById(com.tokopedia.design.R.id.view_pager_ticker);
         pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
-        CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
+        CirclePageIndicator pageIndicator = getView().findViewById(com.tokopedia.design.R.id.page_indicator_ticker);
         View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
         hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
 

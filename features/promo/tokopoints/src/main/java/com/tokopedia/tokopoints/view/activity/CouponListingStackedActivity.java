@@ -52,7 +52,7 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         updateTitle(getString(R.string.tp_label_my_coupon_new));
         getComponent().inject(this);
         mPresenter.attachView(this);
-        mContainerMain = findViewById(R.id.container);
+        mContainerMain = findViewById(com.tokopedia.design.R.id.container);
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {

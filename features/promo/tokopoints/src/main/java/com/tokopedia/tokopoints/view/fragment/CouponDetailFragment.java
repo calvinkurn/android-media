@@ -186,7 +186,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(R.id.container);
+        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
         llBottomBtn = view.findViewById(R.id.ll_bottom_button);
     }
 
@@ -396,14 +396,14 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
         try {
             this.mRealCode = realCode;
-            TextView btnAction2 = getView().findViewById(R.id.btn_continue);
+            TextView btnAction2 = getView().findViewById(com.tokopedia.session.R.id.btn_continue);
             ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
 
             if (realCode != null && !realCode.isEmpty()) {
                 btnAction2.setText(R.string.tp_label_use);
                 btnAction2.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.white));
                 mSubscriptionCouponTimer.unsubscribe();
                 return;
             }
@@ -412,7 +412,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                 btnAction2.setText(R.string.tp_label_refresh_repeat);
                 btnAction2.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+                btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.white));
                 mSubscriptionCouponTimer.unsubscribe();
             }
         } catch (Exception e) {
@@ -427,12 +427,12 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         }
 
         try {
-            TextView btnAction2 = getView().findViewById(R.id.btn_continue);
+            TextView btnAction2 = getView().findViewById(com.tokopedia.session.R.id.btn_continue);
             ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
             btnAction2.setText(R.string.tp_label_refresh_repeat);
             btnAction2.setEnabled(true);
             progressBar.setVisibility(View.GONE);
-            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.white));
             mSubscriptionCouponTimer.unsubscribe();
         } catch (Exception e) {
             e.printStackTrace();
@@ -442,14 +442,14 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -459,10 +459,10 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         }
 
         mCouponName = data.getTitle();
-        TextView description = getView().findViewById(R.id.tv_title);
+        TextView description = getView().findViewById(com.tokopedia.design.R.id.tv_title);
         TextView label = getView().findViewById(R.id.text_time_label);
         TextView value = getView().findViewById(R.id.text_time_value);
-        TextView btnAction2 = getView().findViewById(R.id.btn_continue);
+        TextView btnAction2 = getView().findViewById(com.tokopedia.session.R.id.btn_continue);
         ImageView imgBanner = getView().findViewById(R.id.img_banner_coupon);
         ImageView imgLabel = getView().findViewById(R.id.img_time);
         TextView textMinExchangeValue = getView().findViewById(R.id.tv_min_txn_value);
@@ -522,7 +522,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             } else {
                 if (getArguments() != null && getArguments().getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
                     btnAction2.setEnabled(false);
-                    btnAction2.setTextColor(getResources().getColor(R.color.black_12));
+                    btnAction2.setTextColor(getResources().getColor(com.tokopedia.abstraction.R.color.black_12));
                     progressBar.setVisibility(View.VISIBLE);
                     btnAction2.setText("");
                     mPresenter.reFetchRealCode(getArguments().getString(CommonConstant.EXTRA_COUPON_CODE));
@@ -535,12 +535,12 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             mCouponRealCode = data.getRealCode();
             btnAction2.setText(R.string.tp_label_use);
             btnAction2.setEnabled(true);
-            btnAction2.setTextColor(getResources().getColor(R.color.white));
+            btnAction2.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
             progressBar.setVisibility(View.GONE);
         } else {
             //check for real_code and start rxjava-timer
             btnAction2.setEnabled(false);
-            btnAction2.setTextColor(getResources().getColor(R.color.black_12));
+            btnAction2.setTextColor(getResources().getColor(com.tokopedia.abstraction.R.color.black_12));
             progressBar.setVisibility(View.VISIBLE);
 
             mSubscriptionCouponTimer = Observable.interval(CommonConstant.COUPON_RE_FETCH_DELAY_S, CommonConstant.COUPON_RE_FETCH_DELAY_S, TimeUnit.SECONDS)
@@ -607,7 +607,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             if (!data.getSwipe().getNote().isEmpty()) {
                 mTextSwipeNote.setText(data.getSwipe().getNote());
                 mTextSwipeNote.setVisibility(View.VISIBLE);
-                mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_70));
+                mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.black_70));
             }
 
             if (data.getSwipe().getPartnerCode() != null
@@ -706,18 +706,18 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                         label.setText("00 : 00 : 00");
                         btnContinue.setText("Expired");
                         btnContinue.setEnabled(false);
-                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));
+                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
                     }
                 }.start();
             } else {
                 btnContinue.setText(item.getUsage().getBtnUsage().getText());
                 btnContinue.setEnabled(true);
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), com.tokopedia.design.R.color.white));
             }
         } else {
             if (item.getUsage().getActiveCountDown() > 0) {
                 btnContinue.setEnabled(false);
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
                 if (item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
                         @Override
@@ -739,7 +739,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             } else {
                 btnContinue.setText(item.getUsage().getUsageStr());
                 btnContinue.setEnabled(true);
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), com.tokopedia.design.R.color.white));
             }
         }
     }
@@ -759,7 +759,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         if (data.getNote() != null && !data.getNote().isEmpty()) {
             mTextSwipeNote.setVisibility(View.VISIBLE);
             mTextSwipeNote.setText(data.getNote());
-            mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_38));
+            mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(),com.tokopedia.design.R.color.black_38));
         } else {
             mTextSwipeNote.setVisibility(View.GONE);
         }

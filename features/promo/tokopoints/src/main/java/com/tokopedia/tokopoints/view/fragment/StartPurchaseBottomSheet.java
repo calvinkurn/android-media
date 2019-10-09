@@ -55,7 +55,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
         if(mLobDetails.getLobs()!=null) {
             for (LobItem item : mLobDetails.getLobs()) {
                 View itemView = inflater.inflate(R.layout.tp_bottomsheet_lob_item, null, false);
-                TextView title = itemView.findViewById(R.id.text_title);
+                TextView title = itemView.findViewById(com.example.tokopoints.notification.R.id.text_title);
                 title.setText(item.getText());
                 linearLayout.addView(itemView);
 

@@ -219,8 +219,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         pager.setAdapter(new CatalogBannerPagerAdapter(getContext(), banners, mPresenter));
         //adding bottom dots(Page Indicator)
         final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator);
-        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green));
+        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.white_two));
         pageIndicator.setViewPager(pager, 0);
         getView().findViewById(R.id.container_pager).setVisibility(View.VISIBLE);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
@@ -572,7 +572,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);

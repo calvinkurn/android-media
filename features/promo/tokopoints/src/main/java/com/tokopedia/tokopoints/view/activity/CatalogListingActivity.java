@@ -40,15 +40,10 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
 
     private void forDeeplink() {
         bundle = getIntent().getExtras();
-        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_VIEW) && getIntent().getData() != null){
-            List<String> list = UriUtil.destructureUri(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING,getIntent().getData());
-            if (list.size() > 0){
+        if (bundle == null)
             bundle = new Bundle();
-            bundle.putString("slug_category",list.get(0));
-            }
-            if (list.size() > 1){
-                bundle.putString("slug_sub_category",list.get(1));
-            }
+        if (getIntent().getData() != null){
+            UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING,getIntent().getData(),bundle);
         }
     }
 
@@ -93,14 +88,14 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     @Override
     public void showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
         }
     }
 
     @Override
     public void hideToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
         }
     }
 

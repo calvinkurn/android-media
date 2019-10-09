@@ -139,12 +139,12 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(R.id.container);
+        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-        mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeToRefresh = view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(0,
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10));
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
     }
 
     private void initListener() {
@@ -243,14 +243,14 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 

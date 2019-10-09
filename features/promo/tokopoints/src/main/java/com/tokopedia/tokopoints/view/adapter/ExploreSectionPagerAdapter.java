@@ -173,9 +173,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_180);
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180);
         } else {
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_280);
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280);
         }
 
         if (!content.getCta().isEmpty()) {
@@ -187,8 +187,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -199,7 +199,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CatalogListCarouselAdapter adapter = new CatalogListCarouselAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), rvCarousel);
             rvCarousel.setAdapter(adapter);
@@ -229,8 +229,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -241,7 +241,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
                 && URLUtil.isValidUrl(content.getLayoutBannerAttr().getImageList().get(0).getImageURLMobile())) {
-            ImageView imgBanner = view.findViewById(R.id.img_banner);
+            ImageView imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
@@ -291,8 +291,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -303,7 +303,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
                 && URLUtil.isValidUrl(content.getLayoutBannerAttr().getImageList().get(0).getImageURLMobile())) {
-            ImageView imgBanner = view.findViewById(R.id.img_banner);
+            ImageView imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
@@ -352,8 +352,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -364,7 +364,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
                 && URLUtil.isValidUrl(content.getLayoutBannerAttr().getImageList().get(0).getImageURLMobile())) {
-            ImageView imgBanner = view.findViewById(R.id.img_banner);
+            ImageView imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
@@ -413,8 +413,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -497,8 +497,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -565,8 +565,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -634,8 +634,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -645,7 +645,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_1_1));
         }
@@ -674,8 +674,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -685,7 +685,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_2_1));
         }
@@ -706,8 +706,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -725,7 +725,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_3_1));
         }
@@ -754,9 +754,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_180);
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180);
         } else {
-            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_280);
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280);
         }
 
         if (!content.getCta().isEmpty()) {
@@ -768,8 +768,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
-            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
-            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+            view.findViewById(com.example.tokopoints.notification.R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(com.example.tokopoints.notification.R.id.text_title)).setText(content.getSectionTitle());
         }
 
         if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
@@ -780,7 +780,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-            rvCarousel.addItemDecoration(new NonCarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new NonCarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CouponListAdapter adapter = new CouponListAdapter(content.getLayoutCouponAttr().getCouponList());
             rvCarousel.setAdapter(adapter);

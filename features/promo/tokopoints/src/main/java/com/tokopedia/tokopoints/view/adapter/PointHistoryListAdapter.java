@@ -42,7 +42,7 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
             point = view.findViewById(R.id.text_point);
             loyalty = view.findViewById(R.id.text_loyalty);
             txnId = view.findViewById(R.id.text_txn_id);
-            title = view.findViewById(R.id.text_title);
+            title = view.findViewById(com.example.tokopoints.notification.R.id.text_title);
             note = view.findViewById(R.id.text_note);
             date = view.findViewById(R.id.text_date);
             imgIcon = view.findViewById(R.id.img_icon);

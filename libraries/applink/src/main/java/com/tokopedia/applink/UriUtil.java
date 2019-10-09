@@ -1,6 +1,7 @@
 package com.tokopedia.applink;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -70,6 +71,34 @@ public class UriUtil {
             return result;
         }
         return result;
+    }
+
+
+
+    public static Bundle destructiveUriBundle(@NonNull String uriPatternString, Uri uri, Bundle bundle){
+        try {
+            if (bundle == null)
+                bundle = new Bundle();
+            Uri uriPattern = Uri.parse(uriPatternString);
+            if (uriPattern == null) {
+                return bundle;
+            }
+
+            int size = Math.min(uri.getPathSegments().size(), uriPattern.getPathSegments().size());
+            int i = 0;
+            while (i < size) {
+                if (uriPattern.getPathSegments().get(i).startsWith("{") &&
+                        uriPattern.getPathSegments().get(i).endsWith("}")) {
+                    bundle.putString(uriPatternString.substring(1, uriPatternString.length() - 1), uri.getPathSegments().get(i));
+                }
+                i++;
+            }
+        } catch (Exception e){
+            return bundle;
+        }
+
+        return bundle;
+
     }
 
     public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri) {

@@ -111,7 +111,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         int id = item.getItemId();
-        if (id == R.id.action_menu_share) {
+        if (id == com.tokopedia.analytics.R.id.action_menu_share) {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE));
@@ -222,7 +222,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(R.id.container);
+        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
     }
 
     private void initListener() {
@@ -446,7 +446,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
             btnAction2.setText(R.string.tp_label_refresh_repeat);
             btnAction2.setEnabled(true);
-            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.white));
             mSubscriptionCouponTimer.unsubscribe();
         }
     }
@@ -469,17 +469,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        Typography quota = getView().findViewById(R.id.text_quota_count);
+        Typography quota = getView().findViewById(com.example.tokopoints.notification.R.id.text_quota_count);
         Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
-        ImageView imgBanner = getView().findViewById(R.id.img_banner);
+        ImageView imgBanner = getView().findViewById(com.example.tokopoints.notification.R.id.img_banner);
 
         btnAction2.setEnabled(!data.isDisabledButton());
 
         if (data.isDisabledButton()) {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.disabled_color));
         } else {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), com.tokopedia.design.R.color.white));
         }
 
         //Quota text handling
@@ -506,7 +506,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             ImageUtil.unDimImage(imgBanner);
         }
 
-        pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.Yellow_Y500));
+        pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), com.tokopedia.design.R.color.unify_Y500));
     }
 
     @Override
@@ -528,14 +528,14 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -546,7 +546,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         mCouponName = data.getTitle();
-        Typography quota = getView().findViewById(R.id.text_quota_count);
+        Typography quota = getView().findViewById(com.example.tokopoints.notification.R.id.text_quota_count);
         Typography description = getView().findViewById(R.id.text_description);
         Typography disabledError = getView().findViewById(R.id.text_disabled_error);
         ConstraintLayout giftSectionMainLayout = getView().findViewById(R.id.gift_section_main_layout);
@@ -556,7 +556,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (getActivity(), R.drawable.ic_catalog_gift_btn), null, null, null);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
-        ImageView imgBanner = getView().findViewById(R.id.img_banner);
+        ImageView imgBanner = getView().findViewById(com.example.tokopoints.notification.R.id.img_banner);
         Typography labelPoint = getView().findViewById(R.id.text_point_label);
         Typography textDiscount = getView().findViewById(R.id.text_point_discount);
 
@@ -619,18 +619,18 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled()) {
             ImageUtil.dimImage(imgBanner);
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.black_54));
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), com.tokopedia.design.R.color.black_54));
         } else {
             ImageUtil.unDimImage(imgBanner);
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.orange_red));
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), com.tokopedia.design.R.color.orange_red));
         }
 
         if (data.isDisabledButton()) {
             giftSectionMainLayout.setVisibility(View.GONE);
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.black_12));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), com.tokopedia.abstraction.R.color.black_12));
         } else {
             giftSectionMainLayout.setVisibility(View.VISIBLE);
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), com.tokopedia.design.R.color.white));
         }
 
         if (data.getPointsSlash() <= 0) {
@@ -727,8 +727,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
         WebView webView = view.findViewById(R.id.catalog_webview);
-        ImageView closeBtn = view.findViewById(R.id.close_button);
-        Typography titleView = view.findViewById(R.id.title_closeable);
+        ImageView closeBtn = view.findViewById(com.tokopedia.design.R.id.close_button);
+        Typography titleView = view.findViewById(com.tokopedia.design.R.id.title_closeable);
 
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING);
         closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());

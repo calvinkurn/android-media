@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -29,6 +30,8 @@ object DeeplinkMapper {
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
                 return getRegisteredNavigationDigital(context, deeplink)
+            } else if (deeplink.startsWith(ApplinkConst.TOKOPOINTS)) {
+                return getRegisteredNavigationTokopoints(context,deeplink)
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
@@ -69,23 +72,6 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
-            ApplinkConst.TokoPoints.HOMEPAGE -> return ApplinkConstInternalPromo.TOKOPOINTS_HOME
-            ApplinkConst.TokoPoints.HOMEPAGE2 -> return ApplinkConstInternalPromo.TOKOPOINTS_HOME
-            ApplinkConst.TokoPoints.CATALOG_DETAIL3 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL
-            ApplinkConst.TokoPoints.CATALOG_DETAIL4 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL
-            ApplinkConst.TokoPoints.CATALOG_LISTING -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING2 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING3 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING4 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING5 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING6 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.CATALOG_LISTING7 -> return ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_LISTING
-            ApplinkConst.TokoPoints.COUPON_DETAIL3 -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON_DETAIL
-            ApplinkConst.TokoPoints.COUPON_DETAIL4 -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON_DETAIL
-            ApplinkConst.TokoPoints.COUPON_LISTING -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON
-            ApplinkConst.TokoPoints.COUPON_LISTING2 -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON
-            ApplinkConst.TokoPoints.COUPON_LISTING3 -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING
-            ApplinkConst.TokoPoints.COUPON_LISTING4 -> return ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING
             else -> ""
         }
     }

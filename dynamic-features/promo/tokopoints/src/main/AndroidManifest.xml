@@ -5,7 +5,7 @@
     <dist:module
         dist:instant="false"
         dist:onDemand="true"
-        dist:title="@string/tp_title_tokopoints">
+        dist:title="@string/title_tokopoints">
         <dist:fusing dist:include="true" />
     </dist:module>
 

@@ -279,7 +279,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
         mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_arrow_right_grey), null);
+                (getActivity(), com.tokopedia.design.R.drawable.ic_arrow_right_grey), null);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
         mImgEgg = view.findViewById(R.id.img_egg);
@@ -288,7 +288,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
-        appBarHeader = view.findViewById(R.id.app_bar);
+        appBarHeader = view.findViewById(com.tokopedia.abstraction.R.id.app_bar);
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         tickerContainer = view.findViewById(R.id.cons_ticker_container);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
@@ -409,14 +409,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 if (tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), com.tokopedia.session.R.color.green_50);
                 } else {
                     ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
                 }
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);
@@ -433,7 +433,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onSuccessTicker(@NonNull List<TickerContainer> tickers) {
         if (getView() != null && tickers.size() > 0) {
-            ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
+            ViewPager pager = getView().findViewById(com.tokopedia.design.R.id.view_pager_ticker);
 
             pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -457,12 +457,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             });
 
             pager.setAdapter(new TickerPagerAdapter(getContext(), tickers));
-            final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
+            final CirclePageIndicator pageIndicator = getView().findViewById(com.tokopedia.design.R.id.page_indicator_ticker);
             if (tickers != null && tickers.size() > 1) {
                 //adding bottom dots(Page Indicator)
                 pageIndicator.setVisibility(View.VISIBLE);
-                pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-                pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+                pageIndicator.setFillColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green));
+                pageIndicator.setPageColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.white_two));
                 pageIndicator.setViewPager(pager, 0);
             } else {
                 pageIndicator.setVisibility(View.GONE);
@@ -716,14 +716,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
