@@ -47,6 +47,7 @@
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="path_user_push_notification_setting" translatable="false">/user-push-notification-setting</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
+    <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
 
