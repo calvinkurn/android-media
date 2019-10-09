@@ -977,10 +977,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
-            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
+            subTotalPrice += (totalItemPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
             if (voucherLogisticItemUiModel != null) {
                 int discountedRate = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate();
-                subTotalPrice += (totalItemPrice + discountedRate + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
+                subTotalPrice += discountedRate;
+            } else {
+                subTotalPrice += shippingPrice;
             }
         } else {
             subTotalPrice = totalItemPrice;
