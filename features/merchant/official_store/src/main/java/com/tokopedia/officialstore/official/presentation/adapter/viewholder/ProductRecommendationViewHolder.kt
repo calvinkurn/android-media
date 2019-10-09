@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
+import android.app.Activity
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.AppCompatTextView
@@ -20,11 +21,6 @@ import com.tokopedia.unifycomponents.Toaster
 class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
-    private var textView : AppCompatTextView? = null
-
-    init {
-        textView = view.findViewById(R.id.sample_text)
-    }
 
     override fun bind(element: ProductRecommendationViewModel) {
         System.out.println(element)
@@ -40,7 +36,7 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
                             shopLocation = element.productItem.location,
-                            isWishlistVisible = false,
+                            isWishlistVisible = true,
                             isWishlisted = element.productItem.isWishlist,
                             shopBadgeList = element.productItem.badgesUrl.map {
                                 ProductCardModel.ShopBadge(imageUrl = it?: "")
@@ -55,9 +51,11 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        // Implement Tracking?
+                        // Implement Tracking
+                        ImpresionTask().execute(element.productItem.trackerImageUrl)
                     }
                     // listener
+                    element.listener.onProductImpression(element.productItem)
                 }
             })
 
@@ -66,7 +64,21 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
                 if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
             }
 
-            setButtonWishlistOnClickListener {}
+            setButtonWishlistOnClickListener {
+                element.listener.onWishlistClick(element.productItem, !element.productItem.isWishlist) { success, throwable ->
+                    if (success) {
+                        element.productItem.isWishlist = !element.productItem.isWishlist
+                        setButtonWishlistImage(element.productItem.isWishlist)
+                        if(element.productItem.isWishlist) {
+                            showSuccessAddWishlist((context as Activity).findViewById(R.id.content), "Sukses menambah wishlist")
+                        } else {
+                            showSuccessRemoveWishlist((context as Activity).findViewById(R.id.content), "Sukses menghapus wishlist")
+                        }
+                    } else {
+                        showError(rootView, throwable)
+                    }
+                }
+            }
         }
     }
 

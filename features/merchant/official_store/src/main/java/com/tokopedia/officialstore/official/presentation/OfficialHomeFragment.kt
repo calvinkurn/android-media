@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,26 +23,27 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent> {
-
+class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
     companion object {
-        const val BUNDLE_CATEGORY = "category_os"
 
+        const val BUNDLE_CATEGORY = "category_os"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
-    }
 
+    }
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+
     private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
-
     private var category: Category? = null
 
     private var adapter: OfficialHomeAdapter? = null
@@ -131,7 +133,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter)
+                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG) {
@@ -204,5 +206,20 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+        // Implement Product Click
+        Log.d("Test: ", "onProductClick")
+    }
+
+    override fun onProductImpression(item: RecommendationItem) {
+        // Implement Product Impression
+        Log.d("Test: ", "onProductImpression")
+    }
+
+    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+        // Implement Wishlist Click
+        Log.d("Test: ", "onWishlistClick")
     }
 }
