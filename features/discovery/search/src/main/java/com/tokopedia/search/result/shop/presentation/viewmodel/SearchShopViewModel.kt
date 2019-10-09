@@ -33,7 +33,7 @@ import com.tokopedia.search.utils.exists
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 
-class SearchShopViewModel(
+internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
         private val searchShopFirstPageRepository: Repository<SearchShopModel>,
@@ -462,11 +462,30 @@ class SearchShopViewModel(
     fun onViewRemoveSelectedFilter(uniqueId: String?) {
         if (uniqueId == null) return
 
-        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
-
-        filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
+        removeFilterFromFilterController(uniqueId)
 
         onViewApplyFilter(filterController.getParameter())
+    }
+
+    private fun removeFilterFromFilterController(uniqueId: String) {
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        if (option.key == Option.KEY_CATEGORY) {
+            filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
+        }
+        else if (option.key == Option.KEY_PRICE_MIN || option.key == Option.KEY_PRICE_MAX) {
+            filterController.setFilter(createOptionWithKey(Option.KEY_PRICE_MIN), isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
+            filterController.setFilter(createOptionWithKey(Option.KEY_PRICE_MAX), isFilterApplied = false, isCleanUpExistingFilterWithSameKey = true)
+        }
+        else {
+            filterController.setFilter(option, isFilterApplied = false)
+        }
+    }
+
+    private fun createOptionWithKey(optionKey: String): Option {
+        return Option().also {
+            it.key = optionKey
+        }
     }
 
     fun getSearchParameter() = searchParameter.toMap()

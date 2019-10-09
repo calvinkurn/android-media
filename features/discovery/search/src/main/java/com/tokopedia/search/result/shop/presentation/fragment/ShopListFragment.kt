@@ -346,7 +346,7 @@ class ShopListFragment:
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
-
+        searchShopViewModel?.onViewRemoveSelectedFilter(uniqueId)
     }
 
     override fun getRegistrationId(): String {
@@ -361,7 +361,8 @@ class ShopListFragment:
         return searchShopViewModel?.let {
             OptionHelper.combinePriceFilterIfExists(
                     it.getActiveFilterOptionList(),
-                    resources.getString(R.string.empty_state_selected_filter_price_name))
+                    resources.getString(R.string.empty_state_selected_filter_price_name)
+            )
         } ?: mutableListOf()
     }
 }

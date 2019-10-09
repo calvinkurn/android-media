@@ -26,6 +26,8 @@ import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldContain
+import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.betweenFirstAndLast
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.secondToLast
@@ -114,12 +116,28 @@ internal class SearchShopViewModelTest : Spek({
             OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga minimum")
     )
     val maxPriceOption = OptionHelper.generateOptionFromUniqueId(
-            OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga minimum")
+            OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga maximum")
     )
     val priceFilter = Filter().also { filter ->
         filter.options = mutableListOf<Option>().also { optionList ->
             optionList.add(minPriceOption)
             optionList.add(maxPriceOption)
+        }
+    }
+    val handphoneOption = OptionHelper.generateOptionFromUniqueId(
+            OptionHelper.constructUniqueId(SearchApiConst.SC, "13", "Handphone")
+    )
+    val tvOption = OptionHelper.generateOptionFromUniqueId(
+            OptionHelper.constructUniqueId(SearchApiConst.SC, "14", "TV")
+    )
+    val kulkasOption = OptionHelper.generateOptionFromUniqueId(
+            OptionHelper.constructUniqueId(SearchApiConst.SC, "15", "Kulkas")
+    )
+    val categoryFilter = Filter().also { filter ->
+        filter.options = mutableListOf<Option>().also { optionList ->
+            optionList.add(handphoneOption)
+            optionList.add(tvOption)
+            optionList.add(kulkasOption)
         }
     }
 
@@ -129,6 +147,7 @@ internal class SearchShopViewModelTest : Spek({
         it.add(shopFilter)
         it.add(locationFilter)
         it.add(priceFilter)
+        it.add(categoryFilter)
     }
 
     val searchShopParameter = mapOf(
@@ -1005,12 +1024,16 @@ internal class SearchShopViewModelTest : Spek({
             val searchShopViewModel by memoized<SearchShopViewModel>()
             val queryParametersFromFilter = mutableMapOf<String, String>()
 
-            Given("search shop and dynamic filter API call will be successful") {
+            Given("view get search shop first page and get dynamic filter successfully") {
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
             }
 
-            Given("Query parameters from filter, simulate remove and add filter") {
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
+            Given("query parameters from filter, simulate remove and add filter") {
                 queryParametersFromFilter.putAll(searchShopViewModel.getSearchParameter().convertValuesToString())
                 queryParametersFromFilter.remove(SearchApiConst.OFFICIAL)
                 queryParametersFromFilter[SearchApiConst.FCITY] = "1,2,3"
@@ -1035,9 +1058,9 @@ internal class SearchShopViewModelTest : Spek({
                 searchParameter[SearchApiConst.START] shouldBe 0
             }
 
-            Then("verify search shop and get dynamic filter API is called") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+            Then("verify search shop and get dynamic filter API is called twice for load first page and apply filter") {
+                searchShopFirstPageRepository.isExecuted(2)
+                dynamicFilterRepository.isExecuted(2)
             }
         }
 
@@ -1050,6 +1073,10 @@ internal class SearchShopViewModelTest : Spek({
             Given("search shop and dynamic filter API call will be successful") {
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
             }
 
             Given("retrieve initial search parameter") {
@@ -1071,15 +1098,19 @@ internal class SearchShopViewModelTest : Spek({
     Feature("Handle View Remove Selected Filter") {
         createTestInstance()
 
-        Scenario("Remove selected filter with Option unique id") {
+        Scenario("Remove selected filter with Option's unique id") {
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
-            val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId("official", "true", "Official Store")
+            val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, "true", "Official Store")
 
             Given("search shop and dynamic filter API call will be successful") {
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
             }
 
             When("handle remove selected filter") {
@@ -1089,12 +1120,12 @@ internal class SearchShopViewModelTest : Spek({
             Then("Search Parameter should not contain the selected filter anymore") {
                 val searchParameter = searchShopViewModel.getSearchParameter()
 
-                searchParameter.containsKey("official") shouldBe false
+                searchParameter shouldNotContain SearchApiConst.OFFICIAL
             }
 
-            Then("verify search shop and get dynamic filter API is called") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+            Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
+                searchShopFirstPageRepository.isExecuted(2)
+                dynamicFilterRepository.isExecuted(2)
             }
         }
 
@@ -1107,6 +1138,10 @@ internal class SearchShopViewModelTest : Spek({
             Given("search shop and dynamic filter API call will be successful") {
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
             }
 
             Given("retrieve initial search parameter") {
@@ -1152,6 +1187,10 @@ internal class SearchShopViewModelTest : Spek({
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
             }
 
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
             When("handle remove selected filter") {
                 searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
             }
@@ -1160,60 +1199,115 @@ internal class SearchShopViewModelTest : Spek({
                 val searchParameter = searchShopViewModel.getSearchParameter()
 
                 val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.VALUE_SEPARATOR)
-                remainingLocationFilter.contains("1") shouldBe false
-                remainingLocationFilter.contains("2") shouldBe true
-                remainingLocationFilter.contains("3") shouldBe true
+
+                remainingLocationFilter shouldNotContain "1"
+                remainingLocationFilter shouldContain "2"
+                remainingLocationFilter shouldContain "3"
             }
 
-            Then("verify search shop and get dynamic filter API is called") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+            Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
+                searchShopFirstPageRepository.isExecuted(2)
+                dynamicFilterRepository.isExecuted(2)
             }
         }
 
-//        Scenario("Remove selected category filter") {
-//            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-//            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-//            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
-//            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
-//            val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.SC, "13", "Handphone")
-//
-//            lateinit var searchShopViewModel: SearchShopViewModel
-//
-//            Given("search shop view model with search parameter contains category filter") {
-//                val searchShopParameterWithCategoryFilter = mapOf<String, Any>(
-//                        SearchApiConst.Q to "samsung",
-//                        SearchApiConst.FCITY to "1,2,3"
-//                )
-//
-//                searchShopViewModel = SearchShopViewModel(
-//                        TestDispatcherProvider(), searchShopParameterWithCategoryFilter,
-//                        searchShopFirstPageRepository, searchShopLoadMoreRepository, dynamicFilterRepository,
-//                        shopHeaderViewModelMapper, shopViewModelMapper,
-//                        searchLocalCacheHandler, userSession, localCacheHandler
-//                )
-//            }
-//
-//            Given("search shop and dynamic filter API call will be successful") {
-//                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-//                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
-//            }
-//
-//            When("handle remove selected filter") {
-//                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
-//            }
-//
-//            Then("Search Parameter should not contain the category filter anymore") {
-//                val searchParameter = searchShopViewModel.getSearchParameter()
-//
-//                searchParameter.containsKey("official") shouldBe false
-//            }
-//
-//            Then("verify search shop and get dynamic filter API is called") {
-//                searchShopFirstPageRepository.isExecuted()
-//                dynamicFilterRepository.isExecuted()
-//            }
-//        }
+        Scenario("Remove selected category filter option") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
+            val selectedFilterOptionUniqueId = handphoneOption.uniqueId
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model with search parameter contains category filter (${SearchApiConst.SC} = 13,14,15))") {
+                val searchShopParameterWithCategoryFilter = mapOf<String, Any>(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.SC to "13,14,15"
+                )
+
+                searchShopViewModel = SearchShopViewModel(
+                        TestDispatcherProvider(), searchShopParameterWithCategoryFilter,
+                        searchShopFirstPageRepository, searchShopLoadMoreRepository, dynamicFilterRepository,
+                        shopHeaderViewModelMapper, shopViewModelMapper,
+                        searchLocalCacheHandler, userSession, localCacheHandler
+                )
+            }
+
+            Given("search shop and dynamic filter API call will be successful") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
+            When("handle remove selected filter") {
+                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+            }
+
+            Then("Search Parameter should not contain any category filter anymore") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter shouldNotContain SearchApiConst.SC
+            }
+
+            Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
+                searchShopFirstPageRepository.isExecuted(2)
+                dynamicFilterRepository.isExecuted(2)
+            }
+        }
+
+        Scenario("Remove selected price filter option") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
+            val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Filter Harga")
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model with search parameter contains Price filter (${SearchApiConst.PMIN} and ${SearchApiConst.PMAX})") {
+                val searchShopParameterWithCategoryFilter = mapOf<String, Any>(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.PMIN to 1300,
+                        SearchApiConst.PMAX to 1000000
+                )
+
+                searchShopViewModel = SearchShopViewModel(
+                        TestDispatcherProvider(), searchShopParameterWithCategoryFilter,
+                        searchShopFirstPageRepository, searchShopLoadMoreRepository, dynamicFilterRepository,
+                        shopHeaderViewModelMapper, shopViewModelMapper,
+                        searchLocalCacheHandler, userSession, localCacheHandler
+                )
+            }
+
+            Given("search shop and dynamic filter API call will be successful") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
+            When("handle remove selected filter") {
+                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+            }
+
+            Then("Search Parameter should not contain any price filter") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter shouldNotContain SearchApiConst.PMIN
+                searchParameter shouldNotContain SearchApiConst.PMAX
+            }
+
+            Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
+                searchShopFirstPageRepository.isExecuted(2)
+                dynamicFilterRepository.isExecuted(2)
+            }
+        }
     }
 })
 
