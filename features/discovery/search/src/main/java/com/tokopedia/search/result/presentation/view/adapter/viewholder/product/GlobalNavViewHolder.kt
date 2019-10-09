@@ -33,15 +33,15 @@ class GlobalNavViewHolder(
                 clickSeeAllUrl = element.seeAllUrl,
                 itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
                     for(item in element.itemList) {
-                        it.add(convertGlobalNavWidgetItemModel(element.source, item))
+                        it.add(convertGlobalNavWidgetItemModel(item))
                     }
                 }
         )
     }
 
-    private fun convertGlobalNavWidgetItemModel(source: String, item: GlobalNavViewModel.Item): GlobalNavWidgetModel.Item {
+    private fun convertGlobalNavWidgetItemModel(item: GlobalNavViewModel.Item): GlobalNavWidgetModel.Item {
         return GlobalNavWidgetModel.Item(
-                source = source,
+                categoryName = item.categoryName,
                 name = item.name,
                 info = item.info,
                 imageUrl = item.imageUrl,
@@ -71,6 +71,7 @@ class GlobalNavViewHolder(
             globalNavWidgetModelItem: GlobalNavWidgetModel.Item
     ): GlobalNavViewModel.Item {
         return GlobalNavViewModel.Item(
+                globalNavWidgetModelItem.categoryName,
                 globalNavWidgetModelItem.name,
                 globalNavWidgetModelItem.info,
                 globalNavWidgetModelItem.imageUrl,

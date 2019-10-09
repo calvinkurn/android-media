@@ -303,6 +303,7 @@ query SearchProduct(
             see_all_applink
             see_all_url
             list {
+                category_name
                 name
                 info
                 image_url

@@ -78,6 +78,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
 
     public static class Item implements Parcelable {
 
+        private String categoryName;
         private String name;
         private String info;
         private String imageUrl;
@@ -90,6 +91,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         private int position;
 
         public Item(
+                String categoryName,
                 String name,
                 String info,
                 String imageUrl,
@@ -100,6 +102,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
                 String backgroundUrl,
                 String logoUrl,
                 int position) {
+            this.categoryName = categoryName;
             this.name = name;
             this.info = info;
             this.imageUrl = imageUrl;
@@ -110,6 +113,10 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             this.backgroundUrl = backgroundUrl;
             this.logoUrl = logoUrl;
             this.position = position;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
         }
 
         public String getName() {
@@ -168,6 +175,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.categoryName);
             dest.writeString(this.name);
             dest.writeString(this.info);
             dest.writeString(this.imageUrl);
@@ -181,6 +189,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
         }
 
         protected Item(Parcel in) {
+            this.categoryName = in.readString();
             this.name = in.readString();
             this.info = in.readString();
             this.imageUrl = in.readString();

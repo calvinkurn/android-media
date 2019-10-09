@@ -7,9 +7,9 @@ import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -83,6 +83,7 @@ public class ProductViewModelMapper {
         int position = 1;
         for (SearchProductModel.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
+                    item.getCategoryName(),
                     item.getName(),
                     item.getInfo(),
                     item.getImageUrl(),

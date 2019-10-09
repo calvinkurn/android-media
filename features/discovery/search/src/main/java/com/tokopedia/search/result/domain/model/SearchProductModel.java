@@ -870,6 +870,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavItem {
+        @SerializedName("category_name")
+        private String categoryName = "";
+
         @SerializedName("name")
         private String name = "";
 
@@ -896,6 +899,10 @@ public class SearchProductModel {
 
         @SerializedName("logo_url")
         private String logoUrl = "";
+
+        public String getCategoryName() {
+            return categoryName;
+        }
 
         public String getName() {
             return name;
