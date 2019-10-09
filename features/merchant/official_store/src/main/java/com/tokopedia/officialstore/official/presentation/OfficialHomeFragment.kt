@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.presentation
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -36,7 +37,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
         const val BUNDLE_CATEGORY = "category_os"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val REQUEST_FROM_PDP = 394
+        private const val REQUEST_FROM_PDP = 888
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
 
@@ -214,6 +215,13 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === REQUEST_FROM_PDP) {
+            // Update wishlist
+        }
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
