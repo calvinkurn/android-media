@@ -7,12 +7,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -31,7 +33,7 @@ class AddToCartDoneViewModel @Inject constructor(
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
-    val recommendationProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
+    val recommendationProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
 
     companion object {
         object TopAdsDisplay {
@@ -49,32 +51,33 @@ class AddToCartDoneViewModel @Inject constructor(
     }
 
     fun getRecommendationProduct(productId: String) {
-        launch {
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
-                    (recommendationProduct.value as? Loaded)?.data as? Success == null) {
-                recommendationProduct.value = Loading
-                loadRecommendationProduct(productId)
-            } else null
-
-            topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                recommendationProduct.value = Loaded(Success(recommendationWidget))
+        launchCatchError(block = {
+            val recomResponse = withContext(Dispatchers.IO) {
+                if (GlobalConfig.isCustomerApp())
+                    loadRecommendationProduct(productId)
+                else listOf()
             }
+            val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel(
+                    recomResponse
+            )
+            recommendationProduct.value = Success(recommendationWidget)
+
+        }) {
+            recommendationProduct.value = Fail(it)
         }
     }
 
-    private fun loadRecommendationProduct(productId: String) = async(Dispatchers.IO) {
+    private suspend fun loadRecommendationProduct(productId: String): List<RecomendationEntity.RecomendationData> {
         val topadsParams = generateRecommendationProductParams(productId)
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
                 RecomendationEntity::class.java, topadsParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
+            return graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
+                    ?: emptyList()
         } catch (t: Throwable) {
-            Loaded(Fail(t))
+            throw t
         }
     }
 
