@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -33,6 +35,8 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     companion object {
 
         const val BUNDLE_CATEGORY = "category_os"
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
 
@@ -47,6 +51,10 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private var category: Category? = null
 
     private var adapter: OfficialHomeAdapter? = null
+
+
+    private var lastClickLayoutType: String? = null
+    private var lastParentPosition: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -208,18 +216,31 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         super.onDestroy()
     }
 
+    private fun goToPDP(item: RecommendationItem, position: Int) {
+        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
+    }
+
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        // Implement Product Click
-        Log.d("Test: ", "onProductClick")
+        // TO_DO: Implement tracking
+        lastClickLayoutType = layoutType
+        if (position.size > 1) {
+            lastParentPosition = position[0]
+            goToPDP(item, position[1])
+        } else {
+            goToPDP(item, position[0])
+        }
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        // Implement Product Impression
+        // TO_DO: Implement Product Impression
         Log.d("Test: ", "onProductImpression")
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        // Implement Wishlist Click
+        // TO_DO: Implement Wishlist Click
         Log.d("Test: ", "onWishlistClick")
     }
 }
