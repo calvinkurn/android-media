@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.config.GlobalConfig;
 
 import java.io.ByteArrayOutputStream;
