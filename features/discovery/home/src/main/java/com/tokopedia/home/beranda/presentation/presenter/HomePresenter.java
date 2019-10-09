@@ -501,6 +501,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+
+        if (stickyLoginUseCase != null) {
+            stickyLoginUseCase.cancelJobs();
+        }
     }
 
     /**
