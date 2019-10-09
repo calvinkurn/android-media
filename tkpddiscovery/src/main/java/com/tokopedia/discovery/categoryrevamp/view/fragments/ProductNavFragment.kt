@@ -241,7 +241,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun setQuickFilterAdapter(productCount:String){
+    private fun setQuickFilterAdapter(productCount: String) {
         quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
@@ -377,8 +377,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             layout_no_data.visibility = View.VISIBLE
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            quickfilter_recyclerview.visibility = View.GONE
         } else {
             layout_no_data.visibility = View.GONE
+            quickfilter_recyclerview.visibility = View.VISIBLE
         }
     }
 
@@ -415,7 +417,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-            productNavViewModel.fetchQuickFilters(getQuickFilterParams())        }
+            productNavViewModel.fetchQuickFilters(getQuickFilterParams())
+        }
         attachScrollListener()
     }
 
@@ -529,6 +532,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                     item.name,
                     CurrencyFormatHelper.convertRupiahToInt(item.price),
                     adapterPosition,
+                    item.categoryBreadcrumb ?: "",
                     getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
         }
 
