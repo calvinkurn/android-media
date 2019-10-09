@@ -268,24 +268,26 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
-            CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setShopGroupData(shopGroupData);
-            if (shopGroupData.isError()) {
-                cartShopHolderData.setAllSelected(false);
-            } else {
-                if (shopGroupData.isChecked()) {
-                    cartShopHolderData.setAllSelected(true);
-                } else if (shopGroupData.getCartItemDataList() != null && shopGroupData.getCartItemDataList().size() > 1) {
-                    for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
-                        if (cartItemHolderData.isSelected()) {
-                            cartShopHolderData.setPartialSelected(true);
-                            break;
+            if (shopGroupData.getCartItemDataList() != null && shopGroupData.getCartItemDataList().size() > 0) {
+                CartShopHolderData cartShopHolderData = new CartShopHolderData();
+                cartShopHolderData.setShopGroupData(shopGroupData);
+                if (shopGroupData.isError()) {
+                    cartShopHolderData.setAllSelected(false);
+                } else {
+                    if (shopGroupData.isChecked()) {
+                        cartShopHolderData.setAllSelected(true);
+                    } else if (shopGroupData.getCartItemDataList() != null && shopGroupData.getCartItemDataList().size() > 1) {
+                        for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                            if (cartItemHolderData.isSelected()) {
+                                cartShopHolderData.setPartialSelected(true);
+                                break;
+                            }
                         }
                     }
                 }
+                cartShopHolderData.setShopGroupData(shopGroupData);
+                cartDataList.add(cartShopHolderData);
             }
-            cartShopHolderData.setShopGroupData(shopGroupData);
-            cartDataList.add(cartShopHolderData);
         }
         notifyDataSetChanged();
     }
