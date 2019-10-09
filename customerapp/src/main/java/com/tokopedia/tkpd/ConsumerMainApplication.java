@@ -76,6 +76,8 @@ import java.util.concurrent.TimeUnit;
 
 import kotlin.jvm.functions.Function1;
 
+import static com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -100,7 +102,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         UIBlockDebugger.init(this);
-        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+        initAkamaiBotManager(this);
         setVersionCode();
 
         initializeSdk();
