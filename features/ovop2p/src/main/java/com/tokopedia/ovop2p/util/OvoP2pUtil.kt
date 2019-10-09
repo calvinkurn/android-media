@@ -43,7 +43,7 @@ object OvoP2pUtil {
             }
             dialogView.findViewById<TextView>(R.id.rcvr_no).text = dataMap[Constants.Keys.TO_PHN_NO].toString()
             dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp" + dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
-            dialogView.findViewById<TextView>(R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
+            dialogView.findViewById<TextView>(com.tokopedia.abstraction.R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
         }
         dialogView?.findViewById<View>(R.id.proceed_dlg)?.setOnClickListener(onClickListener)
         dialogView?.findViewById<View>(R.id.cancel)?.setOnClickListener(onClickListener)
@@ -122,9 +122,9 @@ object OvoP2pUtil {
         val layout = snackbar.view as Snackbar.SnackbarLayout
         snackbar.view.setBackgroundColor(Color.TRANSPARENT)
         val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val snackView = inflater.inflate(R.layout.error_snackbar_layout, null)
-        snackView.findViewById<View>(R.id.btn_ok).setOnClickListener(onClickListener)
-        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(R.id.error_msg) as TextView).text = errorMsg
+        val snackView = inflater.inflate(com.tokopedia.design.R.layout.error_snackbar_layout, null)
+        snackView.findViewById<View>(com.tokopedia.design.R.id.btn_ok).setOnClickListener(onClickListener)
+        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(com.tokopedia.design.R.id.error_msg) as TextView).text = errorMsg
         layout.addView(snackView, 0)
         return snackbar
     }
