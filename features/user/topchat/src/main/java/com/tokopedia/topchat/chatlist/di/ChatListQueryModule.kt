@@ -37,6 +37,27 @@ class ChatListQueryModule {
     fun provideRawQueryDeleteChatListMessage(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_delete)
 
+    @ChatListScope
+    @Provides
+    @IntoMap
+    @StringKey(ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ)
+    fun provideRawQueryMutationMarkChatAsRead(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_chat_mark_read)
+
+    @ChatListScope
+    @Provides
+    @IntoMap
+    @StringKey(ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD)
+    fun provideRawQueryMutationMarkChatAsUnread(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_chat_mark_unread)
+
+    @ChatListScope
+    @Provides
+    @IntoMap
+    @StringKey(ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA)
+    fun provideRawQueryChatBlastSellerMetaData(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_blast_seller_metadata)
+
     @Provides
     fun provideGetChatListMessageInfoUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ChatListPojo> = GraphqlUseCase<ChatListPojo>(graphqlRepository).apply {

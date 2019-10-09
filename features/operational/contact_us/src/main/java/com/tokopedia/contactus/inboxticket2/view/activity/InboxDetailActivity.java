@@ -783,7 +783,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void showMessage(String message) {
         super.showMessage(message);
-        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
     }
 
@@ -797,7 +797,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (isSendButtonEnabled){
             sendMessage();
         }else{
-            Toaster.Companion.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            Toaster.INSTANCE.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
             });
         }
     }

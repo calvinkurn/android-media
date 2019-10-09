@@ -829,7 +829,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             adapter.showLoading();
         } else {
             adapter.setItems(items, headerViewModel);
-        }
+
     }
 
     private boolean needToShowGeolocationComponent() {
