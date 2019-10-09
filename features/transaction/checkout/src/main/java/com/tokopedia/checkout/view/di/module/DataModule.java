@@ -51,10 +51,13 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 /**
  * @author anggaprasetiyo on 29/01/18.
@@ -126,6 +129,11 @@ public class DataModule {
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(new AkamaiBotInterceptor())
                 .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(chain -> {
+                    Request.Builder newRequest = chain.request().newBuilder();
+                    newRequest.addHeader("User-Agent", getUserAgent());
+                    return chain.proceed(newRequest.build());
+                })
                 .addInterceptor(cartApiInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)

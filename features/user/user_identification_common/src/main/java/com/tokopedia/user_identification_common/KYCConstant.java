@@ -32,6 +32,8 @@ public interface KYCConstant {
 
     int IS_FILE_IMAGE_TOO_BIG = -5;
 
+    int IS_FILE_IMAGE_NOT_EXIST = -7;
+
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";

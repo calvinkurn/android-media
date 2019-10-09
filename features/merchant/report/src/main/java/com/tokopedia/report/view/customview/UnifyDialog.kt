@@ -1,8 +1,6 @@
 package com.tokopedia.report.view.customview
 
 import android.app.Activity
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.IntDef
 import android.support.constraint.ConstraintLayout
@@ -32,7 +30,7 @@ class UnifyDialog(private val activity: Activity,
     private var dialogTitle: TextView? = null
     private var dialogDescription: TextView? = null
 
-    fun layoutResId(): Int = R.layout.layout_unify_dialog
+    fun layoutResId(): Int = R.layout.report_layout_unify_dialog
 
     init {
         val dialogView = activity.layoutInflater.inflate(layoutResId(), null)
@@ -81,18 +79,18 @@ class UnifyDialog(private val activity: Activity,
             val imageLp = imageHeader?.layoutParams
             val topMargin: Int = activity.resources.getDimensionPixelSize(when(headerType){
                 ICON_HEADER -> {
-                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(R.dimen.dp_8).toFloat()
-                    imageLp?.width = activity.resources.getDimensionPixelSize(R.dimen.dp_80)
-                    imageLp?.height = activity.resources.getDimensionPixelSize(R.dimen.dp_80)
-                    R.dimen.dp_16
+                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8).toFloat()
+                    imageLp?.width = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_80)
+                    imageLp?.height = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_80)
+                    com.tokopedia.design.R.dimen.dp_16
                 }
                 IMAGE_HEADER -> {
-                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(R.dimen.dp_10).toFloat()
-                    imageLp?.width = activity.resources.getDimensionPixelSize(R.dimen.dp_180)
-                    imageLp?.height = activity.resources.getDimensionPixelSize(R.dimen.dp_180)
-                    R.dimen.dp_0
+                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10).toFloat()
+                    imageLp?.width = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
+                    imageLp?.height = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
+                    com.tokopedia.design.R.dimen.dp_0
                 }
-                else -> R.dimen.dp_24
+                else -> com.tokopedia.design.R.dimen.dp_24
             })
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 layoutParams.setMargins(layoutParams.marginStart, topMargin,

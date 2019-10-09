@@ -26,7 +26,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_diagonal_arrow"/>
+            app:srcCompat="@drawable/autocomplete_diagonal_arrow"/>
 
         <LinearLayout
             android:layout_width="match_parent"

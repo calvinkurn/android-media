@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#EAEAEA"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/no_result_image"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:scaleType="fitCenter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_empty_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_toEndOf="@id/no_result_image"
+            android:layout_toRightOf="@id/no_result_image"
+            android:textColor="@color/font_black_primary_70"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_empty_content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_view_empty_title_text"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/no_result_image"
+            android:layout_toRightOf="@id/no_result_image"
+            android:textColor="@color/font_black_secondary_54"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_result_empty"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@id/no_result_image"
+            android:layout_marginTop="@dimen/dp_6" />
+
+    </RelativeLayout>
+
+    <com.tokopedia.topads.sdk.widget.TopAdsView
+        android:id="@+id/topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:display_type="grid"
+        app:ep="product"
+        app:items="4" />
+
+</LinearLayout>

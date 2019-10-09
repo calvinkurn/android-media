@@ -1,5 +1,13 @@
 package com.tokopedia.tokopoints.view.presenter;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.RouteManager;
@@ -15,6 +23,7 @@ import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -194,8 +203,9 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
 
             @Override
             public void onError(Throwable e) {
-                //NA
                 getView().hideLoader();
+                boolean hasInternet = NetworkDetector.isConnectedToInternet(getView().getAppContext());
+                getView().showError(hasInternet);
             }
 
             @Override

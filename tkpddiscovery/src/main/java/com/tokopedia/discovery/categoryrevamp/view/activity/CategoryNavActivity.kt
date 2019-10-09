@@ -14,7 +14,6 @@ import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
@@ -29,12 +28,11 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
-import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -206,7 +204,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             initToolbar()
             progressBar.visibility = View.VISIBLE
             checkIfBanned()
-            bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
+            bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
+                    FilterEventTracking.Event.CLICK_CATEGORY,
+                    FilterEventTracking.Category.FILTER_CATEGORY,
+                    getCategoryId(),
+                    FilterEventTracking.Category.PREFIX_CATEGORY_PAGE))
 
         }
 
@@ -380,12 +382,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
         layout_search.setOnClickListener {
             catAnalyticsInstance.eventSearchBarClicked(departmentId)
-            moveToAutoCompleteActivity()
+            moveToAutoCompleteActivity(departmentName)
+        }
+
+        image_button_close.setOnClickListener {
+            moveToAutoCompleteActivity("")
         }
     }
 
-    private fun moveToAutoCompleteActivity() {
-        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departmentName)
+    private fun moveToAutoCompleteActivity(departMentName : String) {
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departMentName)
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
