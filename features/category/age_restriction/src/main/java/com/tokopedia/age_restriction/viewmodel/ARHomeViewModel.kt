@@ -17,6 +17,10 @@ import kotlin.coroutines.CoroutineContext
 
 class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
+    companion object{
+        private const val minimumAdultAge = 21
+    }
+
     private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()
     private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
@@ -77,7 +81,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     private fun processUserDOB(userDOBResponse: UserDOBResponse?) {
         userDOBResponse?.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 21)
+                if (it.isAdult || it.age >= minimumAdultAge)
                     userAdult.value = 1
                 else
                     notAdult.value = 1

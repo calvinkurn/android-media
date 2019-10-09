@@ -12,6 +12,10 @@ import kotlin.coroutines.CoroutineContext
 
 class VerifyDOBViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
+    companion object{
+        private const val minimumAdultAge = 21
+    }
+
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()
 
@@ -45,7 +49,7 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
 
         }
         if (userDOBUpdateResponse.userDobUpdateData.isDobVerified) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 21)
+            if (userDOBUpdateResponse.userDobUpdateData.age > minimumAdultAge)
                 userIsAdult.value = true
             else
                 userNotAdult.value = true
