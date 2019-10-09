@@ -22,6 +22,6 @@ class ProductRecommendationViewModel(
     }
 
     companion object {
-        val LAYOUT = R.layout.product_recommendation_item
+        val LAYOUT = R.layout.viewmodel_product_recommendation_item
     }
 }
