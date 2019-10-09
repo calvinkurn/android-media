@@ -33,11 +33,12 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    var holidayViewModel: HolidayViewModel? = null
+    lateinit var holidayViewModel: HolidayViewModel
     private var selectedDatesListener: SelectedDates? = null
 
     var minDate: Date? = null
     var maxDate: Date? = null
+    var isFirstTime: Boolean = true
     var locationModels = ArrayList<LocationDateModel>()
     val selectedDates = ArrayList<Date>()
     val dateFormatArg = SimpleDateFormat("dd-MM-yyyy", Locale("in", "ID", ""))
@@ -45,6 +46,12 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        component.inject(this)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            holidayViewModel = viewModelProvider.get(HolidayViewModel::class.java)
+        }
     }
 
     override fun getComponent(): EventViewModelComponent {
@@ -62,43 +69,25 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        component.inject(this)
-
-
-
-//        if (this::viewModelFactory.isInitialized) {
-            Log.d("Naveen", "done")
-            activity?.run {
-                val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-                holidayViewModel = viewModelProvider.get(HolidayViewModel::class.java)
-            }
-//        } else {
-//            Log.d("Naveen", "Something wrong")
-//        }
         holidayViewModel?.getTravelHolidayDate()
-
-
         holidayViewModel?.holidayResult?.observe(this, android.arch.lifecycle.Observer {
-
             when (it) {
                 is Success -> {
-                    if (it.data.data.isNotEmpty()) {
+                    if (isFirstTime && it.data.data.isNotEmpty()) {
                         renderCalender(mappingHolidayData(it.data))
+                        isFirstTime = false
                     }
                 }
-
                 is Fail -> {
                     renderCalender(arrayListOf())
                 }
             }
         })
-//        renderCalender(arrayListOf())
-        btn_close.setOnClickListener({ view1 -> dismissAllowingStateLoss() })
+        btn_close.setOnClickListener({ view1 -> dismiss() })
     }
 
 
-    fun renderCalender(legends: ArrayList<Legend>) {
+    private fun renderCalender(legends: ArrayList<Legend>) {
         val calendar = calendar_unify.calendarPickerView
 
         val nextYear = Calendar.getInstance()
@@ -128,10 +117,9 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
                 GlobalScope.launch {
                     delay(300)
-                    dismissAllowingStateLoss()
+                    dismiss()
                 }
             }
-
             override fun onDateUnselected(date: Date) {
             }
         })
@@ -149,8 +137,9 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
                 }
     }
 
-    fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
+    private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
+        legendList.clear()
         for (holiday in holidayData.data) {
             legendList.add(Legend(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, holiday.attribute.date),
                     holiday.attribute.label))

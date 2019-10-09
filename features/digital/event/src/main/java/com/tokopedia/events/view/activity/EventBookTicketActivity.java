@@ -9,9 +9,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkContentPosition;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
@@ -25,9 +30,11 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +42,8 @@ public class EventBookTicketActivity
         extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView, View.OnClickListener, SelectEventDateBottomSheet.SelectedDates {
 
 
+    private static String EVENT_DATE_COACH_MARK_TAG = "EVEN_DATE_COACH_MARK";
+    private static String TICKET_SUMMARY_COACH_MARK_TAG = "TICKET_SUMMARY_COACH_MARK";
     View buttonPayTickets;
     TextView buttonTextview;
     View progressBarLayout;
@@ -48,6 +57,10 @@ public class EventBookTicketActivity
     TextView tvLocation;
     TextView tvDate;
     View buttonCountLayout;
+    RelativeLayout eventDateLayout;
+    View ticketInfoLayout;
+    Ticker infoTicker;
+
 
     EventBookTicketContract.BookTicketPresenter bookTicketPresenter;
     private String title;
@@ -102,13 +115,44 @@ public class EventBookTicketActivity
         tvLocation = findViewById(R.id.tv_location_bta);
         tvDate = findViewById(R.id.tv_day_time_bta);
         buttonCountLayout = findViewById(R.id.button_count_layout);
+        ticketInfoLayout = findViewById(R.id.ticket_info);
+        eventDateLayout = findViewById(R.id.event_date_layout);
+        infoTicker = findViewById(R.id.policy_ticker);
         buttonPayTickets.setOnClickListener(this);
         tvUbahJadwal.setOnClickListener(this);
     }
 
+
+    private void showEventDateCoachMark() {
+        ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
+        coachItems.add(new CoachMarkItem(eventDateLayout, getString(R.string.coachicon_event_date), getString(R.string.coachicon_event_date_description)));
+        CoachMark coachMark = new CoachMarkBuilder().allowPreviousButton(false).build();
+        coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> {
+            return false;
+        });
+        if (!Utils.hasShown(getActivity(), EVENT_DATE_COACH_MARK_TAG)) {
+            coachMark.show(getActivity(), "EventCoachMark", coachItems);
+            Utils.setShown(getActivity(), EVENT_DATE_COACH_MARK_TAG, true);
+        }
+    }
+
+
+    private void showTicketSummeryCoachMark() {
+        ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
+        coachItems.add(new CoachMarkItem(ticketInfoLayout, getString(R.string.coachicon_event_date), getString(R.string.coachicon_event_date_description)));
+        CoachMark coachMark = new CoachMarkBuilder().allowPreviousButton(false).build();
+        coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> false);
+        if (!Utils.hasShown(getActivity(), TICKET_SUMMARY_COACH_MARK_TAG)) {
+            coachMark.show(getActivity(), "EventCoachMark", coachItems);
+            Utils.setShown(getActivity(), TICKET_SUMMARY_COACH_MARK_TAG, true);
+        }
+    }
+
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
+        showEventDateCoachMark();
         if (detailsViewModel != null) {
+            infoTicker.setVisibility(View.VISIBLE);
             eventsDetailsViewModel = detailsViewModel;
             toolbar.setTitle(detailsViewModel.getTitle());
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
@@ -120,8 +164,8 @@ public class EventBookTicketActivity
                     tvUbahJadwal.setVisibility(View.GONE);
                 }
                 tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-                if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
-                    tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+                if (detailsViewModel.getCustomText1() == 16384)
+                    tvDate.setText(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
                 else
                     tvDate.setVisibility(View.GONE);
                 setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
@@ -138,8 +182,10 @@ public class EventBookTicketActivity
         ticketCount.setText(String.format(getString(R.string.x_type), ticketQuantity, type));
         buttonPayTickets.setVisibility(View.VISIBLE);
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
-        if (buttonCountLayout.getVisibility() != View.VISIBLE)
+        if (buttonCountLayout.getVisibility() != View.VISIBLE) {
+            showTicketSummeryCoachMark();
             buttonCountLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.events.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
@@ -65,6 +66,7 @@ public class Utils {
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "23";
+    private static final String SHOWCASE_PREFERENCES = "event_show_case_pref";
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -461,5 +463,19 @@ public class Utils {
             e.printStackTrace();
             throw new RuntimeException("Date doesnt valid (" + input + ") with format" + DEFAULT_FORMAT);
         }
+    }
+
+
+    public static boolean hasShown(Context context, String tag){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(tag, false);
+    }
+
+    public static void setShown(Context context, String tag, boolean hasShown){
+        SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE).edit();
+        sharedPreferencesEditor.putBoolean (tag, hasShown);
+        sharedPreferencesEditor.apply();
     }
 }
