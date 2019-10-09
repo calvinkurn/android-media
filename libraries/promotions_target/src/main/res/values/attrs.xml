@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CardConstraintLayout">
+        <attr name="shadowHeight" format="dimension"/>
+        <attr name="shadowDx" format="dimension"/>
+        <attr name="shadowDy" format="dimension"/>
+        <attr name="shadowStartY" format="dimension"/>
+        <attr name="shadowColor" format="color"/>
+        <attr name="shadowStrokeWidth" format="dimension"/>
+        <attr name="cornerRadius" format="dimension"/>
+        <attr name="blurRadius" format="dimension"/>
+        <attr name="enableShadow" format="boolean"/>
+    </declare-styleable>
+</resources>
