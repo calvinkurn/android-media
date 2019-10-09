@@ -50,7 +50,7 @@ public class GraphqlClient {
             });
 
             if (GlobalConfig.isAllowDebuggingTools()) {
-                tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context));
+                tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
             }
 
             sRetrofit = CommonNetwork.createRetrofit(
