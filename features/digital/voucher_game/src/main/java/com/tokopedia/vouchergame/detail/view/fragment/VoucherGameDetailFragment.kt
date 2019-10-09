@@ -178,7 +178,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     if (productData is Success) {
                         val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
                         voucherGameAnalytics.impressionProductCard(
-                                getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
+                                getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1), voucherGameOperatorData.name)
                     }
                 }
             }
@@ -196,7 +196,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+        if (data.catalog.label.isNotEmpty()) {
+            voucherGameAnalytics.categoryName = data.catalog.label
+            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+        }
     }
 
     override fun showError(t: Throwable) {
@@ -350,14 +353,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             recycler_view.addItemDecoration(decorator)
 
             adapter.renderList(listData)
-            recycler_view.post {
-                val productData = voucherGameViewModel.voucherGameProducts.value
-                if (productData is Success) {
-                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
-                    voucherGameAnalytics.impressionProductCard(
-                            getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
-                }
-            }
+//            recycler_view.post {
+//                val productData = voucherGameViewModel.voucherGameProducts.value
+//                if (productData is Success) {
+//                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
+//                    voucherGameAnalytics.impressionProductCard(
+//                            getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
+//                }
+//            }
         }
     }
 
@@ -433,8 +436,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
         if (::voucherGameOperatorData.isInitialized) {
-            voucherGameAnalytics.eventClickProductCard(voucherGameOperatorData.name,
-                    product)
+            voucherGameAnalytics.eventClickProductCard(product, voucherGameOperatorData.name)
         }
         selectProduct(product, position)
     }
