@@ -81,12 +81,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM) ?: 1
             hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
-            if (hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.checkOutDateFmt =
-                    TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                            TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
             if (hotelHomepageModel.checkInDate.isNotBlank()) hotelHomepageModel.checkInDateFmt =
                     TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                             TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+            if (hotelHomepageModel.checkOutDate.isNotBlank()) {
+                hotelHomepageModel.checkOutDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+                hotelHomepageModel.nightCounter = countRoomDuration()
+            }
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
