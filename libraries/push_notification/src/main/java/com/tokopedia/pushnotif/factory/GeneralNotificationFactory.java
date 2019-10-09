@@ -54,10 +54,8 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         Bitmap image = getBitmap(imageUrl);
 
         NotificationCompat.Style bigPictureStyle = new NotificationCompat.BigPictureStyle()
-                .bigPicture(image)
-                .bigLargeIcon(null);
+                .bigPicture(image);
 
-        builder.setLargeIcon(image);
         builder.setStyle(bigPictureStyle);
     }
 }
