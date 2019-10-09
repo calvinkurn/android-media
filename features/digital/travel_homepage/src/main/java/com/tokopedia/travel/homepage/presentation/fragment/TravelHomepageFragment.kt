@@ -56,7 +56,10 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         return view
     }
 
-//    override fun getSwipeRefreshLayoutResourceId() = 0
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
+
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +97,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        travelHomepageViewModel.getIntialList()
         travelHomepageViewModel.travelItemList.observe(this, Observer {
 
             clearAllData()
@@ -107,7 +109,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun loadData(page: Int) {
-
+        travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun initInjector() {
@@ -116,28 +118,28 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun getScreenName(): String = ""
 
-    override fun onBannerVHItemBind() {
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner))
+    override fun onBannerVHItemBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner), isFromCloud ?: true)
     }
 
-    override fun onCategoryVHBind() {
-        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list))
+    override fun onCategoryVHBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list), isFromCloud ?: true)
     }
 
-    override fun onDestinationVHBind() {
-        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination))
+    override fun onDestinationVHBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud ?: true)
     }
 
-    override fun onOrderListVHBind() {
-        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list))
+    override fun onOrderListVHBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), isFromCloud ?: true)
     }
 
-    override fun onRecentSearchVHBind() {
-        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search))
+    override fun onRecentSearchVHBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search), isFromCloud ?: true)
     }
 
-    override fun onRecommendationVHBind() {
-        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation))
+    override fun onRecommendationVHBind(isFromCloud: Boolean?) {
+        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), isFromCloud ?: true)
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {

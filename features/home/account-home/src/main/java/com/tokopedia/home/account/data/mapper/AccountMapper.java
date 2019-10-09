@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
@@ -100,7 +101,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
                 (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
 
-        tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
+        tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         items.add(tokopediaPayViewModel);
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();

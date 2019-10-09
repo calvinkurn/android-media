@@ -29,10 +29,13 @@ import com.tokopedia.user.session.UserSessionInterface;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 import javax.inject.Named;
+
+import static com.tokopedia.sessioncommon.di.SessionModule.getUserAgent;
 
 /**
  * @author by nisie on 10/15/18.
@@ -63,6 +66,11 @@ public class LoginRegisterModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(tkpdAuthInterceptor);
         builder.addInterceptor(fingerprintInterceptor);
+        builder.addInterceptor(chain -> {
+            Request.Builder newRequest = chain.request().newBuilder();
+            newRequest.addHeader("User-Agent", getUserAgent());
+            return chain.proceed(newRequest.build());
+        });
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
         builder.addInterceptor(new RiskAnalyticsInterceptor(context));

@@ -39,7 +39,7 @@ public class GetMCLLateCountUseCase {
         Map<String, Object> variables = new HashMap<>();
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_latecount),
+                GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.saldodetails.R.raw.query_get_merchant_latecount),
                 GqlMclLateCountResponse.class,
                 variables, false);
 

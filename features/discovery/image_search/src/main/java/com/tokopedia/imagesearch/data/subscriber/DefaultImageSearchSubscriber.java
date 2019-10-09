@@ -44,10 +44,6 @@ public class DefaultImageSearchSubscriber extends Subscriber<SearchResultModel> 
 
         model.setSearchParameter(imageSearchProductParameter);
 
-        if (model.getProductList() == null || model.getProductList().size() == 0) {
-            return;
-        }
-
         view.onHandleImageResponseSearch(model);
     }
 }

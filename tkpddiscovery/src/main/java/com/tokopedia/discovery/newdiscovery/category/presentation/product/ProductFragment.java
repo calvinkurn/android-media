@@ -954,5 +954,16 @@ public class ProductFragment extends BrowseSectionFragment
             }
         }
     }
+
+    @Override
+    protected String getCategoryId() {
+        if (productViewModel != null
+                && productViewModel.getCategoryHeaderModel() != null
+                && productViewModel.getCategoryHeaderModel().getDepartementId() != null) {
+            return productViewModel.getCategoryHeaderModel().getDepartementId();
+        } else {
+            return "";
+        }
+    }
 }
 
