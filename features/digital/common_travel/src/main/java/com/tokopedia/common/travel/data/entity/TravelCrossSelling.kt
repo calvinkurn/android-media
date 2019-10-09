@@ -8,12 +8,12 @@ import com.google.gson.annotations.SerializedName
 
 data class TravelCrossSelling(
         @SerializedName("items")
-        val items: List<CrossSellingItem> = listOf(),
+        val items: List<Item> = listOf(),
 
         @SerializedName("meta")
         val meta: Meta = Meta()
 ) {
-    data class CrossSellingItem(
+    data class Item(
             @SerializedName("product")
             val product: String = "",
 

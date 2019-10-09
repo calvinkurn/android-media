@@ -26,6 +26,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
@@ -45,6 +46,8 @@ import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -104,6 +107,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     renderGuestDetail(it.data.hotelTransportDetails.guestDetail)
                     renderPaymentDetail(it.data.payMethod, it.data.pricing, it.data.paymentsData)
                     renderFooter(it.data)
+                    renderCrossSelling(it.data.crossSell)
                     loadingState.visibility = View.GONE
                 }
                 is Fail -> {
@@ -208,6 +212,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             }
         } else evoucher_layout.visibility = View.GONE
 
+    }
+
+    private fun renderCrossSelling(crossSelling: TravelCrossSelling) {
+        if (crossSelling.items.isNotEmpty()) {
+            cross_sell_widget.show()
+            cross_sell_widget.buildView(crossSelling)
+        } else cross_sell_widget.hide()
     }
 
     private fun goToEvoucherPage() {

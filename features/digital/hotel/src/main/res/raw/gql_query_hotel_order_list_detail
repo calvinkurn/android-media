@@ -128,5 +128,22 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
         number
       }
     }
+
+    crossSell{
+           items {
+              product
+              title
+              content
+              prefix
+              uri
+              uriWeb
+              imageURL
+            }
+           meta{
+              title
+              uri
+              uriWeb
+            }
+      }
   }
 }
