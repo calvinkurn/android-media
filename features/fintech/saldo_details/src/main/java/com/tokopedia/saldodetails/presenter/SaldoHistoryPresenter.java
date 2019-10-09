@@ -16,7 +16,7 @@ import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.date.util.SaldoDatePickerUtil;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -143,9 +143,9 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
         String date = dateFormatter(getView().getEndDate());
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
         datePicker.DatePickerCalendar((year, month, day) -> {
-            String selectedDate = getDate(year, month, day);
-            getView().setEndDate(selectedDate);
-            new android.os.Handler().postDelayed(this::onSearchClicked, SEARCH_DELAY);
+            String selectedDate = SaldoHistoryPresenter.this.getDate(year, month, day);
+            SaldoHistoryPresenter.this.getView().setEndDate(selectedDate);
+            new android.os.Handler().postDelayed(SaldoHistoryPresenter.this::onSearchClicked, SEARCH_DELAY);
         });
     }
 
