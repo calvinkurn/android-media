@@ -33,6 +33,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENCY_COD
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ATTRIBUTION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_BRAND;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_DIMENSION_83;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_POSITION;
@@ -63,6 +64,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
 import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_BEBAS_ONGKIR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT;
@@ -415,7 +417,7 @@ public class AccountAnalytics {
                                             LIST, widgetTitle,
                                             DATA_POSITION, String.valueOf(position),
                                             DATA_ATTRIBUTION, NONE_OTHER,
-                                            DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:NONE_OTHER
+                                            DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive() ? VALUE_BEBAS_ONGKIR : NONE_OTHER
                                     )))
                             )
             );
