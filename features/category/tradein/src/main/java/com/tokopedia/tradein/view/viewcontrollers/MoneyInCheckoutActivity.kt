@@ -91,7 +91,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, R.color.g_500)
+                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, com.tokopedia.design.R.color.g_500)
                 ds.isUnderlineText = false
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
@@ -238,7 +238,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierPrice.text = price
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         courierButton.text = getString(R.string.change_courier)
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isCourierSet = true
     }
 
@@ -268,7 +268,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         retrieverTime.text = scheduleTime.timeFmt
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         retrieverTimeButton.text = getString(R.string.change_time)
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isTimeSet = true
         sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
