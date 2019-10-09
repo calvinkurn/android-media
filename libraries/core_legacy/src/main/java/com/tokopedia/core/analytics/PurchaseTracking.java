@@ -84,13 +84,10 @@ public class PurchaseTracking extends TrackingUtils {
         Object revenue = purchase.getRevenue();
         ecommerceBundle.putDouble(FirebaseAnalytics.Param.VALUE, revenue == null ? 0 : Double.parseDouble(((String) revenue)));
         ecommerceBundle.putFloat(FirebaseAnalytics.Param.TAX, purchase.getTax());
+        Object shipping = purchase.getShipping();
+        ecommerceBundle.putFloat(FirebaseAnalytics.Param.SHIPPING, shipping == null ? 0 : Float.parseFloat(((String) shipping)));
         ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
         ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, purchase.getCouponCode());
-//        ArrayList<Bundle> productsBundle = new ArrayList<>();
-//        purchase.getListProduct()
-//        Bundle productsBundle = new Bundle();
-//        bundle1.putString(Purchase.CURRENCY_CODE, purchase.getCurrency());
-//        bundle1.putBundle(Purchase.PURCHASE, purchaseBundlePair.getSecond());
         ecommerceBundle.putParcelableArrayList("items", purchaseBundlePair.getSecond().getParcelableArrayList("products"));
         TrackApp.getInstance().getGTM().pushEECommerce(PurchaseTracking.TRANSACTION, ecommerceBundle);
         TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);

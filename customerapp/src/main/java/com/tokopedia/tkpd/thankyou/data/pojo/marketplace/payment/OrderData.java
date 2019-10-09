@@ -13,24 +13,12 @@ public class OrderData {
     @SerializedName("order_id")
     @Expose
     private int orderId;
-//    @SerializedName("phone")
-//    @Expose
-//    private String phone;
     @SerializedName("order_info")
     @Expose
     private OrderInfo orderInfo;
-//    @SerializedName("order_detail")
-//    @Expose
-//    private List<OrderDetail> orderDetail;
     @SerializedName("shop_info")
     @Expose
     private Shop shop;
-//    @SerializedName("shipping")
-//    @Expose
-//    private Shipping shipping;
-//    @SerializedName("shipping_price")
-//    @Expose
-//    private float shippingPrice;
     @SerializedName("item_price")
     @Expose
     private float itemPrice;
@@ -45,23 +33,6 @@ public class OrderData {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
-
-//    public String getPhone() {
-//        return phone;
-//    }
-//
-//    public void setPhone(String phone) {
-//        this.phone = phone;
-//    }
-
-//    public List<OrderDetail> getOrderDetail() {
-//        return orderDetail;
-//    }
-//
-//    public void setOrderDetail(List<OrderDetail> orderDetail) {
-//        this.orderDetail = orderDetail;
-//    }
-
 
     public OrderInfo getOrderInfo() {
         return orderInfo;
@@ -78,22 +49,6 @@ public class OrderData {
     public void setShop(Shop shop) {
         this.shop = shop;
     }
-
-//    public Shipping getShipping() {
-//        return shipping;
-//    }
-//
-//    public void setShipping(Shipping shipping) {
-//        this.shipping = shipping;
-//    }
-//
-//    public float getShippingPrice() {
-//        return shippingPrice;
-//    }
-//
-//    public void setShippingPrice(float shippingPrice) {
-//        this.shippingPrice = shippingPrice;
-//    }
 
     public float getItemPrice() {
         return itemPrice;

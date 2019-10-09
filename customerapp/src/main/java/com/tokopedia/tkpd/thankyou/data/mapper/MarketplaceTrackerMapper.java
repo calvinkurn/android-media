@@ -106,7 +106,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             for (OrderData orderData : paymentData.getOrders()) {
                 PurchaseTracking.marketplace(
                         MainApplication.getAppContext(),
-                        getTrackignData(
+                        getTrackingData(
                                 orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()
                                 ), getTax(paymentData), paymentType
                         )
@@ -185,7 +185,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         return purchase;
     }
 
-    private Pair<Purchase, Bundle> getTrackignData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
+    private Pair<Purchase, Bundle> getTrackingData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
         Purchase purchase = new Purchase();
         Bundle actionField = new Bundle();
         purchase.setEvent(PurchaseTracking.TRANSACTION);

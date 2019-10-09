@@ -55,14 +55,6 @@ public class OrderDetail {
         this.productName = productName;
     }
 
-    //    public Product getProduct() {
-//        return product;
-//    }
-
-//    public void setProduct(Product product) {
-//        this.product = product;
-//    }
-
     public int getProductId() {
         return productId;
     }

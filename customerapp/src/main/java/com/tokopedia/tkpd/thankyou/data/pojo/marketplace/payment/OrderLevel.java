@@ -19,10 +19,6 @@ public class OrderLevel {
     @Expose
     private float totalDiscount;
 
-//    @SerializedName("total_cashback")
-//    @Expose
-//    private float totalCashback;
-
     @SerializedName("total_benefit")
     @Expose
     private float totalBenefit;

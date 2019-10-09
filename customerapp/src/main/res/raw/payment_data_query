@@ -55,6 +55,7 @@ query payment($paymentID: Int!) {
         }
     }
     payment_ref_num
+    payment_status
     payment_type {
         types
     }

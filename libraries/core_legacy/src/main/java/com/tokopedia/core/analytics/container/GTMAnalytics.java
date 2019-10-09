@@ -379,8 +379,8 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // always allow sending gtm v5 in debug mode, and use remote config value in production
-//        if(!GlobalConfig.isAllowDebuggingTools() && !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_V5, false))
-//            return;
+        if(!GlobalConfig.isAllowDebuggingTools() && !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_V5, false))
+            return;
 
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
