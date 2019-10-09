@@ -2183,21 +2183,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 insuranceCartResponse.getCartShopsList() != null &&
                 !insuranceCartResponse.getCartShopsList().isEmpty()) {
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
+                long shopId = insuranceCartShops.getShopId();
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
-                        List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
-                        if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
-                            for (CartItemData cartItemData : cartItemDataList) {
-                                if (String.valueOf(insuranceCartShopItems.getProductId()).
-                                        equalsIgnoreCase(cartItemData.getOriginData().getParentId())) {
-                                    insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
-                                    insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getParentId());
-
-                                    if (!insuranceCartDigitalProduct.isProductLevel()) {
-                                        cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
-                                    }
-                                }
-                            }
+                        insuranceCartDigitalProduct.setShopId(String.valueOf(shopId));
+                        insuranceCartDigitalProduct.setProductId(String.valueOf(insuranceCartShopItems.getProductId()));
+                        if (!insuranceCartDigitalProduct.isProductLevel()) {
+                            cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                         }
                     }
                 }
