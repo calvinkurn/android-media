@@ -90,6 +90,19 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
+
+                                        // Auto apply Promo Stacking Logistic
+                                        if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
+                                                && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
+                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()
+                                                && !shippingRecommendationData.getLogisticPromo().getDisabled()) {
+                                            courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
+                                            courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
+                                            courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
+                                            courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
+                                            courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
+                                            courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
+                                        }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;

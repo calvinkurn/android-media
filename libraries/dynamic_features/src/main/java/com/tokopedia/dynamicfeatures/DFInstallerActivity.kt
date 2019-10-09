@@ -40,7 +40,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var progressText: TextView
     private lateinit var progressTextPercent: TextView
     private lateinit var buttonDownload: Button
-    private lateinit var closeButton: View
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
@@ -127,22 +126,10 @@ class DFInstallerActivity : BaseSimpleActivity() {
             ContextCompat.getColor(this, R.color.tkpd_main_green),
             android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
-        closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
             downloadTimes++
             loadAndLaunchModule(moduleName)
-        }
-        closeButton.setOnClickListener {
-            try {
-                sessionId?.run {
-                    manager.cancelInstall(this)
-                }
-            } catch (e: Exception) {
-            } finally {
-                sessionId = null
-            }
-            hideProgress()
         }
         progressGroup = findViewById(R.id.progress_group)
 

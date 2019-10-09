@@ -135,7 +135,8 @@
     <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
-    
+    <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
+
     <string name="review_like_pattern">%1$d orang</string>
     <string name="date_review_pattern">%1$s oleh %2$s</string>
     <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>

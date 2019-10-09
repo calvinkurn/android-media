@@ -129,6 +129,9 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
     public static final String PROMOTIONS = "promotions";
+    public static final String DIMENSION83 = "dimension83";
+    public static final String FREE_ONGKIR = "bebas ongkir";
+    public static final String NONE_OR_OTHER = "none / other";
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
