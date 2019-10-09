@@ -50,7 +50,7 @@ data class TravelCrossSelling(
             val uriWeb: String = ""
     )
 
-    data class Response(
+    class Response(
             @SerializedName("response")
             val response: TravelCrossSelling = TravelCrossSelling()
     )

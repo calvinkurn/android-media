@@ -1,7 +1,5 @@
 package com.tokopedia.common.travel.domain
 
-import com.tokopedia.common.travel.data.entity.FlightCrossSellingRequest
-import com.tokopedia.common.travel.data.entity.HotelCrossSellingRequest
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -38,7 +36,7 @@ class TravelCrossSellingUseCase @Inject constructor(val useCase: MultiRequestGra
         }
     }
 
-    fun execute(query: String, requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+    fun executeRx(query: String, requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
             val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, it.parameters)
             graphqlUseCase.clearRequest()
@@ -47,29 +45,18 @@ class TravelCrossSellingUseCase @Inject constructor(val useCase: MultiRequestGra
         }
     }
 
-    fun createRequestParams(product: String, flightRequest: FlightCrossSellingRequest): RequestParams {
+    fun createRequestParams(orderId: String, orderCategory: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(PARAM_PRODUCT, product)
-        requestParams.putObject(PARAM_FLIGHT_PRODUCT, flightRequest)
-        return requestParams
-    }
-
-    fun createRequestParams(product: String, hotelRequest: HotelCrossSellingRequest): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(PARAM_PRODUCT, product)
-        requestParams.putObject(PARAM_HOTEL_PRODUCT, hotelRequest)
+        requestParams.putString(ORDER_ID, orderId)
+        requestParams.putString(ORDER_CATEGORY, orderCategory)
         return requestParams
     }
 
     companion object {
-        const val PARAM_DATA = "data"
+        const val PARAM_FLIGHT_PRODUCT = "FLIGHTS"
+        const val PARAM_HOTEL_PRODUCT = "HOTELS"
 
-        const val PARAM_FLIGHT_PRODUCT = "FLIGHT"
-        const val PARAM_HOTEL_PRODUCT = "HOTEL"
-
-        const val PARAM_PRODUCT = "product"
-        const val PARAM_FLIGHT_REQUEST = "flightRequest"
-        const val PARAM_HOTEL_REQUEST = "hotelRequest"
-
+        const val ORDER_ID = "orderId"
+        const val ORDER_CATEGORY = "orderCategoryStr"
     }
 }

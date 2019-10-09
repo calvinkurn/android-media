@@ -33,8 +33,12 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter;
+import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -132,6 +136,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Ticker cancellationWarningTicker;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
+    private TravelCrossSellWidget travelCrossSellWidget;
 
     private boolean isCancellation;
 
@@ -193,6 +198,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         insuranceLayout = view.findViewById(R.id.insurance_layout);
         insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
         showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
+        travelCrossSellWidget = view.findViewById(R.id.cross_sell_widget);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
@@ -221,7 +227,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
-        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData,
+                GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
         flightDetailOrderPresenter.onGetProfileData();
     }
 
@@ -322,7 +329,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), FlightErrorUtil.getMessageFromException(getActivity(), e), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+                flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData,
+                        GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
             }
         }).showRetrySnackbar();
     }
@@ -379,6 +387,17 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         if (isCancellation) {
             navigateToCancellationListPage();
         }
+    }
+
+    @Override
+    public void showCrossSellingItems(TravelCrossSelling travelCrossSelling) {
+        travelCrossSellWidget.setVisibility(View.VISIBLE);
+        travelCrossSellWidget.buildView(travelCrossSelling);
+    }
+
+    @Override
+    public void hideCrossSellingItems() {
+        travelCrossSellWidget.setVisibility(View.GONE);
     }
 
     @Override

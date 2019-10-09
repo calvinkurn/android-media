@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -31,6 +33,7 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private static final String NEW_LINE = "\n";
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+    private final TravelCrossSellingUseCase crossSellingUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSessionInterface userSession;
     private CompositeSubscription compositeSubscription;
@@ -64,16 +68,19 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
                                       UserSessionInterface userSession,
-                                      FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      FlightGetOrderUseCase flightGetOrderUseCase,
+                                      TravelCrossSellingUseCase crossSellingUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        this.crossSellingUseCase = crossSellingUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
-    public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
+    public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData, String crossSellingQuery) {
         getView().showProgressDialog();
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
+        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override
@@ -111,6 +118,28 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void onSendEticketButtonClicked() {
         getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
+    }
+
+    private Subscriber<GraphqlResponse> getTravelCrossSelling() {
+        return new Subscriber<GraphqlResponse>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideCrossSellingItems();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                TravelCrossSelling crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
+                if (crossSellingResponse.getItems().isEmpty()) getView().hideCrossSellingItems();
+                else getView().showCrossSellingItems(crossSellingResponse);
+            }
+        };
     }
 
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
