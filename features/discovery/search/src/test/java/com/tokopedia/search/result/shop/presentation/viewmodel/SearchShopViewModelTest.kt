@@ -1124,6 +1124,53 @@ internal class SearchShopViewModelTest : Spek({
             }
         }
 
+        Scenario("Remove selected option from filter with multiple options") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
+            val selectedFilterOptionUniqueId = jakartaOption.uniqueId
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model with search parameter contains location filter (${SearchApiConst.FCITY} = 1,2,3)") {
+                val searchShopParameterWithCategoryFilter = mapOf<String, Any>(
+                        SearchApiConst.Q to "samsung",
+                        SearchApiConst.FCITY to "1,2,3"
+                )
+
+                searchShopViewModel = SearchShopViewModel(
+                        TestDispatcherProvider(), searchShopParameterWithCategoryFilter,
+                        searchShopFirstPageRepository, searchShopLoadMoreRepository, dynamicFilterRepository,
+                        shopHeaderViewModelMapper, shopViewModelMapper,
+                        searchLocalCacheHandler, userSession, localCacheHandler
+                )
+            }
+
+            Given("search shop and dynamic filter API call will be successful") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            When("handle remove selected filter") {
+                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+            }
+
+            Then("Search Parameter should only contain the remaining location filter (${SearchApiConst.FCITY} = 2,3)") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.VALUE_SEPARATOR)
+                remainingLocationFilter.contains("1") shouldBe false
+                remainingLocationFilter.contains("2") shouldBe true
+                remainingLocationFilter.contains("3") shouldBe true
+            }
+
+            Then("verify search shop and get dynamic filter API is called") {
+                searchShopFirstPageRepository.isExecuted()
+                dynamicFilterRepository.isExecuted()
+            }
+        }
+
 //        Scenario("Remove selected category filter") {
 //            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
 //            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
