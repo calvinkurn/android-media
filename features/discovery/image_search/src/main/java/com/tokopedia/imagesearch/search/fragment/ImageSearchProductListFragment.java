@@ -268,7 +268,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             @Override
             public int getSpanSize(int position) {
                 if (topAdsRecyclerAdapter.isLoading(position) ||
-                        topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
+                        topAdsRecyclerAdapter.isTopAdsViewHolder(position) ||
+                        adapter.isEmptyItem(position)) {
                     return spanCount;
                 } else {
                     return 1;
@@ -413,6 +414,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
+        adapter.showEmpty(getContext());
     }
 
     @Override

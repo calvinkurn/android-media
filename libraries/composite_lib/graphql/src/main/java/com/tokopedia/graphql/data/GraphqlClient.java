@@ -21,7 +21,10 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -40,6 +43,11 @@ public class GraphqlClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+            tkpdOkHttpBuilder.addInterceptor(chain -> {
+                Request.Builder newRequest = chain.request().newBuilder();
+                newRequest.addHeader("User-Agent", getUserAgent());
+                return chain.proceed(newRequest.build());
+            });
 
             sRetrofit = CommonNetwork.createRetrofit(
                     GraphqlUrl.BASE_URL,

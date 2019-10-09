@@ -1,6 +1,6 @@
 package com.tokopedia.phoneverification.data.source;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
@@ -36,7 +36,7 @@ public class ChangeMsisdnSource {
         TKPDMapParam<String, Object> map = new TKPDMapParam<>();
 
         return phoneVerificationApi
-                .changePhoneNumber(AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                .changePhoneNumber(AuthHelper.generateParamsNetwork(userSession.getUserId(),
                         userSession.getDeviceId(), generateRequestParam(parameters)))
                 .map(changePhoneNumberMapper);
     }

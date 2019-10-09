@@ -15,7 +15,6 @@ import android.widget.ListView;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -28,6 +27,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.transaction.common.TransactionRouter;
 
 import java.util.ArrayList;
@@ -154,9 +154,10 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     }
 
     private void intentToAddPassword() {
-        startActivityForResult(
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
+        if (getActivity() != null) {
+            startActivityForResult(RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_ADD_PASSWORD);
+        }
     }
 
     private void showNoPasswordDialog() {
