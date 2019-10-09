@@ -51,10 +51,10 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        // Implement Tracking
+                        // TO-DO: Implement Tracking
                         ImpresionTask().execute(element.productItem.trackerImageUrl)
                     }
-                    // listener
+                    // TO-DO: listener
                     element.listener.onProductImpression(element.productItem)
                 }
             })
