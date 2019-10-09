@@ -1,9 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -51,10 +49,10 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        // TO-DO: Implement Tracking
+                        // Implement Tracking
                         ImpresionTask().execute(element.productItem.trackerImageUrl)
                     }
-                    // TO-DO: listener
+                    // listener
                     element.listener.onProductImpression(element.productItem)
                 }
             })
