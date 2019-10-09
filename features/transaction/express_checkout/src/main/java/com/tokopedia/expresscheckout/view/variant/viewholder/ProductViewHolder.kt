@@ -8,8 +8,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
@@ -27,6 +27,13 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
     override fun bind(element: ProductViewModel?) {
         if (element != null) {
             var stockWording = ""
+            if (element.isFreeOngkir) {
+                ImageHandler.loadImage(itemView.context, itemView.img_free_ongkir, element.freeOngkirImg, R.drawable.ic_loading_image)
+                itemView.img_free_ongkir.visibility = View.VISIBLE
+            } else {
+                itemView.img_free_ongkir.visibility = View.GONE
+            }
+
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_product, element.productImageUrl)
             if (element.productChildrenList.isNotEmpty()) {
                 for (productChild: ProductChild in element.productChildrenList) {

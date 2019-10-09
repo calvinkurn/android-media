@@ -1,6 +1,9 @@
 <resources>
     <string name="title_search_result" >Hasil Pencarian</string>
     <string name="search_result_app_name">search</string>
+    <string name="app_name">Search</string>
+    <string name="search_result_page">Search Result Page</string>
+    <string name="OK">OK</string>
 
     <string name="product_tab_title">Produk</string>
     <string name="catalog_tab_title">Katalog</string>
@@ -68,4 +71,7 @@
     <string name="image_product_desc">Produk</string>
     <string name="search_hint">Cari produk atau Toko</string>
     <string name="search_title">Pencarian</string>
+
+    <string name="free_ongkir_promo_show_case_title">Bebas Ongkir</string>
+    <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
 </resources>

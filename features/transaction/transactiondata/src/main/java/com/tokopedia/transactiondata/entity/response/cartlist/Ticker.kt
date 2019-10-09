@@ -3,7 +3,7 @@ package com.tokopedia.transactiondata.entity.response.cartlist
 
 import com.google.gson.annotations.SerializedName
 
-data class TickerData(
+data class Ticker(
     @field:SerializedName("id")
     val id: Int,
     @field:SerializedName("message")

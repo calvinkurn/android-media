@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
@@ -182,6 +183,7 @@ public class ProductViewModelMapper {
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
+        productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         return productItem;
     }
 
@@ -235,6 +237,10 @@ public class ProductViewModelMapper {
                 );
 
         return labelGroupViewModel;
+    }
+
+    private FreeOngkirViewModel convertToFreeOngkirViewModel(SearchProductModel.FreeOngkir freeOngkir) {
+        return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {
