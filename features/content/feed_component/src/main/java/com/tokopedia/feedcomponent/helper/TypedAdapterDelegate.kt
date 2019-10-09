@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.helper
 
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import java.lang.reflect.ParameterizedType
@@ -29,8 +28,6 @@ abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return onCreateViewHolder(parent, getView(parent))
+        return onCreateViewHolder(parent, getView(parent, layoutRes))
     }
-
-    private fun getView(parent: ViewGroup): View = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
 }
