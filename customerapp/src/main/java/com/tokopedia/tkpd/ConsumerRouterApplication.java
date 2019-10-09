@@ -1721,9 +1721,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NonNull
     @Override
     public Intent getKYCIntent(Context context, int projectId) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.KYC_FORM);
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-        return intent;
+       return RouteManager.getIntent(context, ApplinkConst.KYC_FORM, String.valueOf(projectId));
     }
 
     public Observable<String> getAtcObsr() {

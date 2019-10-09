@@ -31,7 +31,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
-    private int projectId;
+    private int projectId = -1;
 
     public interface Listener {
         void trackOnBackPressed();
@@ -51,7 +51,11 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         } else {
             stepperModel = createNewStepperModel();
         }
-        projectId = getIntent().getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID,-1);
+        try {
+            projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
     }
 

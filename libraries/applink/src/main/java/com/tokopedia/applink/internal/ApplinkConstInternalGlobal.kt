@@ -95,7 +95,7 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
     @JvmField
-    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form"
+    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
