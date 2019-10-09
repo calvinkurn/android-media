@@ -120,5 +120,6 @@
     <string name="location_search_hint">Lokasi hits, wilayah, atau kota</string>
     <string name="location_deals_changed_toast">Kamu sedang melihat pilihan Deals di</string>
     <string name="location_deals_changed_toast_oke">Oke</string>
+    <string name="deals_disable_buy_now">Stok Produk Kosong</string>
 
 </resources>

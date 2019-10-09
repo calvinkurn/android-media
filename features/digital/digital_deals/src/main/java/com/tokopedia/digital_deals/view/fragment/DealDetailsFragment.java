@@ -343,7 +343,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         Date currentTime = Calendar.getInstance().getTime();
         if ((currentTime.getTime())/1000> detailsViewModel.getSaleEndDate())
         {
-            buyDealNow.setText("Stok Produk Kosong");
+            buyDealNow.setText(getContext().getResources().getString(R.string.deals_disable_buy_now));
             buyDealNow.setClickable(false);
             buyDealNow.setBackgroundColor(getContext().getResources().getColor(R.color.search_divider_color));
         } else {
