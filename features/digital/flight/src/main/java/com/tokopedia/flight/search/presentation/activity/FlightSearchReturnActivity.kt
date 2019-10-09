@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.activity
+package com.tokopedia.flight.search.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,10 +10,10 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
+import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
+import com.tokopedia.flight.search.presentation.fragment.FlightSearchReturnFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
-import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
-import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchReturnFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
