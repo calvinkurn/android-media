@@ -4,6 +4,7 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -219,7 +220,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             purchase.addProduct(productBundlePair.getFirst().getProduct());
             bundles.add(productBundlePair.getSecond());
         }
-        bundle.putBundle("actionField", actionField);
+//        bundle.putBundle("actionField", actionField);
         bundle.putParcelableArrayList("products", bundles);
 //        for (Product product : getProductList(orderData)) {
 //            purchase.addProduct(product.getProduct());
@@ -364,15 +365,15 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             Product product = new Product();
             Bundle bundle = new Bundle();
             product.setProductID(String.valueOf(orderDetail.getProductId()));
-            bundle.putString(Product.KEY_ID, String.valueOf(orderDetail.getProductId()));
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(orderDetail.getProductId()));
             product.setProductName(getProductName(orderDetail));
-            bundle.putString(Product.KEY_NAME, getProductName(orderDetail));
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getProductName(orderDetail));
             product.setPrice(String.valueOf(orderDetail.getProductPrice()));
-            bundle.putString(Product.KEY_PRICE, String.valueOf(orderDetail.getProductPrice()));
+            bundle.putDouble(FirebaseAnalytics.Param.PRICE, orderDetail.getProductPrice());
             product.setCategory(getProductCategory(orderDetail));
-            bundle.putString(Product.KEY_CAT, getProductCategory(orderDetail));
+            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
-            bundle.putString(Product.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
+            bundle.putInt(FirebaseAnalytics.Param.QUANTITY, orderDetail.getQuantity());
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
             bundle.putString(Product.KEY_DIMENSION_54, getDimension54Value(orderData.isFulfillment()));
 

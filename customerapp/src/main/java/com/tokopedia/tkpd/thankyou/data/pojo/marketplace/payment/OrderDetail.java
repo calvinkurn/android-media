@@ -22,7 +22,7 @@ public class OrderDetail {
     private int productId;
     @SerializedName("product_price")
     @Expose
-    private float productPrice;
+    private double productPrice;
     @SerializedName("quantity")
     @Expose
     private int quantity;
@@ -71,11 +71,11 @@ public class OrderDetail {
         this.productId = productId;
     }
 
-    public float getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(float productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 
