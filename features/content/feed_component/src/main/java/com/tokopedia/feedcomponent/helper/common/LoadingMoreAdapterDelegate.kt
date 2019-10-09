@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.helper.TypedAdapterDelegate
 /**
  * Created by jegul on 2019-10-02.
  */
-object LoadingMoreAdapterDelegate : TypedAdapterDelegate<LoadingMoreModel, Any, LoadingMoreViewHolder>(LoadingMoreViewHolder.LAYOUT) {
+class LoadingMoreAdapterDelegate : TypedAdapterDelegate<LoadingMoreModel, Any, LoadingMoreViewHolder>(LoadingMoreViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: LoadingMoreModel, holder: LoadingMoreViewHolder) {
         holder.bind(item)

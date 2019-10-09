@@ -9,7 +9,7 @@ import android.view.ViewGroup
 abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     protected val delegatesManager = AdapterDelegatesManager<T>()
-    protected val itemList: MutableList<T> = mutableListOf()
+    val itemList: MutableList<T> = mutableListOf()
 
     fun setItems(itemList: List<T>) {
         this.itemList.clear()
