@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
@@ -218,6 +219,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (crossSelling.items.isNotEmpty()) {
             cross_sell_widget.show()
             cross_sell_widget.buildView(crossSelling)
+            cross_sell_widget.setListener(object: TravelCrossSellAdapter.OnItemClickListener{
+                override fun onItemClickListener(item: TravelCrossSelling.Item) {
+                    RouteManager.route(context, item.uri)
+                }
+
+            })
         } else cross_sell_widget.hide()
     }
 

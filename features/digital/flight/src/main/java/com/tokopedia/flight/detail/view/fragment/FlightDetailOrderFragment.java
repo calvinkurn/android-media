@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
@@ -64,11 +65,14 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -393,6 +397,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void showCrossSellingItems(TravelCrossSelling travelCrossSelling) {
         travelCrossSellWidget.setVisibility(View.VISIBLE);
         travelCrossSellWidget.buildView(travelCrossSelling);
+        travelCrossSellWidget.setListener(item -> {
+            RouteManager.route(getContext(), item.getUri());
+        });
     }
 
     @Override

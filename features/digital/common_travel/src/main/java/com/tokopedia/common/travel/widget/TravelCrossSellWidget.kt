@@ -32,5 +32,8 @@ class TravelCrossSellWidget @JvmOverloads constructor(context: Context, attrs: A
         cross_selling_rv.adapter = adapter
     }
 
+    fun setListener(listener: TravelCrossSellAdapter.OnItemClickListener) {
+        adapter.listener = listener
+    }
 
 }

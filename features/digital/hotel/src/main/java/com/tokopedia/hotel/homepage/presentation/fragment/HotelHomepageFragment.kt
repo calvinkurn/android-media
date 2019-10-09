@@ -77,6 +77,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
+            hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT) ?: 1
+            hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM) ?: 1
+            hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
+            hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
+            if (hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.checkOutDateFmt =
+                    TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                            TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+            if (hotelHomepageModel.checkInDate.isNotBlank()) hotelHomepageModel.checkInDateFmt =
+                    TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                            TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -367,17 +377,25 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_ID = "param_id"
         const val EXTRA_PARAM_NAME = "param_name"
         const val EXTRA_PARAM_TYPE = "param_type"
+        const val EXTRA_PARAM_CHECKIN = "param_check_in"
+        const val EXTRA_PARAM_CHECKOUT = "param_check_out"
+        const val EXTRA_ADULT = "param_adult"
+        const val EXTRA_ROOM = "param_room"
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Int, name: String, type: String): HotelHomepageFragment =
+        fun getInstance(id: Int, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
                         putInt(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
+                        if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
+                        if (checkOut.isNotBlank()) putString (EXTRA_PARAM_CHECKOUT, checkOut)
+                        if (adult != 0) putInt(EXTRA_ADULT, adult)
+                        if (room != 0) putInt(EXTRA_ROOM, room)
                     }
                 }
     }
