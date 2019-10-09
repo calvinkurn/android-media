@@ -17,6 +17,7 @@ class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListe
         globalNavWidgetPillWithInfo?.setData(globalNavWidgetPillModelItemWithInfo, this)
         globalNavWidgetPillWithoutSeeAllApplink?.setData(globalNavWidgetPillModelWithoutSeeAllApplink, this)
         globalNavWidgetCard?.setData(globalNavWidgetModelCard, this)
+        globalNavWidgetCard2?.setData(globalNavWidgetModelCard2, this)
     }
 
     override fun onClickItem(item: GlobalNavWidgetModel.Item) {

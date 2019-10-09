@@ -97,6 +97,28 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewGlobalNavWidgetCard2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Global Nav Widget Card 2 (Same as above)"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            app:typographyType="heading_3"
+            app:layout_constraintTop_toBottomOf="@id/globalNavWidgetCard"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/globalNavWidgetCard2"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/textViewGlobalNavWidgetCard2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

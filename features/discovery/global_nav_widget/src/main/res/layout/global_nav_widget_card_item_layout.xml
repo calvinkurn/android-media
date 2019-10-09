@@ -17,7 +17,7 @@
         android:paddingBottom="@dimen/dp_4">
 
         <ImageView
-            android:id="@+id/globalNavCardItemImage"
+            android:id="@+id/globalNavCardItemBackground"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_60"
             android:adjustViewBounds="true"
@@ -27,8 +27,22 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/globalNavCardItemLogo"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/globalNavCardSource"
+            android:id="@+id/globalNavCardCategoryName"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_4"
@@ -38,7 +52,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:singleLine="true"
             android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/globalNavCardItemImage"
+            app:layout_constraintTop_toBottomOf="@id/globalNavCardItemBackground"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:typographyType="small"
@@ -55,7 +69,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:lines="3"
             android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/globalNavCardSource"
+            app:layout_constraintTop_toBottomOf="@id/globalNavCardCategoryName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:typographyType="body_3"

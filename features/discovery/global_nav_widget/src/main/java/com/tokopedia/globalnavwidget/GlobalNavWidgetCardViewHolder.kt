@@ -20,22 +20,47 @@ internal class GlobalNavWidgetCardViewHolder(
     private val context: Context? = itemView.context
 
     internal fun bind(item: GlobalNavWidgetModel.Item) {
+        bindOnClickListener(item)
+        bindImageBackgroundAndLogo(item)
+        bindCategoryName(item)
+        bindTitle(item)
+        bindSubtitleAndStrikethrough(item)
+        bindInfo(item)
+    }
+
+    private fun bindOnClickListener(item: GlobalNavWidgetModel.Item) {
         itemView.globalNavCardItemCardView?.setOnClickListener { _ ->
             listener.onClickItem(item)
         }
+    }
 
-        itemView.globalNavCardItemImage?.let {
-            ImageHandler.loadImageFitCenter(context, it, item.imageUrl)
+    private fun bindImageBackgroundAndLogo(item: GlobalNavWidgetModel.Item) {
+        val backgroundUrl = if (item.imageUrl.isNotEmpty()) item.imageUrl else item.backgroundUrl
+
+        itemView.globalNavCardItemBackground?.let {
+            ImageHandler.loadImageFitCenter(context, it, backgroundUrl)
         }
 
-        itemView.globalNavCardSource?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
-            itemView.globalNavCardSource?.text = item.categoryName
-        }
+        val shouldShowLogo = item.imageUrl.isEmpty() && item.logoUrl.isNotEmpty()
 
+        itemView.globalNavCardItemLogo?.shouldShowWithAction(shouldShowLogo) {
+            ImageHandler.loadImageFitCenter(context, it, item.logoUrl)
+        }
+    }
+
+    private fun bindCategoryName(item: GlobalNavWidgetModel.Item) {
+        itemView.globalNavCardCategoryName?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
+            itemView.globalNavCardCategoryName?.text = item.categoryName
+        }
+    }
+
+    private fun bindTitle(item: GlobalNavWidgetModel.Item) {
         itemView.globalNavCardTitle.shouldShowWithAction(item.name.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(item.name)
         }
+    }
 
+    private fun bindSubtitleAndStrikethrough(item: GlobalNavWidgetModel.Item) {
         val shouldShowStrikethrough = item.strikethrough.isNotEmpty()
 
         itemView.globalNavCardStrikethrough.shouldShowWithAction(shouldShowStrikethrough) {
@@ -48,7 +73,9 @@ internal class GlobalNavWidgetCardViewHolder(
         itemView.globalNavCardSubtitle.shouldShowWithAction(shouldShowSubtitle) {
             it.text = MethodChecker.fromHtml(item.subtitle)
         }
+    }
 
+    private fun bindInfo(item: GlobalNavWidgetModel.Item) {
         itemView.globalNavCardPrice.shouldShowWithAction(item.info.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(item.info)
         }

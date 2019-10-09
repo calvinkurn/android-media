@@ -188,7 +188,6 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     categoryName = "Deals",
                     name = "Jakarta (CGK) - Surabaya (SUB)",
                     info = "Rp 859.000",
-                    imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
                     clickItemApplink = "tokopedia://deals/test-giftn-17695",
                     clickItemUrl = "https://www.tokopedia.com/deals/i/test-giftn-17695/",
                     subtitle = "Mulai dari",
@@ -204,6 +203,39 @@ internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
                     subtitle = "Mulai dari",
                     strikethrough = "Rp 858.999.999.999.999.999",
                     position = 6
+            ))
+        }
+)
+
+internal val globalNavWidgetModelCard2 = GlobalNavWidgetModel(
+        source = "deal",
+        keyword = "hotel",
+        title = "Trending Deals",
+        navTemplate = "card",
+        background = "https://ecs7.tokopedia.net/img/red-container.png",
+        clickSeeAllApplink = "tokopedia://deals/brand/asana-grove-hotel-yogyakarta-2566",
+        clickSeeAllUrl = "https://www.tokopedia.com/deals/jakarta/t/asana-grove-hotel-yogyakarta-2566/",
+        itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
+            it.add(GlobalNavWidgetModel.Item(
+                    categoryName = "Hotel",
+                    name = "Sebelum liburan, book hotelmu disini!",
+                    clickItemApplink = "tokopedia://deals/test-giftn-7419",
+                    clickItemUrl = "https://www.tokopedia.com/deals/i/test-giftn-7419/",
+                    backgroundUrl = "https://ecs7.tokopedia.net/img/red-container.png",
+                    logoUrl = "https://ecs7.tokopedia.net/img/recharge/category/pesawat/colored-active.png",
+                    position = 1
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    categoryName = "Deals",
+                    name = "Inaya Putri Bali",
+                    info = "Rp 1.500.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/30/5510064/5510064_44d8a048-f210-429d-b2e1-325dcbc6a5a5.png",
+                    clickItemApplink = "tokopedia://deals/test-giftn-7419",
+                    clickItemUrl = "https://www.tokopedia.com/deals/i/test-giftn-7419/",
+                    subtitle = "Harga /kamar/malam",
+                    backgroundUrl = "https://ecs7.tokopedia.net/img/red-container.png",
+                    logoUrl = "https://ecs7.tokopedia.net/img/recharge/category/pesawat/colored-active.png",
+                    position = 2
             ))
         }
 )
