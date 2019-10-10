@@ -20,10 +20,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -92,16 +95,16 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 when(it) {
                     is Success -> {
                         with (it.data) {
-                            if (catalog.label.isNotEmpty())  (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
-
-                            if (banners.isEmpty()) promo_banner.visibility = View.GONE
-                            else {
-                                renderBanners(banners)
+                            if (catalog.label.isNotEmpty()) {
+                                (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+                                voucherGameAnalytics.categoryName = catalog.label
                             }
+
+                            renderBanners(banners)
+                            renderTickers(tickers)
                         }
                     }
                     is Fail -> {
-                        promo_banner.visibility = View.GONE
                     }
                 }
             }
@@ -120,6 +123,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
+        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 
@@ -186,10 +190,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
             recycler_view.post {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (searchInputView.searchText.isNotEmpty()) {
-                    voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
-                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
-                } else {
+                if (searchInputView.searchText.isEmpty()) {
                     voucherGameAnalytics.impressionOperatorCard(
                             data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
@@ -198,25 +199,54 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     private fun renderBanners(data: List<TopupBillsBanner>) {
-        promo_banner.setPromoList(data.map { it.imageUrl })
-        promo_banner.setOnPromoClickListener {
-            val banner = data[it]
-            voucherGameAnalytics.eventClickBanner(banner, it)
-            RouteManager.route(context, banner.applinkUrl) }
-        promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
-        promo_banner.setOnPromoAllClickListener {
-            voucherGameAnalytics.eventClickViewAllBanner()
-            RouteManager.route(context, ApplinkConst.PROMO_LIST)
-        }
-        context?.let {
-            promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
-        }
-        promo_banner.setBannerIndicator(Indicator.GREEN)
+        if (data.isNotEmpty()) {
+            promo_banner.setPromoList(data.map { it.imageUrl })
+            promo_banner.setOnPromoClickListener {
+                val banner = data[it]
+                voucherGameAnalytics.eventClickBanner(banner, it)
+                RouteManager.route(context, banner.applinkUrl)
+            }
+            promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
+            promo_banner.setOnPromoAllClickListener {
+                voucherGameAnalytics.eventClickViewAllBanner()
+                RouteManager.route(context, ApplinkConst.PROMO_LIST)
+            }
+            context?.let {
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
+            }
+            promo_banner.setBannerIndicator(Indicator.GREEN)
 
-        val seeAllText = promo_banner.bannerSeeAll
-        seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+            val seeAllText = promo_banner.bannerSeeAll
+            seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
 
-        promo_banner.buildView()
+            promo_banner.buildView()
+            promo_banner.visibility = View.VISIBLE
+        } else {
+            promo_banner.visibility = View.GONE
+        }
+    }
+
+    private fun renderTickers(tickers: List<TopupBillsTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<TickerData>()
+            for (item in tickers) {
+                messages.add(TickerData(item.name, item.content,
+                        when (item.type) {
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
+            }
+            context?.run {
+                ticker_view.addPagerView(TickerPagerAdapter(this, messages), messages)
+            }
+            ticker_view.visibility = View.VISIBLE
+        } else {
+            ticker_view.visibility = View.GONE
+        }
+
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
@@ -242,6 +272,15 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onItemClicked(operator: VoucherGameOperator) {
         if (searchInputView.searchText.isNotEmpty()) {
+            voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
+
+            val operatorList = voucherGameViewModel.voucherGameList.value
+            if (operatorList is Success) {
+                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                        operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            }
+
             voucherGameAnalytics.eventClickOperatorCardSearchResult(operator)
         } else {
             voucherGameAnalytics.eventClickOperatorCard(operator)
@@ -264,7 +303,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
         searchInputView.searchText = ""
     }
 
@@ -289,17 +329,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { if(text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { searchVoucherGame(it) }
     }
 
     override fun onSearchReset() {

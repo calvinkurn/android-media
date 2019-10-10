@@ -564,7 +564,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.Companion.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
@@ -731,7 +731,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
             if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.Companion.showErrorWithAction(mainContent,
+                Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
                         getResources().getString(R.string.title_ok), v -> {});

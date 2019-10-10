@@ -8,10 +8,12 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -30,6 +32,7 @@ class AddToCartDoneViewModel @Inject constructor(
         private val rawQueries: Map<String, String>,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
