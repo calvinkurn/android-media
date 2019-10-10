@@ -9,6 +9,8 @@ import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
+import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
@@ -46,9 +48,9 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
 
     }
 
-    override fun getDetailPromo(codeCoupon: String) {
+    override fun getDetailPromo(slug: String) {
         view.showLoading()
-        getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon),
+        getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(slug),
                 object : Subscriber<GraphqlResponse>() {
 
                     override fun onError(e: Throwable) {

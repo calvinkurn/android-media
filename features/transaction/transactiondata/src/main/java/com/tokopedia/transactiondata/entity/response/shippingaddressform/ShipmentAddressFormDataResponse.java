@@ -8,6 +8,7 @@ import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldAttributes;
 import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
+import com.tokopedia.transactiondata.entity.response.cartlist.Ticker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
+    @SerializedName("tickers")
+    @Expose
+    private List<Ticker> tickers = new ArrayList<>();
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -160,5 +164,9 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isIneligbilePromoDialogEnabled() {
         return isIneligbilePromoDialogEnabled;
+    }
+
+    public List<Ticker> getTickers() {
+        return tickers;
     }
 }

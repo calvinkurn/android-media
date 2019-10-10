@@ -72,6 +72,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

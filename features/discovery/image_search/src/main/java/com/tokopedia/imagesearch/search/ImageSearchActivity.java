@@ -460,6 +460,9 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
+        if (productViewModel.getProductList() == null || productViewModel.getProductList().size() == 0) {
+            return;
+        }
         sendGTMEventSuccessImageSearch();
         sendAppsFlyerEventSuccessImageSearch(productViewModel);
     }
