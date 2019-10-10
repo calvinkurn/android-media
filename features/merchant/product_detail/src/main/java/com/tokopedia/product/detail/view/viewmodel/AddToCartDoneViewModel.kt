@@ -52,14 +52,11 @@ class AddToCartDoneViewModel @Inject constructor(
 
     fun getRecommendationProduct(productId: String) {
         launchCatchError(block = {
-            val recomResponse = withContext(Dispatchers.IO) {
+            val recommendationWidget = withContext(Dispatchers.IO) {
                 if (GlobalConfig.isCustomerApp())
                     loadRecommendationProduct(productId)
                 else listOf()
             }
-            val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel(
-                    recomResponse
-            )
             recommendationProduct.value = Success(recommendationWidget)
 
         }) {
@@ -67,29 +64,18 @@ class AddToCartDoneViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadRecommendationProduct(productId: String): List<RecomendationEntity.RecomendationData> {
-        val topadsParams = generateRecommendationProductParams(productId)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+    private fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
         try {
-            return graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()
-        } catch (t: Throwable) {
-            throw t
+            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                    pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                    pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                    productIds = arrayListOf(productId)
+            )).toBlocking()
+            return data.first()?: emptyList()
+        } catch (e: Throwable) {
+            e.debugTrace()
+            throw e
         }
-    }
-
-    private fun generateRecommendationProductParams(productId: String): Map<String, Any> {
-        return mapOf(
-                TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
-                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
-                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
-                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
-                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
-                TopAdsDisplay.KEY_PRODUCT_ID to productId
-        )
     }
 
     fun addWishList(
