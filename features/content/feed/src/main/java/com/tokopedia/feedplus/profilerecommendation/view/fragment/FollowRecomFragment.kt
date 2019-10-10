@@ -2,7 +2,7 @@ package com.tokopedia.feedplus.profilerecommendation.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View

@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
 import androidx.constraintlayout.widget.ConstraintLayout
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
