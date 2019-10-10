@@ -78,4 +78,7 @@
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
+
+    <!--Ovo Wallet-->
+    <string name="wallet_title">Ovo</string>
 </resources>
