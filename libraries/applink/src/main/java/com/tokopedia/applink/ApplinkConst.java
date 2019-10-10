@@ -197,8 +197,8 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
-    String DEPOSIT = "tokopedia://saldo";
-    String SALDO_INTRO = "tokopedia://saldointro";
+    String SALDO = "tokopedia://saldo";
+    String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
@@ -358,6 +358,12 @@ public interface ApplinkConst {
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
 
+        String EXTRA_CATEGORY_ID = "category_id";
+        String EXTRA_CATEGORY_NAME = "category_name";
+        String EXTRA_CART_ID = "cart_id";
+        String EXTRA_PRODUCT_TITLE = "product_title";
+        String EXTRA_PRODUCT_PRICE = "product_price";
+        String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }
 }

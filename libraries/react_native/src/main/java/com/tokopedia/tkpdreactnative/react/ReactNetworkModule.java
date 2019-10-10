@@ -14,18 +14,17 @@ import com.facebook.react.bridge.WritableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +39,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.example.akamai_bot_lib.UtilsKt.getSensorData;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getSensorData;
 
 /**
  * @author ricoharisin .

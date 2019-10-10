@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -33,13 +33,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Transaction Heading"
-            android:textColor="#b3000000"
-            android:textSize="14sp"
-            android:textStyle="normal" />
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            tools:text="Transaction Heading" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/saldo_transaction_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/transaction_heading"
@@ -53,7 +53,7 @@
             android:id="@+id/nominal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/date"
+            android:layout_below="@+id/saldo_transaction_date"
             android:layout_marginTop="@dimen/dp_10" />
 
         <TextView
@@ -62,8 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/nominal"
             android:layout_marginTop="@dimen/dp_7"
-            android:textColor="@color/black_36"
             android:background="@android:drawable/list_selector_background"
+            android:textColor="@color/black_36"
             android:textSize="@dimen/sp_14" />
 
     </RelativeLayout>

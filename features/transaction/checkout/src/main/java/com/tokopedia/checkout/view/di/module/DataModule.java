@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.content.Context;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;

@@ -47,6 +47,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -814,10 +815,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     tvCourierSelection.setOnClickListener(null);
                 }
 
+                // Change duration to promo title after promo is applied
+                tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
                 if (courierData.getDiscountedRate() == 0) {
                     // Gratis Shipping Price
                     tvLogTicker.setVisibility(View.GONE);
-                    tvSelectedDurationRecommendation.setText(courierData.getPromoTitle());
                 } else if (courierData.getDiscountedRate() > 0) {
                     // Discounted Shipping Price
                     tvDurationStrikedPrice.setVisibility(View.VISIBLE);
@@ -878,6 +880,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.GONE);
+            tvLogTicker.setVisibility(View.GONE);
 
             if (shipmentCartItemModel.isStateLoadingCourierState()) {
                 llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
@@ -960,8 +963,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 !shipmentCartItemModel.isError()) {
+            VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
             shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
                     .getShipperPrice();
+            if (voucherLogisticItemUiModel != null) {
+                if (shippingPrice - voucherLogisticItemUiModel.getCouponAmountRaw() <= 0) {
+                    shippingPrice = 0;
+                } else {
+                    shippingPrice = shippingPrice - voucherLogisticItemUiModel.getCouponAmountRaw();
+                }
+            }
             Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
             if (useInsurance != null && useInsurance) {
                 insurancePrice = shipmentCartItemModel.getSelectedShipmentDetailData()
@@ -981,7 +992,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
-        tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
+        if (shippingPrice == 0) {
+            tvShippingFeePrice.setText(tvShippingFeePrice.getContext().getString(R.string.label_free_shipping));
+        } else {
+            tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
+        }
         tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
         tvPrioritasFeePrice.setText(getPriceFormat(tvPrioritasFee, tvPrioritasFeePrice, priorityPrice));
         tvProtectionLabel.setText(totalPPPItemLabel);

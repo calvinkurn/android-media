@@ -105,7 +105,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
@@ -323,5 +323,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         CategoryPageAnalytics.catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                 selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
 }

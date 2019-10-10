@@ -56,7 +56,7 @@ class HotelModule {
     @Provides
     @Named("travel_calendar_holiday_query")
     fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_travel_calendar_holiday)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday)
     }
 
 }
