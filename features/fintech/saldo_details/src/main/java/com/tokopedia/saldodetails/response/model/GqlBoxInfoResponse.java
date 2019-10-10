@@ -39,7 +39,6 @@ public class GqlBoxInfoResponse implements Parcelable {
     };
 
 
-
     public GqlBoxInfoResponse(Parcel in) {
         this.boxTitle = in.readString();
         this.boxDesc = in.readString();
