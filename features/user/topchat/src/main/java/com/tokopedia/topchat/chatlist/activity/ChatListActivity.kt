@@ -335,6 +335,8 @@ class ChatListActivity : BaseTabActivity()
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
         webSocketViewModel.clear()
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        chatNotifCounterViewModel.clear()
     }
 
     object DeeplinkIntent {
