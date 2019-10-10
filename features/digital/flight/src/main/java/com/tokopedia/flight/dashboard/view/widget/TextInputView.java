@@ -73,8 +73,8 @@ public class TextInputView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), com.tokopedia.flight.R.layout.flight_widget_text_input_view, this);
-        AppCompatImageView imageView = (AppCompatImageView) view.findViewById(com.tokopedia.design.R.id.image_view);
-        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.design.R.id.text_input_layout);
+        AppCompatImageView imageView = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.image_view);
+        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.text_input_layout);
         EditText etText = textInputLayout.getEditText();
 
         if (removeBackground) {
