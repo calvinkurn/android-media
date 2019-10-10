@@ -721,6 +721,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 int index = cartDataList.indexOf(shipmentSellerCashbackModel);
                 cartDataList.remove(shipmentSellerCashbackModel);
                 notifyItemRemoved(index);
+                shipmentSellerCashbackModel = null;
             }
         }
 
