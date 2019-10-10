@@ -176,7 +176,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 data.properties)
 
         val searchProperties = data.properties
+
         bottom_action_view.visible()
+        bottom_action_view.visibility = View.VISIBLE
+
         super.renderList(searchProperties, searchProperties.isNotEmpty())
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
@@ -249,8 +252,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             emptyModel.content = getString(R.string.hotel_search_filter_empty_subtitle)
             emptyModel.buttonTitle = getString(R.string.hotel_search_filter_empty_button)
         }
-        sortMenu.dismiss()
 
+        bottom_action_view.visibility = View.GONE
         return emptyModel
     }
 
