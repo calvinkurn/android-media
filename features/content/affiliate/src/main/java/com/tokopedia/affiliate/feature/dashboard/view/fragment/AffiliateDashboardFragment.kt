@@ -96,20 +96,14 @@ class AffiliateDashboardFragment :
         }
     }
 
-    private val coachMarkIncome: CoachMark by lazy {
+    private val coachMark: CoachMark by lazy {
         with(CoachMarkBuilder()) {
-            allowNextButton(false)
+            allowPreviousButton(false)
         }.build()
     }
 
     private val coachMarkIncomeItem: CoachMarkItem by lazy {
         CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
-    }
-
-    private val coachMarkFirstTimeUser: CoachMark by lazy {
-        CoachMarkBuilder()
-                .allowNextButton(false)
-                .build()
     }
 
     private val coachMarkCuratedTrafficItem: CoachMarkItem by lazy {
@@ -342,7 +336,7 @@ class AffiliateDashboardFragment :
 
         startDate?.let { startDate ->
             endDate?.let { endDate ->
-                if (startDate != null && endDate != null) calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
+                calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
             }
         }
     }
@@ -421,13 +415,13 @@ class AffiliateDashboardFragment :
         esShareNow.gone()
 
         if (affiliatePrefs.isFirstTimeOpenDashboard(userSession.userId)) {
-            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
+            coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
             affiliatePrefs.setFirstTimeOpenDashboard(userSession.userId)
         }
     }
 
     private fun showTooltip() {
-        coachMarkIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
+        coachMark.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
     }
 
     private fun showChangesAppliedToaster() {
