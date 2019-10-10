@@ -3,6 +3,8 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.os.Build;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;

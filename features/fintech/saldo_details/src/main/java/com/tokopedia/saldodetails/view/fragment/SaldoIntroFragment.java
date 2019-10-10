@@ -2,9 +2,6 @@ package com.tokopedia.saldodetails.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -16,8 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;

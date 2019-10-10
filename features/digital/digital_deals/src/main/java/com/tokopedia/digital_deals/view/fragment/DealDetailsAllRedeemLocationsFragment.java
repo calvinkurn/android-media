@@ -2,19 +2,20 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -25,11 +26,8 @@ import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealDetailsAllLocationsAdapter;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
-import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

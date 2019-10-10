@@ -1,5 +1,6 @@
 package com.tokopedia.filter.newdynamicfilter.adapter.viewholder;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
