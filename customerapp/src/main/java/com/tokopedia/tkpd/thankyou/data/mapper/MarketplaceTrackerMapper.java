@@ -19,10 +19,10 @@ import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.FreeShipping;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderInfoGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderLevel;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 import kotlin.Pair;
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.functions.Func1;
 
@@ -72,7 +71,6 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     @Override
     public Boolean call(PaymentGraphql response) {
         if (isResponseValid(response)) {
-//            PaymentGraphql paymentGraphql = (PaymentGraphql) response.getData(PaymentGraphql.class);
             paymentData = response.getPayment();
             newBuyerFlag = response.isNewBuyerFlag();
             String orderId = getOrderId(response);
@@ -353,6 +351,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
+            product.setDimension83(getDimension83Value(orderData.getOrderInfo().getOrderDetail().get(0).getFreeShipping()));
 
             products.add(product);
         }
@@ -388,6 +387,14 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         }
 
         return "";
+    }
+
+    private String getDimension83Value(FreeShipping freeShipping) {
+        if (freeShipping != null && freeShipping.isEligibleFreeShipping()) {
+            return "bebas ongkir";
+        } else {
+            return "none/others";
+        }
     }
 
     private String getDimension54Value(boolean isFulfillment) {

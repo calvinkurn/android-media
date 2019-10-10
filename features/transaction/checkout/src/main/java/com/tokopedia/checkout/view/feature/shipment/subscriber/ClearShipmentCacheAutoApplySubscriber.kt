@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber
 
+import android.text.TextUtils
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
@@ -10,6 +11,7 @@ import rx.Subscriber
  */
 
 class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
+                                            val presenter: ShipmentContract.Presenter,
                                             val voucherType: String,
                                             val shopIndex: Int,
                                             val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
@@ -31,15 +33,23 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex, voucherType)
+                onSuccess(responseData)
             }
         } else {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex, voucherType)
+                onSuccess(responseData)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)
             }
         }
+    }
+
+    private fun onSuccess(responseData: ClearCacheAutoApplyStackResponse) {
+        if (!TextUtils.isEmpty(responseData.successData.tickerMessage)) {
+            presenter.tickerAnnouncementHolderData.message = responseData.successData.tickerMessage
+            view?.updateTickerAnnouncementMessage()
+        }
+        view?.onSuccessClearPromoStack(shopIndex, voucherType)
     }
 
 }

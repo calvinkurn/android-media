@@ -798,7 +798,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void onProductDetailLinkClicked(String url) {
-        startActivity(digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), url));
+        RouteManager.route(getContext(), url);
     }
 
     @Override

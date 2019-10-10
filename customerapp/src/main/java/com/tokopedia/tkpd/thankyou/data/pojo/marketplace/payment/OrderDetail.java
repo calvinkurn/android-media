@@ -29,6 +29,9 @@ public class OrderDetail {
     @SerializedName("subtotal_price")
     @Expose
     private float subtotalPrice;
+    @SerializedName("free_shipping")
+    @Expose
+    private FreeShipping freeShipping;
 
 
     public int getOrderDetailId() {
@@ -85,5 +88,13 @@ public class OrderDetail {
 
     public void setSubtotalPrice(float subtotalPrice) {
         this.subtotalPrice = subtotalPrice;
+    }
+
+    public FreeShipping getFreeShipping() {
+        return freeShipping;
+    }
+
+    public void setFreeShipping(FreeShipping freeShipping) {
+        this.freeShipping = freeShipping;
     }
 }

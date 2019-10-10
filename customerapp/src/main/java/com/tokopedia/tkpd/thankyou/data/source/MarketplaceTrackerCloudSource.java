@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.OrderGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderInfoGraphql;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
@@ -25,9 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by okasurya on 12/5/17.
@@ -38,6 +35,8 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private SessionHandler sessionHandler;
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
+    private RemoteConfig remoteConfig;
+    private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          MarketplaceTrackerApi marketplaceTrackerApi,
@@ -54,15 +53,6 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         mapper = new MarketplaceTrackerMapper(sessionHandler,
                 (List<String>) requestParams.getObject(ThanksTrackerConst.Key.SHOP_TYPES),
                 requestParams);
-//        marketplaceTrackerApi.getOrderTrackingData(getRequestPayload()).flatMapIterable(graphqlResponseResponse -> {
-//            return new ArrayList<>(graphqlResponseResponse.body().getData().getOrderInfoGraphql().getOrderData().size() / 10);
-//        }).flatMap(o -> {
-//            // next pages
-//            return marketplaceTrackerApi.getOrderTrackingData(getRequestPayload());
-//        }).reduce((graphqlResponseResponse, graphqlResponseResponse2) -> {
-//            graphqlResponseResponse.body().getData().getOrderInfoGraphql().getOrderData().addAll(graphqlResponseResponse2.body().getData().getOrderInfoGraphql().getOrderData());
-//            return graphqlResponseResponse;
-//        });
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         ArrayList<GraphqlRequest> requests = new ArrayList<>();
         HashMap<String, Object> variables = new HashMap<>();
@@ -78,16 +68,23 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
             }
             return paymentGraphql;
         }).map(mapper);
-//        return Observable.zip(graphqlUseCase.addRequests();, marketplaceTrackerApi.getOrderTrackingData(getOrderRequestPayload()), (paymentGraphqlResponse, orderGraphqlResponse) -> {
-//            paymentGraphqlResponse.body().getData().getPayment().setOrders(orderGraphqlResponse.body().getData().getOrderInfoGraphql().getOrderData());
-//            return paymentGraphqlResponse;
-//        }).map(mapper);
-//        return marketplaceTrackerApi.getTrackingData(getRequestPayload()).flatMap(graphqlResponseResponse -> {
-//            return marketplaceTrackerApi.getOrderTrackingData(getRequestPayload()).map(graphqlResponseResponse1 -> {
-//                graphqlResponseResponse.body().getData().getPayment().setOrders(graphqlResponseResponse1.body().getData().getOrderInfoGraphql().getOrderData());
-//                return graphqlResponseResponse;
-//            });
-//        }).map(mapper);
+    }
+
+    private String getRequestPayload() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+        Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
+
+        int queryTracker;
+        if (isUsingQueryWithFreeShipping) {
+            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
+        } else {
+            queryTracker = R.raw.payment_tracker_query;
+        }
+
+        return String.format(
+                loadRawString(context.getResources(), queryTracker),
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
+        );
     }
 
     private String getPaymentRequestPayload() {
@@ -101,7 +98,7 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private String getOrderRequestPayload() {
         return String.format(
                 loadRawString(context.getResources(), R.raw.order_info_query),
-                requestParams.getString(ThanksTrackerConst.Key.ID, "0")
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
         );
     }
 
