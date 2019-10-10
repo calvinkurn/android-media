@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by yoasfs on 2019-08-06
  */
-class HighlightViewHolder(val v: View,
-                          val highlightListener: HighlightAdapter.HighlightListener,
-                          val cardTitleListener: CardTitleView.CardTitleListener):
+class HighlightViewHolder(v: View,
+                          private val highlightListener: HighlightAdapter.HighlightListener,
+                          private val cardTitleListener: CardTitleView.CardTitleListener):
         AbstractViewHolder<HighlightViewModel>(v) {
 
     private lateinit var adapter: HighlightAdapter

@@ -208,6 +208,13 @@ class DynamicFeedFragment:
     }
 
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+        for (track in trackList) {
+            if (isClick) {
+                presenter.trackAffiliate(track.clickURL)
+            } else {
+                presenter.trackAffiliate(track.viewURL)
+            }
+        }
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {

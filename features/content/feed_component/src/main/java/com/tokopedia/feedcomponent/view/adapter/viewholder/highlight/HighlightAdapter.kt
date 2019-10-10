@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import kotlinx.android.synthetic.main.item_highlight_card.view.*
 
@@ -41,7 +42,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         holder.bind(list[p1], p1)
     }
 
-    class Holder(v: View, val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
+    class Holder(v: View, private val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
 
         fun bind(item: HighlightCardViewModel, positionInAdapter: Int) {
             initView(item)
@@ -70,6 +71,10 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             }
             itemView.productImage.setOnClickListener {
                 highlightListener.onHighlightItemClicked(item.positionInFeed, item)
+                highlightListener.onAffiliateTrackClicked(item.tracking, true)
+            }
+            itemView.addOnImpressionListener(item.impressHolder) {
+                highlightListener.onAffiliateTrackClicked(item.tracking, false)
             }
         }
 
