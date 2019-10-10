@@ -95,8 +95,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                     is Success -> {
                         with (it.data) {
                             if (catalog.label.isNotEmpty()) {
-                                (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
-                                voucherGameAnalytics.categoryName = catalog.label
+                                val categoryName = catalog.label
+                                (activity as BaseVoucherGameActivity).updateTitle(categoryName)
+                                voucherGameAnalytics.categoryName = categoryName
+                                voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
+                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName, id.toString())
+                                }
                             }
 
                             if (banners.isEmpty()) promo_banner.visibility = View.GONE
@@ -121,8 +125,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         super.onViewCreated(view, savedInstanceState)
 
         voucherGameExtraParam.categoryId.toIntOrNull()?.let {
-            // TODO: Add categoryName
-            rechargeAnalytics.eventDigitalCategoryScreenLaunch("", it.toString())
             rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
         }
 
