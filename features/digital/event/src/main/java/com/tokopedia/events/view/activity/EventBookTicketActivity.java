@@ -150,7 +150,6 @@ public class EventBookTicketActivity
 
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
-        showEventDateCoachMark();
         if (detailsViewModel != null) {
             infoTicker.setVisibility(View.VISIBLE);
             eventsDetailsViewModel = detailsViewModel;
@@ -159,6 +158,7 @@ public class EventBookTicketActivity
             title = detailsViewModel.getTitle();
             if (detailsViewModel.getSchedulesViewModels() != null) {
                 if (detailsViewModel.getSchedulesViewModels().size() > 1) {
+                    showEventDateCoachMark();
                     tvUbahJadwal.setVisibility(View.VISIBLE);
                 } else {
                     tvUbahJadwal.setVisibility(View.GONE);
@@ -183,7 +183,9 @@ public class EventBookTicketActivity
         buttonPayTickets.setVisibility(View.VISIBLE);
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
         if (buttonCountLayout.getVisibility() != View.VISIBLE) {
-            showTicketSummeryCoachMark();
+            if (tvUbahJadwal.getVisibility() == View.VISIBLE) {
+                showTicketSummeryCoachMark();
+            }
             buttonCountLayout.setVisibility(View.VISIBLE);
         }
     }
