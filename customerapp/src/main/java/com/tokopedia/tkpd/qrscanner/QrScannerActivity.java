@@ -58,6 +58,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
     private static final int REQUEST_PAY_WITH_QR = 4;
+    private static final String PARAM_NEED_RESULT = "1";
 
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
@@ -102,7 +103,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.QR_SCANNEER, uri);
             if (!paths.isEmpty()) {
                 String param = paths.get(0);
-                mNeedResult = param.equals("1");
+                mNeedResult = param.equals(PARAM_NEED_RESULT);
             }
         }
         Bundle extras = getIntent().getExtras();

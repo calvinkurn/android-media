@@ -23,6 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+const val PARAM_NEED_RESULT = "1"
+
 class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -57,7 +59,7 @@ class AllContacts : BaseDaggerFragment(), View.OnClickListener, CoroutineScope {
             when (id) {
                 R.id.scanqr_imgvw -> {
                     val intent = RouteManager.getIntent(context,
-                            ApplinkConstInternalMarketplace.QR_SCANNEER, "1")
+                            ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT)
                     startActivityForResult(intent, Constants.Keys.CODE_QR_SCANNER_ACTIVITY)
                 }
             }
