@@ -13,10 +13,10 @@ ext {
     supportLibraryVersion = '28.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0'
-    coroutineVersion = '1.0.0'
+    coroutineVersion = '1.3.0'
     dbFlowVersion = '3.0.1'
-    retrofitVersion = '2.4.0'
-    okHttpVersion = '3.12.1'
+    retrofitVersion = '2.6.0'
+    okHttpVersion = '3.12.5'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
@@ -79,9 +79,9 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.5'
-    unifyComponentsVersion = '0.0.10'
-    unifyCoachMarkVersion = '1.0.1'
-    unifyCalendarVersion = '0.0.2'
+    unifyComponentsVersion = '0.0.11'
+    unifyCoachMarkVersion = '1.0.5'
+    unifyCalendarVersion = '0.0.4'
     unifyBannerVersion = '0.0.6'
 
 
@@ -186,7 +186,7 @@ ext {
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:3.0.4+",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:1.0@aar"
+            cashshield : "com.cashshield.android:cashshield:2.4.1@aar"
     ]
 
     deeplinkDispatchDependencies = [
@@ -219,7 +219,7 @@ ext {
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
-            hansel                : "io.hansel.preprocessor:preprocessor:8.2.8",
+            hansel                : "io.hansel.preprocessor:preprocessor:8.3.3",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -276,8 +276,8 @@ ext {
     debugToolsDependencies = [
             stetho      : "com.facebook.stetho:stetho:1.4.2",
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
-            chuck       : "com.readystatesoftware.chuck:library:1.0.4-alpha2@aar",
-            chuckNoOp   : "com.readystatesoftware.chuck:library-no-op:1.0.4-alpha2@aar",
+            chuck       : "com.github.okasurya.chuck:library:1.0.4-alpha2",
+            chuckNoOp   : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
             blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",

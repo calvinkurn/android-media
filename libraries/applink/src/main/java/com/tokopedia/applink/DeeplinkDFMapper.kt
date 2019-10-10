@@ -8,7 +8,9 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
@@ -22,6 +24,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -48,9 +52,11 @@ object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val DFM_SIMILAR_SEARCH = "similarsearch"
     private val DFM_IMAGE_SEARCH = "image_search"
+    private val DFM_AUTOCOMPLETE = "autocomplete"
+    private val DFM_SEARCH_RESULT = "search"
     private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    private val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
@@ -64,6 +70,8 @@ object DeeplinkDFMapper {
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
+    private val DFM_SALDO_DEPOSIT = "saldo_deposit"
+    private val DFM_SALDO_INTRO = "saldo_deposit"
 
 
     private var manager: SplitInstallManager? = null
@@ -82,7 +90,11 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
+            add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
+            add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+            add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
+            add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
         }
     }
 

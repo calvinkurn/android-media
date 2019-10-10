@@ -72,7 +72,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.Companion.showError(this.findViewById(android.R.id.content),
+                    Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                             message,
                             Snackbar.LENGTH_LONG);
                 } catch (Exception e) {
@@ -84,7 +84,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                    Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                             message,
                             Snackbar.LENGTH_LONG, getButtonStringOnError(), (v) -> retryOnError());
                 } catch (Exception e) {
@@ -118,14 +118,14 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     public void showMessageWithAction(String message, String actionText, View.OnClickListener listener) {
-        Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_INDEFINITE, actionText, listener);
 
     }
 
     public void showMessage(String message) {
-        Toaster.Companion.showError(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG);
     }

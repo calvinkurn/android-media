@@ -1,8 +1,9 @@
 package com.tokopedia.affiliate.feature.dashboard.di;
 
 import com.tokopedia.affiliate.common.di.AffiliateComponent;
+import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateDashboardFragment;
+import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateCuratedProductFragment;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.CommissionDetailFragment;
-import com.tokopedia.affiliate.feature.dashboard.view.fragment.DashboardFragment;
 
 import dagger.Component;
 
@@ -17,7 +18,9 @@ import dagger.Component;
         dependencies = AffiliateComponent.class)
 public interface DashboardComponent {
 
-    void inject(DashboardFragment dashboardFragment);
+    void inject(AffiliateCuratedProductFragment affiliateCuratedProductFragment);
+
+    void inject(AffiliateDashboardFragment dashboardFragment);
 
     void inject(CommissionDetailFragment commissionDetailFragment);
 }

@@ -22,6 +22,10 @@
     <color name="shop_separator_color">#DBDEE2</color>
     <color name="product_separator_color">#EAEAEA</color>
     <color name="shadow">#AD31353B</color>
+    <color name="grey_400">#bdbdbd</color>
 
     <color name="tkpd_bg_color">#EAEAEA</color>
+
+    <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
+    <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
 </resources>

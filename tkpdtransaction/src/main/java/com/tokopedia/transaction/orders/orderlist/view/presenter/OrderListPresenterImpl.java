@@ -144,7 +144,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             return;
         getView().displayLoadMore(true);
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
-                page, XSOURCE, PAGE_NAME, new ArrayList<>());
+                page,
+                XSOURCE,
+                PAGE_NAME,
+                new ArrayList<>(),
+                "");
         getRecommendationUseCase.execute(requestParam, new Subscriber<List<? extends RecommendationWidget>>() {
             @Override
             public void onCompleted() {

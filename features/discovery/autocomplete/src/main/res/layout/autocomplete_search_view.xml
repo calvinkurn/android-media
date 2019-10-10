@@ -31,14 +31,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                app:srcCompat="@drawable/discovery_ic_back"/>
+                app:srcCompat="@drawable/autocomplete_ic_back"/>
 
             <RelativeLayout
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_autocomplete_input">
+                android:background="@drawable/autocomplete_bg_input">
 
                     <com.tokopedia.design.component.EditTextCompat
                         android:id="@+id/searchTextView"
@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="4dp"
-                        app:srcCompat="@drawable/discovery_ic_search" />
+                        app:srcCompat="@drawable/autocomplete_ic_search" />
 
                     <ImageView
                         android:id="@+id/action_image_search_btn"
@@ -73,7 +73,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
-                        app:srcCompat="@drawable/discovery_ic_camera" />
+                        app:srcCompat="@drawable/autocomplete_ic_camera" />
 
                     <ImageView
                         android:id="@+id/action_empty_btn"
@@ -83,7 +83,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="4dp"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/discovery_ic_clear" />
+                        app:srcCompat="@drawable/autocomplete_ic_clear" />
 
             </RelativeLayout>
 
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                app:srcCompat="@drawable/discovery_ic_audio" />
+                app:srcCompat="@drawable/autocomplete_ic_audio" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/action_cancel_button"

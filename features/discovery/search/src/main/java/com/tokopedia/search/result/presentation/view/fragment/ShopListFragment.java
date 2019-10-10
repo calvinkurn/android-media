@@ -15,11 +15,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.authentication.AuthHelperJava;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
@@ -133,10 +134,10 @@ public class ShopListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
                 )
         );
 
@@ -210,8 +211,8 @@ public class ShopListFragment
         if(userSession == null) return "";
 
         return userSession.isLoggedIn() ?
-                AuthHelperJava.md5(userSession.getUserId()) :
-                AuthHelperJava.md5(getRegistrationId());
+                AuthHelper.getMD5Hash(userSession.getUserId()) :
+                AuthHelper.getMD5Hash(getRegistrationId());
     }
 
     private void loadDataFromPresenter() {
@@ -511,5 +512,10 @@ public class ShopListFragment
     @Override
     public void removeLoading() {
         removeSearchPageLoading();
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_SHOP;
     }
 }

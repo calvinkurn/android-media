@@ -33,4 +33,8 @@ class GetNotificationUpdateUnreadUseCase @Inject constructor(
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.execute(subscriber)
     }
+
+    fun unsubsribe(){
+        graphqlUseCase.unsubscribe()
+    }
 }

@@ -23,6 +23,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
@@ -76,7 +77,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
-    protected ProgressBar loadingView;
 
     protected CatalogListAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -227,7 +227,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {
@@ -587,5 +586,10 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public void removeLoading() {
         removeSearchPageLoading();
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_CATALOG;
     }
 }
