@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,7 +21,6 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
-import com.tokopedia.topchat.chatlist.data.ChatListUrl
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
@@ -164,6 +162,12 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
+    private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
+        val broadCastUrl = metaData.url
+        broadCastButtonVisibility(true)
+        setBroadcastButtonUrl(broadCastUrl)
+    }
+
     private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable) {
         broadCastButtonVisibility(false)
     }
@@ -172,18 +176,7 @@ class ChatItemListViewModel @Inject constructor(
         _broadCastButtonVisibility.value = visibility
     }
 
-    private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
-        broadCastButtonVisibility(true)
-
-        var broadCastLink = ChatListUrl.BROADCAST_MICROSITE
-        if (metaData.isWhiteListed()) {
-            broadCastLink = if (GlobalConfig.isAllowDebuggingTools()) {
-                ChatListUrl.STAGING_BROADCAST_WHITELIST
-            } else {
-                ChatListUrl.BROADCAST_WHITELIST
-            }
-        }
-
-        _broadCastButtonUrl.value = broadCastLink
+    private fun setBroadcastButtonUrl(broadCastUrl: String) {
+        _broadCastButtonUrl.value = broadCastUrl
     }
 }
