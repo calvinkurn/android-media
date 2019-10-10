@@ -42,7 +42,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
             if (getApplicationContext() instanceof TokopointRouter
                     && ((TokopointRouter) getApplicationContext())
                     .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
@@ -52,10 +51,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
             } else {
                 return HomepageFragment.newInstance();
             }
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
     }
 
     @Override

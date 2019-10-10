@@ -38,11 +38,17 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
 
     @Override
     protected Fragment getNewFragment() {
+        Bundle loginStatusBundle = new Bundle();
         if (mUserSession.isLoggedIn()) {
-            return TokoPointsHomeFragmentNew.newInstance();
+            TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
+            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", mUserSession.isLoggedIn());
+            tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
+            return tokoPointsHomeFragmentNew;
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
+            TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
+            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", mUserSession.isLoggedIn());
+            tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
+            return tokoPointsHomeFragmentNew;
         }
     }
 

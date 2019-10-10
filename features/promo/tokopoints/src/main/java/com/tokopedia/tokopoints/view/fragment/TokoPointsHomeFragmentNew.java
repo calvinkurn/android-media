@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,6 +16,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -118,6 +122,23 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private TokoPointToolbar tokoPointToolbar;
     private ServerErrorView serverErrorView;
 
+    private Boolean userLoggedInStatus;
+    private AppCompatImageView ivLeaderBoard;
+    private AppCompatImageView ivUserCoupon;
+    private TextView userCouponCount;
+    private CardView rewardsPointLayout;
+    private AppCompatImageView ivPointStack;
+    private TextView tvPointLabel;
+    private View midSeparator;
+    private AppCompatImageView ivLoyaltyStack;
+    private TextView tvLoyaltyLabel;
+    private TextView tvPointsValue;
+    private ConstraintLayout pointLayout;
+    private TextView emptyTitle;
+    private TextView emptySubtitle;
+    private TextView tvNonLoginCta;
+    private static final int REQUEST_CODE_LOGIN = 1;
+
 
     public static TokoPointsHomeFragmentNew newInstance() {
         return new TokoPointsHomeFragmentNew();
@@ -146,7 +167,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         appBarHeader.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> handleAppBarOffsetChange(verticalOffset));
         setLayoutParams();
-
         return view;
     }
 
@@ -164,6 +184,17 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         RelativeLayout.LayoutParams imageBigLp = (RelativeLayout.LayoutParams) mImgBackground.getLayoutParams();
         imageBigLp.height = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_home_top_bg_height));
         mImgBackground.setLayoutParams(imageBigLp);
+
+        if (!userLoggedInStatus) {
+            RelativeLayout.LayoutParams rewardsPointLayoutLP = (RelativeLayout.LayoutParams) rewardsPointLayout.getLayoutParams();
+            rewardsPointLayoutLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_130));
+            rewardsPointLayout.setLayoutParams(rewardsPointLayoutLP);
+
+            RelativeLayout.LayoutParams tvEmptyLP = (RelativeLayout.LayoutParams) emptyTitle.getLayoutParams();
+            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_44));
+            emptyTitle.setLayoutParams(tvEmptyLP);
+        }
+
     }
 
     public static int getStatusBarHeight(Context context) {
@@ -445,6 +476,21 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
         serverErrorView = view.findViewById(R.id.server_error_view);
+        ivLeaderBoard = view.findViewById(R.id.iv_tpToolbar_leaderboard);
+        ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon);
+        userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount);
+        rewardsPointLayout = view.findViewById(R.id.card_point);
+        ivPointStack = view.findViewById(R.id.img_points_stack);
+        tvPointLabel = view.findViewById(R.id.text_my_points_label);
+        midSeparator = view.findViewById(R.id.line_separator_points_vertical);
+        ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack);
+        pointLayout = view.findViewById(R.id.layout_homepoint);
+        tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label);
+        tvNonLoginCta=view.findViewById(R.id.tvNonLoginCta);
+
+        emptyTitle = view.findViewById(R.id.emptyTitle);
+        emptySubtitle = view.findViewById(R.id.emptySubtitle);
+
         setStatusBarViewHeight();
     }
 
@@ -869,29 +915,58 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (data == null) {
             return; //TODO any error page? Ask from gulfikar
         }
-
         //init header
         if (data.getStatus() != null) {
-            mTextMembershipLabel.setText(data.getStatus().getUserName());
 
-            if (data.getStatus().getTier() != null) {
-                mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
-                mTextMembershipValue.setText(mValueMembershipDescription);
-                mTextMembershipValueBottom.setText(mValueMembershipDescription);
+
+            if (!userLoggedInStatus) {
+                mImgEgg.setVisibility(View.GONE);
+
+                emptyTitle.setVisibility(View.VISIBLE);
+                emptySubtitle.setVisibility(View.VISIBLE);
+                emptyTitle.setText(data.getStatus().getEmptyMessage().getTitle());
+                emptySubtitle.setText(data.getStatus().getEmptyMessage().getSubTitle());
+
+                ivLeaderBoard.setVisibility(View.GONE);
+                ivUserCoupon.setVisibility(View.GONE);
+                userCouponCount.setVisibility(View.GONE);
+                ivLoyaltyStack.setVisibility(View.GONE);
+                ivPointStack.setVisibility(View.GONE);
+                midSeparator.setVisibility(View.GONE);
+                tvPointLabel.setVisibility(View.GONE);
+                tvLoyaltyLabel.setVisibility(View.GONE);
+                mTextPoints.setVisibility(View.GONE);
+                mTextLoyalty.setVisibility(View.GONE);
+                pointLayout.setBackground(getResources().getDrawable(R.drawable.bg_tp_nonlogin_rewards_container));
+                tvNonLoginCta.setVisibility(View.VISIBLE);
+                tvNonLoginCta.setText(data.getStatus().getCta().getText());
+
                 ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground, data.getStatus().getTier().getBackgroundImgURLMobile());
-                ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
-            }
 
-            if (data.getStatus().getPoints() != null) {
-                mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
-                mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
-                mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getLoyalty(), false));
+            } else {
+                mTextMembershipLabel.setText(data.getStatus().getUserName());
+
+                if (data.getStatus().getTier() != null) {
+                    mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
+                    mTextMembershipValue.setText(mValueMembershipDescription);
+                    mTextMembershipValueBottom.setText(mValueMembershipDescription);
+                    ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground, data.getStatus().getTier().getBackgroundImgURLMobile());
+                    ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
+                    ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
+                }
+
+                if (data.getStatus().getPoints() != null) {
+                    mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
+                    mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
+                    mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getLoyalty(), false));
+                }
             }
         }
 
         //init bottom sheet
         renderPurchaseBottomsheet(data.getLobs());
+
     }
 
 
