@@ -78,6 +78,9 @@ public class Product {
     @SerializedName("shop")
     @Expose
     private Shop shop;
+    @SerializedName("free_ongkir")
+    @Expose
+    private FreeOngkirInformation freeOngkirInformation;
 
     public String getId() {
         return id;
@@ -277,5 +280,13 @@ public class Product {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public FreeOngkirInformation getFreeOngkirInformation() {
+        return freeOngkirInformation;
+    }
+
+    public void setFreeOngkirInformation(FreeOngkirInformation freeOngkirInformation) {
+        this.freeOngkirInformation = freeOngkirInformation;
     }
 }
