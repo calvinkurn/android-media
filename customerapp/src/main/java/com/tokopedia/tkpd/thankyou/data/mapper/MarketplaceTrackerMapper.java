@@ -218,12 +218,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             purchase.addProduct(productBundlePair.getFirst().getProduct());
             bundles.add(productBundlePair.getSecond());
         }
-//        bundle.putBundle("actionField", actionField);
         bundle.putParcelableArrayList("products", bundles);
-//        for (Product product : getProductList(orderData)) {
-//            purchase.addProduct(product.getProduct());
-//        }
-
         return new Pair<>(purchase, bundle);
     }
 
@@ -375,6 +370,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             bundle.putInt(FirebaseAnalytics.Param.QUANTITY, orderDetail.getQuantity());
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
             bundle.putString(Product.KEY_DIMENSION_54, getDimension54Value(orderData.isFulfillment()));
+            bundle.putString(Product.KEY_DIMENSION_83, getDimension83Value(orderDetail.getFreeShipping()));
 
             products.add(new Pair<>(product, bundle));
         }

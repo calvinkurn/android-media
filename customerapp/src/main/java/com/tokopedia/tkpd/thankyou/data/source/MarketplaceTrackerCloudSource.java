@@ -88,7 +88,6 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     }
 
     private String getPaymentRequestPayload() {
-//        new GraphqlRequest(loadRawString(context.getResources(), R.raw.payment_data_query), PaymentGraphql)
         return String.format(
                 loadRawString(context.getResources(), R.raw.payment_data_query),
                 requestParams.getString(ThanksTrackerConst.Key.ID, "0")
