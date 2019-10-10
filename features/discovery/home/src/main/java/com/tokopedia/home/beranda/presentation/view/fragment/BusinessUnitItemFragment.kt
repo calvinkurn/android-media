@@ -19,7 +19,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BusinessUnitItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -178,9 +178,8 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
             )
         }
         getRecyclerView(view).addItemDecoration(
-                SpacingItemDecoration(
-                        convertDpToPixel(2.toFloat(), activity),
-                        SpacingItemDecoration.HORIZONTAL)
+                BusinessUnitItemDecoration(
+                        convertDpToPixel(2.toFloat(), activity))
         )
     }
 
