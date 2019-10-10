@@ -241,6 +241,12 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         const val ARG_RANGE_DATE_SELECTED = "arg_range_date_selected"
         const val ARG_MIN_SELECTABLE_DATE_FROM_TODAY = "arg_min_selectable_date_from_today"
 
+        const val DEFAULT_MIN_SELECTED_DATE_TODAY = 0
+        const val DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY = 1
+        const val DEFAULT_RANGE_DATE_SELECTED = 360
+        const val DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH = 30
+        const val DEFAULT_RANGE_CALENDAR_YEAR = 1
+
         fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
                         rangeDateSelected: Long, minDateLabel: String,
                         maxDateLabel: String, minSelectableDateFromToday: Int = 0): SelectionRangeCalendarWidget =
