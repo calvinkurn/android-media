@@ -434,9 +434,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onDestroy() {
         super.onDestroy()
-        chatItemListViewModel.deleteChat.removeObservers(this)
-        chatItemListViewModel.mutateChatList.removeObservers(this)
+        removeLiveDataObserver()
         chatItemListViewModel.clear()
+    }
+
+    private fun removeLiveDataObserver() {
+        chatItemListViewModel.mutateChatList.removeObservers(this)
+        chatItemListViewModel.deleteChat.removeObservers(this)
+        chatItemListViewModel.broadCastButtonVisibility.removeObservers(this)
+        chatItemListViewModel.broadCastButtonUrl.removeObservers(this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
