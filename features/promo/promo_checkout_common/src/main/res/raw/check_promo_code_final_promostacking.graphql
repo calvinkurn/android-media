@@ -34,6 +34,12 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
                 type
                 amount_str
                 amount
+                details {
+                  description
+                  type
+                  amount_str
+                  amount
+                }
               }
         }
       clashing_info_detail {
@@ -65,6 +71,11 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
           color
           text
         }
+      }
+      ticker_info {
+        unique_id
+        status_code
+        message
       }
     }
   }
