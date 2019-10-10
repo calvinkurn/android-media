@@ -13,7 +13,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.wallet.OvoActivationAnalytics
+import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import com.tokopedia.wallet.R
 import com.tokopedia.wallet.di.WalletComponentInstance
 import javax.inject.Inject

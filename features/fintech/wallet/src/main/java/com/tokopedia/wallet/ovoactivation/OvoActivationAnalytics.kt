@@ -1,4 +1,4 @@
-package com.tokopedia.wallet
+package com.tokopedia.wallet.ovoactivation
 
 
 import com.tokopedia.track.TrackApp

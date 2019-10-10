@@ -1,8 +1,6 @@
 package com.tokopedia.wallet.ovoactivation.view
 
-import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.SpannableString
@@ -27,8 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.wallet.R
-import com.tokopedia.wallet.OvoActivationAnalytics
-import com.tokopedia.wallet.di.WalletComponent
+import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import com.tokopedia.wallet.di.WalletComponentInstance
 import com.tokopedia.wallet.ovoactivation.view.model.PhoneActionModel
 
