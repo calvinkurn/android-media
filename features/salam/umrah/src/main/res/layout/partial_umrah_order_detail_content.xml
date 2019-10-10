@@ -3,17 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:background="@color/white">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_margin="@dimen/dp_16"
         android:text="@string/umrah_order_detail_detail_title"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,8 +20,9 @@
     <com.tokopedia.salam.umrah.common.presentation.widget.TicketView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
         android:background="@color/white"
-        android:elevation="@dimen/dp_4"
+        android:elevation="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_detail_title"
@@ -39,41 +36,23 @@
             android:orientation="vertical"
             android:padding="@dimen/dp_16">
 
-            <LinearLayout
-                android:id="@+id/container_rating_view"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_property_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="center"
                 android:text="Avissa Suites"
-                app:fontSize="titleBig"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_6" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_property_address"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="center"
-                android:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat."
-                app:fontSize="micro" />
+                android:text="Travel Berkah"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_property_phone"
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="center"
-                android:text="No. Telepon: 0231 204464"
-                app:fontSize="micro" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -83,55 +62,63 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ticket_head"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_16">
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Informasi Jemaah"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <View
+                android:id="@+id/divider_status"
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layerType="software" />
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@color/grey_250" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_guest_title"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:text="Nama Tamu"
-                app:fontSize="micro" />
+                android:layout_height="wrap_content">
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_guest_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:text="Muhammad Furqan"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_booking_code_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kode Booking"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="small" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_booking_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:text="Kode Booking"
-                app:fontSize="micro" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_booking_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9AUEVO"
+                    android:textColor="@color/Green_G500"
+                    app:layout_constraintLeft_toLeftOf="@+id/tg_booking_code_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tg_booking_code_label"
+                    app:typographyType="heading_6" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_booking_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:text="XYZABABA110"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_show_detail_booking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/umrah_order_detail_show_detail"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>
 
