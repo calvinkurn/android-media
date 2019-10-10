@@ -175,24 +175,24 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice = view.findViewById(com.tokopedia.flight.R.id.container_download_invoice);
         totalPrice = view.findViewById(com.tokopedia.flight.R.id.total_price);
         orderHelp = view.findViewById(com.tokopedia.flight.R.id.help);
-        buttonCancelTicket = view.findViewById(com.tokopedia.design.R.id.button_cancel);
+        buttonCancelTicket = view.findViewById(com.tokopedia.flight.R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(com.tokopedia.flight.R.id.button_reschedule);
         buttonReorder = view.findViewById(com.tokopedia.flight.R.id.button_reorder);
-        paymentInfoLayout = view.findViewById(com.tokopedia.flight.orderlist.R.id.payment_info_layout);
+        paymentInfoLayout = view.findViewById(com.tokopedia.flight.R.id.payment_info_layout);
         paymentCostLayout = view.findViewById(com.tokopedia.flight.R.id.payment_cost_layout);
         paymentDueDateLayout = view.findViewById(com.tokopedia.flight.R.id.payment_due_date_layout);
         tvPaymentDescriptionLabel = view.findViewById(com.tokopedia.flight.R.id.tv_payment_description_label);
-        tvPaymentDescription = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_description);
-        tvPaymentCost = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_cost);
-        tvPaymentCostLabel = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_cost_label);
-        tvPaymentDueDate = view.findViewById(com.tokopedia.flight.orderlist.R.id.tv_payment_due_date);
+        tvPaymentDescription = view.findViewById(com.tokopedia.flight.R.id.tv_payment_description);
+        tvPaymentCost = view.findViewById(com.tokopedia.flight.R.id.tv_payment_cost);
+        tvPaymentCostLabel = view.findViewById(com.tokopedia.flight.R.id.tv_payment_cost_label);
+        tvPaymentDueDate = view.findViewById(com.tokopedia.flight.R.id.tv_payment_due_date);
         insuranceLayout = view.findViewById(com.tokopedia.flight.R.id.insurance_layout);
         insuranceRecyclerView = view.findViewById(com.tokopedia.flight.R.id.rv_insurance);
         showEticket = view.findViewById(com.tokopedia.flight.R.id.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(com.tokopedia.flight.R.id.cancellation_container);
-        cancellationWarningTicker = view.findViewById(com.tokopedia.flight.orderlist.R.id.cancellation_warning);
+        cancellationWarningTicker = view.findViewById(com.tokopedia.flight.R.id.cancellation_warning);
 
         setViewClickListener();
 

@@ -29,8 +29,8 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
 
     public FlightBookingAmenityViewHolder(View itemView, ListenerCheckedLuggage listenerCheckedLuggage) {
         super(itemView);
-        title = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
-        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.image_checked);
+        title = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
+        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.R.id.image_checked);
         this.listenerCheckedLuggage = listenerCheckedLuggage;
     }
 

@@ -36,7 +36,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
         super(itemView);
 
         passengerNumber = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.passenger_number);
-        passengerName = (TextView) itemView.findViewById(com.tokopedia.common.travel.R.id.passenger_name);
+        passengerName = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.passenger_name);
         passengerCategory = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.passenger_category);
         recyclerViewPassengerDetail = (RecyclerView) itemView.findViewById(com.tokopedia.flight.R.id.recycler_view_passenger_detail);
 

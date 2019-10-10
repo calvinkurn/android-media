@@ -24,6 +24,6 @@ public class FlightBookingNationalityViewHolder extends AbstractViewHolder<Count
 
     public FlightBookingNationalityViewHolder(View layoutView) {
         super(layoutView);
-        countryName = (TextView) layoutView.findViewById(com.tokopedia.common.travel.R.id.country_name);
+        countryName = (TextView) layoutView.findViewById(com.tokopedia.flight.R.id.country_name);
     }
 }

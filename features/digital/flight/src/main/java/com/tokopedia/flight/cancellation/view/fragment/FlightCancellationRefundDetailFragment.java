@@ -86,8 +86,8 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     }
 
     private void setupView(View view) {
-        progressBar = (ProgressBar) view.findViewById(com.tokopedia.common.travel.R.id.progress_bar);
-        container = (LinearLayout) view.findViewById(com.tokopedia.design.R.id.container);
+        progressBar = (ProgressBar) view.findViewById(com.tokopedia.flight.R.id.progress_bar);
+        container = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.container);
         tvStepTitle = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_step_title);
         tvTotalRefund = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_total_refund);
         tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);

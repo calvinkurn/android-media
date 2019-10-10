@@ -51,7 +51,7 @@ public class FlightRadioLabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), com.tokopedia.flight.R.layout.widget_flight_radio_label_view, this);
-        titleTextView = (TextView) view.findViewById(com.tokopedia.design.R.id.title);
+        titleTextView = (TextView) view.findViewById(com.tokopedia.flight.R.id.title);
         toggleSwitchCompat = (SwitchCompat) view.findViewById(com.tokopedia.flight.R.id.toggle);
         toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_uncheck_thumb));
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {

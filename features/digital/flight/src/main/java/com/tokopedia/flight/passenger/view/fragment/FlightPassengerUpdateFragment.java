@@ -79,17 +79,17 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_passenger_update, container, false);
-        spPassengerTitle = view.findViewById(com.tokopedia.common.travel.R.id.sp_title);
+        spPassengerTitle = view.findViewById(com.tokopedia.flight.R.id.sp_title);
         etPassengerType = view.findViewById(com.tokopedia.flight.R.id.et_passenger_type);
-        etPassengerFirstName = view.findViewById(com.tokopedia.common.travel.R.id.et_first_name);
-        etPassengerLastName = view.findViewById(com.tokopedia.common.travel.R.id.et_last_name);
-        etPassengerBirthdate = view.findViewById(com.tokopedia.common.travel.R.id.et_birth_date);
+        etPassengerFirstName = view.findViewById(com.tokopedia.flight.R.id.et_first_name);
+        etPassengerLastName = view.findViewById(com.tokopedia.flight.R.id.et_last_name);
+        etPassengerBirthdate = view.findViewById(com.tokopedia.flight.R.id.et_birth_date);
         etPassportNumber = view.findViewById(com.tokopedia.flight.R.id.et_passport_no);
         etPassportExpired = view.findViewById(com.tokopedia.flight.R.id.et_passport_expiration_date);
         etPassportNationality = view.findViewById(com.tokopedia.flight.R.id.et_nationality);
         etPassportIssuerCountry = view.findViewById(com.tokopedia.flight.R.id.et_passport_issuer_country);
         passportContainer = view.findViewById(com.tokopedia.flight.R.id.container_passport_data);
-        btnSavePassengerInfo = view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        btnSavePassengerInfo = view.findViewById(com.tokopedia.flight.R.id.button_submit);
 
         etPassportExpired.setOnClickListener(new View.OnClickListener() {
             @Override

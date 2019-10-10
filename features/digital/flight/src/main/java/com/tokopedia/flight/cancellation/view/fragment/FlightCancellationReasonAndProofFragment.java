@@ -139,8 +139,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     private void buildView(View view) {
-        container = view.findViewById(com.tokopedia.design.R.id.container);
-        progressBar = view.findViewById(com.tokopedia.common.travel.R.id.progress_bar);
+        container = view.findViewById(com.tokopedia.flight.R.id.container);
+        progressBar = view.findViewById(com.tokopedia.flight.R.id.progress_bar);
         tvChooseReason = view.findViewById(com.tokopedia.flight.R.id.et_saved_passenger);
         attachmentContainer = view.findViewById(com.tokopedia.flight.R.id.attachment_container);
         attachmentDescription = view.findViewById(com.tokopedia.flight.R.id.attachment_description);

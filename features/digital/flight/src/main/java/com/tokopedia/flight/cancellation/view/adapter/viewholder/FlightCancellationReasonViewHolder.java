@@ -25,8 +25,8 @@ public class FlightCancellationReasonViewHolder extends AbstractViewHolder<Fligh
     public FlightCancellationReasonViewHolder(View itemView, ReasonListener listener) {
         super(itemView);
 
-        title = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
-        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.image_checked);
+        title = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
+        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.R.id.image_checked);
         this.listener = listener;
     }
 

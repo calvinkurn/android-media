@@ -43,7 +43,7 @@ public class HorizontalProgressBar extends FrameLayout {
 
     private void init() {
         View view = inflate(getContext(), com.tokopedia.flight.R.layout.view_horizontal_progress_bar, this);
-        progressBar = (ProgressBar) view.findViewById(com.tokopedia.abstraction.R.id.progressBar);
+        progressBar = (ProgressBar) view.findViewById(com.tokopedia.flight.R.id.progressBar);
     }
 
     public void setProgress(int progress) {

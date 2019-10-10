@@ -89,7 +89,7 @@ public class FlightInsuranceView extends LinearLayout {
 
     private void findView(View view) {
         tvName = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_name);
-        tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.design.R.id.tv_description);
+        tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_description);
         cbInsurance = (AppCompatCheckBox) view.findViewById(com.tokopedia.flight.R.id.cb_insurance);
         ivHighlight = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.iv_highlight);
         ivProtectionImageView = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.iv_protection_expand);

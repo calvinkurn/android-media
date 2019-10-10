@@ -64,10 +64,10 @@ public class FlightDetailActivity extends BaseTabActivity {
         flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         isSubmitDisplayed = getIntent().getBooleanExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, true);
         super.setupLayout(savedInstanceState);
-        buttonSubmit = (Button) findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        buttonSubmit = (Button) findViewById(com.tokopedia.flight.R.id.button_submit);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(com.tokopedia.flight.R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(" ");
-        appBarLayout = (AppBarLayout) findViewById(com.tokopedia.abstraction.R.id.app_bar_layout);
+        appBarLayout = (AppBarLayout) findViewById(com.tokopedia.flight.R.id.app_bar_layout);
         departureAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_code);
         departureAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_name);
         arrivalAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_code);

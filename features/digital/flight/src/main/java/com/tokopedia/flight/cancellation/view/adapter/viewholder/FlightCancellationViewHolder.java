@@ -72,7 +72,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         txtDuration = itemView.findViewById(com.tokopedia.flight.R.id.duration);
         checkBoxFlight = itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
 
-        verticalRecyclerView = itemView.findViewById(com.tokopedia.common.travel.R.id.recycler_view_passenger);
+        verticalRecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.recycler_view_passenger);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);

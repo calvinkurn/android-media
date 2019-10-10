@@ -39,7 +39,7 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_terms_and_conditions, container, false);
         txtTerms = view.findViewById(com.tokopedia.flight.R.id.txt_cancellation_tnc);
-        txtDescription = view.findViewById(com.tokopedia.design.R.id.tv_description);
+        txtDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description);
         btnSelengkapnya = view.findViewById(com.tokopedia.flight.R.id.btn_next);
         checkBox = view.findViewById(com.tokopedia.flight.R.id.checkbox);
 

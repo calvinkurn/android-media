@@ -78,7 +78,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
                 RouteManager.route(this, ApplinkConst.LOGIN);
             }
             return true;
-        } else if (item.getItemId() == com.tokopedia.abstraction.R.id.menu_help) {
+        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_help) {
             RouteManager.route(this, CONTACT_US_FLIGHT);
             return true;
         } else {

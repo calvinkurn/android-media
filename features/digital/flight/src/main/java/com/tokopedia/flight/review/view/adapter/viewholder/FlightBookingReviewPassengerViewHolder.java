@@ -77,7 +77,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         context = layoutView.getContext();
 
         passengerNumber = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_number);
-        passengerName = layoutView.findViewById(com.tokopedia.common.travel.R.id.passenger_name);
+        passengerName = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_name);
         passengerCategory = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_category);
         passengerCancellationStatus = layoutView.findViewById(com.tokopedia.flight.R.id.txt_passenger_cancellation_status);
         secondPassengerCancellationStatus = layoutView.findViewById(com.tokopedia.flight.R.id.txt_second_passenger_cancellation_status);

@@ -19,7 +19,7 @@ public class FlightClassViewHolder extends AbstractViewHolder<FlightClassViewMod
 
     public FlightClassViewHolder(View itemView, ListenerCheckedClass listenerCheckedClass) {
         super(itemView);
-        titleTextView = (AppCompatTextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+        titleTextView = (AppCompatTextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
         arrowImageView = (AppCompatImageView) itemView.findViewById(com.tokopedia.flight.R.id.iv_checked);
         this.listenerCheckedClass = listenerCheckedClass;
     }

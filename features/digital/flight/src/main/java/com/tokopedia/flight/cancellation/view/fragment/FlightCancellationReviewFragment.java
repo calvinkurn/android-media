@@ -96,7 +96,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         containerAdditionalDocuments = view.findViewById(com.tokopedia.flight.R.id.container_additional_documents);
         txtReason = view.findViewById(com.tokopedia.flight.R.id.txt_cancellation_reason);
         txtTotalRefund = view.findViewById(com.tokopedia.flight.R.id.tv_total_refund);
-        btnSubmit = view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        btnSubmit = view.findViewById(com.tokopedia.flight.R.id.button_submit);
         tvDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
         tvRefundDetail = view.findViewById(com.tokopedia.flight.R.id.tv_refund_detail);
         containerEstimateRefund = view.findViewById(com.tokopedia.flight.R.id.container_estimate_refund);

@@ -93,7 +93,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
         recyclerView = getRecyclerView(view);
         btnContainer = view.findViewById(com.tokopedia.flight.R.id.btn_container);
-        btnSubmit = view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        btnSubmit = view.findViewById(com.tokopedia.flight.R.id.button_submit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override

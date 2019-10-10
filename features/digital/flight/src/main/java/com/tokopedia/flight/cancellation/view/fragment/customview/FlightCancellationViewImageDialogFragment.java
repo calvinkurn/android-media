@@ -56,7 +56,7 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        imageView = view.findViewById(com.tokopedia.design.R.id.image_view);
+        imageView = view.findViewById(com.tokopedia.flight.R.id.image_view);
         ivClose = view.findViewById(com.tokopedia.flight.R.id.iv_close);
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -191,10 +191,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnInfoView = (CardWithAction) view.findViewById(com.tokopedia.flight.R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_passengers);
         passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
-        submitButton = (AppCompatButton) view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
-        tilContactName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_contact_name);
+        submitButton = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_submit);
+        tilContactName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_contact_name);
-        tilContactEmail = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_contact_email);
+        tilContactEmail = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_contact_email);
         etContactEmail = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_contact_email);
         contactPhoneNumberLayout = (RelativeLayout) view.findViewById(com.tokopedia.flight.R.id.contact_phone_number_layout);
         contactPhoneNumberLabel = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.contact_phone_number_label);

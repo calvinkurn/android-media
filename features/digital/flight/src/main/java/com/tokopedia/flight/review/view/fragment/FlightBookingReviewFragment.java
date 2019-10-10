@@ -195,7 +195,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         reviewTotalPrice = (TextView) view.findViewById(com.tokopedia.flight.R.id.total_price);
         reviewDiscountPrice = (TextView) view.findViewById(com.tokopedia.flight.R.id.tv_discount_voucher);
         reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_total_final_price);
-        buttonSubmit = (Button) view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        buttonSubmit = (Button) view.findViewById(com.tokopedia.flight.R.id.button_submit);
         promoTicker = (TickerCheckoutView) view.findViewById(com.tokopedia.flight.R.id.flight_promo_ticker_view);
         containerFlightReturn = view.findViewById(com.tokopedia.flight.R.id.container_flight_return);
         tickerView = view.findViewById(com.tokopedia.flight.R.id.flight_ticker_view);

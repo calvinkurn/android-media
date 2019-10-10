@@ -180,13 +180,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                              Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_passenger, container, false);
 
-        tilFirstName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_first_name);
-        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(com.tokopedia.common.travel.R.id.et_first_name);
-        tilLastName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_last_name);
-        etLastName = (AppCompatEditText) view.findViewById(com.tokopedia.common.travel.R.id.et_last_name);
+        tilFirstName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_first_name);
+        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(com.tokopedia.flight.R.id.et_first_name);
+        tilLastName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_last_name);
+        etLastName = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_last_name);
         rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_passenger_title);
-        tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.common.travel.R.id.til_birth_date);
-        etBirthDate = (AppCompatEditText) view.findViewById(com.tokopedia.common.travel.R.id.et_birth_date);
+        tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_birth_date);
+        etBirthDate = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_birth_date);
         luggageContainer = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.luggage_container);
         rvLuggages = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_luggages);
         mealsContainer = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.meals_container);
@@ -196,7 +196,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etPassportNationality = view.findViewById(com.tokopedia.flight.R.id.et_nationality);
         etPassportIssuerCountry = view.findViewById(com.tokopedia.flight.R.id.et_passport_issuer_country);
         passportContainer = view.findViewById(com.tokopedia.flight.R.id.container_passport_data);
-        buttonSubmit = (AppCompatButton) view.findViewById(com.tokopedia.common.travel.R.id.button_submit);
+        buttonSubmit = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
