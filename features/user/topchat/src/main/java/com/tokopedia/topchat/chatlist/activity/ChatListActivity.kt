@@ -41,7 +41,7 @@ import javax.inject.Inject
 
 class ChatListActivity : BaseTabActivity()
         , HasComponent<ChatListComponent>
-        , ChatListContract.Activity{
+        , ChatListContract.Activity {
 
     private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()
@@ -82,7 +82,7 @@ class ChatListActivity : BaseTabActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(userSession.shopId.toLongOrZero() > 0) {
+        if (userSession.shopId.toLongOrZero() > 0) {
             tabList.add(ChatListPagerAdapter.ChatListTab(
                     userSession.shopName,
                     "0",
@@ -98,16 +98,20 @@ class ChatListActivity : BaseTabActivity()
         ))
         super.onCreate(savedInstanceState)
 
+        setupViewModel()
         initTabLayout()
         setObserver()
         initData()
     }
 
-    private fun setObserver() {
+    private fun setupViewModel() {
         viewModelProvider = ViewModelProviders.of(this@ChatListActivity, viewModelFactory)
-
         webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
-        webSocketViewModel?.itemChat?.observe(this,
+        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
+    }
+
+    private fun setObserver() {
+        webSocketViewModel.itemChat.observe(this,
                 Observer { result ->
                     when (result) {
                         is Success -> {
@@ -120,7 +124,6 @@ class ChatListActivity : BaseTabActivity()
                 }
         )
 
-        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
         chatNotifCounterViewModel.chatNotifCounter.observe(this,
                 Observer { result ->
                     when (result) {
@@ -132,7 +135,6 @@ class ChatListActivity : BaseTabActivity()
                     }
                 }
         )
-
     }
 
     private fun initData() {
@@ -207,7 +209,7 @@ class ChatListActivity : BaseTabActivity()
 
 
     override fun notifyViewCreated() {
-        if(!fragmentViewCreated) {
+        if (!fragmentViewCreated) {
             webSocketViewModel.connectWebSocket()
             fragmentViewCreated = true
         }
@@ -243,15 +245,25 @@ class ChatListActivity : BaseTabActivity()
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
+                chatNotifCounterViewModel.setLastVisitedTab(this@ChatListActivity, tab.position)
                 setTabSelectedView(tab.customView)
                 with(chatListAnalytics) {
-                    eventClickTabChat(if(tab.position==0) SELLER_ANALYTICS_LABEL else BUYER_ANALYTICS_LABEL)
+                    eventClickTabChat(if (tab.position == 0) SELLER_ANALYTICS_LABEL else BUYER_ANALYTICS_LABEL)
                 }
             }
         })
 
-        if(tabList.size == 1) {
+        if (tabList.size == 1) {
             tabLayout.hide()
+        } else {
+            goToLastSeenTab()
+        }
+    }
+
+    private fun goToLastSeenTab() {
+        chatNotifCounterViewModel.getLastVisitedTab(this).apply {
+            if (this == -1) return@apply
+            viewPager.currentItem = this
         }
     }
 
@@ -276,21 +288,21 @@ class ChatListActivity : BaseTabActivity()
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
         val titleView = customView.findViewById<TextView>(R.id.title)
         val iconView = customView.findViewById<ImageView>(R.id.icon)
-        titleView.text = setTitleTab(title,counter)
+        titleView.text = setTitleTab(title, counter)
         iconView.setImageDrawable(MethodChecker.getDrawable(this, icon))
         return customView
     }
 
     private fun setTitleTab(title: String, counter: String): CharSequence? {
-        if(counter.toLongOrZero() > 0) {
+        if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                if (counter.toLongOrZero() > 99) {
-                    "99+"
-                } else {
-                    counter
-                }
+                    if (counter.toLongOrZero() > 99) {
+                        "99+"
+                    } else {
+                        counter
+                    }
 
-            return if(title.length > 10) {
+            return if (title.length > 10) {
                 title.take(9) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
