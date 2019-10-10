@@ -271,10 +271,12 @@ public class SearchTracking {
         for (ProductItemViewModel item : productItemViewModels) {
             index++;
             Bundle product = new Bundle();
+            String itemCategory = !TextUtils.isEmpty(item.getCategoryBreadcrumb()) ?
+                    item.getCategoryBreadcrumb() : "none / other";
             product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getProductID());
             product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getProductName());
             product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-            product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
+            product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory);
             product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
             product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPrice()));
             product.putLong(FirebaseAnalytics.Param.INDEX, index);
