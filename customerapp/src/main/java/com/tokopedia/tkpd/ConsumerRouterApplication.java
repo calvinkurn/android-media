@@ -45,7 +45,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -85,7 +84,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -126,7 +124,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
@@ -134,7 +131,6 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
-import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -179,7 +175,6 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -231,7 +226,6 @@ import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -320,19 +314,11 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.tokocash.TokoCashComponentInstance;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.WalletUserSession;
-import com.tokopedia.tokocash.common.di.TokoCashComponent;
-import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
@@ -374,7 +360,6 @@ import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -418,7 +403,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         IHomeRouter,
         DiscoveryRouter,
         DigitalModuleRouter,
-        TokoCashRouter,
         AffiliateRouter,
         ApplinkRouter,
         ShopModuleRouter,
@@ -488,7 +472,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
-    private TokoCashComponent tokoCashComponent;
     private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
@@ -547,8 +530,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
 
         daggerFlightBuilder = DaggerFlightConsumerComponent.builder().appComponent(getApplicationComponent());
-
-        tokoCashComponent = TokoCashComponentInstance.getComponent(this);
 
         FeedPlusComponent feedPlusComponent =
                 DaggerFeedPlusComponent.builder()
@@ -1306,34 +1287,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToDatePicker(Activity activity,
-                                 List<PeriodRangeModelData> periodRangeModelData,
-                                 long startDate, long endDate,
-                                 int datePickerSelection, int datePickerType) {
-        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModelData),
-                datePickerSelection, datePickerType);
-    }
-
-    public static List<PeriodRangeModel> convert(List<PeriodRangeModelData> periodRangeModelDatas) {
-        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
-        for (PeriodRangeModelData periodRangeModelData : periodRangeModelDatas) {
-            periodRangeModels.add(new PeriodRangeModel(
-                    periodRangeModelData.getStartDate(),
-                    periodRangeModelData.getEndDate(),
-                    periodRangeModelData.getLabel()
-            ));
-        }
-        return periodRangeModels;
-    }
-
-    @Override
     public Intent getInboxMessageIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
-        return DateLabelUtils.getRangeDateFormatted(context, startDate, endDate);
     }
 
     @Override
@@ -1530,41 +1485,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
 
-//TODO REMOVE TOKOCASH
-    @Override
-    public Fragment getTopupTokoCashFragment() {
-        return TopupTokoCashFragment.newInstance();
-    }
-
-    @Override
-    public WalletUserSession getTokoCashSession() {
-        return new WalletUserSessionImpl(this);
-    }
-
-    @Override
-    public Intent getNominalActivityIntent(Context context, String qrcode, InfoQrTokoCash infoQrTokoCash) {
-        return NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
-    }
-
     @Override
     public Intent getOvoActivityIntent(Context context) {
         return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
-    public Observable<InfoQrTokoCash> getInfoQrTokoCashUseCase(com.tokopedia.usecase.RequestParams requestParams) {
-        return tokoCashComponent.getInfoQrTokocashUseCase().createObservable(requestParams);
-    }
-//TODO REMOVE TOKOCASH
-
-    @Override
     public void showForceLogoutDialog() {
         ServerErrorHandler.showForceLogoutDialog();
-    }
-
-    @Override
-    public String getExtraBroadcastReceiverWallet() {
-        return "Broadcast Wallet";
     }
 
     @Override

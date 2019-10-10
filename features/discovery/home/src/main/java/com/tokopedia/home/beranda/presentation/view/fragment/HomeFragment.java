@@ -99,8 +99,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;

@@ -41,20 +41,13 @@ class OvoActivationAnalytics @Inject constructor() {
                 Action.CLICK_OVO_CHANGE_PHONE_NUMBER, ""))
     }
 
-    fun eventClickActivationOvoHomepage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(HOME_PAGE, Category.HOMEPAGE,
-                Action.CLICK_HOME_ACTIVATION_OVO, ""))
-    }
-
     companion object {
         private const val GENERIC_EVENT = "clickSaldo"
-        private const val HOME_PAGE = "clickHomepage"
     }
 
     private object Category {
         internal var TOKOCASH_TO_OVO = "tokocash to ovo"
         internal var ACTIVATION_OVO = "aktivasi ovo baru"
-        internal var HOMEPAGE = "homepage"
     }
 
     private object Action {
@@ -64,6 +57,5 @@ class OvoActivationAnalytics @Inject constructor() {
         internal var CLICK_PHONE_NUMBER = "click "
         internal var CLICK_OVO_NEW_ACCOUNT = "click buat akun ovo baru"
         internal var CLICK_OVO_CHANGE_PHONE_NUMBER = "click ubah nomor ponsel sekarang"
-        internal var CLICK_HOME_ACTIVATION_OVO = "click aktivasi ovo pada homepage"
     }
 }

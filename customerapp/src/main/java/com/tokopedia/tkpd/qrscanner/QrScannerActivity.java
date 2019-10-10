@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -35,17 +36,11 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
-import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 public class QrScannerActivity extends BaseScannerQRActivity implements QrScannerContract.View,
         HasComponent<CampaignComponent> {
@@ -118,23 +113,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public Observable<InfoQrTokoCash> getInfoQrTokoCash(RequestParams requestParams) {
-        return ((TokoCashRouter) getApplication()).getInfoQrTokoCashUseCase(requestParams);
-    }
-
-    @Override
-    public void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash) {
-        Intent intent = ((TokoCashRouter) getApplication()).getNominalActivityIntent(getApplicationContext(), qrcode, infoQrTokoCash);
-        startActivityForResult(intent, REQUEST_CODE_NOMINAL);
-    }
-
-    @Override
     public void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData) {
         UserSession session = new UserSession(this);
         if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
             cacheManager.put(QR_RESPONSE, barcodeData);
-            Intent intent = ((TokoCashRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+            Intent intent = ((OvoPayWithQrRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
             intent.putExtra(QR_DATA, cacheManager.getId());
             intent.putExtra(IMEI, imeiNumber);
             startActivity(intent);
@@ -322,11 +306,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         super.onDestroy();
         presenter.destroyView();
         presenter.detachView();
-    }
-
-    @Override
-    public void interruptToLoginPage() {
-        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override

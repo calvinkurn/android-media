@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
 
