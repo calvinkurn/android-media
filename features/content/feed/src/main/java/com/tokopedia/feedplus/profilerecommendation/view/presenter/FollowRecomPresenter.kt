@@ -28,16 +28,16 @@ class FollowRecomPresenter @Inject constructor(
 ) : BaseDaggerPresenter<FollowRecomContract.View>(), FollowRecomContract.Presenter {
 
     override fun getFollowRecommendationList(interestIds: IntArray, cursor: String) {
-        if (cursor == "") view.showLoading()
+        if (cursor == "") view.showListLoading()
         getFollowRecommendationUseCase.apply {
             setRequestParams(GetFollowRecommendationUseCase.getRequestParams(interestIds, cursor))
             execute (onSuccess = {
                 view.onGetFollowRecommendationList(getRecommendationCardList(it.feedUserOnboardingRecommendations), it.feedUserOnboardingRecommendations.meta.nextCursor)
                 view.onGetFollowRecommendationInfo(getRecommendationInfo(it.feedUserOnboardingRecommendations))
-                view.hideLoading()
+                view.hideListLoading()
             }, onError = {
                 view.onGetError(it)
-                view.hideLoading()
+                view.hideListLoading()
             })
         }
     }
@@ -66,12 +66,16 @@ class FollowRecomPresenter @Inject constructor(
                 object : Subscriber<FollowResponseModel>() {
                     override fun onNext(t: FollowResponseModel) {
                         if (t.errorMessage.isNullOrEmpty() && t.isSuccess) {
-                            when (action) {
-                                FollowRecomAction.FOLLOW -> view.onSuccessFollowRecommendation(id)
-                                FollowRecomAction.UNFOLLOW -> view.onSuccessUnfollowRecommendation(id)
-                            }
+                            view.onSuccessFollowUnfollowRecommendation(id, action)
                         }
-                        else view.onGetError(IllegalStateException(t.errorMessage))
+                        else {
+                            view.onFailedFollowUnfollowRecommendation(
+                                    id,
+                                    action,
+                                    IllegalStateException(t.errorMessage)
+                            )
+
+                        }
                     }
 
                     override fun onCompleted() {
@@ -79,7 +83,13 @@ class FollowRecomPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        e?.let(view::onGetError)
+                        e?.let {
+                            view.onFailedFollowUnfollowRecommendation(
+                                    id,
+                                    action,
+                                    it
+                            )
+                        }
                     }
                 }
         )
@@ -116,6 +126,8 @@ class FollowRecomPresenter @Inject constructor(
                 enabledFollowText = data.header.followCta.textFalse,
                 disabledFollowText = data.header.followCta.textTrue,
                 isFollowed = data.header.followCta.isFollow,
+                textFollowTrue = data.header.followCta.textTrue,
+                textFollowFalse = data.header.followCta.textFalse,
                 followInstruction = if (AuthorType.findTypeByString(data.header.followCta.authorType) == AuthorType.SHOP) query.meta.assets.shopDescription else query.meta.assets.profileDescription,
                 authorId = data.header.followCta.authorID
         )

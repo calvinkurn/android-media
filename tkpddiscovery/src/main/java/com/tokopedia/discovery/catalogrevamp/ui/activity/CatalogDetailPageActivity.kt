@@ -23,6 +23,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -113,7 +114,11 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         initSwitchButton()
         initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATALOG_PAGE)
+        bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
+                FilterEventTracking.Event.CLICK_CATALOG_DETAIL,
+                FilterEventTracking.Category.FILTER_CATALOG_DETAIL,
+                "",
+                FilterEventTracking.Category.PREFIX_CATALOG_PAGE))
 
     }
 

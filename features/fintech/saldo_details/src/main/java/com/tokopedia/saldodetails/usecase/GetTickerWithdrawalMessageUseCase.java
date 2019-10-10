@@ -42,7 +42,7 @@ public class GetTickerWithdrawalMessageUseCase {
 
         HashMap<String, Object> usableRequestMap = new HashMap<>();
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_withdrawal_ticker),
+                GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.saldodetails.R.raw.query_withdrawal_ticker),
                 GqlWithdrawalTickerResponse.class,
                 usableRequestMap, false);
 

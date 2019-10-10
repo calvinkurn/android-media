@@ -7,10 +7,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +30,7 @@ class AddToCartDoneViewModel @Inject constructor(
         private val rawQueries: Map<String, String>,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
@@ -57,24 +60,22 @@ class AddToCartDoneViewModel @Inject constructor(
             } else null
 
             topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                recommendationProduct.value = Loaded(Success(recommendationWidget))
+                recommendationProduct.value = Loaded(Success((it.data as? Success)?.data?: return@launch))
             }
         }
     }
 
     private fun loadRecommendationProduct(productId: String) = async(Dispatchers.IO) {
-        val topadsParams = generateRecommendationProductParams(productId)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
-        } catch (t: Throwable) {
-            Loaded(Fail(t))
+            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                    pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                    pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                    productIds = arrayListOf(productId)
+            )).toBlocking()
+            Loaded(Success(data.first()?: emptyList()))
+        } catch (e: Throwable) {
+            e.debugTrace()
+            Loaded(Fail(e))
         }
     }
 
