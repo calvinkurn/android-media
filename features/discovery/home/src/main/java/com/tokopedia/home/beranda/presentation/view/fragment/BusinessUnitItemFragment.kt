@@ -179,7 +179,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         }
         getRecyclerView(view).addItemDecoration(
                 SpacingItemDecoration(
-                        convertDpToPixel(8.toFloat(), activity),
+                        convertDpToPixel(2.toFloat(), activity),
                         SpacingItemDecoration.HORIZONTAL)
         )
     }

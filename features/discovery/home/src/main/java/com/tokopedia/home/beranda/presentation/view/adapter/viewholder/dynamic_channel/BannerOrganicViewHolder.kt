@@ -170,7 +170,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             ProductBannerMixDataModel(it, channel)
         }.toMutableList()
 
-        if (isHasSeeMoreApplink(channel)) {
+        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
             visitables.add(SeeMoreBannerMixDataModel(
                     channel
             ))
