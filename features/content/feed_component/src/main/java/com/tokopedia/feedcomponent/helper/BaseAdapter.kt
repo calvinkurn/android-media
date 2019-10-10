@@ -61,6 +61,7 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     /**
      * Needed to support easy migration from old Adapter
      */
+    fun addElement(item: List<T>) { addItems(item) }
     fun addElement(item: T) { addItem(item) }
     fun clearAllElements() { clearAllItems() }
 }
