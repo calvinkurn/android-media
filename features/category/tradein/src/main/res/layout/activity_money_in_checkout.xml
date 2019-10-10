@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:fillViewport="true">
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -131,6 +137,7 @@
         android:id="@+id/seperator_5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintHeight_min="@dimen/dp_8"
         android:background="@color/light_grey"
         app:layout_constraintBottom_toTopOf="@+id/tv_total_payment_label"
         app:layout_constraintTop_toBottomOf="@+id/terms_text" />
@@ -348,3 +355,4 @@
         app:typographyType="body_2" />
 
 </android.support.constraint.ConstraintLayout>
+</ScrollView>

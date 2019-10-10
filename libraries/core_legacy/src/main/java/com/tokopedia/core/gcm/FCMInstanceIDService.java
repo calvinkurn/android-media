@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm;
 
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -12,9 +13,12 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * @author by Herdi_WORK on 09.12.16.
@@ -33,6 +37,17 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         Hansel.setNewToken(this, refreshedToken);
         updateApsFlyerToken(refreshedToken);
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(refreshedToken);
+
+        try {
+            UserSessionInterface userSession = new UserSession(this);
+            Timber.w("P2" + "Notification Refresh Token - " + refreshedToken + " | "
+                    + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
+                    + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                    + " | " + Build.TAGS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateApsFlyerToken(String refreshedToken) {

@@ -543,7 +543,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
 
-            String registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
+
+            String registeredNavigation = "";
+            if (getActivity() != null) {
+                registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
+            }
 
             if (url.contains(HCI_CAMERA_KTP)) {
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();

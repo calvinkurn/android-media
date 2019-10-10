@@ -19,7 +19,7 @@ import android.support.annotation.NonNull;
                 FlightJourneyTable.class,
                 FlightRouteTable.class
         },
-        version = 11)
+        version = 12)
 @TypeConverters({FlightTypeConverters.class})
 public abstract class FlightSearchRoomDb extends RoomDatabase {
 
