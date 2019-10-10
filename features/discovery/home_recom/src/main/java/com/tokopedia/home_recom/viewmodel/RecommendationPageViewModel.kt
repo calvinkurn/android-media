@@ -104,9 +104,9 @@ open class RecommendationPageViewModel @Inject constructor(
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
-                        1,
-                        productIds,
-                        ref), object : Subscriber<List<RecommendationWidget>>() {
+                        pageNumber = 1,
+                        productIds = productIds,
+                        ref = ref), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
             }

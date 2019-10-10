@@ -88,3 +88,13 @@ data class Media(
         @Expose
         val isAutoPlay: Boolean = false
 )
+
+data class FreeOngkir(
+        @SerializedName("isActive")
+        @Expose
+        val isFreeOngkirActive: Boolean = false,
+
+        @SerializedName("imgURL")
+        @Expose
+        val freeOngkirImgUrl: String = ""
+)

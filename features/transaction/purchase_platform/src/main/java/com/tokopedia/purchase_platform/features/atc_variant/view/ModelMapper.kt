@@ -217,6 +217,8 @@ object ModelMapper {
         productViewModel.productImageUrl = productInfo.firstThumbnailPicture
         productViewModel.productName = productInfo.basic.name
         productViewModel.minOrderQuantity = productInfo.basic.minOrder
+        productViewModel.freeOngkirImg = productInfo.freeOngkir.freeOngkirImgUrl
+        productViewModel.isFreeOngkir = productInfo.freeOngkir.isFreeOngkirActive
         productViewModel.maxOrderQuantity = when {
             productInfo.stock.useStock && productInfo.stock.value > 0 ->
                 productInfo.stock.value

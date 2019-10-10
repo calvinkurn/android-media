@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
@@ -80,6 +81,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
+    @SerializedName("tickers")
+    @Expose
+    private List<Ticker> tickers = new ArrayList<>();
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -162,5 +166,9 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isIneligbilePromoDialogEnabled() {
         return isIneligbilePromoDialogEnabled;
+    }
+
+    public List<Ticker> getTickers() {
+        return tickers;
     }
 }

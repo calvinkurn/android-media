@@ -47,6 +47,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String tokopediaCornerFlag;
     private String isFulfillment;
     private boolean isDiscountedPrice;
+    private boolean isFreeShipping;
 
     public ProductDataCheckoutRequest() {
     }
@@ -80,6 +81,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         tokopediaCornerFlag = builder.tokopediaCornerFlag;
         isFulfillment = builder.isFulfillment;
         isDiscountedPrice = builder.isDiscountedPrice;
+        isFreeShipping = builder.isFreeShipping;
     }
 
     protected ProductDataCheckoutRequest(Parcel in) {
@@ -111,6 +113,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         tokopediaCornerFlag = in.readString();
         isFulfillment = in.readString();
         isDiscountedPrice = in.readByte() != 0;
+        isFreeShipping = in.readByte() != 0;
     }
 
     @Override
@@ -143,6 +146,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeString(tokopediaCornerFlag);
         dest.writeString(isFulfillment);
         dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
+        dest.writeByte((byte) (isFreeShipping ? 1 : 0));
     }
 
     @Override
@@ -266,6 +270,10 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return isFulfillment;
     }
 
+    public boolean isFreeShipping() {
+        return isFreeShipping;
+    }
+
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
     }
@@ -327,6 +335,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String tokopediaCornerFlag;
         private String isFulfillment;
         private boolean isDiscountedPrice;
+        private boolean isFreeShipping;
 
         public Builder() {
         }
@@ -468,6 +477,11 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder setDiscountedPrice(boolean val) {
             isDiscountedPrice = val;
+            return this;
+        }
+
+        public Builder isFreeShipping(boolean val) {
+            isFreeShipping = val;
             return this;
         }
 

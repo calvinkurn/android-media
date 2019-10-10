@@ -55,6 +55,8 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     @Override
     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (isReloadData) {
+            view.resetPromoBenefit();
+            view.clearTotalBenefitPromoStacking();
             view.hideLoading();
         } else {
             view.hideInitialLoading();

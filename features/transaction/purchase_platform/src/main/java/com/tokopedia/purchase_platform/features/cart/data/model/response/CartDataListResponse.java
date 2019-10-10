@@ -23,7 +23,7 @@ public class CartDataListResponse {
     private List<String> errors = new ArrayList<>();
     @SerializedName("tickers")
     @Expose
-    private List<TickerData> tickers = new ArrayList<>();
+    private List<Ticker> tickers = new ArrayList<>();
     @SerializedName("is_coupon_active")
     @Expose
     private int isCouponActive;
@@ -84,7 +84,7 @@ public class CartDataListResponse {
         return errors;
     }
 
-    public List<TickerData> getTickers() {
+    public List<Ticker> getTickers() {
         return tickers;
     }
 

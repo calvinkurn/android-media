@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.data.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,6 +152,8 @@ public class Product {
     @SerializedName("product_tracker_data")
     @Expose
     private ProductTrackerData productTrackerData = new ProductTrackerData();
+    @SerializedName("free_shipping")
+    private FreeShipping freeShipping = new FreeShipping();
 
     public ProductTrackerData getProductTrackerData() {
         return productTrackerData;
@@ -336,5 +339,9 @@ public class Product {
 
     public void setCod(boolean cod) {
         isCod = cod;
+    }
+
+    public FreeShipping getFreeShipping() {
+        return freeShipping;
     }
 }

@@ -12,12 +12,14 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
@@ -38,6 +40,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseC
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
@@ -150,6 +153,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
+    private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private RecipientAddressModel recipientAddressModel;
     private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private ShipmentCostModel shipmentCostModel;
@@ -303,6 +307,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentCostModel = new ShipmentCostModel();
         }
         return shipmentCostModel;
+    }
+
+    @Override
+    public TickerAnnouncementHolderData getTickerAnnouncementHolderData() {
+        return tickerAnnouncementHolderData;
+    }
+
+    @Override
+    public void setTickerAnnouncementHolderData(TickerAnnouncementHolderData tickerAnnouncementHolderData) {
+        this.tickerAnnouncementHolderData = tickerAnnouncementHolderData;
     }
 
     @Override
@@ -583,6 +597,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (getView().isInsuranceEnabled()) {
             getInsuranceTechCartOnCheckout();
+        }
+
+        if (cartShipmentAddressFormData.getTickerData() != null) {
+            setTickerAnnouncementHolderData(
+                    new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
+                            cartShipmentAddressFormData.getTickerData().getMessage())
+            );
         }
 
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
@@ -874,6 +895,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
+                        if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
+                            tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
+                            getView().updateTickerAnnouncementMessage();
+                        }
                         if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR")) {
                             String message = "";
                             if (responseGetPromoStack.getMessage().size() > 0) {
@@ -881,18 +906,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                             if (getView() != null) {
                                 getView().renderErrorCheckPromoShipmentData(message);
+                                getView().resetPromoBenefit();
                                 getView().cancelAllCourierPromo();
                             }
                         } else {
                             getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
+                            getView().setPromoBenefit(responseGetPromoStack.getData().getBenefit().getSummaries());
                             if (responseGetPromoStack.getData().getMessage().getState().equals("red")) {
                                 getView().showToastError(responseGetPromoStack.getData().getMessage().getText());
                                 getView().clearTotalBenefitPromoStacking();
+                                getView().resetPromoBenefit();
                             } else {
                                 for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
                                     if (voucherOrdersItemUiModel.getMessage().getState().equals("red")) {
                                         getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
                                         getView().clearTotalBenefitPromoStacking();
+                                        getView().resetPromoBenefit();
                                         break;
                                     }
                                 }
@@ -1003,6 +1032,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag());
                                     enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag());
                                     enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment());
+                                    enhancedECommerceProductCartMapData.setDimension83(productDataCheckoutRequest.isFreeShipping() ?
+                                            EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR : EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
                                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                                 }
@@ -1034,7 +1065,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code) {
         Promo generatedPromo = null;
         if (getView() != null) {
-            getView().showLoading();
             // Cleaning all codes except logistic promo code
             generatedPromo = getView().generateCheckPromoFirstStepParam();
             generatedPromo.setCodes(new ArrayList<>());
@@ -1064,7 +1094,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 e.printStackTrace();
                 if (getView() != null) {
                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
-                    getView().hideLoading();
                     getView().showToastError(e.getMessage());
                     getView().resetCourier(cartPosition);
                 }
@@ -1073,7 +1102,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (getView() != null) {
-                    getView().hideLoading();
                     checkPromoStackingCodeMapper.setFinal(false);
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                     String errMessage = "";
@@ -1084,16 +1112,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         } else {
                             for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
                                 if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
+                                    // reset duration if getting red state
                                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
+                                        getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
+                                        getView().resetCourier(cartPosition);
                                     } else {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
+                                        getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
                                     }
-                                    getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
                                 }
                             }
                         }
                     } else {
+                        // reset duration when response error
                         if (!responseGetPromoStack.getMessage().isEmpty()) {
                             errMessage = responseGetPromoStack.getMessage().get(0);
                         }
@@ -1489,7 +1521,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().showLoading();
             }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), voucherType, shopIndex, ignoreAPIResponse));
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse));
         }
     }
 
@@ -1512,7 +1544,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
 
-        // Fire and forget
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -1527,7 +1558,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                // Do nothing
+                ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
+                if (getView() != null) {
+                    if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
+                        tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                        getView().updateTickerAnnouncementMessage();
+                    }
+                    getView().onSuccessClearPromoLogistic();
+                }
             }
         });
     }
@@ -1667,9 +1705,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 ShipmentDetailData shipmentDetailData,
                                                 ShipmentCartItemModel shipmentCartItemModel,
                                                 List<ShopShipment> shopShipmentList,
-                                                boolean isInitialLoad) {
+                                                boolean isInitialLoad, ArrayList<Product> products,
+                                                String cartString) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        ShippingParam shippingParam = getShippingParam(shipmentDetailData);
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
         boolean cornerId = false;
@@ -1684,7 +1723,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData, List<Product> products, String cartString) {
         ShippingParam shippingParam = new ShippingParam();
         shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
         shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
@@ -1706,6 +1745,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setTradein(shipmentDetailData.isTradein());
+        shippingParam.setProducts(products);
+        shippingParam.setUniqueId(cartString);
         return shippingParam;
     }
 

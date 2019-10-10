@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecomme
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartWishlistViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -56,7 +57,7 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 viewHolder instanceof CartRecommendationViewHolder ||
                 viewHolder instanceof CartSectionHeaderViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder instanceof CartTickerViewHolder) {
+        } else if (viewHolder instanceof TickerAnnouncementViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;

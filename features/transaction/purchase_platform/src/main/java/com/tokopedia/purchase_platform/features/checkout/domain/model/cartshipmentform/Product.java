@@ -52,6 +52,8 @@ public class Product implements Parcelable {
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
     private String productPreOrderInfo;
     private TradeInInfo tradeInInfo;
+    private boolean freeShipping;
+    private String freeShippingBadgeUrl;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -367,6 +369,22 @@ public class Product implements Parcelable {
         this.tradeInInfo = tradeInInfo;
     }
 
+    public boolean isFreeShipping() {
+        return freeShipping;
+    }
+
+    public void setFreeShipping(boolean freeShipping) {
+        this.freeShipping = freeShipping;
+    }
+
+    public String getFreeShippingBadgeUrl() {
+        return freeShippingBadgeUrl;
+    }
+
+    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
+        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    }
+
     public Product() {
     }
 
@@ -416,6 +434,8 @@ public class Product implements Parcelable {
         dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
         dest.writeParcelable(this.tradeInInfo, flags);
+        dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
+        dest.writeString(this.freeShippingBadgeUrl);
     }
 
     protected Product(Parcel in) {
@@ -458,6 +478,8 @@ public class Product implements Parcelable {
         this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
         this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
+        this.freeShipping = in.readByte() != 0;
+        this.freeShippingBadgeUrl = in.readString();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

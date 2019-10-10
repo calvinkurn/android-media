@@ -155,7 +155,8 @@ public class WishListImpl implements WishList {
                 page,
                 X_SOURCE_RECOM_WIDGET,
                 EMPTY_WISHLIST,
-                new ArrayList<>()),
+                new ArrayList<>(),
+                ""),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
@@ -185,7 +186,8 @@ public class WishListImpl implements WishList {
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
                 EMPTY_WISHLIST,
-                new ArrayList<>()),
+                new ArrayList<>(),
+                ""),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
@@ -364,7 +366,7 @@ public class WishListImpl implements WishList {
 
         Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
                 graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(params.getInt(PAGE_NO, 0),
-                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>(), "")), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -406,7 +408,7 @@ public class WishListImpl implements WishList {
 
         Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
                 graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(mPaging.getPage(),
-                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>(), "")), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())

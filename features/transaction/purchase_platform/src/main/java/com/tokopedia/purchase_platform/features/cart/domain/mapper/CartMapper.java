@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartTickerData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.TickerData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
@@ -98,9 +100,9 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
-        if (!cartDataListResponse.getTickers().isEmpty()) {
-            TickerData tickerData = cartDataListResponse.getTickers().get(0);
-            cartListData.setTicker(new CartTickerData(tickerData.getId(), tickerData.getMessage(), tickerData.getPage()));
+        if (cartDataListResponse.getTickers() != null && !cartDataListResponse.getTickers().isEmpty()) {
+            Ticker ticker = cartDataListResponse.getTickers().get(0);
+            cartListData.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
         }
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
@@ -229,6 +231,11 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
                 cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
+                if (data.getProduct().getFreeShipping() != null && data.getProduct().getFreeShipping().getEligible() &&
+                        !TextUtils.isEmpty(data.getProduct().getFreeShipping().getBadgeUrl())) {
+                    cartItemDataOrigin.setFreeShipping(true);
+                    cartItemDataOrigin.setFreeShippingBadgeUrl(data.getProduct().getFreeShipping().getBadgeUrl());
+                }
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {

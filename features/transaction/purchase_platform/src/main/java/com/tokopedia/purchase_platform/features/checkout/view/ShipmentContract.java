@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
@@ -34,6 +35,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
 
@@ -141,6 +143,8 @@ public interface ShipmentContract {
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
+        void onSuccessClearPromoLogistic();
+
         void resetCourier(int position);
 
         Promo generateCheckPromoFirstStepParam();
@@ -160,6 +164,12 @@ public interface ShipmentContract {
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
 
         boolean isInsuranceEnabled();
+
+        void updateTickerAnnouncementMessage();
+
+        void resetPromoBenefit();
+
+        void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
     }
 
     interface AnalyticsActionListener {
@@ -277,7 +287,8 @@ public interface ShipmentContract {
                                              ShipmentDetailData shipmentDetailData,
                                              ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList,
-                                             boolean isInitialLoad);
+                                             boolean isInitialLoad, ArrayList<Product> products,
+                                             String cartString);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -302,6 +313,10 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
+
+        TickerAnnouncementHolderData getTickerAnnouncementHolderData();
+
+        void setTickerAnnouncementHolderData(TickerAnnouncementHolderData tickerAnnouncementHolderData);
 
         void setShipmentCostModel(ShipmentCostModel shipmentCostModel);
 

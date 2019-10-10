@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
@@ -39,6 +40,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private AutoApplyStackData autoApplyStackData;
     private GlobalCouponAttrData globalCouponAttrData;
     private boolean isIneligbilePromoDialogEnabled;
+    private TickerData tickerData;
 
     public boolean isHasError() {
         return hasError;
@@ -208,6 +210,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         isIneligbilePromoDialogEnabled = ineligbilePromoDialogEnabled;
     }
 
+    public TickerData getTickerData() {
+        return tickerData;
+    }
+
+    public void setTickerData(TickerData tickerData) {
+        this.tickerData = tickerData;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -230,6 +240,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
         isIneligbilePromoDialogEnabled = in.readByte() != 0;
+        tickerData = in.readParcelable(TickerData.class.getClassLoader());
     }
 
     @Override
@@ -252,6 +263,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);
         dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
+        dest.writeParcelable(tickerData, flags);
     }
 
     @Override

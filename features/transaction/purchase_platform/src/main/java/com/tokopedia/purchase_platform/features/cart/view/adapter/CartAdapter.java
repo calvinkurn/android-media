@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
@@ -18,6 +20,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionLi
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSelectAllViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
@@ -67,6 +70,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ActionListener actionListener;
     private final PromoActionListener promoActionListener;
     private final InsuranceItemActionListener insuranceItemActionlistener;
+    private final TickerAnnouncementActionListener tickerAnnouncementActionListener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
@@ -82,14 +86,17 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private int cartSelectAllViewHolderPosition = -1;
 
     @Inject
-    public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
+    public CartAdapter(ActionListener actionListener,
+                       PromoActionListener promoActionListener,
                        CartItemAdapter.ActionListener cartItemActionListener,
-                       InsuranceItemActionListener insuranceItemActionlistener) {
+                       InsuranceItemActionListener insuranceItemActionlistener,
+                       TickerAnnouncementActionListener tickerAnnouncementActionListener) {
         this.cartDataList = new ArrayList<>();
         this.actionListener = actionListener;
         this.cartItemActionListener = cartItemActionListener;
         this.promoActionListener = promoActionListener;
         this.insuranceItemActionlistener = insuranceItemActionlistener;
+        this.tickerAnnouncementActionListener = tickerAnnouncementActionListener;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -118,8 +125,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartRecommendationViewHolder.Companion.getLAYOUT();
         } else if (object instanceof CartLoadingHolderData) {
             return CartLoadingViewHolder.Companion.getLAYOUT();
-        } else if (object instanceof CartTickerHolderData) {
-            return CartTickerViewHolder.Companion.getLAYOUT();
+        } else if (object instanceof TickerAnnouncementHolderData) {
+            return TickerAnnouncementViewHolder.Companion.getLAYOUT();
         } else if (object instanceof Boolean) {
             return CartSelectAllViewHolder.Companion.getLAYOUT();
         } else if (object instanceof InsuranceCartShops) {
@@ -180,10 +187,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartSelectAllViewHolder.Companion.getLAYOUT(), parent, false);
             return new CartSelectAllViewHolder(view, actionListener);
-        } else if (viewType == CartTickerViewHolder.Companion.getLAYOUT()) {
+        } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(CartTickerViewHolder.Companion.getLAYOUT(), parent, false);
-            return new CartTickerViewHolder(view, actionListener);
+                    .inflate(TickerAnnouncementViewHolder.Companion.getLAYOUT(), parent, false);
+            return new TickerAnnouncementViewHolder(view, tickerAnnouncementActionListener);
         } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false);
@@ -242,9 +249,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final CartLoadingViewHolder holderView = (CartLoadingViewHolder) holder;
             final CartLoadingHolderData data = (CartLoadingHolderData) cartDataList.get(position);
             holderView.bind(data);
-        } else if (viewType == CartTickerViewHolder.Companion.getLAYOUT()) {
-            final CartTickerViewHolder holderView = (CartTickerViewHolder) holder;
-            final CartTickerHolderData cartTickerData = ((CartTickerHolderData) cartDataList.get(position));
+        } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
+            final TickerAnnouncementViewHolder holderView = (TickerAnnouncementViewHolder) holder;
+            final TickerAnnouncementHolderData cartTickerData = ((TickerAnnouncementHolderData) cartDataList.get(position));
             holderView.bind(cartTickerData);
         } else if (viewType == CartSelectAllViewHolder.Companion.getLAYOUT()) {
             final CartSelectAllViewHolder holderView = ((CartSelectAllViewHolder) holder);
@@ -1012,14 +1019,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addCartTicker(CartTickerHolderData cartTickerHolderData) {
-        cartDataList.add(0, cartTickerHolderData);
+    public void addCartTicker(TickerAnnouncementHolderData tickerAnnouncementHolderData) {
+        cartDataList.add(0, tickerAnnouncementHolderData);
         notifyItemInserted(0);
     }
 
     public void addCartSelectAll(Boolean isAllSelected) {
         int positionToPlaced = 0;
-        if (!cartDataList.isEmpty() && cartDataList.get(0) instanceof CartTickerHolderData) {
+        if (!cartDataList.isEmpty() && cartDataList.get(0) instanceof TickerAnnouncementHolderData) {
             positionToPlaced += 1;
         }
         if (cartDataList.size() >= positionToPlaced + 1) {

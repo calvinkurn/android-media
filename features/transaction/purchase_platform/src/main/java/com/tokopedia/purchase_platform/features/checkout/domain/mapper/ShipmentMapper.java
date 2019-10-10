@@ -2,6 +2,8 @@ package com.tokopedia.purchase_platform.features.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -71,6 +73,11 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
+
+        if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
+            Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
+            dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+        }
 
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
@@ -432,6 +439,12 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
+                                        !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    productResult.setFreeShipping(true);
+                                    productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
+                                }
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     TradeInInfo tradeInInfo = new TradeInInfo();

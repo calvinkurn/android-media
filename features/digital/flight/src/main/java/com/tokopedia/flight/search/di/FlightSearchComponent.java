@@ -21,13 +21,9 @@ public interface FlightSearchComponent {
 
     FlightApi flightApi();
 
+    void inject(FlightSearchFilterActivity flightSearchFilterActivity);
+
     void inject(FlightSearchFragment flightSearchFragment);
 
     void inject(FlightSearchReturnFragment flightSearchReturnFragment);
-
-    void inject(FlightSearchFilterActivity flightSearchFilterActivity);
-
-    void inject(com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment flightSearchFragment);
-
-    void inject(com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchReturnFragment flightSearchReturnFragment);
 }

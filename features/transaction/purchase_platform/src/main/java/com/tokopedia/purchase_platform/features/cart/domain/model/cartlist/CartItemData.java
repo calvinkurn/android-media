@@ -200,6 +200,8 @@ public class CartItemData implements Parcelable {
         private String promoCodes;
         private String promoDetails;
         private int priceOriginal;
+        private boolean freeShipping;
+        private String freeShippingBadgeUrl;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -621,6 +623,22 @@ public class CartItemData implements Parcelable {
             this.priceOriginal = priceOriginal;
         }
 
+        public boolean isFreeShipping() {
+            return freeShipping;
+        }
+
+        public void setFreeShipping(boolean freeShipping) {
+            this.freeShipping = freeShipping;
+        }
+
+        public String getFreeShippingBadgeUrl() {
+            return freeShippingBadgeUrl;
+        }
+
+        public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
+            this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+        }
+
         public OriginData() {
         }
 
@@ -677,6 +695,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.promoCodes);
             dest.writeString(this.promoDetails);
             dest.writeInt(this.priceOriginal);
+            dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
+            dest.writeString(this.freeShippingBadgeUrl);
         }
 
         protected OriginData(Parcel in) {
@@ -726,6 +746,8 @@ public class CartItemData implements Parcelable {
             this.promoCodes = in.readString();
             this.promoDetails = in.readString();
             this.priceOriginal = in.readInt();
+            this.freeShipping = in.readByte() != 0;
+            this.freeShippingBadgeUrl = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

@@ -78,4 +78,5 @@ public class ShopGroup {
     public boolean isCheckboxState() {
         return checkboxState;
     }
+
 }

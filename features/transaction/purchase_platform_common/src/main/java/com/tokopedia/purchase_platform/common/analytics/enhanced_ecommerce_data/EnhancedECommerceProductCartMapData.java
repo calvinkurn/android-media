@@ -39,6 +39,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_59 = "dimension59";
     private static final String KEY_DIMENSION_77 = "dimension77";
     private static final String KEY_DIMENSION_80 = "dimension80";
+    private static final String KEY_DIMENSION_83 = "dimension83";
     private static final String KEY_DIMENSION_12 = "dimension12";
     private static final String KEY_ATTRIBUTION = "attribution";
     private static final String KEY_WAREHOUSE_ID = "dimension56";
@@ -56,6 +57,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_URL = "url";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+    public static final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
 
     public static final String RECOMMENDATION_ATTRIBUTION = "recommendation";
 
@@ -90,6 +92,10 @@ public class EnhancedECommerceProductCartMapData {
 
     public void setDimension38(String data) {
         Product.put(KEY_DIMENSION_38, !TextUtils.isEmpty(data) ? data : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setDimension83(String data) {
+        Product.put(KEY_DIMENSION_83, !TextUtils.isEmpty(data) ? data : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setDimension54(Boolean isFulfill) {

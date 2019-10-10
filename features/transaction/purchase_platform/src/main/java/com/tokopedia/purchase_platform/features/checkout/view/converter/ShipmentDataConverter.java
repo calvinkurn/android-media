@@ -141,6 +141,7 @@ public class ShipmentDataConverter {
                                         voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
                                         voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
                                         voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                        voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
                                         voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
                                         shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                     }
@@ -181,6 +182,7 @@ public class ShipmentDataConverter {
                                     voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
                                     voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
                                     voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                    voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
                                     voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
                                     shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                 } else {
@@ -267,6 +269,7 @@ public class ShipmentDataConverter {
                 voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
                 voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
                 voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount()));
+                voucherLogisticItemUiModel.setCouponAmountRaw(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
                 voucherLogisticItemUiModel.setCashbackAmount(groupShop.getShop().getVoucherOrdersItemData().getCashbackWalletAmount());
                 voucherLogisticItemUiModel.setDiscountAmount(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
                 voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
@@ -341,6 +344,8 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+        cartItemModel.setFreeShipping(product.isFreeShipping());
+        cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
 
         if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);

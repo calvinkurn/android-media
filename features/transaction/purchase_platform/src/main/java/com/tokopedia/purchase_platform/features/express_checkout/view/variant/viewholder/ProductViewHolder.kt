@@ -27,6 +27,13 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
     override fun bind(element: ProductViewModel?) {
         if (element != null) {
             var stockWording = ""
+            if (element.isFreeOngkir) {
+                ImageHandler.loadImage(itemView.context, itemView.img_free_ongkir, element.freeOngkirImg, R.drawable.ic_loading_image)
+                itemView.img_free_ongkir.visibility = View.VISIBLE
+            } else {
+                itemView.img_free_ongkir.visibility = View.GONE
+            }
+
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_product, element.productImageUrl)
             if (element.productChildrenList.isNotEmpty()) {
                 for (productChild: ProductChild in element.productChildrenList) {

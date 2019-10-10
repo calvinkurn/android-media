@@ -44,6 +44,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
@@ -133,7 +134,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartItemAdapter.ActionListener, ICartListView, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
-        ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener {
+        ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
@@ -293,7 +294,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     .build()
                     .inject(this);
         }
-        cartAdapter = new CartAdapter(this, this, this, this);
+        cartAdapter = new CartAdapter(this, this, this, this, this);
     }
 
     @Override
@@ -1293,9 +1294,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
                 cartAdapter.addCartEmptyData();
 
-                CartTickerData tickerData = cartListData.getTicker();
+                TickerData tickerData = cartListData.getTickerData();
                 if (tickerData != null && tickerData.isValid(CART_PAGE)) {
-                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                    cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
 
                 cartAdapter.notifyDataSetChanged();
@@ -1303,9 +1304,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 cartAdapter.removeCartEmptyData();
 
-                CartTickerData tickerData = cartListData.getTicker();
+                TickerData tickerData = cartListData.getTickerData();
                 if (tickerData != null && tickerData.isValid(CART_PAGE)) {
-                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                    cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
                 if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
@@ -1342,6 +1343,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 onCartNotEmpty();
 
                 cartPageAnalytics.eventViewCartListFinishRender();
+                List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
+                cartPageAnalytics.enhancedECommerceCartLoadedStep0(
+                        dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+                );
             }
 
             if (toolbar != null) {
@@ -1499,7 +1504,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private void clearRecyclerView() {
         cartAdapter.unsubscribeSubscription();
         cartRecyclerView.setAdapter(null);
-        cartAdapter = new CartAdapter(null, null, null, null);
+        cartAdapter = new CartAdapter(null, null, null, null, null);
         cartRecyclerView.removeAllViews();
         cartRecyclerView.getRecycledViewPool().clear();
     }
@@ -1771,7 +1776,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (cartRecyclerView.getAdapter() == null) {
-            cartAdapter = new CartAdapter(this, this, this, this);
+            cartAdapter = new CartAdapter(this, this, this, this, this);
             cartRecyclerView.setAdapter(cartAdapter);
         }
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
