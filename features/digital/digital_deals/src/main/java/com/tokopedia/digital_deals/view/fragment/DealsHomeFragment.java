@@ -174,7 +174,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
@@ -771,7 +771,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();

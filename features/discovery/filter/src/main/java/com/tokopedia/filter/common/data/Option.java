@@ -14,9 +14,13 @@ public final class Option implements Parcelable {
     public static final String KEY_PRICE_MAX = "pmax";
     public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
     public static final String KEY_PRICE_WHOLESALE = "wholesale";
+    public static final String KEY_PRICE_RANGE_1 = "price_range_1";
+    public static final String KEY_PRICE_RANGE_2 = "price_range_2";
+    public static final String KEY_PRICE_RANGE_3 = "price_range_3";
     public static final String KEY_CATEGORY = "sc";
     public static final String KEY_OFFICIAL = "official";
     public static final String KEY_RATING = "rt";
+    public static final String KEY_ANNOTATION_ID = "annotation_id";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
@@ -77,6 +81,10 @@ public final class Option implements Parcelable {
     List<LevelTwoCategory> levelTwoCategoryList;
 
     String inputState = "";
+
+    public boolean isAnnotation() {
+        return Option.KEY_ANNOTATION_ID.equals(getKey());
+    }
 
     public boolean isCategoryOption() {
         return Option.KEY_CATEGORY.equals(getKey());

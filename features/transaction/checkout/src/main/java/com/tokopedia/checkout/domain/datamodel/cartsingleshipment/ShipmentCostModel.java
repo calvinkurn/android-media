@@ -29,7 +29,105 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
     private int TotalDiscWithoutCashback;
+    private long macroInsurancePrice;
+    private String macroInsurancePriceLabel;
     private int bookingFee;
+    private String discountLabel;
+    private int discountAmount;
+    private boolean hasDiscountDetails;
+    private String shippingDiscountLabel;
+    private int shippingDiscountAmount;
+    private String productDiscountLabel;
+    private int productDiscountAmount;
+    private String cashbackLabel;
+    private int cashbackAmount;
+
+    public ShipmentCostModel() {
+    }
+
+    protected ShipmentCostModel(Parcel in) {
+        totalItem = in.readInt();
+        totalItemPrice = in.readDouble();
+        totalPrice = in.readDouble();
+        totalWeight = in.readDouble();
+        shippingFee = in.readDouble();
+        insuranceFee = in.readDouble();
+        priorityFee = in.readDouble();
+        totalPurchaseProtectionItem = in.readInt();
+        purchaseProtectionFee = in.readDouble();
+        additionalFee = in.readDouble();
+        promoPrice = in.readDouble();
+        donation = in.readDouble();
+        promoMessage = in.readString();
+        emasPrice = in.readDouble();
+        tradeInPrice = in.readDouble();
+        totalPromoStackAmount = in.readInt();
+        totalPromoStackAmountStr = in.readString();
+        TotalDiscWithoutCashback = in.readInt();
+        macroInsurancePrice = in.readLong();
+        macroInsurancePriceLabel = in.readString();
+        bookingFee = in.readInt();
+        discountLabel = in.readString();
+        discountAmount = in.readInt();
+        hasDiscountDetails = in.readByte() != 0;
+        shippingDiscountLabel = in.readString();
+        shippingDiscountAmount = in.readInt();
+        productDiscountLabel = in.readString();
+        productDiscountAmount = in.readInt();
+        cashbackLabel = in.readString();
+        cashbackAmount = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(totalItem);
+        dest.writeDouble(totalItemPrice);
+        dest.writeDouble(totalPrice);
+        dest.writeDouble(totalWeight);
+        dest.writeDouble(shippingFee);
+        dest.writeDouble(insuranceFee);
+        dest.writeDouble(priorityFee);
+        dest.writeInt(totalPurchaseProtectionItem);
+        dest.writeDouble(purchaseProtectionFee);
+        dest.writeDouble(additionalFee);
+        dest.writeDouble(promoPrice);
+        dest.writeDouble(donation);
+        dest.writeString(promoMessage);
+        dest.writeDouble(emasPrice);
+        dest.writeDouble(tradeInPrice);
+        dest.writeInt(totalPromoStackAmount);
+        dest.writeString(totalPromoStackAmountStr);
+        dest.writeInt(TotalDiscWithoutCashback);
+        dest.writeLong(macroInsurancePrice);
+        dest.writeString(macroInsurancePriceLabel);
+        dest.writeInt(bookingFee);
+        dest.writeString(discountLabel);
+        dest.writeInt(discountAmount);
+        dest.writeByte((byte) (hasDiscountDetails ? 1 : 0));
+        dest.writeString(shippingDiscountLabel);
+        dest.writeInt(shippingDiscountAmount);
+        dest.writeString(productDiscountLabel);
+        dest.writeInt(productDiscountAmount);
+        dest.writeString(cashbackLabel);
+        dest.writeInt(cashbackAmount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {
+        @Override
+        public ShipmentCostModel createFromParcel(Parcel in) {
+            return new ShipmentCostModel(in);
+        }
+
+        @Override
+        public ShipmentCostModel[] newArray(int size) {
+            return new ShipmentCostModel[size];
+        }
+    };
 
     public int getTotalItem() {
         return totalItem;
@@ -179,61 +277,92 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
 
     public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public long getMacroInsurancePrice() {
+        return macroInsurancePrice;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.totalItem);
-        dest.writeDouble(this.totalItemPrice);
-        dest.writeDouble(this.totalPrice);
-        dest.writeDouble(this.totalWeight);
-        dest.writeDouble(this.shippingFee);
-        dest.writeDouble(this.insuranceFee);
-        dest.writeDouble(this.priorityFee);
-        dest.writeDouble(this.promoPrice);
-        dest.writeString(this.promoMessage);
-        dest.writeDouble(this.additionalFee);
-        dest.writeDouble(this.donation);
-        dest.writeDouble(this.emasPrice);
-        dest.writeDouble(this.tradeInPrice);
-        dest.writeInt(this.totalPromoStackAmount);
-        dest.writeInt(this.bookingFee);
+    public void setMacroInsurancePrice(long macroInsurancePrice) {
+        this.macroInsurancePrice = macroInsurancePrice;
     }
 
-    public ShipmentCostModel() {
+    public String getMacroInsurancePriceLabel() {
+        return macroInsurancePriceLabel;
     }
 
-    protected ShipmentCostModel(Parcel in) {
-        this.totalItem = in.readInt();
-        this.totalItemPrice = in.readDouble();
-        this.totalPrice = in.readDouble();
-        this.totalWeight = in.readDouble();
-        this.shippingFee = in.readDouble();
-        this.insuranceFee = in.readDouble();
-        this.priorityFee = in.readDouble();
-        this.promoPrice = in.readDouble();
-        this.promoMessage = in.readString();
-        this.additionalFee = in.readDouble();
-        this.donation = in.readDouble();
-        this.emasPrice = in.readDouble();
-        this.tradeInPrice = in.readDouble();
-        this.totalPromoStackAmount = in.readInt();
-        this.bookingFee = in.readInt();
+    public void setMacroInsurancePriceLabel(String macroInsurancePriceLabel) {
+        this.macroInsurancePriceLabel = macroInsurancePriceLabel;
     }
 
-    public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {
-        @Override
-        public ShipmentCostModel createFromParcel(Parcel source) {
-            return new ShipmentCostModel(source);
-        }
+    public String getDiscountLabel() {
+        return discountLabel;
+    }
 
-        @Override
-        public ShipmentCostModel[] newArray(int size) {
-            return new ShipmentCostModel[size];
-        }
-    };
+    public void setDiscountLabel(String discountLabel) {
+        this.discountLabel = discountLabel;
+    }
+
+    public int getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(int discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public boolean isHasDiscountDetails() {
+        return hasDiscountDetails;
+    }
+
+    public void setHasDiscountDetails(boolean hasDiscountDetails) {
+        this.hasDiscountDetails = hasDiscountDetails;
+    }
+
+    public String getShippingDiscountLabel() {
+        return shippingDiscountLabel;
+    }
+
+    public void setShippingDiscountLabel(String shippingDiscountLabel) {
+        this.shippingDiscountLabel = shippingDiscountLabel;
+    }
+
+    public int getShippingDiscountAmount() {
+        return shippingDiscountAmount;
+    }
+
+    public void setShippingDiscountAmount(int shippingDiscountAmount) {
+        this.shippingDiscountAmount = shippingDiscountAmount;
+    }
+
+    public String getProductDiscountLabel() {
+        return productDiscountLabel;
+    }
+
+    public void setProductDiscountLabel(String productDiscountLabel) {
+        this.productDiscountLabel = productDiscountLabel;
+    }
+
+    public int getProductDiscountAmount() {
+        return productDiscountAmount;
+    }
+
+    public void setProductDiscountAmount(int productDiscountAmount) {
+        this.productDiscountAmount = productDiscountAmount;
+    }
+
+    public String getCashbackLabel() {
+        return cashbackLabel;
+    }
+
+    public void setCashbackLabel(String cashbackLabel) {
+        this.cashbackLabel = cashbackLabel;
+    }
+
+    public int getCashbackAmount() {
+        return cashbackAmount;
+    }
+
+    public void setCashbackAmount(int cashbackAmount) {
+        this.cashbackAmount = cashbackAmount;
+    }
 
 }

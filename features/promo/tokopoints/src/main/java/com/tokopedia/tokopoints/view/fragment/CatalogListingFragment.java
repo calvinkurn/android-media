@@ -47,6 +47,7 @@ import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
@@ -93,6 +94,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private boolean isPointsAvailable = false;
     private FiltersBottomSheet filtersBottomSheet;
     private MenuItem menuItemFilter;
+    private ServerErrorView serverErrorView;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -101,8 +103,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void onErrorFilter(String errorMessage) {
+    public void onErrorFilter(String errorMessage, boolean hasInternet) {
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        serverErrorView.showErrorUi(hasInternet);
     }
 
     @Nullable
@@ -149,6 +152,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
+        serverErrorView = view.findViewById(R.id.server_error_view);
         initListener();
 
         if (isSeeAllPage()) {

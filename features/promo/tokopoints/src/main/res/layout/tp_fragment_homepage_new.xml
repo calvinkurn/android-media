@@ -210,9 +210,12 @@
 
             </android.support.design.widget.CoordinatorLayout>
 
-            <include
-                layout="@layout/layout_tp_network_error_large"
-                android:visibility="invisible" />
+            <com.tokopedia.tokopoints.view.customview.ServerErrorView
+                android:id="@+id/server_error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                android:layout_marginTop="@dimen/dp_80"/>
 
         </ViewFlipper>
     </FrameLayout>

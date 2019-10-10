@@ -41,10 +41,11 @@ constructor(
                 .map(RecommendationEntityMapper())
     }
 
-    fun getRecomParams(pageNumber: Int,
-                       xSource: String,
-                       pageName: String,
-                       productIds: List<String>): RequestParams {
+    fun getRecomParams(pageNumber: Int = 1,
+                       xSource: String = "",
+                       pageName: String = "",
+                       productIds: List<String> = arrayListOf(),
+                       ref: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
 
@@ -55,6 +56,7 @@ constructor(
         }
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
+        params.putString(REF, ref)
 
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
@@ -68,25 +70,6 @@ constructor(
             params.putString(PAGE_NAME, pageName)
         }
 
-        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
-        return params
-    }
-
-    fun getRecomParams(pageNumber: Int,
-                       productIds: List<String>,
-
-                       ref: String = ""): RequestParams {
-        val params = RequestParams.create()
-        val productIdsString = TextUtils.join(",", productIds)
-
-        if (userSession.isLoggedIn) {
-            params.putInt(USER_ID, userSession.userId.toInt())
-        } else {
-            params.putInt(USER_ID, 0)
-        }
-        params.putInt(PAGE_NUMBER, pageNumber)
-        params.putString(PRODUCT_IDS, productIdsString)
-        params.putString(REF, ref)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }

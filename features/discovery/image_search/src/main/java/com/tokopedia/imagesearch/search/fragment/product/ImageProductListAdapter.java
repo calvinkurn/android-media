@@ -1,6 +1,10 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 
@@ -12,6 +16,13 @@ public class ImageProductListAdapter extends BaseAdapter<ImageProductListTypeFac
 
     public ImageProductListAdapter(ImageProductListTypeFactory adapterTypeFactory) {
         super(adapterTypeFactory);
+    }
+
+    public void showEmpty(Context context) {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setTitle(context.getString(R.string.image_search_msg_empty_product_title));
+        visitables.add(emptyModel);
+        notifyDataSetChanged();
     }
 
     public void updateWishlistStatus(String productId, boolean isWishlisted) {
@@ -50,6 +61,10 @@ public class ImageProductListAdapter extends BaseAdapter<ImageProductListTypeFac
 
     public boolean isProductItem(int position) {
         return checkDataSize(position) && visitables.get(position) instanceof ProductItem;
+    }
+
+    public boolean isEmptyItem(int position) {
+        return checkDataSize(position) && visitables.get(position) instanceof EmptyModel;
     }
 
     private boolean checkDataSize(int position) {
