@@ -1,0 +1,34 @@
+package com.tokopedia.promotionstarget.viewmodel
+
+import android.arch.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.promotionstarget.data.GetPopGratificationlResponse
+import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Named
+
+class PromotionsTargetVM(@Named("Main")
+                         val dispatcher: CoroutineDispatcher,
+                         val claimPopGratificationUseCase: ClaimPopGratificationUseCase
+) : BaseViewModel(dispatcher) {
+
+    val liveData: MutableLiveData<Result<GetPopGratificationlResponse>> = MutableLiveData()
+
+    fun demo(campaignSlug: String, page: String) {
+
+        launchCatchError(block = {
+            val data = claimPopGratificationUseCase.let {
+                it.getResponse(it.getQueryParams(campaignSlug, page))
+            }
+            liveData.value = Success(data)
+
+        }, onError = {
+            //todo check for no internet
+            liveData.value = Fail(it)
+        })
+    }
+}
