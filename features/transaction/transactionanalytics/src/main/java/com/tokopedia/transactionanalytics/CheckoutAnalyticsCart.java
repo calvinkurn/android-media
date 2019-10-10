@@ -302,7 +302,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     @Deprecated
-    public void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap) {
+    public void sendEnhancedECommerce(Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.E_COMMERCE, cartMap
@@ -311,11 +311,11 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
 
-    private void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap, String eventLabel) {
+    private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
-                Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
+                Key.EVENT_ACTION, EventAction.VIEW_CART_PAGE,
                 Key.EVENT_LABEL, eventLabel,
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -323,7 +323,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    private void flushEnhancedECommerceGoToCheckoutStep1() {
+    private void flushEnhancedECommerce() {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.E_COMMERCE, null,
                 Key.CURRENT_SITE, null
@@ -331,94 +331,99 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void enhancedECommerceCartLoadedStep0(Map<String, Object> cartMap) {
+        sendEnhancedECommerce(cartMap, "");
+        flushEnhancedECommerce();
+    }
+
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
         }
-        flushEnhancedECommerceGoToCheckoutStep1();
+        flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
         }
-        flushEnhancedECommerceGoToCheckoutStep1();
+        flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
         }
-        flushEnhancedECommerceGoToCheckoutStep1();
+        flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
         }
-        flushEnhancedECommerceGoToCheckoutStep1();
+        flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
-        flushEnhancedECommerceGoToCheckoutStep1();
+        flushEnhancedECommerce();
     }
 
     // GTM v5 EE Step 1
-    private void enhancedECommerceGoToCheckoutStep1(Bundle eCommerceBundle, String eventLabel) {
+    private void sendEnhancedECommerce(Bundle eCommerceBundle, String eventLabel) {
         eCommerceBundle.putString("eventLabel", eventLabel);
         sendEnhancedEcommerceV5(FirebaseAnalytics.Event.BEGIN_CHECKOUT, eCommerceBundle);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
         }
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Bundle eCommerceBundle, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
         }
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Bundle eCommerceBundle, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
         }
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Bundle eCommerceBundle, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
         }
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Bundle eCommerceBundle, boolean eligibleCod) {
         if (eligibleCod) {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
         } else {
-            enhancedECommerceGoToCheckoutStep1(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
     }
 

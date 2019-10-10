@@ -2,9 +2,10 @@ package com.tokopedia.network.interceptor;
 
 import android.content.Context;
 
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -77,7 +78,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         this.context = context;
         this.networkRouter = networkRouter;
         this.userSession = userSession;
-        this.authKey = AuthUtil.KEY.KEY_WSV4_NEW;
+        this.authKey = AuthKey.KEY_WSV4_NEW;
     }
 
     public TkpdAuthInterceptor(Context context,
@@ -86,7 +87,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         this.context = context;
         this.networkRouter = networkRouter;
         this.userSession = userSession;
-        this.authKey = AuthUtil.KEY.KEY_WSV4_NEW;
+        this.authKey = AuthKey.KEY_WSV4_NEW;
     }
 
     public TkpdAuthInterceptor(Context context,
@@ -217,7 +218,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
+        return AuthHelper.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
                 userSession.getUserId(), userSession);
     }
 

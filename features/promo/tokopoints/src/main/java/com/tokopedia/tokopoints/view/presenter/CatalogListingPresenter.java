@@ -8,14 +8,13 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
-import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorFilter("null");
+                getView().onErrorFilter("null", NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
             }
 
             @Override
@@ -106,7 +105,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 //handling the catalog listing and tabs
                 CatalogFilterOuter catalogFilterOuter = graphqlResponse.getData(CatalogFilterOuter.class);
                 if (catalogFilterOuter == null || catalogFilterOuter.getFilter() == null) {
-                    getView().onErrorFilter(null);
+                    getView().onErrorFilter(null, NetworkDetector.isConnectedToInternet(getView().getActivityContext()));
                 } else {
                     getView().onSuccessFilter(catalogFilterOuter.getFilter());
                 }

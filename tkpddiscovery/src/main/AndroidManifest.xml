@@ -17,6 +17,11 @@
             android:name=".catalog.activity.CatalogDetailActivity"
             android:label="@string/title_activity_catalog"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".catalogrevamp.ui.activity.CatalogDetailPageActivity"
+            android:label="@string/title_activity_catalog"
+            android:screenOrientation="portrait">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -30,6 +35,10 @@
 
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".catalogrevamp.ui.activity.CatalogGalleryActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".intermediary.view.IntermediaryActivity"
             android:label=""

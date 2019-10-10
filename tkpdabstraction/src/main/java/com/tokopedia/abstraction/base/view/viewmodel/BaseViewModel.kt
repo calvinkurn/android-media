@@ -18,4 +18,9 @@ abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): V
             masterJob.children.map { it.cancel() }
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        clear()
+    }
 }
