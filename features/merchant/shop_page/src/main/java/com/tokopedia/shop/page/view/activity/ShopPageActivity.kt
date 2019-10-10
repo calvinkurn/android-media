@@ -69,6 +69,7 @@ import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -104,12 +105,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
     lateinit var tabItemFeed: View
-    lateinit var stickyLoginTextView: StickyLoginView
+    lateinit var stickyLoginView: StickyLoginView
     private lateinit var titles: Array<String>
 
     private var tabPosition = 0
     lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
+
+    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -290,7 +293,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         swipeToRefresh.setOnRefreshListener {
             refreshData()
-            updateStickyState()
+            updateStickyContent()
         }
 
         mainLayout.requestFocus()
@@ -317,28 +320,19 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         getShopInfo()
 
-        stickyLoginTextView = findViewById(R.id.sticky_login_text)
-        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+        stickyLoginView = findViewById(R.id.sticky_login_text)
+        stickyLoginView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             updateStickyState()
         }
-        stickyLoginTextView.setOnClickListener {
-            stickyLoginTextView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.setOnClickListener {
+            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
         }
-        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
-            stickyLoginTextView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
-            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.setOnDismissListener(View.OnClickListener {
+            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
         })
-
-        shopViewModel.getStickyLoginContent(
-            onSuccess = {
-                stickyLoginTextView.setContent(it)
-            },
-            onError = {
-                stickyLoginTextView.hide()
-            }
-        )
-        updateStickyState()
+        updateStickyContent()
         initSearchInputView()
     }
 
@@ -524,7 +518,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             shopPageViewPagerAdapter.shopId = shopCore.shopID
-            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
+            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
             if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
@@ -801,23 +795,43 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 
+    private fun updateStickyContent() {
+        shopViewModel.getStickyLoginContent(
+            onSuccess = {
+                this.tickerDetail = it
+                updateStickyState()
+            },
+            onError = {
+                stickyLoginView.hide()
+            }
+        )
+    }
+
+
     private fun updateStickyState() {
+        if (this.tickerDetail == null) {
+            stickyLoginView.hide()
+            return
+        }
+
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
         if (!isCanShowing) {
-            stickyLoginTextView.visibility = View.GONE
+            stickyLoginView.hide()
             return
         }
 
         val userSession = UserSession(this)
         if (userSession.isLoggedIn) {
-            stickyLoginTextView.dismiss(StickyLoginConstant.Page.SHOP)
-        } else {
-            stickyLoginTextView.show(StickyLoginConstant.Page.SHOP)
-            stickyLoginTextView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+            stickyLoginView.hide()
+            return
         }
 
-        if (stickyLoginTextView.isShowing()) {
-            viewPager.setPadding(0, 0, 0, stickyLoginTextView.height)
+        this.tickerDetail?.let { stickyLoginView.setContent(it) }
+        stickyLoginView.show(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+
+        if (stickyLoginView.isShowing()) {
+            viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }

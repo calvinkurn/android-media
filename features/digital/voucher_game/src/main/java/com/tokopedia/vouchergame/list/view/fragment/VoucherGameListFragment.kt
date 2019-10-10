@@ -24,7 +24,6 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -95,7 +94,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 when(it) {
                     is Success -> {
                         with (it.data) {
-                            if (catalog.label.isNotEmpty())  (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+                            if (catalog.label.isNotEmpty()) {
+                                (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+                                voucherGameAnalytics.categoryName = catalog.label
+                            }
 
                             if (banners.isEmpty()) promo_banner.visibility = View.GONE
                             else {
@@ -129,6 +131,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
+        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 
@@ -195,10 +198,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
             recycler_view.post {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (searchInputView.searchText.isNotEmpty()) {
-                    voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
-                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
-                } else {
+                if (searchInputView.searchText.isEmpty()) {
                     voucherGameAnalytics.impressionOperatorCard(
                             data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
@@ -251,6 +251,15 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onItemClicked(operator: VoucherGameOperator) {
         if (searchInputView.searchText.isNotEmpty()) {
+            voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
+
+            val operatorList = voucherGameViewModel.voucherGameList.value
+            if (operatorList is Success) {
+                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                        operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            }
+
             voucherGameAnalytics.eventClickOperatorCardSearchResult(operator)
         } else {
             voucherGameAnalytics.eventClickOperatorCard(operator)
@@ -273,7 +282,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
         searchInputView.searchText = ""
     }
 
@@ -298,17 +308,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { if(text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { searchVoucherGame(it) }
     }
 
     override fun onSearchReset() {
