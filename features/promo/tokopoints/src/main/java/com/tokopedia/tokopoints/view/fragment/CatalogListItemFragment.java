@@ -103,13 +103,13 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
-        mSwipeToRefresh = rootView.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
+        mSwipeToRefresh = rootView.findViewById(R.id.swipe_refresh_layout);
         if (getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
         } else {
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
         }
-        mContainer = rootView.findViewById(com.tokopedia.design.R.id.container);
+        mContainer = rootView.findViewById(R.id.container);
         return rootView;
     }
 

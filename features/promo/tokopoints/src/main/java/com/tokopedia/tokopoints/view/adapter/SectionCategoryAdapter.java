@@ -55,7 +55,7 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
         public ViewHolder(View itemView) {
             super(itemView);
             ivBg = itemView.findViewById(R.id.iv_bg);
-            tvTitle = itemView.findViewById(com.example.tokopoints.notification.R.id.text_title);
+            tvTitle = itemView.findViewById(R.id.text_title);
             viewCategoryNew = itemView.findViewById(R.id.view_category_new);
         }
 

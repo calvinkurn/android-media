@@ -83,6 +83,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
             bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, getIntent().getData(),bundle);
         }
         startActivity(CouponListingStackedActivity.getCallingIntent(this, bundle));
+        finish();
     }
 
     @Override

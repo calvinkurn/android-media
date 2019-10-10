@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
@@ -139,9 +140,9 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
+        mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-        mSwipeToRefresh = view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
+        mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(0,
                 getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
                 getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
@@ -159,7 +160,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
         });
         getView().findViewById(R.id.text_empty_action).setOnClickListener(v ->
-                RouteManager.route(getActivityContext(),String.format("%s?url=%s",ApplinkConst.WEBVIEW,CommonConstant.WebLink.INFO)));
+                RouteManager.route(getActivityContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.INFO));
 
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -171,7 +172,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public void openWebView(String url) {
-       RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
+       RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
     }
 
     @Override

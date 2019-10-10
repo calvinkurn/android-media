@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
@@ -186,7 +187,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
+        mContainerMain = view.findViewById(R.id.container);
         llBottomBtn = view.findViewById(R.id.ll_bottom_button);
     }
 
@@ -200,7 +201,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
+        RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -459,10 +460,10 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         }
 
         mCouponName = data.getTitle();
-        TextView description = getView().findViewById(com.tokopedia.design.R.id.tv_title);
+        TextView description = getView().findViewById(R.id.tv_title);
         TextView label = getView().findViewById(R.id.text_time_label);
         TextView value = getView().findViewById(R.id.text_time_value);
-        TextView btnAction2 = getView().findViewById(com.tokopedia.session.R.id.btn_continue);
+        TextView btnAction2 = getView().findViewById(R.id.btn_continue);
         ImageView imgBanner = getView().findViewById(R.id.img_banner_coupon);
         ImageView imgLabel = getView().findViewById(R.id.img_time);
         TextView textMinExchangeValue = getView().findViewById(R.id.tv_min_txn_value);

@@ -111,7 +111,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         int id = item.getItemId();
-        if (id == com.tokopedia.analytics.R.id.action_menu_share) {
+        if (id == R.id.action_menu_share) {
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE));
@@ -222,7 +222,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     private void initViews(@NonNull View view) {
-        mContainerMain = view.findViewById(com.tokopedia.design.R.id.container);
+        mContainerMain = view.findViewById(R.id.container);
     }
 
     private void initListener() {
@@ -469,10 +469,10 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        Typography quota = getView().findViewById(com.example.tokopoints.notification.R.id.text_quota_count);
+        Typography quota = getView().findViewById(R.id.text_quota_count);
         Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
-        ImageView imgBanner = getView().findViewById(com.example.tokopoints.notification.R.id.img_banner);
+        ImageView imgBanner = getView().findViewById(R.id.img_banner);
 
         btnAction2.setEnabled(!data.isDisabledButton());
 
@@ -546,7 +546,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         mCouponName = data.getTitle();
-        Typography quota = getView().findViewById(com.example.tokopoints.notification.R.id.text_quota_count);
+        Typography quota = getView().findViewById(R.id.text_quota_count);
         Typography description = getView().findViewById(R.id.text_description);
         Typography disabledError = getView().findViewById(R.id.text_disabled_error);
         ConstraintLayout giftSectionMainLayout = getView().findViewById(R.id.gift_section_main_layout);
@@ -556,7 +556,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (getActivity(), R.drawable.ic_catalog_gift_btn), null, null, null);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
-        ImageView imgBanner = getView().findViewById(com.example.tokopoints.notification.R.id.img_banner);
+        ImageView imgBanner = getView().findViewById(R.id.img_banner);
         Typography labelPoint = getView().findViewById(R.id.text_point_label);
         Typography textDiscount = getView().findViewById(R.id.text_point_discount);
 

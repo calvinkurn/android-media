@@ -510,7 +510,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Hansel.init(this);
         initializeDagger();
         initDaggerInjector();
-        initFirebase();
+//        initFirebase();
         initRemoteConfig();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());

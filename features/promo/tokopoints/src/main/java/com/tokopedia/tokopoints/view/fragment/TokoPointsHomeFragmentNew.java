@@ -39,6 +39,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -354,7 +356,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
-            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
 
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -363,7 +365,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.ActionKeys.CLICK_STATUS_MEMBERSHIP,
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
-            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -406,7 +408,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     private void initViews(@NonNull View view) {
-        coordinatorLayout = view.findViewById(com.tokopedia.design.R.id.container);
+        coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
         mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
@@ -422,7 +424,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom);
         mImgBackground = view.findViewById(R.id.img_bg_header);
-        appBarHeader = view.findViewById(com.tokopedia.abstraction.R.id.app_bar);
+        appBarHeader = view.findViewById(R.id.app_bar);
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         tickerContainer = view.findViewById(R.id.cons_ticker_container);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
@@ -455,7 +457,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getContext(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
+        RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
     }
 
     @Override
@@ -993,7 +995,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void onToolbarLeaderboardClick() {
-            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s"),CommonConstant.WebLink.LEADERBOARD,getString(R.string.tp_leader));
+            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.LEADERBOARD,getString(R.string.tp_leader));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,

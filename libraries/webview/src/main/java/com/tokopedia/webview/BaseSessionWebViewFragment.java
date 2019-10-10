@@ -70,7 +70,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if(DeepLinkChecker.getDeepLinkType(getContext(),url) == DeepLinkChecker.ORDER_LIST) {
+        if(getContext() != null && DeepLinkChecker.getDeepLinkType(getContext(),url) == DeepLinkChecker.ORDER_LIST) {
             RouteManager.route(getContext(), ApplinkConstInternalOrderDetail.ORDER_LIST_URL,url);
             return true;
         }

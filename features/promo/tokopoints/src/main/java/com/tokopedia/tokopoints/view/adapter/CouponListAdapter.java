@@ -60,7 +60,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(view);
             label = view.findViewById(R.id.text_time_label);
             value = view.findViewById(R.id.text_time_value);
-            imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
+            imgBanner = view.findViewById(R.id.img_banner);
             imgLabel = view.findViewById(R.id.img_time);
             ivMinTxn = view.findViewById(R.id.iv_rp);
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);

@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -449,7 +450,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            RouteManager.route(getContext(),String.format("%s?url=%s&title=%s", ApplinkConst.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership)));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(source.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

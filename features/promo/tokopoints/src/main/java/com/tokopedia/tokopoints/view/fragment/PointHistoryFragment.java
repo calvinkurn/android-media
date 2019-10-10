@@ -208,6 +208,6 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
                 RouteManager.route(getContext(),CommonConstant.WebLink.INFO_EXPIRED_POINTS,getString(R.string.tp_title_tokopoints)));
         dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false);
         dialog.show();
-        view.findViewById(com.tokopedia.design.R.id.close_button).setOnClickListener(v -> dialog.dismiss());
+        view.findViewById(R.id.close_button).setOnClickListener(v -> dialog.dismiss());
     }
 }

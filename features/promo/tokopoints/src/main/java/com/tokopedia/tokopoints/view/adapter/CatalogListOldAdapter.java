@@ -44,7 +44,7 @@ public class CatalogListOldAdapter extends RecyclerView.Adapter<CatalogListOldAd
 
         public ViewHolder(View view) {
             super(view);
-            quota = view.findViewById(com.example.tokopoints.notification.R.id.text_quota_count);
+            quota = view.findViewById(R.id.text_quota_count);
             description = view.findViewById(R.id.text_description);
             pointLabel = view.findViewById(R.id.text_my_points_label);
             pointValue = view.findViewById(R.id.text_point_value);
@@ -52,7 +52,7 @@ public class CatalogListOldAdapter extends RecyclerView.Adapter<CatalogListOldAd
             timeValue = view.findViewById(R.id.text_time_value);
             disabledError = view.findViewById(R.id.text_disabled_error);
             btnContinue = view.findViewById(R.id.button_continue);
-            imgBanner = view.findViewById(com.example.tokopoints.notification.R.id.img_banner);
+            imgBanner = view.findViewById(R.id.img_banner);
             imgTime = view.findViewById(R.id.img_time);
             imgPoint = view.findViewById(R.id.img_points_stack);
             labelPoint = view.findViewById(R.id.text_point_label);
