@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -107,6 +108,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         mPresenter.initialize();
     }
 
+    @Override
+    protected int getToolbarResourceID(){
+        return R.id.deals_toolbar;
+    }
     @Override
     protected void onStart() {
         super.onStart();

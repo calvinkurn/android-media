@@ -107,9 +107,9 @@ public class SearchInputView extends BaseCustomView {
 
     protected void init() {
         view = inflate(getContext(), getLayout(), this);
-        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
-        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
-        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
+        searchImageView = (ImageView) view.findViewById(getImageSearchText());
+        searchTextView = (EditText) view.findViewById(getEditTextSearch());
+        closeImageButton = (ImageButton) view.findViewById(getCloseButtonImage());
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
 
         if (searchDrawable != null) {
@@ -152,6 +152,18 @@ public class SearchInputView extends BaseCustomView {
                 }
             }
         });
+    }
+
+    protected int getImageSearchText() {
+        return R.id.image_view_search;
+    }
+
+    protected int getEditTextSearch() {
+        return R.id.edit_text_search;
+    }
+
+    protected int getCloseButtonImage() {
+        return R.id.image_button_close;
     }
 
     public void hideKeyboard(){

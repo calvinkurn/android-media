@@ -35,7 +35,8 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
     }
 
     public void setSearchImageViewDimens(int width, int height){
-        LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) getSearchImageView().getLayoutParams();
+        ImageView imgView = findViewById(com.tokopedia.digital_deals.R.id.image_view_search);
+        LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) imgView.getLayoutParams();
         layoutParams.width=width;
         layoutParams.height=height;
     }
@@ -50,4 +51,18 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
         searchText.setTextColor(textColor);
     }
 
+    @Override
+    protected int getCloseButtonImage() {
+        return com.tokopedia.digital_deals.R.id.image_button_close;
+    }
+
+    @Override
+    protected int getImageSearchText() {
+        return com.tokopedia.digital_deals.R.id.image_view_search;
+    }
+
+    @Override
+    protected int getEditTextSearch() {
+        return com.tokopedia.digital_deals.R.id.edit_text_search;
+    }
 }
