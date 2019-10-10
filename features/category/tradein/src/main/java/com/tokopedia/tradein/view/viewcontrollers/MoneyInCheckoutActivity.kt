@@ -416,4 +416,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     override fun getLayoutRes(): Int {
         return R.layout.activity_money_in_checkout
     }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
+    }
 }

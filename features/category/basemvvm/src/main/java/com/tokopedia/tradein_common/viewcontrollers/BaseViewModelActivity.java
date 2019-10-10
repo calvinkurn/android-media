@@ -49,6 +49,8 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
 
+    abstract protected int getRootViewId();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +163,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     public View getRootView() {
-        return findViewById(R.id.root_view);
+        return findViewById(getRootViewId());
     }
 
     public int getRequestCode() {

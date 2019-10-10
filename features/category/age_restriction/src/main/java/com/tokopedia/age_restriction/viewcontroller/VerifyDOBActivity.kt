@@ -173,4 +173,8 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             travelCalenderSheet!!.show(supportFragmentManager, "CalendarBottomSheet")
         }
     }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
+    }
 }

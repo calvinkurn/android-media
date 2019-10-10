@@ -214,4 +214,8 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             }
         }
     }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
+    }
 }
