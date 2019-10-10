@@ -51,13 +51,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun getNewFragment(): Fragment {
         return when{
-            intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF) -> {
-                val productId = intent.getStringExtra(PRODUCT_ID)
-                val ref = intent.getStringExtra(REF)
-                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(productId, ref)
-                else RecommendationFragment.newInstance(productId, ref)
-            }
-            intent.data != null && intent.data?.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME-> {
+            intent.data != null -> {
                 val ref = intent.data?.getQueryParameter("ref") ?: ""
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
                         if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
@@ -120,8 +114,15 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * and send tracking also routing to home
      */
     override fun onBackPressed() {
-        if(!isSimilarProduct(intent?.data?.toString() ?: "")) RecommendationPageTracking.eventUserClickBack()
-        else SimilarProductRecommendationTracking.eventClickBackButton()
+        if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
+            if(intent?.data?.pathSegments?.size ?: 0 > 1 && isNumber(intent?.data?.pathSegments?.get(1) ?: "")){
+                RecommendationPageTracking.eventUserClickBackWithProductId()
+            }else{
+                RecommendationPageTracking.eventUserClickBack()
+            }
+        } else {
+            SimilarProductRecommendationTracking.eventClickBackButton()
+        }
         if(isTaskRoot) RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
     }

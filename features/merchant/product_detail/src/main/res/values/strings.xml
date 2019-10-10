@@ -131,9 +131,9 @@
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
-    <string name="masuk_yuk">Masuk yuk</string>
     <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
+    <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
+    <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
 
 </resources>

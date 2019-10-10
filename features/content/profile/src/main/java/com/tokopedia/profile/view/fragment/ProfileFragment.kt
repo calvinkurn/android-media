@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -81,7 +80,6 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
-import com.tokopedia.kotlin.extensions.media.toTempFile
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
@@ -98,6 +96,8 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -108,7 +108,6 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_share_ig_by_me.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -185,7 +184,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
 
-    private lateinit var byMeTemplatedView: View
+    private lateinit var byMeInstastoryView: ByMeInstastoryView
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -203,8 +202,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val OPEN_CONTENT_REPORT = 1130
         private const val FOLLOW_HEADER = "follow_header"
         private const val FOLLOW_FOOTER = "follow_footer"
-
-        private const val IG_STORY_TEMP = "ig_story_temp"
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -597,7 +594,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             presenter.trackPostClick(uniqueTrackingId, url)
         }
 
-        profileRouter.openRedirectUrl(activity as Activity, url)
+        onGoToLink(url)
     }
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
@@ -828,6 +825,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
+    private fun getShopIntent(
+            context: Context,
+            shopId: String
+    ) = RouteManager.getIntent(context,ApplinkConst.SHOP,shopId)
+
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
@@ -903,8 +905,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
-        startActivity(intent)
+        context?.let {
+            startActivity(getShopIntent(it, shop.id))
+        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
@@ -927,7 +930,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -975,7 +978,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1203,8 +1206,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         )
 
-        if (!::byMeTemplatedView.isInitialized) byMeTemplatedView = LayoutInflater.from(context).inflate(R.layout.item_share_ig_by_me, null)
-        byMeTemplatedView.tv_user_name.text = element.formattedAffiliateName
+        if (!::byMeInstastoryView.isInitialized) context?.let { ctx -> byMeInstastoryView = ByMeInstastoryView(ctx) }
+        byMeInstastoryView.setUserName(element.formattedAffiliateName)
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
@@ -1449,12 +1452,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             shareProfile.setOnClickListener {
                 checkShouldChangeUsername(headerViewModel.link) {
-                    byMeTemplatedView.iv_avatar.setImageDrawable(iv_profile.drawable)
+                    byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
                     linkerData = showShareBottomSheet(
                             headerViewModel,
                             String.format(getString(R.string.profile_share_text), headerViewModel.link),
                             String.format(getString(R.string.profile_share_title)),
-                            byMeTemplatedView.toSquareBitmap()
+                            byMeInstastoryView.getTempFileUri()
                     )
                     profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     isShareProfile = true
@@ -1596,7 +1599,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             affiliatePreference.setFirstTimeEducation(userSession.userId)
 
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -1617,12 +1620,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_CODE)
+        }
     }
 
     private fun followAfterLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_FOLLOW_CODE)
+        }
     }
+
+    private fun getLoginIntent(context: Context) = RouteManager.getIntent(context, ApplinkConst.LOGIN)
 
     private fun doFollowAfterLogin() {
         swipeToRefresh.isRefreshing = true
@@ -1687,9 +1696,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onGoToLink(link: String) {
-        activity?.let {
-            if (!TextUtils.isEmpty(link)) {
-                profileRouter.openRedirectUrl(it, link)
+        if (context != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(context, link)) {
+                RouteManager.route(context, link)
+            } else {
+                RouteManager.route(
+                        context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                )
             }
         }
     }
@@ -1788,7 +1802,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             element: ProfileHeaderViewModel,
             shareFormat: String,
             shareTitle: String,
-            imageBitmap: Bitmap?
+            imageUri: String?
     ): LinkerData {
         val bottomSheet = ShareBottomSheets.newInstance(
                 this@ProfileFragment,
@@ -1797,11 +1811,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 element.link,
                 shareFormat,
                 shareTitle,
-                imageBitmap?.let { image ->
-                    val ctx = context
-                    if (ctx != null) MethodChecker.getUri(context, image.toTempFile(ctx, IG_STORY_TEMP)).toString()
-                    else null
-                }
+                imageUri
         ).also {
             it.show(fragmentManager)
         }

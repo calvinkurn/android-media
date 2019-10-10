@@ -91,7 +91,6 @@ class AddToCartDoneBottomSheet :
             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         initViewModel()
@@ -176,6 +175,7 @@ class AddToCartDoneBottomSheet :
     private fun goToCart() {
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            dismiss()
         }
     }
 
@@ -188,6 +188,7 @@ class AddToCartDoneBottomSheet :
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
+        dismiss()
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
@@ -222,6 +223,7 @@ class AddToCartDoneBottomSheet :
                 item,
                 item.position,
                 addToCartDoneViewModel.isLoggedIn(),
+                item.pageName,
                 item.header
         )
         if (position.size > 1) {

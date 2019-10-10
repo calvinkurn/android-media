@@ -33,6 +33,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
     private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
+    private static final String PAGE_TITLE = "Thank You";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -40,17 +41,14 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
-                context, ReactConst.Screen.THANK_YOU_PAGE,
-                "Thank You"
+                context, PAGE_TITLE
         ).putExtras(bundle);
     }
 
-    public static Intent createReactNativeActivity(Context context,
-                                                   String reactScreenName,
-                                                   String pageTitle) {
+    public static Intent createReactNativeActivity(Context context, String pageTitle) {
         Intent intent = new Intent(context, ReactNativeThankYouPageActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.THANK_YOU_PAGE);
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         return intent;
@@ -85,7 +83,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
+        return null;
     }
 
     @Override
@@ -122,8 +120,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
             if (manager != null) {
                 AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDismissListener(() -> closeThankyouPage());
-                rating.show(manager, "AppFeedbackRatingBottomSheet");
+                rating.setDialogDismissListener(() -> closeThankyouPage());
+                rating.showDialog(manager, this);
             }
         } else {
             closeThankyouPage();

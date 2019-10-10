@@ -148,6 +148,7 @@ public class OptionHelper {
         category.setId(option.getValue());
         category.setIconImageUrl(option.getIconUrl());
         category.setIndentation(1);
+        category.setKey(option.getKey());
 
         List<Category> levelTwoCategoryList
                 = convertToLevelTwoCategoryList(option.getLevelTwoCategoryList());
@@ -180,6 +181,7 @@ public class OptionHelper {
         category.setName(levelTwoCategory.getName());
         category.setId(levelTwoCategory.getValue());
         category.setIndentation(2);
+        category.setKey(levelTwoCategory.getKey());
 
         List<Category> levelThreeCategoryList
                 = convertToLevelThreeCategoryList(levelTwoCategory.getLevelThreeCategoryList());
@@ -213,6 +215,7 @@ public class OptionHelper {
         category.setId(levelThreeCategory.getValue());
         category.setIndentation(3);
         category.setHasChild(false);
+        category.setKey(levelThreeCategory.getKey());
         return category;
     }
 

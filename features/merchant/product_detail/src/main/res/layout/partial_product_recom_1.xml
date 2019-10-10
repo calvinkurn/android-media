@@ -27,15 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/loading_recom_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/dp_16"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/product_recom_1"
             android:layout_width="match_parent"
@@ -50,6 +41,14 @@
             tools:layoutManager="LinearLayoutManager"
             tools:listitem="@layout/item_product_recommendation"
             tools:orientation="horizontal"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/loading_recom_1"
+            layout="@layout/partial_shimmering_grid_list_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
             tools:visibility="visible" />
 
     </FrameLayout>

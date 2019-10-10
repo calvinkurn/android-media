@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -55,9 +56,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private static final int PER_SECOND = 1000;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
+    private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
 
     private String mOrderId;
     private String mTrackingUrl;
+    private String mCaller;
 
     private ProgressBar loadingScreen;
     private TextView referenceNumber;
@@ -87,11 +90,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     @Inject
     OrderAnalyticsOrderTracking mAnalytics;
 
-    public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
+    public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl, String caller) {
         TrackingPageFragment fragment = new TrackingPageFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARGUMENTS_ORDER_ID, orderId);
         bundle.putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl);
+        bundle.putString(ARGUMENTS_CALLER, caller);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -102,6 +106,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         if (getArguments() != null) {
             mOrderId = getArguments().getString(ARGUMENTS_ORDER_ID);
             mTrackingUrl = getArguments().getString(ARGUMENTS_TRACKING_URL);
+            mCaller = getArguments().getString(ARGUMENTS_CALLER);
         }
     }
 
@@ -221,8 +226,21 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         Observable.timer(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong -> {
-                    fetchData();
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        fetchData();
+                    }
                 });
     }
 
@@ -327,7 +345,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     private void fetchData() {
         presenter.onGetTrackingData(mOrderId);
-        if (mTrackingUrl != null && !mTrackingUrl.isEmpty()) presenter.onGetRetryAvailability(mOrderId);
+        if (mTrackingUrl != null && !mTrackingUrl.isEmpty()
+                && mCaller != null && mCaller.equalsIgnoreCase("seller")) {
+            presenter.onGetRetryAvailability(mOrderId);
+        }
     }
 
     @Override

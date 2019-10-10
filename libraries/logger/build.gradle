@@ -12,28 +12,11 @@ buildscript {
     }
 }
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles 'proguard-rules.pro'
-        }
-    }
+project.ext {
+    artifactId = 'logger'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "logger-release"
 }
 
-dependencies {
-
-}
+apply from: '../../publish_local.gradle'

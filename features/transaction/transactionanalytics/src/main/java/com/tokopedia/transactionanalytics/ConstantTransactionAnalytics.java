@@ -43,6 +43,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
         String VIEW_SOM = "viewSOM";
+        String CLICK_RECOMMENDATION = "clickRecommendation";
     }
 
     interface EventCategory {
@@ -174,6 +175,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
         String VIEW_CART_LIST = "view cart list";
+        String VIEW_CART_PAGE = "view cart page";
         String VIEW_CHECKOUT_PAGE = "view checkout page";
         String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
         String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
@@ -283,6 +285,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
+        String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
@@ -294,6 +297,8 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
+        String CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT = "click add wishlist on primary product";
+        String CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT = "click remove wishlist on primary product";
 
         //Retry Pickup
         String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";
@@ -348,6 +353,8 @@ public interface ConstantTransactionAnalytics {
         String PROMO = "promo";
         String NON_PROMO = "non promo";
         String COD = "cod";
+
+        String SOURCE_CART = "source: cart";
     }
 
     interface ScreenName {

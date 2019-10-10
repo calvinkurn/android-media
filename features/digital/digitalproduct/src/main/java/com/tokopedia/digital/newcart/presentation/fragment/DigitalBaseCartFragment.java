@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
@@ -34,14 +35,12 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -55,6 +54,7 @@ import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -73,7 +73,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected DigitalCartCheckoutHolderView checkoutHolderView;
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
-    private boolean isAlreadyShowPostPaidPopUp;
     private boolean traceStop;
     private PerformanceMonitoring performanceMonitoring;
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
@@ -209,7 +208,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(String userId, String deviceId, Map<String, String> param) {
-        return AuthUtil.generateParamsNetwork(userId, deviceId, param);
+        return AuthHelper.generateParamsNetwork(userId, deviceId, param);
     }
 
     @Override
@@ -229,26 +228,32 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
+        digitalAnalytics.eventclickUseVoucher(getCategoryName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-        intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        intent.putExtra("EXTRA_COUPON_ACTIVE",
+                Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+        );
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
         startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
         return new PromoDigitalModel(
-                Integer.parseInt(cartPassData.getCategoryId()),
+                Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
                 getProductId(),
-                cartPassData.getClientNumber(),
-                cartDigitalInfoData.getAttributes().getPricePlain()
+                cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
+                cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
         );
     }
 
     @Override
     public void onDisablePromoDiscount() {
-        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoData.getPromoCode());
+        digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+    }
+
+    private String getCategoryName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
     }
 
     @Override
@@ -260,7 +265,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
-                intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+                intent.putExtra("EXTRA_COUPON_ACTIVE",
+                        Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+                );
                 requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
@@ -323,7 +330,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
                                 .showAppFeedbackRatingDialog(
-                                        manager, () -> {
+                                        manager,
+                                        getContext(),
+                                        () -> {
                                             if (getActivity() != null) {
                                                 getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                                 closeView();
@@ -394,6 +403,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public String getZoneId() {
+        return cartPassData.getZoneId();
+    }
+
+    @Override
     public boolean isInstantCheckout() {
         return cartPassData.getInstantCheckout().equals("1");
     }
@@ -458,21 +472,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public boolean isAlreadyShowPostPaid() {
-        return isAlreadyShowPostPaidPopUp;
-    }
-
-    @Override
     public void showPostPaidDialog(String title,
                                    String content,
-                                   String confirmButtonTitle,
-                                   String userId) {
-        isAlreadyShowPostPaidPopUp = true;
+                                   String confirmButtonTitle) {
         DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
                 getActivity(),
-                Dialog.Type.RETORIC,
-                DigitalPostPaidLocalCache.newInstance(getActivity()),
-                userId
+                Dialog.Type.RETORIC
         );
         dialog.setTitle(title);
         dialog.setDesc(MethodChecker.fromHtml(content));

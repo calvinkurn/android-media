@@ -386,7 +386,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 FragmentManager manager = getActivity().getSupportFragmentManager();
 
                 ((ReputationRouter)getActivity().getApplicationContext())
-                        .showAppFeedbackRatingDialog(manager, null);
+                        .showAppFeedbackRatingDialog(manager, getContext(), null);
             }
         }
         refreshPage();

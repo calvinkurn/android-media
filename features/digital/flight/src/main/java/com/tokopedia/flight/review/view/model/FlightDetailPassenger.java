@@ -22,6 +22,8 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     int passengerType;
     int passengerStatus;
     String passengerCancellationStr;
+    int secondPassengerStatus;
+    String secondPassengerCancellationStr;
 
     protected FlightDetailPassenger(Parcel in) {
         infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
@@ -29,6 +31,24 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         passengerType = in.readInt();
         passengerStatus = in.readInt();
         passengerCancellationStr = in.readString();
+        secondPassengerStatus = in.readInt();
+        secondPassengerCancellationStr = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(infoPassengerList);
+        dest.writeString(passengerName);
+        dest.writeInt(passengerType);
+        dest.writeInt(passengerStatus);
+        dest.writeString(passengerCancellationStr);
+        dest.writeInt(secondPassengerStatus);
+        dest.writeString(secondPassengerCancellationStr);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightDetailPassenger> CREATOR = new Creator<FlightDetailPassenger>() {
@@ -87,18 +107,20 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         this.passengerCancellationStr = passengerCancellationStr;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getSecondPassengerStatus() {
+        return secondPassengerStatus;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(infoPassengerList);
-        dest.writeString(passengerName);
-        dest.writeInt(passengerType);
-        dest.writeInt(passengerStatus);
-        dest.writeString(passengerCancellationStr);
+    public void setSecondPassengerStatus(int secondPassengerStatus) {
+        this.secondPassengerStatus = secondPassengerStatus;
+    }
+
+    public String getSecondPassengerCancellationStr() {
+        return secondPassengerCancellationStr;
+    }
+
+    public void setSecondPassengerCancellationStr(String secondPassengerCancellationStr) {
+        this.secondPassengerCancellationStr = secondPassengerCancellationStr;
     }
 
     @Override

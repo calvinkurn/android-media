@@ -84,6 +84,8 @@ public class FlightOrderViewModelMapper {
                     refundViewModel.setStatus(flightOrder.getStatus());
                     refundViewModel.setTitle(flightOrder.getStatusString());
                     refundViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
+                    refundViewModel.setCancellations(flightOrder.getCancellations());
+                    refundViewModel.setCancellationInfo(flightOrder.getCancellationInfo());
                     visitables.add(refundViewModel);
                     break;
             }

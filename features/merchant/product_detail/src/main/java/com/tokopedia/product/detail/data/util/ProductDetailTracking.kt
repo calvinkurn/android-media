@@ -255,6 +255,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -278,17 +279,18 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
-                                        PROMO_POSITION, position + 1)
+                                        PROMO_POSITION, position + 1,
+                                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
                         ))
                 ))
         )
     }
 
-    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageTitle: String) {
+    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean,pageName: String, pageTitle: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
-        val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
+        val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val actionValuePostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
@@ -304,6 +306,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, position .toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
@@ -326,7 +329,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         BRAND, DEFAULT_VALUE,
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         VARIANT, DEFAULT_VALUE,
-                        PROMO_POSITION, position
+                        PROMO_POSITION, position,
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         ))
@@ -334,7 +338,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     }
 
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
-        val listValue = LIST_DEFAULT + pageName  +
+        val listValue = LIST_DEFAULT + pageName +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
@@ -347,6 +351,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -373,7 +378,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         VARIANT, DEFAULT_VALUE,
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         PROMO_POSITION, position + 1,
-                        LIST, listValue)
+                        LIST, listValue,
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
         ))
         )
         trackingQueue.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
@@ -383,7 +389,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
-        val listValue = LIST_PRODUCT_AFTER_ATC + LIST_RECOMMENDATION + valueLoginOrNotLogin +
+        val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
                 product.recommendationType + (if (product.isTopAds) " - product topads" else "")
         val valueActionPostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.USER_NON_LOGIN}"
@@ -397,6 +403,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, position.toLong())
+                putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC)
@@ -420,7 +427,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         VARIANT, DEFAULT_VALUE,
                         LIST, listValue,
-                        PROMO_POSITION, position
+                        PROMO_POSITION, position,
+                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         )
@@ -596,6 +604,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         else
             "false"
 
+        val dimension83 = productInfo?.freeOngkir?.let {
+            if (it.isFreeOngkirActive)
+                VALUE_BEBAS_ONGKIR
+            else
+                VALUE_NONE_OTHER
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
                 "eventCategory", "product page",
@@ -614,7 +629,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         "variant", "none / other",
                         "dimension38", trackerAttribution ?: "none / other",
                         "dimension55", dimension55,
-                        "dimension54", getMultiOriginAttribution(multiOrigin)
+                        "dimension54", getMultiOriginAttribution(multiOrigin),
+                        "dimension83", dimension83
                 ))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
@@ -633,12 +649,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo,
                 trackerAttribution, isTradeIn,
-                isDiagnosed, multiOrigin)
+                isDiagnosed, multiOrigin, dimension83 ?: "none / other")
     }
 
     fun eventEnhanceEcommerceProductDetailV5(productInfo: ProductInfo?, shopInfo: ShopInfo?,
                                              trackerAttribution: String?, isTradeIn: Boolean,
-                                             isDiagnosed: Boolean, multiOrigin: Boolean) {
+                                             isDiagnosed: Boolean, multiOrigin: Boolean, dimension83: String) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -652,11 +668,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other")
             putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getEnhanceCategoryFormatted(productInfo?.category?.detail))
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other")
-            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble() ?: 0.toDouble())
+            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble()
+                    ?: 0.toDouble())
             putLong(FirebaseAnalytics.Param.INDEX, 1)
             putString("dimension38", trackerAttribution ?: "none / other")
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
             putString("dimension55", dimension55)
+            putString("dimension83", dimension83)
         }
 
         val event = Bundle().apply {
@@ -690,7 +708,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.id = productInfo.basic.id.toString()
         linkerData.price = productInfo.basic.price.toInt().toString()
@@ -815,51 +833,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
     }
 
-    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when (isMultiOrigin) {
         true -> "tokopedia"
         else -> "regular"
     }
 
-    private fun removeCurrencyPrice(priceFormatted: String): String{
+    private fun removeCurrencyPrice(priceFormatted: String): String {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")
-        } catch (t: Throwable){
+        } catch (t: Throwable) {
             "0"
         }
     }
 
-    fun eventClickOnStickyLogin(isOnSticky: Boolean) {
-        val tracker = TrackApp.getInstance().gtm
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.CLICK
-                )
-            } else {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.EMPTY_LABEL
-                )
-            }
-        }
-    }
-
-    fun eventViewLoginStickyWidget() {
-        val tracker = TrackApp.getInstance().gtm
-        tracker.sendGeneralEvent(
-                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
-                ProductTrackingConstant.Label.EMPTY_LABEL
-        )
-    }
-
-    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean) {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
@@ -867,7 +854,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "$productId - $isVariant"
         )
     }
-    
+
     fun eventViewHelpPopUpWhenAtc() {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
@@ -892,6 +879,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickSearchBar() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
+                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
+                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
+                ""
         )
     }
 
@@ -924,8 +920,11 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CATEGORY = "category"
         private const val LIST_DEFAULT = "/product - "
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc - "
+        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc  - "
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
+        private const val DATA_DIMENSION_83 = "dimension83"
+        private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        private const val VALUE_NONE_OTHER = "none / other"
     }
 }

@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE
+import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity
@@ -47,8 +49,11 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -69,6 +74,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var notifPreference: NotifPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,10 +231,35 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 clearCache()
             }
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
+                accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
             else -> {
             }
+        }
+    }
+
+    private fun sendNotif() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false)
+        val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
+        if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
+            notifPreference.isDisplayedGimmickNotif = true
+            presenter.sendNotif(
+                    { (_, _, _, _) ->
+                        doLogout()
+                        null
+                    },
+                    { throwable ->
+                        doLogout()
+                        if (view != null) {
+                            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+                            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+                        }
+                        null
+                    })
+        } else {
+            doLogout()
         }
     }
 
@@ -271,7 +302,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         dialog.setBtnCancel(getString(R.string.account_home_label_cancel))
         dialog.setOnOkClickListener { v ->
             dialog.dismiss()
-            doLogout()
+            sendNotif()
         }
         dialog.setOnCancelClickListener { v -> dialog.dismiss() }
         dialog.show()
@@ -425,6 +456,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     }
 
     companion object {
+
+        private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         @JvmStatic
         fun createInstance(): Fragment {

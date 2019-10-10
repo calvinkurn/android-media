@@ -85,16 +85,15 @@
                 app:can_swipe="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     
-            <com.tokopedia.shop.page.view.widget.StickyTextView
+            <com.tokopedia.stickylogin.view.StickyLoginView
               android:id="@+id/sticky_login_text"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_gravity="bottom"
               android:background="@color/sticky_bg_color"
+              android:visibility="gone"
               app:sticky_highlight_color="@color/g_500"
-              app:sticky_left_icon="@drawable/ic_toped_widget_login"
-              app:sticky_text="@string/mau_akses_semua_fitur"
-              app:sticky_text_highlight="@string/masuk_yuk" />
+              app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
             
         </android.support.design.widget.CoordinatorLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

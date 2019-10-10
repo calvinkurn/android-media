@@ -3,8 +3,8 @@ package com.tokopedia.flight.banner.view.adapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
-import com.tokopedia.design.banner.BannerPagerAdapter;
-import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.banner.BannerView;
+import com.tokopedia.banner.BannerViewPagerAdapter;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by nakama on 29/12/17.
  */
 
-public class FlightBannerPagerAdapter extends BannerPagerAdapter {
+public class FlightBannerPagerAdapter extends BannerViewPagerAdapter {
 
     private static final int BANNER_WIDTH = 800;
     private final List<String> bannerImageUrls;

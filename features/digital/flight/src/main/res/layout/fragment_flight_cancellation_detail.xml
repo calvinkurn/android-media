@@ -132,6 +132,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/container_bottom_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
@@ -160,6 +161,7 @@
             </android.support.v7.widget.RecyclerView>
 
             <View
+                android:id="@+id/bottom_first_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_8"
@@ -174,6 +176,7 @@
             </android.support.v7.widget.RecyclerView>
 
             <View
+                android:id="@+id/bottom_second_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_8"

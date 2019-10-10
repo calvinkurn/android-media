@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.data.source.dynamicfilter;
 
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.di.qualifier.AceQualifier;
 import com.tokopedia.search.result.data.mapper.dynamicfilter.DynamicFilterMapperModule;

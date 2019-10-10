@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -20,22 +19,24 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.filter.common.manager.FilterSortManager;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.common.manager.FilterSortManager;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
@@ -44,7 +45,6 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +56,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
@@ -72,7 +75,6 @@ public abstract class SearchSectionFragment
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -89,8 +91,8 @@ public abstract class SearchSectionFragment
     private HashMap<String, String> selectedSort;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
-    private int fragmentPosition;
     private boolean hasLoadData;
+    private FilterTrackingData filterTrackingData;
 
     protected SearchParameter searchParameter;
     protected FilterController filterController = new FilterController();
@@ -105,8 +107,12 @@ public abstract class SearchSectionFragment
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
-        startToLoadDataForFirstFragmentPosition();
+        onViewCreatedBeforeLoadData(view, savedInstanceState);
+
+        startToLoadDataForFirstActiveTab();
     }
+
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
 
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -119,12 +125,14 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void startToLoadDataForFirstFragmentPosition() {
-        if (getFragmentPosition() == 0) {
+    private void startToLoadDataForFirstActiveTab() {
+        if (isFirstActiveTab()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
+
+    protected abstract boolean isFirstActiveTab();
 
     @Override
     public void showRefreshLayout() {
@@ -219,7 +227,7 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -247,29 +255,48 @@ public abstract class SearchSectionFragment
         }
 
         switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1:
-                setSpanCount(1);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeSingleGridView();
+            case LIST:
+                switchLayoutTypeTo(BIG_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
-            case GRID_2:
-                setSpanCount(1);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeListView();
+            case SMALL_GRID:
+                switchLayoutTypeTo(LIST);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
-            case GRID_3:
-                setSpanCount(2);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeDoubleGridView();
+            case BIG_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
+    }
+
+    protected void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
+            return;
+        }
+
+        switch (layoutType) {
+            case LIST:
+                recyclerViewLayoutManagerChangeSpanCount(1);
+                getAdapter().changeListView();
+                break;
+            case SMALL_GRID:
+                recyclerViewLayoutManagerChangeSpanCount(2);
+                getAdapter().changeDoubleGridView();
+                break;
+            case BIG_GRID:
+                recyclerViewLayoutManagerChangeSpanCount(1);
+                getAdapter().changeSingleGridView();
+                break;
+        }
+
         refreshMenuItemGridIcon();
+    }
+
+    private void recyclerViewLayoutManagerChangeSpanCount(int spanCount) {
+        setSpanCount(spanCount);
+        gridLayoutManager.setSpanCount(spanCount);
+        staggeredGridLayoutManager.setSpanCount(spanCount);
     }
 
     public void refreshMenuItemGridIcon() {
@@ -304,7 +331,7 @@ public abstract class SearchSectionFragment
     }
 
     private void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
-        FilterTracking.eventSearchResultFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE,
+        FilterTracking.eventApplyFilter(getFilterTrackingData(),
                 getScreenName(), selectedFilters);
 
         refreshSearchParameter(queryParams);
@@ -398,14 +425,14 @@ public abstract class SearchSectionFragment
         if (bottomSheetListener != null && isUsingBottomSheetFilter) {
             openBottomSheetFilter();
         } else {
-            FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, this, getScreenName(), searchParameter.getSearchParameterHashMap());
+            FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
     }
 
     protected void openBottomSheetFilter() {
         if(searchParameter == null || getFilters() == null) return;
 
-        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName());
+        FilterTracking.eventOpenFilterPage(getFilterTrackingData());
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -483,7 +510,6 @@ public abstract class SearchSectionFragment
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
-        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
     }
 
     public abstract void reloadData();
@@ -512,7 +538,6 @@ public abstract class SearchSectionFragment
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
-        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION);
     }
 
     @Override
@@ -523,7 +548,7 @@ public abstract class SearchSectionFragment
     }
 
     public void onBottomSheetHide() {
-        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName(), getSelectedFilter());
+        FilterTracking.eventApplyFilter(getFilterTrackingData(), getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {
@@ -620,11 +645,26 @@ public abstract class SearchSectionFragment
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
 
-    protected void setFragmentPosition(int fragmentPosition) {
-        this.fragmentPosition = fragmentPosition;
+    protected String getActiveTab() {
+        return searchParameter.get(SearchApiConst.ACTIVE_TAB);
     }
 
-    protected int getFragmentPosition() {
-        return this.fragmentPosition;
+    protected void removeSearchPageLoading() {
+        if (isFirstActiveTab() && searchNavigationListener != null) {
+            searchNavigationListener.removeSearchPageLoading();
+        }
     }
+
+    private FilterTrackingData getFilterTrackingData() {
+        if (filterTrackingData == null) {
+            filterTrackingData = new FilterTrackingData(FilterEventTracking.Event.CLICK_SEARCH_RESULT,
+                    getFilterTrackingCategory(),
+                    "",
+                    FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
+                    );
+        }
+        return filterTrackingData;
+    }
+
+    protected abstract String getFilterTrackingCategory();
 }

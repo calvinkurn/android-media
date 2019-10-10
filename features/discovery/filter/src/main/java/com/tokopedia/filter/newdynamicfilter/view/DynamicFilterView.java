@@ -28,4 +28,6 @@ public interface DynamicFilterView {
 
     String getFilterValue(String key);
     boolean getFilterViewState(String uniqueId);
+
+    void onPriceRangeClicked();
 }

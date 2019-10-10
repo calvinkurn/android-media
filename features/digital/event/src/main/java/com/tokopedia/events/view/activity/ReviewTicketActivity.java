@@ -2,15 +2,18 @@ package com.tokopedia.events.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,11 +35,16 @@ import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
+    public static final String SCREEN_NAME = "digital/events/summary";
     ImageView eventImageSmall;
     TextView eventNameTv;
     View eventTimeTv;
@@ -58,10 +66,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View updateNumber;
     ScrollView scrollView;
     View formLayout;
-    EditText edForm1;
-    EditText edForm2;
-    EditText edForm3;
-    EditText edForm4;
     FrameLayout mainContent;
     TextView tvPromoSuccessMsg;
     TextView tvPromoCashbackMsg;
@@ -79,9 +83,12 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View gotoPromo;
     View sectionDiscount;
     TextView tvDiscount;
+    LinearLayout formsLayout;
 
     private int baseFare;
     private int convFees;
+
+    private List<EditText> formsList = new ArrayList<>();
 
     EventReviewTicketsContractor.EventReviewTicketPresenter eventReviewTicketPresenter;
 
@@ -112,7 +119,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        eventsAnalytics = new EventsAnalytics();
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
@@ -126,6 +132,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     void setupVariables() {
+        eventsAnalytics = new EventsAnalytics();
         eventImageSmall = findViewById(R.id.event_image_small);
         eventNameTv = findViewById(R.id.event_name_tv);
         eventTimeTv = findViewById(R.id.event_time_tv);
@@ -147,11 +154,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         updateNumber = findViewById(R.id.update_number);
         scrollView = findViewById(R.id.scroll_view);
         formLayout = findViewById(R.id.form_layout);
-        edForm1 = findViewById(R.id.ed_form_1);
-        edForm2 = findViewById(R.id.ed_form_2);
-        edForm3 = findViewById(R.id.ed_form_3);
-        edForm4 = findViewById(R.id.ed_form_4);
         mainContent = findViewById(R.id.main_content);
+        formsLayout = findViewById(R.id.forms_layout);
         tvPromoSuccessMsg = findViewById(R.id.tv_promo_success_msg);
         tvPromoCashbackMsg = findViewById(R.id.tv_promo_cashback_msg);
         batal = findViewById(R.id.batal);
@@ -186,22 +190,19 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         gotoPromo.setOnClickListener(this);
         dismissTooltip.setOnClickListener(this);
 
-        edForm1.setOnFocusChangeListener(this);
-        edForm2.setOnFocusChangeListener(this);
-        edForm3.setOnFocusChangeListener(this);
-        edForm4.setOnFocusChangeListener(this);
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1) {
         gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (this, R.drawable.promo_code), null, null , null);
+                (this, R.drawable.promo_code), null, null, null);
 
-        int result = customText1&4096;
+        int result = customText1 & 4096;
         if (result == 0) {
             gotoPromo.setVisibility(View.VISIBLE);
         } else {
-            gotoPromo.setVisibility(View.GONE   );
+            gotoPromo.setVisibility(View.GONE);
         }
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
@@ -242,6 +243,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             seatNumbers.setText(builder.toString());
             selectedSeatLayout.setVisibility(View.VISIBLE);
         }
+        eventsAnalytics.sendViewCheckoutEvent(packageViewModel);
     }
 
     @Override
@@ -270,23 +272,20 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public void initForms(String[] hintText, String[] regex) {
         formLayout.setVisibility(View.VISIBLE);
+        formsLayout.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.rightMargin = getResources().getDimensionPixelOffset(R.dimen.dp_16);
         try {
-            edForm1.setHint(hintText[0]);
-            edForm1.setVisibility(View.VISIBLE);
-            edForm1.setTag(regex[0]);
-
-            edForm2.setHint(hintText[1]);
-            edForm2.setVisibility(View.VISIBLE);
-            edForm2.setTag(regex[1]);
-
-            edForm3.setHint(hintText[2]);
-            edForm3.setVisibility(View.VISIBLE);
-            edForm3.setTag(regex[2]);
-
-            edForm4.setHint(hintText[3]);
-            edForm4.setVisibility(View.VISIBLE);
-            edForm4.setTag(regex[3]);
-
+            for (int i = 0; i < hintText.length; i++) {
+                EditText editText = new EditText(this);
+                editText.setHint(hintText[i]);
+                editText.setTag(regex[i]);
+                editText.setTextColor(getResources().getColor(R.color.grey_500));
+                editText.setTextSize(14);
+                editText.setLayoutParams(params);
+                formsLayout.addView(editText);
+                formsList.add(editText);
+            }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -331,14 +330,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public boolean validateAllFields() {
         boolean result = true;
-        if (edForm1.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm1);
-        if (edForm2.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm2);
-        if (edForm3.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm3);
-        if (edForm4.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm4);
+        for (int i= 0; i<formsList.size(); i++) {
+            result = result && eventReviewTicketPresenter.validateEditText(formsList.get(i));
+        }
         return result;
     }
 
@@ -445,7 +439,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventReviewTicketPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

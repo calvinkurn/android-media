@@ -69,7 +69,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
             }
             itemView.productImage.setOnClickListener {
-                highlightListener.onHighlightItemClicked(item.positionInFeed, item.applink)
+                highlightListener.onHighlightItemClicked(item.positionInFeed, item)
             }
         }
 
@@ -78,7 +78,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             if (getBadgeId(item) != 0) {
                 ImageHandler.loadImageWithId(itemView.badge, getBadgeId(item))
             }
-            ImageHandler.loadImageFit2(itemView.context, itemView.userImage, item.header.avatar)
+            ImageHandler.loadImageCircle2(itemView.context, itemView.userImage, item.header.avatar)
             itemView.userName.text = item.header.avatarTitle
             bindLike(item.footer.like)
             bindComment(item.footer.comment)
@@ -114,7 +114,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 }
                 else -> {
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                    val likeText = if (like.fmt.isNotEmpty()) like.fmt else itemView.context.getString(R.string.kol_action_like)
+                    val likeText = if (like.fmt.isNotEmpty()) like.fmt else ""
                     itemView.likeText.text = likeText
                     itemView.likeText.setTextColor(
                             MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
@@ -124,7 +124,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         }
 
         private fun bindComment(comment: Comment) {
-            val commentText = if (comment.fmt.isNotEmpty()) comment.fmt else itemView.context.getString(R.string.kol_action_comment)
+            val commentText = if (comment.fmt.isNotEmpty()) comment.fmt else ""
             itemView.commentText.text = commentText
         }
     }
@@ -140,7 +140,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
 
-        fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String)
+        fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel)
     }
 
 }

@@ -3,7 +3,6 @@
 /tkpddigital/       @tokopedia/minion-mark
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
-/tkpddiscovery/     @tokopedia/minion-dave
 /tkpdtransaction/   @tokopedia/minion-darth
 /feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
@@ -16,6 +15,9 @@
 /features/discovery/productcard/        @tokopedia/minion-dave
 /features/discovery/search/             @tokopedia/minion-dave
 /features/discovery/filter/             @tokopedia/minion-dave
+/features/discovery/image_search/       @tokopedia/minion-dave
+/features/discovery/similarsearch/      @tokopedia/minion-dave
+/features/discovery/autocomplete/       @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
@@ -61,6 +63,7 @@
 /features/digital/digital_homepage          @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 /features/digital/travel_homepage       @tokopedia/minion-mark
+/features/digital/voucher_game       @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -78,6 +81,8 @@
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
 /features/logistic/shipping_recommendation/     @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
+/features/promo/promo_checkout/                 @tokopedia/minion-bob
+/features/promo/promo_checkout_common/          @tokopedia/minion-bob
 
 /features/user/chatbot/                         @tokopedia/minion-darth
 /features/user/chatbot_no_op/                   @tokopedia/minion-kevin
@@ -95,7 +100,6 @@
 /features/user/loginregister/                   @tokopedia/minion-kevin
 /features/user/sessioncommon/                   @tokopedia/minion-kevin
 /features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/bankdb/                          @tokopedia/minion-kevin
 /features/user/notifcenter/                     @tokopedia/minion-kevin
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/dp_16">
 
-    <com.tokopedia.digital.home.presentation.customview.TravelHomepageBannerViewDynamicBackground
+    <com.tokopedia.banner.dynamic.BannerViewDynamicBackground
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -30,13 +30,13 @@
             <ImageView
                 android:id="@+id/img_banner_background"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/travel_homepage_banner_background_height"
+                android:layout_height="@dimen/banner_dynamic_background_height"
                 android:background="@color/tkpd_main_green" />
 
             <ImageView
                 android:id="@+id/overlay_img"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/travel_homepage_banner_background_height"
+                android:layout_height="@dimen/banner_dynamic_background_height"
                 android:alpha="0.32"
                 android:background="#31353B"
                 android:scaleType="centerCrop" />

@@ -8,10 +8,12 @@ import java.util.Map;
  */
 public class EnhancedECommerceActionField {
 
+    public static final String STEP_0 = "0";
     public static final String STEP_1 = "1";
     public static final String STEP_2 = "2";
     public static final String STEP_3 = "3";
     public static final String STEP_4 = "4";
+    public static final String STEP_0_OPTION_VIEW_CART_PAGE = "view cart page";
     public static final String STEP_1_OPTION_CART_PAGE_LOADED = "cart page loaded";
     public static final String STEP_2_OPTION_CHECKOUT_PAGE_LOADED = "checkout page loaded";
     public static final String STEP_3_OPTION_DATA_VALIDATION = "data validation";
@@ -19,8 +21,10 @@ public class EnhancedECommerceActionField {
     public static final String OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     public static final String OPTION_CLICK_CHECKOUT = "click checkout";
     public static final String OPTION_CLICK_BAYAR = "click bayar";
-    public static final String LIST_WISHLIST = "/wishlist";
-    public static final String LIST_RECENT_VIEW = "/recent";
+    public static final String LIST_WISHLIST = "/cart - wishlist";
+    public static final String LIST_WISHLIST_ON_EMPTY_CART = "/cart empty - wishlist";
+    public static final String LIST_RECENT_VIEW = "/cart - recent view";
+    public static final String LIST_RECENT_VIEW_ON_EMPTY_CART = "/cart empty - recent view";
     public static final String LIST_RECOMMENDATION = "/recommendation - primary product";
     public static final String LIST_CART_RECOMMENDATION = "/cart - rekomendasi untuk anda - ";
     public static final String LIST_CART_RECOMMENDATION_ON_EMPTY_CART = "/cart - rekomendasi untuk anda - empty_cart - ";

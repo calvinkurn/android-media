@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -15,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +45,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -52,6 +53,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -64,6 +66,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
@@ -74,6 +77,8 @@ import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -115,6 +120,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView additionalText;
     private TextView infoLabel;
     private TextView helpLabel;
+    private FrameLayout stickyButton;
     private LinearLayout statusDetail;
     private LinearLayout detailContent;
     private LinearLayout additionalInfoLayout;
@@ -125,6 +131,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView primaryActionBtn;
     private TextView secondaryActionBtn;
     private FrameLayout parentLayout;
+    private NestedScrollView nestedScrollView;
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
     private boolean isSingleButton;
@@ -139,6 +146,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     OrderListAnalytics orderListAnalytics;
     private ShopInfo shopInfo;
     private Status status;
+    private Ticker mTickerInfos;
 
 
     @Override
@@ -166,6 +174,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         View view = inflater.inflate(R.layout.fragment_marketplace_order_list_detail, container, false);
         parentLayout = view.findViewById(R.id.parentLayout);
         mainView = view.findViewById(R.id.main_view);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         statusLabel = view.findViewById(R.id.status_label);
         statusValue = view.findViewById(R.id.status_value);
         conditionalInfoText = view.findViewById(R.id.conditional_info);
@@ -177,6 +186,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         detailContent = view.findViewById(R.id.detail_content);
         additionalText = view.findViewById(R.id.additional);
         additionalInfoLayout = view.findViewById(R.id.additional_info);
+        mTickerInfos = view.findViewById(R.id.additional_ticker_info);
         infoLabel = view.findViewById(R.id.info_label);
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
@@ -189,9 +199,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        stickyButton = view.findViewById(R.id.sticky_btn);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
+        setUpScrollChangeListener();
         presenter.attachView(this);
         return view;
     }
@@ -265,7 +277,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if(!presenter.isValidUrl(invoice.invoiceUrl())){
+        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
@@ -355,6 +367,28 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
         additionalInfoLayout.addView(doubleTextView);
+    }
+
+    @Override
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
+        if (getContext()!= null && tickerInfos.size() > 0) {
+            mTickerInfos.setTickerTitle(tickerInfos.get(0).getTitle());
+            mTickerInfos.setHtmlDescription(tickerInfos.get(0).getNotes());
+            mTickerInfos.setVisibility(View.VISIBLE);
+            if (url != null) {
+                mTickerInfos.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        RouteManager.route(getContext(), url);
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -461,7 +495,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
@@ -489,6 +523,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setActionButtons(List<ActionButton> actionButtons) {
         actionBtnLayout.removeAllViews();
         actionBtnLayout.setOrientation(LinearLayout.VERTICAL);
+        boolean stickyButtonAdded = false;
         for (ActionButton actionButton : actionButtons) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
@@ -515,7 +550,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems();
+                        presenter.onBuyAgainAllItems(" - order");
                     }
                 });
             } else {
@@ -524,6 +559,42 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
             }
             actionBtnLayout.addView(textView);
+            if(!stickyButtonAdded){
+                //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
+                TextView stickyTextView = new TextView(getContext());
+                stickyTextView.setText(actionButton.getLabel());
+                stickyTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+                stickyTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                stickyTextView.setGravity(Gravity.CENTER);
+                shape.setShape(GradientDrawable.RECTANGLE);
+                shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+                if (!actionButton.getActionColor().getBackground().equals("")) {
+                    shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+                }
+                if (!actionButton.getActionColor().getBorder().equals("")) {
+                    shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                }
+                LinearLayout.LayoutParams stickyButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                stickyTextView.setBackground(shape);
+                stickyTextView.setLayoutParams(stickyButtonParams);
+                if (!actionButton.getActionColor().getTextColor().equals("")) {
+                    stickyTextView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+                }
+                if (actionButton.getLabel().equalsIgnoreCase(BELI_LAGI)) {
+                    stickyTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            presenter.onBuyAgainAllItems(" - order");
+                        }
+                    });
+                } else {
+                    if (!TextUtils.isEmpty(actionButton.getUri())) {
+                        stickyTextView.setOnClickListener(clickActionButton(actionButton));
+                    }
+                }
+                stickyButton.addView(stickyTextView);
+                stickyButtonAdded = true;
+            }
         }
     }
 
@@ -638,10 +709,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
-                            Toaster.Companion.showErrorWithAction(mainView,
-                                            presenter.getCancelTime(),
+                            Toaster.INSTANCE.showErrorWithAction(mainView,
+                                    presenter.getCancelTime(),
                                     Snackbar.LENGTH_LONG,
-                                    getResources().getString(R.string.title_ok), v -> {});
+                                    getResources().getString(R.string.title_ok), v -> {
+                                    });
                         } else
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
@@ -856,5 +928,25 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onRefresh(View view) {
         presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
+    }
+
+    private void setUpScrollChangeListener() {
+        Rect scrollBounds = new Rect();
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (nestedScrollView, scrollX, scrollY, scrollOldX, scrollOldY) -> {
+            nestedScrollView.getHitRect(scrollBounds);
+            if (actionBtnLayout.getLocalVisibleRect(scrollBounds)) {
+                // Any portion of the sticky button, even a single pixel, is within the visible window
+                stickyButton.setVisibility(View.GONE);
+            } else {
+                // NONE of the sticky button is within the visible window
+                stickyButton.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
+    @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+
     }
 }

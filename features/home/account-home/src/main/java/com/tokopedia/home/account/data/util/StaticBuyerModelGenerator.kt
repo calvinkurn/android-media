@@ -159,6 +159,7 @@ class StaticBuyerModelGenerator private constructor() {
                 applink = ApplinkConst.CONTACT_US_NATIVE
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_help)
+                isUseSeparator = false
             })
 
             return viewItems

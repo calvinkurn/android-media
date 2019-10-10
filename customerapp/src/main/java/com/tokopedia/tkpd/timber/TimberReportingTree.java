@@ -91,9 +91,6 @@ public class TimberReportingTree extends Timber.DebugTree {
                     .append(userId)
                     .append("#");
         }
-        stringBuilder.append("app=")
-                .append(GlobalConfig.getPackageApplicationName())
-                .append("#");
         stringBuilder.append("vernm=")
                 .append(GlobalConfig.VERSION_NAME)
                 .append("#");

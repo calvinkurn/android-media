@@ -9,4 +9,6 @@ interface CreatePostActivityListener {
     fun updateHeader(header: HeaderViewModel)
 
     fun updateShareHeader(text: String)
+
+    fun invalidatePostMenu(isPostEnabled: Boolean)
 }

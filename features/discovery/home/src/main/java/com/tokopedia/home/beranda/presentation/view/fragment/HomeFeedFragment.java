@@ -27,12 +27,12 @@ import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -271,6 +271,10 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             p.setId(model.getProductId());
             p.setName(model.getProductName());
             p.setPriceFormat(model.getPrice());
+            p.setFreeOngkir(new FreeOngkir(
+                    model.isFreeOngkirActive(),
+                    model.getFreeOngkirImageUrl()
+            ));
             new ImpresionTask().execute(model.getTrackerImageUrl());
             TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
                     model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
@@ -325,6 +329,10 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             p.setId(homeFeedViewModel.getProductId());
             p.setName(homeFeedViewModel.getProductName());
             p.setPriceFormat(homeFeedViewModel.getPrice());
+            p.setFreeOngkir(new FreeOngkir(
+                    homeFeedViewModel.isFreeOngkirActive(),
+                    homeFeedViewModel.getFreeOngkirImageUrl()
+            ));
             TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
                     tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
                     homeFeedViewModel.getCategoryBreadcrumbs(),

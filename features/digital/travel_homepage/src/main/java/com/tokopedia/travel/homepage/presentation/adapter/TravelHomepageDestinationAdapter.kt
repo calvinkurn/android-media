@@ -34,15 +34,6 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
         fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: OnItemClickListener) {
             with(itemView) {
-
-                val layoutParams = destination_container.layoutParams
-                if (position == 0) {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_145)
-                } else {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_180)
-                }
-                destination_container.layoutParams = layoutParams
-
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
                 subtitle.text = destination.attributes.subtitle

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
  */
 data class Configuration(
         @SerializedName("row_limit") var maxRow: Int = DEFAULT_MAX_ROW,
-        @SerializedName("interval") var intervals: Long = TimeUnit.MINUTES.toMillis(DEFAULT_SERVICE_TIME), // default 15 minutes
+        @SerializedName("interval") var intervals: Long = DEFAULT_SERVICE_TIME, // default 2 minutes
         var isEnabled: Boolean = true
 ) : Parcelable {
 

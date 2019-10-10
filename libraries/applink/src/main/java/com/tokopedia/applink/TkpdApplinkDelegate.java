@@ -19,6 +19,7 @@ import com.airbnb.deeplinkdispatch.Parser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +142,12 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
                 }
                 if (newIntent.getData() == null) {
                     newIntent.setData(sourceIntent.getData());
+                }
+                for (Iterator<String> iterator = parameters.keySet().iterator(); iterator.hasNext();) {
+                    String key = iterator.next();
+                    if (!newIntent.hasExtra(key)) {
+                        iterator.remove();
+                    }
                 }
                 newIntent.putExtras(parameters);
                 newIntent.putExtra(DeepLink.IS_DEEP_LINK, true);

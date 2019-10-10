@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
  */
 
 data class HighlightViewModel (
+        val postId: String = "",
         val title: Title = Title(),
         val cards: MutableList<HighlightCardViewModel> = ArrayList(),
         val template: Template = Template()

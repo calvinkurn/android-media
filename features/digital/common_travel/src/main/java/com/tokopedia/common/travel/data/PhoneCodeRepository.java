@@ -25,4 +25,9 @@ public class PhoneCodeRepository implements IPhoneCodeRepository {
     public Observable<List<CountryPhoneCodeTable>> getPhoneCodeList(String query) {
         return phoneCodeListDbSource.getPhoneCodeList(query);
     }
+
+    @Override
+    public List<CountryPhoneCodeTable> getCountryById(String id) {
+        return phoneCodeListDbSource.getCountryById(id);
+    }
 }
