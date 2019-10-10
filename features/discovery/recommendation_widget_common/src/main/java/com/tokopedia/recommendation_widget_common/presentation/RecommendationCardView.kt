@@ -36,7 +36,7 @@ open class RecommendationCardView : ProductCardView {
         setImageUrl(item.imageUrl)
         setTopAdsVisible(item.isTopAds)
         setSlashedPrice(item.slashedPrice)
-        setDiscount(item.discountPercentage)
+        setDiscount(item.discountPercentageInt)
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
         setBadges(item.badgesUrl)

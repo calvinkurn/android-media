@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopProduct(
         @SerializedName("campaign")
@@ -47,7 +48,11 @@ data class ShopProduct(
 
         @SerializedName("stock")
         @Expose
-        val stock: Int = 0
+        val stock: Int = 0,
+
+        @SerializedName("freeOngkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
 ){
         data class Response(
                 @SerializedName("GetShopProduct")
