@@ -81,6 +81,14 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mUserSession.isLoggedIn()){
+            inflateFragment();
+        }
+    }
+
+    @Override
     public void showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
