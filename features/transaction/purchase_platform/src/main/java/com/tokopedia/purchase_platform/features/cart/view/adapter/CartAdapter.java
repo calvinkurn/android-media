@@ -19,7 +19,6 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSelectAllViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;

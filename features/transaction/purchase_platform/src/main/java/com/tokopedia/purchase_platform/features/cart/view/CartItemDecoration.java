@@ -5,11 +5,10 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
 import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecentViewViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSectionHeaderViewHolder;
