@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
@@ -74,6 +75,7 @@ object DeeplinkDFMapper {
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
     private val DFM_SALDO_INTRO = "saldo_deposit"
     private val DFM_TRADEIN = "tradein"
+    private val DFM_TRADEIN_FINAL_PRICE = "tradein"
 
 
     private var manager: SplitInstallManager? = null
@@ -98,6 +100,7 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
             add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
         }
     }
 

@@ -345,7 +345,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
             }
         };
-        int greenColor = getResources().getColor(R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
