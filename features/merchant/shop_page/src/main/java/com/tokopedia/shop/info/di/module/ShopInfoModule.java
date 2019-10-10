@@ -2,11 +2,9 @@ package com.tokopedia.shop.info.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.reputation.common.data.interceptor.ReputationAuthInterceptor;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase;
