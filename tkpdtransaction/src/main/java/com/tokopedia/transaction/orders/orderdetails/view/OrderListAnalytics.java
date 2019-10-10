@@ -44,8 +44,9 @@ public class OrderListAnalytics {
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
-    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
-    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi order";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
+    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
+    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
@@ -186,7 +187,7 @@ public class OrderListAnalytics {
         }
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -226,8 +227,11 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_ADD_TO_CART);
-        map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
-        map.put("eventAction", EVENT_ACTION_BUY_AGAIN);
+        if(fromDetail)
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN_DETAIL);
+        else
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
+        map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
         map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);

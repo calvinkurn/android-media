@@ -17,7 +17,6 @@ class ProductListMapper {
                     val item = ProductsItem()
 
                     i?.let { dataItem ->
-
                         item.imageURL300 = dataItem.product?.image?.sEcs ?: ""
                         item.imageURL = dataItem.product?.image?.sEcs ?: ""
                         item.imageURL700 = dataItem.product?.image?.mEcs ?: ""
@@ -37,11 +36,16 @@ class ProductListMapper {
                         item.isTopAds = true
                         item.rating = dataItem.product?.productRating ?: 0
 
-                        item.countReview = (dataItem.product?.countReviewFormat?.toInt()) ?: 0
+                        item.countReview = getReviewCount(dataItem.product?.countReviewFormat
+                                ?: "0")
+
                         item.wishlist = (dataItem.product?.wishlist) ?: false
 
                         item.id = (dataItem.product?.id?.toInt()) ?: 0
                         item.categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0
+                        item.productImpTrackingUrl = dataItem.product?.image?.sUrl ?: ""
+                        item.productClickTrackingUrl = dataItem.productClickUrl ?: ""
+                        item.productWishlistTrackingUrl = dataItem.productWishlistUrl ?: ""
                     }
 
                     productListResponse.searchProduct.products.add(0, item)
@@ -49,5 +53,14 @@ class ProductListMapper {
             }
         }
         return productListResponse
+    }
+
+    private fun getReviewCount(s: String): Int {
+        return try {
+            val reviewCount = s.replace(".", "").replace(",", "")
+            Integer.parseInt(reviewCount)
+        } catch (e: NumberFormatException) {
+            0
+        }
     }
 }

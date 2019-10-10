@@ -18,8 +18,8 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
         listenerTrackingCoupon.onImpressionCoupon(element)
         var timerUsage = TimerPromoCheckout()
         ImageHandler.loadImageRounded2(view?.context, view?.imageBanner, element?.imageUrlMobile)
-        view?.imagePeriod?.setImageResource(R.drawable.ic_tp_time_new)
-        view?.imageMinTrans?.setImageResource(R.drawable.ic_tp_rp_new)
+        view?.imagePeriod?.setImageResource(R.drawable.ic_promo_rp_new)
+        view?.imageMinTrans?.setImageResource(R.drawable.ic_promo_time_new)
         view?.titlePeriod?.text = element?.usage?.text
         view?.titleMinTrans?.text = element?.minimumUsageLabel
         if (TextUtils.isEmpty(element?.minimumUsage)) {
