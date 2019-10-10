@@ -845,7 +845,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
 
-        if (isInsuranceSelected && isErrorInInsurance()) {
+        if (isErrorInInsurance() ||
+                (isInsuranceSelected &&
+                        selectedInsuranceProduct.cartShopsList.isNullOrEmpty())) {
             return
         }
 
