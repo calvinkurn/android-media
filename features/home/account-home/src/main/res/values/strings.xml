@@ -224,8 +224,8 @@
     <string name="account_home_batal_geolocation_alertdialog">Batal</string>
 
     <string name="account_home_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
-    <string name="account_home_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengunna</string>
-    <string name="account_home_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengunna</string>
+    <string name="account_home_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="account_home_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
     <string name="account_home_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
     <string name="account_home_safe_mode_selected_dialog_positive_button">Aktifkan</string>
     <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
