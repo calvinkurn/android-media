@@ -6,12 +6,8 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactoryImpl
-import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.shop.presentation.viewholder.EmptySearchViewHolder
-import com.tokopedia.search.result.shop.presentation.viewholder.ShopHeaderViewHolder
-import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
+import com.tokopedia.search.result.shop.presentation.model.*
+import com.tokopedia.search.result.shop.presentation.viewholder.*
 
 class ShopListTypeFactoryImpl(
         private val shopListener: ShopListener,
@@ -27,18 +23,28 @@ class ShopListTypeFactoryImpl(
         return ShopHeaderViewHolder.LAYOUT
     }
 
+    override fun type(shopCpmViewModel: ShopCpmViewModel): Int {
+        return ShopCpmViewHolder.LAYOUT
+    }
+
+    override fun type(shopTotalCountViewModel: ShopTotalCountViewModel): Int {
+        return ShopTotalCountViewHolder.LAYOUT
+    }
+
     override fun type(shopItem: ShopViewModel.ShopItem): Int {
         return ShopItemViewHolder.LAYOUT
     }
 
-    override fun type(emptySearchViewModel: EmptySearchViewModel): Int {
-        return EmptySearchViewHolder.LAYOUT
+    override fun type(shopEmptySearchViewModel: ShopEmptySearchViewModel): Int {
+        return ShopEmptySearchViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            EmptySearchViewHolder.LAYOUT -> EmptySearchViewHolder(view, emptyStateListener)
+            ShopEmptySearchViewHolder.LAYOUT -> ShopEmptySearchViewHolder(view, emptyStateListener)
             ShopHeaderViewHolder.LAYOUT -> ShopHeaderViewHolder(view, bannerAdsListener)
+            ShopCpmViewHolder.LAYOUT -> ShopCpmViewHolder(view, bannerAdsListener)
+            ShopTotalCountViewHolder.LAYOUT -> ShopTotalCountViewHolder(view)
             ShopItemViewHolder.LAYOUT -> ShopItemViewHolder(view, shopListener)
             com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder.LAYOUT
             -> com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null)

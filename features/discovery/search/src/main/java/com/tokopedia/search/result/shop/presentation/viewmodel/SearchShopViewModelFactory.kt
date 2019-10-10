@@ -9,10 +9,10 @@ import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 
 class SearchShopViewModelFactory(
         private val coroutineDispatcher: DispatcherProvider,
@@ -20,7 +20,8 @@ class SearchShopViewModelFactory(
         private val searchShopFirstPageRepository: Repository<SearchShopModel>,
         private val searchShopLoadMoreRepository: Repository<SearchShopModel>,
         private val dynamicFilterRepository: Repository<DynamicFilterModel>,
-        private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
+        private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
+        private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface,
@@ -43,7 +44,8 @@ class SearchShopViewModelFactory(
                 searchShopFirstPageRepository,
                 searchShopLoadMoreRepository,
                 dynamicFilterRepository,
-                shopHeaderViewModelMapper,
+                shopCpmViewModelMapper,
+                shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 searchLocalCacheHandler,
                 userSession,

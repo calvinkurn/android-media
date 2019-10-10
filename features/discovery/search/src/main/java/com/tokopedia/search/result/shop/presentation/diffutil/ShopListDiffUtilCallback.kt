@@ -2,7 +2,7 @@ package com.tokopedia.search.result.shop.presentation.diffutil
 
 import android.support.v7.util.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 class ShopListDiffUtilCallback(
@@ -42,7 +42,7 @@ class ShopListDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is EmptySearchViewModel && newItem is EmptySearchViewModel) oldItem == newItem
+        return if (oldItem is ShopEmptySearchViewModel && newItem is ShopEmptySearchViewModel) oldItem == newItem
         else true
     }
 }

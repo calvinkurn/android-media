@@ -25,8 +25,9 @@ import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.*
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.EmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.exists
@@ -39,7 +40,8 @@ internal class SearchShopViewModel(
         private val searchShopFirstPageRepository: Repository<SearchShopModel>,
         private val searchShopLoadMoreRepository: Repository<SearchShopModel>,
         private val dynamicFilterRepository: Repository<DynamicFilterModel>,
-        private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
+        private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
+        private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface,
@@ -193,7 +195,7 @@ internal class SearchShopViewModel(
     private fun createVisitableListWithEmptySearchViewModel(isFilterActive: Boolean): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val emptySearchViewModel = EmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), isFilterActive)
+        val emptySearchViewModel = ShopEmptySearchViewModel(SHOP_TAB_TITLE, getSearchParameterQuery(), isFilterActive)
 
         visitableList.add(emptySearchViewModel)
 
@@ -203,10 +205,13 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shopHeaderViewModel = createShopHeaderViewModelAsVisitable(searchShopModel)
-        visitableList.add(shopHeaderViewModel)
+        val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
+        visitableList.add(shopCpmViewModel)
 
-        val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
+        val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel)
+        visitableList.add(shopTotalCountViewModel)
+
+        val shopViewModelList = createShopItemViewModelList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
         addLoadingMoreModel(visitableList)
@@ -214,14 +219,18 @@ internal class SearchShopViewModel(
         return visitableList
     }
 
-    private fun createShopHeaderViewModelAsVisitable(searchShopModel: SearchShopModel): Visitable<*> {
-        val shopHeaderViewModel = shopHeaderViewModelMapper.convert(searchShopModel)
-        shopHeaderViewModel.query = getSearchParameterQuery()
-
-        return shopHeaderViewModel
+    private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
+        return shopCpmViewModelMapper.convert(searchShopModel)
     }
 
-    private fun createShopItemViewModelAsVisitableList(searchShopModel: SearchShopModel): List<Visitable<*>> {
+    private fun createShopTotalCountViewModel(searchShopModel: SearchShopModel): Visitable<*> {
+        val shopTotalCountViewModel = shopTotalCountViewModelMapper.convert(searchShopModel)
+        shopTotalCountViewModel.query = getSearchParameterQuery()
+
+        return shopTotalCountViewModel
+    }
+
+    private fun createShopItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val shopViewModel = shopViewModelMapper.convert(searchShopModel)
         setShopItemPosition(shopViewModel.shopItemList)
 
@@ -308,7 +317,7 @@ internal class SearchShopViewModel(
     }
 
     private fun shouldUpdateEmptySearchViewModel(): Boolean {
-        return searchShopMutableList.exists<EmptySearchViewModel>()
+        return searchShopMutableList.exists<ShopEmptySearchViewModel>()
                 && filterController.isFilterActive()
     }
 
@@ -384,7 +393,7 @@ internal class SearchShopViewModel(
     private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shopViewModelList = createShopItemViewModelAsVisitableList(searchShopModel)
+        val shopViewModelList = createShopItemViewModelList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
         addLoadingMoreModel(visitableList)

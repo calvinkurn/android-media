@@ -10,7 +10,7 @@ import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCa
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import java.util.*
 
-open class ShopListAdapter(
+class ShopListAdapter(
         private val shopListTypeFactory: ShopListTypeFactory
 ): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 

@@ -14,7 +14,8 @@ import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocal
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.repository.SearchShopRepositoryModule
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,7 +45,8 @@ class SearchShopViewModelFactoryModule(
             searchShopLoadMoreRepository: Repository<SearchShopModel>,
             @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY)
             dynamicFilterRepository: Repository<DynamicFilterModel>,
-            shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
+            shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
+            shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
             searchLocalCacheHandler: SearchLocalCacheHandler,
             userSession: UserSessionInterface,
@@ -57,7 +59,8 @@ class SearchShopViewModelFactoryModule(
                 searchShopFirstPageRepository,
                 searchShopLoadMoreRepository,
                 dynamicFilterRepository,
-                shopHeaderViewModelMapper,
+                shopCpmViewModelMapper,
+                shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 searchLocalCacheHandler,
                 userSession,
