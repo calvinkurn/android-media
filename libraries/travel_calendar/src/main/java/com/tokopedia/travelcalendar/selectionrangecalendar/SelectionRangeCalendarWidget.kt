@@ -46,6 +46,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
     var rangeDateSelected: Long = 0
     var minDateLabel: String = ""
     var maxDateLabel: String = ""
+    var minSelectableDateFromToday: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +77,8 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
             if (it.getString(ARG_MAX_DATE_LABEL) != null)
                 maxDateLabel = it.getString(ARG_MAX_DATE_LABEL)
 
+            if (it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY) != null)
+                minSelectableDateFromToday = it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY)
         }
     }
 
@@ -128,7 +131,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         nextYear.add(Calendar.YEAR, rangeYear)
 
         val yesterday = Calendar.getInstance()
-        yesterday.add(Calendar.DATE, 0)
+        yesterday.add(Calendar.DATE, minSelectableDateFromToday)
         yesterday.set(Calendar.HOUR_OF_DAY, 0)
         yesterday.set(Calendar.MINUTE, 0)
         yesterday.set(Calendar.SECOND, 0)
@@ -236,10 +239,11 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         const val ARG_MAX_DATE_LABEL = "arg_max_date_label"
         const val ARG_RANGE_YEAR = "arg_range_year"
         const val ARG_RANGE_DATE_SELECTED = "arg_range_date_selected"
+        const val ARG_MIN_SELECTABLE_DATE_FROM_TODAY = "arg_min_selectable_date_from_today"
 
         fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
                         rangeDateSelected: Long, minDateLabel: String,
-                        maxDateLabel: String): SelectionRangeCalendarWidget =
+                        maxDateLabel: String, minSelectableDateFromToday: Int = 0): SelectionRangeCalendarWidget =
                 SelectionRangeCalendarWidget().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_MIN_DATE, minDate)
@@ -248,6 +252,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
                         putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
                         putString(ARG_MIN_DATE_LABEL, minDateLabel)
                         putString(ARG_MAX_DATE_LABEL, maxDateLabel)
+                        putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
                     }
                 }
     }

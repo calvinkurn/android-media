@@ -329,8 +329,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
+        var minSelectDateFromToday = 0
+        if (!remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true)) minSelectDateFromToday = 1
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, 1, 30,
-                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label))
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
         hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
