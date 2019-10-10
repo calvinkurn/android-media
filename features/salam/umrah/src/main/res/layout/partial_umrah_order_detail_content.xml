@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/umrah_order_detail_detail_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.hotel.common.presentation.widget.TicketView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tv_anchor1="@+id/ticket_head"
+        app:tv_circleRadius="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_detail_title">
+
+        <LinearLayout
+            android:id="@+id/ticket_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_hotel_ticket_top"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <LinearLayout
+                android:id="@+id/container_rating_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_property_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                app:fontSize="titleBig"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium"
+                tools:text="Avissa Suites" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_property_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                app:fontSize="micro"
+                tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_property_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                app:fontSize="micro"
+                tools:text="No. Telepon: 0231 204464" />
+
+        </LinearLayout>
+
+    </com.tokopedia.hotel.common.presentation.widget.TicketView>
+
+</android.support.constraint.ConstraintLayout>
