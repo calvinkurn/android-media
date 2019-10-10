@@ -9,18 +9,43 @@
     android:background="@color/white">
 
     <FrameLayout
+        android:id="@+id/feed_background_frame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_150"
-        android:background="@drawable/gradient_profile"/>
+        android:layout_height="@dimen/dp_200"
+        app:layout_scrollFlags="scroll|snap">
+
+        <ImageView
+            android:id="@+id/feed_background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_feed"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
+    </FrameLayout>
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/feed_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:elevation="0dp">
 
-        <com.tokopedia.searchbar.HomeMainToolbar
+        <View
+            android:visibility="invisible"
+            app:layout_collapseMode="pin"
+            android:id="@+id/status_bar_bg"
+            android:background="@color/green_600"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|snap"
+            android:layout_height="25dp"/>
+
+        <com.tokopedia.searchbar.FeedMainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,6 +72,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
@@ -78,7 +104,8 @@
             android:id="@+id/layout_grey_popup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black_54">
+            android:background="@color/black_54"
+            android:visibility="gone">
 
         </FrameLayout>
 
