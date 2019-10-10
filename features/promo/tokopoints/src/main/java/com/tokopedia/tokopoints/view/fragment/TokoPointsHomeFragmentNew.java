@@ -133,6 +133,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
+        if (getArguments() != null) {
+            userLoggedInStatus = getArguments().getBoolean("USER_IS_LOGGEDIN");
+        }
         View view = inflater.inflate(R.layout.tp_fragment_homepage_new, container, false);
         initViews(view);
         hideStatusBar();
@@ -372,14 +375,22 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.view_point_bottom
                 || source.getId() == R.id.view_point) {
-            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            if (userLoggedInStatus) {
+                startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            } else {
+                getActivity().startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty) {
-            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            if (userLoggedInStatus) {
+                startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            } else {
+                getActivity().startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -410,8 +421,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
-        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_arrow_right_grey), null);
+        if (userLoggedInStatus) {
+            mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                    (getActivity(), R.drawable.ic_arrow_right_grey), null);
+        }
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);

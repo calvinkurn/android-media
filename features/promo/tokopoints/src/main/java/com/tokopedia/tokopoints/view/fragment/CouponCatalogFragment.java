@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
@@ -40,6 +43,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.TkpdWebView;
 
 import java.util.Arrays;
@@ -71,6 +75,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private String mCouponName;
     public CountDownTimer mTimer;
     private PerformanceMonitoring fpmDetailTokopoint;
+    UserSession mUserSession;
+    private CatalogsValueEntity catalogsValueEntity;
+    private TextView pointValueText;
+    Typography pointValue;
+    Typography textUserPoint;
+    String code;
+    String userPoints;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -83,6 +94,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mUserSession = new UserSession(getAppContext());
         fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -665,8 +677,11 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         btnAction2.setOnClickListener(v -> {
             //call validate api the show dialog
-            mPresenter.startValidateCoupon(data);
-
+            if (mUserSession.isLoggedIn()) {
+                mPresenter.startValidateCoupon(data);
+            } else {
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), 2);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,

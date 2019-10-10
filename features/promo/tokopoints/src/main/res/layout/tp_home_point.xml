@@ -5,6 +5,18 @@
     android:layout_height="@dimen/dp_48"
     android:background="@color/white">
 
+    <TextView
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:id="@+id/tvNonLoginCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/img_points_stack"
         android:layout_width="@dimen/dp_24"
@@ -28,7 +40,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_point"
-        android:textColor="@color/tp_loyalty_color"
+        android:textColor="#f531353b"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
         app:layout_constraintStart_toEndOf="@+id/img_points_stack"
@@ -90,7 +102,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_loyalty"
-        android:textColor="@color/tp_loyalty_color"
+        android:textColor="#f531353b"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
         app:layout_constraintTop_toTopOf="parent" />
