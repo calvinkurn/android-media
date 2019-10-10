@@ -35,14 +35,14 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected Fragment getNewFragment() {
         Bundle loginStatusBundle = new Bundle();
-        if (mUserSession.isLoggedIn()) {
-            TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
-            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", mUserSession.isLoggedIn());
+        boolean isLogin = mUserSession.isLoggedIn();
+        TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
+        if (isLogin) {
+            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", isLogin);
             tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
             return tokoPointsHomeFragmentNew;
         } else {
-            TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
-            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", mUserSession.isLoggedIn());
+            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", isLogin);
             tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
             return tokoPointsHomeFragmentNew;
         }
@@ -67,7 +67,7 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode==RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
             inflateFragment();
         } else
             finish();
@@ -83,7 +83,7 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected void onResume() {
         super.onResume();
-        if (mUserSession.isLoggedIn()){
+        if (mUserSession.isLoggedIn()) {
             inflateFragment();
         }
     }

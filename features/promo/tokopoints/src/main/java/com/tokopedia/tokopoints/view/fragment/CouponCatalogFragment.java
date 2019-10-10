@@ -71,6 +71,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private static final String LIST_TAG_START = "<li>";
     private static final String LIST_TAG_END = "</li>";
     private static final int MAX_POINTS_TO_SHOW = 4;
+    private static final int REQUEST_CODE_LOGIN = 1;
     private ViewFlipper mContainerMain;
     private ServerErrorView serverErrorView;
     private Subscription mSubscriptionCouponTimer;
@@ -436,7 +437,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        userPoints=point;
+        userPoints = point;
         textUserPoint = getView().findViewById(R.id.text_point_value);
         textUserPoint.setText(point);
     }
@@ -686,7 +687,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             if (mUserSession.isLoggedIn()) {
                 mPresenter.startValidateCoupon(data);
             } else {
-                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), 2);
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -802,7 +803,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) {
+        if (requestCode == REQUEST_CODE_LOGIN) {
             pointValueText.setText(getResources().getString(R.string.points_saya));
             mPresenter.getCatalogDetail(code);
             mPresenter.startValidateCoupon(catalogsValueEntity);

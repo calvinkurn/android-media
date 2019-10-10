@@ -42,7 +42,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_point"
-        android:textColor="#f531353b"
+        android:textColor="@color/tp_loyalty_color"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
         app:layout_constraintStart_toEndOf="@+id/img_points_stack"
@@ -104,7 +104,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_loyalty"
-        android:textColor="#f531353b"
+        android:textColor="@color/tp_loyalty_color"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
         app:layout_constraintTop_toTopOf="parent" />
