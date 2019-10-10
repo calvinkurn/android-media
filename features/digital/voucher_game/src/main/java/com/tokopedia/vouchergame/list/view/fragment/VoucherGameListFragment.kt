@@ -105,7 +105,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                         }
                     }
                     is Fail -> {
-                        promo_banner.visibility = View.GONE
                     }
                 }
             }
@@ -221,6 +220,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
 
             promo_banner.buildView()
+            promo_banner.visibility = View.VISIBLE
         } else {
             promo_banner.visibility = View.GONE
         }
