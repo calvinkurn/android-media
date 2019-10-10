@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -34,6 +35,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -56,6 +58,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -143,7 +147,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        String code = getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE);
+        code = getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE);
         mPresenter.getCatalogDetail(code);
     }
 
@@ -201,6 +205,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public void populateDetail(CatalogsValueEntity data) {
+        catalogsValueEntity = data;
         setCatalogToUi(data);
     }
 
@@ -431,7 +436,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        Typography textUserPoint = getView().findViewById(R.id.text_point_value);
+        userPoints=point;
+        textUserPoint = getView().findViewById(R.id.text_point_value);
         textUserPoint.setText(point);
     }
 
@@ -482,7 +488,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         Typography quota = getView().findViewById(R.id.text_quota_count);
-        Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
+        pointValue = getView().findViewById(R.id.text_point_value_coupon);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
 
@@ -690,6 +696,10 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         });
 
 
+        pointValueText = getView().findViewById(R.id.text_point_value_label);
+        if (!mUserSession.isLoggedIn()) {
+            pointValueText.setText("Masuk untuk tukar Points");
+        }
         //start catalog status timer
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
@@ -787,5 +797,15 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
                 .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
                 .commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            pointValueText.setText(getResources().getString(R.string.points_saya));
+            mPresenter.getCatalogDetail(code);
+            mPresenter.startValidateCoupon(catalogsValueEntity);
+        }
     }
 }
