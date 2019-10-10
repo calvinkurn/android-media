@@ -177,7 +177,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
 
-        bottom_action_view.visible()
         bottom_action_view.visibility = View.VISIBLE
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
