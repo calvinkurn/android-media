@@ -128,7 +128,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         nextYear.add(Calendar.YEAR, rangeYear)
 
         val yesterday = Calendar.getInstance()
-        yesterday.add(Calendar.DATE, 1)
+        yesterday.add(Calendar.DATE, 0)
         yesterday.set(Calendar.HOUR_OF_DAY, 0)
         yesterday.set(Calendar.MINUTE, 0)
         yesterday.set(Calendar.SECOND, 0)
