@@ -249,6 +249,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             emptyModel.content = getString(R.string.hotel_search_filter_empty_subtitle)
             emptyModel.buttonTitle = getString(R.string.hotel_search_filter_empty_button)
         }
+        sortMenu.dismiss()
 
         return emptyModel
     }
