@@ -167,4 +167,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
 
+    public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
+    public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
 }

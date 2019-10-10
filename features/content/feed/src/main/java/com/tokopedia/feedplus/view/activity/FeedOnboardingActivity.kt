@@ -17,7 +17,6 @@ import com.tokopedia.feedplus.view.fragment.FeedOnboardingFragment
 class FeedOnboardingActivity : BaseSimpleActivity() {
 
     object DeeplinkIntents {
-        @DeepLink(ApplinkConst.INTEREST_PICK)
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()

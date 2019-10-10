@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
@@ -56,6 +57,7 @@ class WebSocketViewModel
 
             easyWS?.let {
                 for (response in it.textChannel) {
+                    debug(TAG," Response: $response")
                     when(response.getCode()) {
                         EVENT_TOPCHAT_REPLY_MESSAGE ->  {
                             val chat = Success(mapToIncomingChat(response))
@@ -79,8 +81,8 @@ class WebSocketViewModel
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
-        val message = responseData.message.censoredReply.trim()
-        val time = responseData.message.timeStampUnix
+        val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
+        val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
 
         val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),
@@ -97,15 +99,15 @@ class WebSocketViewModel
     private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
+        val msgId = responseData?.msgId.toString()
 
         val contact = ItemChatAttributesContactPojo(
-                responseData.fromUid.toString(),
-                responseData.fromRole,
+                responseData?.fromUid.toString(),
+                responseData?.fromRole.toString(),
                 "",
-                responseData.from,
+                responseData?.from.toString(),
                 0,
-                responseData.fromRole,
+                responseData?.fromRole.toString(),
                 ""
         )
 

@@ -11,6 +11,7 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -19,6 +20,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -101,6 +105,43 @@ class ChatListActivity : BaseTabActivity()
         initTabLayout()
         setObserver()
         initData()
+        initOnBoarding()
+    }
+
+    private fun initOnBoarding() {
+        if (!userSession.hasShop()) return
+        tabLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            if (!isOnBoardingAlreadyShown())  {
+                showOnBoarding()
+            }
+        }
+    }
+
+    private fun showOnBoarding() {
+        if (tabLayout.childCount < 0) return
+        val tabViewGroup = tabLayout.getChildAt(0) as ViewGroup
+        if (tabViewGroup.childCount < 2) return
+
+        val sellerTab = tabViewGroup.getChildAt(0)
+        val buyerTab = tabViewGroup.getChildAt(1)
+        val tutorials = arrayListOf(
+                CoachMarkItem(
+                        sellerTab,
+                        getString(R.string.coach_tab_title_seller),
+                        getString(R.string.coach_tab_description_seller)
+                ),
+                CoachMarkItem(
+                        buyerTab,
+                        getString(R.string.coach_tab_title_buyer),
+                        getString(R.string.coach_tab_description_buyer)
+                )
+        )
+        CoachMark().show(this@ChatListActivity, TAG_ONBOARDING, tutorials)
+        CoachMarkPreference.setShown(this, TAG_ONBOARDING, true)
+    }
+
+    private fun isOnBoardingAlreadyShown(): Boolean {
+        return CoachMarkPreference.hasShown(this, TAG_ONBOARDING)
     }
 
     private fun setObserver() {
@@ -126,7 +167,9 @@ class ChatListActivity : BaseTabActivity()
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            if(tabList.size > 1) {
+                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            }
                             setNotificationCounterOnTab()
                         }
                     }
@@ -187,15 +230,15 @@ class ChatListActivity : BaseTabActivity()
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
         debug(TAG, incomingChatWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingChatWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
         debug(TAG, incomingTypingWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingTypingWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
     private fun determineFragmentByTag(tag: String?): ChatListFragment {
@@ -334,6 +377,8 @@ class ChatListActivity : BaseTabActivity()
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
         webSocketViewModel.clear()
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        chatNotifCounterViewModel.clear()
     }
 
     object DeeplinkIntent {
@@ -347,6 +392,7 @@ class ChatListActivity : BaseTabActivity()
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
         const val TAG = "ChatListActivity"
+        private val TAG_ONBOARDING = ChatListActivity::class.java.name + ".OnBoarding"
         fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
     }
 
