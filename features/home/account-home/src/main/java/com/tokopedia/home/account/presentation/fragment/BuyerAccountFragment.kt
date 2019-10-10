@@ -32,6 +32,8 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 
@@ -92,6 +94,13 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         ))
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         scrollToTop()
@@ -102,7 +111,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun getScreenName(): String {
-        return TAG
+        return String.format("/%s/%s",
+                AccountConstants.Analytics.USER,
+                AccountConstants.Analytics.BELI)
     }
 
     override fun loadBuyerData(model: BuyerViewModel?) {

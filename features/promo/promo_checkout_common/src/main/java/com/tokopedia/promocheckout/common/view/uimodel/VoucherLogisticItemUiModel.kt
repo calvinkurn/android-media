@@ -12,14 +12,16 @@ data class VoucherLogisticItemUiModel(
         var couponAmount: String = "",
         var cashbackAmount: Int = 0,
         var discountAmount: Int = 0,
-        var message: MessageUiModel = MessageUiModel()) : Parcelable {
+        var message: MessageUiModel = MessageUiModel(),
+        var couponAmountRaw: Int = 0) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
             source.readString(),
             source.readInt(),
             source.readInt(),
-            source.readParcelable(MessageUiModel::class.java.classLoader)
+            source.readParcelable(MessageUiModel::class.java.classLoader),
+            source.readInt()
     )
 
     override fun describeContents() = 0
@@ -31,6 +33,7 @@ data class VoucherLogisticItemUiModel(
         writeInt(cashbackAmount)
         writeInt(discountAmount)
         writeParcelable(message, flags)
+        writeInt(couponAmountRaw)
     }
 
     companion object {

@@ -132,6 +132,11 @@ public class AccountConstants {
 
         public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
         public static final String ITEM_POWER_MERCHANT = "Power Merchant";
+        public static final String DATA_DIMENSION_83 = "dimension83";
+        public static final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
+
+        public static final String JUAL = "jual";
+        public static final String BELI = "beli";
 
         public static final String EVENT_CATEGORY_AKUN_PEMBELI = "akun saya pembeli";
         public static final String EVENT_ACTION_CLICK_AVATAR = "click - profile avatar";

@@ -10,6 +10,7 @@ import com.tokopedia.filter.newdynamicfilter.DynamicFilterDetailGeneralActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterOfferingActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterRatingActivity;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -23,18 +24,18 @@ import rx.schedulers.Schedulers;
 public class FilterDetailActivityRouter {
 
     public static void launchDetailActivity(AppCompatActivity activity, Filter filter) {
-        launchDetailActivity(activity, filter, false, "");
+        launchDetailActivity(activity, filter, false, null);
     }
 
     public static void launchDetailActivity(AppCompatActivity activity,
-                                            Filter filter, boolean isUsingTracking, String trackingPrefix) {
+                                            Filter filter, boolean isUsingTracking, FilterTrackingData trackingData) {
         if (filter.isColorFilter()) {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
 
         } else if (filter.isOfferingFilter()) {
             DynamicFilterOfferingActivity.Companion
@@ -42,7 +43,7 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
 
         } else if (filter.isRatingFilter()) {
             DynamicFilterRatingActivity
@@ -50,7 +51,7 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
 
         } else if (filter.isBrandFilter()) {
             DynamicFilterDetailBrandActivity
@@ -58,23 +59,23 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
 
         } else if (filter.isLocationFilter()) {
-            launchLocationFilterPage(activity, filter, isUsingTracking, trackingPrefix);
+            launchLocationFilterPage(activity, filter, isUsingTracking, trackingData);
         } else {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
         }
     }
 
     private static void launchLocationFilterPage(final AppCompatActivity activity,
                                                  final Filter filter,
-                                                 final boolean isUsingTracking, final String trackingPrefix) {
+                                                 final boolean isUsingTracking, final FilterTrackingData trackingData) {
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -100,7 +101,7 @@ public class FilterDetailActivityRouter {
                         .moveTo(activity,
                                 filter.getTitle(),
                                 filter.getSearch().getSearchable() == 1,
-                                filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
+                                filter.getSearch().getPlaceholder(), isUsingTracking, trackingData);
             }
         });
     }
@@ -110,7 +111,7 @@ public class FilterDetailActivityRouter {
                                               String defaultCategoryRootId,
                                               String defaultCategoryId) {
         launchCategoryActivity(activity, filter,
-                defaultCategoryRootId, defaultCategoryId, false, "");
+                defaultCategoryRootId, defaultCategoryId, false, null);
     }
 
     public static void launchCategoryActivity(AppCompatActivity activity,
@@ -118,13 +119,13 @@ public class FilterDetailActivityRouter {
                                               String defaultCategoryRootId,
                                               String defaultCategoryId,
                                               boolean isUsingTracking,
-                                              String trackingPrefix) {
+                                              FilterTrackingData trackingData) {
         DynamicFilterCategoryActivity
                 .moveTo(activity,
                         filter.getOptions(),
                         defaultCategoryRootId,
                         defaultCategoryId,
                         isUsingTracking,
-                        trackingPrefix);
+                        trackingData);
     }
 }

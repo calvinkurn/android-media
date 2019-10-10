@@ -103,6 +103,8 @@ public interface ProductListSectionContract {
         void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
 
         void hideErrorMessage();
+
+        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

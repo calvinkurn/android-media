@@ -12,6 +12,8 @@ import javax.inject.Inject;
 public class FlightPassengerInfoValidator {
 
     private static final int MAX_PASSENGER_NAME_LENGTH = 48;
+    private static final int MAX_PASSENGER_FIRST_NAME_LENGTH = 30;
+    private static final int MAX_PASSENGER_LAST_NAME_LENGTH = 18;
     private static final int MIN_PASSENGER_LAST_NAME = 2;
     private static final String REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$";
     private static final String REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$";
@@ -42,6 +44,14 @@ public class FlightPassengerInfoValidator {
 
     public boolean validateNameIsMoreThanMaxLength(String firstName, String lastName) {
         return firstName.length() + lastName.length() > MAX_PASSENGER_NAME_LENGTH;
+    }
+
+    public boolean validateFirstNameIsMoreThanMaxLength(String firstName) {
+        return firstName.length() > MAX_PASSENGER_FIRST_NAME_LENGTH;
+    }
+
+    public boolean validateLastNameIsMoreThanMaxLength(String lastName) {
+        return lastName.length() > MAX_PASSENGER_LAST_NAME_LENGTH;
     }
 
     public boolean validateLastNameIsLessThanMinLength(String lastName) {

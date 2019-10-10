@@ -108,7 +108,7 @@ class FollowRecomAdapter(
         itemList[itemIndex] = (itemList[itemIndex] as FollowRecomCardViewModel).copy(
                 isFollowed = action == FollowRecomAction.FOLLOW
         )
-        notifyItemChanged(itemIndex)
+        notifyItemChanged(itemIndex, Unit)
         listener.onFollowStateChanged(getFollowedCount())
     }
 
@@ -144,15 +144,24 @@ class FollowRecomAdapter(
         private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
 
         fun bind(element: FollowRecomCardViewModel, position: Int) {
+            reset()
             initView(element, position)
             initViewListener(element)
         }
 
         fun onViewRecycled() {
+            reset()
+        }
+
+        private fun reset() {
             ivImage1.clearImage()
             ivImage2.clearImage()
             ivImage3.clearImage()
             ivProfile.clearImage()
+
+            ivImage1.setImageDrawable(null)
+            ivImage2.setImageDrawable(null)
+            ivImage3.setImageDrawable(null)
             resetListener()
         }
 
@@ -184,7 +193,7 @@ class FollowRecomAdapter(
             }
 
             setBadge(element.badgeUrl)
-            setButtonFollow(element.isFollowed)
+            setButtonFollow(element.isFollowed, element.textFollowTrue, element.textFollowFalse)
         }
 
         private fun initViewListener(element: FollowRecomCardViewModel) {
@@ -223,13 +232,13 @@ class FollowRecomAdapter(
             }
         }
 
-        private fun setButtonFollow(isFollowed: Boolean) {
+        private fun setButtonFollow(isFollowed: Boolean, actionTrue: String, actionFalse: String) {
             btnFollow.apply {
                 if (isFollowed) {
-                    text = itemView.context.getString(R.string.following)
+                    text = actionFalse
                     buttonVariant = 2
                 } else {
-                    text = itemView.context.getString(R.string.action_follow_english)
+                    text = actionTrue
                     buttonVariant = 1
                 }
             }

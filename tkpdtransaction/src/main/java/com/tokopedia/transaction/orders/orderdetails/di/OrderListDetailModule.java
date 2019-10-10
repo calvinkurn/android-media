@@ -19,10 +19,10 @@ import dagger.Provides;
 import okhttp3.Interceptor;
 
 @Module
-class OrderListDetailModule {
+public class OrderListDetailModule {
 
     @Provides
-    PostCancelReasonUseCase providePostCancelUseCase(@ApplicationContext Context context){
+    PostCancelReasonUseCase providePostCancelUseCase(@ApplicationContext Context context) {
         List<Interceptor> interceptorList = new ArrayList<>(2);
         interceptorList.add(new TkpdOldAuthInterceptor(context,
                 (NetworkRouter) context, new UserSession(context)));
@@ -32,7 +32,7 @@ class OrderListDetailModule {
     }
 
     @Provides
-    FinishOrderUseCase provideFinishOrderUseCasee(@ApplicationContext Context context){
+    FinishOrderUseCase provideFinishOrderUseCasee(@ApplicationContext Context context) {
         List<Interceptor> interceptorList = new ArrayList<>(2);
         interceptorList.add(new TkpdOldAuthInterceptor(context,
                 (NetworkRouter) context, new UserSession(context)));
