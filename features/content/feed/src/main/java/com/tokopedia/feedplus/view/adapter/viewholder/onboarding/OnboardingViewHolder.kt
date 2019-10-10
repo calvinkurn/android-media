@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.onboarding
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
