@@ -130,13 +130,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                         setCourierRatesBottomSheet(it.data)
                     else {
                         val courierBtn = findViewById<Button>(R.id.courier_btn)
-                        showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                        showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
                             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                                     TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                                     TradeInGTMConstants.ACTION_CLICK_PILIH_KURIR,
                                     "")
-                            showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                            showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         }
                     }
                 }
@@ -165,12 +165,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
             when (it) {
                 is ScheduleTimeError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
                     }
                 }
                 is CourierPriceError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
                     }
                 }
@@ -179,7 +179,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                             TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.FAILURE)
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
@@ -218,13 +218,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierLabel.text = getString(R.string.choose_courier)
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         retrieverTimeLabel.text = getString(R.string.retrieval_time)
         retrieverTime.hide()
         retrieverTimeButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         isCourierSet = false
         isTimeSet = false
     }

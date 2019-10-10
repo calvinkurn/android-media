@@ -332,7 +332,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         });
                         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
                             showMessageWithAction(getString(R.string.tradein_permission_setting),
-                                    getString(R.string.title_ok), (v) -> {
+                                    getString(com.tokopedia.abstraction.R.string.title_ok), (v) -> {
                                         final Intent intent = new Intent();
                                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -341,7 +341,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                                     });
                         } else {
                             showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
-                                    getString(R.string.title_ok), (v) -> requestPermission());
+                                    getString(com.tokopedia.abstraction.R.string.title_ok), (v) -> requestPermission());
                         }
                         return;
                     }
@@ -362,7 +362,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     private void showDeviceNotElligiblePopup(int messageStringId) {
-        int greenColor = getResources().getColor(R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

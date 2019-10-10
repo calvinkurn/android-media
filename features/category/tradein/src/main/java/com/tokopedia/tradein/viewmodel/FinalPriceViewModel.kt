@@ -61,7 +61,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
-                warningMessage.value = applicationInstance.getString(R.string.default_request_error_timeout)
+                warningMessage.value = applicationInstance.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse?) {

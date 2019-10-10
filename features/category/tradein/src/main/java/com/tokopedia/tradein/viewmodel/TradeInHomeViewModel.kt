@@ -138,7 +138,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationInstance.resources, R.raw.gql_validate_tradein)
+            val query = GraphqlHelper.loadRawString(applicationInstance.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
             val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {
