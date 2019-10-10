@@ -1,14 +1,9 @@
 package com.tokopedia.home.account.presentation.presenter
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import android.content.Context
 import android.preference.PreferenceManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.network.util.NetworkClient
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.*
 import com.tokopedia.home.account.domain.SetUserProfileSafeModeUseCase
@@ -23,27 +18,14 @@ class SettingsPresenter(var context: Context?,
                         var setUserProfileSafeModeUseCase: SetUserProfileSafeModeUseCase?) : BaseDaggerPresenter<SettingOptionsView>() {
 
     private lateinit var userSession: UserSessionInterface
-    private var graphqlRepository: GraphqlRepository
 
-    var adultAgeVerifiedLiveData: MutableLiveData<Boolean>? = MutableLiveData()
-    var savedSafeModeValue: MutableLiveData<Boolean>? = MutableLiveData()
+    private val savedSafeModeValue: Boolean
+        get() {
+            val settings = PreferenceManager.getDefaultSharedPreferences(context)
+            return settings.getBoolean(context?.getString((R.string.pref_safe_mode)), false)
+        }
 
-    init {
-        adultAgeVerifiedLiveData?.observe(context as LifecycleOwner, Observer {
-            view.refreshSettingOptionsList()
-            if (it!!)
-                getAndSaveSafeModeValue()
-        })
-
-        graphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val savedSettingValue = settings.getBoolean(context?.getString((R.string.pref_safe_mode)), false)
-
-        savedSafeModeValue?.postValue(savedSettingValue)
-        savedSafeModeValue?.observe(context as LifecycleOwner, Observer {
-            view.refreshSafeSearchOption()
-        })
-    }
+    var adultAgeVerified: Boolean = false
 
     fun verifyUserAge() {
         if (getUserLoginState().isLoggedIn)
@@ -64,21 +46,33 @@ class SettingsPresenter(var context: Context?,
         profileDobResponse.let {
             if (it.isDobVerified) {
                 if (it.isAdult || it.age >= minimumAdultAge) {
-                    adultAgeVerifiedLiveData?.postValue(true)
+                    adultAgeVerified = true
+                    showSafeModeOption()
                 }
             }
         }
     }
 
-    fun getAndSaveSafeModeValue() {
+    private fun showSafeModeOption() {
+        if (view != null)
+            view.refreshSettingOptionsList()
+        getAndSaveSafeModeValue()
+    }
+
+    private fun getAndSaveSafeModeValue() {
         userProfileSafeModeUseCase?.executeQuerySafeMode(
                 { (profileSettingResponse) ->
                     saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, profileSettingResponse.safeMode)
-                    savedSafeModeValue?.postValue(profileSettingResponse.safeMode)
+                    refreshSafeModeSwitch()
                 },
                 { throwable ->
                     throwable.printStackTrace()
                 })
+    }
+
+    private fun refreshSafeModeSwitch() {
+        if (view != null)
+            view.refreshSafeSearchOption()
     }
 
     private fun getUserLoginState(): UserSessionInterface {
@@ -89,12 +83,12 @@ class SettingsPresenter(var context: Context?,
     }
 
     fun onClickAcceptButton() {
-        val savedValue: Boolean = !savedSafeModeValue?.value!!
+        val savedValue: Boolean = !savedSafeModeValue
         setUserProfileSafeModeUseCase?.executeQuerySetSafeMode(
                 { (userProfileSettingUpdate) ->
                     if (userProfileSettingUpdate.isSuccess) {
                         saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, savedValue)
-                        savedSafeModeValue?.postValue(savedValue)
+                        refreshSafeModeSwitch()
                     }
                 },
                 { throwable ->

@@ -15,6 +15,11 @@ import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
 
+    companion object {
+        private const val STATUS_AGREE = "setuju"
+        private const val STATUS_DENY = "batal"
+    }
+
     private lateinit var arHomeViewModel: ARHomeViewModel
     private var notAdult = 11
     private var notVerified = 22
@@ -23,7 +28,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var selection = 0
 
     override fun clickAccept() {
-        sendGeneralEvent("setuju")
+        sendGeneralEvent(STATUS_AGREE)
         when (selection) {
             notLogin -> {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
@@ -72,7 +77,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickDeny() {
-        sendGeneralEvent("batal")
+        sendGeneralEvent(STATUS_DENY)
         when (selection) {
             notLogin -> {
                 sendGeneralEvent(eventClick,

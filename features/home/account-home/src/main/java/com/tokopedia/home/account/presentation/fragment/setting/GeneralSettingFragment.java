@@ -188,9 +188,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true));
 
-        if (settingsPresenter.getAdultAgeVerifiedLiveData() != null
-                && settingsPresenter.getAdultAgeVerifiedLiveData().getValue() != null
-                && settingsPresenter.getAdultAgeVerifiedLiveData().getValue())
+        if (settingsPresenter.getAdultAgeVerified())
             settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
