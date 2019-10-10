@@ -15,7 +15,6 @@
             layout="@layout/layout_holdwithdrawl_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_scrollFlags="scroll" />
 
         <include
