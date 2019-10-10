@@ -118,4 +118,12 @@ public class PaymentData {
     public StackedPromos getStackedPromos() {
         return stackedPromos;
     }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 }

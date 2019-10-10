@@ -41,6 +41,7 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
+    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 
@@ -76,8 +77,8 @@ public class PurchaseTracking extends TrackingUtils {
         ecommerceBundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
         ecommerceBundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
         ecommerceBundle.putString(Purchase.PAYMENT_TYPE, purchase.getPaymentType());
-        ecommerceBundle.putString("shopId", purchase.getShopId());
-        ecommerceBundle.putString("shipmentOption", purchase.getLogisticType());
+        ecommerceBundle.putString(Purchase.SHOP_ID, purchase.getShopId());
+        ecommerceBundle.putString(Purchase.LOGISTIC_TYPE, purchase.getLogisticType());
         ecommerceBundle.putString(Purchase.CURRENT_SITE, purchase.getCurrentSite());
         ecommerceBundle.putString(Purchase.USER_ID, purchase.getUserId());
         ecommerceBundle.putString(FirebaseAnalytics.Param.AFFILIATION, purchase.getAffiliation());
@@ -88,7 +89,7 @@ public class PurchaseTracking extends TrackingUtils {
         ecommerceBundle.putFloat(FirebaseAnalytics.Param.SHIPPING, shipping == null ? 0 : Float.parseFloat(((String) shipping)));
         ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
         ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, purchase.getCouponCode());
-        ecommerceBundle.putParcelableArrayList("items", purchaseBundlePair.getSecond().getParcelableArrayList("products"));
+        ecommerceBundle.putParcelableArrayList(ITEMS, purchaseBundlePair.getSecond().getParcelableArrayList("products"));
         TrackApp.getInstance().getGTM().pushEECommerce(PurchaseTracking.TRANSACTION, ecommerceBundle);
         TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
     }
