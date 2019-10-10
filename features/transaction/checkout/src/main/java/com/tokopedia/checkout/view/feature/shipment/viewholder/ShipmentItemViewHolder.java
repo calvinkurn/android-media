@@ -992,7 +992,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
         tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
-        if (voucherLogisticItemUiModel != null) {
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
                 tvShippingFeePrice.setText(tvShippingFeePrice.getContext().getString(R.string.label_free_shipping));
             } else {
