@@ -190,6 +190,11 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     @Override
+    protected int getProgressBarId() {
+        return R.id.progress_bar_layout;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return null;
     }

@@ -420,4 +420,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     override fun getRootViewId(): Int {
         return R.id.root_view
     }
+
+    override fun getProgressBarId(): Int {
+        return R.id.progress_bar_layout
+    }
 }

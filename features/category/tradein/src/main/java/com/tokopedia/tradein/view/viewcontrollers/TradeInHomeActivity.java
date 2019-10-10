@@ -309,6 +309,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
+    protected int getProgressBarId() {
+        return R.id.progress_bar_layout;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return null;
     }

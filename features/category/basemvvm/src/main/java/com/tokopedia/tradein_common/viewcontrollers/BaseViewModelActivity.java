@@ -51,6 +51,8 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected int getRootViewId();
 
+    abstract protected int getProgressBarId();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,11 +138,11 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     public void showProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
+        getProgressBar().setVisibility(View.VISIBLE);
     }
 
     public void hideProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
+        getProgressBar().setVisibility(View.GONE);
     }
 
     @Override
@@ -164,6 +166,10 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     public View getRootView() {
         return findViewById(getRootViewId());
+    }
+
+    public View getProgressBar() {
+        return findViewById(getProgressBarId());
     }
 
     public int getRequestCode() {
@@ -234,7 +240,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
+        transaction.replace(getRootViewId(), fragment);
         transaction.commit();
     }
 
