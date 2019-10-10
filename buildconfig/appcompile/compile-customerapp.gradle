@@ -66,6 +66,7 @@ include "features:fintech:saldo_details"
 include "features:fintech:tokocash"
 //include "features:fintech:tokocash_no_op"
 include "features:fintech:common_wallet"
+include "features:fintech:wallet"
 
 include "features:home:navigation"
 include "features:home:navigation-common"

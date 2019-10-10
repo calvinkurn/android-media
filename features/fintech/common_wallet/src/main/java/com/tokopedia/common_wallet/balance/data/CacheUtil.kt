@@ -9,9 +9,9 @@ import java.lang.reflect.Type
 
 object CacheUtil {
 
-    val KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE"
-    val KEY_POPUP_INTRO_OVO_CACHE = "INTRO_OVO_CACHE"
-    val FIRST_TIME_POPUP = "NEW_FIRST_TIME_POPUP"
+    const val KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE"
+    const val KEY_POPUP_INTRO_OVO_CACHE = "INTRO_OVO_CACHE"
+    const val FIRST_TIME_POPUP = "NEW_FIRST_TIME_POPUP"
 
     fun convertModelToString(obj: Any, type: Type): String {
         val gson = Gson()
