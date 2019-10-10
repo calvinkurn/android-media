@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -14,6 +13,7 @@
         android:id="@+id/tg_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/umrah_order_detail_detail_title"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,20 +21,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <com.tokopedia.hotel.common.presentation.widget.TicketView
+    <com.tokopedia.salam.umrah.common.presentation.widget.TicketView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tv_anchor1="@+id/ticket_head"
-        app:tv_circleRadius="@dimen/dp_8"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tg_detail_title">
+        app:layout_constraintTop_toBottomOf="@+id/tg_detail_title"
+        app:tv_anchor1="@+id/ticket_head"
+        app:tv_circleRadius="@dimen/dp_8">
 
         <LinearLayout
             android:id="@+id/ticket_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_hotel_ticket_top"
             android:orientation="vertical"
             android:padding="@dimen/dp_16">
 
@@ -51,10 +52,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:gravity="center"
+                android:text="Avissa Suites"
                 app:fontSize="titleBig"
                 app:textViewTheme="lightPrimary"
-                app:weight="medium"
-                tools:text="Avissa Suites" />
+                app:weight="medium" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_property_address"
@@ -62,8 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:gravity="center"
-                app:fontSize="micro"
-                tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
+                android:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat."
+                app:fontSize="micro" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_property_phone"
@@ -71,11 +72,69 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:gravity="center"
-                app:fontSize="micro"
-                tools:text="No. Telepon: 0231 204464" />
+                android:text="No. Telepon: 0231 204464"
+                app:fontSize="micro" />
 
         </LinearLayout>
 
-    </com.tokopedia.hotel.common.presentation.widget.TicketView>
+        <LinearLayout
+            android:id="@+id/ticket_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ticket_head"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_16">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layerType="software" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_guest_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="Nama Tamu"
+                app:fontSize="micro" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_guest_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:text="Muhammad Furqan"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_booking_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="Kode Booking"
+                app:fontSize="micro" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_booking_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:text="XYZABABA110"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium" />
+
+        </LinearLayout>
+
+    </com.tokopedia.salam.umrah.common.presentation.widget.TicketView>
 
 </android.support.constraint.ConstraintLayout>
