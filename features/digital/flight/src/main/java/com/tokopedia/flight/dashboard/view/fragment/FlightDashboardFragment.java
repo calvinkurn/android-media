@@ -165,7 +165,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         returnDateSeparatorView = view.findViewById(com.tokopedia.flight.R.id.separator_date_return);
         bannerLayout = view.findViewById(com.tokopedia.flight.R.id.banner_layout);
         bannerView = view.findViewById(com.tokopedia.flight.R.id.banner);
-        progressBar = view.findViewById(com.tokopedia.common.travel.R.id.progress_bar);
+        progressBar = view.findViewById(com.tokopedia.flight.R.id.progress_bar);
         formContainerLayout = view.findViewById(com.tokopedia.flight.R.id.dashboard_container);
         tickerView = view.findViewById(com.tokopedia.flight.R.id.flight_ticker_view);
 
