@@ -73,7 +73,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
 
 
     public void setVideoThumbNail(String thumbNailUrl, String videoUrl, boolean isFullScreen, CustomVideoPlayerListener customVideoPlayerListener, boolean localFile) {
-        ImageHandler.loadImage(getContext(), thumbNail, thumbNailUrl, R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), thumbNail, thumbNailUrl, com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         this.videoUrl = videoUrl;
         this.isFullScreen = isFullScreen;
         this.isLocalFile = localFile;

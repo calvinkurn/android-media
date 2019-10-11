@@ -357,12 +357,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         submissionResult.getMe().setLiked(isLiked);
         if (isLiked) {
             updateLikeCount(true);
-            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
-            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_wishlist_checked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_wishlist_checked));
         } else {
             updateLikeCount(false);
-            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
-            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_wishlist_unchecked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.design.R.drawable.ic_wishlist_unchecked));
         }
     }
 

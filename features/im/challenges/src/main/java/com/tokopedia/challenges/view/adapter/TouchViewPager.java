@@ -21,9 +21,9 @@ public class TouchViewPager extends ViewPager {
     }
 
     private void applyAttrs(AttributeSet attrs) {
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TouchViewPager);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, com.tokopedia.design.R.styleable.TouchViewPager);
         try {
-            allowPageSwitching = styledAttributes.getBoolean(R.styleable.TouchViewPager_can_swipe, true);
+            allowPageSwitching = styledAttributes.getBoolean(com.tokopedia.design.R.styleable.TouchViewPager_can_swipe, true);
         } finally {
             styledAttributes.recycle();
         }

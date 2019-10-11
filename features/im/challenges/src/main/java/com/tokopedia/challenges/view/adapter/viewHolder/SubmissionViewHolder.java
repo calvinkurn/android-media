@@ -79,7 +79,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
 
         ImageHandler.loadImage(context, submissionImage,
                 Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()),
-                R.color.grey_1100, R.color.grey_1100);
+                com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (submissionResult.getMe() != null) {
             setLikes(submissionResult.getMe().isLiked());
@@ -127,7 +127,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
     }
 
     private void setUserData(User user) {
-        ImageHandler.loadImageCircle2(context, ivUserAvatar, user.getThumbnailImage(), R.drawable.ic_big_notif_customerapp);
+        ImageHandler.loadImageCircle2(context, ivUserAvatar, user.getThumbnailImage(), com.tokopedia.design.R.drawable.ic_big_notif_customerapp);
         tvParticipantUserName.setText(user.getTitle());
     }
 
@@ -135,9 +135,9 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
         if (((SubmissionResult) itemView.getTag()).getMe() != null) {
             ((SubmissionResult) itemView.getTag()).getMe().setLiked(isLiked);
             if (isLiked) {
-                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_checked));
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),com.tokopedia.design.R.drawable.ic_wishlist_checked));
             } else {
-                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_unchecked));
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),com.tokopedia.design.R.drawable.ic_wishlist_unchecked));
             }
         }
     }

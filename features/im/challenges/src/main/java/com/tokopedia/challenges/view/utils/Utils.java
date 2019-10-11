@@ -212,7 +212,7 @@ public class Utils {
                 tvStatus.setText(context.getResources().getString(R.string.ch_approved));
             }
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
+            tvStatus.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
         } else if (STATUS_DECLINED.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.ch_rejected));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
@@ -225,7 +225,7 @@ public class Utils {
         } else if (STATUS_COMPLETED.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.ch_completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
+            tvStatus.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.black_38));
         } else if (Utils.STATUS_ENCODING.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.ch_pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);

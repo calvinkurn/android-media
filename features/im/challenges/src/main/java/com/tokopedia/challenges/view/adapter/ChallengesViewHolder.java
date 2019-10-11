@@ -57,7 +57,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }
-        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrl(challengesResult.getThumbnailUrl()), R.color.grey_1100);
+        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrl(challengesResult.getThumbnailUrl()), com.tokopedia.design.R.color.grey_1100);
 
         itemView.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, ChallengeDetailsActivity.class);

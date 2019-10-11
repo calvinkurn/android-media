@@ -68,10 +68,10 @@ public class ShareInstagramBottomSheet extends BottomSheets {
     public void initView(View view) {
         ImageView imgShare = view.findViewById(R.id.img_share);
         if (challengeItem != null) {
-            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(challengeItem.getThumbnailUrl()), R.color.grey_1100);
+            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(challengeItem.getThumbnailUrl()), com.tokopedia.design.R.color.grey_1100);
             hastag = challengeItem.getHashTag();
         } else if (submissionResult != null) {
-            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()), R.color.grey_1100);
+            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()), com.tokopedia.design.R.color.grey_1100);
             if (submissionResult.getSharing() != null && submissionResult.getSharing().getSocialTracking() != null && submissionResult.getSharing().getSocialTracking().getInstagram() != null)
                 hastag = submissionResult.getSharing().getSocialTracking().getInstagram().getRequiredText();
         }

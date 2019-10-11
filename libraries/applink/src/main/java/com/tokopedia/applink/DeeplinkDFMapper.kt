@@ -96,7 +96,6 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(CHALLENGE) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalChallenges.CHALLENGE_DETAILS) }, DFM_IM_CHALLENGES, R.string.applink_title_im_challenges))
             add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
             add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
         }

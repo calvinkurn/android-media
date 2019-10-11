@@ -157,7 +157,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
 
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
 
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
@@ -231,7 +231,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             } else {
                 collapsingToolbarLayout.setTitle(" ");
                 setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(),
-                        R.color.white));
+                       com.tokopedia.design.R.color.white));
             }
         });
     }
@@ -283,7 +283,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     public void renderChallengeDetail(Result challengeResult) {
         this.challengeResult = challengeResult;
         ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()),
-                R.color.grey_1100, R.color.grey_1100);
+                com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         if (!TextUtils.isEmpty(challengeResult.getTitle())) {
             challengeTitle.setText(challengeResult.getTitle());
         } else {

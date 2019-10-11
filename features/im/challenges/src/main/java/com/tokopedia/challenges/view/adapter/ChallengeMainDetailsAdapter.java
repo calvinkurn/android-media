@@ -75,7 +75,7 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
         if (viewType == VIEW_CHALLENGE_DETAIL)
             return new ChallengeDetailViewHolder(inflater.inflate(R.layout.layout_challenge_details, parent, false));
         else if (viewType == VIEW_LOADER)
-            return new FooterViewHolder(inflater.inflate(R.layout.loading_layout, parent, false));
+            return new FooterViewHolder(inflater.inflate(com.tokopedia.abstraction.R.layout.loading_layout, parent, false));
         else
             return new SubmissionViewHolder(inflater.inflate(R.layout.submission_layout, parent, false),
                     context, isPastChallenge);

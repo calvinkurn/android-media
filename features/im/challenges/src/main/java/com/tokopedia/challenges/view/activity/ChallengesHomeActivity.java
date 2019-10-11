@@ -105,7 +105,7 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
             toolbar.setElevation(10);
         }
 
-        TabUtil.wrapTabIndicatorToTitle(tabLayout, (int) getResources().getDimension(R.dimen.dp_16), (int) getResources().getDimension(R.dimen.dp_12));
+        TabUtil.wrapTabIndicatorToTitle(tabLayout, (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12));
 
     }
 

@@ -219,7 +219,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ivShareVia.setVisibility(View.VISIBLE);
             }
 
-            ImageHandler.loadImage(context, submissionImage, Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, submissionImage, Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
             if (productItem.getMe() != null) {
                 setLikes(productItem.getMe().isLiked());
@@ -247,9 +247,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (categoryItems.get(getIndex()).getMe() != null) {
                 categoryItems.get(getIndex()).getMe().setLiked(isLiked);
                 if (isLiked) {
-                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_checked));
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,com.tokopedia.design.R.drawable.ic_wishlist_checked));
                 } else {
-                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_unchecked));
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,com.tokopedia.design.R.drawable.ic_wishlist_unchecked));
                 }
             }
         }
