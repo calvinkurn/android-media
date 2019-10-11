@@ -218,7 +218,11 @@ class FeedAnalyticTracker
                 activityId,
                 getPromoViewData(
                         getPromotionsData(
-                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType), "", position))
+                                listOf(getPromotionData(
+                                        activityId,
+                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
+                                        userSessionInterface.name,
+                                        position))
                         )
                 )
         )
@@ -238,7 +242,11 @@ class FeedAnalyticTracker
                 activityId,
                 getPromoClickData(
                         getPromotionsData(
-                                listOf(getPromotionData(activityId, ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType), "", position))
+                                listOf(getPromotionData(
+                                        activityId,
+                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
+                                        userSessionInterface.name,
+                                        position))
                         )
                 )
         )
