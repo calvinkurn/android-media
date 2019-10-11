@@ -83,7 +83,9 @@ public interface HomeContract {
 
         boolean hasGeolocationPermission();
 
-        void setStickyContent(StickyLoginTickerPojo stickyContent);
+        void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
+
+        void hideStickyLogin();
     }
 
     interface Presenter extends CustomerPresenter<View> {

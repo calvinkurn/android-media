@@ -215,10 +215,12 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
+            tvBalanceTokoPoint.visibility = View.GONE
         } else if (element.tokopointsDrawerHomeData == null && !element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener(null)
             tokopointProgressBarLayout.visibility = View.VISIBLE
             tokopointActionContainer.visibility = View.GONE
+            tvBalanceTokoPoint.visibility = View.GONE
         } else {
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE

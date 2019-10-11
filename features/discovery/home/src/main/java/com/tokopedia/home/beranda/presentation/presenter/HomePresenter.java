@@ -32,6 +32,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
@@ -506,6 +507,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+
+        if (stickyLoginUseCase != null) {
+            stickyLoginUseCase.cancelJobs();
+        }
     }
 
     /**
@@ -628,14 +633,20 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void getStickyContent() {
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME);
         stickyLoginUseCase.execute(
-                tickerResponse -> {
-                    getView().setStickyContent(tickerResponse.getResponse());
-                    return Unit.INSTANCE;
-                },
-                throwable -> {
-                    // no op
-                    return Unit.INSTANCE;
+            tickerResponse -> {
+                for (StickyLoginTickerPojo.TickerDetail ticker : tickerResponse.getResponse().getTickers()) {
+                    if (ticker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
+                        getView().setStickyContent(ticker);
+                        return Unit.INSTANCE;
+                    }
                 }
+                getView().hideStickyLogin();
+                return Unit.INSTANCE;
+            },
+            throwable -> {
+                getView().hideStickyLogin();
+                return Unit.INSTANCE;
+            }
         );
     }
 }

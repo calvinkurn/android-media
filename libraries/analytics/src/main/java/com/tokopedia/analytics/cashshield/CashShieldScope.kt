@@ -3,6 +3,7 @@ package com.tokopedia.analytics.cashshield
 import android.content.Context
 import com.cashshield.android.cashshieldclient
 import com.tokopedia.analytics.R
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -28,11 +29,11 @@ class CashShieldScope(private val context: Context): CoroutineScope {
     fun send() {
         if(context != null) {
             try {
-                launch {
+                launchCatchError(coroutineContext, {
                     val cs = cashshieldclient()
                     cs.dedi = true
                     cs.sendSignatureFDS(context, getSessionId(), context.getString(R.string.cashshield_token))
-                }
+                }) { }
             } catch (ignored: Exception) {
 
             }

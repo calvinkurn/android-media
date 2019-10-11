@@ -11,6 +11,7 @@ data class MoneyInScheduleOptionResponse(
     constructor(parcel: Parcel) : this(parcel.readParcelable(ResponseData::class.java.classLoader) as ResponseData)
 
     data class ResponseData(
+            @SerializedName("getPickupScheduleOption")
             val getPickupScheduleOption: GetPickupScheduleOption
     ) : Parcelable {
         constructor(parcel: Parcel) : this(parcel.readParcelable(GetPickupScheduleOption::class.java.classLoader)

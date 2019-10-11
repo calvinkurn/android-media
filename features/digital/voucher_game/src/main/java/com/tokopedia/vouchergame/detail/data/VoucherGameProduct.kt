@@ -30,6 +30,9 @@ class VoucherGameProduct(
                 @SerializedName("price")
                 @Expose
                 val price: String = "",
+                @SerializedName("price_plain")
+                @Expose
+                val pricePlain: String = "",
                 @SerializedName("promo")
                 @Expose
                 val promo: Promo? = Promo(),
