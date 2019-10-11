@@ -90,7 +90,7 @@ public class PurchaseTracking extends TrackingUtils {
         ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
         ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, purchase.getCouponCode());
         ecommerceBundle.putParcelableArrayList(ITEMS, purchaseBundlePair.getSecond().getParcelableArrayList("products"));
-        TrackApp.getInstance().getGTM().pushEECommerce(PurchaseTracking.TRANSACTION, ecommerceBundle);
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle);
         TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
     }
 
