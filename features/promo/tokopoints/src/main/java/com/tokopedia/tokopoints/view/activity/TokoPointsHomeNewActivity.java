@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
@@ -17,16 +16,15 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
-import com.tokopedia.user.session.UserSession;
 
-public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
+import static com.tokopedia.tokopoints.view.util.CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN;
+
+public class TokoPointsHomeNewActivity extends LoginTransitionActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
         toolbar.setVisibility(View.GONE);
         updateTitle(getString(R.string.tp_title_tokopoints));
@@ -35,14 +33,14 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected Fragment getNewFragment() {
         Bundle loginStatusBundle = new Bundle();
-        boolean isLogin = mUserSession.isLoggedIn();
+        boolean isLogin = userSession.isLoggedIn();
         TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
         if (isLogin) {
-            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", isLogin);
+            loginStatusBundle.putBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin);
             tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
             return tokoPointsHomeFragmentNew;
         } else {
-            loginStatusBundle.putBoolean("USER_IS_LOGGEDIN", isLogin);
+            loginStatusBundle.putBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin);
             tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
             return tokoPointsHomeFragmentNew;
         }
@@ -73,7 +71,6 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
             finish();
     }
 
-
     protected void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(this, applink);
@@ -81,11 +78,8 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mUserSession.isLoggedIn()) {
-            inflateFragment();
-        }
+    protected void onLoginStateChanged() {
+        super.onLoginStateChanged();
     }
 
     @Override

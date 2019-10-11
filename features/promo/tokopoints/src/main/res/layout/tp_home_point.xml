@@ -6,9 +6,8 @@
     android:layout_height="@dimen/dp_48"
     android:background="@color/white">
 
-    <TextView
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_4"
         android:id="@+id/tvNonLoginCta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

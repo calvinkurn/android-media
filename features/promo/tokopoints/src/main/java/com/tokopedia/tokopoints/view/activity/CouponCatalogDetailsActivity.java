@@ -9,39 +9,26 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.user.session.UserSession;
-
-import javax.inject.Inject;
 
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
-    private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
-
-    @Inject
-    CouponCatalogPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
     }
 
     @Override
     protected Fragment getNewFragment() {
-            return CouponCatalogFragment.newInstance(getIntent().getExtras());
+        return CouponCatalogFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -84,10 +71,5 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
                     AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
                     AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

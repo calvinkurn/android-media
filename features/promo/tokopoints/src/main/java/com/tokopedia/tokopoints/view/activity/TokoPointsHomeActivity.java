@@ -23,17 +23,13 @@ import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.user.session.UserSession;
 
 @DeepLink(ApplinkConst.TOKOPOINTS)
 public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
-    private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
@@ -66,11 +62,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         tokoPointComponent = DaggerTokoPointComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

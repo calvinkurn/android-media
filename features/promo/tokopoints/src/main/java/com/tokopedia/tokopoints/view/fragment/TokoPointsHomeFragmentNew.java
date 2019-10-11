@@ -78,6 +78,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.tokopoints.view.util.CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN;
+
 /*
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
@@ -155,7 +157,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
         if (getArguments() != null) {
-            userLoggedInStatus = getArguments().getBoolean("USER_IS_LOGGEDIN");
+            userLoggedInStatus = getArguments().getBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN);
         }
         View view = inflater.inflate(R.layout.tp_fragment_homepage_new, container, false);
         initViews(view);
