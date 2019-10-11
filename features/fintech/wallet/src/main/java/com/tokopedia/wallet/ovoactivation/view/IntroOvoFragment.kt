@@ -91,13 +91,13 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
             titleOvo.text = getString(R.string.wallet_announcement_ovo_title)
             descFirstOvo.text = getString(R.string.wallet_announcement_ovo_description)
             descSecondOvo.text = getString(R.string.wallet_announcement_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, com.tokopedia.design.R.drawable.wallet_ic_intro_ovo)
+            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_ovo)
         } else {
             listener.setTitleHeader(getString(R.string.wallet_title_header_activation_ovo))
             titleOvo.text = getString(R.string.wallet_announcement_activation_ovo_title)
             descFirstOvo.text = getString(R.string.wallet_announcement_activation_ovo_description)
             descSecondOvo.text = getString(R.string.wallet_announcement_activation_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, com.tokopedia.design.R.drawable.wallet_ic_intro_activation)
+            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_activation)
         }
 
         activationOvoBtn.setOnClickListener {
