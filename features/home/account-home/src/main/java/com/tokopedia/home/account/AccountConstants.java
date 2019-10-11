@@ -63,15 +63,6 @@ public class AccountConstants {
         public static final String CREDIT_CARD = "credit card";
         public static final String APPLICATION = "application";
         public static final String EMAIL = "email";
-        public static final String PURCHASE = "purchase";
-        public static final String SALES = "sales";
-        public static final String MESSAGE = "message";
-        public static final String DISCUSSION = "discussion";
-        public static final String REVIEW = "review";
-        public static final String PROMO = "promo";
-        public static final String SELLER_INFO = "seller info";
-        public static final String GROUP = "group";
-        public static final String CHAT = "chat";
         public static final String TOKOPEDIA = "tokopedia";
         public static final String NEWS_LETTER = "newsletter";
         public static final String SCREEN_NAME = "screenName";
