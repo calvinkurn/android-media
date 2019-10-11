@@ -277,15 +277,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.FACEBOOK)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.FACEBOOK, R.drawable.ic_btn_fb);
+            shareApps = new ShareApps(Constants.PackageName.Companion.FACEBOOK, com.tokopedia.design.R.drawable.ic_btn_fb);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.GPLUS)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.GPLUS, R.drawable.ic_btn_g);
+            shareApps = new ShareApps(Constants.PackageName.Companion.GPLUS, com.tokopedia.design.R.drawable.ic_btn_g);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.TWITTER)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.TWITTER, R.drawable.ic_btn_twitter);
+            shareApps = new ShareApps(Constants.PackageName.Companion.TWITTER, com.tokopedia.design.R.drawable.ic_btn_twitter);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.GMAIL)) {
@@ -293,7 +293,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.SMS)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.SMS, R.drawable.ic_btn_sms);
+            shareApps = new ShareApps(Constants.PackageName.Companion.SMS, com.tokopedia.design.R.drawable.ic_btn_sms);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.PINTEREST)) {

@@ -83,7 +83,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
         pagerGuide = view.findViewById(R.id.view_pager_referral_guide);
         tabGuide = view.findViewById(R.id.tab_referral_guide);
         llShareIcons = view.findViewById(R.id.ll_share_icons);
-        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
+        nestedScrollView = view.findViewById(com.tokopedia.design.R.id.nested_scroll_view);
         viewLine = view.findViewById(R.id.view_line);
         referralCount = view.findViewById(R.id.referral_count);
         imgTick = view.findViewById(R.id.img_tick);
