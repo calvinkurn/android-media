@@ -77,7 +77,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 item.id.toString(),
                 CurrencyFormatHelper.convertRupiahToInt(item.price),
                 position,
-                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
+                getProductItemPath(item.categoryBreadcrumb ?: "", getDepartMentId()),
                 item.categoryBreadcrumb ?: "")
     }
 
@@ -542,7 +542,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                     CurrencyFormatHelper.convertRupiahToInt(item.price),
                     adapterPosition,
                     item.categoryBreadcrumb ?: "",
-                    getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
+                    getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
         }
 
     }
