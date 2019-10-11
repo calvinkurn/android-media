@@ -407,27 +407,31 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         if (intent != null && intent.extras != null) {
             val bundle = intent.extras
             val tabName = bundle!!.getString(TAB_NAME)
-
-            if (tabName != null) {
-                when (tabName) {
-                    TAB_INSTAN -> if (instantLoanEnabled) {
-                        activeTabPosition = DANA_INSTAN_TAB_POSITION
-                    } else {
-                        finish()
-                    }
-
-                    TAB_TANPA_AGUNAN ->
-                        activeTabPosition = PINJAMAN_ONLINE_TAB_POSITION
-
-                    else -> activeTabPosition = DANA_INSTAN_TAB_POSITION
-                }
-            }
+            setActiveTabPosition(tabName)
+        } else if (intent != null && intent.data != null) {
+            setActiveTabPosition(intent?.data?.lastPathSegment)
         } else {
             activeTabPosition = 1
         }
 
         val tab = tabLayout!!.getTabAt(activeTabPosition)
         tab?.select()
+    }
+
+    private fun setActiveTabPosition(tabName: String?) {
+        if (tabName != null) {
+            when (tabName) {
+                TAB_INSTAN -> if (instantLoanEnabled) {
+                    activeTabPosition = DANA_INSTAN_TAB_POSITION
+                } else {
+                    finish()
+                }
+                TAB_TANPA_AGUNAN ->
+                    activeTabPosition = PINJAMAN_ONLINE_TAB_POSITION
+
+                else -> activeTabPosition = DANA_INSTAN_TAB_POSITION
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
