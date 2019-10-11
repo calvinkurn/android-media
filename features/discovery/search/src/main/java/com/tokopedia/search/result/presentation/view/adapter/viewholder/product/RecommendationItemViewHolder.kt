@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
-import android.support.annotation.Nullable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +17,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel
 
 /**
@@ -32,7 +30,7 @@ class RecommendationItemViewHolder (
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.search_result_product_card_small_grid
+        val LAYOUT = R.layout.search_result_recommendation_card_small_grid
     }
 
     private val context: Context = itemView.context
@@ -45,7 +43,6 @@ class RecommendationItemViewHolder (
         initProductCardContainer(recommendationItemViewModel)
         initProductImage(recommendationItemViewModel)
         initWishlistButton(recommendationItemViewModel)
-        initPromoLabel(recommendationItemViewModel)
         initShopName(recommendationItemViewModel)
         initTitleTextView(recommendationItemViewModel)
         initSlashedPriceSection(recommendationItemViewModel)
@@ -53,16 +50,14 @@ class RecommendationItemViewHolder (
         initShopBadge(recommendationItemViewModel)
         initLocationTextView(recommendationItemViewModel)
         initCredibilitySection(recommendationItemViewModel)
-        initOffersLabel(recommendationItemViewModel)
         initTopAdsIcon(recommendationItemViewModel)
-
         finishBindViewHolder()
     }
 
     private fun initProductCardContainer(recommendationItemViewModel: RecommendationItemViewModel) {
 
         productCardViewHintListener?.setOnClickListener {
-            listener.onProductClick(recommendationItemViewModel.recommendationItem, adapterPosition.toString())
+            listener.onProductClick(recommendationItemViewModel.recommendationItem, "", adapterPosition)
         }
     }
 
@@ -89,35 +84,13 @@ class RecommendationItemViewHolder (
     }
 
     private fun initWishlistButton(recommendationItemViewModel: RecommendationItemViewModel) {
+        productCardViewHintListener?.setButtonWishlistVisible(true)
         productCardViewHintListener?.setButtonWishlistImage(recommendationItemViewModel.recommendationItem.isWishlist)
         productCardViewHintListener?.setButtonWishlistOnClickListener {
-            listener.onWishlistClick(recommendationItemViewModel.recommendationItem)
+            listener.onWishlistClick(recommendationItemViewModel.recommendationItem, recommendationItemViewModel.recommendationItem.isWishlist){ success, throwable ->
+                /** do nothing **/
+            }
         }
-    }
-
-    private fun initPromoLabel(recommendationItemViewModel: RecommendationItemViewModel) {
-        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(recommendationItemViewModel, LABEL_GROUP_POSITION_PROMO)
-
-        if(promoLabelViewModel != null) {
-            productCardViewHintListener?.setLabelPromoVisible(true)
-            productCardViewHintListener?.setLabelPromoType(promoLabelViewModel.type)
-            productCardViewHintListener?.setLabelPromoText(promoLabelViewModel.title)
-        }
-        else {
-            productCardViewHintListener?.setLabelPromoVisible(false)
-        }
-    }
-
-    @Nullable
-    private fun getFirstLabelGroupOfPosition(recommendationItemViewModel: RecommendationItemViewModel, position: String): LabelGroupViewModel? {
-        val labelGroupOfPosition = getLabelGroupOfPosition(recommendationItemViewModel, position)
-
-        return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
-    }
-
-    @Nullable
-    private fun getLabelGroupOfPosition(recommendationItemViewModel: RecommendationItemViewModel, position: String): List<LabelGroupViewModel>? {
-        return recommendationItemViewModel.labelGroupList.filter { labelGroup -> labelGroup.position == position }
     }
 
     private fun initShopName(recommendationItemViewModel: RecommendationItemViewModel) {
@@ -125,17 +98,17 @@ class RecommendationItemViewHolder (
         productCardViewHintListener?.setShopNameVisible(isShopNameShown)
 
         if(isShopNameShown) {
-            productCardViewHintListener?.setShopNameText(recommendationItemViewModel.shopName)
+            productCardViewHintListener?.setShopNameText(recommendationItemViewModel.recommendationItem.shopName)
         }
     }
 
     private fun isShopNameShown(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return recommendationItemViewModel.isShopOfficialStore
+        return recommendationItemViewModel.recommendationItem.badgesUrl.contains("official_store")
     }
 
     private fun initTitleTextView(recommendationItemViewModel: RecommendationItemViewModel) {
         productCardViewHintListener?.setProductNameVisible(true)
-        productCardViewHintListener?.setProductNameText(recommendationItemViewModel.productName)
+        productCardViewHintListener?.setProductNameText(recommendationItemViewModel.recommendationItem.name)
     }
 
     private fun initSlashedPriceSection(recommendationItemViewModel: RecommendationItemViewModel) {
@@ -145,13 +118,13 @@ class RecommendationItemViewHolder (
         productCardViewHintListener?.setSlashedPriceVisible(isLabelDiscountVisible)
 
         if (isLabelDiscountVisible) {
-            productCardViewHintListener?.setLabelDiscountText(recommendationItemViewModel.discountPercentage)
-            productCardViewHintListener?.setSlashedPriceText(recommendationItemViewModel.originalPrice)
+            productCardViewHintListener?.setLabelDiscountText(recommendationItemViewModel.recommendationItem.discountPercentage)
+            productCardViewHintListener?.setSlashedPriceText(recommendationItemViewModel.recommendationItem.slashedPrice)
         }
     }
 
     private fun isLabelDiscountVisible(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return recommendationItemViewModel.discountPercentage > 0
+        return recommendationItemViewModel.recommendationItem.discountPercentage > 0
     }
 
     private fun initPriceTextView(recommendationItemViewModel: RecommendationItemViewModel) {
@@ -160,8 +133,7 @@ class RecommendationItemViewHolder (
     }
 
     private fun getPriceText(recommendationItemViewModel: RecommendationItemViewModel) : String {
-        return if(!TextUtils.isEmpty(recommendationItemViewModel.priceRange)) recommendationItemViewModel.priceRange
-        else recommendationItemViewModel.price
+        return recommendationItemViewModel.recommendationItem.price
     }
 
     private fun initShopBadge(recommendationItemViewModel: RecommendationItemViewModel) {
@@ -170,19 +142,17 @@ class RecommendationItemViewHolder (
 
         if(hasAnyBadgesShown) {
             productCardViewHintListener?.removeAllShopBadges()
-            loopBadgesListToLoadShopBadgeIcon(recommendationItemViewModel.badgesList)
+            loopBadgesListToLoadShopBadgeIcon(recommendationItemViewModel.recommendationItem.badgesUrl)
         }
     }
 
     private fun hasAnyBadgesShown(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return recommendationItemViewModel.badgesList.any { badge -> badge.isShown }
+        return recommendationItemViewModel.recommendationItem.badgesUrl.isNotEmpty()
     }
 
-    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
+    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<String?>) {
         for (badgeItem in badgesList) {
-            if (badgeItem.isShown) {
-                loadShopBadgesIcon(badgeItem.imageUrl ?: "")
-            }
+            loadShopBadgesIcon(badgeItem ?: "")
         }
     }
 
@@ -234,7 +204,6 @@ class RecommendationItemViewHolder (
 
     private fun initCredibilitySection(recommendationItemViewModel: RecommendationItemViewModel) {
         initRatingAndReview(recommendationItemViewModel)
-        initCredibilityLabel(recommendationItemViewModel)
     }
 
     private fun initRatingAndReview(recommendationItemViewModel: RecommendationItemViewModel) {
@@ -274,47 +243,6 @@ class RecommendationItemViewHolder (
 
     private fun isReviewCountVisible(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
         return recommendationItemViewModel.recommendationItem.countReview != 0
-    }
-
-    private fun initCredibilityLabel(recommendationItemViewModel: RecommendationItemViewModel) {
-        val isCredibilityLabelVisible = isCredibilityLabelVisible(recommendationItemViewModel)
-        productCardViewHintListener?.setLabelCredibilityVisible(isCredibilityLabelVisible)
-
-        if (isCredibilityLabelVisible) {
-            val credibilityLabelViewModel : LabelGroupViewModel =
-                    getFirstLabelGroupOfPosition(recommendationItemViewModel, LABEL_GROUP_POSITION_CREDIBILITY)!!
-
-            productCardViewHintListener?.setLabelCredibilityType(credibilityLabelViewModel.type)
-            productCardViewHintListener?.setLabelCredibilityText(credibilityLabelViewModel.title)
-        }
-    }
-
-    private fun isCredibilityLabelVisible(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return isRatingAndReviewNotVisible(recommendationItemViewModel)
-                && isCredibilityLabelExists(recommendationItemViewModel)
-    }
-
-    private fun isRatingAndReviewNotVisible(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return !isImageRatingVisible(recommendationItemViewModel) && !isReviewCountVisible(recommendationItemViewModel)
-    }
-
-    private fun isCredibilityLabelExists(recommendationItemViewModel: RecommendationItemViewModel): Boolean {
-        return getFirstLabelGroupOfPosition(recommendationItemViewModel, LABEL_GROUP_POSITION_CREDIBILITY) != null
-    }
-
-    private fun initOffersLabel(recommendationItemViewModel: RecommendationItemViewModel) {
-        val offersLabelViewModel = getFirstLabelGroupOfPosition(recommendationItemViewModel, LABEL_GROUP_POSITION_OFFERS)
-
-        productCardViewHintListener?.setLabelOffersVisible(offersLabelViewModel != null)
-
-        if(offersLabelViewModel != null) {
-            setOffersLabelContent(offersLabelViewModel)
-        }
-    }
-
-    private fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
-        productCardViewHintListener?.setLabelOffersType(offersLabelViewModel.type)
-        productCardViewHintListener?.setLabelOffersText(offersLabelViewModel.title)
     }
 
     private fun initTopAdsIcon(recommendationItemViewModel: RecommendationItemViewModel) {

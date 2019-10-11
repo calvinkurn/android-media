@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.search.result.presentation.model.*;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*;
@@ -28,6 +29,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final GlobalNavWidgetListener globalNavWidgetListener;
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
+    private final RecommendationListener recommendationListener;
     private final Config topAdsConfig;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
@@ -38,6 +40,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                                       GlobalNavWidgetListener globalNavWidgetListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
+                                      RecommendationListener recommendationListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -48,6 +51,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.globalNavWidgetListener = globalNavWidgetListener;
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
+        this.recommendationListener = recommendationListener;
         this.topAdsConfig = config;
     }
 
@@ -100,6 +104,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
+    public int type(RecommendationItemViewModel recommendationItemViewModel) {
+        return RecommendationItemViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -124,6 +133,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new SearchLoadingMoreViewHolder(view);
         } else if(type == RecommendationTitleViewHolder.LAYOUT){
             viewHolder = new RecommendationTitleViewHolder(view);
+        } else if(type == RecommendationItemViewHolder.LAYOUT){
+            viewHolder = new RecommendationItemViewHolder(view, recommendationListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

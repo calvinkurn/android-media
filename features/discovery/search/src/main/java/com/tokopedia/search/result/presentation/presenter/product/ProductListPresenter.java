@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -126,6 +127,58 @@ final class ProductListPresenter
         }
     }
 
+    public void handleWishlistButtonClicked(final RecommendationItem recommendationItem) {
+        if (getView().isUserHasLogin()) {
+            getView().disableWishlistButton(String.valueOf(recommendationItem.getProductId()));
+            if (recommendationItem.isWishlist()) {
+                getView().logDebug(this.toString(), "Remove Wishlist " + recommendationItem.getProductId());
+                removeWishlistActionUseCase.createObservable(String.valueOf(recommendationItem.getProductId()), getView().getUserId(), new WishListActionListener() {
+                    @Override
+                    public void onErrorAddWishList(String errorMessage, String productId) { }
+
+                    @Override
+                    public void onSuccessAddWishlist(String productId) { }
+
+                    @Override
+                    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+                        getView().errorRecommendationWishlist(errorMessage, productId);
+                    }
+
+                    @Override
+                    public void onSuccessRemoveWishlist(String productId) {
+                        getView().successRemoveRecommendationWishlist(productId);
+                    }
+                });
+            } else if(recommendationItem.isTopAds()){
+                RequestParams params = RequestParams.create();
+                params.putString(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL, recommendationItem.getWishlistUrl());
+                productWishlistUrlUseCase.execute(params, getWishlistSubscriber(recommendationItem));
+            } else {
+                getView().logDebug(this.toString(), "Add Wishlist " + recommendationItem.getProductId());
+                addWishlistActionUseCase.createObservable(String.valueOf(recommendationItem.getProductId()), getView().getUserId(),
+                        new WishListActionListener() {
+                            @Override
+                            public void onErrorAddWishList(String errorMessage, String productId) {
+                                getView().errorRecommendationWishlist(errorMessage, productId);
+                            }
+
+                            @Override
+                            public void onSuccessAddWishlist(String productId) {
+                                getView().successAddRecommendationWishlist(productId);
+                            }
+
+                            @Override
+                            public void onErrorRemoveWishlist(String errorMessage, String productId) { }
+
+                            @Override
+                            public void onSuccessRemoveWishlist(String productId) { }
+                        });
+            }
+        } else {
+            getView().launchLoginActivity(String.valueOf(recommendationItem.getProductId()));
+        }
+    }
+
     private Subscriber<Boolean> getWishlistSubscriber(final ProductItemViewModel productItem) {
         return new Subscriber<Boolean>() {
             @Override
@@ -145,6 +198,32 @@ final class ProductListPresenter
                 if (isViewAttached()){
                     if (result) {
                         getView().onSuccessAddWishlist(productItem.getProductID());
+                    } else {
+                        getView().notifyAdapter();
+                    }
+                }
+            }
+        };
+    }
+    private Subscriber<Boolean> getWishlistSubscriber(final RecommendationItem recommendationItem) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().errorAddRecommendationWishlist(e.getMessage(), String.valueOf(recommendationItem.getProductId()));
+                    getView().notifyAdapter();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean result) {
+                if (isViewAttached()){
+                    if (result) {
+                        getView().successAddRecommendationWishlist(String.valueOf(recommendationItem.getProductId()));
                     } else {
                         getView().notifyAdapter();
                     }
@@ -629,10 +708,10 @@ final class ProductListPresenter
                     @Override
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null){
-                            ProductViewModel productViewModel = new RecommendationViewModelMapper().convertToProductViewModel(recommendationWidgets.get(0));
+                            List<RecommendationItemViewModel> recommendationItemViewModel = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
                             List<Visitable> items = new ArrayList();
                             items.add(new RecommendationTitleViewModel(recommendationWidgets.get(0).getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidgets.get(0).getTitle()));
-                            items.addAll(productViewModel.getProductList());
+                            items.addAll(recommendationItemViewModel);
                             getView().addRecommendationList(items);
                         }
                     }

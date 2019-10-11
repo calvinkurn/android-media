@@ -35,6 +35,8 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -78,6 +80,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -105,7 +109,8 @@ public class ProductListFragment
         GlobalNavWidgetListener,
         BannerAdsListener,
         EmptyStateListener,
-        WishListActionListener {
+        WishListActionListener,
+        RecommendationListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final String SHOP = "shop";
@@ -258,7 +263,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this,
-                this, this,
+                this, this, this,
                 topAdsConfig);
         adapter = new ProductListAdapter(this, productListTypeFactory);
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
@@ -347,8 +352,6 @@ public class ProductListFragment
     public void addRecommendationList(List<Visitable> list){
         isListEmpty = false;
 
-        sendProductRecommendationImpressionTrackingEvent(list);
-
         adapter.appendItems(list);
     }
 
@@ -380,20 +383,6 @@ public class ProductListFragment
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey());
-    }
-
-    private void sendProductRecommendationImpressionTrackingEvent(List<Visitable> list) {
-        for (int i = 0; i < list.size(); i++) {
-            Object object = list.get(i);
-            if (object instanceof ProductItemViewModel) {
-                ProductItemViewModel item = (ProductItemViewModel) object;
-                if(userSession.isLoggedIn()){
-                    RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(i));
-                } else {
-                    RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(i));
-                }
-            }
-        }
     }
 
     private void loadMoreProduct(final int startRow) {
@@ -543,6 +532,40 @@ public class ProductListFragment
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
             sendItemClickTrackingEvent(item, adapterPosition);
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        }
+    }
+
+    @Override
+    public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
+        Intent intent = getProductIntent(String.valueOf(item.getProductId()), "0");
+
+        if(intent != null) {
+            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, position[0]);
+            if(userSession.isLoggedIn()){
+                RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(position[0]));
+            }else {
+                RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(position[0]));
+            }
+            startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        }
+    }
+
+    @Override
+    public void onProductImpression(@NotNull RecommendationItem item) {
+        if(userSession.isLoggedIn()){
+            RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(item.getPosition()));
+        } else {
+            RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(item.getPosition()));
+        }
+    }
+
+    @Override
+    public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+        presenter.handleWishlistButtonClicked(item);
+        if(userSession.isLoggedIn()){
+            RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(isAddWishlist);
+        } else {
+            RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
         }
     }
 
@@ -711,6 +734,26 @@ public class ProductListFragment
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    @Override
+    public void successRemoveRecommendationWishlist(String productId) {
+        adapter.updateWishlistStatus(productId, false);
+        enableWishlistButton(productId);
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    @Override
+    public void successAddRecommendationWishlist(String productId) {
+        adapter.updateWishlistStatus(productId, true);
+        enableWishlistButton(productId);
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    @Override
+    public void errorRecommendationWishlist(String errorMessage, String productId) {
+        enableWishlistButton(productId);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override

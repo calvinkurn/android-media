@@ -2,7 +2,6 @@ package com.tokopedia.search.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -40,8 +39,8 @@ class RecommendationTracking {
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_IDR = "IDR"
         private const val VALUE_EMPTY = ""
-        private const val VALUE_LIST_RECOMMENDATION_PRODUCT = "/searchproduct - rekomendasi untuk anda - %s - empty_search - %s%s"
-        private const val VALUE_LIST_RECOMMENDATION_PRODUCT_NON_LOGIN = "/searchproduct - non login - rekomendasi untuk anda - %s - empty_search - %s%s"
+        private const val VALUE_LIST_RECOMMENDATION_PRODUCT = "/searchproduct - rekomendasi untuk anda - empty_search - %s %s"
+        private const val VALUE_LIST_RECOMMENDATION_PRODUCT_NON_LOGIN = "/searchproduct - non login - rekomendasi untuk anda - empty_search - %s %s"
 
         private const val EVENT_PRODUCT_VIEW = "productView"
         private const val EVENT_PRODUCT_CLICK = "productClick"
@@ -64,22 +63,22 @@ class RecommendationTracking {
         }
 
 
-        private fun convertRecommendationItemToDataImpressionObject(item: ProductItemViewModel,
+        private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
                                                                     list: String,
                                                                     position: String): Any  {
             return DataLayer.mapOf(
-                    FIELD_PRODUCT_NAME, item.productName,
-                    FIELD_PRODUCT_ID, item.productID,
+                    FIELD_PRODUCT_NAME, item.name,
+                    FIELD_PRODUCT_ID, item.productId,
                     FIELD_PRODUCT_PRICE, item.price,
                     FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                    FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
+                    FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_LIST, list,
                     FIELD_PRODUCT_POSITION, position
             )
         }
 
-        private fun convertRecommendationItemToDataClickObject(item: ProductItemViewModel,
+        private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                                list: String,
                                                                position: String): Any  {
             return DataLayer.mapOf(
@@ -88,12 +87,12 @@ class RecommendationTracking {
             ),
                     FIELD_PRODUCTS, DataLayer.listOf(
                     DataLayer.mapOf(
-                            FIELD_PRODUCT_NAME, item.productName,
-                            FIELD_PRODUCT_ID, item.productID,
+                            FIELD_PRODUCT_NAME, item.name,
+                            FIELD_PRODUCT_ID, item.productId,
                             FIELD_PRODUCT_PRICE, item.price,
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
+                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_POSITION, position
                     )
             )
@@ -102,7 +101,7 @@ class RecommendationTracking {
 
         fun eventImpressionProductRecommendationLogin(
                 trackingQueue: TrackingQueue,
-                recommendationItem: ProductItemViewModel,
+                recommendationItem: RecommendationItem,
                 position: String
         ){
             val data = DataLayer.mapOf(
@@ -117,7 +116,7 @@ class RecommendationTracking {
                             recommendationItem,
                             String.format(
                                     VALUE_LIST_RECOMMENDATION_PRODUCT,
-                                    recommendationItem.categoryName,
+                                    recommendationItem.recommendationType,
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)
@@ -129,7 +128,7 @@ class RecommendationTracking {
 
         fun eventImpressionProductRecommendationNonLogin(
                 trackingQueue: TrackingQueue,
-                recommendationItem: ProductItemViewModel,
+                recommendationItem: RecommendationItem,
                 position: String
         ){
             val data = DataLayer.mapOf(
@@ -144,7 +143,7 @@ class RecommendationTracking {
                             recommendationItem,
                             String.format(
                                     VALUE_LIST_RECOMMENDATION_PRODUCT_NON_LOGIN,
-                                    recommendationItem.categoryName,
+                                    recommendationItem.recommendationType,
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)
@@ -155,7 +154,7 @@ class RecommendationTracking {
         }
 
         fun eventClickProductRecommendationLogin(
-                recommendationItem: ProductItemViewModel,
+                recommendationItem: RecommendationItem,
                 position: String
         ){
             val data = DataLayer.mapOf(
@@ -169,7 +168,7 @@ class RecommendationTracking {
                             recommendationItem,
                             String.format(
                                     VALUE_LIST_RECOMMENDATION_PRODUCT,
-                                    recommendationItem.categoryName,
+                                    recommendationItem.recommendationType,
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)
@@ -180,7 +179,7 @@ class RecommendationTracking {
         }
 
         fun eventClickProductRecommendationNonLogin(
-                recommendationItem: ProductItemViewModel,
+                recommendationItem: RecommendationItem,
                 position: String
         ){
             val data = DataLayer.mapOf(
@@ -194,7 +193,7 @@ class RecommendationTracking {
                             recommendationItem,
                             String.format(
                                     VALUE_LIST_RECOMMENDATION_PRODUCT,
-                                    recommendationItem.categoryName,
+                                    recommendationItem.recommendationType,
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)

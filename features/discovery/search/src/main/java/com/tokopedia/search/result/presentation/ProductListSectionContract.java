@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -105,6 +105,12 @@ public interface ProductListSectionContract {
         void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
 
         void hideErrorMessage();
+
+        void successRemoveRecommendationWishlist(String productId);
+
+        void successAddRecommendationWishlist(String productId);
+
+        void errorRecommendationWishlist(String errorMessage, String productId);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
@@ -115,5 +121,7 @@ public interface ProductListSectionContract {
         void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
+
+        void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
     }
 }
