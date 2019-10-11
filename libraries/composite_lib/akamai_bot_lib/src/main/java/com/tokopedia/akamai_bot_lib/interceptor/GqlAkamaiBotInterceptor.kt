@@ -36,6 +36,12 @@ class GqlAkamaiBotInterceptor : Interceptor {
                             newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                     ?: "")
                             newRequest.addHeader("X-TKPD-AKAMAI","login")
+                        }else if (it.contains("register") ){
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                            newRequest.addHeader("X-TKPD-AKAMAI","register")
+                        }else{
+                            // none
                         }
 
                     }
