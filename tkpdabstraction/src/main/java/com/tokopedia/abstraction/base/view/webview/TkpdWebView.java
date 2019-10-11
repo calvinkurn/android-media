@@ -60,7 +60,7 @@ public class TkpdWebView extends WebView {
     private void init(){
         //set custom tracking, helpful for GA
         WebSettings webSettings = getSettings();
-        String userAgent = String.format("%s - %s]","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+        String userAgent = String.format("%s - %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
         webSettings.setUserAgentString(userAgent);
     }
 
