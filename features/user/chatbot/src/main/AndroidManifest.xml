@@ -7,7 +7,21 @@
             android:name=".view.activity.ChatbotActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:label="@string/title_chat_bot"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="chatbot"
+                    android:pathPattern="/.*"
+                    />
+
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
@@ -17,7 +31,6 @@
         <activity
             android:name=".view.activity.ChatBotProvideRatingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ChatBotProvideRatingActivityTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 </manifest>

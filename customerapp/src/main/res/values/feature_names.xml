@@ -78,4 +78,9 @@
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
+
+    <!--ChatBot-->
+    <string name="title_chat_bot">Chat Sekarang</string>
+    <string name="title_module_chat_bot">Chat Sekarang</string>
+
 </resources>

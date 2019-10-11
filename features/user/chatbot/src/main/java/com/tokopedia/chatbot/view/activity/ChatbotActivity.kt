@@ -10,21 +10,30 @@ import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
+import android.R.attr.keySet
+import com.tokopedia.applink.RouteManager
+
 
 /**
  * @author by nisie on 23/11/18.
  */
 class ChatbotActivity : BaseChatToolbarActivity() {
 
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
+        val list = UriUtil.destructureUri(ApplinkConst.CHATBOT,intent.data,true)
+        bundle.putString("message_id",list[0])
+        bundle.putString("deep_link_uri",intent.data.toString())
+//        if (intent.extras != null) {
+//            bundle.putAll(intent.extras)
+//        }
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
@@ -60,9 +69,8 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         }
     }
 
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.CHATBOT)
+    //object DeepLinkIntents {
+       // @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             return Intent(context, ChatbotActivity::class.java)
@@ -70,8 +78,31 @@ class ChatbotActivity : BaseChatToolbarActivity() {
                     .putExtras(extras)
         }
 
-    }
+    //}
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //UriUtil.destructureUri("", )
+//        val params = UriUtil.destructureUri(ApplinkConst.CHATBOT, intent.data,true)
+//        val bundle = Bundle()
+//        bundle.putString("data",intent.data.toString())
+//        if(bundle!=null){
+//            getCallingIntent(this, bundle)
+//        }
+//        RouteManager.route(this,)
+//
+//        val extras = Bundle()
+//        var uri = "tokopedia://chatbot/76418634"
+//        var list = UriUtil.destructureUri(,uri);
+//        extras.put
+
+        val list = UriUtil.destructureUri(ApplinkConst.CHATBOT,intent.data,true)
+        //messageId = list[0]
+
+
+
+    }
 
    fun upadateToolbar(profileName: String?, profileImage: String?) {
         ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)

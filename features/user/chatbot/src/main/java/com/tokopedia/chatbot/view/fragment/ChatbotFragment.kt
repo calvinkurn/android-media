@@ -214,9 +214,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         loadInitialData()
     }
 
+    override fun getSwipeRefreshLayoutResourceId() = 0
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     private fun onAttachImageClicked() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
+            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
                             ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
@@ -423,6 +429,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY)
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
+        }
+    }
+
+    override fun prepareListener() {
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
         }
     }
 
