@@ -57,14 +57,16 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
-    private final TetraDebugger tetraDebugger;
+    private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
-        tetraDebugger = TetraDebugger.Companion.instance(context);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(context);
+        }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
@@ -192,7 +194,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
-        tetraDebugger.send(values);
+        if (tetraDebugger != null) {
+            tetraDebugger.send(values);
+        }
     }
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
@@ -379,7 +383,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // always allow sending gtm v5 in debug mode, and use remote config value in production
-        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+        if(!GlobalConfig.isAllowDebuggingTools() && !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_V5, false))
             return;
 
         // replace list
@@ -491,7 +495,9 @@ public class GTMAnalytics extends ContextAnalytics {
                     Map<String, Object> maps = new HashMap<>();
                     maps.put("user_id", uid);
                     getTagManager().getDataLayer().push(maps);
-                    tetraDebugger.setUserId(userId);
+                    if (tetraDebugger != null) {
+                        tetraDebugger.setUserId(userId);
+                    }
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());

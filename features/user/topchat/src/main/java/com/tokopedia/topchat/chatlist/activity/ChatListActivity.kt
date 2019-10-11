@@ -11,6 +11,7 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -19,6 +20,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -41,7 +45,7 @@ import javax.inject.Inject
 
 class ChatListActivity : BaseTabActivity()
         , HasComponent<ChatListComponent>
-        , ChatListContract.Activity{
+        , ChatListContract.Activity {
 
     private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()
@@ -82,7 +86,7 @@ class ChatListActivity : BaseTabActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(userSession.shopId.toLongOrZero() > 0) {
+        if (userSession.shopId.toLongOrZero() > 0) {
             tabList.add(ChatListPagerAdapter.ChatListTab(
                     userSession.shopName,
                     "0",
@@ -98,16 +102,57 @@ class ChatListActivity : BaseTabActivity()
         ))
         super.onCreate(savedInstanceState)
 
+        setupViewModel()
         initTabLayout()
         setObserver()
         initData()
+        initOnBoarding()
+    }
+
+    private fun initOnBoarding() {
+        if (!userSession.hasShop()) return
+        tabLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            if (!isOnBoardingAlreadyShown())  {
+                showOnBoarding()
+            }
+        }
+    }
+
+    private fun showOnBoarding() {
+        if (tabLayout.childCount < 0) return
+        val tabViewGroup = tabLayout.getChildAt(0) as ViewGroup
+        if (tabViewGroup.childCount < 2) return
+
+        val sellerTab = tabViewGroup.getChildAt(0)
+        val buyerTab = tabViewGroup.getChildAt(1)
+        val tutorials = arrayListOf(
+                CoachMarkItem(
+                        sellerTab,
+                        getString(R.string.coach_tab_title_seller),
+                        getString(R.string.coach_tab_description_seller)
+                ),
+                CoachMarkItem(
+                        buyerTab,
+                        getString(R.string.coach_tab_title_buyer),
+                        getString(R.string.coach_tab_description_buyer)
+                )
+        )
+        CoachMark().show(this@ChatListActivity, TAG_ONBOARDING, tutorials)
+        CoachMarkPreference.setShown(this, TAG_ONBOARDING, true)
+    }
+
+    private fun isOnBoardingAlreadyShown(): Boolean {
+        return CoachMarkPreference.hasShown(this, TAG_ONBOARDING)
+    }
+
+    private fun setupViewModel() {
+        viewModelProvider = ViewModelProviders.of(this@ChatListActivity, viewModelFactory)
+        webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
+        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
     }
 
     private fun setObserver() {
-        viewModelProvider = ViewModelProviders.of(this@ChatListActivity, viewModelFactory)
-
-        webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
-        webSocketViewModel?.itemChat?.observe(this,
+        webSocketViewModel.itemChat.observe(this,
                 Observer { result ->
                     when (result) {
                         is Success -> {
@@ -120,19 +165,19 @@ class ChatListActivity : BaseTabActivity()
                 }
         )
 
-        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
         chatNotifCounterViewModel.chatNotifCounter.observe(this,
                 Observer { result ->
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            if(tabList.size > 1) {
+                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            }
                             setNotificationCounterOnTab()
                         }
                     }
                 }
         )
-
     }
 
     private fun initData() {
@@ -187,27 +232,33 @@ class ChatListActivity : BaseTabActivity()
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
         debug(TAG, incomingChatWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingChatWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
         debug(TAG, incomingTypingWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingTypingWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(tag: String?): ChatListFragment {
-        return when (tag) {
-            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
-            else -> fragmentAdapter.getItem(1) as ChatListFragment
+    private fun determineFragmentByTag(tag: String?): ChatListFragment? {
+        val fragment = when (tag) {
+            "User" -> fragmentAdapter.getItem(0)
+            else -> fragmentAdapter.getItem(1)
+        }
+
+        return if(fragment == null) {
+            null
+        } else  {
+            fragment as ChatListFragment
         }
     }
 
 
     override fun notifyViewCreated() {
-        if(!fragmentViewCreated) {
+        if (!fragmentViewCreated) {
             webSocketViewModel.connectWebSocket()
             fragmentViewCreated = true
         }
@@ -243,15 +294,25 @@ class ChatListActivity : BaseTabActivity()
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
+                chatNotifCounterViewModel.setLastVisitedTab(this@ChatListActivity, tab.position)
                 setTabSelectedView(tab.customView)
                 with(chatListAnalytics) {
-                    eventClickTabChat(if(tab.position==0) SELLER_ANALYTICS_LABEL else BUYER_ANALYTICS_LABEL)
+                    eventClickTabChat(if (tab.position == 0) SELLER_ANALYTICS_LABEL else BUYER_ANALYTICS_LABEL)
                 }
             }
         })
 
-        if(tabList.size == 1) {
+        if (tabList.size == 1) {
             tabLayout.hide()
+        } else {
+            goToLastSeenTab()
+        }
+    }
+
+    private fun goToLastSeenTab() {
+        chatNotifCounterViewModel.getLastVisitedTab(this).apply {
+            if (this == -1) return@apply
+            viewPager.currentItem = this
         }
     }
 
@@ -276,21 +337,21 @@ class ChatListActivity : BaseTabActivity()
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
         val titleView = customView.findViewById<TextView>(R.id.title)
         val iconView = customView.findViewById<ImageView>(R.id.icon)
-        titleView.text = setTitleTab(title,counter)
+        titleView.text = setTitleTab(title, counter)
         iconView.setImageDrawable(MethodChecker.getDrawable(this, icon))
         return customView
     }
 
     private fun setTitleTab(title: String, counter: String): CharSequence? {
-        if(counter.toLongOrZero() > 0) {
+        if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                if (counter.toLongOrZero() > 99) {
-                    "99+"
-                } else {
-                    counter
-                }
+                    if (counter.toLongOrZero() > 99) {
+                        "99+"
+                    } else {
+                        counter
+                    }
 
-            return if(title.length > 10) {
+            return if (title.length > 10) {
                 title.take(9) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
@@ -327,6 +388,8 @@ class ChatListActivity : BaseTabActivity()
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
         webSocketViewModel.clear()
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        chatNotifCounterViewModel.clear()
     }
 
     object DeeplinkIntent {
@@ -340,6 +403,7 @@ class ChatListActivity : BaseTabActivity()
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
         const val TAG = "ChatListActivity"
+        private val TAG_ONBOARDING = ChatListActivity::class.java.name + ".OnBoarding"
         fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
     }
 
