@@ -91,13 +91,13 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
             titleOvo.text = getString(R.string.wallet_announcement_ovo_title)
             descFirstOvo.text = getString(R.string.wallet_announcement_ovo_description)
             descSecondOvo.text = getString(R.string.wallet_announcement_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_ovo)
+            ImageHandler.loadImageWithId(imgIntroOvo, com.tokopedia.design.R.drawable.wallet_ic_intro_ovo)
         } else {
             listener.setTitleHeader(getString(R.string.wallet_title_header_activation_ovo))
             titleOvo.text = getString(R.string.wallet_announcement_activation_ovo_title)
             descFirstOvo.text = getString(R.string.wallet_announcement_activation_ovo_description)
             descSecondOvo.text = getString(R.string.wallet_announcement_activation_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_activation)
+            ImageHandler.loadImageWithId(imgIntroOvo, com.tokopedia.design.R.drawable.wallet_ic_intro_activation)
         }
 
         activationOvoBtn.setOnClickListener {
@@ -118,11 +118,11 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(it, R.color.tkpd_main_green)
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.design.R.color.tkpd_main_green)
                 }
             }
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
-                    R.color.tkpd_main_green)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    com.tokopedia.design.R.color.tkpd_main_green)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             tncOvo.movementMethod = LinkMovementMethod.getInstance()
             tncOvo.text = ss
