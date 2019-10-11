@@ -214,7 +214,7 @@ final class ProductListPresenter
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().errorAddRecommendationWishlist(e.getMessage(), String.valueOf(recommendationItem.getProductId()));
+                    getView().errorRecommendationWishlist(e.getMessage(), String.valueOf(recommendationItem.getProductId()));
                     getView().notifyAdapter();
                 }
             }
