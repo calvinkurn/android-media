@@ -122,5 +122,9 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
           Description
           VideoURLAndroid
          }
+        freeOngkir {
+          isActive
+          imgURL
+        }
     }
 }

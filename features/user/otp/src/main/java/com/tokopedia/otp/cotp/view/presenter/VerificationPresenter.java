@@ -122,7 +122,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 validateOtpUseCase.execute(ValidateOtpUseCase.getRegisterPhoneNumberParam(
                         phoneNumber,
                         otpType,
-                        otpCode
+                        otpCode,
+                        otpMode
                 ), new VerifyOtpSubscriber(getView()));
                 break;
             default:

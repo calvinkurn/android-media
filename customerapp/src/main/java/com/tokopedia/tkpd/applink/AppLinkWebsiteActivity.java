@@ -32,15 +32,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
-    private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
-    private static final String EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
     private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
     private static final String KEY_APP_LINK_QUERY_ALLOW_OVERRIDE = "allow_override";
-
-
 
     private FragmentGeneralWebView fragmentGeneralWebView;
 
@@ -55,8 +51,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     public static Intent newInstance(Context context, String url) {
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, true)
-                .putExtra(EXTRA_NEED_LOGIN, false)
+                .putExtra(KEY_APP_LINK_QUERY_TITLEBAR, true)
+                .putExtra(KEY_APP_LINK_QUERY_NEED_LOGIN, false)
                 .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, true);
 
     }
@@ -66,8 +62,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
         return new Intent(context, AppLinkWebsiteActivity.class)
                 .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, showToolbar)
-                .putExtra(EXTRA_NEED_LOGIN, needLogin)
+                .putExtra(KEY_APP_LINK_QUERY_TITLEBAR, showToolbar)
+                .putExtra(KEY_APP_LINK_QUERY_NEED_LOGIN, needLogin)
                 .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, allowOverride);
     }
 
