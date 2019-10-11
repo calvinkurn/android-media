@@ -1,12 +1,13 @@
 package com.tokopedia.purchase_platform.common.di
 
 import android.content.Context
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
+import com.tokopedia.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
@@ -71,6 +72,11 @@ class PurchasePlatformNetworkModule {
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .addInterceptor(AkamaiBotInterceptor())
                 .addInterceptor(fingerprintInterceptor)
+                .addInterceptor { chain ->
+                    val newRequest = chain.request().newBuilder()
+                    newRequest.addHeader("User-Agent", getUserAgent())
+                    chain.proceed(newRequest.build())
+                }
                 .addInterceptor(cartApiInterceptor)
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)

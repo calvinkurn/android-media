@@ -74,7 +74,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
-import rx.Subscriber
 import rx.Subscription
 import java.lang.RuntimeException
 import rx.Subscriber
