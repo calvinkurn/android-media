@@ -28,6 +28,7 @@ object ProductTrackingConstant {
         const val CLICK_REPORT_ON_HELP_POP_UP_ATC = "click report on help pop up atc"
         const val CLICK_CLOSE_ON_HELP_POP_UP_ATC = "click close on help pop up atc"
         const val CLICK_SEARCH_BOX = "click search box"
+        const val CLICK_RIBBON_TRADE_IN = "click - ribbon trade in"
 
     }
 
