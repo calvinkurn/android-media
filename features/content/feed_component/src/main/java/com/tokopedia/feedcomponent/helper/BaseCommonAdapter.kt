@@ -25,13 +25,17 @@ open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
         return oldItem == newItem
     }
 
-    fun showLoading() {
-        itemList.add(itemList.size, LoadingMoreModel())
-        notifyDataSetChanged()
+    @JvmOverloads
+    fun showLoading(isSmooth: Boolean = false) {
+        addItem(itemList.size, LoadingMoreModel())
+        if (isSmooth) notifyItemInserted(itemList.size) else notifyDataSetChanged()
     }
 
-    fun hideLoading() {
-        if (itemList.isNotEmpty() && itemList[itemList.lastIndex] is LoadingMoreModel) itemList.removeAt(itemList.lastIndex)
-        notifyDataSetChanged()
+    @JvmOverloads
+    fun hideLoading(isSmooth: Boolean = false) {
+        if (itemList.isNotEmpty() && itemList[itemList.lastIndex] is LoadingMoreModel) {
+            removeItemAt(itemList.lastIndex)
+            if (isSmooth) notifyItemRemoved(itemList.size) else notifyDataSetChanged()
+        }
     }
 }
