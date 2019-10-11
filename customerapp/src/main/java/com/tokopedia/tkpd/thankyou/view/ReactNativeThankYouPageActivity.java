@@ -48,6 +48,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public static Intent createReactNativeActivity(Context context, String pageTitle) {
         Intent intent = new Intent(context, ReactNativeThankYouPageActivity.class);
         Bundle extras = new Bundle();
+        extras.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.THANK_YOU_PAGE);
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         return intent;

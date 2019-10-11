@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -18,12 +19,16 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
+import com.tokopedia.topchat.chatlist.data.ChatListUrl
+import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
+import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,13 +55,20 @@ class ChatItemListViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
-
     val mutateChatList: LiveData<Result<ChatListPojo>>
         get() = _mutateChatList
 
     private val _deleteChat = MutableLiveData<Result<ChatDelete>>()
     val deleteChat: LiveData<Result<ChatDelete>>
         get() = _deleteChat
+
+    private val _broadCastButtonVisibility = MutableLiveData<Boolean>()
+    val broadCastButtonVisibility: LiveData<Boolean>
+        get() = _broadCastButtonVisibility
+
+    private val _broadCastButtonUrl = MutableLiveData<String>()
+    val broadCastButtonUrl: LiveData<String>
+        get() = _broadCastButtonUrl
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -137,5 +149,41 @@ class ChatItemListViewModel @Inject constructor(
         ) {
             result(Fail(it))
         }
+    }
+
+    fun loadChatBlastSellerMetaData() {
+        val query = queries[QUERY_BLAST_SELLER_METADATA] ?: return
+        launchCatchError(block = {
+            val data = withContext(dispatcher) {
+                val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
+                repository.getReseponse(listOf(request))
+            }.getSuccessData<BlastSellerMetaDataResponse>()
+            onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
+        }) {
+            onErrorLoadChatBlastSellerMetaData(it)
+        }
+    }
+
+    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable) {
+        broadCastButtonVisibility(false)
+    }
+
+    private fun broadCastButtonVisibility(visibility: Boolean) {
+        _broadCastButtonVisibility.value = visibility
+    }
+
+    private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
+        broadCastButtonVisibility(true)
+
+        var broadCastLink = ChatListUrl.BROADCAST_MICROSITE
+        if (metaData.isWhiteListed()) {
+            broadCastLink = if (GlobalConfig.isAllowDebuggingTools()) {
+                ChatListUrl.STAGING_BROADCAST_WHITELIST
+            } else {
+                ChatListUrl.BROADCAST_WHITELIST
+            }
+        }
+
+        _broadCastButtonUrl.value = broadCastLink
     }
 }

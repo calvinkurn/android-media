@@ -470,7 +470,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             if (item.media.isNotEmpty()) {
                 val media = item.media[0]
                 list.add(HighlightCardViewModel(
-                        feed.id,
+                        media.id.toIntOrZero(),
                         0,
                         media.thumbnail,
                         media.appLink,
