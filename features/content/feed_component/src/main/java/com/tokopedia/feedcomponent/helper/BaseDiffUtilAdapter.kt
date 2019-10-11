@@ -52,6 +52,26 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
         )
     }
 
+    fun addItemAndAnimateChanges(item: T) {
+        animateNotifyChanged(
+                oldItemList = this.itemList,
+                newItemList = itemList + item,
+                changeList = {
+                    addItem(item)
+                }
+        )
+    }
+
+    fun clearAllItemsAndAnimateChanges() {
+        animateNotifyChanged(
+                oldItemList = this.itemList,
+                newItemList = emptyList(),
+                changeList = {
+                    clearAllItems()
+                }
+        )
+    }
+
     private inline fun animateNotifyChanged(oldItemList: List<T>, newItemList: List<T>, changeList: () -> Unit) {
         val diffCallback = BaseDiffUtilCallback(oldItemList, newItemList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)

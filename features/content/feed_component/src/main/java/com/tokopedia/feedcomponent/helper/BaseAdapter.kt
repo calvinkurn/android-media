@@ -48,6 +48,8 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     fun getItems(): List<T> = itemList
 
+    fun getItems(position: Int): T = itemList[position]
+
     fun setItems(itemList: List<T>) {
         this.itemList.clear()
         addItems(itemList)
@@ -61,6 +63,10 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
         this.itemList.add(item)
     }
 
+    fun addItem(position: Int, item: T) {
+        this.itemList.add(position, item)
+    }
+
     fun clearAllItems() {
         this.itemList.clear()
     }
@@ -69,23 +75,32 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
      * Needed to support easy migration from old Adapter
      */
     @Deprecated(
-            message = "Use addItems(items) instead",
+            message = "Use addItems(items) instead, and call notify as you wish",
             replaceWith = ReplaceWith("addItems(item)"),
             level = DeprecationLevel.WARNING
     )
-    fun addElement(item: List<T>) { addItems(item) }
+    fun addElement(item: List<T>) {
+        addItems(item)
+        notifyDataSetChanged()
+    }
 
     @Deprecated(
-            message = "Use addItem(item) instead",
+            message = "Use addItem(item) instead, and call notify as you wish",
             replaceWith = ReplaceWith("addItem(item)"),
             level = DeprecationLevel.WARNING
     )
-    fun addElement(item: T) { addItem(item) }
+    fun addElement(item: T) {
+        addItem(item)
+        notifyDataSetChanged()
+    }
 
     @Deprecated(
-            message = "Use clearAllItems() instead",
+            message = "Use clearAllItems() instead, and call notify as you wish",
             replaceWith = ReplaceWith("clearAllItems()"),
             level = DeprecationLevel.WARNING
     )
-    fun clearAllElements() { clearAllItems() }
+    fun clearAllElements() {
+        clearAllItems()
+        notifyDataSetChanged()
+    }
 }
