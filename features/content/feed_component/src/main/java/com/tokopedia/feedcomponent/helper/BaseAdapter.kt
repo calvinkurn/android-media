@@ -67,6 +67,14 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
         this.itemList.add(position, item)
     }
 
+    fun removeItem(item: T) {
+        this.itemList.remove(item)
+    }
+
+    fun removeItemAt(position: Int) {
+        this.itemList.removeAt(position)
+    }
+
     fun clearAllItems() {
         this.itemList.clear()
     }
@@ -102,5 +110,27 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     fun clearAllElements() {
         clearAllItems()
         notifyDataSetChanged()
+    }
+
+    @Deprecated(
+            message = "Use removeItem(item) instead, and call notify as you wish",
+            replaceWith = ReplaceWith("removeItem(item)"),
+            level = DeprecationLevel.WARNING
+    )
+    fun removeElement(item: T) {
+        removeItem(item)
+        notifyDataSetChanged()
+    }
+
+    @Deprecated(
+            message = "Use addItems(items) instead, and call notify as you wish",
+            replaceWith = ReplaceWith("addItems(items)"),
+            level = DeprecationLevel.WARNING
+    )
+    fun addMoreData(itemList: List<T>) {
+        val positionStart = itemList.size
+        addItems(itemList)
+        if (positionStart == 0) notifyDataSetChanged()
+        else notifyItemRangeInserted(positionStart, itemList.size)
     }
 }
