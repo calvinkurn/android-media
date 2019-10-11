@@ -13,6 +13,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
@@ -195,7 +196,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.primaryClip = clipData
 
-        Toaster.showNormal(view,
+        Toaster.showNormal(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG)
     }
