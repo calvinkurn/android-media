@@ -183,6 +183,18 @@ class ShopListFragment:
         searchShopViewModel?.getOpenFilterPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccessOpenFilterPage ->
             handleEventOpenFilterPage(isSuccessOpenFilterPage)
         })
+
+        searchShopViewModel?.getShopItemImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventShopItemImpression(trackingObjectList)
+        })
+
+        searchShopViewModel?.getProductPreviewImpressionTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { trackingObjectList ->
+            trackEventProductPreviewImpression(trackingObjectList)
+        })
+
+        searchShopViewModel?.getEmptySearchTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isTrackEmptySearch ->
+            trackEventEmptySearch(isTrackEmptySearch)
+        })
     }
 
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
@@ -258,6 +270,26 @@ class ShopListFragment:
         else {
             activity?.let { activity ->
                 NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
+            }
+        }
+    }
+
+    private fun trackEventShopItemImpression(trackingObjectList: List<Any>) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.trackImpressionSearchResultShop(trackingObjectList, keyword)
+    }
+
+    private fun trackEventProductPreviewImpression(trackingObjectList: List<Any>) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.eventImpressionSearchResultShopProductPreview(trackingObjectList, keyword)
+    }
+
+    private fun trackEventEmptySearch(isTrackEmptySearch: Boolean) {
+        if (isTrackEmptySearch) {
+            activity?.let { activity ->
+                val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+                val selectedFilterMap = searchShopViewModel?.getActiveFilterMap() ?: mapOf()
+                SearchTracking.eventSearchNoResult(activity, keyword, screenName, selectedFilterMap)
             }
         }
     }

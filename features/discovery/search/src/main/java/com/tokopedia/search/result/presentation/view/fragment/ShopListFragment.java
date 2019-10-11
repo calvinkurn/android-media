@@ -251,8 +251,8 @@ public class ShopListFragment
             }
         }
 
-        searchTracking.trackImpressionSearchResultShop(dataLayerShopItemList, getQueryKey());
-        searchTracking.trackImpressionSearchResultShopProductPreview(dataLayerShopItemProductList, getQueryKey());
+        SearchTracking.trackImpressionSearchResultShop(dataLayerShopItemList, getQueryKey());
+        SearchTracking.eventImpressionSearchResultShopProductPreview(dataLayerShopItemProductList, getQueryKey());
     }
 
     private List<Object> createShopProductPreviewDataLayerObjectList(ShopViewModel.ShopItem shopItem) {
@@ -361,10 +361,10 @@ public class ShopListFragment
     }
 
     private void trackShopItemClick(@NonNull ShopViewModel.ShopItem shopItem) {
-        searchTracking.trackSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+        searchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
 
         if(isShopNotActive(shopItem)) {
-            searchTracking.trackSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
+            searchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), getQueryKey());
         }
     }
 
@@ -384,7 +384,7 @@ public class ShopListFragment
     public void onProductItemClicked(@NonNull ShopViewModel.ShopItem.ShopItemProduct shopItemProduct) {
         if (redirectionListener == null) return;
 
-        searchTracking.trackSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), getQueryKey());
+        searchTracking.eventSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), getQueryKey());
 
         redirectIfApplinkNotEmpty(shopItemProduct.getApplink());
     }

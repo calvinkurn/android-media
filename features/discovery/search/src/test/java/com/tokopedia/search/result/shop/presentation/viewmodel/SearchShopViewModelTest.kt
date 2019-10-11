@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.Repository
@@ -46,14 +47,14 @@ internal class SearchShopViewModelTest : Spek({
 
     val shopItemList: List<ShopItem> = mutableListOf<ShopItem>().also {
         it.add(ShopItem(id = "1", productList = shopItemProductList))
-        it.add(ShopItem(id = "2"))
+        it.add(ShopItem(id = "2", productList = shopItemProductList))
         it.add(ShopItem(id = "3", productList = shopItemProductList))
-        it.add(ShopItem(id = "4"))
+        it.add(ShopItem(id = "4", productList = shopItemProductList))
     }
 
     val moreShopItemList: List<ShopItem> = mutableListOf<ShopItem>().also {
         it.add(ShopItem(id = "5", productList = shopItemProductList))
-        it.add(ShopItem(id = "6"))
+        it.add(ShopItem(id = "6", productList = shopItemProductList))
     }
 
     val aceSearchShopWithNextPage = AceSearchShop(
@@ -155,10 +156,12 @@ internal class SearchShopViewModelTest : Spek({
     val shopTotalCountViewModelMapper = shopViewModelMapperModule.provideShopTotalCountViewModelMapper()
     val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
 
+    val userIdLoggedIn = "123456"
+    val deviceId = "pixel 2"
     val userSession = mockk<UserSessionInterface>().also {
         every { it.isLoggedIn }.returns(true)
-        every { it.userId }.returns("123456")
-        every { it.deviceId }.returns("pixel 2")
+        every { it.userId }.returns(userIdLoggedIn)
+        every { it.deviceId }.returns(deviceId)
     }
 
     val localCacheGCMIDValue = "GCM_ID"
@@ -197,6 +200,73 @@ internal class SearchShopViewModelTest : Spek({
                 shopCpmViewModelMapper, shopTotalCountViewModelMapper, shopViewModelMapper,
                 searchLocalCacheHandler, userSession, localCacheHandler
         )
+    }
+
+    Feature("Create Search Shop View Model") {
+        createTestInstance()
+
+        Scenario("Create Search Shop View Model with non-logged in user") {
+            val userIdNonLogin = "0"
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("User has logged in") {
+                every { userSession.isLoggedIn }.returns(false)
+            }
+
+            When("Create Search Shop View Model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Then("Verify search parameter is updated properly") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter[SearchApiConst.UNIQUE_ID] shouldBe AuthHelper.getMD5Hash(localCacheGCMIDValue)
+                searchParameter[SearchApiConst.USER_ID] shouldBe userIdNonLogin
+                searchParameter[SearchApiConst.START] shouldBe SearchShopViewModel.START_ROW_FIRST_TIME_LOAD
+            }
+        }
+
+        Scenario("Create Search Shop View Model with logged in user") {
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("User has logged in") {
+                every { userSession.isLoggedIn }.returns(true)
+                every { userSession.userId }.returns(userIdLoggedIn)
+            }
+
+            When("Create Search Shop View Model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Then("Verify search parameter is updated properly") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter[SearchApiConst.UNIQUE_ID] shouldBe AuthHelper.getMD5Hash(userIdLoggedIn)
+                searchParameter[SearchApiConst.USER_ID] shouldBe userIdLoggedIn
+                searchParameter[SearchApiConst.START] shouldBe SearchShopViewModel.START_ROW_FIRST_TIME_LOAD
+            }
+        }
+
+        Scenario("Create Search Shop View Model with empty parameter") {
+            val searchParameterWithoutQuery = mapOf<String, Any>()
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            When("Create Search Shop View Model") {
+                searchShopViewModel = createSearchShopViewModel(searchParameterWithoutQuery)
+            }
+
+            Then("Verify search parameter is updated properly") {
+                val searchParameter = searchShopViewModel.getSearchParameter()
+
+                searchParameter[SearchApiConst.UNIQUE_ID] shouldBe AuthHelper.getMD5Hash(userIdLoggedIn)
+                searchParameter[SearchApiConst.USER_ID] shouldBe userIdLoggedIn
+                searchParameter[SearchApiConst.START] shouldBe SearchShopViewModel.START_ROW_FIRST_TIME_LOAD
+            }
+
+            Then("verify getSearchParameterQuery is empty String") {
+                searchShopViewModel.getSearchParameterQuery() shouldBe ""
+            }
+        }
     }
 
     Feature("Handle View Created") {
@@ -417,6 +487,19 @@ internal class SearchShopViewModelTest : Spek({
                 shopItemImpressionTracking?.size shouldBe shopItemList.size
             }
 
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
+            }
+
+            Then("should not post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe null
+            }
+
             Then("assert has next page is true") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -456,6 +539,19 @@ internal class SearchShopViewModelTest : Spek({
 
                 val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
                 shopItemImpressionTracking?.size shouldBe shopItemList.size
+            }
+
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
+            }
+
+            Then("should not post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe null
             }
 
             Then("assert has next page is false") {
@@ -522,6 +618,12 @@ internal class SearchShopViewModelTest : Spek({
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldOnlyHaveEmptySearchModel()
+            }
+
+            Then("should post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
             }
 
             Then("assert has next page is false") {
@@ -862,6 +964,13 @@ internal class SearchShopViewModelTest : Spek({
                 shopItemImpressionTracking?.size shouldBe moreShopItemList.size
             }
 
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe moreShopItemList.size * shopItemProductList.size
+            }
+
             Then("assert has next page is true") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -907,6 +1016,13 @@ internal class SearchShopViewModelTest : Spek({
 
                 val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
                 shopItemImpressionTracking?.size shouldBe moreShopItemList.size
+            }
+
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe moreShopItemList.size * shopItemProductList.size
             }
 
             Then("assert has next page is false") {
@@ -1075,6 +1191,44 @@ internal class SearchShopViewModelTest : Spek({
             Then("verify search shop API is called twice and search more shop API is called once") {
                 searchShopFirstPageRepository.isExecuted(2)
                 searchShopLoadMoreRepository.isExecuted()
+            }
+
+            Then("verify dynamic filter API is called once") {
+                dynamicFilterRepository.isExecuted(2)
+            }
+
+            Then("assert search shop state success after reload") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Reload Search Shop After Search Shop First Page Gives Empty Result") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("view search shop first page successfully with empty result") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelEmptyList).andThen(searchShopModel)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view reload search shop") {
+                searchShopViewModel.onViewReloadData()
+            }
+
+            Then("verify search shop API is called twice and search more shop API is called once") {
+                searchShopFirstPageRepository.isExecuted(2)
             }
 
             Then("verify dynamic filter API is called once") {
@@ -1479,6 +1633,13 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopFirstPageRepository.isExecuted(2)
                 dynamicFilterRepository.isExecuted(2)
             }
+        }
+    }
+
+    Feature("Handle View Tracking Shop Item Click") {
+
+        Scenario("") {
+
         }
     }
 })

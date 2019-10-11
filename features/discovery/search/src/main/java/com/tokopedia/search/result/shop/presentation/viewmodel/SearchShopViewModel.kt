@@ -60,11 +60,14 @@ internal class SearchShopViewModel(
     private val loadingMoreModel = LoadingMoreModel()
     private var hasLoadData = false
     private var hasNextPage = false
+    private var isEmptySearchShop = false
     private var dynamicFilterModel: DynamicFilterModel? = null
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val emptySearchTrackingEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         setSearchParameterUniqueId()
@@ -92,7 +95,8 @@ internal class SearchShopViewModel(
     }
 
     fun getUserId(): String {
-        return if (userSession.isLoggedIn) userSession.userId else "0"
+        return if (userSession.isLoggedIn) userSession.userId
+        else "0"
     }
 
     private fun setSearchParameterStartRow(startRow: Int) {
@@ -169,29 +173,32 @@ internal class SearchShopViewModel(
         if(searchShopModel == null) return
 
         updateIsHasNextPage(searchShopModel)
+        updateIsSearchShopEmpty(searchShopModel)
 
         val visitableList = createVisitableListFromModel(searchShopModel)
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
+
         postImpressionTrackingEvent(visitableList)
+        postEmptySearchTrackingEvent()
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
         hasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
     }
 
+    private fun updateIsSearchShopEmpty(searchShopModel: SearchShopModel) {
+        isEmptySearchShop = searchShopModel.aceSearchShop.shopList.isEmpty()
+    }
+
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
-        return if (isSearchShopListEmpty(searchShopModel)) {
+        return if (isEmptySearchShop) {
             createVisitableListWithEmptySearchViewModel(false)
         }
         else {
             createSearchShopListWithHeader(searchShopModel)
         }
-    }
-
-    private fun isSearchShopListEmpty(searchShopModel: SearchShopModel): Boolean {
-        return searchShopModel.aceSearchShop.shopList.isEmpty()
     }
 
     private fun createVisitableListWithEmptySearchViewModel(isFilterActive: Boolean): List<Visitable<*>> {
@@ -248,6 +255,8 @@ internal class SearchShopViewModel(
         }
     }
 
+    private fun getSearchParameterStartRow() = (searchParameter[SearchApiConst.START] ?: "").toString().toIntOrNull() ?: 0
+
     private fun setShopProductItemPosition(shopItemProductList: List<ShopViewModel.ShopItem.ShopItemProduct>) {
         for ((index, shopItemProduct) in shopItemProductList.withIndex()) {
             shopItemProduct.position = index + 1
@@ -271,37 +280,34 @@ internal class SearchShopViewModel(
 
     private fun postImpressionTrackingEvent(visitableList: List<Visitable<*>>) {
         val dataLayerShopItemList = mutableListOf<Any>()
-//        val dataLayerShopItemProductList = ArrayList<Any>()
+        val dataLayerShopItemProductList = mutableListOf<Any>()
 
-        for (`object` in visitableList) {
-            if (`object` is ShopViewModel.ShopItem) {
-                dataLayerShopItemList.add(`object`.getShopAsObjectDataLayer())
-//                dataLayerShopItemProductList.addAll(createShopProductPreviewDataLayerObjectList(`object`))
+        for (shopItem in visitableList) {
+            if (shopItem is ShopViewModel.ShopItem) {
+                dataLayerShopItemList.add(shopItem.getShopAsObjectDataLayer())
+                dataLayerShopItemProductList.addAll(createShopProductPreviewDataLayerObjectList(shopItem))
             }
         }
 
         shopItemImpressionTrackingEventLiveData.postValue(Event(dataLayerShopItemList))
+        productPreviewImpressionTrackingEventLiveData.postValue(Event(dataLayerShopItemProductList))
     }
 
-//    private fun createShopProductPreviewDataLayerObjectList(shopItem: ShopViewModel.ShopItem): List<Any> {
-//        val dataLayerShopItemProductList = ArrayList<Any>()
-//
-//        val maxProductCount = getProductPreviewItemMaxCount(shopItem.productList)
-//
-//        for (i in 0 until maxProductCount) {
-//            val product = shopItem.productList[i]
-//            dataLayerShopItemProductList.add(product.getShopProductPreviewAsObjectDataLayerList())
-//        }
-//
-//        return dataLayerShopItemProductList
-//    }
-//
-//    private fun getProductPreviewItemMaxCount(shopItemProductList: List<ShopViewModel.ShopItem.ShopItemProduct>): Int {
-//        return if (shopItemProductList.size > SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT)
-//            SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
-//        else
-//            shopItemProductList.size
-//    }
+    private fun createShopProductPreviewDataLayerObjectList(shopItem: ShopViewModel.ShopItem): List<Any> {
+        val dataLayerShopItemProductList = mutableListOf<Any>()
+
+        shopItem.productList.forEach { productItem ->
+            dataLayerShopItemProductList.add(productItem.getShopProductPreviewAsObjectDataLayerList())
+        }
+
+        return dataLayerShopItemProductList
+    }
+
+    private fun postEmptySearchTrackingEvent() {
+        if (isEmptySearchShop) {
+            emptySearchTrackingEventLiveData.postValue(Event(true))
+        }
+    }
 
     private fun catchSearchShopException(e: Throwable?) {
         hasNextPage = false
@@ -539,8 +545,6 @@ internal class SearchShopViewModel(
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
 
-    fun getSearchParameterStartRow() = (searchParameter[SearchApiConst.START] ?: "").toString().toIntOrNull() ?: 0
-
     fun getSearchShopLiveData(): LiveData<State<List<Visitable<*>>>> {
         return searchShopLiveData
     }
@@ -563,6 +567,18 @@ internal class SearchShopViewModel(
 
     fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> {
         return shopItemImpressionTrackingEventLiveData
+    }
+
+    fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> {
+        return productPreviewImpressionTrackingEventLiveData
+    }
+
+    fun getActiveFilterMap(): Map<String, String> {
+        return filterController.getActiveFilterMap()
+    }
+
+    fun getEmptySearchTrackingEventLiveData(): LiveData<Event<Boolean>> {
+        return emptySearchTrackingEventLiveData
     }
 
     override fun onCleared() {
