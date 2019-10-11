@@ -295,7 +295,7 @@ class AffiliateDashboardFragment :
         else {
             calendarView = initCalendarView()
             calendarBottomSheet = initCalendarBottomSheet()
-            unifyCalendar.calendarPickerView.scrollToDate(startDate ?: getCurrentDate())
+            unifyCalendar.calendarPickerView?.scrollToDate(startDate ?: getCurrentDate())
             tempStartDate = null
             tempEndDate = null
             calendarBottomSheet.show()
@@ -336,11 +336,15 @@ class AffiliateDashboardFragment :
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
         val maxDate = getMaxDate()
-        val calendarPickerView = pickerView.init(getMinDate(), maxDate, holidayList)
-                .inMode(CalendarPickerView.SelectionMode.RANGE)
-        pickerView.setOnDateSelectedListener(getOnSelectedDateListener())
+        val calendarPickerView = pickerView?.init(getMinDate(), maxDate, holidayList)
+                ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+        pickerView?.setOnDateSelectedListener(getOnSelectedDateListener())
 
-        if (startDate != null && endDate != null) calendarPickerView.withSelectedDates(listOf(startDate, endDate))
+        startDate?.let { startDate ->
+            endDate?.let { endDate ->
+                if (startDate != null && endDate != null) calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
+            }
+        }
     }
 
     private fun getMinDate(): Date {

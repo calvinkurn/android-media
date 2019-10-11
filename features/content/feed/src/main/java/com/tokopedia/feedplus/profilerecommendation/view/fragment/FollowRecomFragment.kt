@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.profilerecommendation.view.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
@@ -75,8 +74,11 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             setCancelable(false)
         }
     }
+
     private val interestIds: IntArray
         get() = arguments?.getIntArray(EXTRA_INTEREST_IDS) ?: intArrayOf()
+
+    private val actionFollowIdList: MutableList<String> = mutableListOf()
 
     private lateinit var followRecomAdapter: FollowRecomAdapter
     private lateinit var rvFollowRecom: RecyclerView
@@ -132,26 +134,32 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction) {
+        onFollowButtonClicked(authorId, actionToCall)
         if (isFollowed) {
             feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
         } else {
             feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
         }
-        presenter.followUnfollowRecommendation(authorId, actionToCall)
+        onFollowButtonClicked(authorId, actionToCall)
     }
 
     override fun onFollowStateChanged(followCount: Int) {
         setupInfo(infoViewModel, followCount)
     }
 
-    override fun onSuccessFollowRecommendation(id: String) {
-        followRecomAdapter.updateFollowState(id, FollowRecomAction.FOLLOW)
-        updateDialogIfApplicable(id)
+    override fun onSuccessFollowUnfollowRecommendation(id: String, action: FollowRecomAction) {
+        //Not updating follow state because it is updated before call
+        removeActionFollowId(id)
     }
 
-    override fun onSuccessUnfollowRecommendation(id: String) {
-        followRecomAdapter.updateFollowState(id, FollowRecomAction.UNFOLLOW)
+    override fun onFailedFollowUnfollowRecommendation(id: String, action: FollowRecomAction, t: Throwable) {
+        followRecomAdapter.updateFollowState(id, when (action) {
+            FollowRecomAction.FOLLOW -> FollowRecomAction.UNFOLLOW
+            FollowRecomAction.UNFOLLOW -> FollowRecomAction.FOLLOW
+        })
         updateDialogIfApplicable(id)
+        onGetError(t)
+        removeActionFollowId(id)
     }
 
     override fun onSuccessFollowAllRecommendation() {
@@ -211,7 +219,12 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             FollowRecomAction.FOLLOW -> feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
             FollowRecomAction.UNFOLLOW -> feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
         }
-        presenter.followUnfollowRecommendation(authorId, action)
+        if (!actionFollowIdList.contains(authorId)) {
+            actionFollowIdList.add(authorId)
+            followRecomAdapter.updateFollowState(authorId, action)
+            updateDialogIfApplicable(authorId)
+            presenter.followUnfollowRecommendation(authorId, action)
+        }
     }
 
     override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
@@ -300,9 +313,15 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
                     avatarUrl = model.avatar,
                     badgeUrl = model.badgeUrl,
                     instruction = model.followInstruction,
-                    isFollowed = model.isFollowed
+                    isFollowed = model.isFollowed,
+                    actionFalse = model.textFollowFalse,
+                    actionTrue = model.textFollowTrue
             )
             listener = this@FollowRecomFragment
         }
+    }
+
+    private fun removeActionFollowId(id: String) {
+        actionFollowIdList.remove(id)
     }
 }
