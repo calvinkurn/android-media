@@ -182,7 +182,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PRODUCT:
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isHome(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
                         openShopInfo(linkSegment, uriData);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -536,7 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_INFO,
                                 shopId);
-                    } else if(isHome(linkSegment)){
+                    } else if(isShopHome(linkSegment)){
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_HOME,
                                 shopId);
@@ -563,7 +563,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
-    private boolean isHome(List<String> linkSegment) {
+    private boolean isShopHome(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("home");
     }
