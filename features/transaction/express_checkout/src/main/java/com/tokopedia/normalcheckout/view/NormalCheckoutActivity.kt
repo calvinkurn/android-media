@@ -109,17 +109,17 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
     }
 
     override fun clickAccept() {
-        sendGeneralEvent("setuju")
+        sendPDPEvent("setuju")
         normalCheckoutFragment?.run {
             this.goToTradeInHome()
         }
     }
 
     override fun clickDeny() {
-        sendGeneralEvent("batal")
+        sendPDPEvent("batal")
     }
 
-    private fun sendGeneralEvent(label: String) {
+    private fun sendPDPEvent(label: String) {
         val trackApp = TrackApp.getInstance()
         trackApp.gtm.sendGeneralEvent("clickPDP",
                 "product detail page",
