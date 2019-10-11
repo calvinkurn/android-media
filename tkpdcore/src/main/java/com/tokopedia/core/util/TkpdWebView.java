@@ -7,14 +7,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebSettings;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core2.R;
-import com.tokopedia.url.TokopediaUrl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
