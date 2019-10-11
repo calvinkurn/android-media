@@ -221,7 +221,7 @@ internal val globalNavWidgetModelCard2 = GlobalNavWidgetModel(
                     name = "Sebelum liburan, book hotelmu disini!",
                     clickItemApplink = "tokopedia://deals/test-giftn-7419",
                     clickItemUrl = "https://www.tokopedia.com/deals/i/test-giftn-7419/",
-                    backgroundUrl = "https://ecs7.tokopedia.net/img/red-container.png",
+                    backgroundUrl = "https://ecs7.tokopedia.net/img/autocomplete/image_background_default_widget.png",
                     logoUrl = "https://ecs7.tokopedia.net/img/recharge/category/pesawat/colored-active.png",
                     position = 1
             ))
