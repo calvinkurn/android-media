@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Umrah</string>
+
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
     <string name="umrah_order_detail_show_detail">Lihat Detail</string>
+
+    <string name="umrah_my_umrah_show_detail">Lihat Detail</string>
+
 </resources>

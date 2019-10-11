@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.adapter.viewholder.UmrahSimpleViewHolder
-import com.tokopedia.salam.umrah.common.presentation.viewmodel.UmrahSimpleViewModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 
 /**
  * @author by furqan on 08/10/2019
  */
 class UmrahSimpleAdapter : RecyclerView.Adapter<UmrahSimpleViewHolder>() {
 
-    private val simpleViewModels = arrayListOf<UmrahSimpleViewModel>()
+    private val simpleViewModels = arrayListOf<UmrahSimpleModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahSimpleViewHolder =
             UmrahSimpleViewHolder(LayoutInflater.from(parent.context)
@@ -24,13 +24,13 @@ class UmrahSimpleAdapter : RecyclerView.Adapter<UmrahSimpleViewHolder>() {
         viewHolder.bind(simpleViewModels[position])
     }
 
-    fun setDatas(datas: List<UmrahSimpleViewModel>) {
+    fun setDatas(datas: List<UmrahSimpleModel>) {
         this.simpleViewModels.clear()
         this.simpleViewModels.addAll(datas)
         notifyDataSetChanged()
     }
 
-    fun addData(data: UmrahSimpleViewModel) {
+    fun addData(data: UmrahSimpleModel) {
         this.simpleViewModels.add(data)
         notifyDataSetChanged()
     }

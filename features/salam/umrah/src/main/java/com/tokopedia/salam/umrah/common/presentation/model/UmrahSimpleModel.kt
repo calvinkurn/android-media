@@ -1,8 +1,8 @@
-package com.tokopedia.salam.umrah.common.presentation.viewmodel
+package com.tokopedia.salam.umrah.common.presentation.model
 
 /**
  * @author by furqan on 08/10/2019
  */
-class UmrahSimpleViewModel(
+class UmrahSimpleModel(
         val title: String = "",
         val description: String = "")
