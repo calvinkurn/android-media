@@ -189,11 +189,11 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         if (!userLoggedInStatus) {
             RelativeLayout.LayoutParams rewardsPointLayoutLP = (RelativeLayout.LayoutParams) rewardsPointLayout.getLayoutParams();
-            rewardsPointLayoutLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_130));
+            rewardsPointLayoutLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_cta_container_nonlogin));
             rewardsPointLayout.setLayoutParams(rewardsPointLayoutLP);
 
             RelativeLayout.LayoutParams tvEmptyLP = (RelativeLayout.LayoutParams) emptyTitle.getLayoutParams();
-            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_48));
+            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_56));
             emptyTitle.setLayoutParams(tvEmptyLP);
         }
 
