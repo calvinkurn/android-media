@@ -62,6 +62,8 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         val seeAllButtonText: TextView = itemView.findViewById(R.id.see_all_button)
 
         if(channel.header.backImage.isNotBlank()) {
+            val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
+            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
             seeAllButton.show()
             seeAllButtonText.hide()
             seeAllButton.setOnClickListener {
@@ -69,6 +71,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                         DynamicLinkHelper.getActionLink(channel.header))
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+
             }
             Glide.with(context)
                     .load(channel.header.backImage)

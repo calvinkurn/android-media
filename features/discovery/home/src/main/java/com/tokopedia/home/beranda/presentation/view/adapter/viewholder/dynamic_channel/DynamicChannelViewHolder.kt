@@ -90,7 +90,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 channelTitle.text = channelHeaderName
                 channelTitle.setTextColor(
                         if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                        else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700_20)
+                        else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700)
                 )
             } else {
                 channelTitleContainer?.visibility = View.GONE
