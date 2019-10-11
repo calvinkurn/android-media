@@ -682,6 +682,12 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             bottomSeparator.setVisibility(View.GONE);
         }
 
+        //hide gift section when user is in public page
+        if (!mUserSession.isLoggedIn()){
+            giftSectionMainLayout.setVisibility(View.GONE);
+            bottomSeparator.setVisibility(View.GONE);
+        }
+
         btnAction2.setOnClickListener(v -> {
             //call validate api the show dialog
             if (mUserSession.isLoggedIn()) {
@@ -806,7 +812,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (requestCode == REQUEST_CODE_LOGIN) {
             pointValueText.setText(getResources().getString(R.string.points_saya));
             mPresenter.getCatalogDetail(code);
-            mPresenter.startValidateCoupon(catalogsValueEntity);
+            if (catalogsValueEntity.isDisabled()) {
+                mPresenter.startValidateCoupon(catalogsValueEntity);
+            }
         }
     }
 }
