@@ -7,7 +7,11 @@
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_3">
+    app:cardElevation="@dimen/dp_3"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_product_card"

@@ -52,4 +52,8 @@
     <string name="insurance_price_label">Asuransi</string>
     <string name="additional_price_label">Biaya Tambahan Penjual</string>
     <string name="total_price_label">Total Pembayaran</string>
+    <string name="show_bottomsheet">Show Bottomsheet</string>
+    <string name="tolak_pesanan">Tolak Pesanan</string>
+    <string name="accept_order">accept_order</string>
+    <string name="kembali">Kembali</string>
 </resources>

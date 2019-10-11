@@ -4,11 +4,14 @@ package com.tokopedia.sellerorder.common.util
  * Created by fwidjaja on 2019-08-30.
  */
 object SomConsts {
+    const val PARAM_INPUT = "input"
     const val PARAM_SELLER = "seller"
     const val PARAM_CLIENT = "android"
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_SHOP_ID = "shop_id"
+    const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -32,4 +35,25 @@ object SomConsts {
     const val RECEIVER_NOTES_START = "[Tokopedia Note: "
     const val RECEIVER_NOTES_END = "]"
     const val RECEIVER_NOTES_COLON = ":"
+
+    const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+    const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
+
+    const val ACTION_OK = "OK"
+    const val RESULT_ACCEPT_ORDER = "result_accept_order"
+    const val KEY_REJECT_ORDER = "reject_order"
+
+    const val KEY_REASON_EMPTY_STOCK = "empty_stock"
+    const val KEY_REASON_SHOP_CLOSED = "shop_closed"
+    const val KEY_REASON_COURIER_PROBLEM = "courier_problem"
+    const val KEY_REASON_BUYER_NO_RESPONSE = "buyer_no_resp"
+    const val KEY_REASON_OTHER = "other_reason"
+
+    const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
+    const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"
+    const val VALUE_REASON_COURIER_PROBLEM = "Kendala Kurir"
+    const val VALUE_REASON_BUYER_NO_RESPONSE = "Pembeli Tidak Respons"
+    const val VALUE_REASON_OTHER = "Lainnya"
+
+    const val TITLE_PILIH_PENOLAKAN = "Pilih alasan penolakan"
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.sellerorder.detail.presentation.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -10,36 +12,66 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
+import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_BUYER_NO_RESPONSE
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_COURIER_PROBLEM
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_EMPTY_STOCK
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_OTHER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_SHOP_CLOSED
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_EMPTY_STOCK
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetTextOnlyAdapter
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment() {
+class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
+    private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
+    private lateinit var somBottomSheetTextOnlyAdapter:  SomBottomSheetTextOnlyAdapter
+    private lateinit var dialogUnify: DialogUnify
+    private lateinit var bottomSheetUnify: BottomSheetUnify
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -72,6 +104,7 @@ class SomDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingDetail()
+        observingAcceptOrder()
     }
 
     private fun prepareLayout() {
@@ -80,6 +113,8 @@ class SomDetailFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
         }
+
+        somBottomSheetTextOnlyAdapter = SomBottomSheetTextOnlyAdapter(this)
     }
 
     private fun loadDetail() {
@@ -107,6 +142,34 @@ class SomDetailFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun observingAcceptOrder() {
+        somDetailViewModel.acceptOrderResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    acceptOrderResponse = it.data.acceptOrder
+                    if (acceptOrderResponse.success == 1) {
+                        // if success = 1 : finishActivity, then show toaster
+                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(RESULT_ACCEPT_ORDER, acceptOrderResponse)
+                        })
+                        activity?.finish()
+
+                    } else {
+                        // if success = 0 : dismiss dialogUnify, then show toaster error
+                        val toasterError = Toaster
+                        view?.let { v ->
+                            toasterError.make(v, acceptOrderResponse.listMessage.first(), LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+                        }
+                    }
+                }
+                is Fail -> {
+                    // dismiss dialogUnify
+                    dialogUnify.dismiss()
+                }
+            }
+        })
+    }
+
     private fun renderDetail() {
         // header
         val dataHeader = SomDetailHeader(
@@ -117,7 +180,8 @@ class SomDetailFragment : BaseDaggerFragment() {
                 detailResponse.customer.name,
                 detailResponse.deadline.text,
                 detailResponse.deadline.color,
-                detailResponse.listLabelInfo)
+                detailResponse.listLabelInfo,
+                detailResponse.orderId.toString())
 
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
@@ -160,5 +224,107 @@ class SomDetailFragment : BaseDaggerFragment() {
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
+
+        // buttons
+        if (detailResponse.button.isNotEmpty()) {
+            rl_btn_detail?.visibility = View.VISIBLE
+            detailResponse.button.first().let { buttonResp ->
+                btn_primary?.text = buttonResp.displayName
+                btn_primary?.setOnClickListener { v ->
+                    dialogUnify = DialogUnify(v.context, HORIZONTAL_ACTION, NO_IMAGE)
+                    dialogUnify.setTitle(buttonResp.title)
+                    dialogUnify.setDescription(buttonResp.content)
+                    if (buttonResp.key.equals(getString(R.string.accept_order), true)) {
+                        dialogUnify.setPrimaryCTAText(getString(R.string.terima_pesanan))
+                        dialogUnify.setPrimaryCTAClickListener {
+
+                            val mapParam = buttonResp.param.convertStrObjToHashMap()
+                            if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+                                somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                                        mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
+                                dialogUnify.dismiss()
+                            }
+                        }
+
+                        dialogUnify.setSecondaryCTAText(getString(R.string.kembali))
+                        dialogUnify.setSecondaryCTAClickListener {
+                            dialogUnify.dismiss()
+                        }
+                    }
+                    dialogUnify.show()
+                }
+            }
+
+            btn_secondary?.setOnClickListener {
+                showTextOnlyBottomSheet()
+                bottomSheetUnify.clearHeader(true)
+                bottomSheetUnify.clearClose(true)
+                val mapKey = HashMap<String, String>()
+                val listKey = ArrayList<HashMap<String, String>>()
+                detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
+                    mapKey[btn.key] = btn.displayName
+                    listKey.add(mapKey)
+                }
+                somBottomSheetTextOnlyAdapter.listKey = listKey
+                somBottomSheetTextOnlyAdapter.notifyDataSetChanged()
+            }
+
+        } else {
+            rl_btn_detail?.visibility = View.GONE
+        }
+    }
+
+    private fun showTextOnlyBottomSheet() {
+        bottomSheetUnify = BottomSheetUnify()
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
+        viewBottomSheet.rv_bottomsheet_secondary?.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            adapter = somBottomSheetTextOnlyAdapter
+        }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+    }
+
+    override fun onBottomSheetItemClick(key: String) {
+        bottomSheetUnify.dismiss()
+        println("++ KEY = $key")
+        if (key.equals(KEY_REJECT_ORDER, true)) {
+            showTextOnlyBottomSheet()
+            bottomSheetUnify.clearHeader(false)
+            bottomSheetUnify.clearClose(false)
+            bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
+            somBottomSheetTextOnlyAdapter.listKey = createOptionsRejectOrder()
+            somBottomSheetTextOnlyAdapter.notifyDataSetChanged()
+
+        } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
+            // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
+        }
+    }
+
+    private fun createOptionsRejectOrder(): ArrayList<HashMap<String, String>> {
+        val listKey = ArrayList<HashMap<String, String>>()
+
+        val map1 = HashMap<String, String>()
+        map1[KEY_REASON_EMPTY_STOCK] = VALUE_REASON_EMPTY_STOCK
+        listKey.add(map1)
+
+        val map2 = HashMap<String, String>()
+        map2[KEY_REASON_SHOP_CLOSED] = VALUE_REASON_SHOP_CLOSED
+        listKey.add(map2)
+
+        val map3 = HashMap<String, String>()
+        map3[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
+        listKey.add(map3)
+
+        val map4 = HashMap<String, String>()
+        map4[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
+        listKey.add(map4)
+
+        val map5 = HashMap<String, String>()
+        map5[KEY_REASON_OTHER] = VALUE_REASON_OTHER
+        listKey.add(map5)
+
+        return listKey
     }
 }

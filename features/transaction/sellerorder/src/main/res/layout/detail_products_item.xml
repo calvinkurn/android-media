@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/products_title"
@@ -19,7 +15,11 @@
         app:typographyWeight="bold"
         android:layout_marginTop="@dimen/dp_16"
         tools:text="Daftar Produk"
-        android:text="@string/daftar_produk"/>
+        android:text="@string/daftar_produk"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_products"

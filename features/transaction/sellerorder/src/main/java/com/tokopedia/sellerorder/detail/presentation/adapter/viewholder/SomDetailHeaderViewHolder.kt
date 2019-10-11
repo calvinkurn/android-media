@@ -5,8 +5,13 @@ import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -25,6 +30,11 @@ class SomDetailHeaderViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolde
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             itemView.header_title?.text = item.dataObject.statusText
+            itemView.header_see_history?.setOnClickListener {
+                itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.HISTORY_ORDER, "")
+                        .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
+                        .putExtra(EXTRA_USER_MODE, 2))
+            }
             itemView.header_buyer_value?.text = item.dataObject.custName
             itemView.header_date_value?.text = item.dataObject.paymentDate
 
@@ -54,6 +64,9 @@ class SomDetailHeaderViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolde
             }
 
             itemView.header_invoice?.text = item.dataObject.invoice
+            itemView.header_see_invoice?.setOnClickListener {
+                RouteManager.route(it.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, item.dataObject.invoiceUrl))
+            }
         }
     }
 }

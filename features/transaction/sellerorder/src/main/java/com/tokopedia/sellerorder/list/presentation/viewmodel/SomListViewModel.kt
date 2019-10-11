@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,61 +38,46 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     suspend fun getTickerList(rawQuery: String) {
         val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
         val tickerParams = mapOf(PARAM_INPUT to requestTickerParams)
-        try {
-            val tickerListData = async {
-                val response = withContext(Dispatchers.Default) {
-                    val tickerRequest = GraphqlRequest(rawQuery, POJO_TICKER, tickerParams)
-                    graphqlRepository.getReseponse(listOf(tickerRequest))
-                            .getSuccessData<SomListTicker.Data>()
+        launchCatchError(block = {
+            val tickerListData = withContext(Dispatchers.IO) {
+                val tickerRequest = GraphqlRequest(rawQuery, POJO_TICKER, tickerParams as Map<String, Any>?)
+                graphqlRepository.getReseponse(listOf(tickerRequest))
+                        .getSuccessData<SomListTicker.Data>()
                 }
-                response
-            }
-
-            tickerListResult.value = Success(tickerListData.await().orderTickers.listTicker.toMutableList())
-        } catch (t: Throwable) {
-            tickerListResult.value = Fail(t)
-        }
+            tickerListResult.value = Success(tickerListData.orderTickers.listTicker.toMutableList())
+        }, onError = {
+            tickerListResult.postValue(Fail(it))
+        })
     }
 
     suspend fun getFilterList(rawQuery: String) {
-        try {
-            val filterListData = async {
-                val response = withContext(Dispatchers.Default) {
-                    val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER)
-                    graphqlRepository.getReseponse(listOf(filterRequest))
-                            .getSuccessData<SomListFilter.Data>()
-                }
-                response
+        launchCatchError(block = {
+            val filterListData = withContext(Dispatchers.IO) {
+                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER)
+                graphqlRepository.getReseponse(listOf(filterRequest))
+                        .getSuccessData<SomListFilter.Data>()
             }
-
-            val statusListOrder = filterListData.await().orderFilterSom.statusList.toMutableList()
-            filterListResult.value = Success(statusListOrder)
-        } catch (t: Throwable) {
-            filterListResult.value = Fail(t)
-        }
+            filterListResult.postValue(Success(filterListData.orderFilterSom.statusList.toMutableList()))
+        }, onError = {
+            filterListResult.postValue(Fail(it))
+        })
     }
 
     suspend fun getOrderList(rawQuery: String, requestOrderParams: SomListOrderParam) {
         val orderParams = mapOf(PARAM_INPUT to requestOrderParams)
-        try {
-            val orderListData = async {
-                val response = withContext(Dispatchers.Default) {
-                    val orderRequest = GraphqlRequest(rawQuery, POJO_ORDER, orderParams)
-                    graphqlRepository.getReseponse(listOf(orderRequest))
-                            .getSuccessData<SomListOrder.Data>()
-                }
-                response
+        launchCatchError(block = {
+            val orderListData = withContext(Dispatchers.IO) {
+                val orderRequest = GraphqlRequest(rawQuery, POJO_ORDER, orderParams)
+                graphqlRepository.getReseponse(listOf(orderRequest))
+                        .getSuccessData<SomListOrder.Data>()
             }
-
-            orderListResult.value = Success(orderListData.await().orderList.orders.toMutableList())
-        } catch (t: Throwable) {
-            orderListResult.value = Fail(t)
-        }
+            orderListResult.postValue(Success(orderListData.orderList.orders.toMutableList()))
+        }, onError = {
+            orderListResult.postValue(Fail(it))
+        })
     }
 
     companion object {
-        const val PARAM_INPUT = "input"
-
         private val POJO_TICKER = SomListTicker.Data::class.java
         private val POJO_FILTER = SomListFilter.Data::class.java
         private val POJO_ORDER = SomListOrder.Data::class.java

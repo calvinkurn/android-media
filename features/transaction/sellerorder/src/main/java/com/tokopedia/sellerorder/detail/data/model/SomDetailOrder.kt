@@ -19,7 +19,7 @@ data class SomDetailOrder (
         data class GetSomDetail (
             @SerializedName("order_id")
             @Expose
-            val userId: Int = 0,
+            val orderId: Int = 0,
 
             @SerializedName("status")
             @Expose

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,25 +29,21 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     }
 
     suspend fun getFilterList(rawQuery: String) {
-        try {
-            val filterListData = async {
-                val response = withContext(Dispatchers.Default) {
-                    val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER_ALL)
-                    graphqlRepository.getReseponse(listOf(filterRequest))
-                            .getSuccessData<SomListAllFilter.Data>()
-                }
-                response
+        launchCatchError(block = {
+            val filterListData = withContext(Dispatchers.IO) {
+                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER_ALL)
+                graphqlRepository.getReseponse(listOf(filterRequest))
+                        .getSuccessData<SomListAllFilter.Data>()
             }
+            shippingListResult.postValue(Success(filterListData.orderShippingList.toMutableList()))
+            statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
+            orderTypeListResult.postValue(Success(filterListData.orderTypeList.toMutableList()))
 
-            shippingListResult.value = Success(filterListData.await().orderShippingList.toMutableList())
-            statusOrderListResult.value = Success(filterListData.await().orderFilterSomSingle.statusList.toMutableList())
-            orderTypeListResult.value = Success(filterListData.await().orderTypeList.toMutableList())
-
-        } catch (t: Throwable) {
-            shippingListResult.value = Fail(t)
-            statusOrderListResult.value = Fail(t)
-            orderTypeListResult.value = Fail(t)
-        }
+        }, onError = {
+            shippingListResult.postValue(Fail(it))
+            statusOrderListResult.postValue(Fail(it))
+            orderTypeListResult.postValue(Fail(it))
+        })
     }
 
     companion object {

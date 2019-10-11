@@ -31,7 +31,7 @@ data class SomListOrderParam(
 
         @SerializedName("status_list")
         @Expose
-        var statusList: List<Int> = arrayListOf(),
+        var statusList: List<Int> = listOf(),
 
         @SerializedName("shipping_list")
         @Expose
