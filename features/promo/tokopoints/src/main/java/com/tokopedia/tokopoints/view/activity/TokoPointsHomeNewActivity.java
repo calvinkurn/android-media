@@ -71,10 +71,9 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN) {
             inflateFragment();
-        } else
-            finish();
+        }
     }
 
 
