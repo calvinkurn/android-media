@@ -245,12 +245,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
         if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
             notifPreference.isDisplayedGimmickNotif = true
-            presenter.sendNotif(
-                    { (_, _, _, _) ->
-                        doLogout()
-                        null
-                    },
-                    { throwable ->
+            presenter.sendNotif({ (_) ->
+                doLogout()
+                null
+            }, { throwable ->
                         doLogout()
                         if (view != null) {
                             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
