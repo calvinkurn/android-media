@@ -146,7 +146,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     lateinit var productManageListAdapter: ProductManageListAdapter
 
-    private var productManageViewModels: List<ProductManageViewModel> = listOf()
+    private var productManageViewModels: MutableList<ProductManageViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
@@ -234,7 +234,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
-            onSearchSubmitted("")
+            loadInitialData()
         }
 
         displayOnBoardingCheck()
