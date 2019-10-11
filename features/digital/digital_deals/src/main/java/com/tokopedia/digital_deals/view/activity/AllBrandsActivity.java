@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -104,11 +105,9 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getComponent().inject(this);
-        overridePendingTransition(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands,
-                com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
         Uri uri = getIntent().getData();
         if (uri != null) {
-            List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_ALL_BRANDS, uri, true);
+            List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri, true);
             getAllBrandsStaticIntent(this, params.get(0));
         }
         userSession = new UserSession(this);

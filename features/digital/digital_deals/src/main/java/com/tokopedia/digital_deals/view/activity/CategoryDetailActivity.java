@@ -11,6 +11,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
@@ -69,19 +70,16 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
-            overridePendingTransition(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands, com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
-        }
         Uri uri = getIntent().getData();
         if (uri != null) {
-            Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConst.DEALS_CATEGORY, uri, true);
+            Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
             Bundle extras = getIntent().getExtras();
             for (String key :params.keySet()) {
                 extras.putString(key, (String) params.get(key));
             }
             getInstanceIntentAppLinkBackToHome(this, extras);
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override

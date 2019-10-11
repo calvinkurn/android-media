@@ -1,6 +1,8 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import android.net.Uri
+import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
@@ -24,20 +26,35 @@ object DeeplinkMapper {
      */
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
-        if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
-            return getRegisteredNavigationFromHttp(context, deeplink)
+        val mappedDeeplink:String = if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
+            getRegisteredNavigationFromHttp(context, deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-                return getRegisteredNavigationDigital(context, deeplink)
+                getRegisteredNavigationDigital(context, deeplink)
             } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
-                return getRegisteredNavigationSearch(deeplink)
+                getRegisteredNavigationSearch(deeplink)
+            } else if (deeplink.startsWithPattern(ApplinkConst.DEALS_HOME)) {
+                getRegisteredNavigationDeals(deeplink)
+            } else{
+                getRegisteredNavigationFromTokopedia(deeplink)
             }
-            return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
-            return getRegisteredNavigationFromSellerapp(deeplink)
+            getRegisteredNavigationFromSellerapp(deeplink)
         } else {
-            return deeplink
+            ""
         }
+        return if (mappedDeeplink.isEmpty()) {
+            deeplink
+        } else {
+            val uri = Uri.parse(deeplink)
+            val queryParameterString = uri.query
+            if (queryParameterString?.isNotEmpty() == true) {
+                "$mappedDeeplink?$queryParameterString"
+            } else {
+                mappedDeeplink
+            }
+        }
+
     }
 
     /**
@@ -70,7 +87,7 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
-            ApplinkConst.DEALS_HOME -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
+//            ApplinkConst.DEALS_HOME -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
             else -> ""
         }
     }

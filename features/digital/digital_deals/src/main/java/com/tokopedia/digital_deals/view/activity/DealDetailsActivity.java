@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
@@ -26,15 +27,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
     private List<Outlet> outlets;
     private DealsDetailsResponse dealDetail;
-
-
-    public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        Intent destination = new Intent();
-        extras.putString(DealDetailsPresenter.HOME_DATA, extras.getString("slug"));
-        destination = new Intent(context, DealDetailsActivity.class)
-                .putExtras(extras);
-        return destination;
-    }
+    private String slug;
 
     @Override
     protected int getLayoutRes() {
@@ -54,22 +47,24 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     @Override
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
-        return DealDetailsFragment.createInstance(getIntent().getExtras());
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            List<String> params = UriUtil.destructureUri(ApplinkConst.DEALS_DETAIL, uri, true);
-            Bundle extra = getIntent().getExtras();
-            if (extra != null) {
-                extra.putString("slug", params.get(0));
+        if (getIntent().getExtras() != null) {
+            return DealDetailsFragment.createInstance(getIntent().getExtras());
+        } else {
+            Uri uri = getIntent().getData();
+            Bundle extras = getIntent().getExtras();
+            if (uri != null) {
+                List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri, true);
+                slug = params.get(0);
+                if (extras == null) {
+                    extras = new Bundle();
+                    extras.putString(DealDetailsPresenter.HOME_DATA, slug);
+                }
             }
-            getInstanceIntentAppLinkBackToHome(this, extra);
+            return DealDetailsFragment.createInstance(extras);
         }
     }
+
+
 
     @Override
     public void replaceFragment(List<Outlet> outlets, int flag) {

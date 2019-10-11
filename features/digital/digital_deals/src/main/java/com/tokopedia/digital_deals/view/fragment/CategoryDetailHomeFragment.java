@@ -158,7 +158,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         toolbarTitle = view.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
         searchInputView.setOnClickListener(this);
         seeAllBrands = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all);
-        popularLocation = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
+        popularLocation = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular_category);
         overFlowIcon = view.findViewById(com.tokopedia.digital_deals.R.id.overFlow_icon);
         numberOfDeals = view.findViewById(com.tokopedia.digital_deals.R.id.number_of_locations);
         recyclerViewDeals = view.findViewById(com.tokopedia.digital_deals.R.id.rv_deals);

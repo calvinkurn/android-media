@@ -86,7 +86,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))

@@ -24,23 +24,6 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     private String url;
     private int position;
 
-//    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
-//    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
-//        Intent destination;
-//        try {
-//            String deepLink = extras.getString(DeepLink.URI);
-//
-//            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-//            destination = new Intent(context, DealsHomeActivity.class)
-//                    .setData(uri.build())
-//                    .putExtras(extras);
-//
-//        } catch (Exception e) {
-//            destination = new Intent(context, DealsHomeActivity.class);
-//        }
-//        return destination;
-//    }
-
     @Override
     protected int getToolbarResourceID() {
         return R.id.toolbar;
