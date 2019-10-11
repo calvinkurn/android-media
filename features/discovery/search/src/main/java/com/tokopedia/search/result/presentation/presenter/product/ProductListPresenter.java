@@ -649,7 +649,10 @@ final class ProductListPresenter
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
-        getView().addLoading();
+
+        if (productViewModel.getTotalData() > Integer.parseInt(getSearchRows())) {
+            getView().addLoading();
+        }
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
