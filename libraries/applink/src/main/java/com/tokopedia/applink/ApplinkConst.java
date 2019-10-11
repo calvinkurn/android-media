@@ -201,7 +201,8 @@ public interface ApplinkConst {
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
-    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/instan";
+    String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
