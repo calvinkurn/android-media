@@ -126,7 +126,8 @@ class CategoryPageAnalytics {
                               creative_name: String,
                               creative_url: String,
                               position: Int,
-                              path: String) {
+                              path: String,
+                              namedPath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, "promoClick",
@@ -142,9 +143,9 @@ class CategoryPageAnalytics {
                 KEY_CREATIVE, creative_name,
                 KEY_CREATIVE_URL, creative_url,
                 KEY_POSITION, position,
-                KEY_CATEGORY, "",
-                "promo_id", "",
-                KEY_PROMO_CODE, "")))
+                KEY_CATEGORY, namedPath,
+                "promo_id", sub_category_id,
+                KEY_PROMO_CODE, sub_category_id)))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -153,11 +154,12 @@ class CategoryPageAnalytics {
     //10
 
     fun eventSubCategoryImpression(category_id: String,
-                                   id: String,
+                                   sub_id: String,
                                    creative_name: String,
                                    creative_url: String,
                                    position: Int,
-                                   path: String) {
+                                   path: String,
+                                   namePath:String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, "promoView",
@@ -166,16 +168,16 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, "",
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                KEY_ID, id,
+                KEY_ID, sub_id,
                 KEY_NAME, path,
                 KEY_CREATIVE, creative_name,
                 KEY_CREATIVE_URL, creative_url,
                 KEY_POSITION, position,
-                KEY_CATEGORY, "",
-                "promo_id", "",
-                KEY_PROMO_CODE, "")))
+                KEY_CATEGORY, namePath,
+                "promo_id", sub_id,
+                KEY_PROMO_CODE, sub_id)))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }

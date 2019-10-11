@@ -65,6 +65,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         SubCategoryListener,
         WishListActionListener {
 
+    var isSubCategoryAvailable = false
+
+
     override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
 
         val item = element as ProductsItem
@@ -328,6 +331,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
+                    isSubCategoryAvailable = true
                     subcategory_recyclerview.visibility = View.VISIBLE
                     subCategoryAdapter = SubCategoryAdapter(it.data as ArrayList<SubCategoryItem>,
                             this)
@@ -337,6 +341,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 }
 
                 is Fail -> {
+                    isSubCategoryAvailable = false
                     subcategory_recyclerview.visibility = View.GONE
                 }
             }
@@ -377,10 +382,14 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             layout_no_data.visibility = View.VISIBLE
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
-            quickfilter_recyclerview.visibility = View.GONE
+            quickfilter_parent.visibility = View.GONE
+            subcategory_recyclerview.visibility = View.GONE
         } else {
             layout_no_data.visibility = View.GONE
-            quickfilter_recyclerview.visibility = View.VISIBLE
+            quickfilter_parent.visibility = View.VISIBLE
+            if(isSubCategoryAvailable){
+                subcategory_recyclerview.visibility = View.VISIBLE
+            }
         }
     }
 

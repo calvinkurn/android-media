@@ -48,14 +48,26 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
                 subCategoryListener.OnDefaultItemClicked()
             } else {
                 val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
-                catAnalyticsInstance.eventClickSubCategory(item.id.toString(),
-                        id, item.name ?: "", item.url ?: "", position,
-                        getSubCategoryPath(item.url
-                                ?: "", item.id.toString()))
+                catAnalyticsInstance.eventClickSubCategory(
+                        item.id.toString(),
+                        id,
+                        item.name ?: "",
+                        item.thumbnailImage ?: "",
+                        position,
+                        getSubCategoryPath(item.url ?: "", item.id.toString()),
+                        getCategoryNamePath(item.url ?: ""))
 
                 subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
             }
         }
+    }
+
+    private fun getCategoryNamePath(path: String): String {
+        if (path.isNotEmpty()) {
+            val m = path.split("/p/")
+            return m[1]
+        }
+        return ""
     }
 
     private fun getSubCategoryPath(path: String, id: String): String {
@@ -83,8 +95,12 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             val item = subCategoryList[position]
 
             catAnalyticsInstance.eventSubCategoryImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
-                    item.id.toString(), item.name ?: "", item.url ?: "", position,
-                    getSubCategoryPath(item.url ?: "", item.id.toString()))
+                    item.id.toString(),
+                    item.name ?: "",
+                    item.thumbnailImage ?: "", position,
+                    getSubCategoryPath(item.url ?: "",
+                            item.id.toString()),
+                    getCategoryNamePath(item.url ?: ""))
         }
     }
 
