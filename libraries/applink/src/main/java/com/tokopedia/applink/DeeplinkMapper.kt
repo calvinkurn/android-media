@@ -33,6 +33,9 @@ object DeeplinkMapper {
             } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)
             }
+            if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
+                return getRegisteredNavigationSearch(deeplink)
+            }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
             return getRegisteredNavigationFromSellerapp(deeplink)

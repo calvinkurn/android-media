@@ -269,6 +269,7 @@ public class InboxDetailPresenterImpl
                         CommentsItem topItem = new CommentsItem();
                         topItem.setAttachment(mTicketDetail.getAttachment());
                         topItem.setMessage(mTicketDetail.getMessage());
+                        topItem.setMessagePlaintext(mTicketDetail.getMessage());
                         topItem.setCreatedBy(mTicketDetail.getCreatedBy());
                         topItem.setCreateTime(mTicketDetail.getCreateTime());
                         List<CommentsItem> commentsItems = mTicketDetail.getComments();
@@ -777,6 +778,8 @@ public class InboxDetailPresenterImpl
 
                     @Override
                     public void onError(Throwable e) {
+                        mView.hideProgressBar();
+                        mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.contact_us_search_error), false);
                         e.printStackTrace();
                     }
 

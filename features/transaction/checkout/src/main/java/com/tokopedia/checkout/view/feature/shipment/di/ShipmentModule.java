@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
@@ -18,6 +19,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
@@ -28,6 +30,7 @@ import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
+import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
@@ -49,6 +52,10 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -70,6 +77,7 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
+    private InsuranceItemActionListener insuranceItemActionlistener;
     private PromoActionListener promoActionListener;
     private ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener;
     private ShipmentContract.View view;
@@ -78,6 +86,7 @@ public class ShipmentModule {
         this.shipmentAdapterActionListener = shipmentFragment;
         this.promoActionListener = shipmentFragment;
         this.shipmentAnalyticsActionListener = shipmentFragment;
+        this.insuranceItemActionlistener = shipmentFragment;
         this.view = shipmentFragment;
     }
 
@@ -171,7 +180,7 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     GetCourierRecommendationUseCase provideGetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
-        return new GetCourierRecommendationUseCase(shippingDurationConverter);
+        return new GetCourierRecommendationUseCase(shippingDurationConverter, new Gson());
     }
 
     @Provides
@@ -188,9 +197,16 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
+
+    @Provides
+    @ShipmentScope
+    GetInsuranceCartUseCase getInsuranceCartUseCase(@ApplicationContext Context context) {
+        return new GetInsuranceCartUseCase(context);
+    }
+
 
     @Provides
     @ShipmentScope
@@ -216,7 +232,9 @@ public class ShipmentModule {
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                                                         CodAnalytics codAnalytics,
-                                                        CheckoutAnalyticsCourierSelection checkoutAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
+                                                        CheckoutAnalyticsCourierSelection checkoutAnalytics,
+                                                        GetInsuranceCartUseCase getInsuranceCartUseCase) {
+        return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
             checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
             checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
             getShipmentAddressFormOneClickShipementUseCase,
@@ -224,7 +242,7 @@ public class ShipmentModule {
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
             shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
-            analyticsPurchaseProtection, codAnalytics, checkoutAnalytics);
+            analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase);
     }
 
     @Provides
@@ -243,7 +261,7 @@ public class ShipmentModule {
     @ShipmentScope
     ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter,
                                            RatesDataConverter ratesDataConverter) {
-        return new ShipmentAdapter(shipmentAdapterActionListener, promoActionListener, shipmentDataRequestConverter, ratesDataConverter);
+        return new ShipmentAdapter(shipmentAdapterActionListener, promoActionListener, shipmentDataRequestConverter, ratesDataConverter, insuranceItemActionlistener);
     }
 
     @Provides
