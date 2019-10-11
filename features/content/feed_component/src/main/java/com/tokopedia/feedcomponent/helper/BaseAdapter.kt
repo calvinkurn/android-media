@@ -48,7 +48,7 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     fun getItems(): List<T> = itemList
 
-    fun getItems(position: Int): T = itemList[position]
+    fun getItem(position: Int): T = itemList[position]
 
     fun setItems(itemList: List<T>) {
         this.itemList.clear()

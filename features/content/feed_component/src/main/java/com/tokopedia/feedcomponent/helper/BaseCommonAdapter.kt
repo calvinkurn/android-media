@@ -1,7 +1,9 @@
 package com.tokopedia.feedcomponent.helper
 
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.feedcomponent.helper.common.*
+import kotlin.reflect.KClass
 
 /**
  * Created by jegul on 2019-10-02.
@@ -17,6 +19,27 @@ open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
                 .addDelegate(LoadingAdapterDelegate())
     }
 
+    @Deprecated(
+            message = "It is better to check for loading from view / viewModel",
+            level = DeprecationLevel.WARNING
+    )
+    val isLoading: Boolean
+        get() {
+            return if (lastIndex > -1) {
+                val lastItem = getItem(lastIndex)
+                lastItem is LoadingModel || lastItem is LoadingMoreModel
+            } else {
+                false
+            }
+        }
+
+    @Deprecated(
+            message = "It,is better to check for loading from view / viewModel",
+            level = DeprecationLevel.WARNING
+    )
+    val isShowLoadingMore: Boolean
+        get() = itemCount > 0
+
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return oldItem == newItem
     }
@@ -25,17 +48,53 @@ open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
         return oldItem == newItem
     }
 
-    @JvmOverloads
-    fun showLoading(isSmooth: Boolean = false) {
-        addItem(itemList.size, LoadingMoreModel())
-        if (isSmooth) notifyItemInserted(itemList.size) else notifyDataSetChanged()
+    fun showLoadMore() {
+        insertAtLast(LoadingMoreModel())
     }
 
-    @JvmOverloads
-    fun hideLoading(isSmooth: Boolean = false) {
-        if (itemList.isNotEmpty() && itemList[itemList.lastIndex] is LoadingMoreModel) {
+    fun hideLoadMore() {
+        removeAtLast(LoadingMoreModel::class)
+    }
+
+    fun showPageLoad() {
+        insertAtLast(LoadingModel())
+    }
+
+    fun hidePageLoad() {
+        removeAtLast(LoadingModel::class)
+    }
+
+    @Deprecated(
+            message = "It is better to be explicit about which loading to show",
+            level = DeprecationLevel.WARNING
+    )
+    fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) showLoadMore()
+            else showPageLoad()
+        }
+    }
+
+    @Deprecated(
+            message = "It is better to be explicit about which loading to hide",
+            level = DeprecationLevel.WARNING
+    )
+    fun hideLoading() {
+        if (isLoading) {
+            hideLoadMore()
+            hidePageLoad()
+        }
+    }
+
+    private fun insertAtLast(item: Any) {
+        addItem(itemList.size, item)
+        notifyItemInserted(itemCount)
+    }
+
+    private fun <T: Any>removeAtLast(classType: KClass<T>) {
+        if (itemList.isNotEmpty() && itemList[itemList.lastIndex]::class == classType) {
             removeItemAt(itemList.lastIndex)
-            if (isSmooth) notifyItemRemoved(itemList.size) else notifyDataSetChanged()
+            notifyItemRemoved(itemList.size)
         }
     }
 }
