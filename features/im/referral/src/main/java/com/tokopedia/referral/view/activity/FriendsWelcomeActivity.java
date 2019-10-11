@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.di.DaggerReferralComponent;
 import com.tokopedia.referral.di.ReferralComponent;
@@ -23,8 +25,6 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
 
     private static final String WELCOME_SCREEN = "/referral/friends";
     private ReferralComponent referralComponent = null;
-    private String code = "";
-    private String owner = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +33,6 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
         if (!TextUtils.isEmpty(toolbarTitle)) updateTitle(toolbarTitle);
         if (!isappShowReferralButtonActivated(this)) {
             finish();
-        }
-    }
-
-    private void getDataUri() {
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            List<String> pathSegments = uri.getPathSegments();
-            code = pathSegments.get(0);
-            owner = pathSegments.get(1);
         }
     }
 
@@ -70,7 +61,11 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        getDataUri();
+        Uri uri = getIntent().getData();
+        List<String> linkPathSegments = UriUtil.destructureUri(
+                ApplinkConstInternalGlobal.REFERRAL_WELCOME_FRIENDS, uri, true);
+        String code = linkPathSegments.get(0).isEmpty() ? "" : linkPathSegments.get(0);
+        String owner = linkPathSegments.get(1).isEmpty() ? "" : linkPathSegments.get(1);
         return FragmentReferralFriendsWelcome.newInstance(code, owner);
     }
 }
