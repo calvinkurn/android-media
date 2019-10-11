@@ -30,6 +30,7 @@ public interface ApplinkConst {
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
+    String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
