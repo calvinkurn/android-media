@@ -1580,10 +1580,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
-
+        feedAnalytics.eventClickFeedInterestPick(item.name)
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        feedAnalytics.eventClickFeedInterestPickSeeAll()
         activity?.let {
             val bundle = Bundle()
             bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))
@@ -1593,6 +1594,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
+        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
         feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
     }
 

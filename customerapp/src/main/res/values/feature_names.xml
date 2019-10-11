@@ -88,4 +88,6 @@
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="inbox">Inbox</string>
+
+    <string name="instant_loan_app_name">Dana Instan</string>
 </resources>
