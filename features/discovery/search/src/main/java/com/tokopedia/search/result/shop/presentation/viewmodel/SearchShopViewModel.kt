@@ -64,6 +64,7 @@ internal class SearchShopViewModel(
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
 
     init {
         setSearchParameterUniqueId()
@@ -173,6 +174,7 @@ internal class SearchShopViewModel(
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
+        postImpressionTrackingEvent(visitableList)
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
@@ -266,6 +268,40 @@ internal class SearchShopViewModel(
     private fun updateSearchShopLiveDataStateToSuccess() {
         searchShopLiveData.postValue(Success(searchShopMutableList))
     }
+
+    private fun postImpressionTrackingEvent(visitableList: List<Visitable<*>>) {
+        val dataLayerShopItemList = mutableListOf<Any>()
+//        val dataLayerShopItemProductList = ArrayList<Any>()
+
+        for (`object` in visitableList) {
+            if (`object` is ShopViewModel.ShopItem) {
+                dataLayerShopItemList.add(`object`.getShopAsObjectDataLayer())
+//                dataLayerShopItemProductList.addAll(createShopProductPreviewDataLayerObjectList(`object`))
+            }
+        }
+
+        shopItemImpressionTrackingEventLiveData.postValue(Event(dataLayerShopItemList))
+    }
+
+//    private fun createShopProductPreviewDataLayerObjectList(shopItem: ShopViewModel.ShopItem): List<Any> {
+//        val dataLayerShopItemProductList = ArrayList<Any>()
+//
+//        val maxProductCount = getProductPreviewItemMaxCount(shopItem.productList)
+//
+//        for (i in 0 until maxProductCount) {
+//            val product = shopItem.productList[i]
+//            dataLayerShopItemProductList.add(product.getShopProductPreviewAsObjectDataLayerList())
+//        }
+//
+//        return dataLayerShopItemProductList
+//    }
+//
+//    private fun getProductPreviewItemMaxCount(shopItemProductList: List<ShopViewModel.ShopItem.ShopItemProduct>): Int {
+//        return if (shopItemProductList.size > SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT)
+//            SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
+//        else
+//            shopItemProductList.size
+//    }
 
     private fun catchSearchShopException(e: Throwable?) {
         hasNextPage = false
@@ -388,6 +424,8 @@ internal class SearchShopViewModel(
 
         updateSearchShopListWithNewData(visitableList)
         updateSearchShopLiveDataStateToSuccess()
+
+        postImpressionTrackingEvent(visitableList)
     }
 
     private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -521,6 +559,10 @@ internal class SearchShopViewModel(
 
     fun getActiveFilterOptionList(): List<Option> {
         return filterController.getActiveFilterOptionList()
+    }
+
+    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> {
+        return shopItemImpressionTrackingEventLiveData
     }
 
     override fun onCleared() {

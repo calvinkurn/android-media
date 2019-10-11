@@ -410,6 +410,13 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe shopItemList.size
+            }
+
             Then("assert has next page is true") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -442,6 +449,13 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe shopItemList.size
             }
 
             Then("assert has next page is false") {
@@ -604,7 +618,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("assert dynamic filter response event is success (true)") {
                 val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
 
-                getDynamicFilterResponseEvent?.peekContent() shouldBe true
+                getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe true
             }
         }
 
@@ -639,7 +653,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("assert dynamic filter response event is failed (false)") {
                 val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
 
-                getDynamicFilterResponseEvent?.peekContent() shouldBe false
+                getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe false
             }
         }
 
@@ -676,7 +690,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("assert dynamic filter response event is success (true)") {
                 val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
 
-                getDynamicFilterResponseEvent?.peekContent() shouldBe true
+                getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe true
             }
 
             Then("assert search shop state is success and have updated Empty Search Model with Filter Data") {
@@ -841,6 +855,13 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
 
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe moreShopItemList.size
+            }
+
             Then("assert has next page is true") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -879,6 +900,13 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe moreShopItemList.size
             }
 
             Then("assert has next page is false") {
@@ -1090,7 +1118,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("should post event success open filter page") {
                 val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
 
-                openFilterPageEvent?.peekContent() shouldBe true
+                openFilterPageEvent?.getContentIfNotHandled() shouldBe true
             }
         }
 
@@ -1121,7 +1149,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("should show error message indicating no filter data exists") {
                 val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
 
-                openFilterPageEvent?.peekContent() shouldBe false
+                openFilterPageEvent?.getContentIfNotHandled() shouldBe false
             }
         }
 
@@ -1157,7 +1185,7 @@ internal class SearchShopViewModelTest : Spek({
             Then("should show error message indicating no filter data exists") {
                 val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
 
-                openFilterPageEvent?.peekContent() shouldBe false
+                openFilterPageEvent?.getContentIfNotHandled() shouldBe false
             }
         }
     }
