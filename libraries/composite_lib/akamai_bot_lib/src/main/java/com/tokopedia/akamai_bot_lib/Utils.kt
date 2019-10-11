@@ -1,4 +1,4 @@
-package com.example.akamai_bot_lib
+package com.tokopedia.akamai_bot_lib
 
 import android.app.Application
 import android.os.Build
