@@ -11,6 +11,11 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     protected val delegatesManager = AdapterDelegatesManager<T>()
     protected val itemList: MutableList<T> = mutableListOf()
 
+    @Deprecated(
+            message = "Use getItems() instead",
+            replaceWith = ReplaceWith("getItems()"),
+            level = DeprecationLevel.WARNING
+    )
     val data: List<T>
         get() = itemList
 
@@ -41,6 +46,8 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder is BaseViewHolder) { holder.onViewRecycled() }
     }
 
+    fun getItems(): List<T> = itemList
+
     fun setItems(itemList: List<T>) {
         this.itemList.clear()
         addItems(itemList)
@@ -61,7 +68,24 @@ abstract class BaseAdapter<T: Any> : RecyclerView.Adapter<RecyclerView.ViewHolde
     /**
      * Needed to support easy migration from old Adapter
      */
+    @Deprecated(
+            message = "Use addItems(items) instead",
+            replaceWith = ReplaceWith("addItems(item)"),
+            level = DeprecationLevel.WARNING
+    )
     fun addElement(item: List<T>) { addItems(item) }
+
+    @Deprecated(
+            message = "Use addItem(item) instead",
+            replaceWith = ReplaceWith("addItem(item)"),
+            level = DeprecationLevel.WARNING
+    )
     fun addElement(item: T) { addItem(item) }
+
+    @Deprecated(
+            message = "Use clearAllItems() instead",
+            replaceWith = ReplaceWith("clearAllItems()"),
+            level = DeprecationLevel.WARNING
+    )
     fun clearAllElements() { clearAllItems() }
 }
