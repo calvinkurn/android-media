@@ -42,6 +42,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
@@ -107,6 +108,7 @@ open class DynamicPostViewHolder(v: View,
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
+        bindTracking(element.impressHolder, element.tracking)
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -493,6 +495,12 @@ open class DynamicPostViewHolder(v: View,
             }
         }
         return itemList
+    }
+
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+        itemView.addOnImpressionListener(impressHolder) {
+            listener.onAffiliateTrackClicked(trackList, false)
+        }
     }
 
     interface DynamicPostListener {

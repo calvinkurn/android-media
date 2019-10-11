@@ -1704,14 +1704,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             visitable.header.followCta.authorType,
                             trackingPostModel)
                 }
-                onAffiliateTrackClicked(visitable.tracking, false)
 
             } else if (visitable is BannerViewModel) {
                 val (itemViewModels) = visitable
                 val trackingBannerModels = ArrayList<TrackingBannerModel>()
                 for ((_, _, _, trackingBannerModel, tracking) in itemViewModels) {
                     trackingBannerModels.add(trackingBannerModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId)
             } else if (visitable is FeedRecommendationViewModel) {
@@ -1719,7 +1717,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val trackingList = ArrayList<TrackingRecommendationModel>()
                 for ((_, _, _, _, _, _, _, _, _, _, trackingRecommendationModel, tracking) in cards) {
                     trackingList.add(trackingRecommendationModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1731,7 +1728,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-                onAffiliateTrackClicked(tracking, false)
             }
         }
     }

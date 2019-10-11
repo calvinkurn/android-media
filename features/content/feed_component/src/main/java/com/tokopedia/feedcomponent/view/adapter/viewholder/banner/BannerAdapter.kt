@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_banner_item.view.*
 
@@ -40,10 +42,15 @@ class BannerAdapter(private val itemViewModels: List<BannerItemViewModel>,
             itemView.setOnClickListener {
                 listener.onBannerItemClick(positionInFeed, adapterPosition, element.redirectUrl)
             }
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.onAffiliateTrackClicked(element.tracking, false)
+            }
         }
     }
 
     interface BannerItemListener {
         fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String)
+
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }
 }
