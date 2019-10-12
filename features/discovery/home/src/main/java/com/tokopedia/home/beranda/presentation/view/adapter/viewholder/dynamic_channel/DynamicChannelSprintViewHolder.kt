@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.graphics.Color
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
@@ -12,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -23,7 +21,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridS
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -45,7 +42,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     }
 
     val context: Context = sprintView.context
-    val defaultSpanCount = 3
+    private val defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
@@ -110,22 +107,28 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: SprintViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-
-                holder.thematicCardView.setImageSrc(grid.imageUrl)
-                holder.thematicCardView.setName(grid.name)
-                holder.thematicCardView.setPrice(grid.price)
-                holder.thematicCardView.setDiscount(grid.discount)
-                holder.thematicCardView.setSlashedPrice(grid.slashedPrice)
-                holder.thematicCardView.setCashback(grid.cashback)
-                holder.thematicCardView.setOnClickListener {
-                    HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                            channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown))
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
+                holder.thematicCardView.apply {
+                    setImageProductVisible(true)
+                    setPriceVisible(true)
+                    setSlashedPriceVisible(true)
+                    setLabelDiscountVisible(true)
+                    setLabelPromoVisible(grid.cashback.isNotEmpty())
+                    setImageProductUrl(grid.imageUrl)
+                    setProductNameText(grid.name)
+                    setPriceText(grid.price)
+                    setLabelDiscountText(grid.discount)
+                    setSlashedPriceText(grid.slashedPrice)
+                    setLabelPromoText(grid.cashback)
+                    setLabelPromoType(ThematicCardView.LIGHT_RED)
+                    setOnClickListener {
+                        HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown))
+                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
 
         override fun getItemCount(): Int {

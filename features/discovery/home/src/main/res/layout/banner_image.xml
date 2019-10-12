@@ -12,7 +12,9 @@
     <include
         layout="@layout/home_master_dynamic_channel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="parent"/>
     <android.support.v7.widget.CardView
         app:cardCornerRadius="@dimen/dp_10"
         app:cardElevation="@dimen/dp_1"

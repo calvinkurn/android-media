@@ -3,8 +3,6 @@
     android:id="@+id/channel_title_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    app:layout_constraintTop_toTopOf="parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -14,11 +12,15 @@
         android:id="@+id/channel_title"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:maxEms="12"
+        android:maxLength="16"
         android:textSize="@dimen/sp_18"
+        android:lines="1"
+        android:ellipsize="end"
+        app:layout_constraintWidth_default="wrap"
         app:layout_constraintEnd_toStartOf="@+id/count_down"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -43,10 +45,11 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_toRightOf="@id/channel_title"
         app:coundDownBackgroud="@drawable/background_countdown"
-        app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/barrier"
         app:layout_constraintStart_toEndOf="@id/channel_title"
-        app:layout_constraintTop_toTopOf="@+id/channel_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         tools:layout_height="40dp"
         tools:layout_width="100dp"
         tools:visibility="visible" />
@@ -66,9 +69,9 @@
         android:textColor="@color/medium_green"
         android:textSize="13sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/channel_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/see_all_button_unify"
@@ -77,13 +80,12 @@
             android:text="@string/lihat_semua"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginTop="10dp"
             android:visibility="gone"
             app:unifyButtonVariant="ghost"
             app:unifyButtonType="alternate"
-            app:unifyButtonSize="medium"
-            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:unifyButtonSize="small"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/channel_title" />
+            app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
 
