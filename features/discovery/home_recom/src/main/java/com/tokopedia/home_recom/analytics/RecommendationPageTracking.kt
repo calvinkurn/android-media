@@ -226,7 +226,7 @@ class RecommendationPageTracking {
                                         VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE_TOP_ADS
                                     else
                                         VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE,
-                            ref),
+                            if(ref.isEmpty()) "null" else ref),
                             position
                         )
                     )
@@ -256,7 +256,7 @@ class RecommendationPageTracking {
                                             if(!recommendationItem.isTopAds)
                                                 VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE
                                             else VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE_TOP_ADS,
-                                            ref),
+                                            if(ref.isEmpty()) "null" else ref),
                                     position
                             )
                         )
@@ -276,7 +276,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRIMARY_PRODUCT_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -288,7 +288,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -308,7 +308,7 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                             recommendationItem,
-                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, ref)
+                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
                         )
                     )
             )
@@ -348,7 +348,7 @@ class RecommendationPageTracking {
                                 if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE,
                                 recommendationItem.pageName,
                                 recommendationItem.recommendationType,
-                                ref
+                                if(ref.isEmpty()) "null" else ref
                         ), position)
                     )
             )
@@ -376,7 +376,7 @@ class RecommendationPageTracking {
                             if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE_NON_LOGIN,
                             recommendationItem.pageName,
                             recommendationItem.recommendationType,
-                            ref
+                            if(ref.isEmpty()) "null" else ref
                         ), position)
                     )
             )
@@ -407,7 +407,7 @@ class RecommendationPageTracking {
                                                 VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE
                                             else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE,
                                             recommendationItem.pageName, recommendationItem.recommendationType,
-                                            ref
+                                            if(ref.isEmpty()) "null" else ref
                                     ), position)
                         )
                     )
@@ -435,7 +435,7 @@ class RecommendationPageTracking {
                             convertRecommendationItemToDataImpressionObject(recommendationItem,
                                 String.format(
                                         if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE_NON_LOGIN,
-                                        recommendationItem.pageName, recommendationItem.recommendationType, ref
+                                        recommendationItem.pageName, recommendationItem.recommendationType, if(ref.isEmpty()) "null" else ref
                                 ), position)
                         )
                     )
@@ -482,7 +482,7 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                             recommendationItem,
-                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, ref)
+                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
                         )
                     )
             )
@@ -496,7 +496,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_BUY_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -512,7 +512,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, ref)}"
+                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)}"
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -526,7 +526,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_NON_LOGIN,
-                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, ref)}"
+                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)}"
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -563,7 +563,7 @@ class RecommendationPageTracking {
                                 VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE_TOP_ADS
                             else
                                 VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE,
-                            ref),
+                            if(ref.isEmpty()) "null" else ref),
                     position
             )
             )
@@ -593,7 +593,7 @@ class RecommendationPageTracking {
                                     if(!recommendationItem.isTopAds)
                                         VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE
                                     else VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE_TOP_ADS,
-                                    ref),
+                                    if(ref.isEmpty()) "null" else ref),
                             position
                     )
             )
@@ -613,7 +613,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRIMARY_PRODUCT_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -625,7 +625,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -645,7 +645,7 @@ class RecommendationPageTracking {
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                     recommendationItem,
-                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, ref)
+                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             )
             )
@@ -659,7 +659,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -703,7 +703,7 @@ class RecommendationPageTracking {
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                     recommendationItem,
-                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, ref)
+                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             )
             )
@@ -717,7 +717,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_BUY_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -745,7 +745,7 @@ class RecommendationPageTracking {
                                         VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE
                                     else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE,
                                     recommendationItem.pageName, recommendationItem.recommendationType,
-                                    ref
+                                    if(ref.isEmpty()) "null" else ref
                             ), position)
             )
             )
@@ -772,7 +772,7 @@ class RecommendationPageTracking {
                     convertRecommendationItemToDataImpressionObject(recommendationItem,
                             String.format(
                                     if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE_NON_LOGIN,
-                                    recommendationItem.pageName, recommendationItem.recommendationType, ref
+                                    recommendationItem.pageName, recommendationItem.recommendationType, if(ref.isEmpty()) "null" else ref
                             ), position)
             )
             )
@@ -800,7 +800,7 @@ class RecommendationPageTracking {
                     if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE,
                     recommendationItem.pageName,
                     recommendationItem.recommendationType,
-                    ref
+                    if(ref.isEmpty()) "null" else ref
             ), position)
             )
             )
@@ -827,7 +827,7 @@ class RecommendationPageTracking {
                     if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE_NON_LOGIN,
                     recommendationItem.pageName,
                     recommendationItem.recommendationType,
-                    ref
+                    if(ref.isEmpty()) "null" else ref
             ), position)
             )
             )
@@ -844,7 +844,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
@@ -857,7 +857,7 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_NON_LOGIN,
-                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, if(ref.isEmpty()) "null" else ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
