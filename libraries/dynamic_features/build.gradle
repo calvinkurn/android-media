@@ -22,6 +22,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.playServicesDependencies.core
+    implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

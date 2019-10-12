@@ -52,6 +52,10 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
           quantityMin
           priceString
         }
+        freeOngkir{
+          isActive
+          imageUrl
+        }
         rating
         countReview
         recommendationType

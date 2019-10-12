@@ -298,7 +298,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         @NonNull
         @Override
         public GuidedSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item_with_background, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_guided_search_item_with_background, parent, false);
             return new GuidedSearchViewHolder(view, guidedSearchListener);
         }
 

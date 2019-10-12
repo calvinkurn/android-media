@@ -15,12 +15,15 @@ public class ShopPageTrackingConstant {
     public static final String PROMO_CLICK = "promoClick";
     public static final String CLICK_SHOP_MANAGE = "clickManageShop";
     public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
+    public static final String CLICK_TOP_NAV = "clickTopNav";
+
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
     public static final String SHOP_PAGE_BUYER = "shop page - buyer";
     public static final String SHOP_PAGE = "shop page";
+    public static final String TOP_NAV = "top nav - %s";
     public static final String MEMBERSHIP_SHOP_PAGE = "membership - shop page";
 
     //ACTION
@@ -38,6 +41,13 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_NAVIGATION = "product navigation";
     public static final String IMPRESSION = "impression";
     public static final String CLICK_SEND_CHAT = "click on kirim pesan";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH = "click - search";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click - etalase autocomplete";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click - global autocomplete";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -76,6 +86,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_DISCUSSION = "click discussion";
     public static final String CLICK_MANAGE_SHOP = "click manage shop";
     public static final String SHOP_INFO = "Shop Info";
+    public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_PAGEURL= "keyword:  %s - page: %s";
+    public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_VALUE_PAGEURL= "keyword:  %s - value: %s - page:%s";
     public static final String MEMBERSHIP_CLICK_MEMBER = "click daftar jadi member";
     public static final String MEMBERSHIP_DETAIL_PAGE = "click membership detail page";
     public static final String MEMBERSHIP_COUPON_CLAIM = "click klaim kupon";
@@ -117,4 +129,21 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
     public static final String PROMOTIONS = "promotions";
+    public static final String DIMENSION83 = "dimension83";
+    public static final String FREE_ONGKIR = "bebas ongkir";
+    public static final String NONE_OR_OTHER = "none / other";
+
+    //SCREEN/PAGES
+    public static final String SCREEN_SHOP_PAGE = "Shop Page";
+    public static final String SCREEN_SEARCH_BAR = "Search Bar";
+
+    //value
+    public static final String VALUE_PRODUCT = "Product";
+
+    //page_url
+    public static final String ETALASE_SHOPNAME = "etalase-%s";
+    public static final String SRP_SHOPNAME = "srp-%s";
+
+
+
 }

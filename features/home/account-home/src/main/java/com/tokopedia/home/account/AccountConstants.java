@@ -63,15 +63,6 @@ public class AccountConstants {
         public static final String CREDIT_CARD = "credit card";
         public static final String APPLICATION = "application";
         public static final String EMAIL = "email";
-        public static final String PURCHASE = "purchase";
-        public static final String SALES = "sales";
-        public static final String MESSAGE = "message";
-        public static final String DISCUSSION = "discussion";
-        public static final String REVIEW = "review";
-        public static final String PROMO = "promo";
-        public static final String SELLER_INFO = "seller info";
-        public static final String GROUP = "group";
-        public static final String CHAT = "chat";
         public static final String TOKOPEDIA = "tokopedia";
         public static final String NEWS_LETTER = "newsletter";
         public static final String SCREEN_NAME = "screenName";
@@ -132,7 +123,38 @@ public class AccountConstants {
 
         public static final String SECTION_OTHER_FEATURE = "Fitur Lainnya";
         public static final String ITEM_POWER_MERCHANT = "Power Merchant";
+        public static final String DATA_DIMENSION_83 = "dimension83";
+        public static final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
 
+        public static final String JUAL = "jual";
+        public static final String BELI = "beli";
+
+        public static final String EVENT_CATEGORY_AKUN_PEMBELI = "akun saya pembeli";
+        public static final String EVENT_ACTION_CLICK_AVATAR = "click - profile avatar";
+        public static final String EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION = "account promotion impression";
+        public static final String EVENT_ACTION_ACCOUNT_PROMOTION_CLICK= "click on account promotion";
+
+        public static final String FIELD_ID = "id";
+        public static final String FIELD_NAME = "name";
+        public static final String FIELD_CREATIVE = "creative";
+        public static final String FIELD_CREATIVE_URL = "creative_url";
+        public static final String FIELD_POSITION = "position";
+
+        public static final String CREATIVE_TOKOPOINTS = "tokopoints";
+        public static final String CREATIVE_KUPON_SAYA = "kupon saya";
+        public static final String CREATIVE_TOKO_MEMBER = "toko member";
+
+        public static final int POSITION_TOKOPOINT = 1;
+        public static final int POSITION_KUPON_SAYA = 2;
+        public static final int POSITION_TOKOMEMBER = 3;
+
+        public static final String EVENT_PROMO_VIEW = "promoView";
+        public static final String EVENT_PROMO_CLICK = "promoClick";
+        public static final String PROMOTIONS = "promotions";
+        public static final String PROMOTION_VIEW = "promoView";
+        public static final String PROMOTION_CLICK = "promoClick";
+
+        public static final String VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion";
     }
 
     public interface VccStatus {

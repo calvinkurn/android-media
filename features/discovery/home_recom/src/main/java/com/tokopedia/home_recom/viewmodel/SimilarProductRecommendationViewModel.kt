@@ -3,8 +3,6 @@ package com.tokopedia.home_recom.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home_recom.model.entity.SingleProductRecommendationEntity
-import com.tokopedia.home_recom.model.mapper.SingleProductRecommendationMapper
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -134,14 +132,5 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
     internal fun <T> combineList(first: List<T>, second: List<T>): List<T>{
         return ArrayList(first).apply { addAll(second) }
-    }
-
-    private fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData): List<RecommendationItem>{
-        return SingleProductRecommendationMapper.convertIntoRecommendationList(
-                data.recommendation,
-                data.title,
-                data.pageName,
-                data.layoutType
-        )
     }
 }

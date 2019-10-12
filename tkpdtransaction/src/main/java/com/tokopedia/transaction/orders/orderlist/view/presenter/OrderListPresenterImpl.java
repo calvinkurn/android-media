@@ -140,7 +140,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             return;
         getView().displayLoadMore(true);
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
-                page, XSOURCE, PAGE_NAME, new ArrayList<>());
+                page,
+                XSOURCE,
+                PAGE_NAME,
+                new ArrayList<>(),
+                "");
         getRecommendationUseCase.execute(requestParam, new Subscriber<List<? extends RecommendationWidget>>() {
             @Override
             public void onCompleted() {
@@ -594,7 +598,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
-
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
@@ -697,9 +700,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 break;
             case "tanya penjual":
                 getView().startSellerAndAddInvoice();
+                orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
             case "ajukan pembatalan":
                 getView().requestCancelOrder(getStatus());
+                orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;
                 default:
                     break;

@@ -71,6 +71,16 @@ data class FragmentViewModel(
         return null
     }
 
+    fun getInsuranceRecommendationViewModel(): InsuranceRecommendationViewModel? {
+        for (visitable in viewModels) {
+            if (visitable is InsuranceRecommendationViewModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getInsuranceViewModel(): InsuranceViewModel? {
         for (visitable in viewModels) {
             if (visitable is InsuranceViewModel) {
