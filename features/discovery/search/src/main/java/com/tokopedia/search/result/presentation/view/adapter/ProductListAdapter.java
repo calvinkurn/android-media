@@ -209,6 +209,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(position) && list.get(position) instanceof ProductItemViewModel;
     }
 
+    public boolean isRecommendationItem(int position){
+        return checkDataSize(position) && list.get(position) instanceof RecommendationItemViewModel;
+    }
+
     @Override
     public boolean isEmptyItem(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;

@@ -473,7 +473,7 @@ public class ProductListFragment
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
-        if (adapter != null && adapter.isProductItem(position)) {
+        if (adapter != null && (adapter.isProductItem(position) || adapter.isRecommendationItem(position))) {
             adapter.updateWishlistStatus(position, isWishlist);
         }
     }
