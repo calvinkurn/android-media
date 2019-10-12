@@ -13,8 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.productcard.utils.doIfVisible
-import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
@@ -314,5 +312,14 @@ class ShopItemViewHolder(
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context.resources.getDimensionPixelSize(id)
+    }
+
+    private val View?.isNullOrNotVisible: Boolean
+        get() = this == null || !this.isVisible
+
+    private fun View.doIfVisible(action: (View) -> Unit) {
+        if(this.isVisible) {
+            action(this)
+        }
     }
 }
