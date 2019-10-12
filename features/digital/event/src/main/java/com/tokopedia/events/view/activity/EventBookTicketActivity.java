@@ -127,24 +127,10 @@ public class EventBookTicketActivity
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
         coachItems.add(new CoachMarkItem(eventDateLayout, getString(R.string.coachicon_event_date), getString(R.string.coachicon_event_date_description)));
         CoachMark coachMark = new CoachMarkBuilder().allowPreviousButton(false).build();
-        coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> {
-            return false;
-        });
+        coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> false);
         if (!Utils.hasShown(getActivity(), EVENT_DATE_COACH_MARK_TAG)) {
             coachMark.show(getActivity(), "EventCoachMark", coachItems);
             Utils.setShown(getActivity(), EVENT_DATE_COACH_MARK_TAG, true);
-        }
-    }
-
-
-    private void showTicketSummeryCoachMark() {
-        ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
-        coachItems.add(new CoachMarkItem(ticketInfoLayout, getString(R.string.coachicon_event_date), getString(R.string.coachicon_event_date_description)));
-        CoachMark coachMark = new CoachMarkBuilder().allowPreviousButton(false).build();
-        coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> false);
-        if (!Utils.hasShown(getActivity(), TICKET_SUMMARY_COACH_MARK_TAG)) {
-            coachMark.show(getActivity(), "EventCoachMark", coachItems);
-            Utils.setShown(getActivity(), TICKET_SUMMARY_COACH_MARK_TAG, true);
         }
     }
 
@@ -183,9 +169,6 @@ public class EventBookTicketActivity
         buttonPayTickets.setVisibility(View.VISIBLE);
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
         if (buttonCountLayout.getVisibility() != View.VISIBLE) {
-            if (tvUbahJadwal.getVisibility() == View.VISIBLE) {
-                showTicketSummeryCoachMark();
-            }
             buttonCountLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -290,7 +273,7 @@ public class EventBookTicketActivity
         if (v.getId() == R.id.pay_tickets) {
             bookTicketPresenter.payTicketsClick(title, tvDate.getText().toString(), tvLocation.getText().toString());
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
-            if (bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
+            if (eventsDetailsViewModel.getCustomText1() == 16384 && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
                 openCalender(bookTicketPresenter.getLocationDateModels());
         }
     }

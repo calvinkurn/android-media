@@ -27,10 +27,24 @@
         app:layout_constraintLeft_toRightOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.calendar.UnifyCalendar
-        android:id="@+id/calendar_unify"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/select_date_title"/>
+        app:layout_constraintTop_toBottomOf="@+id/select_date_title">
+
+        <com.tokopedia.calendar.UnifyCalendar
+            android:id="@+id/calendar_unify"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/loading_progress_bar"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_60"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

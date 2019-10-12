@@ -69,8 +69,12 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        loading_progress_bar.visibility = View.VISIBLE
+
         holidayViewModel?.getTravelHolidayDate()
         holidayViewModel?.holidayResult?.observe(this, android.arch.lifecycle.Observer {
+            loading_progress_bar.visibility = View.GONE
             when (it) {
                 is Success -> {
                     if (isFirstTime && it.data.data.isNotEmpty()) {
@@ -93,13 +97,6 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
         val nextYear = Calendar.getInstance()
         nextYear.add(Calendar.YEAR, 1)
 
-        val yesterday = Calendar.getInstance()
-        yesterday.add(Calendar.DATE, 1)
-        yesterday.set(Calendar.HOUR_OF_DAY, 0)
-        yesterday.set(Calendar.MINUTE, 0)
-        yesterday.set(Calendar.SECOND, 0)
-        yesterday.set(Calendar.MILLISECOND, 0)
-
         arguments?.let {
             locationModels = it.getParcelableArrayList<LocationDateModel>(ARG_ACTIVE_DATES)
             if (locationModels?.size > 0) {
@@ -110,7 +107,7 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
             }
         }
 
-        calendar?.init(yesterday.time, nextYear.time, legends, selectedDates)?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+        calendar?.init(selectedDates[0], nextYear.time, legends, selectedDates)?.inMode(CalendarPickerView.SelectionMode.SINGLE)
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 selectedDatesListener?.selectedScheduleDate(date)
