@@ -40,7 +40,10 @@ abstract class BaseRecommendationView(context: Context,
                 getLayoutTitle().text = product.title
                 if(product.seeMoreAppLink.isNotEmpty()) {
                     getSeeMore().show()
-                    getSeeMore().setOnClickListener { RouteManager.route(context, product.seeMoreAppLink) }
+                    getSeeMore().setOnClickListener {
+                        productDetailTracking.eventClickSeeMoreRecomWidget(product.pageName)
+                        RouteManager.route(context, product.seeMoreAppLink)
+                    }
                 }
                 initAdapter(product)
                 visible()
