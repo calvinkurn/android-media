@@ -157,17 +157,9 @@ internal class SearchShopViewModelTest : Spek({
     val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
 
     val userIdLoggedIn = "123456"
-    val deviceId = "pixel 2"
-    val userSession = mockk<UserSessionInterface>().also {
-        every { it.isLoggedIn }.returns(true)
-        every { it.userId }.returns(userIdLoggedIn)
-        every { it.deviceId }.returns(deviceId)
-    }
+    val userIdNonLogin = "0"
 
     val localCacheGCMIDValue = "GCM_ID"
-    val localCacheHandler = mockk<LocalCacheHandler>().also {
-        every { it.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns(localCacheGCMIDValue)
-    }
 
     @Suppress("UNUSED_VARIABLE")
     fun FeatureBody.createTestInstance() {
@@ -186,6 +178,14 @@ internal class SearchShopViewModelTest : Spek({
         val searchLocalCacheHandler by memoized {
             mockk<SearchLocalCacheHandler>(relaxed = true)
         }
+
+        val userSession by memoized {
+            mockk<UserSessionInterface>(relaxed = true)
+        }
+
+        val localCacheHandler by memoized {
+            mockk<LocalCacheHandler>(relaxed = true)
+        }
     }
 
     fun TestBody.createSearchShopViewModel(parameter: Map<String, Any> = searchShopParameter): SearchShopViewModel {
@@ -193,6 +193,8 @@ internal class SearchShopViewModelTest : Spek({
         val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
         val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
         val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
+        val userSession by memoized<UserSessionInterface>()
+        val localCacheHandler by memoized<LocalCacheHandler>()
 
         return SearchShopViewModel(
                 TestDispatcherProvider(), parameter,
@@ -206,11 +208,16 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Create Search Shop View Model with non-logged in user") {
-            val userIdNonLogin = "0"
+            val userSession by memoized<UserSessionInterface>()
+            val localCacheHandler by memoized<LocalCacheHandler>()
             lateinit var searchShopViewModel: SearchShopViewModel
 
-            Given("User has logged in") {
+            Given("User has not logged in") {
                 every { userSession.isLoggedIn }.returns(false)
+            }
+
+            Given("GCM ID value from local cache") {
+                every { localCacheHandler.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns(localCacheGCMIDValue)
             }
 
             When("Create Search Shop View Model") {
@@ -227,11 +234,17 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Create Search Shop View Model with logged in user") {
+            val userSession by memoized<UserSessionInterface>()
+            val localCacheHandler by memoized<LocalCacheHandler>()
             lateinit var searchShopViewModel: SearchShopViewModel
 
             Given("User has logged in") {
                 every { userSession.isLoggedIn }.returns(true)
                 every { userSession.userId }.returns(userIdLoggedIn)
+            }
+
+            Given("GCM ID value from local cache") {
+                every { localCacheHandler.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns(localCacheGCMIDValue)
             }
 
             When("Create Search Shop View Model") {
@@ -248,8 +261,14 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Create Search Shop View Model with empty parameter") {
+            val userSession by memoized<UserSessionInterface>()
             val searchParameterWithoutQuery = mapOf<String, Any>()
             lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("User has logged in") {
+                every { userSession.isLoggedIn }.returns(true)
+                every { userSession.userId }.returns(userIdLoggedIn)
+            }
 
             When("Create Search Shop View Model") {
                 searchShopViewModel = createSearchShopViewModel(searchParameterWithoutQuery)

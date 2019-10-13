@@ -22,11 +22,11 @@ class ShopCpmViewHolder(
     }
 
     init {
-        itemView.adsBannerView?.setTopAdsBannerClickListener { position, applink, data ->
+        itemView.adsBannerViewSearchShop?.setTopAdsBannerClickListener { position, applink, data ->
             bannerAdsListener?.onBannerAdsClicked(position, applink, data)
         }
 
-        itemView.adsBannerView?.setTopAdsImpressionListener(createTopAdsItemImpressionListener())
+        itemView.adsBannerViewSearchShop?.setTopAdsImpressionListener(createTopAdsItemImpressionListener())
     }
 
     private fun createTopAdsItemImpressionListener(): TopAdsItemImpressionListener {
@@ -44,8 +44,8 @@ class ShopCpmViewHolder(
     }
 
     private fun initCpmModel(shopCpmViewModel: ShopCpmViewModel) {
-        itemView.adsBannerView?.shouldShowWithAction(shopCpmViewModel.cpmModel.data.size > 0) {
-            itemView.adsBannerView?.displayAds(shopCpmViewModel.cpmModel)
+        itemView.adsBannerViewSearchShop?.shouldShowWithAction(shopCpmViewModel.cpmModel.data.size > 0) {
+            itemView.adsBannerViewSearchShop?.displayAds(shopCpmViewModel.cpmModel)
         }
     }
 }
