@@ -5,7 +5,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_1
@@ -14,6 +17,7 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRe
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_4
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
@@ -34,6 +38,10 @@ abstract class BaseRecommendationView(context: Context,
                 gone()
             } else {
                 getLayoutTitle().text = product.title
+                if(product.seeMoreAppLink.isNotEmpty()) {
+                    getSeeMore().show()
+                    getSeeMore().setOnClickListener { RouteManager.route(context, product.seeMoreAppLink) }
+                }
                 initAdapter(product)
                 visible()
             }
@@ -66,6 +74,7 @@ abstract class BaseRecommendationView(context: Context,
 
     abstract fun getListener(): RecommendationProductAdapter.UserActiveListener
     abstract fun getLayoutTitle(): TextView
+    abstract fun getSeeMore(): Typography
     abstract fun getView(): View
     abstract fun getRecyclerView(): RecyclerView
     abstract fun getLayoutProgress(): View
