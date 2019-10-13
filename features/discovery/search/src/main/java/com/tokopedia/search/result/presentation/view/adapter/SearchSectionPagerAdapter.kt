@@ -10,7 +10,7 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
-import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment
+import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
 class SearchSectionPagerAdapter(
         fragmentManager: FragmentManager,
@@ -40,13 +40,10 @@ class SearchSectionPagerAdapter(
                 createCatalogFragment()
             }
             TAB_THIRD_POSITION -> {
-                createShopMVVMFragment()
-            }
-            TAB_FORTH_POSITION -> {
-                createProfileFragment()
+                createShopFragment()
             }
             else -> {
-                createShopFragment()
+                createProfileFragment()
             }
         }
     }
@@ -60,15 +57,11 @@ class SearchSectionPagerAdapter(
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance(searchParameter)
+        return ShopListFragment.newInstance()
     }
 
     private fun createProfileFragment(): ProfileListFragment {
         return ProfileListFragment.newInstance(searchParameter)
-    }
-
-    private fun createShopMVVMFragment(): com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment {
-        return com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment.newInstance()
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

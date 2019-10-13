@@ -120,7 +120,7 @@ class ShopListFragment:
     }
 
     private fun initRefreshLayout() {
-        refreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        refreshLayout = view?.findViewById(R.id.swipeRefreshLayoutSearchShop)
 
         refreshLayout?.setOnRefreshListener {
             searchShopViewModel?.onViewReloadData()

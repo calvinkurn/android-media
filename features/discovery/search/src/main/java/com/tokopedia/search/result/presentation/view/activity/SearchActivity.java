@@ -474,7 +474,6 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(catalogTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(shopTabTitle);
     }
 
     private void initTabLayout() {
