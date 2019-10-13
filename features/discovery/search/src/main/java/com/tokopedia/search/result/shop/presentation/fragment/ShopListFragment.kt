@@ -56,7 +56,7 @@ class ShopListFragment:
 
     private var gridLayoutManager: GridLayoutManager? = null
     private var shopListAdapter: ShopListAdapter? = null
-    private var recyclerView: RecyclerView? = null
+    private var recyclerViewSearchShop: RecyclerView? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
@@ -143,12 +143,12 @@ class ShopListFragment:
         activity?.let { activity ->
             initShopListAdapter()
 
-            recyclerView = view?.findViewById(R.id.recyclerViewSearchShop)
-            recyclerView?.layoutManager = gridLayoutManager
-            recyclerView?.adapter = shopListAdapter
-            recyclerView?.addItemDecoration(createShopItemDecoration(activity))
+            recyclerViewSearchShop = view?.findViewById(R.id.recyclerViewSearchShop)
+            recyclerViewSearchShop?.layoutManager = gridLayoutManager
+            recyclerViewSearchShop?.adapter = shopListAdapter
+            recyclerViewSearchShop?.addItemDecoration(createShopItemDecoration(activity))
             gridLayoutLoadMoreTriggerListener?.let {
-                recyclerView?.addOnScrollListener(it)
+                recyclerViewSearchShop?.addOnScrollListener(it)
             }
         }
     }
@@ -208,10 +208,12 @@ class ShopListFragment:
                 hideRefreshLayout()
                 updateList(searchShopLiveData)
                 updateScrollListener()
+                hideSearchPageLoading()
             }
             is State.Error -> {
                 hideRefreshLayout()
                 showRetryLayout(searchShopLiveData)
+                hideSearchPageLoading()
             }
         }
     }
@@ -231,6 +233,10 @@ class ShopListFragment:
     private fun updateScrollListener() {
         gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
         gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getHasNextPage() ?: false)
+    }
+
+    private fun hideSearchPageLoading() {
+        searchNavigationListener?.removeSearchPageLoading()
     }
 
     private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
@@ -298,6 +304,7 @@ class ShopListFragment:
         super.setUserVisibleHint(isVisibleToUser)
 
         setupSearchNavigation()
+        trackScreen()
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
@@ -316,6 +323,12 @@ class ShopListFragment:
 
     private fun openFilterPage() {
         searchShopViewModel?.onViewOpenFilterPage()
+    }
+
+    private fun trackScreen() {
+        if (userVisibleHint) {
+            SearchTracking.screenTrackSearchSectionFragment(screenName)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -338,7 +351,24 @@ class ShopListFragment:
     }
 
     override fun onItemClicked(shopItem: ShopViewModel.ShopItem) {
+        trackShopItemClick(shopItem)
         route(shopItem.applink)
+    }
+
+    private fun trackShopItemClick(shopItem: ShopViewModel.ShopItem) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+
+        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), keyword)
+
+        if (isShopNotActive(shopItem)) {
+            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), keyword)
+        }
+    }
+
+    private fun isShopNotActive(shopItem: ShopViewModel.ShopItem): Boolean {
+        return (shopItem.isClosed
+                || shopItem.isModerated
+                || shopItem.isInactive)
     }
 
     private fun route(applink: String) {
@@ -350,7 +380,13 @@ class ShopListFragment:
     }
 
     override fun onProductItemClicked(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        trackProductItemClick(shopItemProduct)
         route(shopItemProduct.applink)
+    }
+
+    private fun trackProductItemClick(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        SearchTracking.eventSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
@@ -396,5 +432,9 @@ class ShopListFragment:
                     resources.getString(R.string.empty_state_selected_filter_price_name)
             )
         } ?: mutableListOf()
+    }
+
+    fun backToTop() {
+        recyclerViewSearchShop?.smoothScrollToPosition(0)
     }
 }

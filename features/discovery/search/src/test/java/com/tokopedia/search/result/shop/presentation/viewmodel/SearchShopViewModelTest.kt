@@ -1635,11 +1635,4 @@ internal class SearchShopViewModelTest : Spek({
             }
         }
     }
-
-    Feature("Handle View Tracking Shop Item Click") {
-
-        Scenario("") {
-
-        }
-    }
 })

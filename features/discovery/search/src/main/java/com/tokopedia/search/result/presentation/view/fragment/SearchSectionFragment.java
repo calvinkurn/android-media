@@ -199,7 +199,7 @@ public abstract class SearchSectionFragment
         if (getUserVisibleHint()
                 && getActivity() != null
                 && getActivity().getApplicationContext() != null) {
-            searchTracking.screenTrackSearchSectionFragment(getScreenName());
+            SearchTracking.screenTrackSearchSectionFragment(getScreenName());
         }
     }
 
