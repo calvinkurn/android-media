@@ -36,7 +36,6 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -74,7 +73,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -860,8 +858,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickInvoiceThumbnail(url: String, id: String) {
-        val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        onGoToWebView(encodedUrl, id)
+        onGoToWebView(url, id)
     }
 
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
