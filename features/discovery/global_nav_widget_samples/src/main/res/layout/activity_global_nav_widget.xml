@@ -79,7 +79,7 @@
             android:id="@+id/textViewGlobalNavWidgetWithoutBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Global Nav Widget Without Background in GlobalNavWidgetModel"
+            android:text="Global Nav Widget Without Background in GlobalNavWidgetModel (Random)"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
