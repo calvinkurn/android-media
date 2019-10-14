@@ -14,6 +14,8 @@ interface SettingFieldTypeFactory : AdapterTypeFactory {
 
     fun type(childSetting: ChildSetting): Int
 
+    fun type(pushNotifierTroubleshooterSetting: PushNotifierTroubleshooterSetting): Int
+
     fun createViewHolder(
             parent: View,
             type: Int,
