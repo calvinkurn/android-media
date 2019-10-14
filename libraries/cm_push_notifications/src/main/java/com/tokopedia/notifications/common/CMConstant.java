@@ -88,6 +88,12 @@ public interface CMConstant {
         String PRODUCT_INFO_LIST = "product_info_list";
         String PARENT_ID = "parentId";
         String CAMPAIGN_USER_TOKEN = "campaignUserToken";
+
+        String NOTIFICATION_MODE = "isOffline";
+        String NOTIFICATION_START_TIME= "startTime";
+        String NOTIFICATION_END_TIME= "endTime";
+
+
     }
 
     interface ReceiverExtraData {

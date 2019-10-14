@@ -1,7 +1,9 @@
 package com.tokopedia.notifications.model
 
+import android.arch.persistence.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,9 +11,13 @@ import com.google.gson.annotations.SerializedName
  */
 data class Grid(
         @SerializedName("appLink")
+        @ColumnInfo(name = "appLink")
+        @Expose
         var appLink: String? = null,
 
         @SerializedName("img")
+        @ColumnInfo(name = "img")
+        @Expose
         var img: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

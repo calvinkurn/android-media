@@ -1,7 +1,9 @@
 package com.tokopedia.notifications.model
 
+import android.arch.persistence.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,18 +11,28 @@ import com.google.gson.annotations.SerializedName
  */
 data class Media(
         @SerializedName("fallback_url")
+        @ColumnInfo(name = "fallback_url")
+        @Expose
         var fallbackUrl: String,
 
         @SerializedName("high_quality_url")
+        @ColumnInfo(name = "high_quality_url")
+        @Expose
         var highQuality: String,
 
         @SerializedName("medium_quality_url")
+        @ColumnInfo(name = "medium_quality_url")
+        @Expose
         var mediumQuality: String,
 
         @SerializedName("low_quality_url")
+        @ColumnInfo(name = "low_quality_url")
+        @Expose
         var lowQuality: String,
 
         @SerializedName("display_url")
+        @ColumnInfo(name = "display_url")
+        @Expose
         var displayUrl: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

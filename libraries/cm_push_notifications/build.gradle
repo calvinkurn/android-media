@@ -52,6 +52,10 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
+
+    implementation "android.arch.work:work-runtime-ktx:1.0.1"
+
 }
 
 project.ext {

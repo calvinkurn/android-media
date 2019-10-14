@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp.ruleEngine.storage;
+package com.tokopedia.notifications.database;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -7,25 +7,45 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.notifications.database.convertors.CarouselConverter;
+import com.tokopedia.notifications.database.convertors.GridConverter;
+import com.tokopedia.notifications.database.convertors.ProductInfoConverter;
+import com.tokopedia.notifications.database.convertors.PushActionButtonConverter;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
+import com.tokopedia.notifications.database.convertors.JsonObjectConverter;
+import com.tokopedia.notifications.database.convertors.NotificationModeConverter;
+import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class}, version = 2)
-@TypeConverters(ButtonListConverter.class)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 2)
+@TypeConverters({ButtonListConverter.class,
+        NotificationModeConverter.class,
+        NotificationStatusConverter.class,
+        JsonObjectConverter.class,
+        PushActionButtonConverter.class,
+        CarouselConverter.class,
+        GridConverter.class,
+        ProductInfoConverter.class})
 public abstract class RoomDB extends RoomDatabase {
 
     public abstract InAppDataDao inAppDataDao();
 
     public abstract ElapsedTimeDao elapsedTimeDao();
 
+    public abstract BaseNotificationDao baseNotificationDao();
+
     private static volatile RoomDB INSTANCE;
 
     /**
      * Below Migration added to rename fields of table(inapp_data and elapsed_time) as columnInfo is not added to these table
-     * and data coping is not required as doesn't contain any data*
+     * and data copying is not required as doesn't contain any data*
      **/
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -44,6 +64,13 @@ public abstract class RoomDB extends RoomDatabase {
             database.execSQL("CREATE TABLE `elapsed_time`" +
                     " (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `elt` INTEGER NOT NULL)");
 
+        }
+    };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //todo migration for offline push
         }
     };
 
