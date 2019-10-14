@@ -324,4 +324,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         CategoryPageAnalytics.catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                 selectedSortName, sortValue)
     }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+    }
 }

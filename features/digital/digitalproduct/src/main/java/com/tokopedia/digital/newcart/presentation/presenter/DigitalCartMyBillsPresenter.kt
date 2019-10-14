@@ -5,8 +5,9 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
@@ -17,20 +18,20 @@ import javax.inject.Inject
 
 class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase?,
                                                       digitalAnalytics: DigitalAnalytics?,
+                                                      rechargeAnalytics: RechargeAnalytics?,
                                                       digitalModuleRouter: DigitalModuleRouter?,
                                                       cartDigitalInteractor: ICartDigitalInteractor?,
                                                       val userSession: UserSession?,
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
-                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?,
-                                                      rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase?) :
+                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalAnalytics,
+                rechargeAnalytics,
                 digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase), DigitalCartMyBillsContract.Presenter {
+                digitalInstantCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
     override fun onSubcriptionCheckedListener(checked: Boolean) {
 
         if (checked) {

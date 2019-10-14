@@ -50,9 +50,9 @@ public class TkpdOkHttpBuilder {
     }
 
     public TkpdOkHttpBuilder setOkHttpRetryPolicy() {
-        builder.readTimeout(45, TimeUnit.SECONDS);
-        builder.connectTimeout(45, TimeUnit.SECONDS);
-        builder.writeTimeout(45, TimeUnit.SECONDS);
+        builder.readTimeout(10, TimeUnit.SECONDS);
+        builder.connectTimeout(10, TimeUnit.SECONDS);
+        builder.writeTimeout(10, TimeUnit.SECONDS);
 
         return this;
     }
