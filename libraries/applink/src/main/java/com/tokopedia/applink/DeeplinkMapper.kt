@@ -54,7 +54,6 @@ object DeeplinkMapper {
                 mappedDeeplink
             }
         }
-
     }
 
     /**
@@ -87,7 +86,12 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
-//            ApplinkConst.DEALS_HOME -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
+            ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
+            ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
+            ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
+            ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
+            ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
+
             else -> ""
         }
     }

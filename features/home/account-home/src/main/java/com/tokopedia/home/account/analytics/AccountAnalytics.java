@@ -15,7 +15,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,42 +114,6 @@ public class AccountAnalytics {
         ));
     }
 
-    public void eventClickNotificationSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", NOTIFICATION, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
-
-
-    public void eventClickApplicationSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", APPLICATION, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
-
-    public void eventClickEmailSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", EMAIL, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
 
     public void eventClickKycSetting() {
 
@@ -258,16 +221,6 @@ public class AccountAnalytics {
             ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
 
-    public void setPromoPushPreference(Boolean newValue) {
-        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
-            ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
-    }
-
-    public void setNewsletterEmailPref(Boolean newValue) {
-        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
-            ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
-    }
-
     public static void clickOpenShopFree(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_ACCOUNT,
@@ -339,7 +292,8 @@ public class AccountAnalytics {
                 DATA_CATEGORY, recommendationItem.getCategoryBreadcrumbs(),
                 DATA_VARIAN, NONE_OTHER,
                 LIST, list,
-                DATA_POSITION, String.valueOf(position));
+                DATA_POSITION, String.valueOf(position),
+                DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:NONE_OTHER);
     }
 
     public void eventAccountProductClick(RecommendationItem recommendationItem, int position, String widgetTitle) {
@@ -367,12 +321,55 @@ public class AccountAnalytics {
                                             DATA_VARIAN, NONE_OTHER,
                                             LIST, widgetTitle,
                                             DATA_POSITION, String.valueOf(position),
-                                            DATA_ATTRIBUTION, NONE_OTHER
+                                            DATA_ATTRIBUTION, NONE_OTHER,
+                                            DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive() ? VALUE_BEBAS_ONGKIR : NONE_OTHER
                                     )))
                             )
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
+    }
+
+    public void eventAccountPromoClick(String creativeName, String label, int position) {
+        final Analytics tracker = TrackApp.getInstance().getGTM();
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    EVENT, EVENT_PROMO_CLICK,
+                    EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
+                    EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_CLICK,
+                    EVENT_LABEL, label,
+                    ECOMMERCE, DataLayer.mapOf(
+                            PROMOTION_CLICK, DataLayer.mapOf(
+                                    PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                                            FIELD_ID, 0,
+                                            FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
+                                            FIELD_CREATIVE, creativeName,
+                                            FIELD_CREATIVE_URL, NONE_OTHER,
+                                            FIELD_POSITION, String.valueOf(position)
+                                    )))
+                    )
+            );
+            tracker.sendEnhanceEcommerceEvent(map);
+        }
+    }
+
+    public static HashMap<String, Object> getAccountPromoImpression(String creativeName, int position) {
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
+                EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION,
+                EVENT_LABEL, EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMOTION_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                                        FIELD_ID, 0,
+                                        FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
+                                        FIELD_CREATIVE, creativeName,
+                                        FIELD_CREATIVE_URL, NONE_OTHER,
+                                        FIELD_POSITION, String.valueOf(position)
+                                )))
+                )
+        );
     }
 
     public void eventClickWishlistButton(boolean wishlistStatus) {

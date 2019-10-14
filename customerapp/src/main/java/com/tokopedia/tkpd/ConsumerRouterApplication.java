@@ -45,6 +45,8 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -180,8 +182,6 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
-import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kol.KolComponentInstance;
@@ -269,8 +269,6 @@ import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -366,7 +364,6 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
-import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -433,14 +430,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        InstantLoanChuckRouter,
-        InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
-//        DealsModuleRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
         ChangePasswordRouter,
@@ -462,7 +456,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ReferralRouter,
-        SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
         ExpressCheckoutRouter,
@@ -472,7 +465,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductDetailRouter,
         OvoPayWithQrRouter,
         OvoP2pRouter,
-        KYCRouter{
+        KYCRouter {
 
     private static final String EXTRA = "extra";
 
@@ -528,6 +521,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             tetraDebugger.init();
         }
     }
+
     private void setTetraUserId(String userId) {
         if (tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
@@ -981,11 +975,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getLoginIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.LOGIN);
-    }
-
-    @Override
-    public boolean isInstantLoanEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true);
     }
 
     public void sendScreenName(@NonNull String screenName) {
@@ -1560,7 +1549,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOvoActivityIntent(Context context) {
-        return new Intent(context,PaymentQRSummaryActivity.class);
+        return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
@@ -1892,11 +1881,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
-    @Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
-
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
     }
@@ -1961,7 +1945,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }
-          
+
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
@@ -2012,6 +1996,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);
                     }
+
                     @Override
                     public void onError(LinkerError linkerError) {
 
@@ -2184,23 +2169,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getAddPasswordIntent(Context context) {
-        return AddPasswordActivity.newInstance(context);
-    }
-
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
-    @Override
-    public boolean isMerchantCreditLineEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
-                true);
-    }
-
-    @Override
     public Intent getTopProfileIntent(Context context, String userId) {
         return ProfileActivity.Companion.createIntent(context, userId);
     }
@@ -2319,18 +2287,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToSaldo(Context context) {
 
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-            startSaldoDepositIntent(context);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
 
-        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(), SaldoDetailsInternalRouter.getSaldoClassName());
-    }
-
-    @Override
-    public void startSaldoDepositIntent(Context context) {
-        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
+                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
     }
 
     public Intent getInboxChatIntent(Context context) {
@@ -2341,6 +2305,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return InboxReputationActivity.getCallingIntent(context);
     }
 
+    @Override
+    public void startSaldoDepositIntent(Context context) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
+    }
 
     public Intent getInboxHelpIntent(Context context) {
         return InboxListActivity.getCallingIntent(context);
@@ -2735,7 +2703,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @SuppressLint("MissingPermission")
     @Override
     public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
+                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
         Bundle bundle = new Bundle();
         BaseDaggerFragment baseDaggerFragment = null;
         switch (cameraType) {
@@ -2744,7 +2712,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
                 baseDaggerFragment.setArguments(bundle);
-            break;
+                break;
             case KYC_SELFIEID_CAMERA:
                 baseDaggerFragment = new FragmentSelfieIdCamera();
                 bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);

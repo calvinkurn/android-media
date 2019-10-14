@@ -16,13 +16,15 @@ interface FollowRecomContract {
 
         fun onGetFollowRecommendationInfo(infoViewModel: FollowRecomInfoViewModel)
 
-        fun onSuccessFollowRecommendation(id: String)
-
-        fun onSuccessUnfollowRecommendation(id: String)
-
         fun onSuccessFollowAllRecommendation()
 
+        fun onSuccessFollowUnfollowRecommendation(id: String, action: FollowRecomAction)
+
+        fun onFailedFollowUnfollowRecommendation(id: String, action: FollowRecomAction, t: Throwable)
+
         fun onFinishSetOnboardingStatus()
+
+        fun onErrorSetOnboardingStatus(throwable: Throwable)
 
         fun onGetError(error: Throwable)
 
@@ -30,7 +32,11 @@ interface FollowRecomContract {
 
         fun showLoading()
 
+        fun showListLoading()
+
         fun hideLoading()
+
+        fun hideListLoading()
     }
 
     interface Presenter {
