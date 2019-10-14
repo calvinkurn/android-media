@@ -20,8 +20,14 @@
             android:theme="@style/Theme.Transparent.Black"/>
 
         <activity
-            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
+            android:name=".view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".view.activity.FeedOnboardingActivity"
+            android:label="@string/title_feed_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

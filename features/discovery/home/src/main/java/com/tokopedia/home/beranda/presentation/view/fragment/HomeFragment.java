@@ -194,6 +194,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SharedPreferences sharedPrefs;
 
     private int[] positionSticky = new int[2];
+    private StickyLoginTickerPojo.TickerDetail tickerDetail;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -370,7 +371,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
-        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -395,11 +395,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 updateStickyState();
-
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
             }
         });
         stickyLoginView.setOnClickListener(new View.OnClickListener() {
@@ -436,12 +431,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (activityStateListener != null) {
             activityStateListener.onResume();
-        }
-
-        updateStickyState();
-        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-        if (floatingEggButtonFragment != null) {
-            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 
@@ -782,7 +771,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof RefreshNotificationListener) {
             ((RefreshNotificationListener) getActivity()).onRefreshNotification();
         }
-        updateStickyState();
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
@@ -1551,30 +1539,44 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setStickyContent(StickyLoginTickerPojo stickyContent) {
-        if (stickyContent.getTickers().size() > 0) {
-            stickyLoginView.setContent(stickyContent.getTickers().get(0));
-        } else {
-            stickyLoginView.setVisibility(View.GONE);
-        }
+    public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
+        this.tickerDetail = tickerDetail;
+        updateStickyState();
+        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+    }
+
+    @Override
+    public void hideStickyLogin() {
+        stickyLoginView.setVisibility(View.GONE);
     }
 
     private void updateStickyState() {
-        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if (!isCanShowing) {
-            stickyLoginView.setVisibility(View.GONE);
+        if (this.tickerDetail == null) {
+            hideStickyLogin();
             return;
         }
+
+        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if (!isCanShowing) {
+            hideStickyLogin();
+            return;
+        }
+
+        if (isUserLoggedIn()) {
+            hideStickyLogin();
+            return;
+        }
+
+        stickyLoginView.setContent(this.tickerDetail);
+        stickyLoginView.show(StickyLoginConstant.Page.HOME);
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
         }
 
-        if (isUserLoggedIn()) {
-            stickyLoginView.setVisibility(View.GONE);
-        } else {
-            stickyLoginView.show(StickyLoginConstant.Page.HOME);
-            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 

@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.authentication.AuthHelperJava
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
@@ -46,6 +46,9 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
@@ -57,6 +60,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
+import rx.Subscriber
 import javax.inject.Inject
 
 
@@ -74,6 +78,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
         val item = element as ProductsItem
 
+        if (item.isTopAds) {
+            ImpresionTask().execute(item.productImpTrackingUrl)
+        }
         catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
                 item.name,
                 item.id.toString(),
@@ -130,6 +137,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
+
+    @Inject
+    lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
 
     lateinit var userSession: UserSession
 
@@ -215,7 +225,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
@@ -491,9 +501,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun getUniqueId(): String {
         return if (userSession.isLoggedIn)
-            AuthHelperJava.md5(userSession.userId)
+            AuthHelper.getMD5Hash(userSession.userId)
         else
-            AuthHelperJava.md5(gcmHandler.registrationId)
+            AuthHelper.getMD5Hash(gcmHandler.registrationId)
     }
 
     override fun onSwipeToRefresh() {
@@ -538,6 +548,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, 1002)
         }
         if (!item.isTopAds) {
+            ImpresionTask().execute(item.productClickTrackingUrl)
+        }
             catAnalyticsInstance.eventClickProductList(item.id.toString(),
                     mDepartmentId,
                     item.name,
@@ -545,7 +557,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                     adapterPosition,
                     item.categoryBreadcrumb ?: "",
                     getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
-        }
 
     }
 
@@ -649,6 +660,21 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                 selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+        val params = RequestParams.create()
+        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishListTrackerUrl)
+        topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onNext(wishlistModel: WishlistModel) {
+            }
+        })
     }
 
 }

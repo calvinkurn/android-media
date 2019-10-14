@@ -1,0 +1,9 @@
+query flightFareCalendar($departCode: String!, $arrivalCode: String!, $year: String!, $class: String){
+  flightFare(departCode: $departCode, arrivalCode: $arrivalCode, year: $year, class: $class) {
+    id
+    attributes {
+      date
+      cheapestPriceNumeric
+    }
+  }
+}

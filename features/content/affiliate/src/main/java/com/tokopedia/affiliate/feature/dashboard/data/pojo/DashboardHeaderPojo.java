@@ -31,6 +31,9 @@ public class DashboardHeaderPojo {
     @SerializedName("postQuota")
     @Expose
     private PostQuotaBean postQuota;
+    @SerializedName("productCount")
+    @Expose
+    private String productCount;
 
     public String getTotalCommission() {
         return totalCommission;
@@ -70,6 +73,14 @@ public class DashboardHeaderPojo {
 
     public void setPostQuota(PostQuotaBean postQuota) {
         this.postQuota = postQuota;
+    }
+
+    public String getProductCount() {
+        return productCount;
+    }
+
+    public void setProductCount(String productCount) {
+        this.productCount = productCount;
     }
 
     public static class PostQuotaBean {

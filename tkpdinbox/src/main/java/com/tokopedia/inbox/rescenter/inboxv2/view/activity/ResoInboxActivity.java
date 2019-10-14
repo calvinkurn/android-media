@@ -24,12 +24,14 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
 
     @DeepLink(ApplinkConstant.RESCENTER_BUYER)
     public static Intent newApplinkBuyerInstance(Context context, Bundle bundle) {
-        return newBuyerInstance(context).putExtras(bundle);
+        Intent intent = newBuyerInstance(context);
+        return removeExtraBundle(intent,bundle);
     }
 
     @DeepLink(ApplinkConstant.RESCENTER_SELLER)
     public static Intent newApplinkSellerInstance(Context context, Bundle bundle) {
-        return newSellerInstance(context).putExtras(bundle);
+        Intent intent = newSellerInstance(context);
+        return removeExtraBundle(intent,bundle);
     }
 
     public static Intent newSellerInstance(Context context) {
@@ -106,5 +108,17 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+
+    private static Intent removeExtraBundle(Intent intent, Bundle bundle) {
+        Bundle extras = intent.getExtras();
+        if (extras != null && extras.keySet() != null) {
+            for (String s : extras.keySet()) {
+                bundle.remove(s);
+            }
+        }
+        intent.putExtras(bundle);
+        return intent;
     }
 }

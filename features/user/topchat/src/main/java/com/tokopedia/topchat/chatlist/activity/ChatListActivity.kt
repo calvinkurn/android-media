@@ -126,7 +126,9 @@ class ChatListActivity : BaseTabActivity()
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            if(tabList.size > 1) {
+                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            }
                             setNotificationCounterOnTab()
                         }
                     }
@@ -143,24 +145,71 @@ class ChatListActivity : BaseTabActivity()
         chatNotifCounterViewModel.queryGetNotifCounter()
     }
 
+    override fun increaseUserNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun increaseSellerNotificationCounter() {
+        increaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
+    override fun decreaseUserNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_account)
+    }
+
+    override fun decreaseSellerNotificationCounter() {
+        decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
+    }
+
+    private fun decreaseNotificationCounter(iconId: Int) {
+        for ((tabIndex, tab) in tabList.withIndex()) {
+            if (tab.icon == iconId) {
+                decreaseTabCounter(tabIndex, tab)
+            }
+        }
+    }
+
+    private fun increaseNotificationCounter(iconId: Int) {
+        for ((tabIndex, tab) in tabList.withIndex()) {
+            if (tab.icon == iconId) {
+                increaseTabCounter(tabIndex, tab)
+            }
+        }
+    }
+
+    private fun increaseTabCounter(tabIndex: Int, tab: ChatListPagerAdapter.ChatListTab) {
+        tab.increaseTabCounter()
+        setupTabTitleAt(tabIndex)
+    }
+
+    private fun decreaseTabCounter(tabIndex: Int, tab: ChatListPagerAdapter.ChatListTab) {
+        tab.decreaseTabCounter()
+        setupTabTitleAt(tabIndex)
+    }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
         debug(TAG, incomingChatWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingChatWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
         debug(TAG, incomingTypingWebSocketModel.toString())
-        val fragment: ChatListFragment = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
-        fragment.processIncomingMessage(incomingTypingWebSocketModel)
+        val fragment: ChatListFragment? = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(tag: String?): ChatListFragment {
-        return when (tag) {
-            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
-            else -> fragmentAdapter.getItem(1) as ChatListFragment
+    private fun determineFragmentByTag(tag: String?): ChatListFragment? {
+        val fragment = when (tag) {
+            "User" -> fragmentAdapter.getItem(0)
+            else -> fragmentAdapter.getItem(1)
+        }
+
+        return if(fragment == null) {
+            null
+        } else  {
+            fragment as ChatListFragment
         }
     }
 
@@ -216,14 +265,20 @@ class ChatListActivity : BaseTabActivity()
 
     private fun setNotificationCounterOnTab() {
         for (i in 0 until tabLayout.tabCount) {
-            val title = tabList[i].title
-            val counter = tabList[i].counter
-            val tab = tabLayout.getTabAt(i)
-            val titleView = tab?.customView?.findViewById<TextView>(R.id.title)
-            titleView?.text = setTitleTab(title,counter)
+            setupTabTitleAt(i)
         }
     }
 
+    private fun setupTabTitleAt(tabPosition: Int) {
+        val title = tabList[tabPosition].title
+        val counter = tabList[tabPosition].counter
+        val tabTitle = setTitleTab(title, counter)
+        val tab = tabLayout.getTabAt(tabPosition)
+
+        tab?.customView?.findViewById<TextView>(R.id.title)?.apply {
+            text = tabTitle
+        }
+    }
 
     private fun createCustomView(title: String, icon: Int, counter: String): View? {
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
@@ -280,6 +335,8 @@ class ChatListActivity : BaseTabActivity()
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
         webSocketViewModel.clear()
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+        chatNotifCounterViewModel.clear()
     }
 
     object DeeplinkIntent {
