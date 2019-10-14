@@ -39,7 +39,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
 
 }
 
