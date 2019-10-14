@@ -36,7 +36,7 @@ object DeeplinkMapper {
                 return getRegisteredNavigationSearch(deeplink)
             }
             if(deeplink.startsWith(ApplinkConst.CHAT_BOT,true)){
-                return chatbotDeeplink()
+                return chatbotDeeplink(deeplink)
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
@@ -100,7 +100,7 @@ object DeeplinkMapper {
     }
 
 
-    private fun chatbotDeeplink(): String {
-        return ApplinkConstInternalGlobal.CHAT_BOT
+    private fun chatbotDeeplink(deeplink:String): String {
+        return deeplink.replace(ApplinkConst.CHAT_BOT, ApplinkConstInternalGlobal.CHAT_BOT)
     }
 }
