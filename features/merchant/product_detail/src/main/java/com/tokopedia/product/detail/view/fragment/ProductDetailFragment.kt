@@ -465,6 +465,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         tv_trade_in_promo.setOnClickListener {
+            productId?.let{
+                productDetailTracking.eventClickTradeInRibbon(it)
+            }
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)

@@ -25,9 +25,11 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
     private static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
 
     @Inject
-    public CartApiInterceptor(Context context, NetworkRouter abstractionRouter,
-                              UserSessionInterface userSessionInterface, String authKey) {
-        super(context, abstractionRouter, userSessionInterface, authKey);
+    public CartApiInterceptor(Context context,
+                              NetworkRouter networkRouter,
+                              UserSessionInterface userSession,
+                              String authKey) {
+        super(context, networkRouter, userSession, authKey);
     }
 
     @Override

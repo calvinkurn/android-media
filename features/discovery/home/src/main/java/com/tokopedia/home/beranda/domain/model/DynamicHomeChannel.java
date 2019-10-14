@@ -991,6 +991,10 @@ public class DynamicHomeChannel {
         @SerializedName("backImage")
         private String backImage;
 
+        @Expose
+        @SerializedName("textColor")
+        private String textColor;
+
         public String getId() {
             return id;
         }
@@ -1053,6 +1057,14 @@ public class DynamicHomeChannel {
 
         public void setBackImage(String backImage) {
             this.backImage = backImage;
+        }
+
+        public String getTextColor() {
+            return textColor;
+        }
+
+        public void setTextColor(String textColor) {
+            this.textColor = textColor;
         }
     }
 

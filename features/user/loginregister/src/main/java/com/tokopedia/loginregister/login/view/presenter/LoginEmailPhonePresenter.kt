@@ -8,6 +8,8 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.login.domain.StatusPinUseCase
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
@@ -40,6 +42,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
+                                                   private val statusPinUseCase: StatusPinUseCase,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -256,6 +259,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun getTickerInfo(){
         tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
                 TickerInfoLoginSubscriber(viewEmailPhone))
+    }
+
+    override fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
+        statusPinUseCase.executeCoroutines(onSuccess, onError)
     }
 
     override fun detachView() {
