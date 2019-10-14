@@ -114,42 +114,6 @@ public class AccountAnalytics {
         ));
     }
 
-    public void eventClickNotificationSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", NOTIFICATION, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
-
-
-    public void eventClickApplicationSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", APPLICATION, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
-
-    public void eventClickEmailSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", EMAIL, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
 
     public void eventClickKycSetting() {
 
@@ -255,16 +219,6 @@ public class AccountAnalytics {
     public void setUserAttributes(UserAttributeData data) {
         if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
             ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
-    }
-
-    public void setPromoPushPreference(Boolean newValue) {
-        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
-            ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
-    }
-
-    public void setNewsletterEmailPref(Boolean newValue) {
-        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
-            ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
     }
 
     public static void clickOpenShopFree(){

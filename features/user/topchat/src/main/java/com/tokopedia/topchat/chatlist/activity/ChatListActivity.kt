@@ -243,17 +243,18 @@ class ChatListActivity : BaseTabActivity()
         fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(tag: String?): ChatListFragment? {
-        val fragment = when (tag) {
-            "User" -> fragmentAdapter.getItem(0)
-            else -> fragmentAdapter.getItem(1)
+    private fun determineFragmentByTag(tag: String?): ChatListFragment {
+        if (isBuyerOnly()) {
+            return fragmentAdapter.getItem(0) as ChatListFragment
         }
+        return when (tag) {
+            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
+            else -> fragmentAdapter.getItem(1) as ChatListFragment
+        }
+    }
 
-        return if(fragment == null) {
-            null
-        } else  {
-            fragment as ChatListFragment
-        }
+    private fun isBuyerOnly(): Boolean {
+        return tabList.size == 1
     }
 
 
