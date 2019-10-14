@@ -30,6 +30,8 @@ import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
@@ -204,14 +206,19 @@ class ChatListActivity : BaseTabActivity()
         fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment {
+    private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment? {
         if (isBuyerOnly()) return getBuyerFragment()
         if (isFromBuyer(fromUid, tag)) return getSellerFragment()
-        return getBuyerFragment()
+        if (isFromSeller(fromUid, tag)) return getBuyerFragment()
+        return null
     }
 
     private fun isFromBuyer(fromUid: String, tag: String): Boolean {
-        return (tag == "User" && fromUid != userSession.userId)
+        return (tag == ROLE_BUYER && fromUid != userSession.userId)
+    }
+
+    private fun isFromSeller(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_SELLER && fromUid != userSession.userId)
     }
 
     private fun getBuyerFragment(): ChatListFragment {
