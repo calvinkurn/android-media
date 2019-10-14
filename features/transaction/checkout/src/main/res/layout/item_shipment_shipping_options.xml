@@ -165,6 +165,7 @@
             android:button="@drawable/ic_cart_check_box" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_dropshipper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_dropshipper_new"

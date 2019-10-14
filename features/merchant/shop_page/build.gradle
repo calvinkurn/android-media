@@ -77,6 +77,12 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.unifyDependencies.components
+
 }
 
 project.ext {

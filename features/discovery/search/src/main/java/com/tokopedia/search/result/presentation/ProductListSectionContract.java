@@ -111,6 +111,8 @@ public interface ProductListSectionContract {
         void successAddRecommendationWishlist(String productId);
 
         void errorRecommendationWishlist(String errorMessage, String productId);
+
+        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

@@ -26,9 +26,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
@@ -73,6 +73,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
@@ -278,9 +279,7 @@ public class ProductListFragment
     }
 
     private void setupListener() {
-
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
-
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
@@ -346,7 +345,12 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-        startShowCase();
+
+        // This method is commented, due to "Bebas Ongkir" promo show case shown as pop up dialog.
+        // This start show case will be uncommented again
+        // after "Bebas Ongkir" promo show case is not pop up dialog anymore.
+
+        // startShowCase();
     }
 
     public void addRecommendationList(List<Visitable> list){
@@ -494,6 +498,7 @@ public class ProductListFragment
             product.setName(item.getProductName());
             product.setPriceFormat(item.getPrice());
             product.setCategory(new Category(item.getCategoryID()));
+            product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
             TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
         }
     }
@@ -623,8 +628,20 @@ public class ProductListFragment
         product.setName(item.getProductName());
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
+        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
 
         return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
+        }
+
+        return null;
     }
 
     @Override
@@ -1005,6 +1022,10 @@ public class ProductListFragment
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
+    /**
+     * This method is left unused for now, due to "Bebas Ongkir" promo show case shown as pop up dialog.
+     * This start show case will be used again after "Bebas Ongkir" promo show case is not pop up dialog anymore.
+     */
     public void startShowCase() {
         final String showCaseTag = ProductListFragment.class.getName();
         if (!isShowCaseAllowed(showCaseTag)) {
@@ -1205,6 +1226,13 @@ public class ProductListFragment
 
         if (relativeLayoutErrorMessageContainer != null) {
             relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
+        if (getActivity() != null) {
+            FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge);
         }
     }
 

@@ -1,6 +1,11 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.search.di.module.AddWishListUseCaseModule;
+import com.tokopedia.search.di.module.RemoteConfigModule;
+import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
+import com.tokopedia.search.di.module.UserSessionModule;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.di.module.*;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;

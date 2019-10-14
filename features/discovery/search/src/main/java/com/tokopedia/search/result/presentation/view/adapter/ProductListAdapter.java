@@ -147,7 +147,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                 if (productId.equals(model.getProductID())) {
                     model.setWishlistButtonEnabled(isEnabled);
                     notifyItemChanged(i);
-                    break;
                 }
             }
         }
@@ -160,7 +159,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
                     notifyItemChanged(i);
-                    break;
                 }
             } else if(list.get(i) instanceof RecommendationItemViewModel){
                 RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);

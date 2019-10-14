@@ -61,7 +61,8 @@ class FlightSearchJourneyByIdUseCase @Inject constructor(
                     it.departureAirportName,
                     it.departureAirportCity,
                     it.arrivalAirportName,
-                    it.arrivalAirportCity
+                    it.arrivalAirportCity,
+                    it.operatingAirline
             )
         }
         with(journeyAndRoutes.flightJourneyTable) {

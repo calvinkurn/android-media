@@ -23,7 +23,8 @@ class RecommendationItem(val productId: Int,
                          var isWishlist: Boolean,
                          val slashedPrice: String,
                          val slashedPriceInt: Int,
-                         val discountPercentage: Int,
+                         val discountPercentageInt: Int,
+                         val discountPercentage: String,
                          val position: Int,
                          val shopId: Int,
                          val shopType: String,
@@ -36,7 +37,14 @@ class RecommendationItem(val productId: Int,
                          val location: String,
                          val badgesUrl: List<String?>,
                          val type: String,
+                         val isFreeOngkirActive: Boolean,
+                         val freeOngkirImageUrl: String,
+                         val labelPromo: RecommendationLabel,
+                         val labelOffers: RecommendationLabel,
+                         val labelCredibility: RecommendationLabel): ImpressHolder(){
                          val isGold: Boolean): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }
+
+data class RecommendationLabel(var title: String = "", val type: String = "")
