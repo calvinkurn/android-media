@@ -159,11 +159,8 @@ class CatalogDetailPageActivity : BaseActivity(),
     private fun applyFilter(filterParameter: Map<String, String>) {
         val fragment = catalogDetailListingFragment as BaseCategorySectionFragment
 
-        if(filterParameter.isNotEmpty()){
-            if(filterParameter.size <= 1 && filterParameter.containsKey(ORDER_BY))
-                searchNavContainer?.onFilterSelected(false)
-            else
-                searchNavContainer?.onFilterSelected(true)
+        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+            searchNavContainer?.onFilterSelected(true)
         } else {
             searchNavContainer?.onFilterSelected(false)
         }
@@ -324,7 +321,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         visibleFragmentListener?.onFilterClick()
     }
 
-    override fun onSortApplied(isDefault: Boolean) {
-        searchNavContainer?.onSortSelected(!isDefault)
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
     }
 }

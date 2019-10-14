@@ -63,7 +63,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     private var sortAppliedListener: SortAppliedListener? = null
 
     companion object {
-        const val DEFAULT_SORT = "Paling Sesuai"
+        const val DEFAULT_SORT = 23
     }
 
     protected open fun onSwipeToRefresh() {
@@ -355,7 +355,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
-                sortAppliedListener?.onSortApplied(DEFAULT_SORT == selectedSortName)
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
                         selectedSort["ob"]?.toInt() ?: 0)
             }
@@ -414,6 +414,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     interface SortAppliedListener {
-        fun onSortApplied(isDefault: Boolean)
+        fun onSortApplied(showTick: Boolean)
     }
 }
