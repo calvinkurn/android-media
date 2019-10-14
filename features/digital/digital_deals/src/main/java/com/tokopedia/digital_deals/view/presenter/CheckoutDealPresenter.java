@@ -20,6 +20,7 @@ import com.tokopedia.digital_deals.view.model.cart.CartItems;
 import com.tokopedia.digital_deals.view.model.cart.Configuration;
 import com.tokopedia.digital_deals.view.model.cart.MetaData;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
@@ -106,8 +107,7 @@ public class CheckoutDealPresenter
 
     private void goToLoyaltyActivity() {
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
-        Intent loyaltyIntent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
+        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(),
                         DealsUrl.AppLink.DEALS,
                         DealsUrl.AppLink.DEALS,
                         Utils.LOYALTY_DEFAULT_TAB);
