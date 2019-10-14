@@ -163,6 +163,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
+    @JvmField
+    val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
+
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
