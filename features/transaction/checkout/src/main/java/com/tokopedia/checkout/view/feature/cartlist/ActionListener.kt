@@ -53,6 +53,4 @@ interface ActionListener {
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
     fun onSelectAllClicked()
-
-    fun onShowCartTicker(tickerId: String)
 }

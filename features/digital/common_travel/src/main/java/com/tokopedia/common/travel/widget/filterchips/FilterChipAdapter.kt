@@ -29,7 +29,9 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             chips.text = list.get(position)
-            chips.isSelected = if (initialPositionSelected != null) position == initialPositionSelected else false
+            if (initialPositionSelected != null && position == initialPositionSelected) selectChip()
+            else chips.isSelected = false
+
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
                 if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
@@ -57,7 +59,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
 
         fun selectChip() {
             chips.isSelected = true
-            if (selectedColor > 0) setTextColor(selectedColor)
+            this.setTextColor(com.tokopedia.design.R.color.snackbar_border_normal)
         }
     }
 

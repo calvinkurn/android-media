@@ -73,6 +73,10 @@ public class Ticker {
         @Expose
         String title;
 
+        @SerializedName("layout")
+        @Expose
+        String layout;
+
         @SerializedName("target")
         @Expose
         String target;
@@ -162,6 +166,10 @@ public class Ticker {
             this.title = title;
         }
 
+        public String getLayout() { return layout; }
+
+        public void setLayout(String layout) { this.layout = layout; }
+
         public String getTarget() {
             return target;
         }
@@ -228,6 +236,7 @@ public class Ticker {
                     ", id='" + id + '\'' +
                     ", message='" + message + '\'' +
                     ", title='" + title + '\'' +
+                    ", layout='" + layout + '\'' +
                     ", target='" + target + '\'' +
                     ", device='" + device + '\'' +
                     ", updatedOn='" + updatedOn + '\'' +

@@ -55,7 +55,7 @@ import javax.inject.Inject
  * @property viewModelFactory the factory for ViewModel provide by Dagger.
  * @property trackingQueue the queue util for handle tracking.
  * @property productId the productId of ProductDetail.
- * @property ref the ref code for know source page.
+ * @property queryParam the ref code for know source page.
  * @property lastClickLayoutType for handling last click product layout type.
  * @property lastParentPosition for handling last click product and get know parent position for nested recyclerView.
  * @property viewModelProvider the viewModelProvider by Dagger
@@ -78,7 +78,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
-    private lateinit var ref: String
+    private lateinit var queryParam: String
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -99,7 +99,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_FROM_PDP = 394
         fun newInstance(productId: String = "", source: String = "") = RecommendationFragment().apply {
             this.productId = productId
-            this.ref = source
+            this.queryParam = source
         }
     }
 
@@ -112,7 +112,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
-            ref = it.getString(SAVED_REF) ?: ""
+            queryParam = it.getString(SAVED_REF) ?: ""
         }
         activity?.let {
             trackingQueue = TrackingQueue(it)
@@ -128,20 +128,20 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
                     null,
-                    ref)
+                    queryParam)
         }
         else {
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
                     productId,
-                    ref)
+                    queryParam)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
-        outState.putString(SAVED_REF, ref)
+        outState.putString(SAVED_REF, queryParam)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -241,24 +241,24 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(isAddWishlist){
                 recommendationWidgetViewModel.addWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, queryParam)
                 }else {
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), queryParam)
                 }
             } else {
                 recommendationWidgetViewModel.removeWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, queryParam)
                 }else {
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), queryParam)
                 }
             }
         }else{
             RouteManager.route(context, ApplinkConst.LOGIN)
             if(productId.isNotBlank() || productId.isNotEmpty()){
-               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(ref)
+               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(queryParam)
             } else {
-               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
+               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), queryParam)
             }
         }
     }
@@ -271,15 +271,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductImpression(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLoginWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLoginWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
             }else {
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
             }
         } else {
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
             }else {
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
             }
         }
     }
@@ -332,10 +332,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(productId.isNotBlank()) {
                 recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                        ref,
+                        queryParam,
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {
-                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), ref, onErrorGetRecommendation = this::onErrorGetRecommendation)
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), queryParam, onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
     }
@@ -354,7 +354,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun displayProductInfo(dataModel: ProductInfoDataModel){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, ref))
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, queryParam))
                 .commit()
     }
 
@@ -395,15 +395,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private fun eventTrackerClickListener(item: RecommendationItem){
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductWithProductId(getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductWithProductId(getHeaderName(item), item, item.position.toString(), queryParam)
             }else {
-                RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), queryParam)
             }
         }else{
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLoginWithProductId(getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLoginWithProductId(getHeaderName(item), item, item.position.toString(), queryParam)
             }else {
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), ref)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), queryParam)
             }
         }
     }
@@ -451,7 +451,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}"))
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}?${queryParam}"))
                 }
             }))
         }
@@ -471,7 +471,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         linkerData.imgUri = productDetailData.imageUrl
         linkerData.ogUrl = null
         linkerData.type = "Recommendation"
-        linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}"
+        linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}?$queryParam"
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
