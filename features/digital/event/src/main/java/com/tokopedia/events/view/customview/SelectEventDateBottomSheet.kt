@@ -3,7 +3,6 @@ package com.tokopedia.events.view.customview
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.events.R
 import com.tokopedia.events.di.*
 import com.tokopedia.events.view.viewmodel.LocationDateModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
