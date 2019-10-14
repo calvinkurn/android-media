@@ -34,10 +34,6 @@ class OfficialHomeMapper {
         }
 
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
-            val defaultValue = ""
-            val pageName = "official-store"
-            val pageNumber = 1
-            
             productRecommendation.recommendationItemList.forEach {
                 adapter?.addElement(3, ProductRecommendationViewModel(it, listener))
             }

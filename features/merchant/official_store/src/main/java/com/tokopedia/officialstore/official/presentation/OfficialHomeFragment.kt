@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
@@ -20,7 +19,6 @@ import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
@@ -37,6 +35,7 @@ import javax.inject.Inject
 class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
 
     companion object {
+        const val DEFAULT_PAGE = 1
         const val GRID_SPAN_COUNT = 1
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
@@ -87,6 +86,8 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 // Load more product recom
+                val nextPage = page + 1
+                viewModel.loadMore(category, nextPage)
             }
         }
     }
@@ -103,7 +104,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     private fun refreshData() {
         adapter?.clearAllElements()
-        viewModel.loadFirstData(category)
+        viewModel.loadFirstData(category, DEFAULT_PAGE)
     }
 
     private fun observeBannerData() {
