@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
@@ -31,12 +32,17 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var umrahOrderDetailViewModel: UmrahOrderDetailViewModel
 
+    lateinit var orderId: String
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahOrderDetailComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        orderId = savedInstanceState?.getString(EXTRA_ORDER_ID)
+                ?: arguments?.getString(EXTRA_ORDER_ID) ?: ""
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -60,6 +66,24 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        umrahOrderDetailViewModel.getOrderDetail(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_order_detail),
+                orderId,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_order_detail)
+        )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (::orderId.isInitialized) {
+            outState.putString(EXTRA_ORDER_ID, orderId)
+        }
     }
 
     private fun renderData(data: UmrahOrderDetailsEntity) {

@@ -21,7 +21,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
 
-    fun getOrderDetail(rawQuery: String, orderId: String, orderCategory: String, response: String) {
+    fun getOrderDetail(rawQuery: String, orderId: String, response: String) {
         /*val params = mapOf(PARAM_ORDER_ID to orderId,
                 PARAM_ORDER_CATEGORY_STR to orderCategory)
 
@@ -49,6 +49,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     companion object {
         const val PARAM_ORDER_ID = "orderId"
         const val PARAM_ORDER_CATEGORY_STR = "orderCategoryStr"
+        const val UMRAH_CATEGORY = "UMRAH"
     }
 
 }
