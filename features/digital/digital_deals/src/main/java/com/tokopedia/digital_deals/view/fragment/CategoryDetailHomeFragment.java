@@ -550,23 +550,20 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         if (id == com.tokopedia.digital_deals.R.id.action_promo) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
-            ((DealsModuleRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.PROMOURL);
+            RouteManager.route(getActivity().getApplication(), DealsUrl.WebUrl.PROMOURL);
         } else if (id == com.tokopedia.digital_deals.R.id.action_booked_history) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
             if (userSession.isLoggedIn()) {
                 RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
             } else {
-                Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
-                        getLoginIntent(getActivity());
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                 navigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
             }
         } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
-            ((DealsModuleRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.FAQURL);
+            RouteManager.route(getActivity().getApplication(), DealsUrl.WebUrl.FAQURL);
         }
         return true;
     }

@@ -40,6 +40,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.DealsModuleRouter;
@@ -342,13 +344,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         Date currentTime = Calendar.getInstance().getTime();
         if ((currentTime.getTime())/1000> detailsViewModel.getSaleEndDate())
         {
-            buyDealNow.setText(getContext().getResources().getString(R.string.deals_disable_buy_now));
+            buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_disable_buy_now));
             buyDealNow.setClickable(false);
-            buyDealNow.setBackgroundColor(getContext().getResources().getColor(R.color.search_divider_color));
+            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.digital_deals.R.color.search_divider_color));
         } else {
             buyDealNow.setClickable(true);
-            buyDealNow.setText(getContext().getResources().getString(R.string.buy_now));
-            buyDealNow.setBackground(getContext().getResources().getDrawable(R.drawable.button_buy_now_background));
+            buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.buy_now));
+            buyDealNow.setBackground(getContext().getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.button_buy_now_background));
         }
         if (detailsViewModel.getBrand() != null)
             dealsAnalytics.sendEcommerceDealDetail(detailsViewModel.getId(), detailsViewModel.getSalesPrice(), detailsViewModel.getDisplayName(), detailsViewModel.getBrand().getTitle());
@@ -483,9 +485,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     public void startGeneralWebView(String url) {
-
-        ((DealsModuleRouter) getActivity().getApplication())
-                .actionOpenGeneralWebView(getActivity(), url);
+        RouteManager.route(getActivity().getApplication(), url);
     }
 
     @Override
@@ -529,8 +529,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
-                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
-                            getLoginIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
                 }
         ).show();

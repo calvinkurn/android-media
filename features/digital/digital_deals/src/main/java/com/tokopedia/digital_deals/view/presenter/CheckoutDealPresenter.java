@@ -24,6 +24,7 @@ import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,13 +119,13 @@ public class CheckoutDealPresenter
 
 
     public void getCheckoutDetails() {
+        UserSession userSession = new UserSession(getView().getActivity());
         Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
         this.packageViewModel = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromDetails(dealDetail, packageViewModel);
-        getView().setEmailIDPhoneNumber(((DealsModuleRouter) getView().getActivity().getApplication()).getUserEmailProfil(),
-                ((DealsModuleRouter) getView().getActivity().getApplication()).getUserPhoneNumber());
+        getView().setEmailIDPhoneNumber(userSession.getEmail(), userSession.getPhoneNumber());
     }
 
     private JsonObject convertCartItemToJson(String cart) {

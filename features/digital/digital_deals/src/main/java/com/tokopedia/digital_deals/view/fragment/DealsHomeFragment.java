@@ -631,8 +631,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startGeneralWebView(String url) {
-        ((DealsModuleRouter) getActivity().getApplication())
-                .actionOpenGeneralWebView(getActivity(), url);
+        RouteManager.route(getActivity().getApplication(), url);
     }
 
     @Override

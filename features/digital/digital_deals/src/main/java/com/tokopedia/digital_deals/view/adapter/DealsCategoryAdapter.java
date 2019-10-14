@@ -21,7 +21,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -457,8 +458,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void showLoginSnackbar(String message, int position) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
-                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
-                            getLoginIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
                     toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
                 }
         ).show();

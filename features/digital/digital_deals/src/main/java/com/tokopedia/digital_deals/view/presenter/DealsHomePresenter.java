@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.DealsModuleRouter;
@@ -221,8 +222,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             if (userSession.isLoggedIn()) {
                 getView().startOrderListActivity();
             } else {
-                Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
+                Intent intent = RouteManager.getIntent(getView().getActivity(), ApplinkConst.LOGIN);
                 getView().navigateToActivityRequest(intent, getView().getRequestCode());
             }
         } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
