@@ -24,7 +24,7 @@ class UmrahSimpleAdapter : RecyclerView.Adapter<UmrahSimpleViewHolder>() {
         viewHolder.bind(simpleViewModels[position])
     }
 
-    fun setDatas(datas: List<UmrahSimpleModel>) {
+    fun setData(datas: List<UmrahSimpleModel>) {
         this.simpleViewModels.clear()
         this.simpleViewModels.addAll(datas)
         notifyDataSetChanged()

@@ -5,6 +5,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,9 +43,36 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
             val gson = Gson()
             orderDetailData.value = Success(gson.fromJson(response,
                     UmrahOrderDetailsEntity.Response::class.java).orderDetails)
-        }){
+        }) {
             it.printStackTrace()
         }
+    }
+
+    fun transformToSimpleModel(detailsData: List<UmrahOrderDetailsEntity.DataDetail>): List<UmrahSimpleModel> {
+        val data = arrayListOf<UmrahSimpleModel>()
+
+        for (item in detailsData) {
+            data.add(UmrahSimpleModel(
+                    title = item.label,
+                    description = item.value
+            ))
+        }
+
+        return data
+    }
+
+    fun transformToSimpleDetailModel(detailsData: List<UmrahOrderDetailsEntity.DataDetail>): List<UmrahSimpleDetailModel> {
+        val data = arrayListOf<UmrahSimpleDetailModel>()
+
+        for (item in detailsData) {
+            data.add(UmrahSimpleDetailModel(
+                    title = item.label,
+                    subtitle = item.value,
+                    icon = item.imageUrl
+            ))
+        }
+
+        return data
     }
 
     companion object {

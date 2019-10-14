@@ -9,5 +9,8 @@ import com.google.gson.annotations.SerializedName
 class UmrahOrderDetailsMetaDataEntity (
         @SerializedName("travel_agent")
         @Expose
-        val travelAgent: String = ""
+        val travelAgent: String = "",
+        @SerializedName("booking_code")
+        @Expose
+        val bookingCode: String = ""
 )

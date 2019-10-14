@@ -5,4 +5,5 @@ package com.tokopedia.salam.umrah.common.presentation.model
  */
 class UmrahSimpleModel(
         val title: String = "",
-        val description: String = "")
+        val description: String = "",
+        val textColor: String = "")

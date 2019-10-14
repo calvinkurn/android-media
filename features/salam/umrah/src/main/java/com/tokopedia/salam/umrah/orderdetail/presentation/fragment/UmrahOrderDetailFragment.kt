@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
+import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -97,14 +100,26 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         tg_invoice_button.setOnClickListener {
             RouteManager.route(context, data.invoice.invoiceUrl)
         }
+        val titleLayoutManager = LinearLayoutManager(context)
+        val titleAdapter = UmrahSimpleAdapter()
+        titleAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(data.title))
+        rv_header_detail.layoutManager = titleLayoutManager
+        rv_header_detail.adapter = titleAdapter
 
         // content section
+        val detailLayoutManager = LinearLayoutManager(context)
+        val detailAdapter = UmrahSimpleDetailAdapter()
+        detailAdapter.setData(umrahOrderDetailViewModel.transformToSimpleDetailModel(data.details))
+        rv_umrah_details.layoutManager = detailLayoutManager
+        rv_umrah_details.adapter = detailAdapter
+
         if (data.items.isNotEmpty()) {
             val itemData = data.items[0]
             val metaData = Gson().fromJson(itemData.metadata, UmrahOrderDetailsMetaDataEntity::class.java)
 
             tg_umrah_package.text = itemData.title
             tg_umrah_travel.text = metaData.travelAgent
+            tg_booking_code.text = metaData.bookingCode
         }
 
         // footer section
