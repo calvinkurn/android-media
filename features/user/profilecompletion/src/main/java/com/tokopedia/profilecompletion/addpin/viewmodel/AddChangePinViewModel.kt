@@ -211,7 +211,7 @@ class AddChangePinViewModel @Inject constructor(
             }
         }
     }
-
+  
     fun checkSkipOtpPin(){
         rawQueries[ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN]?.let { query ->
             val params = mapOf(ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION)
@@ -243,6 +243,16 @@ class AddChangePinViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        addPinUseCase.cancelJobs()
+        changePinUseCase.cancelJobs()
+        checkPinUseCase.cancelJobs()
+        getStatusPinUseCase.cancelJobs()
+        validatePinUseCase.cancelJobs()
+        skipOtpPinUseCase.cancelJobs()
+    }
+  
     companion object {
         const val OTP_TYPE_SKIP_VALIDATION = 125
     }

@@ -644,6 +644,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     fun onErrorLogin(errorMessage: String?) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+        analytics.sendCashShield(context)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
@@ -663,6 +664,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
         analytics.trackClickOnNextFail(emailPhoneEditText.text.toString(), message)
+        analytics.sendCashShield(context)
         partialRegisterInputView.onErrorValidate(message)
     }
 
@@ -878,7 +880,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }.showRetrySnackbar()
 
             analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
-
+            analytics.sendCashShield(context)
         }
     }
 

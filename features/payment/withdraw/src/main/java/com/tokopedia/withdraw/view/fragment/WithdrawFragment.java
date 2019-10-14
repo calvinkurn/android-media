@@ -804,7 +804,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     presenter.refreshBankList();
-                    Toaster.Companion.showNormal(mainView, getString(R.string.swd_bank_added_success), Snackbar.LENGTH_LONG);
+                    Toaster.INSTANCE.showNormal(mainView, getString(R.string.swd_bank_added_success), Snackbar.LENGTH_LONG);
                 }
                 break;
             case BANK_SETTING_INTENT:

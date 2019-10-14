@@ -285,6 +285,7 @@ public class ShipmentDataRequestConverter {
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
                 .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
+                .isFreeShipping(cartItem.isFreeShipping())
                 .build();
     }
 

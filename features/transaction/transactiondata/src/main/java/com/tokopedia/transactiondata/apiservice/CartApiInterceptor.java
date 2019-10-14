@@ -32,16 +32,9 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String responseError = response.peekBody(512).string();
-        int errorCode = response.code();
-        if (responseError != null && !responseError.contains(RESPONSE_STATUS_REQUEST_DENIED))
+        if (!responseError.contains(RESPONSE_STATUS_REQUEST_DENIED))
             if (!responseError.isEmpty() && responseError.contains("header")) {
-                CartErrorResponse cartErrorResponse = new Gson().fromJson(
-                        responseError, CartErrorResponse.class
-                );
-                throw new CartResponseErrorException(
-                        errorCode,
-                        cartErrorResponse.getCartHeaderResponse().getErrorCode(),
-                        CART_ERROR_GLOBAL);
+                throw new CartResponseErrorException(CART_ERROR_GLOBAL);
             }
     }
 
