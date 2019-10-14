@@ -24,12 +24,12 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
 import com.tokopedia.promocheckout.list.model.listpromocatalog.TokopointsCatalogHighlight
+import com.tokopedia.promocheckout.list.model.listpromolastseen.GetPromoSuggestion
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
@@ -152,16 +152,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     abstract fun onPromoCodeUse(promoCode: String)
 
-    /* hold cos api not ready yet
-       promoCheckoutListPresenter.getListLastSeen(resources)
-    */
-    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-
+    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
     }
-
-    /* hold cos api not ready yet
-       promoCheckoutListPresenter.getListLastSeen(resources)
-    */
 
     override fun renderListExchangeCoupon(data: TokopointsCatalogHighlight) {
         view?.text_title?.text=data.title
@@ -203,9 +195,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
+    override fun renderListLastSeen(data: GetPromoSuggestion?) {
         promoLastSeenAdapter.listData.clear()
-        promoLastSeenAdapter.listData.addAll(data)
+        promoLastSeenAdapter.listData.addAll(data?.promoHistory as Collection<PromoHistoryItem>)
         promoLastSeenAdapter.notifyDataSetChanged()
         populateLastSeen()
     }

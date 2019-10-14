@@ -8,9 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
@@ -19,11 +16,11 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -43,6 +40,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
         childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
+    }
+
+    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
+        textInputCoupon.setText(promoHistoryItem.promoCode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,6 +158,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override fun loadData(page: Int) {
         if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+            promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
             promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
     }
