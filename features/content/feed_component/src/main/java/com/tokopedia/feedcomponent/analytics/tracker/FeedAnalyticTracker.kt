@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -23,6 +24,8 @@ class FeedAnalyticTracker
         const val PRODUCTS = "products"
 
         const val PROMOTIONS = "promotions"
+        public val CURRENCY_CODE = "currencyCode"
+        public val CURRENCY_CODE_IDR = "IDR"
     }
 
     private object Event {
@@ -32,6 +35,9 @@ class FeedAnalyticTracker
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_VIEW = "productView"
+        const val ECOMMERCE = "ecommerce"
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
         const val ADD = "add"
@@ -50,6 +56,7 @@ class FeedAnalyticTracker
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
+        const val CONTENT_INTEREST_PICK = "content interest pick"
     }
 
     private object Action {
@@ -61,7 +68,18 @@ class FeedAnalyticTracker
         const val CLICK_READ_MORE = "click read more"
         const val CLICK_POST = "click post"
         const val CLICK_AVATAR = "click avatar"
+        const val CLICK_INTEREST = "click interest"
+        const val CLICK_INTEREST_SEE_ALL = "click interest - lihat semua"
+        const val CLICK_INTEREST_CHECK_ACCOUNT = "click check akun yang sesuai"
+        const val CLICK_INTEREST_CHECK_INSPIRATION = "click lihat inspirasi"
+        const val CLICK_PRODUCT_RECOM = "click product recommendation"
+        const val CLICK_CONTENT_RECOM = "click content recommendation"
+        const val CLICK_FOLLOW = "click follow"
+        const val CLICK_UNFOLLOW = "click unfollow"
+        const val CLICK_FOLLOW_ALL = "click follow semua"
 
+        const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
+        const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
     }
 
@@ -70,6 +88,8 @@ class FeedAnalyticTracker
         const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
+        const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
+        const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
     }
 
     private object Promotion {
@@ -89,6 +109,22 @@ class FeedAnalyticTracker
         const val MEDIA_PREVIEW_TAG = "{role}"
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_CODE_IDR = "IDR"
+        const val BRAND = "brand"
+        const val CATEGORY = "category"
+        const val VARIANT = "variant"
+        const val LIST = "list"
+        const val POSITION = "position"
+        const val ACTION_FIELD = "actionField"
+        const val CLICK = "click"
+        const val IMPRESSIONS = "impressions"
+    }
+
+    private object ListSource {
+        const val PROFILE_RECOM_SHOP_RECOM = "/feed profile recom - shop recommendation"
+        const val PROFILE_FOLLOW_RECOM_SHOP_RECOM = "/feed follow recom - shop recommendation"
+        const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
+        const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
+        const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
     }
 
 
@@ -97,9 +133,185 @@ class FeedAnalyticTracker
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Screenshot 39
+     * Screenshot 9 & 13
      *
-     * @param activityId - postId
+     */
+    fun eventClickFeedInterestPick(optionName: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_INTEREST,
+                optionName)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 10
+     *
+     */
+    fun eventClickFeedInterestPickSeeAll() {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_INTEREST_SEE_ALL,
+                "")
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 11
+     *
+     */
+    fun eventClickFeedCheckAccount(countString: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_INTEREST_CHECK_ACCOUNT,
+                countString)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 9
+     *
+     */
+    fun eventClickFeedCheckInspiration(countString: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_INTEREST_CHECK_INSPIRATION,
+                countString)
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     *
+     */
+    fun eventOpenInterestPickDetail() {
+        trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     *
+     */
+    fun eventOpenOnboardingProfileRecom() {
+        trackOpenScreenEvent(Screen.ONBOARDING_PROFILE_RECOM)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 19
+     *
+     */
+    fun eventViewContentRecommendation(activityId: String, position: Int, authorType: String) {
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_VIEW,
+                Category.CONTENT_INTEREST_PICK,
+                Action.IMPRESSION_CONTENT_RECOM,
+                activityId,
+                getPromoViewData(
+                        getPromotionsData(
+                                listOf(getPromotionData(
+                                        activityId,
+                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
+                                        userSessionInterface.name,
+                                        position))
+                        )
+                )
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 19
+     *
+     */
+    fun eventClickContentRecommendation(activityId: String, position: Int, authorType: String) {
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_CLICK,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_CONTENT_RECOM,
+                activityId,
+                getPromoClickData(
+                        getPromotionsData(
+                                listOf(getPromotionData(
+                                        activityId,
+                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
+                                        userSessionInterface.name,
+                                        position))
+                        )
+                )
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 17
+     *
+     */
+    fun eventClickFollowRecomNameAndImage(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_AVATAR,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 18
+     *
+     */
+    fun eventClickFollowShopOrProfile(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_FOLLOW,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 18
+     *
+     */
+    fun eventClickUnFollowShopOrProfile(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_UNFOLLOW,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 20
+     *
+     */
+    fun eventClickFollowAll() {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_INTEREST_PICK,
+                Action.CLICK_FOLLOW_ALL,
+                "")
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     *
      */
     fun eventOpenMediaPreview() {
         trackOpenScreenEvent(Screen.MEDIA_PREVIEW)
@@ -592,4 +804,88 @@ class FeedAnalyticTracker
         }
         return result
     }
+
+    fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
+        return DataLayer.mapOf(CURRENCY_CODE, CURRENCY_CODE_IDR,
+                Product.IMPRESSIONS, getProducts(listProduct))
+    }
+
+    fun getEcommerceClick(listProduct: List<ProductItem>, listSource: String): Map<String, Any> {
+        return DataLayer.mapOf(Product.CLICK, getEcommerceClickValue(listProduct, listSource))
+    }
+
+    fun getEcommerceClickValue(listProduct: List<ProductItem>, listSource: String): Map<String, Any> {
+        return DataLayer.mapOf(
+                Product.ACTION_FIELD, getEcommerceActionFieldValue(listSource),
+                PRODUCTS, getProducts(listProduct))
+    }
+
+    fun getEcommerceActionFieldValue(listSource: String): Map<String, Any> {
+        return DataLayer.mapOf(Product.LIST, listSource)
+    }
+
+    fun getProducts(listProduct: List<ProductItem>): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+        for (promo in listProduct) {
+            val map = createProductMap(promo)
+            list.add(map)
+        }
+        return DataLayer.listOf(*list.toTypedArray<Any>())
+    }
+
+    fun createProductMap(product: ProductItem) : Map<String, Any> {
+        val map = java.util.HashMap<String, Any>()
+        map[Product.ID] = product.id.toString()
+        map[Product.NAME] = product.name
+        map[Product.PRICE] = product.price
+        map[Product.BRAND] = product.brand
+        map[Product.CATEGORY] = product.category
+        map[Product.VARIANT] = product.variant
+        map[Product.LIST] = product.list
+        map[Product.POSITION] = product.position
+        return map
+    }
+
+    private fun getProductItemList(id: Int, name: String, price: Int, brand: String, category: String,
+                                variant: String, list: String, position: Int)
+            : List<ProductItem> {
+        val dataList = ArrayList<ProductItem>()
+        dataList.add(ProductItem(
+                id, name, price, brand, category, variant, list, position
+        ))
+        return dataList
+    }
+
+    class ProductItem(id: Int, name: String, price: Int, brand: String, category: String,
+                  variant: String, list: String, position: Int) {
+        var id: Int = 0
+            internal set
+        var name: String
+            internal set
+        var price: Int = 0
+            internal set
+        var brand: String
+            internal set
+        var category: String
+            internal set
+        var variant: String
+            internal set
+        var list: String
+            internal set
+        var position: Int
+            internal set
+
+        init {
+            this.id = id
+            this.name = name
+            this.price = price
+            this.brand = brand
+            this.category = category
+            this.variant = variant
+            this.list = list
+            this.position = position
+        }
+    }
+
+
 }
