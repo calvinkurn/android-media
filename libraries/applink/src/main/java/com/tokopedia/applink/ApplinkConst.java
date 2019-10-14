@@ -256,6 +256,9 @@ public interface ApplinkConst {
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
 
+    String PUSHNOTIFCHECKER = "tokopedia://push-notif-checker";
+
+
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
