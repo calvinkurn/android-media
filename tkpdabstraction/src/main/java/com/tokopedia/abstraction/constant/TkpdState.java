@@ -47,4 +47,8 @@ public class TkpdState {
         public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
         public static final String PRODUCT_URI = "PRODUCT_URI";
     }
+
+    public class DrawerPosition {
+        public static final int MANAGE_PRODUCT = 8;
+    }
 }
