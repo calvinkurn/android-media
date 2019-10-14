@@ -329,8 +329,7 @@ class AffiliateDashboardFragment :
 
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
-        val maxDate = getMaxDate()
-        val calendarPickerView = pickerView?.init(getMinDate(), maxDate, holidayList)
+        val calendarPickerView = pickerView?.init(getMinDate(), getMaxDate(), holidayList)
                 ?.inMode(CalendarPickerView.SelectionMode.RANGE)
         pickerView?.setOnDateSelectedListener(getOnSelectedDateListener())
 
@@ -349,8 +348,7 @@ class AffiliateDashboardFragment :
 
     private fun getMaxDate(): Date {
         val maxTime = Calendar.getInstance(Locale.getDefault())
-        maxTime.set(Calendar.DAY_OF_MONTH, maxTime.getActualMaximum(Calendar.DAY_OF_MONTH))
-        maxTime.add(Calendar.MONTH, 1)
+        maxTime.add(Calendar.DAY_OF_MONTH, 1)
         maxTime.set(Calendar.HOUR_OF_DAY, 0)
         maxTime.set(Calendar.MINUTE, 0)
         maxTime.set(Calendar.SECOND, 0)
