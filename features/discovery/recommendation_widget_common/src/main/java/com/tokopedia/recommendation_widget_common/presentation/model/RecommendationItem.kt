@@ -41,7 +41,7 @@ class RecommendationItem(val productId: Int,
                          val freeOngkirImageUrl: String,
                          val labelPromo: RecommendationLabel,
                          val labelOffers: RecommendationLabel,
-                         val labelCredibility: RecommendationLabel): ImpressHolder(){
+                         val labelCredibility: RecommendationLabel,
                          val isGold: Boolean): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
