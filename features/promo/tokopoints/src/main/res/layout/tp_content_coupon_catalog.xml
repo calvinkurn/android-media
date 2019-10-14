@@ -82,7 +82,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_quota_count"
                 app:typographyType="small" />
 
-            <View
+            <RelativeLayout
                 android:id="@+id/top_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
@@ -130,8 +130,8 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
-            <View
-                android:id="@+id/mid_separator"
+            <RelativeLayout
+                android:id="@+id/tp_mid_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_margin="@dimen/dp_16"
@@ -148,8 +148,8 @@
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/how_to_use_coupon_catalog"
                 android:textColor="@color/clr_f531353b"
-                app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
-                app:layout_constraintTop_toBottomOf="@+id/mid_separator"
+                app:layout_constraintLeft_toLeftOf="@+id/tp_mid_separator"
+                app:layout_constraintTop_toBottomOf="@+id/tp_mid_separator"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
@@ -178,7 +178,7 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
-            <View
+            <RelativeLayout
                 android:id="@+id/bottom_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
@@ -254,7 +254,7 @@
         android:background="@color/transparent"
         android:orientation="vertical">
 
-        <View
+        <RelativeLayout
             android:id="@+id/top_shaded_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
@@ -344,7 +344,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_12"
             android:layout_weight="1"
-            android:background="@drawable/bg_button_buy_orange"
+            android:background="@drawable/bg_button_buy_orange_tokopoints"
             android:gravity="center"
             android:textAllCaps="false"
             android:textColor="@color/white"
