@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget
+package com.tokopedia.promotionstarget.gql
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -14,7 +14,7 @@ class GqlUseCaseWrapper {
                     setTypeClass(gqlResponseType)
                     setGraphqlQuery(query)
                     setRequestParams(params)
-                    setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
+                    setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
                 }
         return gqlUseCase.executeOnBackground()
     }

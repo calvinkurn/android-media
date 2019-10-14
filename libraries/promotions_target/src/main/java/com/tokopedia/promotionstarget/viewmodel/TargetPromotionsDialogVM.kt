@@ -2,21 +2,22 @@ package com.tokopedia.promotionstarget.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.promotionstarget.data.GetPopGratificationlResponse
+import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
 import javax.inject.Named
 
-class PromotionsTargetVM(@Named("Main")
-                         val dispatcher: CoroutineDispatcher,
-                         val claimPopGratificationUseCase: ClaimPopGratificationUseCase
+class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
+                                                   val dispatcher: CoroutineDispatcher,
+                                                   val claimPopGratificationUseCase: ClaimPopGratificationUseCase
 ) : BaseViewModel(dispatcher) {
 
-    val liveData: MutableLiveData<Result<GetPopGratificationlResponse>> = MutableLiveData()
+    val liveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
 
     fun demo(campaignSlug: String, page: String) {
 
@@ -24,6 +25,7 @@ class PromotionsTargetVM(@Named("Main")
             val data = claimPopGratificationUseCase.let {
                 it.getResponse(it.getQueryParams(campaignSlug, page))
             }
+
             liveData.value = Success(data)
 
         }, onError = {

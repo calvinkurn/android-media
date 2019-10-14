@@ -1,37 +1,27 @@
 package com.tokopedia.promotionstarget.usecase
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.promotionstarget.data.GetPopGratificationlResponse
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
-import java.util.*
 
-class GetPopGratificationUseCase(val queryString: String): UseCase<GetPopGratificationlResponse>() {
+import com.tokopedia.promotionstarget.CouponGratificationParams
+import com.tokopedia.promotionstarget.gql.GqlUseCaseWrapper
+import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
+import com.tokopedia.promotionstarget.di.GET_POP_GRATIFICATION
+import javax.inject.Inject
+import javax.inject.Named
 
 
-    override fun createObservable(requestParams: RequestParams?): Observable<GetPopGratificationlResponse> {
-        val graphqlRequest = GraphqlRequest(queryString, GetPopGratificationlResponse::class.java, getQueryParams("", ""))
-        val graphqlUseCase = GraphqlUseCase()
-        graphqlUseCase.addRequest(graphqlRequest)
+class GetPopGratificationUseCase @Inject constructor(@Named(GET_POP_GRATIFICATION) val queryString: String) {
+    val PARAMS = CouponGratificationParams
 
-        graphqlUseCase.executeSync()
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val data = (it.getData(GetPopGratificationlResponse::class.java) as GetPopGratificationlResponse)
-            data
-        } //To change body of created functions use File | Settings | File Templates.
+    private val gqlWrapper = GqlUseCaseWrapper()
+
+    suspend fun getResponse(map: HashMap<String, Any>): GetPopGratificationResponse {
+        return gqlWrapper.getResponse(GetPopGratificationResponse::class.java, queryString, map)
     }
 
-    fun getData(){
-
-    }
-
-    private fun getQueryParams(campaignSlug: String, page: String): HashMap<String, Any> {
+    fun getQueryParams(campaignSlug: String, page: String): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
-        val requestParams = RequestParams.create()
-        variables["CampaignSlug"] = campaignSlug
-        variables["Page"] = page
+        variables[PARAMS.CAMPAIGN_SLUG] = campaignSlug
+        variables[PARAMS.PAGE] = page
         return variables
     }
 
