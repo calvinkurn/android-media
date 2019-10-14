@@ -108,7 +108,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     renderGuestDetail(it.data.hotelTransportDetails.guestDetail)
                     renderPaymentDetail(it.data.payMethod, it.data.pricing, it.data.paymentsData)
                     renderFooter(it.data)
-//                    renderCrossSelling(it.data.crossSell)
                     loadingState.visibility = View.GONE
                 }
                 is Fail -> {
@@ -153,6 +152,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             orderDetailViewModel.getOrderDetail(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
                     orderId, orderCategory)
+
             orderDetailViewModel.getCrossSellData(
                     GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
                     orderId)

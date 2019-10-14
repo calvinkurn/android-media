@@ -22,11 +22,14 @@ import javax.inject.Inject
 class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase,
                                                     private val graphqlUseCase: GraphqlUseCase) {
 
-    suspend fun execute(query: String, requestParams: RequestParams): Result<TravelCrossSelling> {
+    suspend fun execute(query: String, orderId: String, orderCategory: String): Result<TravelCrossSelling> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
+
+        val params = mapOf(ORDER_ID to orderId, ORDER_CATEGORY to orderCategory)
+
         try {
-            val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, requestParams.parameters)
+            val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
             val travelCrossSelling = useCase.executeOnBackground().getSuccessData<TravelCrossSelling.Response>().response
