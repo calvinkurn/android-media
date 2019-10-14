@@ -115,7 +115,7 @@ class ProductManagePresenterImpl @Inject constructor(
     override fun editPrice(productId: String, price: String, currencyId: String, currencyText: String) {
         view.showLoadingProgress()
         val param = ProductEditPriceParam()
-        param.price = price.toFloat()
+        param.price = price.toFloatOrNull() ?: 0F
         param.productId = productId
         param.shop.shopId = userSessionInterface.shopId
 

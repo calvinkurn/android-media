@@ -157,8 +157,8 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     private fun showCategoryOption() {
         var categoryId = 0L
         productManageFilterModel?.let {
-            categoryId = if (it.categoryId != null && it.categoryId.isNotEmpty()) {
-                it.categoryId.toLong()
+            categoryId = if (it.categoryId.isNotEmpty()) {
+                it.categoryId.toLongOrNull() ?: 0
             } else {
                 0
             }

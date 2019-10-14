@@ -6,13 +6,11 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -34,20 +32,6 @@ class ProductManageNetworkModule {
     fun provideGMRetrofit(@GMProductManageQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
-    }
-
-    @ProductManageQualifier
-    @ProductManageScope
-    @Provides
-    fun provideTomeRetrofit(@ProductManageQualifier okHttpClient: OkHttpClient,
-                            retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl("TOME").client(okHttpClient).build()
-    }
-
-    @Provides
-    @ProductManageScope
-    fun provideTomeApi(@ProductManageQualifier retrofit: Retrofit): TomeProductApi {
-        return retrofit.create(TomeProductApi::class.java)
     }
 
     @ProductManageScope
@@ -78,25 +62,6 @@ class ProductManageNetworkModule {
         return builder.build()
     }
 
-    @ProductManageQualifier
-    @Provides
-    fun provideOkHttpClientTomeBearerAuth(httpLoggingInterceptor: HttpLoggingInterceptor,
-                                          chuckInterceptor: ChuckInterceptor,
-                                          tkpdAuthInterceptor: TkpdAuthInterceptor
-    ): OkHttpClient {
-
-        val builder = OkHttpClient.Builder()
-                .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
-                .addInterceptor(tkpdAuthInterceptor)
-
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(chuckInterceptor)
-                    .addInterceptor(httpLoggingInterceptor.apply
-                    { level = HttpLoggingInterceptor.Level.BODY })
-        }
-        return builder.build()
-    }
 
     @Provides
     @ProductManageScope

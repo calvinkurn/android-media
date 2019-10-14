@@ -35,7 +35,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -548,7 +547,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = getColor(context, R.color.tkpd_main_green)
+                val backgroundColor = MethodChecker.getColor(context, R.color.tkpd_main_green)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
