@@ -150,9 +150,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
                     orderId, orderCategory)
 
-            orderDetailViewModel.getCrossSellData(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
-                    orderId)
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 

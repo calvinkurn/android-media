@@ -1,5 +1,4 @@
 query crossSellQuery($orderId: String, $orderCategory: String) {
-  status
   crossSell(orderId: $orderId, orderCategory: $orderCategory) {
       items {
         product

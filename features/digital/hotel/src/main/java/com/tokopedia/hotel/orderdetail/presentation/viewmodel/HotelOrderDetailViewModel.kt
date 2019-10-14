@@ -29,13 +29,7 @@ class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun getOrderDetail(rawQuery: String, orderId: String, orderCategory: String) {
         launch {
             orderDetailData.value = useCase.execute(rawQuery, orderId, orderCategory, true)
-        }
-    }
-
-    fun getCrossSellData(rawQuery: String, orderId: String) {
-        launch {
-            crossSellData.value = crossSellingUseCase.execute(rawQuery,
-                    orderId, TravelCrossSellingUseCase.PARAM_HOTEL_PRODUCT)
+            crossSellData.value = crossSellingUseCase.execute(rawQuery, orderId, TravelCrossSellingUseCase.PARAM_HOTEL_PRODUCT)
         }
     }
 
