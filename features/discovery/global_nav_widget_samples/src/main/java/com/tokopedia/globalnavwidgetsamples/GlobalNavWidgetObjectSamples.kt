@@ -136,6 +136,58 @@ internal val globalNavWidgetPillModelWithoutSeeAllApplink = GlobalNavWidgetModel
         }
 )
 
+internal val globalNavWidgetWithoutBackgroundInModel = GlobalNavWidgetModel(
+        source = "recharge",
+        keyword = "pulsa simpati",
+        title = "Beli Pulsa",
+        navTemplate = "default template pill",
+        background = "",
+        clickSeeAllApplink = "tokopedia://digital/form?category_id=1&operator_id=12",
+        clickSeeAllUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12",
+        itemList = mutableListOf<GlobalNavWidgetModel.Item>().also {
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "1.000",
+                    info = "Rp 1.800",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=2227",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=2227",
+                    position = 1
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "20.000",
+                    info = "Rp 20.500",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=1126",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=1126",
+                    position = 2
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "50.000",
+                    info = "Rp 50.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=69",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=69",
+                    position = 3
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "500.000",
+                    info = "Rp 500.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=117",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=117",
+                    position = 4
+            ))
+            it.add(GlobalNavWidgetModel.Item(
+                    name = "30.000",
+                    info = "Rp 30.000",
+                    imageUrl = "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+                    clickItemApplink = "tokopedia://digital/form?category_id=1&operator_id=12&product_id=3445",
+                    clickItemUrl = "https://pulsa.tokopedia.com/pulsa/?operator_id=12&product_id=3445",
+                    position = 5
+            ))
+        }
+)
+
 internal val globalNavWidgetModelCard = GlobalNavWidgetModel(
         source = "deal",
         keyword = "hotel",

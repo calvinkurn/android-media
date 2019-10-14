@@ -76,6 +76,28 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewGlobalNavWidgetWithoutBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Global Nav Widget Without Background in GlobalNavWidgetModel"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            app:typographyType="heading_3"
+            app:layout_constraintTop_toBottomOf="@id/globalNavWidgetPillWithoutSeeAllApplink"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/globalNavWidgetWithoutBackground"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/textViewGlobalNavWidgetWithoutBackground"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewGlobalNavWidgetCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,7 +106,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             app:typographyType="heading_3"
-            app:layout_constraintTop_toBottomOf="@id/globalNavWidgetPillWithoutSeeAllApplink"
+            app:layout_constraintTop_toBottomOf="@id/globalNavWidgetWithoutBackground"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 

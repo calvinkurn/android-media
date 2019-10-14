@@ -1,6 +1,6 @@
 package com.tokopedia.globalnavwidget
 
-object GlobalNavWidgetConstant {
+internal object GlobalNavWidgetConstant {
 
     const val NAV_TEMPLATE_CARD = "card"
 

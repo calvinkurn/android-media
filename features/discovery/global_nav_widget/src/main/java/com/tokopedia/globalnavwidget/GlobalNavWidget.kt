@@ -1,6 +1,7 @@
 package com.tokopedia.globalnavwidget
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -10,8 +11,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
+import android.graphics.drawable.GradientDrawable
 
 class GlobalNavWidget: BaseCustomView {
+
+    private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
 
     constructor(context: Context): super(context) {
         init()
@@ -41,6 +45,26 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun setBackground(backgroundImgUrl: String) {
+        if (backgroundImgUrl.isEmpty()) {
+            setBackgroundRandom()
+        }
+        else {
+            setBackgroundFromModel(backgroundImgUrl)
+        }
+    }
+
+    private fun setBackgroundRandom() {
+        val backgroundIndex = (backgroundGradientColorList.indices).shuffled().first()
+
+        val gd = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex]))
+        gd.cornerRadius = 0f
+
+        globalNavContainerLayout?.background = gd
+    }
+
+    private fun setBackgroundFromModel(backgroundImgUrl: String) {
         globalNavContainerLayout?.let {
             ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
         }

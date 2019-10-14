@@ -16,6 +16,7 @@ class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListe
         globalNavWidgetPillWithNoInfo?.setData(globalNavWidgetPillModelItemNoInfo, this)
         globalNavWidgetPillWithInfo?.setData(globalNavWidgetPillModelItemWithInfo, this)
         globalNavWidgetPillWithoutSeeAllApplink?.setData(globalNavWidgetPillModelWithoutSeeAllApplink, this)
+        globalNavWidgetWithoutBackground?.setData(globalNavWidgetWithoutBackgroundInModel, this)
         globalNavWidgetCard?.setData(globalNavWidgetModelCard, this)
         globalNavWidgetCard2?.setData(globalNavWidgetModelCard2, this)
     }
