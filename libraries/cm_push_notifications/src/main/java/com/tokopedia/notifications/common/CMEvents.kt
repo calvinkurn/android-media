@@ -27,7 +27,7 @@ object PersistentEvent {
 }
 
 object IrisAnalyticsEvents {
-    private const val PUSH_RECEIVED = "pushReceived"
+    public const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
 
@@ -40,41 +40,46 @@ object IrisAnalyticsEvents {
     private const val PARENT_ID = "parent_id"
     private const val PUSH_TYPE = "push_type"
     private const val IS_SILENT = "is_silent"
+    private const val CLICKED_ELEMENT_ID="clicked_element_id"
 
-    fun sendPushReceiveEvent(context: Context, baseNotificationModel: BaseNotificationModel) {
-        val values = HashMap<String, Any>()
+    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
-            values[EVENT_NAME] = PUSH_RECEIVED
-            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp.toString()
-            values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
-            values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
-            values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
-            values[SOURCE] = CMNotificationUtils.getApplicationName(context)
-            values[PARENT_ID] = baseNotificationModel.parentId.toString()
-            values[PUSH_TYPE] = baseNotificationModel.type?.let { baseNotificationModel.type } ?: ""
-            values[IS_SILENT] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
-
+            val values = addBaseValues(context, eventName, baseNotificationModel)
+            irisAnalytics.saveEvent(values)
         }
-       irisAnalytics.sendEvent(values)
+    }
+
+    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
+        val irisAnalytics = IrisAnalytics(context)
+        if (irisAnalytics != null) {
+            val values = addBaseValues(context, eventName, baseNotificationModel)
+            if (elementID != null) {
+                values[CLICKED_ELEMENT_ID] = elementID
+
+            }
+            irisAnalytics.saveEvent(values)
+        }
 
     }
 
-    fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String?) {
+    fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            values[EVENT_NAME] = eventName
-            values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp.toString()
-            values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
-            values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
-            values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
-            values[SOURCE] = CMNotificationUtils.getApplicationName(context)
-            values[PARENT_ID] = baseNotificationModel.parentId.toString()
-            values[PUSH_TYPE] = pushType?.let { pushType } ?: ""
+
+        values[EVENT_NAME] = eventName
+        values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+        values[CAMPAIGN_ID] = baseNotificationModel.campaignId.toString()
+        values[NOTIFICATION_ID] = baseNotificationModel.notificationId.toString()
+        values[SOURCE] = CMNotificationUtils.getApplicationName(context)
+        values[PARENT_ID] = baseNotificationModel.parentId.toString()
+        values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type }
+                ?: ""
+        if (CMConstant.NotificationType.SILENT_PUSH != baseNotificationModel.type) {
             values[IS_SILENT] = false
         }
-       irisAnalytics.saveEvent(values)
+        values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
+
+        return values
 
     }
 }
