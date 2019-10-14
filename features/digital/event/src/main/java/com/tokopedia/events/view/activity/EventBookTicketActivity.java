@@ -150,10 +150,7 @@ public class EventBookTicketActivity
                     tvUbahJadwal.setVisibility(View.GONE);
                 }
                 tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-                if (detailsViewModel.getCustomText1() == 16384)
-                    tvDate.setText(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
-                else
-                    tvDate.setVisibility(View.GONE);
+                tvDate.setText(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
                 setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
             } else {
                 tvUbahJadwal.setVisibility(View.GONE);

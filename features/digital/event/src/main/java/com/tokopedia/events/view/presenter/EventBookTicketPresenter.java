@@ -332,8 +332,8 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
                 for (SchedulesViewModel viewModel : schedulesViewModelList) {
                     LocationDateModel model = new LocationDateModel();
                     model.setmLocation(viewModel.getCityName());
-                    if (dataModel.getCustomText1() == 16384)
-                        model.setDate(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(viewModel.getStartDate()));
+                    if (viewModel.getStartDate() != 0)
+                    model.setDate(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(viewModel.getStartDate()));
                     locationDateModels.add(model);
                 }
             }
