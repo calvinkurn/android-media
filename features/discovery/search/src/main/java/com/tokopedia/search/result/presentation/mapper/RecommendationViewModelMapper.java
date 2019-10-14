@@ -15,12 +15,6 @@ import java.util.List;
  */
 public class RecommendationViewModelMapper {
 
-    public ProductViewModel convertToProductViewModel(RecommendationWidget recommendationWidget) {
-        ProductViewModel productViewModel = new ProductViewModel();
-        productViewModel.setProductList(convertToProductItemViewModelList(1, recommendationWidget.getRecommendationItemList()));
-        return productViewModel;
-    }
-
     public List<RecommendationItemViewModel> convertToRecommendationItemViewModel(RecommendationWidget recommendationWidget) {
         List<RecommendationItemViewModel> recommendationItemViewModels = new ArrayList<>();
         for (RecommendationItem recommendationItem : recommendationWidget.getRecommendationItemList()){
@@ -51,7 +45,7 @@ public class RecommendationViewModelMapper {
         productItem.setImageUrl(productModel.getImageUrl());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
-        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentageInt());
         productItem.setOriginalPrice(productModel.getSlashedPrice());
         productItem.setPrice(productModel.getPrice());
         productItem.setShopID(String.valueOf(productModel.getShopId()));

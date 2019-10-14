@@ -55,6 +55,7 @@ class RecommendationTracking {
         private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - product recommendation - non login"
 
         private const val EVENT_ACTION_CLICK_WISHLIST_NON_LOGIN = "add - wishlist on product recommendation - non login"
+        private const val EVENT_ACTION_CLICK_SEE_MORE = "click - see more on widget %s"
         private const val EVENT_ACTION_CLICK_WISHLIST_LOGIN = "%s - wishlist on product recommendation"
 
 
@@ -175,7 +176,7 @@ class RecommendationTracking {
             )
             )
             )
-           getTracker().sendGeneralEvent(data as HashMap<String, Any>)
+           getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
         }
 
         fun eventClickProductRecommendationNonLogin(
@@ -192,7 +193,7 @@ class RecommendationTracking {
                     convertRecommendationItemToDataClickObject(
                             recommendationItem,
                             String.format(
-                                    VALUE_LIST_RECOMMENDATION_PRODUCT,
+                                    VALUE_LIST_RECOMMENDATION_PRODUCT_NON_LOGIN,
                                     recommendationItem.recommendationType,
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
@@ -200,32 +201,39 @@ class RecommendationTracking {
             )
             )
             )
-           getTracker().sendGeneralEvent(data as HashMap<String, Any>)
+           getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
         }
 
         fun eventUserClickProductToWishlistForUserLogin(
                 isAdded: Boolean
         ){
-            val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_SEARCH_RESULT,
                     EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_PAGE,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_WISHLIST_LOGIN, if(isAdded) "add" else "remove"),
                     EVENT_LABEL, VALUE_EMPTY
             )
-            tracker.sendEnhanceEcommerceEvent(data)
+            getTracker().sendEnhanceEcommerceEvent(data)
         }
 
         fun eventUserClickProductToWishlistForNonLogin() {
-            val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_SEARCH_RESULT,
                     EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_WISHLIST_NON_LOGIN,
                     EVENT_LABEL, VALUE_EMPTY
             )
-            tracker.sendEnhanceEcommerceEvent(data)
+            getTracker().sendEnhanceEcommerceEvent(data)
         }
 
+        fun eventUserClickSeeMore(pageName: String){
+            val data = DataLayer.mapOf(
+                    EVENT, EVENT_SEARCH_RESULT,
+                    EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_PAGE,
+                    EVENT_ACTION, String.format(EVENT_ACTION_CLICK_SEE_MORE, pageName),
+                    EVENT_LABEL, VALUE_EMPTY
+            )
+            getTracker().sendEnhanceEcommerceEvent(data)
+        }
     }
 }

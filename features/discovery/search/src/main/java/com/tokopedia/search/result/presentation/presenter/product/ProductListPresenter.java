@@ -722,7 +722,8 @@ final class ProductListPresenter
                         if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null){
                             List<RecommendationItemViewModel> recommendationItemViewModel = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
                             List<Visitable> items = new ArrayList();
-                            items.add(new RecommendationTitleViewModel(recommendationWidgets.get(0).getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidgets.get(0).getTitle()));
+                            RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                            items.add(new RecommendationTitleViewModel(recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(), recommendationWidget.getSeeMoreAppLink(), recommendationWidget.getPageName()));
                             items.addAll(recommendationItemViewModel);
                             getView().addRecommendationList(items);
                         }

@@ -545,11 +545,11 @@ public class ProductListFragment
         Intent intent = getProductIntent(String.valueOf(item.getProductId()), "0");
 
         if(intent != null) {
-            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, position[0]);
+            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, item.getPosition());
             if(userSession.isLoggedIn()){
-                RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(position[0]));
+                RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(item.getPosition()));
             }else {
-                RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(position[0]));
+                RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(item.getPosition()));
             }
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         }

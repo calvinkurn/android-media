@@ -10,6 +10,8 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
  */
 public class RecommendationTitleViewModel implements Parcelable , Visitable<ProductListTypeFactory> {
     private String title;
+    private String seeMoreUrl;
+    private String pageName;
 
     public String getTitle() {
         return title;
@@ -29,8 +31,26 @@ public class RecommendationTitleViewModel implements Parcelable , Visitable<Prod
         dest.writeString(title);
     }
 
-    public RecommendationTitleViewModel(String title) {
+    public RecommendationTitleViewModel(String title, String seeMoreUrl, String pageName) {
         this.title = title;
+        this.seeMoreUrl = seeMoreUrl;
+        this.pageName = pageName;
+    }
+
+    public String getSeeMoreUrl() {
+        return seeMoreUrl;
+    }
+
+    public void setSeeMoreUrl(String seeMoreUrl) {
+        this.seeMoreUrl = seeMoreUrl;
+    }
+
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
     }
 
     protected RecommendationTitleViewModel(Parcel in) {
