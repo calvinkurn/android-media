@@ -65,7 +65,8 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
     private fun getCategoryNamePath(path: String): String {
         if (path.isNotEmpty()) {
             val m = path.split("/p/")
-            return m[1]
+            if (m.size > 1)
+                return m[1]
         }
         return ""
     }
@@ -73,7 +74,8 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
     private fun getSubCategoryPath(path: String, id: String): String {
         if (path.isNotEmpty()) {
             val m = path.split("/p/")
-            return "category/" + m[1] + " - " + id
+            if (m.size > 1)
+                return "category/" + m[1] + " - " + id
         }
         return ""
     }
@@ -93,13 +95,13 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             viewMap[position] = true
 
             val item = subCategoryList[position]
-            val id  = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
+            val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
 
             catAnalyticsInstance.eventSubCategoryImpression(id,
                     item.id.toString(),
                     item.name ?: "",
                     item.thumbnailImage ?: "", position,
-                    getSubCategoryPath(item.url ?: "",id),
+                    getSubCategoryPath(item.url ?: "", id),
                     getCategoryNamePath(item.url ?: ""))
         }
     }
