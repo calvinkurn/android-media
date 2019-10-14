@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -30,6 +29,7 @@ import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.viewmodel.RedirectionViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
@@ -61,8 +61,8 @@ class ShopListFragment:
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
+    private var redirectionViewModel: RedirectionViewModel? = null
     private var searchNavigationListener: SearchNavigationListener? = null
-    private var redirectionListener: RedirectionListener? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -76,20 +76,12 @@ class ShopListFragment:
         super.onAttach(context)
 
         castContextToSearchNavigationListener(context)
-        castContextToRedirectionListener(context)
     }
 
     // TODO:: Remove context casting, once SearchActivity already using ViewModel
     private fun castContextToSearchNavigationListener(context: Context?) {
         if (context is SearchNavigationListener) {
             searchNavigationListener = context
-        }
-    }
-
-    // TODO:: Remove context casting, once SearchActivity already using ViewModel
-    private fun castContextToRedirectionListener(context: Context?) {
-        if (context is RedirectionListener) {
-            redirectionListener = context
         }
     }
 
@@ -110,6 +102,7 @@ class ShopListFragment:
     private fun initViewModel() {
         activity?.let { activity ->
             searchShopViewModel = ViewModelProviders.of(activity).get(SearchShopViewModel::class.java)
+            redirectionViewModel = ViewModelProviders.of(activity).get(RedirectionViewModel::class.java)
         }
     }
 
@@ -411,7 +404,7 @@ class ShopListFragment:
 
     override fun onEmptyButtonClicked() {
         SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
-        redirectionListener?.showSearchInputView()
+        redirectionViewModel?.showAutoCompleteView()
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {

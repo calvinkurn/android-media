@@ -55,9 +55,12 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.result.presentation.viewmodel.RedirectionViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,6 +118,11 @@ public class SearchActivity extends BaseActivity
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
     @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     ViewModelProvider.Factory searchShopViewModelFactory;
+    @Inject @Named(SearchConstant.REDIRECTION_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory redirectionViewModelFactory;
+
+    @Nullable
+    RedirectionViewModel redirectionViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -367,6 +375,8 @@ public class SearchActivity extends BaseActivity
 
     private void handleIntent() {
         initResources();
+        initViewModel();
+        observeViewModel();
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
@@ -376,6 +386,26 @@ public class SearchActivity extends BaseActivity
         catalogTabTitle = getString(R.string.catalog_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
+    }
+
+    private void initViewModel() {
+        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
+
+        redirectionViewModel = ViewModelProviders.of(this, redirectionViewModelFactory).get(RedirectionViewModel.class);
+    }
+
+    private void observeViewModel() {
+        if (redirectionViewModel != null) {
+            redirectionViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
+                if (booleanEvent != null) {
+                    Boolean content = booleanEvent.getContentIfNotHandled();
+
+                    if (content != null && content) {
+                        showSearchInputView();
+                    }
+                }
+            });
+        }
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -455,8 +485,6 @@ public class SearchActivity extends BaseActivity
     }
 
     private void loadSection() {
-        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
-
         List<String> searchFragmentTitles = new ArrayList<>();
         addFragmentTitlesToList(searchFragmentTitles);
         initTabLayout();

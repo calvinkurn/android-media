@@ -10,6 +10,8 @@ public interface SearchConstant {
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
+    String REDIRECTION_VIEW_MODEL_FACTORY = "redirection_view_model_factory";
+
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
