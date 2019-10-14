@@ -32,7 +32,6 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.exists
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CancellationException
 
 internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
@@ -214,8 +213,10 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
-        visitableList.add(shopCpmViewModel)
+        if (searchShopModel.cpmModel.data.size > 0) {
+            val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
+            visitableList.add(shopCpmViewModel)
+        }
 
         val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel)
         visitableList.add(shopTotalCountViewModel)
@@ -310,13 +311,10 @@ internal class SearchShopViewModel(
     }
 
     private fun catchSearchShopException(e: Throwable?) {
-        hasNextPage = false
-
         e?.printStackTrace()
 
-        if (e !is CancellationException) {
-            searchShopLiveData.postValue(Error("", searchShopMutableList))
-        }
+        hasNextPage = false
+        searchShopLiveData.postValue(Error("", searchShopMutableList))
     }
 
     private fun getDynamicFilter() {
@@ -392,9 +390,7 @@ internal class SearchShopViewModel(
     private fun catchGetDynamicFilterException(e: Throwable?) {
         e?.printStackTrace()
 
-        if (e !is CancellationException) {
-            dynamicFilterEventLiveData.postValue(Event(false))
-        }
+        dynamicFilterEventLiveData.postValue(Event(false))
     }
 
     fun onViewLoadMore(isViewVisible: Boolean) {

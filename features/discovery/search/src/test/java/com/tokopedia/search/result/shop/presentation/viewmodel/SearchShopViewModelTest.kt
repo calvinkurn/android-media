@@ -23,6 +23,7 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldContain
 import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -77,8 +78,11 @@ internal class SearchShopViewModelTest : Spek({
             shopList = moreShopItemList
     )
 
-    val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
-    val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+    val cpmModel = CpmModel(cpmJSONObject)
+
+    val searchShopModel = SearchShopModel(aceSearchShopWithNextPage, cpmModel)
+    val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage, cpmModel)
+    val searchShopModelWithoutCpm = SearchShopModel(aceSearchShopWithNextPage)
     val searchShopModelEmptyList = SearchShopModel()
     val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
     val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
@@ -577,6 +581,60 @@ internal class SearchShopViewModelTest : Spek({
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
                 hasNextPage shouldBe false
+            }
+        }
+
+        Scenario("Search Shop First Page Successful Without CPM") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("search shop API call will be successful and return search shop data without CPM") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutCpm)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert search shop state is success and contains search shop data without CPM") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe shopItemList.size
+            }
+
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
+            }
+
+            Then("should not post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert has next page is true") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe true
             }
         }
 

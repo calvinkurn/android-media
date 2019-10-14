@@ -21,33 +21,63 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf() {
 internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel() {
     val lastIndex = this?.data?.lastIndex ?: 0
 
-    this.shouldHaveCorrectVisitableList(lastIndex - 1)
+    this.shouldNotBeNull()
 
-    this?.data?.last().shouldBeInstanceOf<LoadingMoreModel>()
+    this.shouldHaveCpmViewModel(0)
+    this.shouldHaveTotalCountViewModel(1)
+    this.shouldHaveShopItemViewModel(2, lastIndex - 1)
+    this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel() {
     val lastIndex = this?.data?.lastIndex ?: 0
 
-    this.shouldHaveCorrectVisitableList(lastIndex)
-}
-
-private fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableList(shopItemLastIndex: Int) {
     this.shouldNotBeNull()
 
-    val data = this?.data as List<Visitable<*>>
+    this.shouldHaveCpmViewModel(0)
+    this.shouldHaveTotalCountViewModel(1)
+    this.shouldHaveShopItemViewModel(2, lastIndex)
+}
 
-    data.first().shouldBeInstanceOf<ShopCpmViewModel>()
-    data[1].shouldBeInstanceOf<ShopTotalCountViewModel>()
-    data.subList(2, shopItemLastIndex).forEachIndexed { index, visitable ->
-        visitable.verifyShopItemIsCorrect(index)
-    }
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel() {
+    val lastIndex = this?.data?.lastIndex ?: 0
+
+    this.shouldNotBeNull()
+
+    this.shouldHaveTotalCountViewModel(0)
+    this.shouldHaveShopItemViewModel(1, lastIndex)
 }
 
 private fun State<List<Visitable<*>>>?.shouldNotBeNull() {
     if (this == null || this.data == null) {
         throw AssertionError("Data to assert is null")
     }
+}
+
+private fun State<List<Visitable<*>>>?.shouldHaveCpmViewModel(cpmViewModelPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
+
+    data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmViewModel>()
+}
+
+private fun State<List<Visitable<*>>>?.shouldHaveTotalCountViewModel(totalCountViewModelPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
+
+    data[totalCountViewModelPosition].shouldBeInstanceOf<ShopTotalCountViewModel>()
+}
+
+private fun State<List<Visitable<*>>>?.shouldHaveShopItemViewModel(shopItemStartPosition: Int, shopItemLastPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
+
+    data.subList(shopItemStartPosition, shopItemLastPosition).forEachIndexed { index, visitable ->
+        visitable.verifyShopItemIsCorrect(index)
+    }
+}
+
+private fun State<List<Visitable<*>>>?.shouldHaveLoadingMoreViewModel(loadingMoreViewModelPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
+
+    data[loadingMoreViewModelPosition].shouldBeInstanceOf<LoadingMoreModel>()
 }
 
 internal fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {
