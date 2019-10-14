@@ -678,9 +678,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
         view?.let {v ->
             if (action.isNullOrBlank()){
-                Toaster.showError(v, message, Snackbar.LENGTH_LONG)
+                Toaster.showError(v, message.toString(), Snackbar.LENGTH_LONG)
             } else {
-                Toaster.showErrorWithAction(v, message, Snackbar.LENGTH_LONG, action, View.OnClickListener {
+                Toaster.showErrorWithAction(v, message.toString(), Snackbar.LENGTH_LONG, action.toString(), View.OnClickListener {
                     actionClick?.invoke(it)
                 })
             }

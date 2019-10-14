@@ -210,17 +210,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-            }
-
             fpm.stopTrace()
         }
     }
@@ -257,7 +246,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun goToProfile(opponentId: String) {
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
-
     override fun showErrorWebSocket(b: Boolean) {
         getViewState().showErrorWebSocket(b)
     }
@@ -737,17 +725,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessDeleteConversation(): () -> Unit {
         return {
             hideLoading()
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-                setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
-                finish()
+            activity?.let {
+                val intent = Intent()
+                val bundle = Bundle()
+                bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+                bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+                intent.putExtras(bundle)
+                it.setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, intent)
+                it.finish()
             }
         }
     }
@@ -827,7 +812,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val intent = Intent()
             val bundle = Bundle()
             bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, isMoveItemInboxToTop)
-            bundle.putParcelable(PARCEL, getViewState().getLastItem())
+            bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
+            bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+            bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()

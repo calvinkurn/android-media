@@ -107,4 +107,5 @@ public interface ICartListPresenter {
 
     void setAllInsuranceProductsChecked(ArrayList<InsuranceCartShops> insuranceCartShops, boolean isChecked);
 
+    Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList, String step);
 }

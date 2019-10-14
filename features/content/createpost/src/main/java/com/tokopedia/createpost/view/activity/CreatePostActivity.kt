@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.createpost.TYPE_AFFILIATE
@@ -122,7 +123,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
             return@setOnClickListener
             fragment.saveDraftAndSubmit()
         }
-        shareTo.setOnClickListener { openShareBottomSheetDialog() }
+        shareTo.apply {
+            setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(this@CreatePostActivity, R.drawable.ic_dropdown_spinner_gray), null)
+            setOnClickListener { openShareBottomSheetDialog() }
+        }
     }
 
 
