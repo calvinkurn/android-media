@@ -51,11 +51,7 @@ data class HotelOrderDetail(
 
         @SerializedName("hotelTransportDetails")
         @Expose
-        val hotelTransportDetails: HotelTransportDetail = HotelTransportDetail(),
-
-        @SerializedName("crossSell")
-        @Expose
-        val crossSell: TravelCrossSelling = TravelCrossSelling()
+        val hotelTransportDetails: HotelTransportDetail = HotelTransportDetail()
 ) {
     data class Status(
             @SerializedName("status")

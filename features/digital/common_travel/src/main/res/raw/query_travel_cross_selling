@@ -1,21 +1,20 @@
-query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
+query crossSellQuery($orderId: String, $orderCategory: String) {
   status
-  orderDetails(orderCategoryStr: $orderCategoryStr, orderId: $orderId) {
-    crossSell{
-           items {
-              product
-              title
-              content
-              prefix
-              uri
-              uriWeb
-              imageURL
-            }
-           meta{
-              title
-              uri
-              uriWeb
-            }
+  crossSell(orderId: $orderId, orderCategory: $orderCategory) {
+      items {
+        product
+        title
+        content
+        prefix
+        uri
+        uriWeb
+        imageURL
+        value
+      }
+      meta {
+        title
+        uri
+        uriWeb
       }
   }
 }

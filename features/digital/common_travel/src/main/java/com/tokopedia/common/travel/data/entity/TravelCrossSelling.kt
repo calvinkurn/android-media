@@ -26,9 +26,6 @@ data class TravelCrossSelling(
             @SerializedName("prefix")
             val prefix: String = "",
 
-            @SerializedName("price")
-            val price: String = "",
-
             @SerializedName("imageURL")
             val imageUrl: String = "",
 
@@ -36,7 +33,10 @@ data class TravelCrossSelling(
             val uriWeb: String = "",
 
             @SerializedName("uri")
-            val uri: String = ""
+            val uri: String = "",
+
+            @SerializedName("value")
+            val value: String = ""
     )
 
     data class Meta(

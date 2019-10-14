@@ -4,6 +4,9 @@ import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase
 import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 
 import dagger.Module
 import dagger.Provides
@@ -27,5 +30,17 @@ class FlightOrderModule {
     @Provides
     fun provideFlightSendEmailUseCase(flightRepository: FlightRepository): FlightSendEmailUseCase {
         return FlightSendEmailUseCase(flightRepository)
+    }
+
+    @FlightOrderScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @FlightOrderScope
+    @Provides
+    internal fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+        return MultiRequestGraphqlUseCase(graphqlRepository)
     }
 }

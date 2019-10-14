@@ -108,9 +108,19 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     renderGuestDetail(it.data.hotelTransportDetails.guestDetail)
                     renderPaymentDetail(it.data.payMethod, it.data.pricing, it.data.paymentsData)
                     renderFooter(it.data)
-                    renderCrossSelling(it.data.crossSell)
+//                    renderCrossSelling(it.data.crossSell)
                     loadingState.visibility = View.GONE
                 }
+                is Fail -> {
+                    showErrorState(it.throwable)
+                    loadingState.visibility = View.GONE
+                }
+            }
+        })
+
+        orderDetailViewModel.crossSellData.observe(this, Observer {
+            when (it) {
+                is Success -> renderCrossSelling(it.data)
                 is Fail -> {
                     showErrorState(it.throwable)
                     loadingState.visibility = View.GONE
@@ -143,6 +153,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             orderDetailViewModel.getOrderDetail(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
                     orderId, orderCategory)
+            orderDetailViewModel.getCrossSellData(
+                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
+                    orderId)
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
