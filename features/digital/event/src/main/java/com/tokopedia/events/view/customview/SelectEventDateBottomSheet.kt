@@ -16,6 +16,8 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.events.R
 import com.tokopedia.events.di.*
 import com.tokopedia.events.view.viewmodel.LocationDateModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -70,11 +72,11 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loading_progress_bar.visibility = View.VISIBLE
+        loading_progress_bar.visible()
 
         holidayViewModel?.getTravelHolidayDate()
         holidayViewModel?.holidayResult?.observe(this, android.arch.lifecycle.Observer {
-            loading_progress_bar.visibility = View.GONE
+            loading_progress_bar.hide()
             when (it) {
                 is Success -> {
                     if (isFirstTime && it.data.data.isNotEmpty()) {

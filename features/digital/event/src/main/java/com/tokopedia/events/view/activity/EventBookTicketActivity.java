@@ -43,7 +43,7 @@ public class EventBookTicketActivity
 
 
     private static String EVENT_DATE_COACH_MARK_TAG = "EVEN_DATE_COACH_MARK";
-    private static String TICKET_SUMMARY_COACH_MARK_TAG = "TICKET_SUMMARY_COACH_MARK";
+    private static String EVENT_DATE_COACH_MARK = "EventCoachMark";
     View buttonPayTickets;
     TextView buttonTextview;
     View progressBarLayout;
@@ -129,7 +129,7 @@ public class EventBookTicketActivity
         CoachMark coachMark = new CoachMarkBuilder().allowPreviousButton(false).build();
         coachMark.setShowCaseStepListener((prev, next, coachMarkItem) -> false);
         if (!Utils.hasShown(getActivity(), EVENT_DATE_COACH_MARK_TAG)) {
-            coachMark.show(getActivity(), "EventCoachMark", coachItems);
+            coachMark.show(getActivity(), EVENT_DATE_COACH_MARK, coachItems);
             Utils.setShown(getActivity(), EVENT_DATE_COACH_MARK_TAG, true);
         }
     }
@@ -270,7 +270,7 @@ public class EventBookTicketActivity
         if (v.getId() == R.id.pay_tickets) {
             bookTicketPresenter.payTicketsClick(title, tvDate.getText().toString(), tvLocation.getText().toString());
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
-            if (eventsDetailsViewModel.getCustomText1() == 16384 && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
+            if (eventsDetailsViewModel.getCustomText1() == Utils.getSingletonInstance().SHOW_DATE_PICKER && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0)
                 openCalender(bookTicketPresenter.getLocationDateModels());
         }
     }
