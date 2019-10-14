@@ -18,6 +18,7 @@ import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 import android.R.attr.keySet
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 
 
 /**
@@ -28,7 +29,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        val list = UriUtil.destructureUri(ApplinkConst.CHATBOT,intent.data,true)
+        val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
         bundle.putString("message_id",list[0])
         bundle.putString("deep_link_uri",intent.data.toString())
 //        if (intent.extras != null) {
