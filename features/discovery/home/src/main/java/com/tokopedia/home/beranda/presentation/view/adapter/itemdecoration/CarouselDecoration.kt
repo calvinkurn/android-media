@@ -5,15 +5,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 
 
-class DynamicIconDecoration(val marginLeft: Int, maxParentWidth: Int,
-                             minimumVisibleIcon: Int,
-                             iconWidth: Int) : RecyclerView.ItemDecoration() {
+class CarouselDecoration(val marginLeft: Int, maxParentWidth: Int,
+                         minimumVisibleItem: Int,
+                         viewHolderWidth: Int) : RecyclerView.ItemDecoration() {
     var leftOutRect = 0
 
     init {
-        val parentWidth = maxParentWidth - (iconWidth*3/4)
-        val leftOutRectTotal = parentWidth - (iconWidth*minimumVisibleIcon)
-        leftOutRect = leftOutRectTotal / (minimumVisibleIcon)
+        val parentWidth = maxParentWidth - (viewHolderWidth*3/4)
+        val leftOutRectTotal = parentWidth - (viewHolderWidth*minimumVisibleItem)
+        leftOutRect = leftOutRectTotal / (minimumVisibleItem)
     }
 
     override fun getItemOffsets(outRect: Rect,

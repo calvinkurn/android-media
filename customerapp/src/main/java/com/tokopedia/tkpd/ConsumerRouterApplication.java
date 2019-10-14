@@ -187,8 +187,6 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
-import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kol.KolComponentInstance;
@@ -434,8 +432,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        InstantLoanChuckRouter,
-        InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
         SearchBarRouter,
@@ -981,11 +977,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getLoginIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.LOGIN);
-    }
-
-    @Override
-    public boolean isInstantLoanEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true);
     }
 
     public void sendScreenName(@NonNull String screenName) {
