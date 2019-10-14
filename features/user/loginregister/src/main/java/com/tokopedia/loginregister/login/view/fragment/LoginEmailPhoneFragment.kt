@@ -1157,7 +1157,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if(!it.isRegistered && isFromAccountPage()){
+            if(!it.isRegistered){
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
