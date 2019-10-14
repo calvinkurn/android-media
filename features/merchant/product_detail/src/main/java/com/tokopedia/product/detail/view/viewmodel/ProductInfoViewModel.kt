@@ -153,14 +153,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.category.id, productInfoP1.productInfo.basic.catalogID,
                     forceRefresh)
 
-            val p2LoginDeferred: ProductInfoP2Login? = if (isUserSessionActive()) {
+            val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()) {
                 getProductInfoP2LoginAsync(productInfoP1.productInfo.basic.id,
                         productInfoP1.productInfo.basic.shopID, forceRefresh)
             } else null
 
-            p2ShopDataResp.value = p2ShopDeferred
-            p2General.value = p2GeneralDeferred
-            p2LoginDeferred?.let { p2Login.value = it }
+            p2ShopDataResp.value = p2ShopDeferred.await()
+            p2General.value = p2GeneralDeferred.await()
+            p2LoginDeferred?.let { p2Login.value = it.await() }
 
             p2ShopDataResp.value?.let {
                 multiOrigin = it.nearestWarehouse.warehouseInfo
@@ -178,9 +178,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
-                                                  forceRefresh: Boolean = false): ProductInfoP2ShopData {
-
+    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+                                                  warehouseId: String,
+                                                  forceRefresh: Boolean = false)
+            : Deferred<ProductInfoP2ShopData> {
+        return async {
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
@@ -223,15 +225,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            return p2Shop
-
+            p2Shop
+        }
     }
 
     private suspend fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
-            forceRefresh: Boolean): ProductInfoP2General {
-
+            forceRefresh: Boolean): Deferred<ProductInfoP2General> {
+        return async {
             val productInfoP2 = ProductInfoP2General()
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -399,12 +401,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            return productInfoP2
-
+            productInfoP2
+        }
     }
 
-    private suspend fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
-            : ProductInfoP2Login {
+    private fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
+            : Deferred<ProductInfoP2Login> {
+        return async {
+
             val p2Login = ProductInfoP2Login()
 
             val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -447,7 +451,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 t.debugTrace()
             }
 
-            return p2Login
+            p2Login
+        }
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
