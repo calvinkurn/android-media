@@ -120,10 +120,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         orderDetailViewModel.crossSellData.observe(this, Observer {
             when (it) {
                 is Success -> renderCrossSelling(it.data)
-                is Fail -> {
-                    showErrorState(it.throwable)
-                    loadingState.visibility = View.GONE
-                }
+                is Fail -> { }
             }
         })
     }
