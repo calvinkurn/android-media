@@ -11,9 +11,6 @@ public class Voucher {
     @SerializedName("voucher_id")
     @Expose
     private String voucherId;
-//    @SerializedName("error")
-//    @Expose
-//    private String error;
 
     public String getVoucherCode() {
         return voucherCode;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -39,13 +38,12 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
-                                         MarketplaceTrackerApi marketplaceTrackerApi,
                                          SessionHandler sessionHandler,
                                          Context context) {
         super(requestParams);
         this.context = context;
         this.sessionHandler = sessionHandler;
-        this.marketplaceTrackerApi = marketplaceTrackerApi;
+//        this.marketplaceTrackerApi = marketplaceTrackerApi;
     }
 
     @Override
@@ -70,36 +68,22 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         }).map(mapper);
     }
 
-    private String getRequestPayload() {
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
-        Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
-
-        int queryTracker;
-        if (isUsingQueryWithFreeShipping) {
-            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
-        } else {
-            queryTracker = R.raw.payment_tracker_query;
-        }
-
-        return String.format(
-                loadRawString(context.getResources(), queryTracker),
-                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
-        );
-    }
-
-    private String getPaymentRequestPayload() {
-        return String.format(
-                loadRawString(context.getResources(), R.raw.payment_data_query),
-                requestParams.getString(ThanksTrackerConst.Key.ID, "0")
-        );
-    }
-
-    private String getOrderRequestPayload() {
-        return String.format(
-                loadRawString(context.getResources(), R.raw.order_info_query),
-                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
-        );
-    }
+//    private String getRequestPayload() {
+//        remoteConfig = new FirebaseRemoteConfigImpl(context);
+//        Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
+//
+//        int queryTracker;
+//        if (isUsingQueryWithFreeShipping) {
+//            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
+//        } else {
+//            queryTracker = R.raw.payment_tracker_query;
+//        }
+//
+//        return String.format(
+//                loadRawString(context.getResources(), queryTracker),
+//                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
+//        );
+//    }
 
     private String loadRawString(Resources resources, int resId) {
         InputStream rawResource = resources.openRawResource(resId);

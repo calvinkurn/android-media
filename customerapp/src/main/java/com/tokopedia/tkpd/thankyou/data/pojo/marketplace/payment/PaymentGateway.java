@@ -20,9 +20,6 @@ public class PaymentGateway {
     @SerializedName("gateway_name")
     @Expose
     private String gatewayName;
-//    @SerializedName("error")
-//    @Expose
-//    private String error;
 
     public int getGatewayId() {
         return gatewayId;

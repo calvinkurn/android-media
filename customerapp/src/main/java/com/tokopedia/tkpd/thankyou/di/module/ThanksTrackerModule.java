@@ -52,24 +52,24 @@ public class ThanksTrackerModule {
     DigitalTrackerMapper digitalTrackerMapper(SessionHandler sessionHandler) {
         return new DigitalTrackerMapper(sessionHandler);
     }
-
-    @Provides
-    @ThanksTrackerScope
-    MarketplaceTrackerService provideMarketplaceTrackerService() {
-        return new MarketplaceTrackerService();
-    }
-
-    @Provides
-    @ThanksTrackerScope
-    MarketplaceTrackerApi provideMarketplaceTrackerApi(MarketplaceTrackerService service) {
-        return service.getApi();
-    }
+//
+//    @Provides
+//    @ThanksTrackerScope
+//    MarketplaceTrackerService provideMarketplaceTrackerService() {
+//        return new MarketplaceTrackerService();
+//    }
+//
+//    @Provides
+//    @ThanksTrackerScope
+//    MarketplaceTrackerApi provideMarketplaceTrackerApi(MarketplaceTrackerService service) {
+//        return service.getApi();
+//    }
 
     @Provides
     @ThanksTrackerScope
     ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
                                                        DigitalTrackerMapper digitalTrackerMapper,
-                                                       MarketplaceTrackerApi marketplaceTrackerApi,
+//                                                       MarketplaceTrackerApi marketplaceTrackerApi,
                                                        @ApplicationContext Context context,
                                                        Gson gson,
                                                        SessionHandler sessionHandler,
@@ -77,7 +77,7 @@ public class ThanksTrackerModule {
         return new ThanksTrackerFactory(
                 digitalTrackerApi,
                 digitalTrackerMapper,
-                marketplaceTrackerApi,
+//                marketplaceTrackerApi,
                 context,
                 gson,
                 sessionHandler,

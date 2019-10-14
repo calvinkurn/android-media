@@ -31,15 +31,15 @@ public class ThanksTrackerFactory {
 
     public ThanksTrackerFactory(DigitalTrackerApi digitalTrackerApi,
                                 DigitalTrackerMapper digitalTrackerMapper,
-                                MarketplaceTrackerApi marketplaceTrackerApi,
+//                                MarketplaceTrackerApi marketplaceTrackerApi,
                                 Context context,
                                 Gson gson,
                                 SessionHandler sessionHandler,
                                 GCMHandler gcmHandler) {
         this.digitalTrackerApi = digitalTrackerApi;
         this.digitalTrackerMapper = digitalTrackerMapper;
-        this.marketplaceTrackerApi = marketplaceTrackerApi;
-        this.marketplaceTrackerMapper = marketplaceTrackerMapper;
+//        this.marketplaceTrackerApi = marketplaceTrackerApi;
+//        this.marketplaceTrackerMapper = marketplaceTrackerMapper;
         this.context = context;
         this.gson = gson;
         this.sessionHandler = sessionHandler;
@@ -53,7 +53,7 @@ public class ThanksTrackerFactory {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
                 return new DigitalTrackerCloudSource(params, digitalTrackerApi, digitalTrackerMapper, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, sessionHandler, context);
+                return new MarketplaceTrackerCloudSource(params, sessionHandler, context);
             }
         }
 

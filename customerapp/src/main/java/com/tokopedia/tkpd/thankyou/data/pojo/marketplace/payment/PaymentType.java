@@ -11,7 +11,7 @@ public class PaymentType {
     @SerializedName("error")
     @Expose
     private String error;
-    @SerializedName("business_types")
+    @SerializedName("types")
     @Expose
     private List<String> types = new ArrayList<>();
 
