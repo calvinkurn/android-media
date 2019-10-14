@@ -5,9 +5,6 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-/**
- * Created by Lukas on 08/10/19
- */
 public class RecommendationTitleViewModel implements Parcelable , Visitable<ProductListTypeFactory> {
     private String title;
     private String seeMoreUrl;

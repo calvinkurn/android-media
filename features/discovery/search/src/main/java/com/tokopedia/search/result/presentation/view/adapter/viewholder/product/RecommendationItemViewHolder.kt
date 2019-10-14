@@ -10,9 +10,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel
 
-/**
- * Created by Lukas on 09/10/19
- */
 class RecommendationItemViewHolder (
         itemView: View,
         val listener: RecommendationListener
