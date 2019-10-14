@@ -35,6 +35,9 @@ object DeeplinkMapper {
             if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)
             }
+            if(deeplink.startsWith(ApplinkConst.CHAT_BOT,true)){
+                return chatbotDeeplink()
+            }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
             return getRegisteredNavigationFromSellerapp(deeplink)
@@ -75,7 +78,7 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
-            ApplinkConst.CHAT_BOT -> return ApplinkConstInternalGlobal.CHAT_BOT
+           // deeplink.startsWith(ApplinkConst.CHAT_BOT) ->
             else -> ""
         }
     }
@@ -94,5 +97,10 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             else -> ""
         }
+    }
+
+
+    private fun chatbotDeeplink(): String {
+        return ApplinkConstInternalGlobal.CHAT_BOT
     }
 }
