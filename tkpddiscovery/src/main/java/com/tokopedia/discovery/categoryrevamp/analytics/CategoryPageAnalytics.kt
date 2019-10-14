@@ -22,6 +22,19 @@ class CategoryPageAnalytics {
     val KEY_PROMO_CODE = "promo_code"
     val KEY_CATEGORY = "category"
     val KEY_CREATIVE = "creative"
+    val KEY_PROMO_ID = "promo_id"
+    val KEY_CURRENCY_CODE = "currencyCode"
+    val KEY_IMPRESSIONS = "impressions"
+    val KEY_PRICE = "price"
+    val KEY_BRAND = "brand"
+    val KEY_ATTRIBUTION = "attribution"
+    val KEY_VARIANT = "variant"
+    val KEY_PROMOTIONS = "promotions"
+    val KEY_PROMOCLICK = "promoClick"
+    val KEY_PRODUCTS = "products"
+    val KEY_ACTIONFIELD = "actionField"
+    val KEY_CLICK = "click"
+    val KEY_PROMOVIEW = "promoView"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -136,15 +149,15 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, "$sub_category_id - $creative_name",
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                KEY_PROMOCLICK, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, sub_category_id,
                 KEY_NAME, path,
                 KEY_CREATIVE, creative_name,
                 KEY_CREATIVE_URL, creative_url,
                 KEY_POSITION, position,
                 KEY_CATEGORY, namedPath,
-                "promo_id", sub_category_id,
+                KEY_PROMO_ID, sub_category_id,
                 KEY_PROMO_CODE, sub_category_id)))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
@@ -159,7 +172,7 @@ class CategoryPageAnalytics {
                                    creative_url: String,
                                    position: Int,
                                    path: String,
-                                   namePath:String) {
+                                   namePath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, "promoView",
@@ -168,15 +181,15 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, "",
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                KEY_PROMOVIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, sub_id,
                 KEY_NAME, path,
                 KEY_CREATIVE, creative_name,
                 KEY_CREATIVE_URL, creative_url,
                 KEY_POSITION, position,
                 KEY_CATEGORY, namePath,
-                "promo_id", sub_id,
+                KEY_PROMO_ID, sub_id,
                 KEY_PROMO_CODE, sub_id)))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
@@ -189,7 +202,7 @@ class CategoryPageAnalytics {
                               productName: String,
                               price: Int,
                               position: Int,
-                              categoryNamePath:String,
+                              categoryNamePath: String,
                               pathList: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -199,19 +212,19 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, product_id,
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                "click", DataLayer.mapOf(
-                "actionField", DataLayer.mapOf(
+                KEY_CLICK, DataLayer.mapOf(
+                KEY_ACTIONFIELD, DataLayer.mapOf(
                 KEY_LIST, pathList)),
-                "products", DataLayer.listOf(DataLayer.mapOf(
+                KEY_PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_NAME, productName,
                 KEY_ID, product_id,
-                "price", price,
-                "brand", "",
-                "category",categoryNamePath,
-                "variant", "",
+                KEY_PRICE, price,
+                KEY_BRAND, "",
+                KEY_CATEGORY, categoryNamePath,
+                KEY_VARIANT, "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position,
-                "attribution", "")))
+                KEY_ATTRIBUTION, "")))
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -234,14 +247,14 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, "",
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(DataLayer.mapOf(
+                KEY_CURRENCY_CODE, "IDR",
+                KEY_IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_NAME, product_name,
                 KEY_ID, product_id,
-                "price", price,
-                "brand", "",
+                KEY_PRICE, price,
+                KEY_BRAND, "",
                 KEY_CATEGORY, categoryPath,
-                "variant", "",
+                KEY_VARIANT, "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position))
         ))

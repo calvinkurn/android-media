@@ -46,6 +46,8 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -332,7 +334,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             when (it) {
                 is Success -> {
                     isSubCategoryAvailable = true
-                    subcategory_recyclerview.visibility = View.VISIBLE
+                    subcategory_recyclerview.show()
                     subCategoryAdapter = SubCategoryAdapter(it.data as ArrayList<SubCategoryItem>,
                             this)
                     subcategory_recyclerview.adapter = subCategoryAdapter
@@ -342,7 +344,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
                 is Fail -> {
                     isSubCategoryAvailable = false
-                    subcategory_recyclerview.visibility = View.GONE
+                    subcategory_recyclerview.hide()
                 }
             }
 
@@ -379,16 +381,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
+            layout_no_data.show()
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
-            quickfilter_parent.visibility = View.GONE
-            subcategory_recyclerview.visibility = View.GONE
+            quickfilter_parent.hide()
+            subcategory_recyclerview.hide()
         } else {
-            layout_no_data.visibility = View.GONE
-            quickfilter_parent.visibility = View.VISIBLE
-            if(isSubCategoryAvailable){
-                subcategory_recyclerview.visibility = View.VISIBLE
+            layout_no_data.hide()
+            quickfilter_parent.show()
+            if (isSubCategoryAvailable) {
+                subcategory_recyclerview.show()
             }
         }
     }
