@@ -535,9 +535,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun showUpdateDataErrorStateLayout(t: Throwable) {
         view?.let {
-            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
-                    Snackbar.LENGTH_LONG, "Coba Lagi",
-                    View.OnClickListener { flightBookingPresenter.onFinishTransactionTimeReached() })
+            NetworkErrorHelper.showEmptyState(
+                    activity, view, FlightErrorUtil.getMessageFromException(activity, t)
+            ) { flightBookingPresenter.onFinishTransactionTimeReached() }
         }
     }
 
