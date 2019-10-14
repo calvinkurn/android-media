@@ -13,10 +13,6 @@ import dagger.Provides;
 
 import javax.inject.Named;
 
-/**
- * Created by Lukas on 08/10/19
- */
-
 @SearchScope
 @Module
 public class RecommendationModule {

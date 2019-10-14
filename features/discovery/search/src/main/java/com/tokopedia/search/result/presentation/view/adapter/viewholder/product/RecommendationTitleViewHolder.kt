@@ -9,10 +9,6 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.RecommendationTracking
 
-/**
- * Created by Lukas on 08/10/19
- */
-
 class RecommendationTitleViewHolder(
         itemView: View
 ) :  AbstractViewHolder<RecommendationTitleViewModel>(itemView) {

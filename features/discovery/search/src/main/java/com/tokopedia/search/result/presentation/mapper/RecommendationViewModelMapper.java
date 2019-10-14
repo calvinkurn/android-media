@@ -10,9 +10,6 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lukas on 08/10/19
- */
 public class RecommendationViewModelMapper {
 
     public List<RecommendationItemViewModel> convertToRecommendationItemViewModel(RecommendationWidget recommendationWidget) {

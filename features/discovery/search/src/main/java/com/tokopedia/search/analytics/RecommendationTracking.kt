@@ -6,10 +6,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-/**
- * Created by Lukas on 09/10/19
- */
-
 class RecommendationTracking {
     companion object{
         private const val EVENT = "event"
