@@ -10,6 +10,9 @@ import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.data.model.ContactUsErrorResponse;
 import com.tokopedia.contactus.common.di.network.ContactUsAuthInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,6 +25,17 @@ import retrofit2.Retrofit;
  */
 @Module
 public class ContactUsModule {
+
+    @Provides
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
 
     @Provides
     Retrofit provideRetrofit(OkHttpClient okHttpClient,
@@ -45,8 +59,9 @@ public class ContactUsModule {
 
     @Provides
     ContactUsAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                             AbstractionRouter abstractionRouter) {
-        return new ContactUsAuthInterceptor(context,abstractionRouter);
+                                                             NetworkRouter networkRouter,
+                                                             UserSessionInterface userSessionInterface) {
+        return new ContactUsAuthInterceptor(context,networkRouter, userSessionInterface);
 
     }
 }
