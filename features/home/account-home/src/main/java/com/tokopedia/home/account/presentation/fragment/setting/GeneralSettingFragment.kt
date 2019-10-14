@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.fragment.setting
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -13,6 +14,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,13 +25,14 @@ import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home.account.AccountConstants.Analytics.*
 import com.tokopedia.home.account.AccountHomeRouter
 import com.tokopedia.home.account.R
@@ -55,10 +58,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func1
-import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -119,6 +118,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.VERSION_NAME)
+
+        enableClearCache(appVersion)
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
@@ -163,8 +164,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 getString(R.string.title_privacy_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_REVIEW_ID,
                 getString(R.string.title_app_review_setting)))
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_CLEAR_CACHE,
-                getString(R.string.title_app_clear_cache)))
+//        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_CLEAR_CACHE,
+//                getString(R.string.title_app_clear_cache)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)))
 
@@ -228,7 +229,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_APP_CLEAR_CACHE -> {
                 accountAnalytics.eventClickSetting(CLEAR_CACHE)
-                clearCache()
+                showDialogClearCache()
             }
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
@@ -261,21 +262,70 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         }
     }
 
+    private fun showDialogClearCache() {
+//        Observable
+//                .just(true)
+//                .map { context?.cacheDir?.deleteRecursively() ?: false }
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({ value: Boolean ->
+//                    context?.let {
+//                        if (value) {
+//                            Toast.makeText(it, R.string.account_home_label_clear_cache_success, Toast.LENGTH_LONG).show()
+//                        } else {
+//                            Toast.makeText(it, R.string.account_home_label_clear_cache_failed, Toast.LENGTH_LONG).show()
+//                        }
+//                    }
+//                }, {})
+
+
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle("Peringatan")
+            dialog.setDescription("Dengan membersihkan cache, berarti Anda juga setuju untuk keluar dan menutup aplikasi.")
+            dialog.setPrimaryCTAText("Lakukan")
+            dialog.setPrimaryCTAClickListener {
+                clearCache()
+            }
+            dialog.setSecondaryCTAText("Batal")
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
+    }
+
     private fun clearCache() {
-        Observable
-                .just(true)
-                .map { context?.cacheDir?.deleteRecursively() ?: false }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ value: Boolean ->
-                    context?.let {
-                        if (value) {
-                            Toast.makeText(it, R.string.account_home_label_clear_cache_success, Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(it, R.string.account_home_label_clear_cache_failed, Toast.LENGTH_LONG).show()
-                        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
+            if (activityManager is ActivityManager) {
+                activityManager.clearApplicationUserData()
+            }
+        } else {
+            try {
+                val runtime = Runtime.getRuntime()
+                runtime.exec("pm clear ${context?.packageName}")
+            } catch (e: Exception) {}
+        }
+    }
+
+    private fun enableClearCache(appVersion: TextView?) {
+        appVersion?.let {
+            var count = 0
+            it.setOnClickListener {
+                count += 1
+                when(count) {
+                    in 3..6 -> {
+                        Toast.makeText(context, "Hanya ${7-count} langkah lagi untuk mengakses menu Bersihkan Cache.", Toast.LENGTH_SHORT).show()
                     }
-                }, {})
+                    7 -> {
+                        Toast.makeText(context, "Anda sudah dapat mengakses menu Bersihkan Cache", Toast.LENGTH_SHORT).show()
+                        adapter.addItem(adapter.size-1, SettingItemViewModel(SettingConstant.SETTING_APP_CLEAR_CACHE,
+                                getString(R.string.title_app_clear_cache)))
+                    }
+                }
+            }
+        }
     }
 
     private fun goToPlaystore() {
