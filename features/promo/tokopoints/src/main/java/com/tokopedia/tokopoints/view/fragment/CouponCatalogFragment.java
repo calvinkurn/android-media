@@ -21,6 +21,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -95,6 +96,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
+        SplitCompat.installActivity(getContext());
         View view = inflater.inflate(R.layout.tp_fragment_coupon_catalog, container, false);
         initViews(view);
         return view;
@@ -566,7 +568,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         btnAction2.setEnabled(!data.isDisabledButton());
         description.setText(data.getTitle());
         btnAction2.setText(data.getButtonStr());
-        btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange);
+        btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints);
 
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
 
@@ -729,8 +731,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
         WebView webView = view.findViewById(R.id.catalog_webview);
-        ImageView closeBtn = view.findViewById(com.tokopedia.design.R.id.close_button);
-        Typography titleView = view.findViewById(com.tokopedia.design.R.id.title_closeable);
+        ImageView closeBtn = view.findViewById(R.id.close_button);
+        Typography titleView = view.findViewById(R.id.title_closeable);
 
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING);
         closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());

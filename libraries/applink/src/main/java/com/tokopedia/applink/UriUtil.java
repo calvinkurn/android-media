@@ -89,7 +89,7 @@ public class UriUtil {
             while (i < size) {
                 if (uriPattern.getPathSegments().get(i).startsWith("{") &&
                         uriPattern.getPathSegments().get(i).endsWith("}")) {
-                    bundle.putString(uriPatternString.substring(1, uriPatternString.length() - 1), uri.getPathSegments().get(i));
+                    bundle.putString(uriPattern.getPathSegments().get(i).substring(1, uriPattern.getPathSegments().get(i).length() - 1), uri.getPathSegments().get(i));
                 }
                 i++;
             }

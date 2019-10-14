@@ -80,7 +80,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         mContainerMain.setDisplayedChild(CONTAINER_SEND_FORM);
 
         mEditEmail = view.findViewById(R.id.edit_email);
-        mWrapperEmail = view.findViewById(com.tokopedia.session.R.id.wrapper_email);
+        mWrapperEmail = view.findViewById(R.id.wrapper_email);
         mEditNotes = view.findViewById(R.id.edit_notes);
         mBtnSendGift = view.findViewById(R.id.button_send);
         mBtnSendNow = view.findViewById(R.id.button_send_now);

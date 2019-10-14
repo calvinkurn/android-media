@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -149,10 +150,11 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
                         public void onTick(long l) {
+                            SplitCompat.installActivity(holder.value.getContext());
                             item.getUsage().setExpiredCountDown(l / 1000);
                             int seconds = (int) (l / 1000) % 60;
                             int minutes = (int) ((l / (1000 * 60)) % 60);
-                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            int hours = (int)  ((l / (1000 * 60 * 60)) % 24);
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
                             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);

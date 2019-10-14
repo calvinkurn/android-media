@@ -221,6 +221,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
+                    new ConsumerDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),

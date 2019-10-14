@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -681,11 +682,11 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
         llBottomBtn.setVisibility(View.VISIBLE);
-
+        SplitCompat.installActivity(getActivity());
         //excluding extra padding from tabs
         TabUtil.wrapTabIndicatorToTitle(tabs,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+                (int) getResources().getDimension(com.tokopedia.tokopoints.R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(com.tokopedia.tokopoints.R.dimen.tp_margin_regular));
     }
 
     private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
