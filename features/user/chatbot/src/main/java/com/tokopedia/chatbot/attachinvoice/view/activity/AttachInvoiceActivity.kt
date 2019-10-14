@@ -41,12 +41,12 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
         title = getString(R.string.string_attach_invoice_activity_title);
         super.setupLayout(savedInstanceState)
         if (supportActionBar != null) {
-            supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable
+            supportActionBar?.setBackgroundDrawable(resources.getDrawable(com.tokopedia.design.R.drawable
                     .bg_white_toolbar_drop_shadow))
-            supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(R.drawable
+            supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(com.tokopedia.design.R.drawable
                     .ic_close_default));
-            toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-            toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarSubTitle_SansSerif);
+            toolbar.setTitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarTitle_SansSerif);
         }
     }
 

@@ -37,6 +37,12 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
                 LinearLayoutManager.VERTICAL, false)
         chatActionListSelection.adapter = adapter
         chatActionListSelection.addItemDecoration(DividerItemDecoration(itemView.context))
+
+        hour = itemView.findViewById(hourId)
+    }
+
+    override fun getHourId(): Int {
+        return R.id.hour
     }
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {

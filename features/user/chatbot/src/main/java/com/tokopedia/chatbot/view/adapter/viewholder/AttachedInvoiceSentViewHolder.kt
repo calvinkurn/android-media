@@ -53,12 +53,12 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         action.visibility = View.GONE
 
         val resource = if (element.isDummy)
-            R.drawable.ic_chat_pending;
+            com.tokopedia.chat_common.R.drawable.ic_chat_pending;
         else
             if (element.isRead)
-                R.drawable.ic_chat_read
+                com.tokopedia.chat_common.R.drawable.ic_chat_read
             else
-                R.drawable.ic_chat_unread
+                com.tokopedia.chat_common.R.drawable.ic_chat_unread
         chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),resource))
     }
 
