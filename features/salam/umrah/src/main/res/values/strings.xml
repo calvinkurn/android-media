@@ -6,5 +6,7 @@
     <string name="umrah_order_detail_show_detail">Lihat Detail</string>
 
     <string name="umrah_my_umrah_show_detail">Lihat Detail</string>
+    <string name="umrah_order_detail_jamaah_info_label">Informasi Jemaah</string>
+    <string name="umrah_common_booking_code_label">Kode Booking</string>
 
 </resources>

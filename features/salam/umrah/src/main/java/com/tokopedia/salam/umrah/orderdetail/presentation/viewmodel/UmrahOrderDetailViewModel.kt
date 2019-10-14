@@ -1,18 +1,15 @@
 package com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -24,8 +21,8 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
 
-    fun getOrderDetail(rawQuery: String, orderId: String, orderCategory: String) {
-        val params = mapOf(PARAM_ORDER_ID to orderId,
+    fun getOrderDetail(rawQuery: String, orderId: String, orderCategory: String, response: String) {
+        /*val params = mapOf(PARAM_ORDER_ID to orderId,
                 PARAM_ORDER_CATEGORY_STR to orderCategory)
 
         launchCatchError(block = {
@@ -37,6 +34,15 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
             orderDetailData.value = Success(data.orderDetails)
         }) {
             orderDetailData.value = Fail(it)
+        }*/
+
+        launchCatchError(block = {
+            delay(3000)
+            val gson = Gson()
+            orderDetailData.value = Success(gson.fromJson(response,
+                    UmrahOrderDetailsEntity.Response::class.java).orderDetails)
+        }){
+            it.printStackTrace()
         }
     }
 

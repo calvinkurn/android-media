@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -54,21 +55,24 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
+                android:id="@+id/tg_umrah_package"
                 android:layout_height="wrap_content"
-                android:text="Avissa Suites"
                 android:textColor="@color/Neutral_N700_96"
-                app:typographyType="heading_6" />
+                app:typographyType="heading_6"
+                tools:text="Avissa Suites" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
+                android:id="@+id/tg_umrah_travel"
                 android:layout_height="wrap_content"
-                android:text="Travel Berkah"
                 android:textColor="@color/Neutral_N700_96"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Travel Berkah" />
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_umrah_details"/>
 
         </LinearLayout>
 
@@ -83,16 +87,16 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Informasi Jemaah"
+                android:text="@string/umrah_order_detail_jamaah_info_label"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_2" />
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_jamaah"/>
 
             <View
-                android:id="@+id/divider_status"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/dp_8"
@@ -107,7 +111,7 @@
                     android:id="@+id/tg_booking_code_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kode Booking"
+                    android:text="@string/umrah_common_booking_code_label"
                     android:textColor="@color/Neutral_N700_68"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -117,7 +121,7 @@
                     android:id="@+id/tg_booking_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="9AUEVO"
+                    tools:text="9AUEVO"
                     android:textColor="@color/Green_G500"
                     app:layout_constraintLeft_toLeftOf="@+id/tg_booking_code_label"
                     app:layout_constraintTop_toBottomOf="@+id/tg_booking_code_label"
