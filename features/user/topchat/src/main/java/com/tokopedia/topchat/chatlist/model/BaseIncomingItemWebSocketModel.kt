@@ -6,4 +6,7 @@ package com.tokopedia.topchat.chatlist.model
  */
 abstract class BaseIncomingItemWebSocketModel(open val messageId: String = "") {
 
+    abstract fun getContactId(): String
+    abstract fun getTag(): String
+
 }
