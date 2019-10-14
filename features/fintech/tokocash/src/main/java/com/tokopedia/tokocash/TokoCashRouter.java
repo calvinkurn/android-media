@@ -54,6 +54,4 @@ public interface TokoCashRouter {
     Observable<BalanceTokoCash> getBalanceTokoCash();
 
     Intent getNominalActivityIntent(Context context, String qrCode, InfoQrTokoCash infoQrTokoCash);
-
-    Intent getOvoActivityIntent(Context applicationContext);
 }
