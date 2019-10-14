@@ -1,10 +1,10 @@
-package com.tokopedia.digital.common.domain.interactor
+package com.tokopedia.common_digital.common.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.digital.R
-import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumberResponseEntity
+import com.tokopedia.common_digital.R
+import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,7 +18,7 @@ class RechargePushEventRecommendationUseCase(private val graphqlUseCase: Graphql
 
     fun execute(requestParams: RequestParams, subscriber: Subscriber<GraphqlResponse>) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.gql_recharge_push_event_recommendation),
-                RechargeFavoritNumberResponseEntity::class.java, requestParams.parameters)
+                RechargePushEventRecommendationResponseEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(requestParams, subscriber)

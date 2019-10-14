@@ -1,5 +1,5 @@
-query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String!, $productIDs: String!) {
-    productRecommendationWidgetSingle(userID: $userID, ref: $ref, pageNumber: $pageNumber, productIDs: $productIDs){
+query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam: String!, $productIDs: String!) {
+    productRecommendationWidgetSingle(userID: $userID, queryParam: $queryParam, pageNumber: $pageNumber, productIDs: $productIDs){
         meta {
             recommendation
             size
