@@ -50,8 +50,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
-        promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
+        isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
+        promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
@@ -128,11 +128,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun initInjector() {
         super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     companion object {
