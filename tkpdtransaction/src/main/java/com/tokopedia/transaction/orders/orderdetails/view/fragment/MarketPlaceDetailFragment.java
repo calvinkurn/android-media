@@ -66,11 +66,12 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
@@ -111,6 +112,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Inject
     OrderListDetailPresenter presenter;
     private LinearLayout mainView;
+    private LinearLayout ViewRecomendItems;
     private TextView statusLabel;
     private TextView statusValue;
     private TextView conditionalInfoText;
@@ -120,6 +122,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView additionalText;
     private TextView infoLabel;
     private TextView helpLabel;
+    private TextView recommendListTitle;
     private FrameLayout stickyButton;
     private LinearLayout statusDetail;
     private LinearLayout detailContent;
@@ -147,6 +150,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private ShopInfo shopInfo;
     private Status status;
     private Ticker mTickerInfos;
+    private RecyclerView recommendationList;
 
 
     @Override
@@ -201,6 +205,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         stickyButton = view.findViewById(R.id.sticky_btn);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        recommendationList = view.findViewById(R.id.recommendation_list);
+        recommendListTitle = view.findViewById(R.id.recommend_title);
+        ViewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -946,7 +953,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+    public void setRecommendation(Object recommendationResponse) {
+        RecommendationResponse rechargeWidgetResponse = (RecommendationResponse) recommendationResponse;
+        if (rechargeWidgetResponse != null && rechargeWidgetResponse.getRechargeFavoriteRecommendationList() != null) {
+            if (rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations().isEmpty()) {
+                ViewRecomendItems.setVisibility(View.GONE);
+            } else {
+                if (getContext() != null) {
+                    recommendListTitle.setText(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getTitle());
+                    recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                    recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
+                }
+            }
+        }
 
     }
 }

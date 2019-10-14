@@ -38,6 +38,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -73,6 +74,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
     private static final int DEFAULT_TAB_ID = 1;
+    private static final String DEVICE_ID = "device_id";
+    private static final String CATEGORY_IDS = "category_ids";
+    private static final int DEFAULT_DEVICE_ID = 5;
+
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -129,6 +134,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         orderDetailsUseCase.addRequest(graphqlRequest);
         orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
+        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -139,6 +145,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
                     CommonUtils.dumper("error occured" + e);
+                    Log.d("bhoo", "error ");
                     getView().hideProgressBar();
                 }
             }
@@ -149,8 +156,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
-                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
-                    getView().setRecommendation(rechargeWidgetResponse);
+                    List<Items> list = orderDetails.getItems();
+                    for(Items item:list){
+                        Log.d("bhoo" ,"cat"+item.getCategoryID()+"");
+
+                    }
+
+                    if (orderCategory.equalsIgnoreCase("marketplace")) {
+                        RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
+                        getView().setRecommendation(recommendationResponse);
+                        Log.d("bhoo", recommendationResponse.getRechargeFavoriteRecommendationList() + "");
+                    } else {
+                        RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                        getView().setRecommendation(rechargeWidgetResponse);
+                        Log.d("bhoo", "else " + rechargeWidgetResponse.getHomeWidget().getWidgetGrid());
+                    }
                 }
             }
         });
@@ -619,6 +639,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
+    }
+
+    private GraphqlRequest makegraphqlRequestForMPRecommendation() {
+        GraphqlRequest graphqlRequestForMPRecommendation;
+        Map<String, Object> variable = new HashMap<>();
+        variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
+        variable.put(CATEGORY_IDS, "");
+        graphqlRequestForMPRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        return graphqlRequestForMPRecommendation;
     }
 
     public boolean isValidUrl(String invoiceUrl) {
