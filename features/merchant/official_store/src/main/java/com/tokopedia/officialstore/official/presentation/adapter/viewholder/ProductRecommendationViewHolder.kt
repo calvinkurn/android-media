@@ -1,9 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler

@@ -64,21 +64,25 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<RecommendationWidget>>()
     }
 
-    fun loadFirstData(category: Category?) {
+    fun loadFirstData(category: Category?, page: Int) {
         launchCatchError(block = {
 //            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "").await())
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
 
         }) {
             // TODO just ignore or handle?
         }
     }
 
-    fun loadMore() {
-        // TODO get dynamic channel & product recommendation
+    fun loadMore(category: Category?, page: Int) {
+        launchCatchError(block = {
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
+        }) {
+
+        }
     }
 
     private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
@@ -127,11 +131,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreProductRecommendation(categoryId: String): Deferred<RecommendationWidget> {
+    private fun getOfficialStoreProductRecommendation(categoryId: String, page: Int): Deferred<RecommendationWidget> {
         return async(Dispatchers.IO) {
             val defaultValue = ""
             val pageName = "official-store"
-            val pageNumber = 1
+            val pageNumber = page
             var productRecommendation = RecommendationWidget(emptyList(), defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue,
                     defaultValue, pageNumber, 0, 0, true, pageName)
 
