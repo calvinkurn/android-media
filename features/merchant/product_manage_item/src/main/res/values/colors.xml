@@ -5,4 +5,6 @@
     <color name="low_score_value">#ffc200</color>
     <color name="medium_score_value">#cddc39</color>
     <color name="high_score_value">#8bc34a</color>
+    <color name="main_green">#42b549</color>
+
 </resources>

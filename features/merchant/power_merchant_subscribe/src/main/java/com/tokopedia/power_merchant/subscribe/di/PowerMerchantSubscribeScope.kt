@@ -2,7 +2,6 @@ package com.tokopedia.power_merchant.subscribe.di
 
 import javax.inject.Scope
 
-@MustBeDocumented
 @Scope
-@kotlin.annotation.Retention
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class PowerMerchantSubscribeScope
