@@ -41,6 +41,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
+    @JvmField
+    val PARAM_IS_FROM_LOGIN = "is_from_login"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -122,6 +124,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // PinCompleteActivity
+    // tokopedia-android-internal://global/add-pin-complete
+    @JvmField
+    val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField
@@ -147,6 +154,19 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
+    // InstantLoanActivity
+    // tokopedia-android-internal://global/loan
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN = "$INTERNAL_GLOBAL/instant-loan"
+
+    // InstantLoanActivity with specific tab
+    // tokopedia-android-internal://global/loan/category/{tab_name}
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
