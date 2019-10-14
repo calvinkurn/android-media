@@ -148,6 +148,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (userSessionInterface.isLoggedIn) {
             orderDetailViewModel.getOrderDetail(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
                     orderId, orderCategory)
 
         } else RouteManager.route(context, ApplinkConst.LOGIN)
