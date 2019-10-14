@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -29,7 +30,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -136,7 +136,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData) {
+    public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
         UserSession session = new UserSession(this);
         if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);

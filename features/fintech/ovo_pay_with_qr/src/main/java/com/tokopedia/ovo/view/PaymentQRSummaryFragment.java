@@ -22,6 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -108,13 +110,16 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         presenter = new PaymentQrSummaryPresenterImpl(getActivity());
         presenter.attachView(this);
         presenter.fetchWalletDetails();
-        cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState == null)
-            cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), id);
+            cacheManager = new SaveInstanceCacheManager(getActivity(), id);
 
-        responseData = cacheManager.get(QR_RESPONSE, new TypeToken<BarcodeResponseData>() {
+        JsonObject response = cacheManager.get(QR_RESPONSE, new TypeToken<JsonObject>() {
         }.getType());
+        if (response != null) {
+            responseData = new GsonBuilder().create().fromJson(response, BarcodeResponseData.class);
 
+        }
     }
 
     @Nullable
