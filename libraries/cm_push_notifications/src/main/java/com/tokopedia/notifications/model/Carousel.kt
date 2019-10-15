@@ -30,7 +30,7 @@ data class Carousel(
 
     constructor(source: Parcel) : this(source.readString(), source.readString(),
             source.readString(), source.readString(), source.readInt(),source.readString()
-    )
+            )
 
     override fun describeContents(): Int {
         return 0
