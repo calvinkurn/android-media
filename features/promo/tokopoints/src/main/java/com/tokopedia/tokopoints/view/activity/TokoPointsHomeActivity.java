@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -29,20 +27,16 @@ import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
 public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
-    private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
             if (TokoPointsRemoteConfig.Companion.instance(getApplicationContext()).getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
                 finish();
                 startActivity(new Intent(this, TokoPointsHomeNewActivity.class));
@@ -50,10 +44,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
             } else {
                 return HomepageFragment.newInstance();
             }
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
     }
 
     @Override
@@ -70,16 +60,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         tokoPointComponent = DaggerTokoPointComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
-        } else {
-            finish();
-        }
     }
 
     @Override

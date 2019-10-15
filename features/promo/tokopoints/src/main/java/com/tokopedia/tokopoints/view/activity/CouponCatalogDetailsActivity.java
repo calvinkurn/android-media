@@ -20,12 +20,10 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
-    private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private UserSession mUserSession;
     private Bundle bundle = null;
@@ -50,12 +48,7 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
-            return CouponCatalogFragment.newInstance(bundle);
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
+        return CouponCatalogFragment.newInstance(bundle);
     }
 
     @Override
@@ -96,16 +89,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
                     AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
-        } else {
-            finish();
         }
     }
 }

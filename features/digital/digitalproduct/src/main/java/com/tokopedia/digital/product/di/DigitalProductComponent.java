@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.product.view.activity.DigitalProductBaseDaggerActivity;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
