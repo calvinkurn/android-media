@@ -33,6 +33,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        findViews(view)
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             if (!((it.getBoolean(IS_SHOW_OTHER_REASON))?:false)) {
@@ -63,6 +64,22 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
         }
     }
+
+    private fun findViews(view: View) {
+        mTxtHelpTitle = view.findViewById(getTextHelpTitleId())
+        mSmileLayout = view.findViewById(getSmilleLayoutId())
+        mTxtSmileSelected = view.findViewById(getSmileSelectedId())
+        mTxtFeedbackQuestion = view.findViewById(getFeedbackQuestionId())
+        mTxtFinished = view.findViewById(getTextFinishedId())
+        mFilterReview = view.findViewById(getFilterReviewId())
+    }
+
+    override fun getTextHelpTitleId():Int = R.id.txt_help_title
+    override fun getSmilleLayoutId():Int = R.id.smile_layout
+    override fun getSmileSelectedId():Int = R.id.txt_smile_selected
+    override fun getFeedbackQuestionId():Int = R.id.txt_feedback_question
+    override fun getTextFinishedId():Int = R.id.txt_finished
+    override fun getFilterReviewId():Int = R.id.filter_review
 
     override fun onSuccessSubmit(intent: Intent) {
         intent.putExtra(BOT_OTHER_REASON, et_state.text.toString())

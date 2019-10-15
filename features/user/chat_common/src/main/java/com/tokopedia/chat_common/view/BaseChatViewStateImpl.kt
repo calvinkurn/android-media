@@ -52,6 +52,18 @@ open class BaseChatViewStateImpl(
 //    }
 
     override fun initView() {
+        recyclerView = view.findViewById(getRecyclerViewId())
+        mainLoading = view.findViewById(getProgressId())
+        replyEditText = view.findViewById(getNewCommentId())
+        replyBox = view.findViewById(getReplyBoxId())
+        actionBox = view.findViewById(getActionBoxId())
+        sendButton = view.findViewById(getSendButtonId())
+        notifier = view.findViewById(getNotifierId())
+        chatMenuButton = view.findViewById(getChatMenuId())
+
+        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
+        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
+
         replyEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
@@ -229,4 +241,16 @@ open class BaseChatViewStateImpl(
     override fun onReceiveRead() {
         getAdapter().changeReadStatus()
     }
+
+    open fun getRecyclerViewId() = R.id.recyclerView
+    open fun getProgressId() = R.id.progress
+    open fun getNewCommentId() = R.id.new_comment
+    open fun getReplyBoxId() = R.id.reply_box
+    open fun getActionBoxId() = R.id.add_comment_area
+    open fun getSendButtonId() = R.id.send_but
+    open fun getNotifierId() = R.id.notifier
+    open fun getChatMenuId() = R.id.iv_chat_menu
+
+
+
 }

@@ -47,14 +47,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var chatMenuBtn: ImageView
 
     override fun initView() {
-        recyclerView = view.findViewById(R.id.recycler_view)
-        mainLoading = view.findViewById(R.id.progress)
-        replyEditText = view.findViewById(R.id.new_comment)
-        replyBox = view.findViewById(R.id.reply_box)
-        actionBox = view.findViewById(R.id.add_comment_area)
-        sendButton = view.findViewById(R.id.send_but)
-        notifier = view.findViewById(R.id.notifier)
-        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
+        recyclerView = view.findViewById(getRecyclerViewId())
+        mainLoading = view.findViewById(getProgressId())
+        replyEditText = view.findViewById(getNewCommentId())
+        replyBox = view.findViewById(getReplyBoxId())
+        actionBox = view.findViewById(getActionBoxId())
+        sendButton = view.findViewById(getSendButtonId())
+        notifier = view.findViewById(getNotifierId())
+        chatMenuButton = view.findViewById(getChatMenuId())
 
         chatMenuBtn = view.findViewById(R.id.iv_chat_menu)
         rvQuickReply = view.findViewById(R.id.list_quick_reply)
@@ -64,8 +64,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
 
-        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
-        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
+//        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
+//        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
         super.initView()
     }
 
@@ -184,4 +184,35 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun getRecyclerViewId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getProgressId(): Int {
+        return R.id.progress
+    }
+
+    override fun getNewCommentId(): Int {
+        return R.id.new_comment
+    }
+
+    override fun getReplyBoxId(): Int {
+        return R.id.reply_box
+    }
+
+    override fun getActionBoxId(): Int {
+        return R.id.add_comment_area
+    }
+
+    override fun getSendButtonId(): Int {
+        return R.id.send_but
+    }
+
+    override fun getNotifierId(): Int {
+        return R.id.notifier
+    }
+
+    override fun getChatMenuId(): Int {
+        return R.id.iv_chat_menu
+    }
 }

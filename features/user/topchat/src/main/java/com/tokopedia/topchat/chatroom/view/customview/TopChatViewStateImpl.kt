@@ -73,17 +73,18 @@ class TopChatViewStateImpl(
     }
 
     override fun initView() {
-        recyclerView = view.findViewById(R.id.recycler_view)
-        mainLoading = view.findViewById(R.id.progress)
-        replyEditText = view.findViewById(R.id.new_comment)
-        replyBox = view.findViewById(R.id.reply_box)
-        actionBox = view.findViewById(R.id.add_comment_area)
-        sendButton = view.findViewById(R.id.send_but)
-        notifier = view.findViewById(R.id.notifier)
-        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
-
-        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
-        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
+        super.initView()
+//        recyclerView = view.findViewById(R.id.recycler_view)
+//        mainLoading = view.findViewById(R.id.progress)
+//        replyEditText = view.findViewById(R.id.new_comment)
+//        replyBox = view.findViewById(R.id.reply_box)
+//        actionBox = view.findViewById(R.id.add_comment_area)
+//        sendButton = view.findViewById(R.id.send_but)
+//        notifier = view.findViewById(R.id.notifier)
+//        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
+//
+//        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
+//        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
@@ -100,9 +101,9 @@ class TopChatViewStateImpl(
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.visibility = View.GONE
-        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
-        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
-        super.initView()
+//        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
+//        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
+//        super.initView()
 
         initProductPreviewLayout()
     }
