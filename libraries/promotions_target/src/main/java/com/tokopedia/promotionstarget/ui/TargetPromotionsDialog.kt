@@ -33,9 +33,9 @@ import javax.inject.Inject
 //todo use weak reference of activity context
 class TargetPromotionsDialog {
 
-    val CONTAINER_SINGLE_COUPON = 0
+    val CONTAINER_MULTIPLE_COUPON = 0
     val CONTAINER_ERROR = 1
-    val CONTAINER_MULTIPLE_COUPON = 2
+    val CONTAINER_SINGLE_COUPON = 2
 
     private lateinit var tvTitle: Typography
     private lateinit var tvSubTitle: Typography

@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false"
     android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.promotionstarget.ui.views.RoundButton
@@ -23,11 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_28"
-        android:clipChildren="false"
-        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/t_promo_image_height" />
 
         <com.tokopedia.promotionstarget.ui.views.CouponView
             android:id="@+id/couponView"
@@ -38,8 +40,7 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:background="@color/white"
-            android:clipChildren="true"
-            android:clipToPadding="true"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button"
@@ -104,16 +105,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/t_promo_image_height"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:clipChildren="true"
-            android:clipToPadding="true" />
 
     </ViewFlipper>
 
