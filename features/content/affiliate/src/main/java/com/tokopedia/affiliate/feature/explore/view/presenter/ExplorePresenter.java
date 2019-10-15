@@ -86,10 +86,10 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @Override
-    public void getAutoComplete(String keyword) {
+    public void getAutoComplete(String suggestionText) {
         autoCompleteUseCase.clearRequest();
-        autoCompleteUseCase.addRequest(autoCompleteUseCase.getRequest(keyword));
-        autoCompleteUseCase.execute(new AutoCompleteSubscriber(getView()));
+        autoCompleteUseCase.addRequest(autoCompleteUseCase.getRequest(suggestionText));
+        autoCompleteUseCase.execute(new AutoCompleteSubscriber(getView(), suggestionText));
     }
 
     @Override

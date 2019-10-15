@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
@@ -22,6 +23,8 @@ import retrofit2.Retrofit
 @Component(modules = arrayOf(DigitalModule::class), dependencies = arrayOf(DigitalCommonComponent::class))
 interface DigitalComponent{
     fun digitalAnalytics() : DigitalAnalytics
+
+    fun rechargeAnalytics(): RechargeAnalytics
 
     fun digitalRouter(): DigitalRouter
 

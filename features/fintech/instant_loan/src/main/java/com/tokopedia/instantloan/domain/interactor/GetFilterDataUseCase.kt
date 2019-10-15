@@ -35,7 +35,7 @@ class GetFilterDataUseCase @Inject constructor(@ApplicationContext context: Cont
 
         val usableRequestMap = HashMap<String, Any>()
         val graphqlRequestForUsable = GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.getResources(), R.raw.query_filter_data),
+                GraphqlHelper.loadRawString(mContext.getResources(), com.tokopedia.instantloan.R.raw.query_filter_data),
                 GqlFilterDataResponse::class.java, usableRequestMap, false)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setExpiryTime(cacheDuration).setSessionIncluded(false).build()
