@@ -25,12 +25,10 @@ import java.util.List;
 
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
     private Bundle bundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
         forDeeplink();
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
