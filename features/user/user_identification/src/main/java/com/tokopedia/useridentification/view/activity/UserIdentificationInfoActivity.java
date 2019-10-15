@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
@@ -16,6 +17,7 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
 
+    private static int projectId;
     public interface Listener {
         void onTrackBackPressed();
     }
@@ -40,10 +42,15 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
         if (getIntent()!= null && getIntent().getExtras()!= null) {
             isSourceSeller = getIntent().getExtras().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
         }
+        try {
+            projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller);
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId);
     }
 }
