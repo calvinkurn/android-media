@@ -48,6 +48,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
@@ -863,7 +864,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         val list: ArrayList<CoachMarkItem> = arrayListOf(item)
 
-        val coachMark = CoachMark()
+        val coachMark = with(CoachMarkBuilder()) {
+            allowPreviousButton(false)
+        }.build()
         coachMark.show(activity, tag, list)
         affiliatePref.setCoachmarkSuggestionShown(tag)
     }
