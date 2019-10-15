@@ -2,14 +2,13 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.content.Context;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
@@ -35,6 +34,8 @@ import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
@@ -44,6 +45,7 @@ import com.tokopedia.transactiondata.repository.CartRepository;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.transactiondata.repository.TopPayRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -81,6 +83,11 @@ public class DataModule {
     }
 
     @Provides
+    NetworkRouter provideNetworkRouter (@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @Provides
     @CartChuckApiInterceptorQualifier
     Interceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
         return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutChuckInterceptor();
@@ -95,23 +102,26 @@ public class DataModule {
     @Provides
     @CartApiInterceptorQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
-                                             AbstractionRouter abstractionRouter) {
-        return new CartApiInterceptor(context, abstractionRouter, TransactionDataApiUrl.Cart.HMAC_KEY);
+                                             NetworkRouter networkRouter,
+                                             UserSessionInterface userSession) {
+        return new CartApiInterceptor(context, networkRouter, userSession, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
 
 
     @Provides
     @CartKeroRatesApiInterceptorQualifier
     TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
-                                                    AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter);
+                                                    NetworkRouter networkRouter,
+                                                    UserSessionInterface userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
     @CartTxActApiInterceptorQualifier
     TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
-                                                AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter);
+                                                NetworkRouter networkRouter,
+                                                UserSessionInterface userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
 
