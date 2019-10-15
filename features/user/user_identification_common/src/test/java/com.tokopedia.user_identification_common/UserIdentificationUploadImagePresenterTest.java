@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.presenter;
+package com.tokopedia.user_identification_common;
 
 import com.google.gson.Gson;
 import com.tokopedia.imageuploader.domain.GenerateHostRepository;
@@ -8,12 +8,13 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
-import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
-import com.tokopedia.useridentification.util.TestSchedulerProvider;
-import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
-import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
-import com.tokopedia.useridentification.view.viewmodel.ImageUploadModel;
+import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
+import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
+import com.tokopedia.user_identification_common.util.TestSchedulerProvider;
+import com.tokopedia.user_identification_common.view.listener.UserIdentificationUploadImage;
+import com.tokopedia.user_identification_common.view.presenter.UserIdentificationUploadImagePresenter;
+import com.tokopedia.user_identification_common.view.viewmodel.AttachmentImageModel;
+import com.tokopedia.user_identification_common.view.viewmodel.ImageUploadModel;
 
 import org.junit.Before;
 import org.junit.Test;
