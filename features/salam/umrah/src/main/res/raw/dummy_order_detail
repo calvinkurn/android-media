@@ -117,7 +117,7 @@
         ],
         "detail": [
             {
-                "imageUrl": "ttps://ecs7.tokopedia.net/img/salam/umroh/date.png",
+                "imageUrl": "https://ecs7.tokopedia.net/img/salam/umroh/date.png",
                 "__typename": "ODMetadata",
                 "value": "9 hari (8 malam)",
                 "label": "20 Nov - 29 Nov 2019",

@@ -22,6 +22,7 @@ import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_umrah_order_detail.*
 import kotlinx.android.synthetic.main.partial_umrah_order_detail_content.*
 import kotlinx.android.synthetic.main.partial_umrah_order_detail_header.*
 import javax.inject.Inject
@@ -87,6 +88,16 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         if (::orderId.isInitialized) {
             outState.putString(EXTRA_ORDER_ID, orderId)
         }
+    }
+
+    fun showLoading() {
+        umrah_order_detail_content_container.visibility = View.GONE
+        pb_umrah_order_detail.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        umrah_order_detail_content_container.visibility = View.VISIBLE
+        pb_umrah_order_detail.visibility = View.GONE
     }
 
     private fun renderData(data: UmrahOrderDetailsEntity) {

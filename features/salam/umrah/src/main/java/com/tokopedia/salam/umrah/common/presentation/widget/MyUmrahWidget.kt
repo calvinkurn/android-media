@@ -46,34 +46,26 @@ class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun showLoadingState() {
-        tg_umrah_departure_loading.visibility = View.VISIBLE
-        iv_my_umrah_loading.visibility = View.VISIBLE
-        btn_my_umrah_detail_loading.visibility = View.VISIBLE
-        tg_umrah_next_label_loading.visibility = View.VISIBLE
-        tg_umrah_next_loading.visibility = View.VISIBLE
-        tg_umrah_package_loading.visibility = View.VISIBLE
-
-        tg_umrah_departure.visibility = View.GONE
-        iv_my_umrah.visibility = View.GONE
-        btn_my_umrah_detail.visibility = View.GONE
-        tg_umrah_next_label.visibility = View.GONE
-        tg_umrah_next.visibility = View.GONE
-        tg_umrah_package.visibility = View.GONE
+        changeVisibility(View.VISIBLE, View.GONE)
     }
 
     fun hideLoadingState() {
-        tg_umrah_departure_loading.visibility = View.GONE
-        iv_my_umrah_loading.visibility = View.GONE
-        btn_my_umrah_detail_loading.visibility = View.GONE
-        tg_umrah_next_label_loading.visibility = View.GONE
-        tg_umrah_next_loading.visibility = View.GONE
-        tg_umrah_package_loading.visibility = View.GONE
+        changeVisibility(View.GONE, View.VISIBLE)
+    }
 
-        tg_umrah_departure.visibility = View.VISIBLE
-        iv_my_umrah.visibility = View.VISIBLE
-        btn_my_umrah_detail.visibility = View.VISIBLE
-        tg_umrah_next_label.visibility = View.VISIBLE
-        tg_umrah_next.visibility = View.VISIBLE
-        tg_umrah_package.visibility = View.VISIBLE
+    private fun changeVisibility(loadingState: Int, contentState: Int) {
+        tg_umrah_departure_loading.visibility = loadingState
+        iv_my_umrah_loading.visibility = loadingState
+        btn_my_umrah_detail_loading.visibility = loadingState
+        tg_umrah_next_label_loading.visibility = loadingState
+        tg_umrah_next_loading.visibility = loadingState
+        tg_umrah_package_loading.visibility = loadingState
+
+        tg_umrah_departure.visibility = contentState
+        iv_my_umrah.visibility = contentState
+        btn_my_umrah_detail.visibility = contentState
+        tg_umrah_next_label.visibility = contentState
+        tg_umrah_next.visibility = contentState
+        tg_umrah_package.visibility = contentState
     }
 }
