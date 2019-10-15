@@ -39,7 +39,6 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
-//            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent, settingListener)
             else -> createViewHolder(parent, type)
         }
     }
