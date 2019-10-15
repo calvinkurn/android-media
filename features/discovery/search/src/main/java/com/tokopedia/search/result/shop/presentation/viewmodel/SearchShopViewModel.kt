@@ -31,6 +31,8 @@ import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewMod
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.exists
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.user.session.UserSessionInterface
 
 internal class SearchShopViewModel(
@@ -213,12 +215,13 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
-        if (searchShopModel.cpmModel.data.size > 0) {
+        val shouldShowCpmShop = shouldShowCpmShop(searchShopModel)
+        if (shouldShowCpmShop) {
             val shopCpmViewModel = createShopCpmViewModel(searchShopModel)
             visitableList.add(shopCpmViewModel)
         }
 
-        val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel)
+        val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel, shouldShowCpmShop)
         visitableList.add(shopTotalCountViewModel)
 
         val shopViewModelList = createShopItemViewModelList(searchShopModel)
@@ -229,13 +232,33 @@ internal class SearchShopViewModel(
         return visitableList
     }
 
+    private fun shouldShowCpmShop(searchShopModel: SearchShopModel): Boolean {
+        if (searchShopModel.cpmModel.data.size <= 0) return false
+
+        val cpm = searchShopModel.cpmModel.data?.first()?.cpm ?: return false
+
+        return if (isViewWillRenderCpmShop(cpm)) true
+        else isViewWillRenderCpmDigital(cpm)
+    }
+
+    private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
+        return cpm.cpmShop != null
+                && cpm.cta.isNotEmpty()
+                && cpm.promotedText.isNotEmpty()
+    }
+
+    private fun isViewWillRenderCpmDigital(cpm: Cpm): Boolean {
+        return cpm.templateId == 4
+    }
+
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
         return shopCpmViewModelMapper.convert(searchShopModel)
     }
 
-    private fun createShopTotalCountViewModel(searchShopModel: SearchShopModel): Visitable<*> {
+    private fun createShopTotalCountViewModel(searchShopModel: SearchShopModel, isAdsBannerVisible: Boolean): Visitable<*> {
         val shopTotalCountViewModel = shopTotalCountViewModelMapper.convert(searchShopModel)
         shopTotalCountViewModel.query = getSearchParameterQuery()
+        shopTotalCountViewModel.isAdsBannerVisible = isAdsBannerVisible
 
         return shopTotalCountViewModel
     }

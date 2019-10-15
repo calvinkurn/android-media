@@ -6,25 +6,23 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
 data class ShopTotalCountViewModel(
-        val totalShopCount: Int = 0,
-        val isAdsBannerVisible: Boolean = false
+        val totalShopCount: Int = 0
 ): Parcelable, Visitable<ShopListTypeFactory> {
 
+    var isAdsBannerVisible: Boolean = false
     var query: String = ""
 
     override fun toString(): String {
         return this.javaClass.canonicalName ?: ""
     }
 
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte()) {
-
-        query = parcel.readString() ?: ""
-    }
-
     override fun type(typeFactory: ShopListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
+    }
+
+    constructor(parcel: Parcel) : this(parcel.readInt()) {
+        isAdsBannerVisible = parcel.readByte() != 0.toByte()
+        query = parcel.readString() ?: ""
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

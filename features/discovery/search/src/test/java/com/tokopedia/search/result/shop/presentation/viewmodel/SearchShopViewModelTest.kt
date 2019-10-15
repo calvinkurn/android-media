@@ -79,10 +79,12 @@ internal class SearchShopViewModelTest : Spek({
     )
 
     val cpmModel = CpmModel(cpmJSONObject)
+    val notCpmShopModel = CpmModel(notCpmShopJsonObject)
 
     val searchShopModel = SearchShopModel(aceSearchShopWithNextPage, cpmModel)
     val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage, cpmModel)
     val searchShopModelWithoutCpm = SearchShopModel(aceSearchShopWithNextPage)
+    val searchShopModelWithoutValidCpmShop = SearchShopModel(aceSearchShopWithNextPage, notCpmShopModel)
     val searchShopModelEmptyList = SearchShopModel()
     val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
     val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
@@ -497,9 +499,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is success and contains search shop data") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
@@ -551,9 +554,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is success and contains search shop data without loading more view model") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
@@ -605,9 +609,65 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is success and contains search shop data without CPM") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+
+            Then("should post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking?.size shouldBe shopItemList.size
+            }
+
+            Then("should post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe shopItemList.size * shopItemProductList.size
+            }
+
+            Then("should not post empty search tracking event") {
+                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
+
+                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert has next page is true") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe true
+            }
+        }
+
+        Scenario("Search Shop First Page Successful Without Valid CPM Shop") {
+            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("search shop API call will be successful and return search shop data without Valid CPM Shop") {
+                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutValidCpmShop)
+                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert search shop state is success and contains search shop data without CPM Shop") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
@@ -1028,9 +1088,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is success and contains data from search shop and search more shop") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
 
@@ -1082,9 +1143,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is success and contains data from search shop and search more shop without loading more view model") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
 
@@ -1137,9 +1199,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state is error, but still contains data from search shop") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Error<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
@@ -1186,9 +1249,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state success after retry") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }
@@ -1230,9 +1294,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state success after retry") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
         }
@@ -1276,9 +1341,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state success after reload") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }
@@ -1314,9 +1380,10 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("assert search shop state success after reload") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+                val query = searchShopViewModel.getSearchParameterQuery()
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel()
+                searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }

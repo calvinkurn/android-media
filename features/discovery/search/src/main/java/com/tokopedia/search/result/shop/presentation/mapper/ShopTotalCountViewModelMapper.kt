@@ -9,17 +9,6 @@ class ShopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewM
     override fun convert(source: SearchShopModel): ShopTotalCountViewModel {
         val searchShopData = source.aceSearchShop
 
-        return ShopTotalCountViewModel(
-                totalShopCount = searchShopData.totalShop,
-                isAdsBannerVisible = isCpmModelDataSizeMoreThanZero(source) && isCpmDataHasCpmShop(source)
-        )
-    }
-
-    private fun isCpmModelDataSizeMoreThanZero(source: SearchShopModel): Boolean {
-        return source.cpmModel.data?.size ?: 0 > 0
-    }
-
-    private fun isCpmDataHasCpmShop(source: SearchShopModel): Boolean {
-        return source.cpmModel.data[0].cpm.cpmShop != null
+        return ShopTotalCountViewModel(totalShopCount = searchShopData.totalShop)
     }
 }

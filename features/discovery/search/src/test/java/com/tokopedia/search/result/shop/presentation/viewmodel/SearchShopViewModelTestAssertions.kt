@@ -18,33 +18,33 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf() {
     }
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel() {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
     this.shouldHaveCpmViewModel(0)
-    this.shouldHaveTotalCountViewModel(1)
+    this.shouldHaveTotalCountViewModel(1, query, true)
     this.shouldHaveShopItemViewModel(2, lastIndex - 1)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel() {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
     this.shouldHaveCpmViewModel(0)
-    this.shouldHaveTotalCountViewModel(1)
+    this.shouldHaveTotalCountViewModel(1, query, true)
     this.shouldHaveShopItemViewModel(2, lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel() {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel(query: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveTotalCountViewModel(0)
+    this.shouldHaveTotalCountViewModel(0, query, false)
     this.shouldHaveShopItemViewModel(1, lastIndex)
 }
 
@@ -60,10 +60,22 @@ private fun State<List<Visitable<*>>>?.shouldHaveCpmViewModel(cpmViewModelPositi
     data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmViewModel>()
 }
 
-private fun State<List<Visitable<*>>>?.shouldHaveTotalCountViewModel(totalCountViewModelPosition: Int) {
+private fun State<List<Visitable<*>>>?.shouldHaveTotalCountViewModel(totalCountViewModelPosition: Int, query: String, isAdsBannerVisible: Boolean) {
     val data = this?.data as List<Visitable<*>>
 
     data[totalCountViewModelPosition].shouldBeInstanceOf<ShopTotalCountViewModel>()
+
+    val shopTotalCountViewModel = data[totalCountViewModelPosition] as ShopTotalCountViewModel
+    shopTotalCountViewModel.shouldHaveCorrectQuery(query)
+    shopTotalCountViewModel.shouldHaveCorrectIsAdsBannerVisible(isAdsBannerVisible)
+}
+
+private fun ShopTotalCountViewModel.shouldHaveCorrectQuery(query: String) {
+    return this.query shouldBe query
+}
+
+private fun ShopTotalCountViewModel.shouldHaveCorrectIsAdsBannerVisible(isAdsBannerVisible: Boolean) {
+    return this.isAdsBannerVisible shouldBe isAdsBannerVisible
 }
 
 private fun State<List<Visitable<*>>>?.shouldHaveShopItemViewModel(shopItemStartPosition: Int, shopItemLastPosition: Int) {
