@@ -20,7 +20,7 @@ class CouponView @JvmOverloads constructor(
             val typedArray =
                     context.theme.obtainStyledAttributes(attrs, R.styleable.CountDownView, 0, 0)
             circleColor = typedArray.getColor(R.styleable.CouponView_cvCircleColor, Color.WHITE)
-            circleRadius = typedArray.getDimension(R.styleable.CouponView_cvCircleRadius, dpToPx(context, 8))
+            circleRadius = typedArray.getDimension(R.styleable.CouponView_cvCircleRadius, dpToPx(context, 24))
             typedArray.recycle()
         }
     }

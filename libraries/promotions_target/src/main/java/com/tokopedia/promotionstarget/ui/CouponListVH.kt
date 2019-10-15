@@ -10,9 +10,17 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         fun getLayout() = R.layout.t_promo_item_coupons
+        const val WIDTH_RATIO = 1.26
     }
 
-    var couponView: CouponView = itemView.findViewById(R.id.couponView)
+    fun setDynamicWidth(){
+        val width = itemView.context.resources.displayMetrics.widthPixels
+        val lp = itemView.layoutParams as RecyclerView.LayoutParams
+        lp.width = (width / WIDTH_RATIO).toInt()
+        itemView.layoutParams = lp
+    }
+
+    private var couponView: CouponView = itemView.findViewById(R.id.couponView)
 
     fun setData(data: CouponData) {
 

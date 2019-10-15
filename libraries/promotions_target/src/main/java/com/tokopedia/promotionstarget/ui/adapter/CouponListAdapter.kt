@@ -8,7 +8,11 @@ import com.tokopedia.promotionstarget.ui.CouponListVH
 class CouponListAdapter(val couponList: ArrayList<CouponData>) : RecyclerView.Adapter<CouponListVH>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CouponListVH {
-        return CouponListVH(LayoutInflater.from(viewGroup.context).inflate(CouponListVH.getLayout(), viewGroup, false))
+        val vh = CouponListVH(LayoutInflater.from(viewGroup.context).inflate(CouponListVH.getLayout(), viewGroup, false))
+        if (couponList.size > 1) {
+            vh.setDynamicWidth()
+        }
+        return vh
     }
 
     override fun getItemCount() = couponList.size
