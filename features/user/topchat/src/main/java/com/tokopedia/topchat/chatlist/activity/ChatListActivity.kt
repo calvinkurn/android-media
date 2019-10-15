@@ -17,6 +17,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.debug
@@ -81,26 +82,44 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
-        if(userSession.shopId.toLongOrZero() > 0) {
-            tabList.add(ChatListPagerAdapter.ChatListTab(
-                    userSession.shopName,
-                    "0",
-                    ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER),
-                    R.drawable.ic_chat_icon_shop
-            ))
-        }
-        tabList.add(ChatListPagerAdapter.ChatListTab(
-                userSession.name,
-                "0",
-                ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER),
-                R.drawable.ic_chat_icon_account
-        ))
         super.onCreate(savedInstanceState)
-
+        initInjector()
+        initTabList()
         initTabLayout()
         setObserver()
         initData()
+    }
+
+    private fun initTabList() {
+        if (userSession.hasShop()) {
+            addSellerTabFragment()
+        }
+
+        if (!GlobalConfig.isSellerApp()) {
+            addBuyerTabFragment()
+        }
+    }
+
+    private fun addSellerTabFragment() {
+        val sellerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+        val sellerTabFragment = ChatListPagerAdapter.ChatListTab(
+                userSession.shopName,
+                "0",
+                sellerFragment,
+                R.drawable.ic_chat_icon_shop
+        )
+        tabList.add(sellerTabFragment)
+    }
+
+    private fun addBuyerTabFragment() {
+        val buyerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
+        val buyerTabFragment = ChatListPagerAdapter.ChatListTab(
+                userSession.name,
+                "0",
+                buyerFragment,
+                R.drawable.ic_chat_icon_account
+        )
+        tabList.add(buyerTabFragment)
     }
 
     private fun setObserver() {
