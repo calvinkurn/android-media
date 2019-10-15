@@ -7,10 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatButton
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.*
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -91,6 +88,9 @@ class TargetPromotionsDialog {
         viewFlipper = root.findViewById(R.id.viewFlipper)
 
         recyclerView.layoutManager = LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
+
+        val pageSnaper = PagerSnapHelper()
+        pageSnaper.attachToRecyclerView(recyclerView)
 
         this.data = data
         initInjections(activityContext)
