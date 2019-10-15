@@ -10,5 +10,6 @@
     <string name="umrah_common_booking_code_label">Kode Booking</string>
     <string name="umrah_order_detail_show_label">LIHAT</string>
     <string name="umrah_order_detail_show_e_voucher_label">Lihat E-Voucher</string>
+    <string name="umrah_order_detail_payment_info_label">Informasi Pembayaran</string>
 
 </resources>
