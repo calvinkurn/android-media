@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_11"
-                android:background="@drawable/bg_red_rounded_discount"
+                android:background="@drawable/bg_red_rounded_discount_tokopoints"
                 android:gravity="center_horizontal"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_3"
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
+                android:background="@color/bg_label_grey_tokopoints"
                 app:layout_constraintLeft_toLeftOf="@+id/text_description"
                 app:layout_constraintRight_toRightOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_disabled_error" />
@@ -135,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
+                android:background="@color/bg_label_grey_tokopoints"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
                 app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
                 app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
@@ -184,7 +184,7 @@
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
+                android:background="@color/bg_label_grey_tokopoints"
                 app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
                 app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
@@ -228,7 +228,7 @@
                     android:id="@+id/gift_btn"
                     android:layout_width="@dimen/dp_120"
                     android:layout_height="@dimen/dp_40"
-                    android:background="@drawable/rounded_red_border_only"
+                    android:background="@drawable/rounded_red_border_only_tokopoints"
                     android:gravity="center"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:paddingLeft="@dimen/dp_24"
@@ -251,7 +251,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -282,7 +282,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/bg_red_rounded_discount"
+            android:background="@drawable/bg_red_rounded_discount_tokopoints"
             android:paddingLeft="@dimen/tp_padding_xsmall"
             android:paddingTop="@dimen/tp_padding_xxsmall"
             android:paddingRight="@dimen/tp_padding_xsmall"

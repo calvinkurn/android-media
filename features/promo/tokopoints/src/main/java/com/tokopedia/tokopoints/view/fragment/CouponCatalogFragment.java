@@ -55,6 +55,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.tokopoints.R.layout.tp_fragment_coupon_catalog;
+
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -96,7 +98,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
-        SplitCompat.installActivity(getContext());
         View view = inflater.inflate(R.layout.tp_fragment_coupon_catalog, container, false);
         initViews(view);
         return view;
@@ -167,7 +168,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override

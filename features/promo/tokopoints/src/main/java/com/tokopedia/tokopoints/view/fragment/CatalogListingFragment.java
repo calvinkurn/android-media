@@ -183,7 +183,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override

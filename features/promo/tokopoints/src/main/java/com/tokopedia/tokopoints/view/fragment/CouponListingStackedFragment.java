@@ -90,7 +90,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
