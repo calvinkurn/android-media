@@ -230,8 +230,11 @@ public interface ApplinkConst {
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
-    String KYC = "tokopedia://kyc";
-    String KYC_FORM = "tokopedia://kyc-form";
+    String KYC_NO_PARAM = "tokopedia://kyc";
+    String KYC = "tokopedia://kyc?projectId={projectId}";
+
+    String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
+    String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
