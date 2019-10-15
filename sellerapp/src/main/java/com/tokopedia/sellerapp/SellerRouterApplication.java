@@ -1410,7 +1410,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isMerchantCreditLineEnabled() {
-        return false;
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
+                true);
     }
 
     public String getDeviceId(Context context) {

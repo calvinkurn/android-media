@@ -10,8 +10,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +31,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -46,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -105,6 +118,18 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
+
+    private ConstraintLayout layoutTicker;
+    private TextView tvTickerMessage;
+    private ImageView ivDismissTicker;
+    private int mclLateCount = 0;
+    private int statusWithDrawLock = -1;
+    private static final int MCL_STATUS_ZERO = 0;
+    private static final int MCL_STATUS_BLOCK1 = 700;
+    private static final int MCL_STATUS_BLOCK2 = 701;
+    private static final int MCL_STATUS_BLOCK3 = 999;
+
+    private boolean showMclBlockTickerFirebaseFlag = false;
     public SaldoDepositFragment() {
     }
 
@@ -229,8 +254,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
         merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
         merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_arrow_up_grey));
-
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_arrow_up_grey));
+        layoutTicker = view.findViewById(R.id.layout_holdwithdrawl_dialog);
+        tvTickerMessage = view.findViewById(R.id.tv_desc_info);
+        ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
         } else {
@@ -368,7 +395,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private void goToWithdrawActivity() {
         if (getActivity() != null) {
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
-            saldoDetailsPresenter.onDrawClicked(intent);
+            saldoDetailsPresenter.onDrawClicked(intent, statusWithDrawLock, mclLateCount, showMclBlockTickerFirebaseFlag);
         }
     }
 
@@ -467,8 +494,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false);
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
+        saldoDetailsPresenter.getMCLLateCount();
+
     }
 
     @Override
@@ -529,7 +561,42 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-    @SuppressLint("Range")
+    public void showTicker() {
+
+        if (showMclBlockTickerFirebaseFlag) {
+            String tickerMsg = getString(R.string.saldolock_tickerDescription);
+            int startIndex = tickerMsg.indexOf(getResources().getString(R.string.tickerClickableText));
+            String late = Integer.toString(mclLateCount);
+            tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
+            SpannableString ss = new SpannableString(tickerMsg);
+
+            tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
+
+            if (startIndex != -1) {
+                ss.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        RouteManager.route(context, String.format("%s?url=%s",
+                                ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
+                    }
+
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                    }
+                }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+
+            tvTickerMessage.setText(ss);
+            ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
+            layoutTicker.setVisibility(View.VISIBLE);
+        }
+    }
+
+        @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
@@ -580,6 +647,16 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setLateCount(int count) {
+        mclLateCount = count;
+    }
+
+    @Override
+    public void hideWithdrawTicker() {
+        layoutTicker.setVisibility(View.GONE);
+    }
+
+    @Override
     public boolean isSellerEnabled() {
         return isSellerEnabled;
     }
@@ -624,18 +701,42 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+
         if (response != null && response.isEligible()) {
-            merchantStatusLL.setVisibility(View.VISIBLE);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
-                    .commit();
+            statusWithDrawLock = response.getStatus();
+            switch (statusWithDrawLock) {
+
+                case MCL_STATUS_ZERO:
+                    hideMerchantCreditLineFragment();
+                    break;
+
+                case MCL_STATUS_BLOCK1:
+                    showTicker();
+                    showMerchantCreditLineWidget(response);
+                    break;
+
+                case MCL_STATUS_BLOCK3:
+                    showTicker();
+                    hideMerchantCreditLineFragment();
+                    break;
+
+                default:
+                    showMerchantCreditLineWidget(response);
+            }
         } else {
             hideMerchantCreditLineFragment();
         }
 
+    }
+
+    public void showMerchantCreditLineWidget(GqlMerchantCreditResponse response) {
+        merchantStatusLL.setVisibility(View.VISIBLE);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                .commit();
     }
 
     @Override

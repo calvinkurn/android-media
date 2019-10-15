@@ -26,7 +26,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -747,6 +746,11 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             updateLabelState(false);
             updateEditTextBackground();
         }
+    }
+
+    public void resetCounter() {
+        mTvCounter.setText(String.format(Locale.US, "%1$d / %2$d",
+                0, mCounterMaxLength - mPrefixLength));
     }
 
     private Typeface readFontFamilyTypeface(int resId) {

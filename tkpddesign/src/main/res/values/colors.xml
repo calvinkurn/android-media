@@ -134,5 +134,6 @@
     <color name="clr_73bd00">#73bd00</color>
     <color name="clr_eef0f3">#eef0f3</color>
     <color name="clr_194c2a86">#194c2a86</color>
+    <color name="bg_saldolock_ticker">#fffae6</color>
 
 </resources>
