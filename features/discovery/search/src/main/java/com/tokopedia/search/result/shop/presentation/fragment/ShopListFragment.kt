@@ -29,7 +29,7 @@ import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.*
-import com.tokopedia.search.result.presentation.viewmodel.RedirectionViewModel
+import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
@@ -61,7 +61,7 @@ class ShopListFragment:
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
-    private var redirectionViewModel: RedirectionViewModel? = null
+    private var searchViewModel: SearchViewModel? = null
     private var searchNavigationListener: SearchNavigationListener? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
@@ -102,7 +102,7 @@ class ShopListFragment:
     private fun initViewModel() {
         activity?.let { activity ->
             searchShopViewModel = ViewModelProviders.of(activity).get(SearchShopViewModel::class.java)
-            redirectionViewModel = ViewModelProviders.of(activity).get(RedirectionViewModel::class.java)
+            searchViewModel = ViewModelProviders.of(activity).get(SearchViewModel::class.java)
         }
     }
 
@@ -230,7 +230,7 @@ class ShopListFragment:
     }
 
     private fun hideSearchPageLoading() {
-        searchNavigationListener?.removeSearchPageLoading()
+        searchViewModel?.hideSearchPageLoading()
     }
 
     private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
@@ -297,22 +297,26 @@ class ShopListFragment:
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
-        setupSearchNavigation()
+        setupSearchNavigation(isVisibleToUser)
         trackScreen()
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
 
-    private fun setupSearchNavigation() {
-        searchNavigationListener?.setupSearchNavigation(
-                object : SearchNavigationListener.ClickListener {
-                    override fun onFilterClick() { openFilterPage() }
+    private fun setupSearchNavigation(isVisibleToUser: Boolean) {
+        if (isVisibleToUser && view != null) {
+            searchNavigationListener?.setupSearchNavigation(
+                    object : SearchNavigationListener.ClickListener {
+                        override fun onFilterClick() {
+                            openFilterPage()
+                        }
 
-                    override fun onSortClick() { }
+                        override fun onSortClick() {}
 
-                    override fun onChangeGridClick() { }
-                },
-                false)
+                        override fun onChangeGridClick() {}
+                    },
+                    false)
+        }
     }
 
     private fun openFilterPage() {
@@ -404,7 +408,7 @@ class ShopListFragment:
 
     override fun onEmptyButtonClicked() {
         SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
-        redirectionViewModel?.showAutoCompleteView()
+        searchViewModel?.showAutoCompleteView()
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {

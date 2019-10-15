@@ -55,7 +55,7 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
-import com.tokopedia.search.result.presentation.viewmodel.RedirectionViewModel;
+import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -118,11 +118,11 @@ public class SearchActivity extends BaseActivity
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
     @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     ViewModelProvider.Factory searchShopViewModelFactory;
-    @Inject @Named(SearchConstant.REDIRECTION_VIEW_MODEL_FACTORY)
-    ViewModelProvider.Factory redirectionViewModelFactory;
+    @Inject @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchViewModelFactory;
 
     @Nullable
-    RedirectionViewModel redirectionViewModel;
+    SearchViewModel searchViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -391,17 +391,28 @@ public class SearchActivity extends BaseActivity
     private void initViewModel() {
         ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
 
-        redirectionViewModel = ViewModelProviders.of(this, redirectionViewModelFactory).get(RedirectionViewModel.class);
+        searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
     }
 
     private void observeViewModel() {
-        if (redirectionViewModel != null) {
-            redirectionViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
+        if (searchViewModel != null) {
+
+            searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
                 if (booleanEvent != null) {
                     Boolean content = booleanEvent.getContentIfNotHandled();
 
                     if (content != null && content) {
                         showSearchInputView();
+                    }
+                }
+            });
+
+            searchViewModel.getHideLoadingEventLiveData().observe(this, booleanEvent -> {
+                if (booleanEvent != null) {
+                    Boolean content = booleanEvent.getContentIfNotHandled();
+
+                    if (content != null && content) {
+                        removeSearchPageLoading();
                     }
                 }
             });

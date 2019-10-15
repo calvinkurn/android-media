@@ -10,12 +10,12 @@ import javax.inject.Named
 
 @SearchScope
 @Module
-internal class RedirectionViewModelFactoryModule {
+internal class SearchViewModelFactoryModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.REDIRECTION_VIEW_MODEL_FACTORY)
-    fun provideRedirectionViewModelFactory(): ViewModelProvider.Factory {
-        return RedirectionViewModelFactory(ProductionDispatcherProvider())
+    @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
+    fun provideSearchViewModelFactory(): ViewModelProvider.Factory {
+        return SearchViewModelFactory(ProductionDispatcherProvider())
     }
 }
