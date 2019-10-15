@@ -4,25 +4,36 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.promotionstarget.DialogManager
+import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
+import com.tokopedia.promotionstarget.di.components.AppModule
+import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.presenter.DialogManagerPresenter
+import com.tokopedia.promotionstarget.ui.TargetPromotionsDialog
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.CoroutineContext
+import javax.inject.Inject
 
-class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks, CoroutineScope {
+class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
     private val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+    @Inject
+    lateinit var presenter: DialogManagerPresenter
+    private val map = ConcurrentHashMap<Activity, Job>()
+    private val scope = CoroutineScope(job)
 
-    val handler = CoroutineExceptionHandler { _, exception ->
+    val ceh = CoroutineExceptionHandler { _, exception ->
         println("Caught $exception")
     }
 
-    private val map = ConcurrentHashMap<Activity, DialogManager>()
+    init {
+        val component = DaggerPromoTargetComponent.builder()
+                .appModule(AppModule(appContext))
+                .build()
+        component.inject(this)
+    }
+
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-
         cancelAll()
         tryShowingGratificationDialog(activity)
     }
@@ -47,19 +58,24 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             if (showGratificationDialog) {
                 val gratificationData = GratificationData(campaignSlug!!, page!!)
 
-                launch(handler) {
-                    try {
-                        val dialogManager = DialogManager(appContext)
-                        dialogManager.getGratificationAndShowDialog(activity, gratificationData)
-                        map[activity] = dialogManager
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                scope.launch(Dispatchers.IO + ceh) {
+                    supervisorScope {
+                        val childJob = launch {
+                            val response = presenter.getGratificationAndShowDialog(gratificationData)
+                            withContext(Dispatchers.Main) {
+                                show(activity, response)
+                            }
+                        }
+                        map[activity] = childJob
                     }
-
                 }
-
             }
         }
+    }
+
+    private fun show(activity: Activity, data: GetPopGratificationResponse) {
+        val dialog = TargetPromotionsDialog()
+        dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data)
     }
 
     private fun cancelAll() {
