@@ -111,7 +111,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(R.color.green_500));
+            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.green_500));
         } else {
             holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.white));
         }

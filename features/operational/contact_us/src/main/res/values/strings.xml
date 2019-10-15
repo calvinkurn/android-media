@@ -104,4 +104,6 @@
     <string name="error_detail_too_short">Message terlalu pendek, minimal 30 karakter</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
+    <string name="contactus_error_field_required">Harus diisi</string>
+    <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
 </resources>
