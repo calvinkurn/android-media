@@ -63,6 +63,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         umrahOrderDetailViewModel.orderDetailData.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    hideLoading()
                     renderData(it.data)
                 }
                 is Fail -> {
@@ -74,6 +75,8 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        showLoading()
 
         umrahOrderDetailViewModel.getOrderDetail(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_order_detail),
