@@ -159,9 +159,8 @@ public class FlightInsuranceView extends LinearLayout {
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
                 ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
         );
-        if (insuranceViewModel.getBenefits().size() > 1) {
-            renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
-        }
+        
+        renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
     }
 
     private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
