@@ -19,6 +19,8 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -99,7 +101,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        SettingBankApplinkModule.class,
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
@@ -138,7 +139,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-                new SettingBankApplinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
