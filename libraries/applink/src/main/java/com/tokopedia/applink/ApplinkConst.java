@@ -257,6 +257,7 @@ public interface ApplinkConst {
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
 
     String PUSHNOTIFCHECKER = "tokopedia://push-notif-checker";
+    String MONEYIN = "tokopedia://money_in/device_validation";
 
 
     interface WebViewUrl {

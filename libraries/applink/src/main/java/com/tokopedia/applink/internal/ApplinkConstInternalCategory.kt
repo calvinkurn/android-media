@@ -16,6 +16,7 @@ object ApplinkConstInternalCategory {
     val AGE_RESTRICTION = "$INTERNAL_CATEGORY/age_restriction"
     val TRADEIN = "$INTERNAL_CATEGORY/tradein"
     val FINAL_PRICE = "$INTERNAL_CATEGORY/host_final_price"
-    val MONEYIN = "money_in/"
     val DEVICE_VALIDATION = "device_validation"
+
+    val MONEYIN_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://money_in/${DEVICE_VALIDATION}"
 }
