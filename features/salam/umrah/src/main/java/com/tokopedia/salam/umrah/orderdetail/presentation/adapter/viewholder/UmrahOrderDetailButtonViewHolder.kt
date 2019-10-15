@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Size.MEDIUM
@@ -20,10 +21,12 @@ class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder
 
     fun bind(data: UmrahOrderDetailButtonViewModel) {
         val button = UnifyButton(itemView.context)
-        button.layoutParams = ViewGroup.LayoutParams(
+        val marginLayoutParams = ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+        marginLayoutParams.bottomMargin = R.dimen.dp_8
+
+        button.layoutParams = marginLayoutParams
         button.text = data.label
         button.buttonSize = MEDIUM
         when {
