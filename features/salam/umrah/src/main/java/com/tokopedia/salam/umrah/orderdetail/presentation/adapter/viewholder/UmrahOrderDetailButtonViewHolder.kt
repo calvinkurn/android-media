@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.adapter.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
@@ -16,27 +17,28 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(data: UmrahOrderDetailButtonViewModel) {
-        val view = itemView as UnifyButton
-
-        view.text = data.label
+        val button = UnifyButton(itemView.context)
+        button.text = data.label
         when {
             data.buttonType == BUTTON_PRIMARY -> {
-                view.buttonVariant = FILLED
-                view.buttonType = MAIN
+                button.buttonVariant = FILLED
+                button.buttonType = MAIN
             }
             data.buttonType == BUTTON_TRANSACTION -> {
-                view.buttonVariant = FILLED
-                view.buttonType = TRANSACTION
+                button.buttonVariant = FILLED
+                button.buttonType = TRANSACTION
             }
             data.buttonType == BUTTON_SECONDARY -> {
-                view.buttonVariant = GHOST
-                view.buttonType = MAIN
+                button.buttonVariant = GHOST
+                button.buttonType = MAIN
             }
             data.buttonType == BUTTON_DEFAULT -> {
-                view.buttonVariant = GHOST
-                view.buttonType = ALTERNATE
+                button.buttonVariant = GHOST
+                button.buttonType = ALTERNATE
             }
         }
+
+        (itemView as LinearLayout).addView(button)
     }
 
     companion object {

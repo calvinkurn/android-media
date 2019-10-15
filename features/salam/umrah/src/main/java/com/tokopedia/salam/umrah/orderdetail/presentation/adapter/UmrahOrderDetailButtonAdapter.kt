@@ -2,9 +2,9 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.viewholder.UmrahOrderDetailButtonViewHolder
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
-import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * @author by furqan on 15/10/2019
@@ -14,12 +14,13 @@ class UmrahOrderDetailButtonAdapter(val listener: Listener) : RecyclerView.Adapt
     private val buttonViewModel = arrayListOf<UmrahOrderDetailButtonViewModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahOrderDetailButtonViewHolder {
-        val button = UnifyButton(parent.context)
-        button.layoutParams = ViewGroup.LayoutParams(
+        val linearLayout = LinearLayout(parent.context)
+        linearLayout.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT)
+        linearLayout.orientation = LinearLayout.VERTICAL
 
-        return UmrahOrderDetailButtonViewHolder(button)
+        return UmrahOrderDetailButtonViewHolder(linearLayout)
     }
 
     override fun getItemCount(): Int = buttonViewModel.size
