@@ -3,7 +3,9 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
@@ -12,7 +14,8 @@ import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -25,8 +28,8 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String, response: String) {
-        /*val params = mapOf(PARAM_ORDER_ID to orderId,
-                PARAM_ORDER_CATEGORY_STR to orderCategory)
+        val params = mapOf(PARAM_ORDER_ID to orderId,
+                PARAM_ORDER_CATEGORY_STR to UMRAH_CATEGORY)
 
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -36,16 +39,10 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
             orderDetailData.value = Success(data.orderDetails)
         }) {
-            orderDetailData.value = Fail(it)
-        }*/
-
-        launchCatchError(block = {
-            delay(3000)
+            // orderDetailData.value = Fail(it)
             val gson = Gson()
             orderDetailData.value = Success(gson.fromJson(response,
                     UmrahOrderDetailsEntity.Response::class.java).orderDetails)
-        }) {
-            it.printStackTrace()
         }
     }
 
@@ -55,22 +52,20 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
             : List<UmrahSimpleModel> {
         val data = arrayListOf<UmrahSimpleModel>()
 
-        if (detailsData.isNotEmpty()) {
-            for (item in detailsData) {
+        when {
+            detailsData.isNotEmpty() -> for (item in detailsData) {
                 data.add(UmrahSimpleModel(
                         title = item.label,
                         description = item.value,
                         textColor = item.textColor
                 ))
             }
-        } else if (passengersData.isNotEmpty()) {
-            for ((index, item) in passengersData.withIndex()) {
+            passengersData.isNotEmpty() -> for ((index, item) in passengersData.withIndex()) {
                 data.add(UmrahSimpleModel(
-                        title = "${index+1}. ${item.name}"
+                        title = "${index + 1}. ${item.name}"
                 ))
             }
-        } else if (valueLabelData.isNotEmpty()) {
-            for (item in valueLabelData) {
+            valueLabelData.isNotEmpty() -> for (item in valueLabelData) {
                 data.add(UmrahSimpleModel(
                         title = item.label,
                         description = item.value

@@ -55,15 +55,15 @@
             android:padding="@dimen/dp_16">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tg_umrah_package"
+                android:id="@+id/tg_umrah_order_package"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Avissa Suites"
                 android:textColor="@color/Neutral_N700_96"
-                app:typographyType="heading_6" />
+                app:typographyType="heading_6"
+                tools:text="Umroh VIP Direct Madinah 9 Hari" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tg_umrah_travel"
+                android:id="@+id/tg_umrah_order_travel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Neutral_N700_96"
@@ -71,7 +71,7 @@
                 tools:text="Travel Berkah" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_umrah_details"
+                android:id="@+id/rv_umrah_order_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
