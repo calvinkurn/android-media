@@ -52,7 +52,11 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
-            listener.isUserBlacklist(pojo.getKycProjectInfo().isAllowToRegister());
+            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED) {
+                listener.isUserBlacklist(true);
+            } else {
+                listener.isUserBlacklist(false);
+            }
         } else {
             listener.onErrorGetUserProjectInfoWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
         }
