@@ -9,7 +9,9 @@ class CouponItemDecoration : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val topSpace = parent.dpToPx(12).toInt()
-        outRect.left = topSpace
+        if (parent.layoutManager?.getPosition(view) == 0) {
+            outRect.left = topSpace
+        }
         outRect.right = topSpace
     }
 }

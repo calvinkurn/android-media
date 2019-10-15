@@ -30,14 +30,12 @@ import javax.inject.Inject
 //todo use weak reference of activity context
 class TargetPromotionsDialog {
 
-    val CONTAINER_MULTIPLE_COUPON = 0
+    val CONTAINER_COUPON = 0
     val CONTAINER_ERROR = 1
-    val CONTAINER_SINGLE_COUPON = 2
 
     private lateinit var tvTitle: Typography
     private lateinit var tvSubTitle: Typography
     private lateinit var imageView: AppCompatImageView
-    private lateinit var couponView: CouponView
     private lateinit var btnAction: AppCompatButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var couponListAdapter: CouponListAdapter
@@ -83,7 +81,6 @@ class TargetPromotionsDialog {
         tvTitle = root.findViewById(R.id.tvTitle)
         tvSubTitle = root.findViewById(R.id.tvSubTitle)
         btnAction = root.findViewById(R.id.btnAction)
-        couponView = root.findViewById(R.id.couponView)
         recyclerView = root.findViewById(R.id.recyclerView)
         viewFlipper = root.findViewById(R.id.viewFlipper)
 
@@ -128,7 +125,7 @@ class TargetPromotionsDialog {
         }
 
         //todo remove test code
-        viewFlipper.displayedChild = CONTAINER_MULTIPLE_COUPON
+        viewFlipper.displayedChild = CONTAINER_COUPON
 
     }
 
