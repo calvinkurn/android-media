@@ -241,6 +241,11 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun initTabLayout() {
+        if (tabList.size == 1) {
+            tabLayout.hide()
+            return
+        }
+
         tabLayout.removeAllTabs()
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
@@ -276,10 +281,6 @@ class ChatListActivity : BaseTabActivity()
                 }
             }
         })
-
-        if(tabList.size == 1) {
-            tabLayout.hide()
-        }
     }
 
     private fun setNotificationCounterOnTab() {
