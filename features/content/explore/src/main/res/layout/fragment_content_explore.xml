@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:elevation="0dp">
 
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search_inspiration"
@@ -33,7 +34,8 @@
             tools:itemCount="2"
             tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/item_explore_tag" />
+            tools:listitem="@layout/item_explore_tag"
+            android:clipToPadding="false"/>
 
     </android.support.design.widget.AppBarLayout>
 
