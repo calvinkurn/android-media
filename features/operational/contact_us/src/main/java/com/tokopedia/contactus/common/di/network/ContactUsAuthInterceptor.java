@@ -2,9 +2,9 @@ package com.tokopedia.contactus.common.di.network;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
@@ -19,8 +19,8 @@ public class ContactUsAuthInterceptor extends TkpdAuthInterceptor {
 
 
     Context mContext;
-    public ContactUsAuthInterceptor(Context context, AbstractionRouter abstractionRouter) {
-        super(context, abstractionRouter);
+    public ContactUsAuthInterceptor(Context context, NetworkRouter networkRouter, UserSessionInterface userSessionInterface) {
+        super(context, networkRouter, userSessionInterface);
         mContext = context;
     }
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";
@@ -33,8 +33,8 @@ public class ContactUsAuthInterceptor extends TkpdAuthInterceptor {
             generateHmacAuthRequest(originRequest, newRequest);
             newRequest.addHeader(HEADER_SESSION_ID,userSession.getDeviceId());
             newRequest.removeHeader("Authorization")
-                    .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
-                    .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+                    .addHeader("Authorization", "Bearer " + userSession.getAccessToken())
+                    .addHeader("Tkpd-UserId", userSession.getUserId());
 
             final Request finalRequest = newRequest.build();
             Response response = getResponse(chain, finalRequest);
