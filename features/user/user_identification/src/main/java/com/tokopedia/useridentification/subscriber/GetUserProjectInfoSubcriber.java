@@ -13,7 +13,7 @@ import rx.Subscriber;
 public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     public interface GetUserProjectInfoListener {
-        void isAllowToRegister(boolean allow);
+        void isUserBlacklist(boolean isBlacklist);
         void onErrorGetUserProjectInfo(Throwable throwable);
         void onErrorGetUserProjectInfoWithErrorCode(String errorCode);
     }
@@ -52,7 +52,7 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
-            listener.isAllowToRegister(pojo.getKycProjectInfo().isAllowToRegister());
+            listener.isUserBlacklist(pojo.getKycProjectInfo().isAllowToRegister());
         } else {
             listener.onErrorGetUserProjectInfoWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
         }
