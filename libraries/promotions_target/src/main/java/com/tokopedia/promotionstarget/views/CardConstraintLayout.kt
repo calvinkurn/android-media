@@ -11,32 +11,34 @@ import com.tokopedia.promotionstarget.R
 
 open class CardConstraintLayout : ConstraintLayout {
 
-    protected var borderPaint = Paint()
-    protected var rectPaint = Paint()
-    protected var shadowPaint = Paint()
+    private var borderPaint = Paint()
+    private var rectPaint = Paint()
+    private var shadowPaint = Paint()
 
-    protected var shadowPath = Path()
+    private var shadowPath = Path()
     protected var clipPath = Path()
-    protected var rectBackgroundPath = Path()
+    private var rectBackgroundPath = Path()
 
     protected var clipRectF = RectF()
-    protected var rectBackgroundRectF = RectF()
-    protected var borderRectF = RectF()
+    private var rectBackgroundRectF = RectF()
+    private var borderRectF = RectF()
 
-    protected var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+    private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
-    protected var shadowColor = Color.BLACK
+    private var shadowColor = Color.BLACK
 
-    protected var shadowStrokeWidth = 15f
+    private var shadowStrokeWidth = 15f
 
     protected var blurRadius = 50f
-    protected var cornerRadius = 8f
-    protected var shadowHeight = 0f
-    protected var shadowDx = 0f
-    protected var shadowDy = 0f
-    protected var shadowStartY = java.lang.Float.MIN_VALUE
-    protected var enableShadow = false
-    protected lateinit var blurMaskFilter: BlurMaskFilter
+    private var cornerRadius = 8f
+    private var shadowHeight = 0f
+    private var shadowDx = 0f
+    private var shadowDy = 0f
+    private var shadowStartY = java.lang.Float.MIN_VALUE
+    private var enableShadow = false
+    private var enableBorder = false
+    private var borderHeight = 0f
+    private lateinit var blurMaskFilter: BlurMaskFilter
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
@@ -54,12 +56,12 @@ open class CardConstraintLayout : ConstraintLayout {
         init(null)
     }
 
-    private fun init(attrs: AttributeSet?) {
+    fun init(attrs: AttributeSet?) {
         readAttrs(attrs)
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
     }
 
-    private fun readAttrs(attrs: AttributeSet?) {
+    open fun readAttrs(attrs: AttributeSet?) {
         if (attrs != null) {
             val typedArray =
                     context.theme.obtainStyledAttributes(attrs, R.styleable.CardConstraintLayout, 0, 0)
@@ -85,6 +87,8 @@ open class CardConstraintLayout : ConstraintLayout {
             blurRadius =
                     typedArray.getDimension(R.styleable.CardConstraintLayout_blurRadius, dpToPx(context, 12))
             enableShadow = typedArray.getBoolean(R.styleable.CardConstraintLayout_enableShadow, true)
+            enableBorder = typedArray.getBoolean(R.styleable.CardConstraintLayout_enableBorder, false)
+            borderHeight = typedArray.getDimension(R.styleable.CardConstraintLayout_borderHeight, 0f)
             typedArray.recycle()
         }
     }
@@ -107,7 +111,9 @@ open class CardConstraintLayout : ConstraintLayout {
             drawShadow(canvas)
         }
         drawRectBackground(canvas)
-        drawBorder(canvas)
+        if (enableBorder) {
+            drawBorder(canvas)
+        }
         super.onDraw(canvas)
     }
 
@@ -119,7 +125,7 @@ open class CardConstraintLayout : ConstraintLayout {
         borderPaint.color = borderColor
         borderPaint.strokeWidth = 0.5f
 
-        borderRectF.top = 0f
+        borderRectF.top = height - borderHeight
         borderRectF.left = 0f
         borderRectF.right = width.toFloat()
         borderRectF.bottom = height.toFloat()

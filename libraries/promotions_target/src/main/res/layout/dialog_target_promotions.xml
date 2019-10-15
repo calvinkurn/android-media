@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:paddingStart="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
@@ -25,6 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_28"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button">
@@ -32,6 +36,9 @@
         <com.tokopedia.promotionstarget.views.CouponView
             android:layout_width="match_parent"
             android:layout_height="@dimen/t_promo_image_height"
+            android:background="@color/white"
+            android:clipChildren="true"
+            android:clipToPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button"
@@ -41,7 +48,7 @@
                 android:id="@+id/appCompatImageView"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_96"
-                tools:src="@color/colorAccent" />
+                android:background="@color/colorAccent" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView2"
@@ -50,9 +57,9 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_14"
+                android:background="@color/colorPink"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-                tools:src="@color/colorPink" />
+                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_min_transaction_title"
@@ -124,6 +131,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center"
         android:textColor="@color/t_promo_grey68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -137,6 +145,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_24"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

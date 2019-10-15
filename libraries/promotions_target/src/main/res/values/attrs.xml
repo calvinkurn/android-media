@@ -10,11 +10,18 @@
         <attr name="cornerRadius" format="dimension"/>
         <attr name="blurRadius" format="dimension"/>
         <attr name="enableShadow" format="boolean"/>
+        <attr name="enableBorder" format="boolean"/>
+        <attr name="borderHeight" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="RoundButton">
         <attr name="rb_cornerRadius" format="dimension" />
         <attr name="rb_buttonColor" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CouponView">
+        <attr name="cvCircleColor" format="color" />
+        <attr name="cvCircleRadius" format="dimension" />
     </declare-styleable>
 
 </resources>
