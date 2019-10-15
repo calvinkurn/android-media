@@ -43,6 +43,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     testImplementation rootProject.ext.testDependencies.mockk
+    implementation project(rootProject.ext.libraries.network)
 
 }
 
