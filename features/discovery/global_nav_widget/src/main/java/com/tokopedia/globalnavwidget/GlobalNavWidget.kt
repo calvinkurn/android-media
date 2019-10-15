@@ -109,6 +109,10 @@ class GlobalNavWidget: BaseCustomView {
         globalNavCardRecyclerView?.visibility = View.VISIBLE
         globalNavCardRecyclerView?.adapter = createCardAdapter(globalNavWidgetItemList, globalNavWidgetListener)
         globalNavCardRecyclerView?.layoutManager = createCardRecyclerViewLayoutManager()
+
+        if (globalNavCardRecyclerView?.itemDecorationCount == 0) {
+            globalNavCardRecyclerView?.addItemDecoration(createGlobalNavWidgetCardItemDecoration())
+        }
     }
 
     private fun createCardAdapter(
@@ -124,6 +128,10 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createCardRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+    }
+
+    private fun createGlobalNavWidgetCardItemDecoration(): RecyclerView.ItemDecoration {
+        return GlobalNavWidgetCardItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
     }
 
     private fun handleDefaultTemplate(
