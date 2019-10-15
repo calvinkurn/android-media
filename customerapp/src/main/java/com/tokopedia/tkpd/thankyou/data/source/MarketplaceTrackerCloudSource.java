@@ -11,7 +11,6 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.OrderGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
-import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
 
@@ -32,7 +31,6 @@ import rx.Observable;
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private Context context;
     private SessionHandler sessionHandler;
-    private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
     private RemoteConfig remoteConfig;
     private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
@@ -43,7 +41,6 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         super(requestParams);
         this.context = context;
         this.sessionHandler = sessionHandler;
-//        this.marketplaceTrackerApi = marketplaceTrackerApi;
     }
 
     @Override

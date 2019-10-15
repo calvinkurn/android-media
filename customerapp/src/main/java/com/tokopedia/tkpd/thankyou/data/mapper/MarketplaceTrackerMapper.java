@@ -185,7 +185,6 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
     private Pair<Purchase, Bundle> getTrackingData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
         Purchase purchase = new Purchase();
-//        Bundle actionField = new Bundle();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
@@ -195,19 +194,13 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
         purchase.setTransactionID(String.valueOf(orderData.getOrderId()));
-//        actionField.putString("id", String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getOrderInfo().getShipping().getShippingPrice()));
-//        actionField.putString(Purchase.SHIPPING_KEY, String.valueOf(orderData.getOrderInfo().getShipping().getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
-//        actionField.putString(Purchase.REVENUE_KEY, String.valueOf(paymentData.getPaymentAmount()));
         purchase.setAffiliation(getShopName(orderData));
-//        actionField.putString("affiliation", getShopName(orderData));
         purchase.setTax(tax);
-//        actionField.putString("tax", tax);
         purchase.setCouponCode(couponCode);
-//        actionField.putString(KEY_COUPON, couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
         purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
