@@ -31,6 +31,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation project(rootProject.ext.libraries.applink)
+
 
 }
 

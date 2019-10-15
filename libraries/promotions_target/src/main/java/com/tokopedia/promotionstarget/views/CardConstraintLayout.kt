@@ -11,32 +11,32 @@ import com.tokopedia.promotionstarget.R
 
 open class CardConstraintLayout : ConstraintLayout {
 
-    private var borderPaint = Paint()
-    private var rectPaint = Paint()
-    private var shadowPaint = Paint()
+    protected var borderPaint = Paint()
+    protected var rectPaint = Paint()
+    protected var shadowPaint = Paint()
 
-    private var shadowPath = Path()
-    private var clipPath = Path()
-    private var rectBackgroundPath = Path()
+    protected var shadowPath = Path()
+    protected var clipPath = Path()
+    protected var rectBackgroundPath = Path()
 
-    private var clipRectF = RectF()
-    private var rectBackgroundRectF = RectF()
-    private var borderRectF = RectF()
+    protected var clipRectF = RectF()
+    protected var rectBackgroundRectF = RectF()
+    protected var borderRectF = RectF()
 
-    private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+    protected var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
-    private var shadowColor = Color.BLACK
+    protected var shadowColor = Color.BLACK
 
-    private var shadowStrokeWidth = 15f
+    protected var shadowStrokeWidth = 15f
 
-    private var blurRadius = 50f
-    private var cornerRadius = 8f
-    private var shadowHeight = 0f
-    private var shadowDx = 0f
-    private var shadowDy = 0f
-    private var shadowStartY = java.lang.Float.MIN_VALUE
-    private var enableShadow = false
-    private lateinit var blurMaskFilter: BlurMaskFilter
+    protected var blurRadius = 50f
+    protected var cornerRadius = 8f
+    protected var shadowHeight = 0f
+    protected var shadowDx = 0f
+    protected var shadowDy = 0f
+    protected var shadowStartY = java.lang.Float.MIN_VALUE
+    protected var enableShadow = false
+    protected lateinit var blurMaskFilter: BlurMaskFilter
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)

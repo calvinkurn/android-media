@@ -30,8 +30,8 @@ class DialogManager(val applicationContext: Context) {
 
 
     private fun show(activity: Activity, data: GetPopGratificationResponse) {
-//        val dialog = TargetPromotionsDialog()
-//        dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SHOW_COUPON, data)
+        val dialog = TargetPromotionsDialog()
+        dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SHOW_COUPON, data)
     }
 
 

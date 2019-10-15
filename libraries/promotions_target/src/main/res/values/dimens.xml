@@ -50,5 +50,6 @@
     <dimen name="tp_coupon_card_large">240dp</dimen>
     <dimen name="tp_coupon_card_medium">220dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="t_promo_image_height">148dp</dimen>
 
 </resources>

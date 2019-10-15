@@ -11,4 +11,10 @@
         <attr name="blurRadius" format="dimension"/>
         <attr name="enableShadow" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="RoundButton">
+        <attr name="rb_cornerRadius" format="dimension" />
+        <attr name="rb_buttonColor" format="integer" />
+    </declare-styleable>
+
 </resources>
