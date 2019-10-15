@@ -8,10 +8,12 @@ import android.os.Parcelable;
  */
 public class AutoCompleteViewModel implements Parcelable {
 
+    private String keyword;
     private String text;
     private String formatted;
 
-    public AutoCompleteViewModel(String text, String formatted) {
+    public AutoCompleteViewModel(String keyword, String text, String formatted) {
+        this.keyword = keyword;
         this.text = text;
         this.formatted = formatted;
     }
@@ -30,6 +32,14 @@ public class AutoCompleteViewModel implements Parcelable {
 
     public void setFormatted(String formatted) {
         this.formatted = formatted;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     @Override

@@ -14,7 +14,6 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -31,8 +30,8 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.createpost.view.applink.CreatePostModule;
+import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -178,11 +177,11 @@ import rx.schedulers.Schedulers;
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
+        CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
-        CheckoutAppLinkModule.class,
         HowtopayApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
@@ -244,11 +243,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),
                     new ProfileApplinkModuleLoader(),
+                    new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
-                    new CheckoutAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
                     new TokopointApplinkModuleLoader(),

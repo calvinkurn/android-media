@@ -56,6 +56,8 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
 }
 
 project.ext {
