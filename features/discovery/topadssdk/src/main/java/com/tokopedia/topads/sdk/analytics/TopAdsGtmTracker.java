@@ -90,7 +90,7 @@ public class TopAdsGtmTracker {
             bundle.putString("eventLabel", keyword);
             bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, "/searchproduct - topads productlist");
             bundle.putString("screenName", screenName);
-            bundle.putParcelableArrayList("items", products);
+            bundle.putParcelableArrayList("items", dataLayerList);
 
             TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
             clearDataLayerList();
