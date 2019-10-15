@@ -34,7 +34,7 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
     override fun onItemClicked(settingId: Int) {
         when (settingId) {
             SettingConstant.SETTING_APP_CLEAR_CACHE -> {
-                accountAnalytics.eventClickSetting(AccountConstants.Analytics.CLEAR_CACHE)
+                accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.CLEAR_CACHE)
                 showDialogClearCache()
             }
             else -> { }
