@@ -26,6 +26,8 @@ class UmrahSimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                 tg_umrah_desc.text = item.description
                 if (item.textColor.isNotEmpty()) {
                     tg_umrah_desc.setTextColor(Color.parseColor(item.textColor))
+                } else {
+                    tg_umrah_desc.setTextColor(resources.getColor(R.color.Neutral_N700_96))
                 }
             } else {
                 tg_umrah_desc.visibility = View.GONE

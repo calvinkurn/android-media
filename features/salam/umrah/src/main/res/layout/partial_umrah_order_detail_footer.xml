@@ -36,6 +36,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@color/grey_250"
+        app:layout_constraintBottom_toTopOf="@+id/rv_pricing"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_payment_method" />
@@ -55,6 +56,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@color/grey_250"
+        app:layout_constraintBottom_toTopOf="@+id/rv_payment_data"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_pricing" />
