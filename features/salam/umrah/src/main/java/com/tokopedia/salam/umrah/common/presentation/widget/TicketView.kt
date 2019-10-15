@@ -56,15 +56,12 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     fun setAnchor(view1: View?, view2: View?) {
 
-        val rect = Rect()
-        view1?.getDrawingRect(rect)
-        offsetDescendantRectToMyCoords(view1, rect)
-        circlePosition1 = rect.bottom.toFloat()
+        view1?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        circlePosition1 = view1?.bottom?.toFloat() ?: 0f
 
         if (view2 != null) {
-            view2.getDrawingRect(rect)
-            offsetDescendantRectToMyCoords(view2, rect)
-            circlePosition2 = rect.bottom.toFloat()
+            view2?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+            circlePosition2 = view2.bottom.toFloat()
         }
 
         postInvalidate()

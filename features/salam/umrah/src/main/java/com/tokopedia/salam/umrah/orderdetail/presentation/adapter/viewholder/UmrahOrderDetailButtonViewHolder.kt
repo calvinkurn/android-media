@@ -2,9 +2,11 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.adapter.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyButton.Size.MEDIUM
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Type.TRANSACTION
@@ -18,7 +20,12 @@ class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder
 
     fun bind(data: UmrahOrderDetailButtonViewModel) {
         val button = UnifyButton(itemView.context)
+        button.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         button.text = data.label
+        button.buttonSize = MEDIUM
         when {
             data.buttonType == BUTTON_PRIMARY -> {
                 button.buttonVariant = FILLED
