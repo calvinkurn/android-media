@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.home.account.presentation.fragment.setting.AdvancedSettingFragment;
 import com.tokopedia.home.account.presentation.fragment.setting.GeneralSettingFragment;
 
-public class GeneralSettingActivity extends BaseSimpleActivity {
+public class AdvancedSettingActivity extends BaseSimpleActivity {
 
     public static Intent createIntent(Context context) {
-        return new Intent(context, GeneralSettingActivity.class);
+        return new Intent(context, AdvancedSettingActivity.class);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return GeneralSettingFragment.Companion.createInstance();
+        return AdvancedSettingFragment.createInstance();
     }
 }
