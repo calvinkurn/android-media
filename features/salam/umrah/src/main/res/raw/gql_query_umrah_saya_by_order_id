@@ -1,4 +1,4 @@
-query umrahWidgetUmrahSayaByOrderUUID($orderid: ID!) {
+query umrahWidgetUmrahSayaByOrderUUID($orderId: ID!) {
   umrahWidgetUmrahSayaByOrderUUID(params: {orderUUID: $orderId}){
     subHeader
     header

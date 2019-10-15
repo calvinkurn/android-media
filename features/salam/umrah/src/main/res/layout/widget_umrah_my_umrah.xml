@@ -14,7 +14,7 @@
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_loading_toped_new" />
+        app:srcCompat="@drawable/ic_umrah_salam_svg" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_package"

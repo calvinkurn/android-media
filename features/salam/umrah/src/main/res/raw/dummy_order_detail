@@ -47,72 +47,6 @@
                 "__typename": "ActionButton",
                 "mappingUri": "",
                 "method": ""
-            },
-            {
-                "control": "",
-                "body": {
-                    "body": "",
-                    "appURL": "nnd.wjnyjs",
-                    "webURL": "http://djhc",
-                    "method": "",
-                    "__typename": "ActionBody"
-                },
-                "name": "",
-                "weight": 0,
-                "uri": "",
-                "buttonType": "secondary",
-                "label": "Lihat",
-                "header": "",
-                "uriWeb": "",
-                "value": "",
-                "key": "buy_again",
-                "__typename": "ActionButton",
-                "mappingUri": "",
-                "method": ""
-            },
-            {
-                "control": "",
-                "body": {
-                    "body": "",
-                    "appURL": "nndk.wjnjs",
-                    "webURL": "http://ubhc",
-                    "method": "",
-                    "__typename": "ActionBody"
-                },
-                "name": "",
-                "weight": 0,
-                "uri": "",
-                "buttonType": "transaction",
-                "label": "Lihat E-Voucher",
-                "header": "",
-                "uriWeb": "",
-                "value": "",
-                "key": "buy_again",
-                "__typename": "ActionButton",
-                "mappingUri": "",
-                "method": ""
-            },
-            {
-                "control": "",
-                "body": {
-                    "body": "",
-                    "appURL": "nnd.wjnjs",
-                    "webURL": "http://dbhc",
-                    "method": "",
-                    "__typename": "ActionBody"
-                },
-                "name": "",
-                "weight": 0,
-                "uri": "",
-                "buttonType": "default",
-                "label": "Lihat Detail",
-                "header": "",
-                "uriWeb": "",
-                "value": "",
-                "key": "buy_again",
-                "__typename": "ActionButton",
-                "mappingUri": "",
-                "method": ""
             }
         ],
         "detail": [
@@ -213,7 +147,7 @@
                 "value": "Rp 30000000",
                 "label": "Total Pembayaran",
                 "backgroundColor": "",
-                "textColor": ""
+                "textColor": "#EF144A"
             }
         ],
         "status": {
