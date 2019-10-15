@@ -67,7 +67,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
         needRefresh = arguments.getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, DEFAULT_NEED_REFRESH)
     }
 
-    fun getProductInfo(productParams: ProductParams, resources: Resources, insuranceEnabled: Boolean, insuranceRecommendationRequest: InsuranceRecommendationRequest) {
+    fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
         launchCatchError(block = {
             val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
@@ -81,7 +81,6 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
             }
             productInfoData.getSuccessData<ProductInfo.Response>().data?.let {
                 val productInfo = ProductInfoAndVariant()
-                val insuranceResult = InsuranceRecommendationGqlResponse()
                 productInfo.productInfo = it
                 if (it.variant.isVariant) {
                     val productVariantData = withContext(Dispatchers.IO) {
@@ -127,8 +126,10 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
             productInfoResp.value = com.tokopedia.normalcheckout.model.Fail(it)
         }
 
+    }
+
+    fun getInsuranceProductRecommendation(insuranceRecommendationRequest: InsuranceRecommendationRequest) {
         launchCatchError(block = {
-            if (isUserSessionActive() && insuranceEnabled) {
                 val insuranceParams = mapOf(INSURANCE_RECOMMENDATION_PARAM_GQL to insuranceRecommendationRequest)
                 val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
                         InsuranceRecommendationGqlResponse::class.java, insuranceParams)
@@ -142,7 +143,6 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                 }
 
                 productInfoResp.value = InsuranceRecommendationContainer(insuranceRecommendationResponse)
-            }
         }) {
 
         }
