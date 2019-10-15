@@ -199,9 +199,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
-    }
-
 }
