@@ -1,4 +1,4 @@
-package com.tokopedia.user_identification_common.subscriber;
+package com.tokopedia.useridentification.subscriber;
 
 import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
