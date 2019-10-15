@@ -309,7 +309,7 @@ dependencies {
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
-//    implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.expressCheckout)
