@@ -12,7 +12,7 @@ class AdapterDelegatesManager<T: Any> {
     private val typedAdapterDelegatesMap: MutableMap<Class<*>, Int> = LinkedHashMap()
     private val specialAdapterDelegates: MutableList<Int> = mutableListOf()
 
-    private val adapterDelegates: SparseArrayCompat<AdapterDelegate<Any>> = SparseArrayCompat()
+    private val adapterDelegates: SparseArrayCompat<AdapterDelegate<T>> = SparseArrayCompat()
 
     @Suppress("UNCHECKED_CAST")
     fun addDelegate(adapterDelegate: AdapterDelegate<T>): AdapterDelegatesManager<T> {
@@ -22,7 +22,7 @@ class AdapterDelegatesManager<T: Any> {
         } else {
             specialAdapterDelegates.add(index)
         }
-        adapterDelegates.put(index, adapterDelegate as AdapterDelegate<Any>)
+        adapterDelegates.put(index, adapterDelegate)
         return this
     }
 
@@ -36,15 +36,15 @@ class AdapterDelegatesManager<T: Any> {
 
     @Suppress("UNCHECKED_CAST")
     fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder) {
-        return getAdapterDelegate(itemList, position).onBindViewHolder(itemList as List<Any>, position, holder)
+        return getAdapterDelegate(itemList, position).onBindViewHolder(itemList, position, holder)
     }
 
-    private fun getAdapterDelegate(itemList: List<T>, position: Int): AdapterDelegate<Any> {
+    private fun getAdapterDelegate(itemList: List<T>, position: Int): AdapterDelegate<T> {
         val itemClass = itemList[position]::class.java
         if (typedAdapterDelegatesMap.containsKey(itemClass)) return adapterDelegates.get(typedAdapterDelegatesMap[itemClass]!!) ?: throw IllegalStateException("Index of adapter delegates found but does not exist in adapter delegate list")
         else {
             specialAdapterDelegates.forEach { delegateIndex ->
-                if (adapterDelegates.get(delegateIndex)?.isForViewType(itemList, position) == true) return adapterDelegates.get(delegateIndex) as AdapterDelegate<Any>
+                if (adapterDelegates.get(delegateIndex)?.isForViewType(itemList, position) == true) return adapterDelegates.get(delegateIndex) as AdapterDelegate<T>
             }
             throw IllegalArgumentException("No delegate is found for item: ${itemList[position]} on position: $position")
         }
