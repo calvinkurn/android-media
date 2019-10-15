@@ -8,6 +8,8 @@ data class ChatBlastSellerMetadata(
         val expireAt: String = "",
         @SerializedName("expirePromo")
         val expirePromo: String = "",
+        @SerializedName("url")
+        val url: String = "",
         @SerializedName("price")
         val price: Int = 0,
         @SerializedName("priceAB")

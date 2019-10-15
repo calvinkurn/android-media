@@ -219,6 +219,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         itemView.setOnClickListener {
             if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
+                orderListAnalytics.sendPageClickEvent("order - detail")
+
                 RouteManager.route(itemView.context, appLink)
             }
         }

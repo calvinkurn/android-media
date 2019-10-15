@@ -62,7 +62,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_similar_recommendation)
+            (this as HomeRecommendationActivity).supportActionBar?.title = ""
         }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
@@ -88,7 +88,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                     it.status.isSuccess() -> {
                         it.data?.get(0)?.let {
                             activity?.run{
-                                (this as HomeRecommendationActivity).supportActionBar?.title = it.header
+                                (this as HomeRecommendationActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
                             }
                         }
                         renderList(mapDataModel(it.data ?: emptyList()), true)
