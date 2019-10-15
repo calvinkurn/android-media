@@ -25,6 +25,10 @@ import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -82,6 +86,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION;
 import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE;
+import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
@@ -101,6 +106,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     private AccountAnalytics accountAnalytics;
     private PermissionCheckerHelper permissionCheckerHelper;
 
+    private GoogleSignInClient googleSignInClient;
+
     public static Fragment createInstance() {
         return new GeneralSettingFragment();
     }
@@ -112,6 +119,14 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
         permissionCheckerHelper = new PermissionCheckerHelper();
+
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(GOOGLE_API_KEY)
+                .requestEmail()
+                .requestProfile()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(getActivity(), googleSignInOptions);
     }
 
     @Override
@@ -441,9 +456,18 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
         RemoteConfigInstance.getInstance().getABTestPlatform().fetchByType(null);
 
+        if (isGoogleAccount()) {
+            googleSignInClient.signOut();
+        }
+
         SharedPreferences stickyPref = getActivity().getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE);
         stickyPref.edit().clear().apply();
 
+    }
+
+    private boolean isGoogleAccount() {
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
+        return acct != null;
     }
 
     @Override
