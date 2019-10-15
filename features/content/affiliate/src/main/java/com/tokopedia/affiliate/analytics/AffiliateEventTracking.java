@@ -57,6 +57,7 @@ public interface AffiliateEventTracking {
     }
 
     interface EventLabel {
-        String SEARCH_RESULT_PRODUCT_ID = "search result-";
+        String SEARCH_RESULT = "search result";
+        String SEARCH_RESULT_PRODUCT_ID = SEARCH_RESULT + "-";
     }
 }
