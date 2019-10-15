@@ -15,6 +15,10 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
 
+    const val PROMO_LIST_MARKETPLACE = "${INTERNAL_PROMO}/list/marketplace"
+    const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
+
+
 
     private const val HOST_TOKOPOINTS = "tokopoints"
     const val INTERNAL_TOKOPOINTS = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPOINTS}"
