@@ -31,5 +31,6 @@
     <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
+    <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
 
 </resources>

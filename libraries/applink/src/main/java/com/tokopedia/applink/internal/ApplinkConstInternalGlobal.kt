@@ -210,4 +210,9 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
 }
