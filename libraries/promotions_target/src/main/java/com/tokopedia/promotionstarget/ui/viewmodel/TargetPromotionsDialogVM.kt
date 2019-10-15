@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.viewmodel
+package com.tokopedia.promotionstarget.ui.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel

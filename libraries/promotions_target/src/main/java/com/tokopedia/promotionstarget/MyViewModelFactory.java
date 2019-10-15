@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase;
-import com.tokopedia.promotionstarget.viewmodel.TargetPromotionsDialogVM;
+import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM;
 
 import kotlinx.coroutines.Dispatchers;
 

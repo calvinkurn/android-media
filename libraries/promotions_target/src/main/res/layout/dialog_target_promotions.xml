@@ -6,13 +6,9 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <com.tokopedia.promotionstarget.views.RoundButton
+    <com.tokopedia.promotionstarget.ui.views.RoundButton
         android:id="@+id/button"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_4"
@@ -22,8 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:rb_cornerRadius="@dimen/dp_2" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_28"
@@ -33,9 +29,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button">
 
-        <com.tokopedia.promotionstarget.views.CouponView
+        <com.tokopedia.promotionstarget.ui.views.CouponView
+            android:id="@+id/couponView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/t_promo_image_height"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@color/white"
             android:clipChildren="true"
             android:clipToPadding="true"
@@ -87,42 +88,49 @@
                 app:typographyType="heading_5"
                 tools:text="Rp100.000" />
 
-        </com.tokopedia.promotionstarget.views.CouponView>
+        </com.tokopedia.promotionstarget.ui.views.CouponView>
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/t_promo_image_height"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/t_promo_image_height"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:clipChildren="true"
+            android:clipToPadding="true" />
 
-    </FrameLayout>
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/t_promo_image_height"
-        android:layout_marginTop="@dimen/dp_28"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        tools:visibility="gone" />
+    </ViewFlipper>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:gravity="center"
         android:textColor="@color/t_promo_grey96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlipper"
         app:typographyType="heading_2"
         tools:text="@string/app_name" />
 
@@ -130,7 +138,11 @@
         android:id="@+id/tvSubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:gravity="center"
         android:textColor="@color/t_promo_grey68"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,11 +152,15 @@
         app:typographyType="body_3"
         tools:text="@string/app_name" />
 
-    <com.tokopedia.promotionstarget.views.RoundButton
+    <com.tokopedia.promotionstarget.ui.views.RoundButton
         android:id="@+id/btnAction"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

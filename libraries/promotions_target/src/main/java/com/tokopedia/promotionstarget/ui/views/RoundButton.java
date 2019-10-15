@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.views;
+package com.tokopedia.promotionstarget.ui.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;

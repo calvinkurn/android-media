@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="true"
+    android:clipToPadding="true">
+
+
+    <com.tokopedia.promotionstarget.ui.views.CouponView
+        android:id="@+id/couponView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/t_promo_image_height"
+        android:background="@color/white"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        tools:background="@color/y_200">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_96"
+            android:background="@color/colorGray" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView2"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_14"
+            android:background="@color/colorPink"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_min_transaction_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/t_promo_min_transaction"
+            android:textColor="@color/t_promo_grey96"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageView2"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:textColor="@color/t_promo_grey96"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageView2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_min_transaction_title"
+            app:typographyType="heading_5"
+            tools:text="Rp100.000" />
+
+    </com.tokopedia.promotionstarget.ui.views.CouponView>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_green_rounded_tradein"
+        android:text="hello"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>
