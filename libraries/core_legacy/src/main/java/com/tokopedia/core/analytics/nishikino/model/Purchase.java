@@ -145,18 +145,16 @@ public class Purchase {
         ActionField.put("affiliation", aff);
     }
 
-    public String getAffiliation() {
-        Object affiliation = ActionField.get("affiliation");
-        return affiliation == null ? "" : ((String) affiliation);
+    public Object getAffiliation() {
+        return ActionField.get("affiliation");
     }
 
     public void setTax(Object tax) {
         ActionField.put("tax", tax);
     }
 
-    public float getTax() {
-        Object tax = ActionField.get("tax");
-        return tax == null ? 0 : Float.parseFloat(((String) tax));
+    public Object getTax() {
+        return ActionField.get("tax");
     }
 
     public void setRevenue(Object revenue) {
@@ -171,9 +169,8 @@ public class Purchase {
         ActionField.put(KEY_COUPON, coupon);
     }
 
-    public String getCouponCode() {
-        Object couponcode = ActionField.get(KEY_COUPON);
-        return couponcode == null ? "" : ((String) couponcode);
+    public Object getCouponCode() {
+        return ActionField.get(KEY_COUPON);
     }
 
     public Object getRevenue() {
