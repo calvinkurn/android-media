@@ -101,7 +101,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     private void findingViewsId(View view) {
         linearlayoutPopularArticle = view.findViewById(R.id.linearlayout_popular_article);
-        orderList = view.findViewById(com.tokopedia.core2.R.id.order_list);
+        orderList = view.findViewById(R.id.order_list);
         noOrders = view.findViewById(R.id.no_orders);
         orderListViewpager = view.findViewById(R.id.order_list_viewpager);
         btnChat = view.findViewById(R.id.toped_bot);

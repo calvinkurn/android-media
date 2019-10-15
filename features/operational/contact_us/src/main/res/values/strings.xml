@@ -97,5 +97,11 @@
     <string name="inbox">Inbox</string>
     <string name="choose_image">Pilih Gambar</string>
     <string name="contact_us_search_error">Ada Yang Salah</string>
-
+    <string name="title_activity_contact_us">Pusat Bantuan</string>
+    <string name="contact_us_error_upload_image">Gagal mengunggah gambar</string>
+    <string name="title_contact_finish">Pesan sudah berhasil terkirim. Customer Care Tokopedia akan membalas pesan tersebut ke email kamu. Silakan cek email secara berkala.</string>
+    <string name="error_detail_empty">Silakan mengisi keterangan masalah terlebih dahulu</string>
+    <string name="error_detail_too_short">Message terlalu pendek, minimal 30 karakter</string>
+    <string name="failed_create_ticket">Gagal membuat tiket</string>
+    <string name="error_attachment">Mohon tambahkan lampiran.</string>
 </resources>

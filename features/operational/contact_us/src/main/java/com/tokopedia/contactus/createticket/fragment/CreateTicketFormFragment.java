@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.createticket.adapter.ImageUploadAdapter;
@@ -32,7 +33,6 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -86,18 +86,18 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     private void findingViewsId(View view) {
-        mainCategory = view.findViewById(com.tokopedia.core2.R.id.main_category);
-        detail = view.findViewById(com.tokopedia.core2.R.id.detail);
-        attachmentNote = view.findViewById(com.tokopedia.core2.R.id.attachment_note);
-        mainView = view.findViewById(com.tokopedia.core2.R.id.main);
-        attachment = view.findViewById(com.tokopedia.core2.R.id.attachment);
-        phoneNumber = view.findViewById(com.tokopedia.core2.R.id.phone_number);
-        name = view.findViewById(com.tokopedia.core2.R.id.name);
-        email = view.findViewById(com.tokopedia.core2.R.id.email);
-        nameTitle = view.findViewById(com.tokopedia.core2.R.id.name_text);
-        emailTitle = view.findViewById(com.tokopedia.core2.R.id.email_text);
-        detailTextView = view.findViewById(com.tokopedia.core2.R.id.detail_text);
-        attachmentLabelTextView = view.findViewById(com.tokopedia.core2.R.id.attachment_note);
+        mainCategory = view.findViewById(R.id.main_category);
+        detail = view.findViewById(R.id.detail);
+        attachmentNote = view.findViewById(R.id.attachment_note);
+        mainView = view.findViewById(R.id.main);
+        attachment = view.findViewById(R.id.attachment);
+        phoneNumber = view.findViewById(R.id.phone_number);
+        name = view.findViewById(R.id.name);
+        email = view.findViewById(R.id.email);
+        nameTitle = view.findViewById(R.id.name_text);
+        emailTitle = view.findViewById(R.id.email_text);
+        detailTextView = view.findViewById(R.id.detail_text);
+        attachmentLabelTextView = view.findViewById(R.id.attachment_note);
     }
 
     @Override
@@ -164,13 +164,13 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(com.tokopedia.core2.R.menu.talk_add_new, menu);
+        inflater.inflate(R.menu.talk_add_new, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.core2.R.id.action_send) {
+        if (item.getItemId() == R.id.action_send) {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
             presenter.sendTicket();
             return true;
@@ -195,7 +195,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     protected int getFragmentLayout() {
-        return com.tokopedia.core2.R.layout.fragment_create_ticket;
+        return R.layout.fragment_create_ticket;
     }
 
     @Override

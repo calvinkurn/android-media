@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.model.GenerateHostPass;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
@@ -129,7 +129,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                                                     }
                                                 }, tkpdResponse.code());
-                                                throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.failed_create_ticket));
+                                                throw new RuntimeException(context.getString(R.string.failed_create_ticket));
                                             }
                                         }
                                     });
@@ -206,7 +206,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                 listener.onError(response.body().getErrorMessages().get(0));
                         }
                     } catch (JSONException e) {
-                        listener.onError(context.getString(com.tokopedia.core2.R.string.failed_create_ticket));
+                        listener.onError(context.getString(R.string.failed_create_ticket));
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -302,7 +302,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                         try {
                             file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
                         } catch (IOException e) {
-                            throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.error_upload_image));
+                            throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));

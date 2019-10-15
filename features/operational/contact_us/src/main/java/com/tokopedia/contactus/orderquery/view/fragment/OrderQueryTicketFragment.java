@@ -67,7 +67,7 @@ public class OrderQueryTicketFragment extends BaseDaggerFragment implements Orde
         imgOrder = view.findViewById(R.id.img_order);
         txtTicketInvoice = view.findViewById(R.id.txt_ticket_invoice);
         txtTicketTitle = view.findViewById(R.id.txt_ticket_title);
-        ticketList = view.findViewById(com.tokopedia.core2.R.id.ticket_list);
+        ticketList = view.findViewById(R.id.ticket_list);
         buyerPurchaseList = (BuyerPurchaseList) getArguments().getSerializable(KEY_BUYER_PURCHASE_LIST);
         presenter.setBuyerPurchaseList(buyerPurchaseList);
         return view;

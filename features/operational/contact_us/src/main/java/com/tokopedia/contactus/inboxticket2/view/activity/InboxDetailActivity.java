@@ -220,9 +220,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void toggleSearch(int visibility) {
         searchView.setVisibility(visibility);
         if (visibility == View.VISIBLE) {
-            mMenu.findItem(com.tokopedia.core2.R.id.action_search).setVisible(false);
+            mMenu.findItem(R.id.action_search).setVisible(false);
         } else {
-            mMenu.findItem(com.tokopedia.core2.R.id.action_search).setVisible(true);
+            mMenu.findItem(R.id.action_search).setVisible(true);
         }
     }
 
@@ -259,7 +259,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     private void findingViewsId() {
-        rootView = findViewById(com.tokopedia.core2.R.id.root_view);
+        rootView = findViewById(R.id.root_view);
         tvTicketTitle = findViewById(R.id.tv_ticket_title);
         tvIdNum = findViewById(R.id.tv_id_num);
         rvMessageList = findViewById(R.id.rv_message_list);
@@ -582,7 +582,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
                 getResources().getColor(com.tokopedia.design.R.color.grey_200),
-                getResources().getColor(com.tokopedia.core2.R.color.black_38), textSizeLabel));
+                getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
     }
 
     @Override

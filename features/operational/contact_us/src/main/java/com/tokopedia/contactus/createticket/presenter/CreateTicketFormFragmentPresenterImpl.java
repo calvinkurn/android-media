@@ -3,7 +3,7 @@ package com.tokopedia.contactus.createticket.presenter;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -120,13 +120,13 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         }
 
         if (viewListener.getMessage().getText().toString().trim().length() == 0) {
-            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(com.tokopedia.core2.R.string.error_detail_empty));
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_empty));
             return false;
         } else if (viewListener.getMessage().getText().toString().trim().length() < 30) {
-            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(com.tokopedia.core2.R.string.error_detail_too_short));
+            viewListener.showErrorValidation(viewListener.getMessage(), viewListener.getString(R.string.error_detail_too_short));
             return false;
         } else if (viewListener.getAttachmentNote().getVisibility() == View.VISIBLE && viewListener.getAttachment().isEmpty()) {
-            viewListener.showError(viewListener.getActivity().getString(com.tokopedia.core2.R.string.error_attachment));
+            viewListener.showError(viewListener.getActivity().getString(R.string.error_attachment));
             return false;
         }
 

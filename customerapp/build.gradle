@@ -364,7 +364,6 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHomepage)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)

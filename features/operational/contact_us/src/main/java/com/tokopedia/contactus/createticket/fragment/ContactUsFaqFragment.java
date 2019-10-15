@@ -17,9 +17,9 @@ import android.widget.ScrollView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -114,7 +114,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
     @Override
     protected int getFragmentLayout() {
-        return com.tokopedia.core2.R.layout.fragment_contact_us_faq;
+        return R.layout.fragment_contact_us_faq;
     }
 
     @Override

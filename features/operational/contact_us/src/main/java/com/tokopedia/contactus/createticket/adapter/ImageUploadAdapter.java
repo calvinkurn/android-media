@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         public ViewHolder(View itemView) {
             super(itemView);
-            image = itemView.findViewById(com.tokopedia.core2.R.id.image_upload);
+            image = itemView.findViewById(R.id.image_upload);
             deleteButton = itemView.findViewById(com.tokopedia.design.R.id.delete_button);
         }
     }
@@ -68,7 +68,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(com.tokopedia.core2.R.layout.listview_image_upload_delete, viewGroup, false));
+                .inflate(R.layout.contactus_listview_image_upload_delete, viewGroup, false));
     }
 
     @Override

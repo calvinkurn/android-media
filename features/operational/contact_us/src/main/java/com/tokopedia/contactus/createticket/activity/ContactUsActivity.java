@@ -72,7 +72,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             while (getFragmentManager().getBackStackEntryCount() > 0) {
                 getFragmentManager().popBackStackImmediate();
             }
-            transaction.add(com.tokopedia.core2.R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
+            transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
             transaction.commit();
         }
@@ -91,7 +91,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return com.tokopedia.core2.R.layout.activity_contact_us;
+        return R.layout.activity_contact_us;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         }
 
         listener = fragment.getBackButtonListener();
-        fragmentTransaction.replace(com.tokopedia.core2.R.id.main_view, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
 
@@ -126,7 +126,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
                         .getString(InboxRouter.PARAM_URL, "").equals(""))) {
             toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
         } else {
-            toolbar.setTitle(com.tokopedia.core2.R.string.title_activity_contact_us);
+            toolbar.setTitle(R.string.title_activity_contact_us);
         }
     }
 
@@ -152,7 +152,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.contactus_slide_in_left, 0, 0, R.animator.contactus_slide_out_right);
-            transaction.add(com.tokopedia.core2.R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
+            transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             if (!getIntent().getBooleanExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, false)) {
                 transaction.addToBackStack(CreateTicketFormFragment.class.getSimpleName());
             }
@@ -173,7 +173,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     public void onFinishCreateTicket() {
-        CommonUtils.UniversalToast(this, getString(com.tokopedia.core2.R.string.title_contact_finish));
+        CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
         if (GlobalConfig.isSellerApp() && SessionHandler.isV4Login(this)) {
             Intent intent = SellerAppRouter.getSellerHomeActivity(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -189,7 +189,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(com.tokopedia.core2.R.id.main_view).getTag());
+        outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(R.id.main_view).getTag());
         outState.putString(EXTRAS_PARAM_URL, url);
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
