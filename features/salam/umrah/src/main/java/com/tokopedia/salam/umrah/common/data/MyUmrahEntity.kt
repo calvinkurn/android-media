@@ -30,7 +30,7 @@ class MyUmrahEntity(
     )
 
     class Response(
-            @SerializedName("umrahWidgetUmrahSayaList")
+            @SerializedName("umrahWidgetUmrahSayaByOrderUUID")
             @Expose
             val umrahWidgetSaya: MyUmrahEntity = MyUmrahEntity()
     )
