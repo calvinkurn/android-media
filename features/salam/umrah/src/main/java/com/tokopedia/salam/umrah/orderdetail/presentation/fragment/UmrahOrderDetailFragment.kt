@@ -19,6 +19,8 @@ import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAd
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
+import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.UmrahOrderDetailButtonAdapter
+import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +33,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 08/10/2019
  */
-class UmrahOrderDetailFragment : BaseDaggerFragment() {
+class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAdapter.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -128,11 +130,12 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         rv_umrah_order_details.layoutManager = detailLayoutManager
         rv_umrah_order_details.adapter = detailAdapter
 
-        val metaData = Gson().fromJson(data.items[0].metadata, UmrahOrderDetailsMetaDataEntity::class.java)
-        tg_umrah_order_package.text = data.items[0].title
-        tg_umrah_order_travel.text = metaData.travelAgent
-        tg_booking_code.text = metaData.bookingCode
-
+        if (data.items.isNotEmpty()) {
+            val metaData = Gson().fromJson(data.items[0].metadata, UmrahOrderDetailsMetaDataEntity::class.java)
+            tg_umrah_order_package.text = data.items[0].title
+            tg_umrah_order_travel.text = metaData.travelAgent
+            tg_booking_code.text = metaData.bookingCode
+        }
 
         val jamaahLayoutManager = LinearLayoutManager(context)
         val jamaahAdapter = UmrahSimpleAdapter()
@@ -160,6 +163,16 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         rv_payment_data.layoutManager = paymentLayoutManager
         rv_payment_data.adapter = paymentAdapter
 
+        val buttonLayoutManager = LinearLayoutManager(context)
+        val buttonAdapter = UmrahOrderDetailButtonAdapter(this)
+        buttonAdapter.setData(umrahOrderDetailViewModel.transformToButtonModel(data.actionButtons))
+        rv_action_button.layoutManager = buttonLayoutManager
+        rv_action_button.adapter = buttonAdapter
+
+    }
+
+    override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
+        RouteManager.route(context, buttonViewModel.buttonLink)
     }
 
     companion object {

@@ -90,6 +90,16 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         return data
     }
 
+    fun transformToButtonModel(actionButtons: List<UmrahOrderDetailsEntity.ActionButton>): List<UmrahOrderDetailButtonViewModel> {
+        val data = arrayListOf<UmrahOrderDetailButtonViewModel>()
+
+        for (item in actionButtons) {
+            data.add(UmrahOrderDetailButtonViewModel(item.label, item.buttonType, item.body.appUrl))
+        }
+
+        return data
+    }
+
     companion object {
         const val PARAM_ORDER_ID = "orderId"
         const val PARAM_ORDER_CATEGORY_STR = "orderCategoryStr"
