@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.track.TrackApp;
@@ -8,6 +10,7 @@ import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +22,11 @@ import java.util.Map;
  */
 public class TopAdsGtmTracker {
 
-    private List<Object> dataLayerList;
+    private ArrayList dataLayerList;
     private static volatile TopAdsGtmTracker topAdsGtmTracker = new TopAdsGtmTracker();
 
     public TopAdsGtmTracker() {
-        dataLayerList = new ArrayList<>();
+        dataLayerList = new ArrayList();
     }
 
     public static TopAdsGtmTracker getInstance() {
@@ -79,33 +82,33 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
         if (!dataLayerList.isEmpty()) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    "event", "productView",
-                    "eventCategory", "search result",
-                    "eventAction", "impression - product - topads",
-                    "eventLabel", keyword,
-                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
-                            "impressions", DataLayer.listOf(
-                                    dataLayerList.toArray(new Object[dataLayerList.size()])
-                            )
-                    ));
-            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            Bundle bundle = new Bundle();
+            bundle.putString("eventCategory", "search result");
+            bundle.putString("eventAction", "impression - product - topads");
+            bundle.putString("eventLabel", keyword);
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, "/searchproduct - topads productlist");
+            bundle.putString("screenName", screenName);
+            bundle.putParcelableArrayList("items", products);
+
+            TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
             clearDataLayerList();
         }
     }
 
-    public void addSearchResultProductViewImpressions(Product product, int position) {
-        this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
-                "id", product.getId(),
-                "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
-                "brand", "none/other",
-                "variant", "none/other",
-                "category", product.getCategory().getId(),
-                "list", "/searchproduct - topads productlist",
-                "position", position,
-                "dimension83", isFreeOngkirActive(product) ? "bebas ongkir" : "none / other"));
+    public void addSearchResultProductViewImpressions(Product item, int position) {
+        Bundle product = new Bundle();
+        String itemCategory = !TextUtils.isEmpty(item.getCategoryBreadcrumb()) ?
+                item.getCategoryBreadcrumb() : "none / other";
+        product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getId());
+        product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getName());
+        product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory);
+        product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
+        product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPriceFormat().replaceAll("[^0-9]", "")));
+        product.putLong(FirebaseAnalytics.Param.INDEX, position);
+        this.dataLayerList.add(product);
     }
 
     public void eventInboxProductView(TrackingQueue trackingQueue) {
@@ -255,28 +258,25 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventSearchResultProductClick(Context context, String keyword, Product product, int position) {
-        Analytics tracker = getTracker();
-        if (tracker != null) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    "event", "productClick",
-                    "eventCategory", "search result",
-                    "eventAction", "click - product - topads",
-                    "eventLabel", keyword,
-                    "ecommerce", DataLayer.mapOf(
-                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
-                                    "products", DataLayer.listOf(DataLayer.mapOf(
-                                            "name", product.getName(),
-                                            "id", product.getId(),
-                                            "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
-                                            "brand", "none/other",
-                                            "category", product.getCategory().getId(),
-                                            "variant", "none/other",
-                                            "position", position,
-                                            "dimension83", isFreeOngkirActive(product) ? "bebas ongkir" : "none / other"))))
-            );
-            tracker.sendEnhanceEcommerceEvent(map);
-        }
+    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String screenName) {
+        Bundle product = new Bundle();
+        product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getId());
+        product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getName());
+        product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
+        product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
+        product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPriceFormat().replaceAll("[^0-9]", "")));
+        product.putLong(FirebaseAnalytics.Param.INDEX, 1);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("eventCategory", "search result");
+        bundle.putString("eventAction", "click - product - topads");
+        bundle.putString("eventLabel", keyword);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, "/searchproduct - topads productlist");
+        bundle.putString("screenName", screenName);
+        bundle.putBundle("items", product);
+
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     private static boolean isFreeOngkirActive(Product product) {
@@ -998,5 +998,13 @@ public class TopAdsGtmTracker {
                                         "position", position + 1))))
         );
         tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    private static double safeParseDouble(String price) {
+        try {
+            return Double.parseDouble(price);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
