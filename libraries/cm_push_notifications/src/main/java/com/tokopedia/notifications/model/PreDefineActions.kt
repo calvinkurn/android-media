@@ -15,10 +15,13 @@ data class PreDefineActions(
         var title: String? = null,
 
         @SerializedName(CMConstant.PayloadKeys.MESSAGE)
-        var msg: String? = null
+        var msg: String? = null,
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        var element_id: String? = ""
 
-) : Parcelable{
+) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString())
@@ -27,6 +30,7 @@ data class PreDefineActions(
         parcel.writeString(type)
         parcel.writeString(title)
         parcel.writeString(msg)
+        parcel.writeString(element_id)
     }
 
     override fun describeContents(): Int {
