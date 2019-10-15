@@ -99,12 +99,6 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetFeatureProductListUseCase(gmCommonRepository);
-    }
-
-    @Provides
-    @ProductManageScope
     public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
                                                               @Named(GQLQueryNamedConstant.SHOP_INFO)
                                                                       String gqlQuery) {
