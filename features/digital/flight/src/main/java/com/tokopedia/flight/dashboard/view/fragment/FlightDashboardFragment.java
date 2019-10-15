@@ -475,7 +475,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, null, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
     }
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
