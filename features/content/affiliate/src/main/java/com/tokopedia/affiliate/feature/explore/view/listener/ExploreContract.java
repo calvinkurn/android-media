@@ -45,6 +45,7 @@ public interface ExploreContract {
 
         void onSuccessGetData(List<Visitable<?>> products,
                               String cursor,
+                              String keyword,
                               boolean isSearch);
 
         void onErrorGetData(String error);
@@ -75,7 +76,7 @@ public interface ExploreContract {
 
         void onErrorCheckQuota(String error, String productId, String adId);
 
-        void onAutoCompleteItemClicked(String keyword);
+        void onAutoCompleteItemClicked(String suggestionText, String keyword);
 
         void onAutoCompleteIconClicked(String keyword);
 

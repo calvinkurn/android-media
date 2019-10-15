@@ -659,9 +659,9 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+    public void onSuccessGetData(List<Visitable<?>> products, String cursor, String keyword, boolean isSearch) {
         if (isSearch)
-            trackImpressionNonEE(products);
+            trackImpressionSearch(products, exploreParams.getKeyword());
 
         trackImpression(products);
 
@@ -856,8 +856,8 @@ public class ExploreFragment
     }
 
     @Override
-    public void onAutoCompleteItemClicked(String keyword) {
-        affiliateAnalytics.onAutoCompleteClicked(keyword);
+    public void onAutoCompleteItemClicked(String suggestionText, String keyword) {
+        affiliateAnalytics.onAutoCompleteClicked(suggestionText, keyword);
         clearAutoCompleteAdapter(keyword);
         onSearchSubmitted(keyword);
         autoCompleteLayout.setVisibility(View.GONE);
@@ -955,19 +955,33 @@ public class ExploreFragment
         presenter.detachView();
     }
 
-    private void trackImpressionNonEE(List<Visitable<?>> visitables){
+    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword){
         for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
 
             if (visitable instanceof ExploreProductViewModel) {
                 ExploreProductViewModel model = (ExploreProductViewModel) visitable;
                 if (!TextUtils.isEmpty(model.getExploreCardViewModel().getProductId()))
-                    affiliateAnalytics.trackProductImpressionNonEE(model.getExploreCardViewModel().getProductId());
+                    affiliateAnalytics.trackProductImpressionSearchResult(
+                            keyword,
+                            model.getExploreCardViewModel().getAdId(),
+                            model.getExploreCardViewModel().getTitle(),
+                            model.getExploreCardViewModel().getProductId(),
+                            model.getExploreCardViewModel().getCommissionValue(),
+                            i
+                    );
             } else if (visitable instanceof RecommendationViewModel) {
                 RecommendationViewModel model = (RecommendationViewModel) visitable;
                 for (ExploreCardViewModel card : model.getCards()) {
                     if (!TextUtils.isEmpty(card.getProductId()))
-                        affiliateAnalytics.trackProductImpressionNonEE(card.getProductId());
+                        affiliateAnalytics.trackProductImpressionSearchResult(
+                                keyword,
+                                card.getAdId(),
+                                card.getTitle(),
+                                card.getProductId(),
+                                card.getCommissionValue(),
+                                i
+                        );
                 }
             }
         }
@@ -992,6 +1006,7 @@ public class ExploreFragment
 
     private void trackProductImpression(ExploreCardViewModel card, int position) {
         affiliateAnalytics.onProductImpression(
+                card.getAdId(),
                 card.getTitle(),
                 card.getProductId(),
                 card.getCommissionValue(),
@@ -1002,6 +1017,7 @@ public class ExploreFragment
 
     private void trackProductClick(ExploreCardViewModel card, int position) {
         affiliateAnalytics.onProductClicked(
+                card.getAdId(),
                 card.getTitle(),
                 card.getProductId(),
                 card.getCommissionValue(),
@@ -1010,7 +1026,14 @@ public class ExploreFragment
         );
 
         if (!TextUtils.isEmpty(exploreParams.getKeyword())){
-            affiliateAnalytics.onProductSearchClicked(card.getProductId());
+            affiliateAnalytics.onProductSearchClicked(
+                    exploreParams.getKeyword(),
+                    card.getAdId(),
+                    card.getTitle(),
+                    card.getProductId(),
+                    card.getCommissionValue(),
+                    position
+            );
         }
     }
 

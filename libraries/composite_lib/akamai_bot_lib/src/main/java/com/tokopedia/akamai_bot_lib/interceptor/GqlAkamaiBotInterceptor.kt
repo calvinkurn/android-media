@@ -1,4 +1,4 @@
-package com.example.akamai_bot_lib.interceptor
+package com.tokopedia.akamai_bot_lib.interceptor
 
 import com.akamai.botman.CYFMonitor
 import okhttp3.Headers
@@ -36,6 +36,12 @@ class GqlAkamaiBotInterceptor : Interceptor {
                             newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                     ?: "")
                             newRequest.addHeader("X-TKPD-AKAMAI","login")
+                        }else if (it.contains("register") ){
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                            newRequest.addHeader("X-TKPD-AKAMAI","register")
+                        }else{
+                            // none
                         }
 
                     }

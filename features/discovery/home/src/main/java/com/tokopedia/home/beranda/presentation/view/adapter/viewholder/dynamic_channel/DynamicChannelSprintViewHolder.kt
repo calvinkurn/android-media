@@ -61,6 +61,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         if(channel.header.backImage.isNotBlank()) {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
+            backgroundThematic.show()
             seeAllButton.show()
             seeAllButtonText.hide()
             seeAllButton.setOnClickListener {
@@ -77,6 +78,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         }else {
             seeAllButton.hide()
             seeAllButtonText.show()
+            backgroundThematic.hide()
         }
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
