@@ -62,6 +62,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -91,6 +92,7 @@ dependencies {
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler

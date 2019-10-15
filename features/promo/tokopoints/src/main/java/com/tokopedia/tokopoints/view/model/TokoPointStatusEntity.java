@@ -16,6 +16,12 @@ public class TokoPointStatusEntity {
     @SerializedName("fullName")
     private String userName;
 
+    @SerializedName("emptyMessage")
+    EmptyMessage emptyMessage;
+
+    @SerializedName("cta")
+    TokopointCta cta;
+
     public String getUserName() {
         return userName;
     }
@@ -40,11 +46,31 @@ public class TokoPointStatusEntity {
         this.points = points;
     }
 
+    public EmptyMessage getEmptyMessage() {
+        return emptyMessage;
+    }
+
+    public void setEmptyMessage(EmptyMessage emptyMessage) {
+        this.emptyMessage = emptyMessage;
+    }
+
+    public TokopointCta getCta() {
+        return cta;
+    }
+
+    public void setCta(TokopointCta cta) {
+        this.cta = cta;
+    }
+
     @Override
     public String toString() {
         return "TokoPointStatusEntity{" +
                 "tier=" + tier +
                 ", points=" + points +
+                ", userName='" + userName + '\'' +
+                ", emptyMessage=" + emptyMessage +
+                ", cta=" + cta +
                 '}';
     }
+
 }
