@@ -218,4 +218,13 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // PushNotificationCheckerActivity
+    // tokopedia-android-internal://global/push-notification-troubleshooter
+    @JvmField
+    val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 }
