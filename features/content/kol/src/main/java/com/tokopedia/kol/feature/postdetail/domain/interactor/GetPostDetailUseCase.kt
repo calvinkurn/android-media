@@ -46,10 +46,10 @@ class GetPostDetailUseCase @Inject constructor(
 
     private fun createParamDynamicFeed(requestParams: RequestParams): RequestParams {
         return GetDynamicFeedUseCase.createRequestParams(
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_USER_ID, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_CURSOR, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, ""),
-                requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
+                userId = requestParams.getString(GetDynamicFeedUseCase.PARAM_USER_ID, ""),
+                cursor = requestParams.getString(GetDynamicFeedUseCase.PARAM_CURSOR, ""),
+                source = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, ""),
+                sourceId = requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
         )
     }
 

@@ -34,9 +34,15 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // ShipmentActivity
+    @JvmField
+    val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // NormalCheckoutActivity
     @JvmField
     val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
+    // CartAddressChoiceActivity
+    @JvmField
+    val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
 
     // ProductDetailActivity
     @JvmField
@@ -113,6 +119,14 @@ object ApplinkConstInternalMarketplace {
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
+
+    //GeolocationActivity
+    @JvmField
+    val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
+
+    //CodActivity
+    @JvmField
+    val COD = "$INTERNAL_MARKETPLACE/cod"
 
     // OnboardingActivity
     @JvmField
