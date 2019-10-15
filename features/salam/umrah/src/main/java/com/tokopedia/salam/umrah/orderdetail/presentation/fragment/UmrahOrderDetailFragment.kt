@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -131,7 +130,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
 
         val itemData = data.items[0]
         val metaData = Gson().fromJson(itemData.metadata, UmrahOrderDetailsMetaDataEntity::class.java)
-        Log.d("TextTitle", itemData.title)
+
         tg_umrah_package.text = itemData.title
         tg_umrah_travel.text = metaData.travelAgent
         tg_booking_code.text = metaData.bookingCode

@@ -58,9 +58,9 @@
                 android:id="@+id/tg_umrah_package"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Avissa Suites"
                 android:textColor="@color/Neutral_N700_96"
-                app:typographyType="heading_6"
-                tools:text="Avissa Suites" />
+                app:typographyType="heading_6" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_travel"

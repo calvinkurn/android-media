@@ -22,7 +22,7 @@ class UmrahSimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                 tg_umrah_title.setTextColor(resources.getColor(R.color.Neutral_N700_96))
             } else {
                 tg_umrah_title.weightType = Typography.REGULAR
-                tg_umrah_title.setTextColor(resources.getColor(R.color.Neutral_N700_20))
+                tg_umrah_title.setTextColor(resources.getColor(R.color.Neutral_N700_44))
             }
 
             if (item.description.isNotEmpty()) {
