@@ -107,8 +107,10 @@
 
     <!--ADD PIN-->
     <string name="title_onboard_pin">Tambahkan keamanan ekstra dengan PIN Tokopedia</string>
-    <string name="subtitle_onboard_pin">Gunakan PIN Tokopedia ketika transaksi dan penarikan dana menggunakan Saldo Tokopedia</string>
+    <string name="subtitle_onboard_pin">Supaya login selanjutnya lebih mudah, yuk gunakan PIN Tokopedia!</string>
+    <string name="subtitle_onboard_pin_2">PIN juga dapat digunakan ketika transaksi Saldo Tokopedia, lho.</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="ignore_pin">Nanti Saja</string>
     <string name="title_dialog_add_phone">Tambah Nomor HP</string>
     <string name="subtitle_dialog_add_phone">Tambah &amp; verifikasi nomor HP terlebih dahulu sebelum membuat PIN</string>
     <string name="cancel_dialog_add_phone">Batal</string>
@@ -117,4 +119,11 @@
     <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
     <string name="subtitle_confirm_create_pin">Masukkan kembali PIN Tokopedia kamu</string>
     <string name="error_wrong_pin">PIN yang Anda masukkan tidak sesuai</string>
+    <string name="complete_add_pin">Selesai</string>
+    <string name="title_complete_add_pin">PIN Tokopedia Kamu Berhasil Disimpan</string>
+    <string name="subtitle_complete_add_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi kamu</string>
+    <string name="ticker_complete_add_pin">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun</string>
+
+    <!--ERROR MESSAGE-->
+    <string name="error_from_cotp">cotp failed</string>
 </resources>

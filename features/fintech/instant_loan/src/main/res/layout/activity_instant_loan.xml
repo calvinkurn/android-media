@@ -73,7 +73,7 @@
                         android:background="@drawable/top_bar_shadow" />
 
                     <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
-                        android:id="@+id/pager"
+                        android:id="@+id/il_pager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/il_margin_medium" />

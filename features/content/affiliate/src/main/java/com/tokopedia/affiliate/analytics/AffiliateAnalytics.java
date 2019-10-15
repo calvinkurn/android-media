@@ -176,14 +176,14 @@ public class AffiliateAnalytics {
     }
 
     //    9
-    public void onProductImpression(String productName, String productId, int productComission,
+    public void onProductImpression(String adId, String productName, String productId, int productComission,
                                     String sectionName, int position) {
         HashMap<String, Object> data = setDefaultDataWithUserId(
                 AffiliateEventTracking.Screen.BYME_EXPLORE,
                 AffiliateEventTracking.Event.PRODUCT_VIEW,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
-                "impression product affiliate",
-                String.format("%s-%s", sectionName, productId)
+                AffiliateEventTracking.Action.IMPRESSION_PRODUCT,
+                String.format("%s-%s-%s", sectionName, productId, adId)
         );
         data.put(
                 "ecommerce",
@@ -197,14 +197,14 @@ public class AffiliateAnalytics {
     }
 
     //    10
-    public void onProductClicked(String productName, String productId, int productComission,
+    public void onProductClicked(String adId, String productName, String productId, int productComission,
                                  String sectionName, int position) {
         HashMap<String, Object> data = setDefaultDataWithUserId(
                 AffiliateEventTracking.Screen.BYME_EXPLORE,
                 AffiliateEventTracking.Event.PRODUCT_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
-                "click product affiliate",
-                String.format("%s-%s", sectionName, productId)
+                AffiliateEventTracking.Action.CLICK_PRODUCT,
+                String.format("%s-%s-%s", sectionName, productId, adId)
         );
         data.put(
                 "ecommerce",
@@ -460,24 +460,48 @@ public class AffiliateAnalytics {
         );
     }
 
-    public void onAutoCompleteClicked(String keyword) {
+    public void onAutoCompleteClicked(String suggestionText, String keyword) {
         getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 AffiliateEventTracking.Action.CLICK_SEARCH_SUGGESTION,
-                keyword);
+                String.format("%s-%s", suggestionText, keyword));
     }
 
-    public void trackProductImpressionNonEE(String productId) {
-        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+    public void trackProductImpressionSearchResult(String keyword, String adId, String productName, String productId, int productComission, int position) {
+        HashMap<String, Object> data = setDefaultDataWithUserId(
+                AffiliateEventTracking.Screen.BYME_EXPLORE,
+                AffiliateEventTracking.Event.AFFILIATE_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 AffiliateEventTracking.Action.IMPRESSION_PRODUCT,
-                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
+                String.format("%s-%s-%s-%s", AffiliateEventTracking.EventLabel.SEARCH_RESULT, productId, keyword, adId)
+        );
+        data.put(
+                "ecommerce",
+                getEnhancedEcommerceImpressions(productName,
+                        productId,
+                        productComission,
+                        AffiliateEventTracking.EventLabel.SEARCH_RESULT,
+                        position)
+        );
+        getAnalyticTracker().sendEnhanceEcommerceEvent(data);
     }
 
-    public void onProductSearchClicked(String productId) {
-        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+    public void onProductSearchClicked(String keyword, String adId, String productName, String productId, int productComission, int position) {
+        HashMap<String, Object> data = setDefaultDataWithUserId(
+                AffiliateEventTracking.Screen.BYME_EXPLORE,
+                AffiliateEventTracking.Event.AFFILIATE_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 AffiliateEventTracking.Action.CLICK_PRODUCT,
-                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
+                String.format("%s-%s-%s-%s", AffiliateEventTracking.EventLabel.SEARCH_RESULT, productId, keyword, adId)
+        );
+        data.put(
+                "ecommerce",
+                getEnhancedEcommerceImpressions(productName,
+                        productId,
+                        productComission,
+                        AffiliateEventTracking.EventLabel.SEARCH_RESULT,
+                        position)
+        );
+        getAnalyticTracker().sendEnhanceEcommerceEvent(data);
     }
 }

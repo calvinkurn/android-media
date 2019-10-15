@@ -31,9 +31,6 @@ public class SettingConstant {
     public static final int SETTING_BANK_ACCOUNT_ID = 33;
     public static final int SETTING_CREDIT_CARD_ID = 34;
     public static final int SETTING_DEBIT_INSTANT = 35;
-    public static final int SETTING_APP_NOTIF_ID = 41;
-    public static final int SETTING_EMAIL_NOTIF_ID = 42;
-
     public static final int SETTING_DEV_OPTIONS = 0;
     public static final int SETTING_APP_REVIEW_ID = 10;
 
@@ -48,8 +45,6 @@ public class SettingConstant {
 
     public static class PeopleUrl{
         public static final String BASE_URL = "https://ws.tokopedia.com/";
-        public static final String PATH_GET_NOTIF_SETTING = "v4/people/get_notification.pl";
-        public static final String PATH_EDIT_NOTIF_SETTING = "v4/action/people/edit_notification.pl";
     }
 
     public static String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
