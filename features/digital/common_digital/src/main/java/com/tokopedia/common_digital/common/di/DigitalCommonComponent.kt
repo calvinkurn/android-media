@@ -10,6 +10,7 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity
 import com.tokopedia.common_digital.common.DigitalRouter
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.user.session.UserSession
 
@@ -46,7 +47,9 @@ interface DigitalCommonComponent {
 
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
 
-    fun userSession(): UserSession;
+    fun userSession(): UserSession
+
+    fun rechargeAnalytics(): RechargeAnalytics
 
 }
 
