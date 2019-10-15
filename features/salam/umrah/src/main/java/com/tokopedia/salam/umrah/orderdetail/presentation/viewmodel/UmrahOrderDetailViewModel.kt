@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
@@ -48,14 +49,33 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         }
     }
 
-    fun transformToSimpleModel(detailsData: List<UmrahOrderDetailsEntity.DataDetail>): List<UmrahSimpleModel> {
+    fun transformToSimpleModel(detailsData: List<UmrahOrderDetailsEntity.DataDetail> = arrayListOf(),
+                               passengersData: List<UmrahOrderDetailsEntity.Passenger> = arrayListOf(),
+                               valueLabelData: List<UmrahValueLabelEntity> = arrayListOf())
+            : List<UmrahSimpleModel> {
         val data = arrayListOf<UmrahSimpleModel>()
 
-        for (item in detailsData) {
-            data.add(UmrahSimpleModel(
-                    title = item.label,
-                    description = item.value
-            ))
+        if (detailsData.isNotEmpty()) {
+            for (item in detailsData) {
+                data.add(UmrahSimpleModel(
+                        title = item.label,
+                        description = item.value,
+                        textColor = item.textColor
+                ))
+            }
+        } else if (passengersData.isNotEmpty()) {
+            for ((index, item) in passengersData.withIndex()) {
+                data.add(UmrahSimpleModel(
+                        title = "${index+1}. ${item.name}"
+                ))
+            }
+        } else if (valueLabelData.isNotEmpty()) {
+            for (item in valueLabelData) {
+                data.add(UmrahSimpleModel(
+                        title = item.label,
+                        description = item.value
+                ))
+            }
         }
 
         return data

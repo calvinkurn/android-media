@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_umrah_order_detail.*
 import kotlinx.android.synthetic.main.partial_umrah_order_detail_content.*
+import kotlinx.android.synthetic.main.partial_umrah_order_detail_footer.*
 import kotlinx.android.synthetic.main.partial_umrah_order_detail_header.*
 import javax.inject.Inject
 
@@ -116,7 +117,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         }
         val titleLayoutManager = LinearLayoutManager(context)
         val titleAdapter = UmrahSimpleAdapter()
-        titleAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(data.title))
+        titleAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(detailsData = data.title))
         rv_header_detail.layoutManager = titleLayoutManager
         rv_header_detail.adapter = titleAdapter
 
@@ -136,7 +137,31 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
             tg_booking_code.text = metaData.bookingCode
         }
 
+        val jamaahLayoutManager = LinearLayoutManager(context)
+        val jamaahAdapter = UmrahSimpleAdapter()
+        jamaahAdapter.isTitleBold = true
+        jamaahAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(passengersData = data.passenger))
+        rv_jamaah.layoutManager = jamaahLayoutManager
+        rv_jamaah.adapter = jamaahAdapter
+
         // footer section
+        val payMethodLayoutManager = LinearLayoutManager(context)
+        val payMethodAdapter = UmrahSimpleAdapter()
+        payMethodAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(valueLabelData = data.payMethod))
+        rv_payment_method.layoutManager = payMethodLayoutManager
+        rv_payment_method.adapter = payMethodAdapter
+
+        val pricingLayoutManager = LinearLayoutManager(context)
+        val pricingAdapter = UmrahSimpleAdapter()
+        pricingAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(detailsData = data.pricing))
+        rv_pricing.layoutManager = pricingLayoutManager
+        rv_pricing.adapter = pricingAdapter
+
+        val paymentLayoutManager = LinearLayoutManager(context)
+        val paymentAdapter = UmrahSimpleAdapter()
+        paymentAdapter.setData(umrahOrderDetailViewModel.transformToSimpleModel(detailsData = data.paymentsData))
+        rv_payment_data.layoutManager = paymentLayoutManager
+        rv_payment_data.adapter = paymentAdapter
 
     }
 
