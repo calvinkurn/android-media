@@ -68,15 +68,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return POSITION_UNDEFINED;
     }
 
-    public void addItem(int position, SettingItemViewModel model) {
-        this.settingItems.add(position, model);
-        this.notifyDataSetChanged();
-    }
-
-    public int getSize() {
-        return this.settingItems.size() == 0 ? 1 : this.settingItems.size() ;
-    }
-
     @Override
     public int getItemViewType(int position) {
         if (settingItems.get(position) instanceof SwitchSettingItemViewModel){

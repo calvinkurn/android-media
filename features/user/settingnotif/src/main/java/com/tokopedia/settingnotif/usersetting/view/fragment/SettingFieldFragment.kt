@@ -15,9 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
@@ -94,10 +92,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
         presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
-    }
-
-    override fun goToPushNotificationCheckerPage() {
-        RouteManager.route(context, ApplinkConst.PUSHNOTIFCHECKER)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

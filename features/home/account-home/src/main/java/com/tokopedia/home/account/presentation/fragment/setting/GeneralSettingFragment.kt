@@ -159,10 +159,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 getString(R.string.title_privacy_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_REVIEW_ID,
                 getString(R.string.title_app_review_setting)))
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
-                getString(R.string.title_app_advanced_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)))
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
+                getString(R.string.title_app_advanced_setting)))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,

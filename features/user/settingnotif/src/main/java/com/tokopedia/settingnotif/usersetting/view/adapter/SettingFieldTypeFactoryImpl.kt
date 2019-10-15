@@ -3,8 +3,13 @@ package com.tokopedia.settingnotif.usersetting.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.*
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingSections
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ChildSettingViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ParentSettingViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
     override fun type(settingSections: SettingSections): Int {
@@ -17,10 +22,6 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
 
     override fun type(childSetting: ChildSetting): Int {
         return ChildSettingViewHolder.LAYOUT
-    }
-
-    override fun type(pushNotifierTroubleshooterSetting: PushNotifierTroubleshooterSetting): Int {
-        return PushNotifCheckerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -38,7 +39,7 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
-            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent, settingListener)
+//            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent, settingListener)
             else -> createViewHolder(parent, type)
         }
     }

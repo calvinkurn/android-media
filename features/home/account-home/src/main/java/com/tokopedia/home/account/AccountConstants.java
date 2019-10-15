@@ -48,7 +48,7 @@ public class AccountConstants {
         public static final String LOGOUT = "logout";
         public static final String CLEAR_CACHE = "clear cache";
         public static final String USER_DATA = "user_data";
-        public static final String ADVANCED_SETTING = "pengaturan lanjutan";
+        public static final String ADVANCED_SETTING = "pengaturan tambahan";
         public static final String PERSONAL_DATA = "personal data";
         public static final String ADDRESS_LIST = "address list";
         public static final String KYC = "kyc";

@@ -5,6 +5,12 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.text.HtmlCompat
+import android.text.Html
+import android.view.View
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
@@ -26,14 +32,25 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
 
     override fun getSettingItems(): MutableList<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_CLEAR_CACHE,
-                getString(R.string.title_app_clear_cache)))
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_PUSH_NOTIFICATION,
+                getString(R.string.title_app_advanced_push_notification)))
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE,
+                getString(R.string.title_app_advanced_clear_cache)))
         return settingItems
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.addItemDecoration(DividerItemDecoration(activity))
     }
 
     override fun onItemClicked(settingId: Int) {
         when (settingId) {
-            SettingConstant.SETTING_APP_CLEAR_CACHE -> {
+            SettingConstant.SETTING_APP_ADVANCED_PUSH_NOTIFICATION -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER)
+            }
+            SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.CLEAR_CACHE)
                 showDialogClearCache()
             }
