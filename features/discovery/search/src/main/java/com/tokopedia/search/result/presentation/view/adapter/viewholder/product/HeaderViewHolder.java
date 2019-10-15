@@ -26,6 +26,7 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
@@ -37,10 +38,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_header_layout;
+    private LinearLayout tickerContainer;
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
+    private TickerListener tickerListener;
     private SuggestionListener suggestionListener;
     private QuickFilterListener quickFilterListener;
     private QuickFilterAdapter quickFilterAdapter;
@@ -48,14 +51,17 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private GuidedSearchAdapter guidedSearchAdapter;
 
     public HeaderViewHolder(View itemView,
+                            TickerListener tickerListener,
                             SuggestionListener suggestionListener,
                             QuickFilterListener quickFilterListener,
                             GuidedSearchListener guidedSearchListener,
                             BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
+        this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
+        tickerContainer = itemView.findViewById(R.id.ticker_container);
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
@@ -97,6 +103,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public void bind(final HeaderViewModel element) {
         bindAdsBannerView(element);
 
+        bindTickerView(element);
+
         bindSuggestionView(element);
 
         bindQuickFilterView(element);
@@ -106,6 +114,26 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private void bindAdsBannerView(final HeaderViewModel element) {
         adsBannerView.displayAds(element.getCpmModel());
+    }
+
+    private void bindTickerView(final HeaderViewModel element) {
+        if (element.getTickerViewModel() != null) {
+            tickerContainer.removeAllViews();
+            View tickerView = LayoutInflater.from(context).inflate(R.layout.search_ticker_layout, null);
+            TextView tickerText = tickerView.findViewById(R.id.ticker_text_view);
+            if (!TextUtils.isEmpty(element.getTickerViewModel().getText())) {
+                tickerText.setText(Html.fromHtml(element.getTickerViewModel().getText()));
+                tickerText.setOnClickListener(v -> {
+                    if (tickerListener != null && !TextUtils.isEmpty(element.getTickerViewModel().getQuery())) {
+                        tickerListener.onTickerClicked(element.getTickerViewModel().getQuery());
+                    }
+                });
+                tickerText.setVisibility(View.VISIBLE);
+            } else {
+                tickerText.setVisibility(View.GONE);
+            }
+            tickerContainer.addView(tickerView);
+        }
     }
 
     private void bindSuggestionView(final HeaderViewModel element) {

@@ -57,6 +57,7 @@ import com.tokopedia.search.result.presentation.view.listener.QuickFilterListene
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -98,6 +99,7 @@ public class ProductListFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView,
         ProductListSectionContract.View,
         ProductListener,
+        TickerListener,
         SuggestionListener,
         GuidedSearchListener,
         RelatedSearchListener,
@@ -255,6 +257,7 @@ public class ProductListFragment
 
     private void setupAdapter() {
         productListTypeFactory = new ProductListTypeFactoryImpl(
+                this,
                 this, this,
                 this, this,
                 this, this,
@@ -603,6 +606,11 @@ public class ProductListFragment
     @Override
     public void onWishlistButtonClicked(final ProductItemViewModel productItem) {
         presenter.handleWishlistButtonClicked(productItem);
+    }
+
+    @Override
+    public void onTickerClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override

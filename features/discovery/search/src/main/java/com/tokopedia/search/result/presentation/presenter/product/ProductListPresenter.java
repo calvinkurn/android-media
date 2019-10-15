@@ -616,6 +616,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
+        headerViewModel.setTickerViewModel(productViewModel.getTickerModel());
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
