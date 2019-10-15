@@ -84,9 +84,9 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdCoreRouter) {
-                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
-                            (context);
+                    intent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
                     context.startActivity(intent);
+
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                     TrackApp.getInstance().getGTM().sendGeneralEvent("clickNavigationDrawer",
                             "left navigation",
