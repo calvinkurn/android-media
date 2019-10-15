@@ -12,6 +12,7 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -23,6 +24,7 @@ import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
@@ -67,6 +69,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
     var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
     val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     companion object {
         val TYPE_CAROUSEL = "carousel"
@@ -107,7 +110,10 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                         LinearLayoutManager.HORIZONTAL,
                         false
                 )
-
+                /**
+                 * Attach startSnapHelper to recyclerView
+                 */
+                startSnapHelper.attachToRecyclerView(recyclerView)
                 /**
                  * Make recyclerview to fill viewport width
                  */

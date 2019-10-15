@@ -61,6 +61,9 @@
                 android:layout_marginRight="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
 
         </LinearLayout>
@@ -71,6 +74,9 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_toStartOf="@+id/btn_inbox"
             android:layout_toLeftOf="@+id/btn_inbox"/>
 
@@ -80,6 +86,9 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_toStartOf="@+id/btn_notification"
             android:layout_toLeftOf="@+id/btn_notification"/>
 
@@ -90,7 +99,10 @@
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
-            android:scaleType="center"/>
+            android:scaleType="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
