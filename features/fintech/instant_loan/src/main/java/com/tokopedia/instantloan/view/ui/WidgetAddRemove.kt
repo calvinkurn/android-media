@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.tokopedia.instantloan.R
 import kotlinx.android.synthetic.main.widget_add_remove.view.*
 
 open class WidgetAddRemove @JvmOverloads constructor(
@@ -43,22 +42,22 @@ open class WidgetAddRemove @JvmOverloads constructor(
     private fun init(attrs: AttributeSet?) {
 
         attrs?.let { attributes ->
-            val typedArray = context.obtainStyledAttributes(attributes, R.styleable.WidgetAddRemove)
+            val typedArray = context.obtainStyledAttributes(attributes, com.tokopedia.instantloan.R.styleable.WidgetAddRemove)
             try {
                 enableBtnTintColor = typedArray.getColor(
-                        R.styleable.WidgetAddRemove_war_btnEnableTintColor,
+                        com.tokopedia.instantloan.R.styleable.WidgetAddRemove_war_btnEnableTintColor,
                         Color.parseColor(defaultEnableColor)
                 )
                 disableBtnTintColor = typedArray.getColor(
-                        R.styleable.WidgetAddRemove_war_btnDisableTintColor,
+                        com.tokopedia.instantloan.R.styleable.WidgetAddRemove_war_btnDisableTintColor,
                         Color.parseColor(defaultDisableColor)
                 )
                 minQuantity = typedArray.getInt(
-                        R.styleable.WidgetAddRemove_war_minQuantity,
+                        com.tokopedia.instantloan.R.styleable.WidgetAddRemove_war_minQuantity,
                         minQuantity
                 )
                 maxQuantity = typedArray.getInt(
-                        R.styleable.WidgetAddRemove_war_maxQuantity,
+                        com.tokopedia.instantloan.R.styleable.WidgetAddRemove_war_maxQuantity,
                         maxQuantity
                 )
             } finally {
@@ -145,7 +144,7 @@ open class WidgetAddRemove @JvmOverloads constructor(
     }
 
     protected fun getLayoutResId(): Int {
-        return R.layout.widget_add_remove
+        return com.tokopedia.instantloan.R.layout.widget_add_remove
     }
 
 

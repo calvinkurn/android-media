@@ -159,4 +159,5 @@
 
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
     <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
+    <string name="title_instantloan">Dana Instan</string>
 </resources>
