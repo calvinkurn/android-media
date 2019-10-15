@@ -116,9 +116,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     open fun getParamInt(paramName: String, arguments: Bundle?,
                          savedInstanceState: Bundle?): Int {
         return when {
-            savedInstanceState != null -> savedInstanceState.getInt(paramName, 0)
-            arguments != null -> arguments.getInt(paramName, 0)
-            else -> 0
+            savedInstanceState != null -> savedInstanceState.getInt(paramName, -1)
+            arguments != null -> arguments.getInt(paramName, -1)
+            else -> -1
         }
     }
 

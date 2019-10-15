@@ -295,7 +295,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                         doLogout();
                         if(getView() != null){
                             String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
-                            Toaster.Companion.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
+                            Toaster.INSTANCE.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
                         }
                         return null;
                     });
