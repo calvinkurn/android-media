@@ -128,10 +128,8 @@ class UmrahOrderDetailFragment : BaseDaggerFragment() {
         rv_umrah_details.layoutManager = detailLayoutManager
         rv_umrah_details.adapter = detailAdapter
 
-        val itemData = data.items[0]
-        val metaData = Gson().fromJson(itemData.metadata, UmrahOrderDetailsMetaDataEntity::class.java)
-
-        tg_umrah_package.text = itemData.title
+        val metaData = Gson().fromJson(data.items[0].metadata, UmrahOrderDetailsMetaDataEntity::class.java)
+        tg_umrah_package.text = data.items[0].title
         tg_umrah_travel.text = metaData.travelAgent
         tg_booking_code.text = metaData.bookingCode
 
