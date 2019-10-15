@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -244,6 +243,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             onProductChange(this, selectedVariantId)
         }
         prescription_ticker.showWithCondition(productInfoAndVariant.productInfo.basic.needPrescription)
+
+        if (viewModel.isUserSessionActive() && insuranceEnabled) {
+            generateInsuranceRequest()
+            viewModel.getInsuranceProductRecommendation(insuranceRecommendationRequest)
+        }
     }
 
     private fun goToHargaFinal() {
@@ -842,13 +846,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
 
-        if (isInsuranceSelected &&
-                !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
-                !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
-
-            if (isErrorInInsurance()) {
-                return
-            }
+        if (isErrorInInsurance() ||
+                (isInsuranceSelected &&
+                        selectedInsuranceProduct.cartShopsList.isNullOrEmpty())) {
+            return
         }
 
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
@@ -1117,12 +1118,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-
-        if (viewModel.isUserSessionActive()) {
-            generateInsuranceRequest()
-        }
-
-        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceEnabled, insuranceRecommendationRequest)
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -1200,16 +1196,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
-        Handler().postDelayed({
-            selectedProductInfo?.let {
-                insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
-                fragmentViewModel.viewModels.add(insuranceViewModel)
-                adapter.addSingleDataViewModel(insuranceViewModel)
-                adapter.notifyDataSetChanged()
-                renderActionButton(it)
-                renderTotalPrice(it, viewModel.selectedwarehouse)
-            }
-        }, 600)
+        selectedProductInfo?.let {
+            insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
+            fragmentViewModel.viewModels.add(insuranceViewModel)
+            adapter.addSingleDataViewModel(insuranceViewModel)
+            adapter.notifyDataSetChanged()
+            renderActionButton(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
+        }
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {

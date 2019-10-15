@@ -97,9 +97,7 @@ class AffiliateDashboardFragment :
     }
 
     private val coachMark: CoachMark by lazy {
-        with(CoachMarkBuilder()) {
-            allowPreviousButton(false)
-        }.build()
+        CoachMarkBuilder().build()
     }
 
     private val coachMarkIncomeItem: CoachMarkItem by lazy {

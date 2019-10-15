@@ -11,15 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -28,14 +25,9 @@ import java.util.List;
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
-    private static final int DEFAULT_BANK_ID = 1;
+    private static final String DEFAULT_BANK_ID = "1";
     WithdrawAnalytics analytics;
 
-    public static final int REFUND = 0;
-    public static final int PENGHASILAN = 1;
-    public static final int MAX_BANK_DISPLAY_COUNT = 3;
-
-    private int currentTab = 0;
 
     int selectedItem;
 
@@ -45,7 +37,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     private final List<BankAccount> listBank;
-    private final List<BankAccount> masterBankList;
 
     private int isEmpty = 0;
     private WithdrawContract.View context;
@@ -59,7 +50,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         this.selectedBankId = "";
         this.selectedItem = -1;
         this.accountButton = new BankAccount();
-        this.masterBankList = new ArrayList<>();
         this.analytics = analytics;
     }
 
@@ -68,23 +58,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public void setList(List<BankAccount> listBank) {
-
-        masterBankList.clear();
-        masterBankList.addAll(listBank);
-        Collections.sort(masterBankList, (o1, o2) -> {
-            if (o1.getIsDefaultBank() < o2.getIsDefaultBank()) {
-                return 1;
-            }
-            return 0;
-        });
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                 new Callback(new ArrayList<>(this.listBank), new ArrayList<>(listBank)));
         diffResult.dispatchUpdatesTo(this);
+
         this.listBank.clear();
-        for (int i = 0; i <= MAX_BANK_DISPLAY_COUNT; i++) {
-            if (masterBankList.size() > i)
-                this.listBank.add(masterBankList.get(i));
-        }
+        this.listBank.addAll(listBank);
         this.listBank.add(accountButton);
     }
 
@@ -129,13 +108,11 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         ImageView mRadio;
         TextView bankName;
         TextView bankAccountName;
-        TextView adminFee;
 
         public ItemBankViewHolder(View itemView) {
             super(itemView);
             bankName = itemView.findViewById(R.id.bank_name);
             bankAccountName = itemView.findViewById(R.id.bank_acc_name);
-            adminFee = itemView.findViewById(R.id.tvAdminFee);
             mRadio = itemView.findViewById(R.id.radio);
         }
     }
@@ -159,22 +136,15 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         return new ItemBankViewHolder(parentView);
     }
 
-    public void setCurrentTab(int currentTab) {
-        this.currentTab = currentTab;
-        notifyDataSetChanged();
-    }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
         switch (holder.getItemViewType()) {
             case 1:
-                if (listBank.size()-1 < 3) {
+                if (listBank.size() < 4) {
                     holder.text.setText(context.getStringResource(R.string.title_add_account_bank));
-                } else if (listBank.size()-1 == 3) {
-                    holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
                 } else {
-                    holder.text.setText(context.getStringResource(R.string.title_set_rekening_utama));
+                    holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
                 }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -195,35 +165,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 Context context = viewHolder.itemView.getContext();
                 BankAccount thisItem = listBank.get(position);
 
-                if (thisItem.getAdminFee() > 0) {
-                    String adminFeeStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(thisItem.getAdminFee(), false);
-                    viewHolder.adminFee.setText(context.getString(R.string.swd_admin_fee, adminFeeStr));
-                    viewHolder.adminFee.setVisibility(View.VISIBLE);
-                } else {
-                    viewHolder.adminFee.setText("");
-                    viewHolder.adminFee.setVisibility(View.GONE);
-                }
-
                 View.OnClickListener l = (View v) -> {
                     analytics.eventClickAccountBank();
                     changeItemSelected(position);
                 };
-                if (thisItem.getStatus() == 0) {
-                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
-                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
-                    viewHolder.adminFee.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
-                    holder.itemView.setOnClickListener(null);
-                } else {
-                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.grey_796));
-                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.grey_button_compat));
-                    viewHolder.adminFee.setTextColor(context.getResources().getColor(R.color.black_40));
-                    holder.itemView.setOnClickListener(l);
-                }
+                holder.itemView.setOnClickListener(l);
 
                 Drawable drawabl;
-                if (thisItem.getStatus() == 0) {
-                    drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_disabled);
-                } else if (listBank.get(position).isChecked()) {
+                if (listBank.get(position).isChecked()) {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_selected);
                 } else {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_default);
@@ -235,7 +184,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 } else {
                     viewHolder.bankName.setText(thisItem.getBankName());
                     viewHolder.bankAccountName.setText(
-                            String.format("%s • %s", thisItem.getAccountNo(), thisItem.getAccountName()));
+                            String.format("%s • %s", thisItem.getBankAccountNumber(), thisItem.getBankAccountName()));
                 }
                 break;
         }
@@ -271,7 +220,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     public void setDefault() {
         if (listBank.size() > 0) {
             for (int i = 0; i < listBank.size(); i++) {
-                if (DEFAULT_BANK_ID == listBank.get(i).getIsDefaultBank()) {
+                if (DEFAULT_BANK_ID.equalsIgnoreCase(listBank.get(i).getType())) {
                     selectedItem = i;
                     listBank.get(selectedItem).setChecked(true);
                     break;
@@ -306,8 +255,8 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
             if (oldItem instanceof BankAccount) {
                 return newItem instanceof BankAccount
-                        && ((BankAccount) oldItem).getBankAccountID() != 0
-                        && (((BankAccount) oldItem).getBankAccountID() == ((BankAccount) newItem).getBankAccountID());
+                        && ((BankAccount) oldItem).getBankAccountId() != null
+                        && ((BankAccount) oldItem).getBankAccountId().equals(((BankAccount) newItem).getBankAccountId());
             }
             return false;
         }
@@ -323,13 +272,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
                 return oldPost.getBankName() != null &&
                         oldPost.getBankName().equalsIgnoreCase(newPost.getBankName()) &&
-                        oldPost.getAccountNo() != null &&
-                        oldPost.getAccountNo().equalsIgnoreCase(newPost.getAccountNo()) &&
-                        oldPost.getAccountNo() != null &&
-                        oldPost.getAccountNo().equalsIgnoreCase(newPost.getAccountNo());
+                        oldPost.getBankAccountNumber() != null &&
+                        oldPost.getBankAccountNumber().equalsIgnoreCase(newPost.getBankAccountNumber()) &&
+                        oldPost.getBankAccountName() != null &&
+                        oldPost.getBankAccountName().equalsIgnoreCase(newPost.getBankAccountName());
             }
             return oldItem.equals(newItem);
         }
     }
-
 }

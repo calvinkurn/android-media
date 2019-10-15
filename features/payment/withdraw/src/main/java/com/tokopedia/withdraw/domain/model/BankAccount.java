@@ -10,171 +10,166 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BankAccount implements Parcelable {
 
-    @SerializedName("bankID")
+    @SerializedName("bank_id")
     @Expose
-    private long bankID;
-    @SerializedName("accountNo")
+    private String bankId;
+    @SerializedName("acc_id")
     @Expose
-    private String accountNo;
-    @SerializedName("bankName")
+    private String bankAccountId;
+    @SerializedName("acc_name")
+    @Expose
+    private String bankAccountName;
+    @SerializedName("branch")
+    @Expose
+    private String bankBranch;
+    @SerializedName("bank_name")
     @Expose
     private String bankName;
-    @SerializedName("bankAccountID")
+    @SerializedName("acc_number")
     @Expose
-    private long bankAccountID;
-    @SerializedName("minAmount")
+    private String bankAccountNumber;
+
+    @SerializedName("type")
     @Expose
-    private long minAmount;
-    @SerializedName("maxAmount")
-    @Expose
-    private long maxAmount;
-    @SerializedName("adminFee")
-    @Expose
-    private long adminFee;
-    @SerializedName("status")
-    @Expose
-    private long status;
-    @SerializedName("isVerifiedAccount")
-    @Expose
-    private long isVerifiedAccount;
-    @SerializedName("bankImageUrl")
-    @Expose
-    private String bankImageUrl;
-    @SerializedName("isDefaultBank")
-    @Expose
-    private int isDefaultBank;
-    @SerializedName("accountName")
-    @Expose
-    private String accountName;
+    private String type;
 
     private boolean isChecked;
 
-    public long getBankID() {
-        return bankID;
+    /**
+     * @return The bankId
+     */
+    public String getBankId() {
+        return bankId;
     }
 
-    public void setBankID(long bankID) {
-        this.bankID = bankID;
+    /**
+     * @param bankId The bank_id
+     */
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
     }
 
-    public String getAccountNo() {
-        return accountNo;
+    /**
+     * @return The bankBranch
+     */
+    public String getBankBranch() {
+        return bankBranch;
     }
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    /**
+     * @param bankBranch The bank_branch
+     */
+    public void setBankBranch(String bankBranch) {
+        this.bankBranch = bankBranch;
     }
 
+    /**
+     * @return The bankAccountName
+     */
+    public String getBankAccountName() {
+        return MethodChecker.fromHtml(bankAccountName).toString();
+    }
+
+    /**
+     * @param bankAccountName The bank_account_name
+     */
+    public void setBankAccountName(String bankAccountName) {
+        this.bankAccountName = bankAccountName;
+    }
+
+    /**
+     * @return The bankAccountNumber
+     */
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    /**
+     * @param bankAccountNumber The bank_account_number
+     */
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
+    }
+
+    /**
+     * @return The bankAccountId
+     */
+    public String getBankAccountId() {
+        return bankAccountId;
+    }
+
+    /**
+     * @param bankAccountId The bank_account_id
+     */
+    public void setBankAccountId(String bankAccountId) {
+        this.bankAccountId = bankAccountId;
+    }
+
+    /**
+     * @return The bankName
+     */
     public String getBankName() {
-        return bankName;
+        return MethodChecker.fromHtml(bankName).toString();
     }
 
+    /**
+     * @param bankName The bank_name
+     */
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
 
-    public long getBankAccountID() {
-        return bankAccountID;
-    }
-
-    public void setBankAccountID(long bankAccountID) {
-        this.bankAccountID = bankAccountID;
-    }
-
-    public long getMinAmount() {
-        return minAmount;
-    }
-
-    public void setMinAmount(long minAmount) {
-        this.minAmount = minAmount;
-    }
-
-    public long getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(long maxAmount) {
-        this.maxAmount = maxAmount;
-    }
-
-    public long getAdminFee() {
-        return adminFee;
-    }
-
-    public void setAdminFee(long adminFee) {
-        this.adminFee = adminFee;
-    }
-
-    public long getStatus() {
-        return status;
-    }
-
-    public void setStatus(long status) {
-        this.status = status;
-    }
-
-    public long getIsVerifiedAccount() {
-        return isVerifiedAccount;
-    }
-
-    public void setIsVerifiedAccount(long isVerifiedAccount) {
-        this.isVerifiedAccount = isVerifiedAccount;
-    }
-
-    public String getBankImageUrl() {
-        return bankImageUrl;
-    }
-
-    public void setBankImageUrl(String bankImageUrl) {
-        this.bankImageUrl = bankImageUrl;
-    }
-
-    public int getIsDefaultBank() {
-        return isDefaultBank;
-    }
-
-    public void setIsDefaultBank(int isDefaultBank) {
-        this.isDefaultBank = isDefaultBank;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setChecked(boolean b) {
+        this.isChecked = b;
     }
 
     public boolean isChecked() {
         return isChecked;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.bankId);
+        dest.writeString(this.bankBranch);
+        dest.writeString(this.bankAccountName);
+        dest.writeString(this.bankAccountNumber);
+        dest.writeString(this.bankAccountId);
+        dest.writeString(this.bankName);
+        dest.writeString(this.type);
+        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
     }
 
     public BankAccount() {
     }
 
     protected BankAccount(Parcel in) {
-        bankID = in.readLong();
-        accountNo = in.readString();
-        bankName = in.readString();
-        bankAccountID = in.readLong();
-        minAmount = in.readLong();
-        maxAmount = in.readLong();
-        adminFee = in.readLong();
-        status = in.readLong();
-        isVerifiedAccount = in.readLong();
-        bankImageUrl = in.readString();
-        isDefaultBank = in.readInt();
-        accountName = in.readString();
+        this.bankId = in.readString();
+        this.bankBranch = in.readString();
+        this.bankAccountName = in.readString();
+        this.bankAccountNumber = in.readString();
+        this.bankAccountId = in.readString();
+        this.bankName = in.readString();
+        this.type = in.readString();
+        this.isChecked = in.readByte() != 0;
     }
 
     public static final Creator<BankAccount> CREATOR = new Creator<BankAccount>() {
         @Override
-        public BankAccount createFromParcel(Parcel in) {
-            return new BankAccount(in);
+        public BankAccount createFromParcel(Parcel source) {
+            return new BankAccount(source);
         }
 
         @Override
@@ -182,26 +177,4 @@ public class BankAccount implements Parcelable {
             return new BankAccount[size];
         }
     };
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(bankID);
-        dest.writeString(accountNo);
-        dest.writeString(bankName);
-        dest.writeLong(bankAccountID);
-        dest.writeLong(minAmount);
-        dest.writeLong(maxAmount);
-        dest.writeLong(adminFee);
-        dest.writeLong(status);
-        dest.writeLong(isVerifiedAccount);
-        dest.writeString(bankImageUrl);
-        dest.writeInt(isDefaultBank);
-        dest.writeString(accountName);
-    }
 }

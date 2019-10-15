@@ -168,10 +168,15 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 && accountModel.getTokopoints().getStatus() != null
                 && accountModel.getTokopoints().getStatus().getPoints() != null) {
             buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
+            buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getImageUrl());
         }
 
         if (accountModel.getTokopointsSumCoupon() != null) {
             buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
+        }
+
+        if (accountModel.getMembershipSumUserCard() != null) {
+            buyerCardViewModel.setTokomember(accountModel.getMembershipSumUserCard().getSumUserCardStr());
         }
 
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
