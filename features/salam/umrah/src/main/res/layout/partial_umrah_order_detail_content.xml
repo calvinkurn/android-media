@@ -45,6 +45,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_umrah_widget"
         app:tv_anchor1="@+id/ticket_head"
+        app:tv_anchor2="@+id/anchor_divider"
         app:tv_circleRadius="@dimen/dp_8">
 
         <LinearLayout
@@ -76,6 +77,11 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+        <View
+            android:id="@+id/anchor_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
         <LinearLayout
             android:id="@+id/ticket_bottom"
