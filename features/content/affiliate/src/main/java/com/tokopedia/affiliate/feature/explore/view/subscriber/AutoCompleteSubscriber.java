@@ -17,9 +17,11 @@ import rx.Subscriber;
  */
 public class AutoCompleteSubscriber extends Subscriber<GraphqlResponse> {
     private ExploreContract.View mainView;
+    private String keyword;
 
-    public AutoCompleteSubscriber(ExploreContract.View mainView) {
+    public AutoCompleteSubscriber(ExploreContract.View mainView, String keyword) {
         this.mainView = mainView;
+        this.keyword = keyword;
     }
 
     @Override
@@ -49,6 +51,7 @@ public class AutoCompleteSubscriber extends Subscriber<GraphqlResponse> {
         List<AutoCompleteViewModel> modelList = new ArrayList<>();
         for (AutoCompletePojo pojo : query.getData().getMatch()) {
             AutoCompleteViewModel model = new AutoCompleteViewModel(
+                    keyword,
                     pojo.getText(),
                     pojo.getFormatted());
             modelList.add(model);

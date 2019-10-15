@@ -15,7 +15,6 @@ import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.util.DurationUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -151,17 +150,17 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
             List<FlightAirlineViewModel> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
-            if (flightAirlineDBs != null && flightAirlineDBs.size() > 0) {
-                List<String> airlineLogoList = new ArrayList<>();
-                for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                    FlightAirlineViewModel flightAirlineDB = flightAirlineDBs.get(i);
-                    airlineLogoList.add(flightAirlineDB.getLogo());
+            flightMultiAirlineView.setAirlineLogos(null);
+            tvAirline.setText("");
+            int airlineIndex = 0;
+            for (FlightAirlineViewModel airline : flightAirlineDBs) {
+                if (airlineIndex < flightAirlineDBs.size() - 1) {
+                    tvAirline.append(airline.getShortName() + " + ");
+                } else {
+                    tvAirline.append(airline.getShortName());
                 }
-                flightMultiAirlineView.setAirlineLogos(airlineLogoList);
-            } else {
-                flightMultiAirlineView.setAirlineLogos(null);
+                airlineIndex++;
             }
-            tvAirline.setText(R.string.flight_label_multi_maskapai);
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
             flightMultiAirlineView.setAirlineLogo(flightJourneyViewModel.getAirlineDataList().get(0).getLogo());

@@ -129,12 +129,12 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void isAllowToRegister(boolean isAllow) {
-        if (isAllow) {
-            presenter.getStatus();
-        } else {
+    public void isUserBlacklist(boolean isBlacklist) {
+        if (isBlacklist) {
             hideLoading();
             showStatusBlacklist();
+        } else {
+            presenter.getStatus();
         }
     }
 

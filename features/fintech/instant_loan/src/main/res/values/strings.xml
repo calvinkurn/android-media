@@ -65,6 +65,7 @@
     <string name="il_loan_processing_time_value">Kurang dari 24 Jam</string>
     <string name="il_dana_instant_interest_rate">Rp50.400 - Rp151.200</string>
     <string name="il_loan_category_label" >Pilih Kategori</string>
+    <string name="il_title_sort_but">Urutkan</string>
 
 
 </resources>

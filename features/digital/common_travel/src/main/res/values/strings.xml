@@ -76,9 +76,10 @@
     <string name="travel_contact_data_email_hint">namakamu@contoh.com</string>
     <string name="travel_contact_data_phone_number_hint">Minimum 9 digit</string>
     <string name="travel_contact_data_name_error">Nama belum diisi</string>
+    <string name="travel_contact_data_name_alphabet_only">Hanya masukkan huruf</string>
     <string name="travel_contact_data_email_error">Format e-mail salah</string>
     <string name="travel_contact_data_phone_number_error">Nomor telepon minimum 9 digit</string>
-    <string name="travel_contact_data_notice">Pastikan alamat e-mail dan nomor telepon yang tercantum sudah benar, karena e-voucher akan dikirim ke kontak tercantum.</string>
+    <string name="travel_contact_data_notice">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
 
     <string name="phone_code_format">+%1$d</string>
     <string name="phone_code_picker_label">(+%1$s)</string>
