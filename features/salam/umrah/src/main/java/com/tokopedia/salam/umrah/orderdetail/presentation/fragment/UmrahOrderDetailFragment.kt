@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
+import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -74,6 +76,17 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                 }
             }
         })
+
+        umrahOrderDetailViewModel.myWidgetData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    renderMyUmrahWidget(it.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,6 +98,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_order_detail),
                 orderId,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_order_detail)
+        )
+        umrahOrderDetailViewModel.getMyUmrahWidget(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_saya_by_order_id),
+                orderId,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_my_umrah_by_order_id)
         )
     }
 
@@ -166,9 +184,15 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         val buttonLayoutManager = LinearLayoutManager(context)
         val buttonAdapter = UmrahOrderDetailButtonAdapter(this)
         buttonAdapter.setData(umrahOrderDetailViewModel.transformToButtonModel(data.actionButtons))
+        rv_action_button.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rv_action_button.layoutManager = buttonLayoutManager
         rv_action_button.adapter = buttonAdapter
 
+    }
+
+    private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
+        my_umrah_widget.myUmrahModel = data
+        my_umrah_widget.buildView()
     }
 
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {

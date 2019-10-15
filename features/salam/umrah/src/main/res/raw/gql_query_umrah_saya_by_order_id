@@ -1,0 +1,11 @@
+query umrahWidgetUmrahSayaByOrderUUID($orderid: ID!) {
+  umrahWidgetUmrahSayaByOrderUUID(params: {orderUUID: $orderId}){
+    subHeader
+    header
+    nextActionText
+    mainButton{
+      text
+      link
+    }
+  }
+}

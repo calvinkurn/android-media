@@ -7,7 +7,6 @@ class MyUmrahWidgetModel (
         val header: String ="",
         val subHeader: String = "",
         val nextActionText: String = "",
-        val mainButton: MainButton = MainButton()
-) {
-    class MainButton(val text: String = "", val link: String = "")
-}
+        val mainButtonText: String = "",
+        val mainButtonLink: String = ""
+)

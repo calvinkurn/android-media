@@ -187,7 +187,7 @@
                 "value": "Rp 10000000",
                 "label": "Uang Muka",
                 "backgroundColor": "",
-                "textColor": "#ff5722"
+                "textColor": ""
             },
             {
                 "imageUrl": "",
@@ -203,7 +203,7 @@
                 "value": "",
                 "label": "(Cicilan 3x)",
                 "backgroundColor": "",
-                "textColor": "#ff5722"
+                "textColor": ""
             }
         ],
         "paymentsData": [
@@ -213,7 +213,7 @@
                 "value": "Rp 30000000",
                 "label": "Total Pembayaran",
                 "backgroundColor": "",
-                "textColor": "#ff5722"
+                "textColor": ""
             }
         ],
         "status": {

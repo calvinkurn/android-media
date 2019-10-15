@@ -7,7 +7,9 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
+import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
@@ -26,6 +28,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     : BaseViewModel(dispatcher) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
+    val myWidgetData = MutableLiveData<Result<MyUmrahWidgetModel>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String, response: String) {
         val params = mapOf(PARAM_ORDER_ID to orderId,
@@ -43,6 +46,24 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
             val gson = Gson()
             orderDetailData.value = Success(gson.fromJson(response,
                     UmrahOrderDetailsEntity.Response::class.java).orderDetails)
+        }
+    }
+
+    fun getMyUmrahWidget(rawQuery: String, orderId: String, response: String) {
+        val params = mapOf(PARAM_ORDER_ID to orderId)
+
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, MyUmrahEntity.Response::class.java, params)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<MyUmrahEntity.Response>()
+
+            myWidgetData.value = Success(transformToMyUmrahWidgetModel(data.umrahWidgetSaya))
+        }) {
+            // orderDetailData.value = Fail(it)
+            val gson = Gson()
+            myWidgetData.value = Success(transformToMyUmrahWidgetModel(gson.fromJson(response,
+                    MyUmrahEntity.Response::class.java).umrahWidgetSaya))
         }
     }
 
@@ -99,6 +120,9 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
         return data
     }
+
+    private fun transformToMyUmrahWidgetModel(data: MyUmrahEntity): MyUmrahWidgetModel =
+            MyUmrahWidgetModel(data.header, data.subHeader, data.nextActionText, data.mainButton.text, data.mainButton.link)
 
     companion object {
         const val PARAM_ORDER_ID = "orderId"
