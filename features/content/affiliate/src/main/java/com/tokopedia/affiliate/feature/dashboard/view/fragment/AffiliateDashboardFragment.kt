@@ -96,6 +96,12 @@ class AffiliateDashboardFragment :
         }
     }
 
+    private val coachMarkAffIncome: CoachMark by lazy {
+        CoachMarkBuilder()
+                .allowPreviousButton(false)
+                .build()
+    }
+
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder().build()
     }
@@ -417,7 +423,7 @@ class AffiliateDashboardFragment :
     }
 
     private fun showTooltip() {
-        coachMark.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
+        coachMarkAffIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
     }
 
     private fun showChangesAppliedToaster() {
