@@ -16,7 +16,7 @@ class UmrahSimpleDetailAdapter : RecyclerView.Adapter<UmrahSimpleDetailViewHolde
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahSimpleDetailViewHolder =
             UmrahSimpleDetailViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_umrah_simple_view, parent, false))
+                    .inflate(R.layout.item_umrah_simple_detail_view, parent, false))
 
     override fun getItemCount(): Int = simpleDetailViewModels.size
 
