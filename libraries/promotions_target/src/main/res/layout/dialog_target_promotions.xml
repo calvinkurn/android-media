@@ -17,6 +17,8 @@
         app:rb_cornerRadius="@dimen/dp_2" />
 
     <ViewFlipper
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +29,8 @@
 
 
         <android.support.v7.widget.RecyclerView
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/t_promo_image_height" />
@@ -97,7 +101,6 @@
             android:layout_height="@dimen/t_promo_image_height"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_28"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:visibility="gone"
