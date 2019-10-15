@@ -19,10 +19,10 @@ query SearchProduct(
         redirection {
             redirect_applink
         }
-#        ticker {
-#            text
-#            query
-#        }
+        ticker {
+            text
+            query
+        }
         suggestion {
             currentKeyword
             suggestion
