@@ -14,6 +14,8 @@ class UmrahSimpleAdapter : RecyclerView.Adapter<UmrahSimpleViewHolder>() {
 
     private val simpleViewModels = arrayListOf<UmrahSimpleModel>()
 
+    var isTitleBold: Boolean = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahSimpleViewHolder =
             UmrahSimpleViewHolder(LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_umrah_simple_view, parent, false))
@@ -21,7 +23,7 @@ class UmrahSimpleAdapter : RecyclerView.Adapter<UmrahSimpleViewHolder>() {
     override fun getItemCount(): Int = simpleViewModels.size
 
     override fun onBindViewHolder(viewHolder: UmrahSimpleViewHolder, position: Int) {
-        viewHolder.bind(simpleViewModels[position])
+        viewHolder.bind(simpleViewModels[position], isTitleBold)
     }
 
     fun setData(datas: List<UmrahSimpleModel>) {
