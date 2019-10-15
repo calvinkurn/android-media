@@ -82,9 +82,9 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initInjector()
         initTabList()
+        super.onCreate(savedInstanceState)
         initTabLayout()
         setObserver()
         initData()
