@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.networkDependencies.glide
 }
 
 project.ext {

@@ -48,8 +48,10 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -73,6 +75,10 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.Subscription
+import java.lang.RuntimeException
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -83,7 +89,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                               private val getRecommendationUseCase: GetRecommendationUseCase,
                                                private val stickyLoginUseCase: StickyLoginUseCase,
+                                               private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -149,14 +157,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.category.id, productInfoP1.productInfo.basic.catalogID,
                     forceRefresh)
 
-            val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()) {
+            val p2LoginDeferred: ProductInfoP2Login? = if (isUserSessionActive()) {
                 getProductInfoP2LoginAsync(productInfoP1.productInfo.basic.id,
                         productInfoP1.productInfo.basic.shopID, forceRefresh)
             } else null
 
-            p2ShopDataResp.value = p2ShopDeferred.await()
-            p2General.value = p2GeneralDeferred.await()
-            p2LoginDeferred?.let { p2Login.value = it.await() }
+            p2ShopDataResp.value = p2ShopDeferred
+            p2General.value = p2GeneralDeferred
+            p2LoginDeferred?.let { p2Login.value = it }
 
             p2ShopDataResp.value?.let {
                 multiOrigin = it.nearestWarehouse.warehouseInfo
@@ -175,8 +183,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
-                                                  forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
-        return async(Dispatchers.IO) {
+                                                  forceRefresh: Boolean = false): ProductInfoP2ShopData {
+
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
@@ -219,15 +227,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            p2Shop
-        }
+            return p2Shop
+
     }
 
     private suspend fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
-            forceRefresh: Boolean): Deferred<ProductInfoP2General> {
-        return async(Dispatchers.IO) {
+            forceRefresh: Boolean): ProductInfoP2General {
+
             val productInfoP2 = ProductInfoP2General()
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -395,13 +403,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            productInfoP2
-        }
+            return productInfoP2
+
     }
 
     private suspend fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
-            : Deferred<ProductInfoP2Login> {
-        return async(Dispatchers.IO) {
+            : ProductInfoP2Login {
             val p2Login = ProductInfoP2Login()
 
             val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -444,8 +451,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 t.debugTrace()
             }
 
-            p2Login
-        }
+            return p2Login
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
@@ -573,42 +579,35 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
         submitTicketSubscription?.unsubscribe()
+        stickyLoginUseCase.cancelJobs()
     }
 
     fun loadMore() {
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
-        launch {
-
+        loadTopAdsProduct.value = Loading
+        launch(Dispatchers.IO) {
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
-                loadTopAdsProduct.value = Loading
-                doLoadTopAdsProductAsync(product.data.productInfo)
-
+                try {
+                    val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                            pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                            pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                            productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                    )).toBlocking()
+                    Loaded(Success(data.first()?: emptyList()))
+                } catch (e: Throwable) {
+                    Loaded(Fail(e))
+                }
             } else null
 
-            topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
+            withContext(Dispatchers.Main) {
+                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data !=null) {
+                    Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
+                } else {
+                    Loaded(Fail(RuntimeException()))
+                }
             }
             lazyNeedForceUpdate = false
-        }
-    }
-
-    private fun doLoadTopAdsProductAsync(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val topadsParams = generateTopAdsParams(productInfo)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
-        else CacheType.CACHE_FIRST).build()
-
-        try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
-        } catch (t: Throwable) {
-            t.debugTrace()
-            Loaded(Fail(t))
         }
     }
 
@@ -655,9 +654,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
-                    onSuccess.invoke(it.response.tickers[0])
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            return@execute
+                        }
+                    }
+                    onError?.invoke(Throwable(""))
                 } else {
-                    onError?.invoke(Throwable("Data not found"))
+                    onError?.invoke(Throwable(""))
                 }
             },
             onError = {
@@ -709,4 +714,25 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val INCLUDE_UI_PARAM = "includeUI"
         }
     }
+
+    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(count: Int) {
+                        onSuccessRequest(count)
+                    }
+                })
+    }
+
 }

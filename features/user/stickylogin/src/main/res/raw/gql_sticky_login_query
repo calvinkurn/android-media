@@ -5,6 +5,7 @@ query get_ticker($page: String!) {
       title
       message
       color
+      layout
     }
   }
 }

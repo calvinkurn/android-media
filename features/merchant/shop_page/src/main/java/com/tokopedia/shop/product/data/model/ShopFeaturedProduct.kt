@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopFeaturedProduct(
         @SerializedName("cashback")
@@ -71,7 +72,11 @@ data class ShopFeaturedProduct(
 
         @SerializedName("wholesale")
         @Expose
-        val wholesale: Boolean = false
+        val wholesale: Boolean = false,
+
+        @SerializedName("free_ongkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
 ){
 
         data class ShopFeaturedProductList(
