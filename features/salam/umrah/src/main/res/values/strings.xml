@@ -11,5 +11,6 @@
     <string name="umrah_order_detail_show_label">LIHAT</string>
     <string name="umrah_order_detail_show_e_voucher_label">Lihat E-Voucher</string>
     <string name="umrah_order_detail_payment_info_label">Informasi Pembayaran</string>
+    <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
 
 </resources>
