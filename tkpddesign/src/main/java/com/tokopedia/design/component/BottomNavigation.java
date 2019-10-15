@@ -220,50 +220,50 @@ public class BottomNavigation extends BottomNavigationView {
     @SuppressLint("RestrictedApi")
     public void enableAnimation(boolean enable) {
 
-//        BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
-//        BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
-//        for (BottomNavigationItemView button : mButtons) {
-//            TextView mLargeLabel = getField(button.getClass(), button, "largeLabel");
-//            TextView mSmallLabel = getField(button.getClass(), button, "smallLabel");
-//
-//            // if disable animation, need animationRecord the source value
-//            if (!enable) {
-//                if (!animationRecord) {
-//                    animationRecord = true;
-//                    mShiftAmount = getField(button.getClass(), button, "shiftAmount");
-//                    mScaleUpFactor = getField(button.getClass(), button, "scaleUpFactor");
-//                    mScaleDownFactor = getField(button.getClass(), button, "scaleDownFactor");
-//
-//                    mLargeLabelSize = mLargeLabel.getTextSize();
-//                    mSmallLabelSize = mSmallLabel.getTextSize();
-//
-//                }
-//                // disable
-//                setField(button.getClass(), button, "shiftAmount", 0);
-//                setField(button.getClass(), button, "scaleUpFactor", 1);
-//                setField(button.getClass(), button, "scaleDownFactor", 1);
-//
-//                // let the mLargeLabel font size equal to mSmallLabel
-//                if (mLargeLabel != null) {
-//                    mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSmallLabelSize);
-//                    mLargeLabel.setPadding(0,0,0,0);
-//                }
-//
-//            } else {
-//                // haven't change the value. It means it was the first call this method. So nothing need to do.
-//                if (!animationRecord)
-//                    return;
-//                // enable animation
-//                setField(button.getClass(), button, "shiftAmount", mShiftAmount);
-//                setField(button.getClass(), button, "scaleUpFactor", mScaleUpFactor);
-//                setField(button.getClass(), button, "scaleDownFactor", mScaleDownFactor);
-//                // restore
-//                if (mLargeLabel != null) {
-//                    mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mLargeLabelSize);
-//                }
-//            }
-//        }
-//        mMenuView.updateMenuView();
+        BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
+        BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
+        for (BottomNavigationItemView button : mButtons) {
+            TextView mLargeLabel = getField(button.getClass(), button, "largeLabel");
+            TextView mSmallLabel = getField(button.getClass(), button, "smallLabel");
+
+            // if disable animation, need animationRecord the source value
+            if (!enable) {
+                if (!animationRecord) {
+                    animationRecord = true;
+                    mShiftAmount = getField(button.getClass(), button, "shiftAmount");
+                    mScaleUpFactor = getField(button.getClass(), button, "scaleUpFactor");
+                    mScaleDownFactor = getField(button.getClass(), button, "scaleDownFactor");
+
+                    mLargeLabelSize = mLargeLabel.getTextSize();
+                    mSmallLabelSize = mSmallLabel.getTextSize();
+
+                }
+                // disable
+                setField(button.getClass(), button, "shiftAmount", 0);
+                setField(button.getClass(), button, "scaleUpFactor", 1);
+                setField(button.getClass(), button, "scaleDownFactor", 1);
+
+                // let the mLargeLabel font size equal to mSmallLabel
+                if (mLargeLabel != null) {
+                    mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSmallLabelSize);
+                    mLargeLabel.setPadding(0,0,0,0);
+                }
+
+            } else {
+                // haven't change the value. It means it was the first call this method. So nothing need to do.
+                if (!animationRecord)
+                    return;
+                // enable animation
+                setField(button.getClass(), button, "shiftAmount", mShiftAmount);
+                setField(button.getClass(), button, "scaleUpFactor", mScaleUpFactor);
+                setField(button.getClass(), button, "scaleDownFactor", mScaleDownFactor);
+                // restore
+                if (mLargeLabel != null) {
+                    mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mLargeLabelSize);
+                }
+            }
+        }
+        mMenuView.updateMenuView();
     }
 
     /**
@@ -299,10 +299,10 @@ public class BottomNavigation extends BottomNavigationView {
         // 2. get mButtons
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
         // 3. change field mShiftingMode value in mButtons
-//        for (BottomNavigationItemView button : mButtons) {
-//            setField(button.getClass(), button, "isShifting", enable);
-//        }
-//        mMenuView.updateMenuView();
+        for (BottomNavigationItemView button : mButtons) {
+            setField(button.getClass(), button, "isShifting", enable);
+        }
+        mMenuView.updateMenuView();
     }
 
     /**
@@ -527,14 +527,14 @@ public class BottomNavigation extends BottomNavigationView {
      */
     @SuppressLint("RestrictedApi")
     public void setIconSizeAt(int position, float width, float height) {
-//        ImageView icon = getIconAt(position);
-//        // update size
-//        ViewGroup.LayoutParams layoutParams = icon.getLayoutParams();
-//        layoutParams.width = dp2px(getContext(), width);
-//        layoutParams.height = dp2px(getContext(), height);
-//        icon.setLayoutParams(layoutParams);
-//
-//        mMenuView.updateMenuView();
+        ImageView icon = getIconAt(position);
+        // update size
+        ViewGroup.LayoutParams layoutParams = icon.getLayoutParams();
+        layoutParams.width = dp2px(getContext(), width);
+        layoutParams.height = dp2px(getContext(), height);
+        icon.setLayoutParams(layoutParams);
+
+        mMenuView.updateMenuView();
     }
 
     /**
@@ -859,9 +859,9 @@ public class BottomNavigation extends BottomNavigationView {
         1. BottomNavigationItemView
         2. private final int mDefaultMargin;
          */
-//        BottomNavigationItemView itemView = getBottomNavigationItemView(position);
-//        setField(BottomNavigationItemView.class, itemView, "defaultMargin", marginTop);
-//        mMenuView.updateMenuView();
+        BottomNavigationItemView itemView = getBottomNavigationItemView(position);
+        setField(BottomNavigationItemView.class, itemView, "defaultMargin", marginTop);
+        mMenuView.updateMenuView();
     }
 
     /**
@@ -870,18 +870,18 @@ public class BottomNavigation extends BottomNavigationView {
     private SparseArray<BadgeView> mBadgeViews = new SparseArray<>();
 
     public void setNotification(int badgeNumber, int positionItem) {
-//        if (getBottomNavigationItemView(positionItem) == null) {
-//            return;
-//        }
-//
-//        BadgeView badgeView = mBadgeViews.get(positionItem);
-//        if (badgeView == null) {
-//            badgeView = new BadgeView(getContext());
-//            mBadgeViews.put(positionItem, badgeView);
-//        }
-//        setBadgePosition(badgeView, badgeNumber);
-//        badgeView.bindTarget(getBottomNavigationItemView(positionItem));
-//        badgeView.setBadgeNumber(badgeNumber);
+        if (getBottomNavigationItemView(positionItem) == null) {
+            return;
+        }
+
+        BadgeView badgeView = mBadgeViews.get(positionItem);
+        if (badgeView == null) {
+            badgeView = new BadgeView(getContext());
+            mBadgeViews.put(positionItem, badgeView);
+        }
+        setBadgePosition(badgeView, badgeNumber);
+        badgeView.bindTarget(getBottomNavigationItemView(positionItem));
+        badgeView.setBadgeNumber(badgeNumber);
     }
 
     private void setBadgePosition(BadgeView badgeView, int badgeNumber) {
