@@ -169,18 +169,13 @@ public class FlightInsuranceView extends LinearLayout {
     }
 
     private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
-        if (benefits.size() > 0) {
-            otherProtection.setVisibility(VISIBLE);
-            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
-            benefitsRecyclerView.setVisibility(GONE);
-            FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
-            benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            benefitsRecyclerView.setAdapter(benefitAdapter);
-            dividerBenefit.setVisibility(VISIBLE);
-        } else {
-            dividerBenefit.setVisibility(GONE);
-            otherProtection.setVisibility(GONE);
-        }
+        otherProtection.setVisibility(VISIBLE);
+        protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
+        benefitsRecyclerView.setVisibility(GONE);
+        FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
+        benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        benefitsRecyclerView.setAdapter(benefitAdapter);
+        dividerBenefit.setVisibility(VISIBLE);
     }
 
     private SpannableStringBuilder buildTncText(String tncAggreement, String tncUrl, String title) {
