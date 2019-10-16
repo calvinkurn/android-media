@@ -43,7 +43,7 @@
             android:background="@color/green_600"
             android:layout_width="match_parent"
             app:layout_scrollFlags="scroll|snap"
-            android:layout_height="25dp"/>
+            android:layout_height="@dimen/dp_25"/>
 
         <com.tokopedia.searchbar.FeedMainToolbar
             android:id="@+id/toolbar"
@@ -53,6 +53,15 @@
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|snap"
             app:screenName="/feed"/>
+
+        <View
+            android:visibility="invisible"
+            app:layout_collapseMode="pin"
+            android:id="@+id/status_bar_bg2"
+            android:layout_marginTop="-10dp"
+            android:background="@color/green_600"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"

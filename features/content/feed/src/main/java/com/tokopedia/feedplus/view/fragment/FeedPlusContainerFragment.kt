@@ -120,7 +120,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it) }
+        activity?.let {
+            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+        }
         initView()
         requestFeedTab()
     }
@@ -188,12 +191,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun initView() {
         //status bar background compability
         setFeedBackgroundCrossfader()
-        activity?.let { status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it) }
+        activity?.let {
+            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+        }
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
+        status_bar_bg2.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+            else -> View.GONE
+        }
+
         hideAllFab(true)
         if (!userSession.isLoggedIn) {
             fab_feed.show()

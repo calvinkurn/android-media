@@ -5,7 +5,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    tools:layout_height="@dimen/dp_100"
+    tools:layout_height="@dimen/dp_130"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetStartWithNavigation="0dp">
