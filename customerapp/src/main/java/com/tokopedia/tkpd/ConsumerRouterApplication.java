@@ -2399,7 +2399,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 )
         );
         mapEvent.put(KEY_DIMENSION_24, productId);
-        TrackApp.getInstance().getGTM().sendGeneralEvent();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
     @Override
