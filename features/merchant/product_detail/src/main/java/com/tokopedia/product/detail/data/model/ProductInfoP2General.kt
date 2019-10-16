@@ -5,6 +5,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
@@ -27,5 +28,6 @@ data class ProductInfoP2General(
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariant? = null,
         var shopFeature: ShopFeatureData = ShopFeatureData(),
-        var productSpecificationResponse: ProductSpecificationResponse = ProductSpecificationResponse()
+        var productSpecificationResponse: ProductSpecificationResponse = ProductSpecificationResponse(),
+        var productFinancingCalculationData: FinancingDataResponse = FinancingDataResponse()
 )

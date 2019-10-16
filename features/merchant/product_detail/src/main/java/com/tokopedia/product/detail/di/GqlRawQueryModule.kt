@@ -217,4 +217,11 @@ class GqlRawQueryModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
 
+    @ProductDetailScope
+    @Provides
+    @Named(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
+    fun providePDPFinancingCalculation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
+    }
+
 }

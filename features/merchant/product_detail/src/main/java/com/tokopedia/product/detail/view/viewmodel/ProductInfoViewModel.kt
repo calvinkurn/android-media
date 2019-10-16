@@ -34,6 +34,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -49,8 +50,6 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
@@ -72,11 +71,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Observer
-import rx.Subscription
-import java.lang.RuntimeException
 import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -155,7 +156,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
                     productInfoP1.productInfo.basic.condition, productInfoP1.productInfo.basic.name,
                     productInfoP1.productInfo.category.id, productInfoP1.productInfo.basic.catalogID,
-                    forceRefresh)
+                    forceRefresh, productInfoP1.productInfo.basic.minOrder)
 
             val p2LoginDeferred: ProductInfoP2Login? = if (isUserSessionActive()) {
                 getProductInfoP2LoginAsync(productInfoP1.productInfo.basic.id,
@@ -185,273 +186,283 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
                                                   forceRefresh: Boolean = false): ProductInfoP2ShopData {
 
-            val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
-                    PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
-            val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
+        val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
+                PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
+        val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
 
-            val nearestWarehouseParam = mapOf(
-                    "productIds" to listOf(productId),
-                    "warehouseID" to warehouseId
-            )
-            val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
-                    MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
+        val nearestWarehouseParam = mapOf(
+                "productIds" to listOf(productId),
+                "warehouseID" to warehouseId
+        )
+        val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
-            val shopCodParam = mapOf(PARAM_SHOP_ID to shopId.toString())
-            val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
-                    ShopCodStatus.Response::class.java, shopCodParam)
+        val shopCodParam = mapOf(PARAM_SHOP_ID to shopId.toString())
+        val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
+                ShopCodStatus.Response::class.java, shopCodParam)
 
-            val p2Shop = ProductInfoP2ShopData()
+        val p2Shop = ProductInfoP2ShopData()
 
-            val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
 
-            val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest)
+        val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest)
 
-            try {
-                val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+        try {
+            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-                if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
-                    val result = (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
-                    if (result.data.isNotEmpty())
-                        p2Shop.shopInfo = result.data.first()
-                }
-
-                if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true) {
-                    p2Shop.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
-                            .result.shopCodStatus.isCod
-                }
-
-                if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
-                    gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
-                            .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
-                }
-            } catch (t: Throwable) {
-                t.debugTrace()
+            if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result
+                if (result.data.isNotEmpty())
+                    p2Shop.shopInfo = result.data.first()
             }
-            return p2Shop
+
+            if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true) {
+                p2Shop.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
+                        .result.shopCodStatus.isCod
+            }
+
+            if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
+                gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                        .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
+            }
+        } catch (t: Throwable) {
+            t.debugTrace()
+        }
+        return p2Shop
 
     }
 
     private suspend fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
-            forceRefresh: Boolean): ProductInfoP2General {
+            forceRefresh: Boolean, minProductQuantity: Int): ProductInfoP2General {
 
-            val productInfoP2 = ProductInfoP2General()
+        val productInfoP2 = ProductInfoP2General()
 
-            val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
-            val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
-                    ProductDetailVariantResponse::class.java, paramsVariant)
+        val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
+        val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
+                ProductDetailVariantResponse::class.java, paramsVariant)
 
-            val shopBadgeParams = mapOf(PARAM_SHOP_IDS to listOf(shopId))
-            val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
-                    ShopBadge.Response::class.java, shopBadgeParams)
+        val shopBadgeParams = mapOf(PARAM_SHOP_IDS to listOf(shopId))
+        val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
+                ShopBadge.Response::class.java, shopBadgeParams)
 
-            val shopCommitmentParams = mapOf(PARAM_SHOP_ID to shopId.toString(),
-                    PARAM_PRICE to productPrice.toInt())
-            val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
-                    ShopCommitment.Response::class.java, shopCommitmentParams)
+        val shopCommitmentParams = mapOf(PARAM_SHOP_ID to shopId.toString(),
+                PARAM_PRICE to productPrice.toInt())
+        val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
+                ShopCommitment.Response::class.java, shopCommitmentParams)
 
-            val ratingParams = mapOf(PARAM_PRODUCT_ID to productId)
-            val ratingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_RATING],
-                    Rating.Response::class.java, ratingParams)
+        val ratingParams = mapOf(PARAM_PRODUCT_ID to productId)
+        val ratingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_RATING],
+                Rating.Response::class.java, ratingParams)
 
-            val wishlistCountRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_COUNT],
-                    WishlistCount.Response::class.java, ratingParams)
+        val wishlistCountRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_COUNT],
+                WishlistCount.Response::class.java, ratingParams)
 
-            val voucherParams = mapOf(GetMerchantVoucherListUseCase.SHOP_ID to shopId,
-                    GetMerchantVoucherListUseCase.NUM_VOUCHER to DEFAULT_NUM_VOUCHER)
-            val voucherRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_VOUCHER],
-                    MerchantVoucherQuery::class.java, voucherParams)
+        val voucherParams = mapOf(GetMerchantVoucherListUseCase.SHOP_ID to shopId,
+                GetMerchantVoucherListUseCase.NUM_VOUCHER to DEFAULT_NUM_VOUCHER)
+        val voucherRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_VOUCHER],
+                MerchantVoucherQuery::class.java, voucherParams)
 
-            val installmentParams = mapOf(PARAM_PRICE to productPrice, "qty" to 1)
-            val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
-                    InstallmentResponse::class.java, installmentParams)
+        val installmentParams = mapOf(PARAM_PRICE to productPrice, "qty" to 1)
+        val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
+                InstallmentResponse::class.java, installmentParams)
 
-            val imageReviewParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_PAGE to 1, PARAM_TOTAL to DEFAULT_NUM_IMAGE_REVIEW)
-            val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
-                    ImageReviewGqlResponse::class.java, imageReviewParams)
+        val imageReviewParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_PAGE to 1, PARAM_TOTAL to DEFAULT_NUM_IMAGE_REVIEW)
+        val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
+                ImageReviewGqlResponse::class.java, imageReviewParams)
 
-            val ppParam = PPItemDetailRequest()
+        val ppParam = PPItemDetailRequest()
 
-            ppParam.productId = productId
-            ppParam.shopId = shopId
-            if (!TextUtils.isEmpty(userSessionInterface.userId)) {
-                ppParam.userId = userSessionInterface.userId.toInt()
-            } else {
-                ppParam.userId = 0
+        ppParam.productId = productId
+        ppParam.shopId = shopId
+        if (!TextUtils.isEmpty(userSessionInterface.userId)) {
+            ppParam.userId = userSessionInterface.userId.toInt()
+        } else {
+            ppParam.userId = 0
+        }
+
+        if (!TextUtils.isEmpty(categoryId)) {
+            ppParam.categoryId = categoryId.toInt()
+        } else {
+            ppParam.categoryId = 0
+        }
+
+        ppParam.condition = condition.toLowerCase()
+        ppParam.productTitle = productTitle
+        ppParam.price = productPrice.toInt()
+
+        val productPPParams = mapOf("param" to ppParam)
+
+        val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
+                ProductPurchaseProtectionInfo::class.java, productPPParams)
+
+        fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
+            val images = SparseArray<ImageReviewGqlResponse.Image>()
+            val reviews = SparseArray<ImageReviewGqlResponse.Review>()
+
+            productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
+            productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+
+            return productReviewImageListQuery?.list?.map {
+                val image = images[it.imageID]
+                val review = reviews[it.reviewID]
+                ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
+                        review.reviewer?.fullName, image.uriThumbnail,
+                        image.uriLarge, review.rating)
+            } ?: listOf()
+
+        }
+
+        val helpfulReviewParams = mapOf(PARAM_PRODUCT_ID to productId)
+        val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW], Review.Response::class.java,
+                helpfulReviewParams)
+
+        val latestTalkParams = mapOf(PARAM_PRODUCT_ID to productId)
+        val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
+                TalkList.Response::class.java, latestTalkParams)
+
+        val shopFeatureParam = mapOf(PARAM_SHOP_ID to shopId.toString())
+        val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
+                ShopFeatureResponse::class.java, shopFeatureParam)
+
+        val productCatalogParams = mapOf(ProductDetailCommonConstant.PARAM_CATALOG_ID to catalogId.toString())
+        val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
+                ProductSpecificationResponse::class.java, productCatalogParams)
+
+        val pdpFinancingParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
+        val pdpFinancingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
+                FinancingDataResponse::class.java, pdpFinancingParam)
+
+        val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
+                shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
+                helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest,
+                shopFeatureRequest, productCatalogRequest, pdpFinancingRequest)
+
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+        try {
+            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+
+            if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
+                productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
             }
 
-            if (!TextUtils.isEmpty(categoryId)) {
-                ppParam.categoryId = categoryId.toInt()
-            } else {
-                ppParam.categoryId = 0
+            if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
+                productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
+                        .result.firstOrNull()
             }
 
-            ppParam.condition = condition.toLowerCase()
-            ppParam.productTitle = productTitle
-            ppParam.price = productPrice.toInt()
+            if (gqlResponse.getError(Rating.Response::class.java)?.isNotEmpty() != true)
+                productInfoP2.rating = gqlResponse.getData<Rating.Response>(Rating.Response::class.java).data
 
-            val productPPParams = mapOf("param" to ppParam)
+            if (gqlResponse.getError(WishlistCount.Response::class.java)?.isNotEmpty() != true)
+                productInfoP2.wishlistCount = gqlResponse.getData<WishlistCount.Response>(WishlistCount.Response::class.java)
+                        .wishlistCount
 
-            val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
-                    ProductPurchaseProtectionInfo::class.java, productPPParams)
-
-            fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
-                val images = SparseArray<ImageReviewGqlResponse.Image>()
-                val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-
-                productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
-                productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
-
-                return productReviewImageListQuery?.list?.map {
-                    val image = images[it.imageID]
-                    val review = reviews[it.reviewID]
-                    ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                            review.reviewer?.fullName, image.uriThumbnail,
-                            image.uriLarge, review.rating)
-                } ?: listOf()
-
+            if (gqlResponse.getError(MerchantVoucherQuery::class.java)?.isNotEmpty() != true) {
+                productInfoP2.vouchers = ((gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java))
+                        .result?.vouchers?.toList()
+                        ?: listOf()).map { MerchantVoucherViewModel(it) }
             }
 
-            val helpfulReviewParams = mapOf(PARAM_PRODUCT_ID to productId)
-            val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW], Review.Response::class.java,
-                    helpfulReviewParams)
-
-            val latestTalkParams = mapOf(PARAM_PRODUCT_ID to productId)
-            val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
-                    TalkList.Response::class.java, latestTalkParams)
-
-            val shopFeatureParam = mapOf(PARAM_SHOP_ID to shopId.toString())
-            val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
-                    ShopFeatureResponse::class.java, shopFeatureParam)
-
-            val productCatalogParams = mapOf(ProductDetailCommonConstant.PARAM_CATALOG_ID to catalogId.toString())
-            val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
-                    ProductSpecificationResponse::class.java, productCatalogParams)
-
-
-            val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
-                    shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                    helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest)
-
-            val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-            try {
-                val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-
-                if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
+            if (gqlResponse.getError(ShopCommitment.Response::class.java)?.isNotEmpty() != true) {
+                val resp = gqlResponse.getData<ShopCommitment.Response>(ShopCommitment.Response::class.java).result
+                if (resp.error.message.isBlank()) {
+                    productInfoP2.shopCommitment = resp.shopCommitment
                 }
-
-                if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
-                            .result.firstOrNull()
-                }
-
-                if (gqlResponse.getError(Rating.Response::class.java)?.isNotEmpty() != true)
-                    productInfoP2.rating = gqlResponse.getData<Rating.Response>(Rating.Response::class.java).data
-
-                if (gqlResponse.getError(WishlistCount.Response::class.java)?.isNotEmpty() != true)
-                    productInfoP2.wishlistCount = gqlResponse.getData<WishlistCount.Response>(WishlistCount.Response::class.java)
-                            .wishlistCount
-
-                if (gqlResponse.getError(MerchantVoucherQuery::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.vouchers = ((gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java))
-                            .result?.vouchers?.toList()
-                            ?: listOf()).map { MerchantVoucherViewModel(it) }
-                }
-
-                if (gqlResponse.getError(ShopCommitment.Response::class.java)?.isNotEmpty() != true) {
-                    val resp = gqlResponse.getData<ShopCommitment.Response>(ShopCommitment.Response::class.java).result
-                    if (resp.error.message.isBlank()) {
-                        productInfoP2.shopCommitment = resp.shopCommitment
-                    }
-                }
-
-                if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true) {
-                    val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java).result
-                    productInfoP2.minInstallment = resp.installmentMinimum
-                }
-
-                if (gqlResponse.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true)
-                    productInfoP2.imageReviews = gqlResponse.getData<ImageReviewGqlResponse>(ImageReviewGqlResponse::class.java)
-                            .toImageReviewItemList()
-
-                if (gqlResponse.getError(Review.Response::class.java)?.isNotEmpty() != true)
-                    productInfoP2.helpfulReviews = gqlResponse.getData<Review.Response>(Review.Response::class.java)
-                            .productMostHelpfulReviewQuery.list
-
-                if (gqlResponse.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.latestTalk = gqlResponse.getData<TalkList.Response>(TalkList.Response::class.java)
-                            .result.data.talks.firstOrNull() ?: Talk()
-                }
-
-                if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.productPurchaseProtectionInfo =
-                            gqlResponse.getData<ProductPurchaseProtectionInfo>(ProductPurchaseProtectionInfo::class.java)
-                }
-
-                if (gqlResponse.getError(ShopFeatureResponse::class.java)?.isNotEmpty() != true) {
-                    val shopFeatureResponse =
-                            gqlResponse.getData<ShopFeatureResponse>(ShopFeatureResponse::class.java)
-                    productInfoP2.shopFeature = shopFeatureResponse.shopFeature.data
-                }
-
-                if (gqlResponse.getError(ProductSpecificationResponse::class.java)?.isNotEmpty() != true) {
-                    val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
-                    productInfoP2.productSpecificationResponse = productSpesification
-                }
-            } catch (t: Throwable) {
-                t.debugTrace()
             }
-            return productInfoP2
+
+            if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true) {
+                val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java).result
+                productInfoP2.minInstallment = resp.installmentMinimum
+            }
+
+            if (gqlResponse.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true)
+                productInfoP2.imageReviews = gqlResponse.getData<ImageReviewGqlResponse>(ImageReviewGqlResponse::class.java)
+                        .toImageReviewItemList()
+
+            if (gqlResponse.getError(Review.Response::class.java)?.isNotEmpty() != true)
+                productInfoP2.helpfulReviews = gqlResponse.getData<Review.Response>(Review.Response::class.java)
+                        .productMostHelpfulReviewQuery.list
+
+            if (gqlResponse.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
+                productInfoP2.latestTalk = gqlResponse.getData<TalkList.Response>(TalkList.Response::class.java)
+                        .result.data.talks.firstOrNull() ?: Talk()
+            }
+
+            if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {
+                productInfoP2.productPurchaseProtectionInfo =
+                        gqlResponse.getData<ProductPurchaseProtectionInfo>(ProductPurchaseProtectionInfo::class.java)
+            }
+
+            if (gqlResponse.getError(ShopFeatureResponse::class.java)?.isNotEmpty() != true) {
+                val shopFeatureResponse =
+                        gqlResponse.getData<ShopFeatureResponse>(ShopFeatureResponse::class.java)
+                productInfoP2.shopFeature = shopFeatureResponse.shopFeature.data
+            }
+
+            if (gqlResponse.getError(ProductSpecificationResponse::class.java)?.isNotEmpty() != true) {
+                val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
+                productInfoP2.productSpecificationResponse = productSpesification
+            }
+
+            if (gqlResponse.getError(FinancingDataResponse::class.java)?.isEmpty() == true) {
+                val financingCalculationData: FinancingDataResponse = gqlResponse.getData(FinancingDataResponse::class.java)
+                productInfoP2.productFinancingCalculationData = financingCalculationData
+            }
+        } catch (t: Throwable) {
+            t.debugTrace()
+        }
+        return productInfoP2
 
     }
 
     private suspend fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
             : ProductInfoP2Login {
-            val p2Login = ProductInfoP2Login()
+        val p2Login = ProductInfoP2Login()
 
-            val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
-            val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-                    ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+        val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
+        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
-            val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
-                    GetCheckoutTypeResponse::class.java)
+        val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
+                GetCheckoutTypeResponse::class.java)
 
-            val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productId),
-                    ParamAffiliate.SHOP_ID_PARAM to shopId,
-                    ParamAffiliate.INCLUDE_UI_PARAM to true)
+        val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productId),
+                ParamAffiliate.SHOP_ID_PARAM to shopId,
+                ParamAffiliate.INCLUDE_UI_PARAM to true)
 
-            val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
-                    TopAdsPdpAffiliateResponse::class.java, affilateParams)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-            try {
-                val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
-                        affiliateRequest), cacheStrategy)
+        val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
+                TopAdsPdpAffiliateResponse::class.java, affilateParams)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        try {
+            val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
+                    affiliateRequest), cacheStrategy)
 
-                if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-                    p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
-                            .isWishlisted == true
-                else
-                    p2Login.isWishlisted = true
+            if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
+                p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
+                        .isWishlisted == true
+            else
+                p2Login.isWishlisted = true
 
 
-                if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.pdpAffiliate = response
-                            .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
-                            .topAdsPDPAffiliate.data.affiliate.firstOrNull()
-                }
-
-                if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.cartType = response
-                            .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                            .getCartType.data.cartType
-                }
-            } catch (t: Throwable) {
-                t.debugTrace()
+            if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
+                p2Login.pdpAffiliate = response
+                        .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
+                        .topAdsPDPAffiliate.data.affiliate.firstOrNull()
             }
 
-            return p2Login
+            if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+                p2Login.cartType = response
+                        .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                        .getCartType.data.cartType
+            }
+        } catch (t: Throwable) {
+            t.debugTrace()
+        }
+
+        return p2Login
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
@@ -594,14 +605,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
                             productIds = arrayListOf(product.data.productInfo.basic.id.toString())
                     )).toBlocking()
-                    Loaded(Success(data.first()?: emptyList()))
+                    Loaded(Success(data.first() ?: emptyList()))
                 } catch (e: Throwable) {
                     Loaded(Fail(e))
                 }
             } else null
 
             withContext(Dispatchers.Main) {
-                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data !=null) {
+                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data != null) {
                     Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
                 } else {
                     Loaded(Fail(RuntimeException()))
@@ -652,22 +663,22 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
         stickyLoginUseCase.execute(
-            onSuccess = {
-                if (it.response.tickers.isNotEmpty()) {
-                    for(tickerDetail in it.response.tickers) {
-                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                            onSuccess.invoke(tickerDetail)
-                            return@execute
+                onSuccess = {
+                    if (it.response.tickers.isNotEmpty()) {
+                        for (tickerDetail in it.response.tickers) {
+                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                                onSuccess.invoke(tickerDetail)
+                                return@execute
+                            }
                         }
+                        onError?.invoke(Throwable(""))
+                    } else {
+                        onError?.invoke(Throwable(""))
                     }
-                    onError?.invoke(Throwable(""))
-                } else {
-                    onError?.invoke(Throwable(""))
+                },
+                onError = {
+                    onError?.invoke(it)
                 }
-            },
-            onError = {
-                onError?.invoke(it)
-            }
         )
     }
 
