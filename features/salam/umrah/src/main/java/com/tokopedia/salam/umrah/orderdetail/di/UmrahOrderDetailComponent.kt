@@ -1,6 +1,7 @@
 package com.tokopedia.salam.umrah.orderdetail.di
 
 import com.tokopedia.salam.umrah.common.di.UmrahComponent
+import com.tokopedia.salam.umrah.orderdetail.presentation.activity.UmrahOrderDetailActivity
 import com.tokopedia.salam.umrah.orderdetail.presentation.fragment.UmrahOrderDetailFragment
 import dagger.Component
 
@@ -13,5 +14,7 @@ import dagger.Component
 interface UmrahOrderDetailComponent {
 
     fun inject(umrahOrderFragment: UmrahOrderDetailFragment)
+
+    fun inject(umrahOrderDetailActivity: UmrahOrderDetailActivity)
 
 }
