@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -30,6 +31,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     lateinit var contentTitleView: Typography
     lateinit var ctaButton: UnifyButton
     lateinit var closeButton: ImageView
+    lateinit var ctaButtonContainer: FrameLayout
 
     private var contentImageUrl = ""
     private var contentImageViewType = ""
@@ -50,6 +52,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentTitleView = findViewById(R.id.content_title)
             ctaButton = findViewById(R.id.cta_button)
             closeButton = findViewById(R.id.iv_close)
+            ctaButtonContainer = findViewById(R.id.fl_btn)
         }
     }
 
@@ -60,6 +63,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDialog(dialog)
+        setupContentPadding()
         setupViewModel(savedInstanceState)
         setupCtaButton()
         contentTitleView.text = contentTitle
@@ -79,6 +83,22 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         ctaButton.setOnClickListener {
             RouteManager.route(it.context, appLink)
             dismiss()
+        }
+    }
+
+    private fun setupContentPadding() {
+        ctaButtonContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                ctaButtonContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                setContentPadding()
+            }
+        })
+    }
+
+    private fun setContentPadding() {
+        val ctaButtonHeight = ctaButtonContainer.height
+        with(contentTextView) {
+            setPadding(paddingLeft, paddingTop, paddingRight, ctaButtonHeight)
         }
     }
 
