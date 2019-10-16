@@ -23,7 +23,7 @@ class ReviewNotificationUpdateExample : BroadcastReceiver() {
 
         context?.let {
             val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
-            pmSubscribeRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            pmSubscribeRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
 
             val pmSubscribeIntent = PendingIntent.getActivity(
                     context,

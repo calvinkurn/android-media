@@ -49,8 +49,9 @@ object ReviewNotificationExample {
         notificationLayout = RemoteViews(packageName, com.tokopedia.pushnotif.R.layout.notification_review_layout)
         val listOfStars = listOf(com.tokopedia.pushnotif.R.id.rate_1, com.tokopedia.pushnotif.R.id.rate_2, com.tokopedia.pushnotif.R.id.rate_3, com.tokopedia.pushnotif.R.id.rate_4, com.tokopedia.pushnotif.R.id.rate_5)
         listOfStars.forEachIndexed { index, starId ->
+            val truePosition = index + 1
             val intent = Intent(context, ReviewNotificationUpdateExample::class.java)
-            intent.action = "$index+1"
+            intent.action = "$truePosition"
 
             notificationLayout.setOnClickPendingIntent(starId,
                     PendingIntent.getBroadcast(
