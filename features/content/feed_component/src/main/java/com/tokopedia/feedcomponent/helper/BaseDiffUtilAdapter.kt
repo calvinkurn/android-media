@@ -53,13 +53,8 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
     }
 
     fun addItemAndAnimateChanges(item: T) {
-        animateNotifyChanged(
-                oldItemList = this.itemList,
-                newItemList = itemList + item,
-                changeList = {
-                    addItem(item)
-                }
-        )
+        addItem(item)
+        notifyItemInserted(lastIndex)
     }
 
     fun clearAllItemsAndAnimateChanges() {
