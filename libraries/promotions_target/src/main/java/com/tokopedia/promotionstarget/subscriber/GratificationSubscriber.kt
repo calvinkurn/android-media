@@ -62,6 +62,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     supervisorScope {
                         val childJob = launch {
                             val response = presenter.getGratificationAndShowDialog(gratificationData)
+                            presenter.composeApi(gratificationData)
                             withContext(Dispatchers.Main) {
                                 show(activity, response)
                             }

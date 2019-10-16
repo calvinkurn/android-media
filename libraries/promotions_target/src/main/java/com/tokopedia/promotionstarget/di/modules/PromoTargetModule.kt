@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.di.CLAIM_POP_GRATIFICATION
+import com.tokopedia.promotionstarget.di.GET_COUPON_DETAIL
 import com.tokopedia.promotionstarget.di.GET_POP_GRATIFICATION
 import com.tokopedia.promotionstarget.di.scopes.PromoTargetScope
 import dagger.Module
@@ -30,5 +31,12 @@ class PromoTargetModule {
     @PromoTargetScope
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @PromoTargetScope
+    @Named(GET_COUPON_DETAIL)
+    fun provideCouponDetailString(context: Context): String = context.resources.openRawResource(R.raw.query_hachiko_catalog_detail)
+            .bufferedReader()
+            .readText()
 
 }

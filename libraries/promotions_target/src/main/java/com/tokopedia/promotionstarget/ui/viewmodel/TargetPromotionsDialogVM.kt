@@ -19,7 +19,8 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
 
     val liveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
 
-    fun claimCoupon(campaignSlug: String="", page: String="") {
+    //todo Rahul remove default values
+    fun claimCoupon(campaignSlug: String="POPGRATIF_LIMITED_2", page: String="TEST") {
 
         launchCatchError(block = {
             val data = claimPopGratificationUseCase.let {
