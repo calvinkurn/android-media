@@ -1340,7 +1340,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onShipmentClicked() {
-        productDetailTracking.eventShippingClicked()
+        productDetailTracking.eventShippingClicked(productId ?: "")
         if (productInfoViewModel.isUserSessionActive()) {
             val productP3value = productInfoViewModel.productInfoP3resp.value
             if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
@@ -1828,7 +1828,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         productDetailTracking.eventSendMessage()
-        productDetailTracking.eventSendChat()
+        productDetailTracking.eventSendChat(productId ?: "")
     }
 
     private fun putChatProductInfoTo(intent: Intent?) {
@@ -1901,7 +1901,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onVariantClicked() {
-        productDetailTracking.eventClickVariant(generateVariantString())
+        productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
         goToNormalCheckout(ATC_AND_BUY)
     }
 
@@ -2129,7 +2129,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
-            productDetailTracking.eventCartMenuClicked(generateVariantString())
+            productDetailTracking.eventCartMenuClicked(generateVariantString(), productId ?: "")
         }
     }
 

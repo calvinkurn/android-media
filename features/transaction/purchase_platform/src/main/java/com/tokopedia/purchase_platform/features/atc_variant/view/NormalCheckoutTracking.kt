@@ -8,9 +8,12 @@ import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAnd
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 
 class NormalCheckoutTracking {
     companion object {
+        private const val KEY_DIMENSION_24 = "dimension24"
+        private const val KEY_DIMENSION_81 = "dimension81"
         const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
@@ -35,11 +38,14 @@ class NormalCheckoutTracking {
     }
 
     fun eventClickBuyInVariantNotLogin(productId: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-            CLICK_PDP,
-            PRODUCT_DETAIL_PAGE,
-            "click - beli on variants page - before login",
-            productId ?: "")
+        val mapEvent = TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                "click - beli on variants page - before login",
+                productId ?: ""
+        )
+        mapEvent[KEY_DIMENSION_24] = productId ?: ""
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     fun eventClickAddToCartInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -157,7 +163,9 @@ class NormalCheckoutTracking {
                             "dimension45" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER),
                             "dimension54" to getMultiOriginAttribution(multiOrigin),
-                                "dimension83" to dimension83
+                                "dimension83" to dimension83,
+                                KEY_DIMENSION_24 to selectedProductInfo.basic.id,
+                                KEY_DIMENSION_81 to  shopType
 
                         )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
@@ -212,6 +220,9 @@ class NormalCheckoutTracking {
             putString("dimension45", cartId ?: NONE_OTHER)
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
             putString("dimension83", dimension83)
+            putString(KEY_DIMENSION_24, selectedProductInfo.basic.id.toString())
+            putString(KEY_DIMENSION_81, shopType)
+
         }
 
         val event = Bundle().apply {
@@ -231,29 +242,38 @@ class NormalCheckoutTracking {
     }
 
     fun eventClickAtcInVariantNotLogin(productId: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-            CLICK_PDP,
-            PRODUCT_DETAIL_PAGE,
-            "click - tambah ke keranjang on variants page - before login",
-            productId ?: "")
+        val mapEvent = TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                "click - tambah ke keranjang on variants page - before login",
+                productId ?: ""
+        )
+        mapEvent[KEY_DIMENSION_24] = productId ?: ""
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventSelectSizeVariant(size: String?) {
+    fun eventSelectSizeVariant(size: String?, productId: String) {
         if (size.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-            CLICK_PDP,
-            PRODUCT_DETAIL_PAGE,
-            SELECT_SIZE_VARIANT,
-            size)
+        val mapEvent = TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                SELECT_SIZE_VARIANT,
+                size
+        )
+        mapEvent[KEY_DIMENSION_24] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventSelectColorVariant(color: String?) {
+    fun eventSelectColorVariant(color: String?, productId: String) {
         if (color.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-            CLICK_PDP,
-            PRODUCT_DETAIL_PAGE,
-            SELECT_COLOR_VARIANT,
-            color)
+        val mapEvent = TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                SELECT_COLOR_VARIANT,
+                color
+        )
+        mapEvent[KEY_DIMENSION_24] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     ////////////////////////////////////////////////////////////
