@@ -79,6 +79,18 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickAdvancedSetting(String item) {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_SETTING,
+                String.format("%s %s", USER, SETTING),
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
+                ""
+        ));
+
+    }
+
     public void eventClickAccountSetting(String item) {
         Analytics analytics = TrackApp.getInstance().getGTM();
 
