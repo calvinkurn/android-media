@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.search.*
 import com.tokopedia.search.result.*
 import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
@@ -699,6 +700,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop First Page Error") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -708,13 +710,15 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will fail") {
-                val exception = Exception("Mock exception for testing error")
-
                 searchShopFirstPageRepository.stubGetResponse().throws(exception)
             }
 
             When("handle view is visible and added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert exception print stack trace is called") {
+                exception.isStackTracePrinted shouldBe true
             }
 
             Then("assert search shop state is error with no data") {
@@ -799,6 +803,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop First Page Error") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
 
@@ -809,13 +814,15 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API will be successful and return search shop data") {
-                val exception = Exception("Mock exception for testing error")
-
                 searchShopFirstPageRepository.stubGetResponse().throws(exception)
             }
 
             When("handle view is visible and added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert exception print stack trace is called") {
+                exception.isStackTracePrinted shouldBe true
             }
 
             Then("assert get dynamic filter API never called") {
@@ -862,6 +869,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Get Dynamic Filter Failed") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
             val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
@@ -873,14 +881,16 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("dynamic filter API will fail") {
-                val exception = Exception("Mock exception for dynamic filter API")
-
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
                 dynamicFilterRepository.stubGetResponse().throws(exception)
             }
 
             When("handle view is visible and added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert exception print stack trace is called") {
+                exception.isStackTracePrinted shouldBe true
             }
 
             Then("assert save dynamic filter is not executed") {
@@ -1172,6 +1182,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop Successful, but Search More Shop Error") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
             val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
@@ -1189,7 +1200,6 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search more shop API call will fail") {
-                val exception = Exception("Mock exception for testing error")
                 searchShopLoadMoreRepository.stubGetResponse().throws(exception)
             }
 
@@ -1206,6 +1216,10 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
 
+            Then("assert exception print stack trace is called") {
+                exception.isStackTracePrinted shouldBe true
+            }
+
             Then("assert has next page is false") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -1218,6 +1232,7 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Retry Search Shop After Error in Search Shop") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
 
@@ -1228,8 +1243,6 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page error") {
-                val exception = Exception("Mock exception for testing retry mechanism")
-
                 searchShopFirstPageRepository.stubGetResponse()
                         .throws(exception)
                         .andThen(searchShopModel)
@@ -1258,6 +1271,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Retry Search Shop After Error in Search More Shop") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
             val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
@@ -1269,8 +1283,6 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully, but error during search shop second page") {
-                val exception = Exception("Mock exception for testing retry mechanism")
-
                 searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
 
                 dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
@@ -1452,6 +1464,7 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Open Filter Page after Get Dynamic Filter Successful and then Failed") {
+            val exception = TestException()
             val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
             val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
 
@@ -1469,8 +1482,6 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view get dynamic filter failed on second try") {
-                val exception = Exception("Mock exception for dynamic filter API")
-
                 dynamicFilterRepository.stubGetResponse().throws(exception)
 
                 searchShopViewModel.onViewReloadData()

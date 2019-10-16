@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.viewmodel
 
-import com.tokopedia.search.result.InstantTaskExecutorRuleSpek
+import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.result.TestDispatcherProvider
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener

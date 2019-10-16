@@ -1,4 +1,4 @@
-package com.tokopedia.search.result
+package com.tokopedia.search
 
 import android.arch.core.executor.ArchTaskExecutor
 import android.arch.core.executor.TaskExecutor
