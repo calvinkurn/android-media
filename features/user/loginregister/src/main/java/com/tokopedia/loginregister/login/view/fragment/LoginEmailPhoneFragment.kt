@@ -892,6 +892,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
         return {
+            logoutGoogleAccountIfExist()
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
         }
     }
@@ -947,6 +948,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 presenter.reloginAfterSQ(validateToken)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+                logoutGoogleAccountIfExist()
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
@@ -1171,6 +1173,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         outState.putBoolean(IS_AUTO_LOGIN, isAutoLogin)
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
     companion object {
