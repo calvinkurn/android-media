@@ -8,4 +8,4 @@ import android.view.ViewGroup
 /**
  * Created by jegul on 2019-10-09.
  */
-fun AdapterDelegate<*>.getView(parent: ViewGroup, @LayoutRes layoutRes: Int): View = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
+fun <T> AdapterDelegate<T>.getView(parent: ViewGroup, @LayoutRes layoutRes: Int): View = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
