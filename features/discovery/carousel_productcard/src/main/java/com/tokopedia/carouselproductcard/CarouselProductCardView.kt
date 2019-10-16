@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.carousel
+package com.tokopedia.carouselproductcard
 
 import android.content.Context
 import android.support.v7.widget.GridLayoutManager
@@ -6,13 +6,11 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.productcard.R
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
-import kotlinx.android.synthetic.main.product_card_carousel_layout.view.*
-import kotlinx.android.synthetic.main.product_card_layout_v2_list.view.*
+import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
-class ProductCardCarouselView: BaseCustomView {
+class CarouselProductCardView: BaseCustomView {
 
     constructor(context: Context): super(context) {
         init()
@@ -31,32 +29,32 @@ class ProductCardCarouselView: BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.product_card_carousel_layout, this)
+        View.inflate(context, R.layout.carousel_product_card_layout, this)
     }
 
     fun setProductModelList(
             productCardModelList: List<ProductCardModel>,
             isScrollable: Boolean = true,
-            productCardCarouselOnItemClickListener: ProductCardCarouselListener.OnItemClickListener? = null,
-            productCardCarouselOnItemLongClickListener: ProductCardCarouselListener.OnItemLongClickListener? = null,
-            productCardCarouselOnItemImpressedListener: ProductCardCarouselListener.OnItemImpressedListener? = null,
-            productCardCarouselOnItemAddToCartListener: ProductCardCarouselListener.OnItemAddToCartListener? = null,
-            productCardCarouselOnWishlistItemClickListener: ProductCardCarouselListener.OnWishlistItemClickListener? = null) {
+            carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
+            carouselProductCardOnItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null,
+            carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
+            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
 
         val blankSpaceConfig = createBlankSpaceConfig(productCardModelList)
 
-        val productCardCarouselListenerInfo = ProductCardCarouselListenerInfo().also {
-            it.onItemClickListener = productCardCarouselOnItemClickListener
-            it.onItemLongClickListener = productCardCarouselOnItemLongClickListener
-            it.onItemImpressedListener = productCardCarouselOnItemImpressedListener
-            it.onItemAddToCartListener = productCardCarouselOnItemAddToCartListener
-            it.onWishlistItemClickListener = productCardCarouselOnWishlistItemClickListener
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
+            it.onItemClickListener = carouselProductCardOnItemClickListener
+            it.onItemLongClickListener = carouselProductCardOnItemLongClickListener
+            it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+            it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+            it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
 
-        productCardCarouselRecyclerView?.adapter = ProductCardCarouselAdapter(
-                productCardModelList, isScrollable, productCardCarouselListenerInfo, blankSpaceConfig)
+        carouselProductCardRecyclerView?.adapter = CarouselProductCardAdapter(
+                productCardModelList, isScrollable, carouselProductCardListenerInfo, blankSpaceConfig)
 
-        productCardCarouselRecyclerView?.layoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
+        carouselProductCardRecyclerView?.layoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
     }
 
     private fun createBlankSpaceConfig(productCardModelList: List<ProductCardModel>): BlankSpaceConfig {
@@ -75,6 +73,7 @@ class ProductCardCarouselView: BaseCustomView {
             blankSpaceConfig.labelCredibility = blankSpaceConfig.labelCredibility || (it.ratingCount == 0 && it.reviewCount == 0 && it.labelCredibility.title.isNotEmpty())
             blankSpaceConfig.labelOffers = blankSpaceConfig.labelOffers || it.labelOffers.title.isNotEmpty()
             blankSpaceConfig.freeOngkir = blankSpaceConfig.freeOngkir || (it.freeOngkir.isActive && it.freeOngkir.imageUrl.isNotEmpty())
+            blankSpaceConfig.twoLinesProductName = true
         }
 
         return blankSpaceConfig

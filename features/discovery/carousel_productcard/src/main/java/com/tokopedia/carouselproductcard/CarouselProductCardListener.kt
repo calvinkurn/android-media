@@ -1,8 +1,8 @@
-package com.tokopedia.productcard.carousel
+package com.tokopedia.carouselproductcard
 
 import com.tokopedia.productcard.v2.ProductCardModel
 
-interface ProductCardCarouselListener {
+interface CarouselProductCardListener {
 
     interface OnItemClickListener {
         fun onItemClick(productCardModel: ProductCardModel)
