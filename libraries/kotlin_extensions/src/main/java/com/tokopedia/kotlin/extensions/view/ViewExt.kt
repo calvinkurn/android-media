@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
@@ -20,6 +21,9 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
+import android.graphics.drawable.GradientDrawable
+
+
 
 
 /**
@@ -323,4 +327,13 @@ fun getScreenHeight(): Int {
 
 interface ViewHintListener {
     fun onViewHint()
+}
+
+fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            onGlobalLayout()
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    })
 }

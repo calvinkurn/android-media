@@ -14,7 +14,11 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
     private String iconImageUrl;
     private Boolean hasChild;
     private int indentation;
+    private String key;
 
+    public boolean isAnnotation() {
+        return Option.KEY_ANNOTATION_ID.equals(getKey());
+    }
 
     @Override
     public List<? extends MultiLevelExpIndListAdapter.ExpIndData> getChildren() {
@@ -83,6 +87,14 @@ public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
 
     public void setChildren(List<Category> children) {
         this.children = children;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void addChildren(List<Category> children, int indentation) {

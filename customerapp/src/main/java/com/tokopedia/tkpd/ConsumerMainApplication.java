@@ -100,7 +100,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         UIBlockDebugger.init(this);
-        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
         initializeSdk();
@@ -176,6 +176,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onTerminate() {
+        // this function is not reliable and will never be called in production
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();

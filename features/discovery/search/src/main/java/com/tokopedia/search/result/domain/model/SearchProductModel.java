@@ -499,6 +499,9 @@ public class SearchProductModel {
         @SerializedName("shop")
         @Expose
         private Shop shop = new Shop();
+        @SerializedName("free_ongkir")
+        @Expose
+        private FreeOngkir freeOngkir = new FreeOngkir();
 
         public String getId() {
             return id;
@@ -638,6 +641,10 @@ public class SearchProductModel {
 
         public Shop getShop() {
             return shop;
+        }
+
+        public FreeOngkir getFreeOngkir() {
+            return freeOngkir;
         }
     }
 
@@ -803,6 +810,24 @@ public class SearchProductModel {
 
         public boolean isPowerBadge() {
             return isPowerBadge;
+        }
+    }
+
+    public static class FreeOngkir {
+        @SerializedName("is_active")
+        @Expose
+        private boolean isActive;
+
+        @SerializedName("img_url")
+        @Expose
+        private String imageUrl;
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
         }
     }
 

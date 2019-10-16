@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
@@ -10,15 +11,21 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 
 /**
@@ -42,13 +49,11 @@ class ChatItemListViewHolder(
 
         data?.let { contact ->
             itemView.setOnClickListener {
-                attributes.readStatus = STATE_CHAT_READ
-                bindReadState(attributes.readStatus, attributes.unreads)
-                listener.chatItemClicked(element)
+                onChatItemClicked(element)
             }
 
             itemView.setOnLongClickListener {
-                listener.chatItemDeleted(element, adapterPosition)
+                showLongClickMenu(element)
                 true
             }
 
@@ -61,6 +66,120 @@ class ChatItemListViewHolder(
             bindLabel(contact.tag)
         }
 
+    }
+
+    private fun onChatItemClicked(chat: ItemChatListPojo) {
+        val attributes = chat.attributes
+
+        if (chat.isUnread() && attributes != null) {
+            chat.markAsRead()
+            listener.decreaseNotificationCounter()
+            bindReadState(attributes.readStatus, attributes.unreads)
+        }
+
+        listener.chatItemClicked(chat, adapterPosition)
+    }
+
+    private fun showLongClickMenu(element: ItemChatListPojo) {
+        Menus(itemView.context, R.style.BottomFilterDialogTheme).apply {
+            setTitle(" ")
+            itemMenuList = createChatLongClickMenu(element)
+            setOnItemMenuClickListener { itemMenus, _ ->
+                handleChatMenuClick(itemMenus, element)
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun handleChatMenuClick(itemMenus: Menus.ItemMenus, element: ItemChatListPojo) {
+        with(itemView.context) {
+            when (itemMenus.title) {
+                getString(R.string.menu_delete_chat) -> delete(element)
+                getString(R.string.menu_mark_as_read) -> markAsRead(element)
+                getString(R.string.menu_mark_as_unread) -> markAsUnRead(element)
+            }
+        }
+    }
+
+    private fun delete(element: ItemChatListPojo) {
+        listener.deleteChat(element, adapterPosition)
+    }
+
+    private fun markAsRead(element: ItemChatListPojo) {
+        listener.markChatAsRead(element.ids()) { result ->
+            when (result) {
+                is Success -> responseSuccessChangeStateRead(result.data.chatState.list, element)
+                is Fail -> failChangeChatState(result.throwable)
+            }
+        }
+    }
+
+    private fun markAsUnRead(element: ItemChatListPojo) {
+        listener.markChatAsUnread(element.ids()) { result ->
+            when (result) {
+                is Success -> responseSuccessChangeStateUnread(result.data.chatState.list, element)
+                is Fail -> failChangeChatState(result.throwable)
+            }
+        }
+    }
+
+    private fun failChangeChatState(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(itemView.context, throwable)
+        Toaster.showError(itemView, errorMessage, Snackbar.LENGTH_LONG)
+    }
+
+    private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
+        for (state in list) {
+            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+                changeStateMarkAsRead(element)
+            }
+        }
+    }
+
+    private fun changeStateMarkAsRead(element: ItemChatListPojo) {
+        element.attributes?.let {
+            with (it) {
+                readStatus = STATE_CHAT_READ
+                bindReadState(readStatus, unreads)
+                listener.decreaseNotificationCounter()
+            }
+        }
+    }
+
+    private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
+        for (state in list) {
+            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+                changeStateMarkAsUnread(element)
+            }
+        }
+    }
+
+    private fun changeStateMarkAsUnread(element: ItemChatListPojo) {
+        element.attributes?.let {
+            with (it) {
+                readStatus = STATE_CHAT_UNREAD
+                bindReadState(readStatus, unreads)
+                listener.increaseNotificationCounter()
+            }
+        }
+    }
+
+    private fun createChatLongClickMenu(element: ItemChatListPojo): MutableList<Menus.ItemMenus> {
+        with(itemView.context) {
+            val menus = arrayListOf<Menus.ItemMenus>()
+            val delete = getString(R.string.menu_delete_chat)
+            val markAsRead = getString(R.string.menu_mark_as_read)
+            val markAsUnread = getString(R.string.menu_mark_as_unread)
+
+            if (element.hasUnreadItem()) {
+                menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))
+            } else {
+                menus.add(Menus.ItemMenus(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
+            }
+            menus.add(Menus.ItemMenus(delete, R.drawable.ic_trash_filled_grey))
+
+            return menus
+        }
     }
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
@@ -136,7 +255,7 @@ class ChatItemListViewHolder(
                 && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
             DateFormat.format(timeFormatString, smsTime).toString()
         } else if ((now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1)
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))){
+                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
             "Kemarin"
         } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
             DateFormat.format(dateTimeFormatString, smsTime).toString()
@@ -146,7 +265,8 @@ class ChatItemListViewHolder(
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.item_chat_list
+        @LayoutRes
+        val LAYOUT = R.layout.item_chat_list
 
         //state of chat
         const val STATE_CHAT_UNREAD = 1

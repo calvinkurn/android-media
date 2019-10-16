@@ -21,7 +21,8 @@ data class DataUiModel(
 		var benefit: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
 		var clashings: ClashingInfoDetailUiModel = ClashingInfoDetailUiModel(),
 		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList(),
-		var trackingDetailUiModel: List<TrackingDetailUiModel> = emptyList()
+		var trackingDetailUiModel: List<TrackingDetailUiModel> = emptyList(),
+		var tickerInfoUiModel: TickerInfoUiModel = TickerInfoUiModel()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readByte() != 0.toByte(),
@@ -41,7 +42,8 @@ data class DataUiModel(
 			parcel.readParcelable(BenefitSummaryInfoUiModel::class.java.classLoader),
 			parcel.readParcelable(ClashingInfoDetailUiModel::class.java.classLoader),
 			parcel.createTypedArrayList(VoucherOrdersItemUiModel),
-			parcel.createTypedArrayList(TrackingDetailUiModel))
+			parcel.createTypedArrayList(TrackingDetailUiModel),
+			parcel.readParcelable(TickerInfoUiModel::class.java.classLoader))
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeByte(if (globalSuccess) 1 else 0)
@@ -62,6 +64,7 @@ data class DataUiModel(
 		parcel.writeParcelable(clashings, flags)
 		parcel.writeTypedList(voucherOrders)
 		parcel.writeTypedList(trackingDetailUiModel)
+		parcel.writeParcelable(tickerInfoUiModel, flags)
 	}
 
 	override fun describeContents(): Int {

@@ -12,6 +12,7 @@ import com.tokopedia.navigation.presentation.adapter.viewholder.NotificationUpda
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
 import com.tokopedia.navigation.widget.ChipFilterItemDivider
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.List
@@ -24,7 +25,8 @@ import kotlin.collections.toList
 
 class NotificationUpdateFilterAdapter(
         private val notificationUpdateTypeFactory: NotificationUpdateFilterSectionTypeFactoryImpl,
-        private val listener: FilterAdapterListener
+        private val listener: FilterAdapterListener,
+        private val userSession: UserSessionInterface
 ) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(notificationUpdateTypeFactory),
         NotificationUpdateFilterSectionItemViewHolder.FilterSectionListener,
         ChipFilterItemDivider.ChipFilterListener {
@@ -50,9 +52,22 @@ class NotificationUpdateFilterAdapter(
     }
 
     fun updateData(data: ArrayList<NotificationUpdateFilterItemViewModel>) {
-        val flatViewModel = flattenFilterViewModel(data)
-        mapFilterData(data)
+        val filteredData = filterData(data)
+        val flatViewModel = flattenFilterViewModel(filteredData)
+        mapFilterData(filteredData)
         addElement(flatViewModel)
+    }
+
+    private fun filterData(data: ArrayList<NotificationUpdateFilterItemViewModel>): ArrayList<NotificationUpdateFilterItemViewModel> {
+        if (userSession.hasShop()) return data
+        val itemToRemove = arrayListOf<NotificationUpdateFilterItemViewModel>()
+        for (filter in data) {
+            if (filter.filterType == NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type) {
+                itemToRemove.add(filter)
+            }
+        }
+        data.removeAll(itemToRemove)
+        return data
     }
 
     override fun onFilterClicked(element: NotificationUpdateFilterSectionItemViewModel) {

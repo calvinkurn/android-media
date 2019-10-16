@@ -73,7 +73,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
             val isCTADisabled = btnCtaPojo.isDisabled
             btnBuy.apply {
                 isEnabled = !isCTADisabled
-                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo) }
+                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo, item.authorType) }
             }
             textBtnBuy.apply {
                 text =
@@ -190,8 +190,8 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         return trackList
     }
 
-    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem) {
-        listener.onPostTagItemBuyClicked(positionInFeed, itemPojo)
+    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem, authorType: String) {
+        listener.onPostTagItemBuyClicked(positionInFeed, itemPojo, authorType)
         listener.onAffiliateTrackClicked(mappingTracking(itemPojo.tracking), true)
     }
 

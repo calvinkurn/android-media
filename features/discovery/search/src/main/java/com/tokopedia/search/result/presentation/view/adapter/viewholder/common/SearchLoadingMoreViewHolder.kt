@@ -11,7 +11,7 @@ class SearchLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<LoadingMo
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.abstraction.R.layout.loading_layout
     }
 
     override fun bind(element: LoadingMoreModel?) {

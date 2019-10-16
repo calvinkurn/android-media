@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
-import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -25,6 +24,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.manager.FilterSortManager
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper
@@ -53,6 +53,8 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     private var filters: ArrayList<Filter> = ArrayList()
 
     private var selectedSort: HashMap<String, String> = HashMap()
+
+    private var filterTrackingData: FilterTrackingData? = null;
 
     var totalCount = ""
 
@@ -188,7 +190,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
 
-        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, getScreenName());
+        FilterTracking.eventOpenFilterPage(getFilterTrackingData());
 
         bottomSheetListener?.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap())
         bottomSheetListener?.launchFilterBottomSheet()
@@ -197,7 +199,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected fun openFilterPage() {
         if (searchParameter == null) return
 
-        FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, this, screenName, searchParameter.getSearchParameterHashMap())
+        FilterSortManager.openFilterPage(getFilterTrackingData(), this, screenName, searchParameter.getSearchParameterHashMap())
     }
 
     private fun isFilterDataAvailable(): Boolean {
@@ -349,12 +351,13 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
-                catAnalyticsInstance.eventSortApplied(getDepartMentId(),
-                        selectedSortName
-                                ?: "", selectedSort["ob"]?.toInt() ?: 0)
+                onSortAppliedEvent(selectedSortName ?: "",
+                        selectedSort["ob"]?.toInt() ?: 0)
             }
         })
     }
+
+    abstract fun onSortAppliedEvent(selectedSortName:String, sortValue:Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {
@@ -386,8 +389,18 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun onBottomSheetHide() {
-        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, screenName, getSelectedFilter())
+        FilterTracking.eventApplyFilter(getFilterTrackingData(), screenName, getSelectedFilter())
     }
 
+    private fun getFilterTrackingData(): FilterTrackingData {
+        if (filterTrackingData == null) {
+            filterTrackingData = FilterTrackingData(FilterEventTracking.Event.CLICK_CATEGORY,
+                    FilterEventTracking.Category.FILTER_CATEGORY,
+                    getDepartMentId(),
+                    FilterEventTracking.Category.PREFIX_CATEGORY_PAGE
+            )
+        }
+        return filterTrackingData!!
+    }
 
 }
