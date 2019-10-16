@@ -57,7 +57,7 @@
                     android:id="@+id/content_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/dp_96"
+                    android:paddingBottom="@dimen/dp_48"
                     tools:text="@tools:sample/lorem/random" />
             </LinearLayout>
 
@@ -89,8 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:paddingTop="@dimen/dp_8">
+        android:background="@color/white">
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"
