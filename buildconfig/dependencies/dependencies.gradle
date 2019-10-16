@@ -184,7 +184,7 @@ ext {
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            branch     : "io.branch.sdk.android:library:3.0.4+",
+            branch     : "io.branch.sdk.android:library:4.1.1",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
             cashshield : "com.cashshield.android:cashshield:2.5.0@aar"
     ]
