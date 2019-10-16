@@ -152,5 +152,7 @@ class ShopProductListViewModel @Inject constructor(private val userSession: User
         it.productUrl = productUrl
         it.isSoldOut = flags.isSold
         it.isShowWishList = !isMyOwnProduct
+        it.isShowFreeOngkir = freeOngkir.isActive
+        it.freeOngkirPromoIcon = freeOngkir.imgUrl
     }
 }

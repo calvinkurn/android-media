@@ -17,6 +17,9 @@ import java.util.Map;
  * Author errysuprayogi on 15,March,2019
  */
 public class InboxGtmTracker {
+    private final String DATA_DIMENSION_83 = "dimension83";
+    private final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
+    private final String VALUE_NONE_OTHER = "none / other";
 
     private List<Object> dataLayerList;
     private static volatile InboxGtmTracker gtmTracker = new InboxGtmTracker();
@@ -62,7 +65,9 @@ public class InboxGtmTracker {
                 "varian", "none/other",
                 "category", recommendationItem.getDepartmentId(),
                 "list", "/inbox - rekomendasi untuk anda - " + recommendationItem.getRecommendationType() + (isTopAds ? " - product topads" : ""),
-                "position", String.valueOf(position)));
+                "position", String.valueOf(position),
+                DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:VALUE_NONE_OTHER)
+                );
     }
 
     public void eventClickRecommendationWishlist(Context context, RecommendationItem recommendationItem, boolean isAdd){
@@ -97,7 +102,8 @@ public class InboxGtmTracker {
                                             "brand", "none/other",
                                             "category", recommendationItem.getCategoryBreadcrumbs(),
                                             "varian", "none/other",
-                                            "position", String.valueOf(position)))))
+                                            "position", String.valueOf(position),
+                                            DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:VALUE_NONE_OTHER))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }

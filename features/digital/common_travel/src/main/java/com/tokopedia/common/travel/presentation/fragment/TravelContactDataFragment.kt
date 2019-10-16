@@ -176,6 +176,9 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         if (til_contact_name.editText.text.isNullOrBlank()) {
             til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_error)
             isValid = false
+        } else if (isNotAplhabetOrSpaceOnly(til_contact_name.editText.text.toString())) {
+            til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_alphabet_only)
+            isValid = false
         }
         if (!isValidEmail(til_contact_email.editText.text.toString())) {
             til_contact_email.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_error)
@@ -186,6 +189,10 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
             isValid = false
         }
         return isValid
+    }
+
+    private fun isNotAplhabetOrSpaceOnly(string: String): Boolean {
+        return !string.matches(Regex("^[a-zA-Z\\s]*$"))
     }
     
     private fun resetEditTextError() {

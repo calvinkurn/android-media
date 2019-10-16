@@ -19,7 +19,7 @@ class HomeFeedViewModel(val productId: String,
                         val clickUrl: String,
                         val trackerImageUrl: String,
                         val slashedPrice: String,
-                        val discountPercentage: Int,
+                        val discountPercentage: String,
                         var priceNumber: Int,
                         val isTopAds: Boolean,
                         val position: Int,
@@ -28,7 +28,9 @@ class HomeFeedViewModel(val productId: String,
                         val badges: List<Badge>,
                         val location: String,
                         val wishlistUrl: String,
-                        var isWishList: Boolean) : ImpressHolder(), Visitable<HomeFeedTypeFactory> {
+                        var isWishList: Boolean,
+                        val isFreeOngkirActive: Boolean,
+                        val freeOngkirImageUrl: String) : ImpressHolder(), Visitable<HomeFeedTypeFactory> {
 
     override fun type(typeFactory: HomeFeedTypeFactory): Int {
         return typeFactory.type(this)
@@ -47,9 +49,9 @@ class HomeFeedViewModel(val productId: String,
                 DATA_LIST, String.format(
                 DATA_LIST_VALUE,
                 tabName,
-                recommendationType
-        ),
-                DATA_POSITION, position.toString())
+                recommendationType),
+                DATA_POSITION, position.toString(),
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     fun convertFeedTabModelToImpressionDataForNonLoginUser(
@@ -67,7 +69,8 @@ class HomeFeedViewModel(val productId: String,
                 tabName,
                 recommendationType
         ),
-                DATA_POSITION, position.toString())
+                DATA_POSITION, position.toString(),
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     fun convertFeedTabModelToClickData(): Any {
@@ -78,7 +81,8 @@ class HomeFeedViewModel(val productId: String,
                 DATA_BRAND, DATA_NONE_OTHER,
                 DATA_VARIANT, DATA_NONE_OTHER,
                 DATA_CATEGORY, categoryBreadcrumbs,
-                DATA_POSITION, position.toString())
+                DATA_POSITION, position.toString(),
+                DATA_DIMENSION_83, if(isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
     }
 
     companion object {
@@ -93,5 +97,8 @@ class HomeFeedViewModel(val productId: String,
         private val DATA_POSITION = "position"
         private val DATA_LIST_VALUE = "/ - p2 - %s - rekomendasi untuk anda - %s"
         private val DATA_LIST_VALUE_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s"
+        private val DATA_DIMENSION_83 = "dimension83"
+        private val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        private val VALUE_NONE_OTHER = "none / other"
     }
 }
