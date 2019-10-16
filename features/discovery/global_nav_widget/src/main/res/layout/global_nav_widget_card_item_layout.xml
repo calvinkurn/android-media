@@ -8,7 +8,8 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
-    app:cardUseCompatPadding="true">
+    app:cardUseCompatPadding="true"
+    app:cardPreventCornerOverlap="false">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/globalNavCardItemConstraintLayout"
