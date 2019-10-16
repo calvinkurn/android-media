@@ -30,6 +30,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
@@ -500,6 +501,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+
+        if (stickyLoginUseCase != null) {
+            stickyLoginUseCase.cancelJobs();
+        }
     }
 
     /**
@@ -625,11 +630,17 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME);
         stickyLoginUseCase.execute(
             tickerResponse -> {
-                getView().setStickyContent(tickerResponse.getResponse());
+                for (StickyLoginTickerPojo.TickerDetail ticker : tickerResponse.getResponse().getTickers()) {
+                    if (ticker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
+                        getView().setStickyContent(ticker);
+                        return Unit.INSTANCE;
+                    }
+                }
+                getView().hideStickyLogin();
                 return Unit.INSTANCE;
             },
             throwable -> {
-                // no op
+                getView().hideStickyLogin();
                 return Unit.INSTANCE;
             }
         );

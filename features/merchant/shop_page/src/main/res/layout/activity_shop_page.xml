@@ -91,6 +91,7 @@
               android:layout_height="wrap_content"
               android:layout_gravity="bottom"
               android:background="@color/sticky_bg_color"
+              android:visibility="gone"
               app:sticky_highlight_color="@color/g_500"
               app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
             

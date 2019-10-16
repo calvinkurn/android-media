@@ -25,8 +25,6 @@ public interface AccountHomeRouter {
 
     void goToManageCreditCard(Context context);
 
-    void goToTokoCash(String applinkUrl, Activity activity);
-
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
@@ -49,9 +47,5 @@ public interface AccountHomeRouter {
 
     boolean isEnableInterestPick();
   
-    Intent getMitraToppersActivityIntent(Context context);
-
-    Intent getAddPasswordIntent(Context context);
-
     void setNewsletterEmailPref(Boolean newValue);
 }

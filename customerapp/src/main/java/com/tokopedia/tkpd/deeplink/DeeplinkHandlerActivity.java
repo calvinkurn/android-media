@@ -117,10 +117,6 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
-import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
-import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
-import com.tokopedia.search.applink.SearchApplinkModule;
-import com.tokopedia.search.applink.SearchApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -170,7 +166,6 @@ import rx.schedulers.Schedulers;
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
-        SearchApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
@@ -212,7 +207,6 @@ import rx.schedulers.Schedulers;
         PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
-        SaldoDetailsAppLinkModule.class,
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
@@ -241,7 +235,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
-                    new SearchApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
@@ -282,7 +275,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
-                    new SaldoDetailsAppLinkModuleLoader(),
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),

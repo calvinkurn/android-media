@@ -622,4 +622,9 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     public SearchParameter getSearchParameter() {
         return new SearchParameter();
     }
+
+    @Override
+    protected String getCategoryId() {
+        return getDepartmentId() != null ? getDepartmentId() : "";
+    }
 }

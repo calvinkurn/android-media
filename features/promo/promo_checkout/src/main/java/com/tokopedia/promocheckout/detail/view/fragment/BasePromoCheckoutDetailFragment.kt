@@ -5,11 +5,11 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 import javax.inject.Inject
 
-abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoCheckoutDetailContract.View {
+abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
@@ -46,10 +46,6 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     open var isUse = false
 
     lateinit var progressDialog: ProgressDialog
-
-    override fun getScreenName(): String {
-        return ""
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,8 +164,8 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
 
     private fun disableViews() {
-        imageMinTrans?.setImageResource(R.drawable.ic_tp_rp_grey)
-        imagePeriod?.setImageResource(R.drawable.ic_tp_time)
+        imageMinTrans?.setImageResource(R.drawable.ic_promo_rp_grey)
+        imagePeriod?.setImageResource(R.drawable.ic_promo_time)
         buttonUse?.isEnabled = false
     }
 

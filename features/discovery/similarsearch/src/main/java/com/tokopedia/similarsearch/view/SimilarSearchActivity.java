@@ -67,7 +67,7 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
         if (exitFragment != null) {
             final View view = exitFragment.getView();
             if (view != null) {
-                int anim = R.anim.slide_in_down;
+                int anim = R.anim.similar_search_slide_in_down;
                 Animation animation =
                         AnimationUtils.loadAnimation(this, anim);
                 animation.setAnimationListener(new Animation.AnimationListener() {
@@ -123,7 +123,7 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
             final View view = findViewById(R.id.background_black);
             if (view != null) {
                 view.setVisibility(View.VISIBLE);
-                int anim = R.anim.fade_in;
+                int anim = R.anim.similar_search_fade_in;
                 Animation animation =
                         AnimationUtils.loadAnimation(this, anim);
                 animation.setAnimationListener(new Animation.AnimationListener() {

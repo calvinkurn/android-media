@@ -327,19 +327,6 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
-            android:label="@string/title_activity_people_deposit"
-            android:theme="@style/Theme.White"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
-            android:theme="@style/Theme.White.PopupTransparent" />
-
-        <activity
             android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

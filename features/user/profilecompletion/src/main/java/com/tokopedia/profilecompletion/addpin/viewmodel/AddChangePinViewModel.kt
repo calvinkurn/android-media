@@ -206,4 +206,13 @@ class AddChangePinViewModel @Inject constructor(
             }
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        addPinUseCase.cancelJobs()
+        changePinUseCase.cancelJobs()
+        checkPinUseCase.cancelJobs()
+        getStatusPinUseCase.cancelJobs()
+        validatePinUseCase.cancelJobs()
+    }
 }

@@ -97,6 +97,16 @@
 
             </LinearLayout>
 
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/label_free_ongkir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:visibility="gone"
+                app:labelType="general_light_green"
+                tools:text="Free Ongkir"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

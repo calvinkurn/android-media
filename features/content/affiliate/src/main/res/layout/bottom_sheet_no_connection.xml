@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_close_default" />
+
+    <com.tokopedia.unifycomponents.EmptyState
+        android:id="@+id/es_no_connection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyEmptyStateCTAFullWidth="true"
+        app:unifyEmptyStateDescription="@string/af_no_connection_detail"
+        app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_no_connection"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStatePrimaryCTAText="@string/af_try_again"
+        app:unifyEmptyStateTitle="@string/af_no_connection_title"
+        app:unifyEmptyStateType="section"
+        android:visibility="visible"/>
+
+</LinearLayout>

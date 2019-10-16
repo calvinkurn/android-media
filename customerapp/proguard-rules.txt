@@ -388,3 +388,6 @@
 -keep class com.scottyab.rootbeer.** { *; }
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+-dontwarn kotlinx.coroutines.flow.**inlined**
+
+-keep public class com.google.android.material.bottomnavigation.** { *; }

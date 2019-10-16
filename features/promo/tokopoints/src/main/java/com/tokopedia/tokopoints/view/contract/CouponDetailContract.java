@@ -17,7 +17,7 @@ public interface CouponDetailContract {
     interface View extends CustomerView {
         void showLoader();
 
-        void showError();
+        void showError(boolean networkError);
 
         void openWebView(String url);
 

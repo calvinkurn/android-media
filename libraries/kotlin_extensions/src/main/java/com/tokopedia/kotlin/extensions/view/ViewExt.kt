@@ -324,3 +324,12 @@ fun getScreenHeight(): Int {
 interface ViewHintListener {
     fun onViewHint()
 }
+
+fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            onGlobalLayout()
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    })
+}

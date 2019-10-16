@@ -183,6 +183,11 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     private fun setViewLogistic() {
         ic_button_coupon.visibility = View.GONE
         layout_counter_coupons.visibility = View.GONE
+        if (state == State.ACTIVE) {
+            imageCloseGlobal?.visibility = View.GONE
+        } else {
+            imageCloseGlobal?.visibility = View.VISIBLE
+        }
     }
 
     private fun setViewDisabled() {

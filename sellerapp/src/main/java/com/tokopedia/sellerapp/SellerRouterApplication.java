@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
@@ -21,6 +22,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -68,7 +70,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
@@ -122,8 +123,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -146,8 +145,6 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
-import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -179,7 +176,6 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
-import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -215,7 +211,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
-        SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
         CharacterPerMinuteInterface,
@@ -431,7 +426,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAddPasswordIntent(Context context) {
-        return AddPasswordActivity.newInstance(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
     }
 
     @Override
@@ -845,7 +840,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void startSaldoDepositIntent(Context context) {
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
-            SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
@@ -1137,11 +1132,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
-
-    @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
@@ -1249,12 +1239,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
     public void onLoginSuccess() {
     }
 
@@ -1270,11 +1254,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getCheckoutIntent(Context context, String deviceid) {
         return null;
-    }
-
-    @Override
-    public boolean isMerchantCreditLineEnabled() {
-        return false;
     }
 
     public String getDeviceId(Context context) {

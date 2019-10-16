@@ -7,10 +7,12 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
 import java.io.EOFException
+import java.io.IOException
 import java.nio.charset.Charset
 
 class GqlAkamaiBotInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response  {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
 
         val request = chain.request()

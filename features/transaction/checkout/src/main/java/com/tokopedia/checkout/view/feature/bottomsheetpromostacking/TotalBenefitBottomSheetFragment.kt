@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -20,19 +18,10 @@ import com.tokopedia.unifyprinciples.Typography
  */
 
 open class TotalBenefitBottomSheetFragment : BottomSheets() {
-    private var benefitUiModel = BenefitSummaryInfoUiModel()
-    private var benefitAdapter = TotalBenefitBottomSheetAdapter()
 
-    private lateinit var rvTotalBenefit: RecyclerView
-    private lateinit var tvTotalLabel: TextView
-    private lateinit var tvTotalAmount: TextView
-    private lateinit var cardTicker: CardView
     private var bottomsheetView: View? = null
 
     companion object {
-        val BENEFIT_TYPE_DISCOUNT = "discount"
-        val BENEFIT_TYPE_CASHBACK = "cashback"
-
         @JvmStatic
         fun newInstance(): TotalBenefitBottomSheetFragment {
             return TotalBenefitBottomSheetFragment()
@@ -41,10 +30,6 @@ open class TotalBenefitBottomSheetFragment : BottomSheets() {
 
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
-    }
-
-    fun setBenefit(benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel) {
-        this.benefitUiModel = benefitSummaryInfoUiModel
     }
 
     override fun getLayoutResourceId(): Int {
@@ -56,7 +41,7 @@ open class TotalBenefitBottomSheetFragment : BottomSheets() {
     }
 
     override fun title(): String {
-        return getString(R.string.totalbenefit_bottomsheet_title)
+        return getString(R.string.label_cashback)
     }
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
@@ -68,26 +53,6 @@ open class TotalBenefitBottomSheetFragment : BottomSheets() {
 
     override fun initView(view: View) {
         bottomsheetView = view
-
-        benefitAdapter.setList(benefitUiModel.summaries)
-
-        rvTotalBenefit = view.findViewById(R.id.rv_total_benefit)
-        rvTotalBenefit.layoutManager = LinearLayoutManager(activity)
-        rvTotalBenefit.adapter = benefitAdapter
-
-        tvTotalLabel = view.findViewById(R.id.label_total)
-        tvTotalLabel.text = benefitUiModel.finalBenefitText
-
-        tvTotalAmount = view.findViewById(R.id.label_total_amount)
-        tvTotalAmount.text = benefitUiModel.finalBenefitAmountStr
-
-        cardTicker = view.findViewById(R.id.cardTicker)
-        cardTicker.visibility = View.GONE
-        for (summary: SummariesUiModel in benefitUiModel.summaries) {
-            if (summary.type.equals(BENEFIT_TYPE_CASHBACK)) {
-                cardTicker.visibility = View.VISIBLE
-            }
-        }
     }
 
     override fun configView(parentView: View?) {

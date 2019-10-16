@@ -13,7 +13,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecentViewVie
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.TickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartWishlistViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
@@ -69,7 +69,7 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 viewHolder instanceof CartRecommendationViewHolder ||
                 viewHolder instanceof CartSectionHeaderViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder instanceof CartTickerViewHolder) {
+        } else if (viewHolder instanceof TickerAnnouncementViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;

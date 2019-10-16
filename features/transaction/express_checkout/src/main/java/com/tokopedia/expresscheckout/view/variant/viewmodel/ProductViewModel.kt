@@ -19,7 +19,9 @@ data class ProductViewModel(
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int,
         var originalPrice: Int = productPrice,
-        var discountedPercentage: Float = 0f
+        var discountedPercentage: Float = 0f,
+        var isFreeOngkir: Boolean = false,
+        var freeOngkirImg: String = ""
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -36,8 +38,9 @@ data class ProductViewModel(
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
-            parcel?.readFloat() ?: 0f) {
-    }
+            parcel?.readFloat() ?: 0f,
+            parcel?.readByte() != 0.toByte(),
+            parcel?.readString() ?: "")
 
     override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -52,6 +55,8 @@ data class ProductViewModel(
         parcel.writeInt(minOrderQuantity)
         parcel.writeInt(originalPrice)
         parcel.writeFloat(discountedPercentage)
+        parcel.writeByte(if (isFreeOngkir) 1 else 0)
+        parcel.writeString(freeOngkirImg)
     }
 
     override fun describeContents(): Int {

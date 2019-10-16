@@ -68,7 +68,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
         public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-            final int animatorId = (enter) ? R.anim.slide_in_up : R.anim.slide_in_down;
+            final int animatorId = (enter) ? R.anim.similar_search_slide_in_up : R.anim.similar_search_slide_in_down;
             final Animation anim = AnimationUtils.loadAnimation(getActivity(), animatorId);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override

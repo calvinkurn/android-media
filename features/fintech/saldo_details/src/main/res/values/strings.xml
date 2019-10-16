@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">saldo_details</string>
+    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+    <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
     <string name="sp_label_new">Baru</string>
     <string name="sp_btn_cancel">Kembali</string>
     <string name="sp_enable_title">Aktifkan Saldo Prioritas</string>

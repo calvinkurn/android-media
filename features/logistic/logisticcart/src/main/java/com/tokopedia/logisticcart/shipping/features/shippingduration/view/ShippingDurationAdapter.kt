@@ -61,7 +61,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
-        is LogisticPromoViewModel -> LogisticPromoViewHolder.LAYOUT
+        is LogisticPromoViewModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
@@ -69,7 +69,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            LogisticPromoViewHolder.LAYOUT -> LogisticPromoViewHolder(view)
+            ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
             else -> ShippingDurationViewHolder(view, this, cartPosition)
         }
@@ -78,7 +78,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationViewModel, shippingDurationAdapterListener)
-            is LogisticPromoViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
+            is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
         }
     }
 

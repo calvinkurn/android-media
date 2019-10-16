@@ -93,6 +93,7 @@ class DynamicFeedFragment:
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
+        updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
     }
@@ -108,6 +109,7 @@ class DynamicFeedFragment:
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String) {
         isLoading = false
+        clearAllData()
         renderList(element, lastCursor.isNotEmpty())
         updateCursor(lastCursor)
     }
@@ -182,9 +184,11 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+        presenter.likeKol(id, positionInFeed, columnNumber)
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+        startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {

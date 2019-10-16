@@ -29,6 +29,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedType
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -270,6 +271,10 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             p.setId(model.getProductId());
             p.setName(model.getProductName());
             p.setPriceFormat(model.getPrice());
+            p.setFreeOngkir(new FreeOngkir(
+                    model.isFreeOngkirActive(),
+                    model.getFreeOngkirImageUrl()
+            ));
             new ImpresionTask().execute(model.getTrackerImageUrl());
             TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
                     model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
@@ -324,6 +329,10 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             p.setId(homeFeedViewModel.getProductId());
             p.setName(homeFeedViewModel.getProductName());
             p.setPriceFormat(homeFeedViewModel.getPrice());
+            p.setFreeOngkir(new FreeOngkir(
+                    homeFeedViewModel.isFreeOngkirActive(),
+                    homeFeedViewModel.getFreeOngkirImageUrl()
+            ));
             TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
                     tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
                     homeFeedViewModel.getCategoryBreadcrumbs(),

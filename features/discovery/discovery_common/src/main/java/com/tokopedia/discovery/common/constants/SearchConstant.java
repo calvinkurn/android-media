@@ -16,9 +16,6 @@ public interface SearchConstant {
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
-    int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
-
     interface RecyclerView {
         int VIEW_LIST = 3;
         int VIEW_PRODUCT_BIG_GRID = 12;
@@ -123,5 +120,10 @@ public interface SearchConstant {
         String SHOP = "shop";
         String CATALOG = "catalog";
         String PROFILE = "profile";
+    }
+
+    interface FreeOngkir {
+        String FREE_ONGKIR_LOCAL_CACHE_NAME = "SEARCH_PRODUCT_FREE_ONGKIR";
+        String FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN = "FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN";
     }
 }
