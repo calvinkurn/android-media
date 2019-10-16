@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
+import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 

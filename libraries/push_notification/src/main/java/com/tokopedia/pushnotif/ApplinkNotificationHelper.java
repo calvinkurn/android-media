@@ -47,6 +47,7 @@ public class ApplinkNotificationHelper {
         model.setTitle(data.getString("title", ""));
         model.setTargetApp(data.getString("target_app", ""));
         model.setTransactionId(data.getString("trans_id", ""));
+        model.setImages(data.getString("images", ""));
 
         return model;
     }

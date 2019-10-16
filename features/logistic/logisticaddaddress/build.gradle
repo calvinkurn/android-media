@@ -28,7 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

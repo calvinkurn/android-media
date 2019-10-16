@@ -4,7 +4,7 @@ object StickyLoginConstant {
 
     enum class Page {
         HOME {
-            override fun toString() = "home"
+            override fun toString() = "header"
         },
         PDP {
             override fun toString() = "pdp"
@@ -15,6 +15,7 @@ object StickyLoginConstant {
     }
 
     const val PARAMS_PAGE = "page"
+    const val LAYOUT_FLOATING = "floating"
 
     const val REMOTE_CONFIG_FOR_HOME = "android_customer_sticky_login_home"
     const val REMOTE_CONFIG_FOR_PDP = "android_customer_sticky_login_pdp"

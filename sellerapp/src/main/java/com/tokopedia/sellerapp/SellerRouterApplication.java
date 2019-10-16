@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -122,8 +123,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -215,7 +214,6 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
         ChatbotRouter,
-        SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
         CharacterPerMinuteInterface,
@@ -431,7 +429,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAddPasswordIntent(Context context) {
-        return AddPasswordActivity.newInstance(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PASSWORD);
     }
 
     @Override
@@ -846,7 +844,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void startSaldoDepositIntent(Context context) {
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
-            SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
@@ -932,11 +930,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getCartIntent(Activity activity) {
         return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
     }
 
     @Override
@@ -1083,11 +1076,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public int getCartCount(Context context) {
-        return 0;
-    }
-
-    @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
 
     }
@@ -1135,11 +1123,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
-    }
-
-    @Override
-    public Intent getWithdrawIntent(Context context, boolean isSeller) {
-        return WithdrawActivity.getCallingIntent(context, isSeller);
     }
 
     @Override
@@ -1250,12 +1233,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @Override
-    public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true);
-    }
-
     public void onLoginSuccess() {
     }
 
@@ -1263,29 +1240,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
     }
 
-    @Override
-    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, String deviceid) {
-        return null;
-    }
-
-    @Override
-    public boolean isMerchantCreditLineEnabled() {
-        return false;
-    }
-
     public String getDeviceId(Context context) {
         return "";
-    }
-    
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity,
-                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
-        return null;
     }
 
     @Override
