@@ -315,7 +315,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (toolbarType != TOOLBAR_WHITE) {
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
-            status_bar_bg.visibility = when {
+            status_bar_bg2.visibility = when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
                 else -> View.GONE
             }

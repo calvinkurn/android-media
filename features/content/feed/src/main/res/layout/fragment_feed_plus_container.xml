@@ -58,7 +58,6 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg2"
-            android:layout_marginTop="-10dp"
             android:background="@color/green_600"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_25"/>
