@@ -111,7 +111,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             }
 
             if (viewListener.getEmail().getText().toString().trim().length() == 0) {
-                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.error_field_required));
+                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
             } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
                 viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_invalid_email));
