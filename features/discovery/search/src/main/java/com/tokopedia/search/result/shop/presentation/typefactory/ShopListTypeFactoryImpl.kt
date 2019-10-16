@@ -1,11 +1,11 @@
 package com.tokopedia.search.result.shop.presentation.typefactory
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
-import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.result.shop.presentation.viewholder.*
 
@@ -13,11 +13,7 @@ class ShopListTypeFactoryImpl(
         private val shopListener: ShopListener,
         private val emptyStateListener: EmptyStateListener,
         private val bannerAdsListener: BannerAdsListener
-) : SearchSectionTypeFactoryImpl(), ShopListTypeFactory {
-
-    override fun type(emptySearchViewModel: com.tokopedia.search.result.presentation.model.EmptySearchViewModel?): Int {
-        return com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder.LAYOUT
-    }
+) : BaseAdapterTypeFactory(), ShopListTypeFactory {
 
     override fun type(shopHeader: ShopHeaderViewModel): Int {
         return ShopHeaderViewHolder.LAYOUT

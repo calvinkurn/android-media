@@ -26,6 +26,18 @@ internal infix fun Map<String, Any?>?.shouldNotContain(expectedKey: String) {
     }
 }
 
+internal infix fun Map<*, *>.shouldHaveSize(expectedSize: Int) {
+    if (this.size != expectedSize) {
+        throw AssertionError("Map size is ${this.size}, expected size: $expectedSize")
+    }
+}
+
+internal fun Map<String, Any>.shouldHaveKeyValue(key: String, value: Any) {
+    if (this[key] != value) {
+        throw AssertionError("Value of key $key is ${this[key]}, expected value: $value")
+    }
+}
+
 internal infix fun Collection<Any>?.shouldHaveSize(expectedSize: Int) {
     if (this == null) {
         throw AssertionError("Collection is null")

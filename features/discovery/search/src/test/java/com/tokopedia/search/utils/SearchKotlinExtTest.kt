@@ -1,6 +1,9 @@
 package com.tokopedia.search.utils
 
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldContain
+import com.tokopedia.search.shouldHaveKeyValue
+import com.tokopedia.search.shouldHaveSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -203,31 +206,3 @@ class SearchKotlinExtTest: Spek({
         }
     }
 })
-
-private infix fun List<String>.shouldContain(expectedToContain: String) {
-    this.forEach {
-        if (it == expectedToContain) {
-            return
-        }
-    }
-
-    throw AssertionError("List does not cointain $expectedToContain")
-}
-
-private infix fun List<*>.shouldHaveSize(expectedSize: Int) {
-    if (this.size != expectedSize) {
-        throw AssertionError("List size is ${this.size}, expected size: $expectedSize")
-    }
-}
-
-private infix fun Map<*, *>.shouldHaveSize(expectedSize: Int) {
-    if (this.size != expectedSize) {
-        throw AssertionError("Map size is ${this.size}, expected size: $expectedSize")
-    }
-}
-
-private fun Map<String, String>.shouldHaveKeyValue(key: String, value: String) {
-    if (this[key] != value) {
-        throw AssertionError("Value of key $key is ${this[key]}, expected value: $value")
-    }
-}

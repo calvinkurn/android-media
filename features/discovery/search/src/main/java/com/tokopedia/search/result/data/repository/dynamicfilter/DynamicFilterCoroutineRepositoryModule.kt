@@ -9,7 +9,6 @@ import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterCorout
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterCoroutineDataSourceModule
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @SearchScope

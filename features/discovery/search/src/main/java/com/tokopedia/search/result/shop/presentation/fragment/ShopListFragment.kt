@@ -3,7 +3,6 @@ package com.tokopedia.search.result.shop.presentation.fragment
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -29,7 +28,10 @@ import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -73,7 +75,7 @@ class ShopListFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null)
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

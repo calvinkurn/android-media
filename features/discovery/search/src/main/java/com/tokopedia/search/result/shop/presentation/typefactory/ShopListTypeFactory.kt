@@ -2,10 +2,9 @@ package com.tokopedia.search.result.shop.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory
 import com.tokopedia.search.result.shop.presentation.model.*
 
-interface ShopListTypeFactory: SearchSectionTypeFactory {
+interface ShopListTypeFactory {
 
     fun type(shopHeader: ShopHeaderViewModel): Int
 
