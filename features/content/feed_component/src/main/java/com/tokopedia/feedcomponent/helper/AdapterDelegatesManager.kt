@@ -14,7 +14,13 @@ class AdapterDelegatesManager<T: Any> {
 
     private val adapterDelegates: SparseArrayCompat<AdapterDelegate<T>> = SparseArrayCompat()
 
-    @Suppress("UNCHECKED_CAST")
+    /**
+     * Adding delegate to the list of delegates
+     * If the adapter delegate to be added is of type [TypedAdapterDelegate], it will be put in a Map
+     * Other type will be added to a regular list
+     * @param adapterDelegate - adapter delegate to be added
+     * @return [AdapterDelegatesManager] to support chaining
+     */
     fun addDelegate(adapterDelegate: AdapterDelegate<T>): AdapterDelegatesManager<T> {
         val index = adapterDelegates.size()
         if (adapterDelegate is TypedAdapterDelegate<*, *, *>) {
@@ -34,7 +40,6 @@ class AdapterDelegatesManager<T: Any> {
         return adapterDelegates.indexOfValue(getAdapterDelegate(itemList, position))
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder) {
         return getAdapterDelegate(itemList, position).onBindViewHolder(itemList, position, holder)
     }
