@@ -83,6 +83,7 @@ ext {
     unifyCoachMarkVersion = '1.0.5'
     unifyCalendarVersion = '0.0.4'
     unifyBannerVersion = '0.0.6'
+    unifyDialogVersion = '0.0.1'
 
 
     gradlePlugin = [
@@ -304,6 +305,7 @@ ext {
        components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar"
+       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar"
     ]
 }
