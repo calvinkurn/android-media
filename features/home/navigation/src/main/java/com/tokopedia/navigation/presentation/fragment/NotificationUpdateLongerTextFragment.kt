@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.navigation.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_notification_update_longer.view.*
 
 /**
  * @author by nisie on 18/02/19.
@@ -31,7 +30,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     lateinit var contentTitleView: Typography
     lateinit var ctaButton: UnifyButton
     lateinit var closeButton: ImageView
-    lateinit var ctaButtonContainer: FrameLayout
 
     private var contentImageUrl = ""
     private var contentImageViewType = ""
@@ -52,7 +50,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentTitleView = findViewById(R.id.content_title)
             ctaButton = findViewById(R.id.cta_button)
             closeButton = findViewById(R.id.iv_close)
-            ctaButtonContainer = findViewById(R.id.fl_btn)
         }
     }
 
@@ -108,13 +105,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         ctaButton.text = btnText
     }
 
-    private fun setupContentPadding() {
-        val ctaButtonHeight = ctaButtonContainer.height
-        with(contentTextView) {
-            setPadding(paddingLeft, paddingTop, paddingRight, ctaButtonHeight)
-        }
-    }
-
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
             contentText = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TEXT, arguments, null, "")
@@ -127,7 +117,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-
         fun createInstance(bundle: Bundle): NotificationUpdateLongerTextFragment {
             val fragment = NotificationUpdateLongerTextFragment()
             fragment.arguments = bundle
@@ -135,6 +124,5 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
 
         val DEFAULT_CTA_BUTTON = "Klik disini"
-
     }
 }
