@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -14,15 +13,13 @@ import com.tokopedia.search.*
 import com.tokopedia.search.result.*
 import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
+import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop.ShopItem
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
-import com.tokopedia.search.shouldBe
-import com.tokopedia.search.shouldContain
-import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -170,16 +167,16 @@ internal class SearchShopViewModelTest : Spek({
 
     @Suppress("UNUSED_VARIABLE")
     fun FeatureBody.createTestInstance() {
-        val searchShopFirstPageRepository by memoized {
-            mockk<Repository<SearchShopModel>>(relaxed = true)
+        val searchShopFirstPageUseCase by memoized {
+            mockk<UseCase<SearchShopModel>>(relaxed = true)
         }
 
-        val searchShopLoadMoreRepository by memoized {
-            mockk<Repository<SearchShopModel>>(relaxed = true)
+        val searchShopLoadMoreUseCase by memoized {
+            mockk<UseCase<SearchShopModel>>(relaxed = true)
         }
 
-        val dynamicFilterRepository by memoized {
-            mockk<Repository<DynamicFilterModel>>(relaxed = true)
+        val getDynamicFilterUseCase by memoized {
+            mockk<UseCase<DynamicFilterModel>>(relaxed = true)
         }
 
         val searchLocalCacheHandler by memoized {
@@ -196,16 +193,16 @@ internal class SearchShopViewModelTest : Spek({
     }
 
     fun TestBody.createSearchShopViewModel(parameter: Map<String, Any> = searchShopParameter): SearchShopViewModel {
-        val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-        val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-        val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+        val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+        val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+        val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
         val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
         val userSession by memoized<UserSessionInterface>()
         val localCacheHandler by memoized<LocalCacheHandler>()
 
         return SearchShopViewModel(
                 TestDispatcherProvider(), parameter,
-                searchShopFirstPageRepository, searchShopLoadMoreRepository, dynamicFilterRepository,
+                searchShopFirstPageUseCase, searchShopLoadMoreUseCase, getDynamicFilterUseCase,
                 shopCpmViewModelMapper, shopTotalCountViewModelMapper, shopViewModelMapper,
                 searchLocalCacheHandler, userSession, localCacheHandler
         )
@@ -299,8 +296,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("View is created and parameter active tab is ${ SearchConstant.ActiveTab.SHOP }") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -315,8 +312,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view created") {
@@ -324,14 +321,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and dynamic filter API is called once") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
 
         Scenario("View is created multiple times and parameter active tab is ${ SearchConstant.ActiveTab.SHOP }") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -346,8 +343,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view created multiple times") {
@@ -357,8 +354,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and dynamic filter API is called once") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
     }
@@ -367,8 +364,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("View is visible and added") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -377,8 +374,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -386,13 +383,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and dynamic filter API is called once") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
 
         Scenario("View is not yet visible, or not yet added") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -401,7 +398,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
             }
 
             When("handle view not visible or not added") {
@@ -411,13 +408,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop API is never called") {
-                searchShopFirstPageRepository.isNeverExecuted()
+                searchShopFirstPageUseCase.isNeverExecuted()
             }
         }
 
         Scenario("View is visible and added more than once") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -426,8 +423,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added, and then not visible, then visible again") {
@@ -437,14 +434,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and dynamic filter API is only called once") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
 
         Scenario("View is created with parameter active tab is ${ SearchConstant.ActiveTab.SHOP }, and then view is visible") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -459,8 +456,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view is already created") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
                 searchShopViewModel.onViewCreated()
             }
@@ -470,8 +467,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and dynamic filter API is called once") {
-                searchShopFirstPageRepository.isExecuted()
-                dynamicFilterRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
     }
@@ -480,8 +477,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Search Shop First Page Successful") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -490,8 +487,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful and return search shop data") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -535,8 +532,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop First Page Successful Without Next Page") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -545,8 +542,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful and return search shop data without next page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutNextPage)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelWithoutNextPage)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -590,8 +587,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop First Page Successful Without CPM") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -600,8 +597,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful and return search shop data without CPM") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutCpm)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelWithoutCpm)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -645,8 +642,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop First Page Successful Without Valid CPM Shop") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -655,8 +652,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will be successful and return search shop data without Valid CPM Shop") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutValidCpmShop)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelWithoutValidCpmShop)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -701,7 +698,7 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Search Shop First Page Error") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -710,7 +707,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API call will fail") {
-                searchShopFirstPageRepository.stubGetResponse().throws(exception)
+                searchShopFirstPageUseCase.stubExecute().throws(exception)
             }
 
             When("handle view is visible and added") {
@@ -736,8 +733,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop with Empty Result") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -746,8 +743,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API will be successful and return empty search shop list") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelEmptyList)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -779,8 +776,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Search Shop First Page Successful") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -789,8 +786,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -798,14 +795,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("assert get dynamic filter API called once") {
-                dynamicFilterRepository.isExecuted()
+                getDynamicFilterUseCase.isExecuted()
             }
         }
 
         Scenario("Search Shop First Page Error") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -814,7 +811,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageRepository.stubGetResponse().throws(exception)
+                searchShopFirstPageUseCase.stubExecute().throws(exception)
             }
 
             When("handle view is visible and added") {
@@ -826,7 +823,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("assert get dynamic filter API never called") {
-                dynamicFilterRepository.isNeverExecuted()
+                getDynamicFilterUseCase.isNeverExecuted()
             }
         }
     }
@@ -835,8 +832,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Get Dynamic Filter Successful") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -846,8 +843,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("dynamic filter API will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -870,8 +867,8 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Get Dynamic Filter Failed") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -881,8 +878,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("dynamic filter API will fail") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().throws(exception)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().throws(exception)
             }
 
             When("handle view is visible and added") {
@@ -907,8 +904,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Get Dynamic Filter Successful and Search Shop Has Empty Result") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -918,11 +915,11 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop API will be successful and return empty search shop list") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelEmptyList)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
             }
 
             Given("dynamic filter API will be successful") {
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             When("handle view is visible and added") {
@@ -956,9 +953,9 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("View load more and visible, and has next page") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -967,9 +964,9 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page and has next page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
-                searchShopLoadMoreRepository.stubGetResponse().returns(searchMoreShopModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+                searchShopLoadMoreUseCase.stubExecute().returns(searchMoreShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
@@ -978,14 +975,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search more shop API is called once") {
-                searchShopLoadMoreRepository.isExecuted()
+                searchShopLoadMoreUseCase.isExecuted()
             }
         }
 
         Scenario("View load more and visible, but does not have next page") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -994,8 +991,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page and does not have next page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelWithoutNextPage)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelWithoutNextPage)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
@@ -1004,14 +1001,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search more shop API is never called") {
-                searchShopLoadMoreRepository.isNeverExecuted()
+                searchShopLoadMoreUseCase.isNeverExecuted()
             }
         }
 
         Scenario("View load more but not visible") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1020,8 +1017,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view has loaded first page and has next page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
@@ -1030,14 +1027,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search more shop API is never called") {
-                searchShopLoadMoreRepository.isNeverExecuted()
+                searchShopLoadMoreUseCase.isNeverExecuted()
             }
         }
 
         Scenario("View load more twice and visible, but does not have next page after first load more") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1046,13 +1043,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page and has next page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Given("search more shop API will return data with has next page is false") {
-                searchShopLoadMoreRepository.stubGetResponse()
+                searchShopLoadMoreUseCase.stubExecute()
                         .returns(searchMoreShopModelWithoutNextPage)
                         .andThen(searchMoreShopModel)
             }
@@ -1063,7 +1060,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search more shop API is only called once") {
-                searchShopLoadMoreRepository.isExecuted()
+                searchShopLoadMoreUseCase.isExecuted()
             }
         }
     }
@@ -1072,9 +1069,9 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Search Shop and Search More Shop Successful") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1083,13 +1080,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Given("search more shop API call will be successful and return search shop data") {
-                searchShopLoadMoreRepository.stubGetResponse().returns(searchMoreShopModel)
+                searchShopLoadMoreUseCase.stubExecute().returns(searchMoreShopModel)
             }
 
             When("handle view load more and visible") {
@@ -1127,9 +1124,9 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Search Shop Successful and Search More Shop Successful Without Next Page") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1138,13 +1135,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Given("search more shop API call will be successful and return search shop data without next page") {
-                searchShopLoadMoreRepository.stubGetResponse().returns(searchMoreShopModelWithoutNextPage)
+                searchShopLoadMoreUseCase.stubExecute().returns(searchMoreShopModelWithoutNextPage)
             }
 
             When("handle view load more and visible") {
@@ -1183,9 +1180,9 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Search Shop Successful, but Search More Shop Error") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1194,13 +1191,13 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Given("search more shop API call will fail") {
-                searchShopLoadMoreRepository.stubGetResponse().throws(exception)
+                searchShopLoadMoreUseCase.stubExecute().throws(exception)
             }
 
             When("handle view load more and visible") {
@@ -1233,8 +1230,8 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Retry Search Shop After Error in Search Shop") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1243,11 +1240,11 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page error") {
-                searchShopFirstPageRepository.stubGetResponse()
+                searchShopFirstPageUseCase.stubExecute()
                         .throws(exception)
                         .andThen(searchShopModel)
 
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -1257,7 +1254,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop API called twice") {
-                searchShopFirstPageRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
             }
 
             Then("assert search shop state success after retry") {
@@ -1272,9 +1269,9 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Retry Search Shop After Error in Search More Shop") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1283,11 +1280,11 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully, but error during search shop second page") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
 
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
-                searchShopLoadMoreRepository.stubGetResponse()
+                searchShopLoadMoreUseCase.stubExecute()
                         .throws(exception)
                         .andThen(searchMoreShopModel)
 
@@ -1300,8 +1297,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop API called once, and search more shop API called twice") {
-                searchShopFirstPageRepository.isExecuted()
-                searchShopLoadMoreRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted()
+                searchShopLoadMoreUseCase.isExecuted(2)
             }
 
             Then("assert search shop state success after retry") {
@@ -1319,9 +1316,9 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Reload Search Shop After Search Shop and Search More Shop") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
-            val searchShopLoadMoreRepository by memoized<Repository<SearchShopModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1330,9 +1327,9 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first and second page successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
-                searchShopLoadMoreRepository.stubGetResponse().returns(searchMoreShopModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+                searchShopLoadMoreUseCase.stubExecute().returns(searchMoreShopModel)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
                 searchShopViewModel.onViewLoadMore(isViewVisible = true)
@@ -1343,12 +1340,12 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop API is called twice and search more shop API is called once") {
-                searchShopFirstPageRepository.isExecuted(2)
-                searchShopLoadMoreRepository.isExecuted()
+                searchShopFirstPageUseCase.isExecuted(2)
+                searchShopLoadMoreUseCase.isExecuted()
             }
 
             Then("verify dynamic filter API is called once") {
-                dynamicFilterRepository.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
 
             Then("assert search shop state success after reload") {
@@ -1362,8 +1359,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Reload Search Shop After Search Shop First Page Gives Empty Result") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1372,8 +1369,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view search shop first page successfully with empty result") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModelEmptyList).andThen(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList).andThen(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -1383,11 +1380,11 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop API is called twice and search more shop API is called once") {
-                searchShopFirstPageRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
             }
 
             Then("verify dynamic filter API is called once") {
-                dynamicFilterRepository.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
 
             Then("assert search shop state success after reload") {
@@ -1405,8 +1402,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Open Filter Page successfully") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1415,8 +1412,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view get dynamic filter successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -1433,8 +1430,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Open Filter Page but Filter Data does not exists") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1443,11 +1440,11 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view get dynamic filter successfully without filter data") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
 
                 val dynamicFilterModelWithoutFilterData = DynamicFilterModel()
                 dynamicFilterModelWithoutFilterData.data = DataValue()
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModelWithoutFilterData)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModelWithoutFilterData)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -1465,8 +1462,8 @@ internal class SearchShopViewModelTest : Spek({
 
         Scenario("Open Filter Page after Get Dynamic Filter Successful and then Failed") {
             val exception = TestException()
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1475,14 +1472,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view get dynamic filter successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
 
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Given("view get dynamic filter failed on second try") {
-                dynamicFilterRepository.stubGetResponse().throws(exception)
+                getDynamicFilterUseCase.stubExecute().throws(exception)
 
                 searchShopViewModel.onViewReloadData()
             }
@@ -1503,8 +1500,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Apply filter with query parameters") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val queryParametersFromFilter = mutableMapOf<String, String>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -1514,8 +1511,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1548,14 +1545,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and get dynamic filter API is called twice for load first page and apply filter") {
-                searchShopFirstPageRepository.isExecuted(2)
-                dynamicFilterRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
         }
 
         Scenario("Apply filter with null query parameters") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             lateinit var initialSearchParameter: Map<String, Any>
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1564,8 +1561,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1592,8 +1589,8 @@ internal class SearchShopViewModelTest : Spek({
         createTestInstance()
 
         Scenario("Remove selected filter with Option's unique id") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, "true", "Official Store")
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -1603,8 +1600,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1622,14 +1619,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
-                searchShopFirstPageRepository.isExecuted(2)
-                dynamicFilterRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
         }
 
         Scenario("Remove selected filter with null unique id") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             lateinit var initialSearchParameter: Map<String, Any>
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1638,8 +1635,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1662,8 +1659,8 @@ internal class SearchShopViewModelTest : Spek({
         }
 
         Scenario("Remove selected option from filter with multiple options") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val selectedFilterOptionUniqueId = jakartaOption.uniqueId
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -1678,8 +1675,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1701,14 +1698,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
-                searchShopFirstPageRepository.isExecuted(2)
-                dynamicFilterRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
         }
 
         Scenario("Remove selected category filter option") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val selectedFilterOptionUniqueId = handphoneOption.uniqueId
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -1723,8 +1720,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1742,14 +1739,14 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
-                searchShopFirstPageRepository.isExecuted(2)
-                dynamicFilterRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
         }
 
         Scenario("Remove selected price filter option") {
-            val searchShopFirstPageRepository by memoized<Repository<SearchShopModel>>()
-            val dynamicFilterRepository by memoized<Repository<DynamicFilterModel>>()
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Filter Harga")
 
             lateinit var searchShopViewModel: SearchShopViewModel
@@ -1765,8 +1762,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Given("search shop and dynamic filter API call will be successful") {
-                searchShopFirstPageRepository.stubGetResponse().returns(searchShopModel)
-                dynamicFilterRepository.stubGetResponse().returns(dynamicFilterModel)
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
             Given("view get search shop first page and get dynamic filter successfully") {
@@ -1785,8 +1782,8 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             Then("verify search shop and get dynamic filter API is called twice for load first page and remove filter") {
-                searchShopFirstPageRepository.isExecuted(2)
-                dynamicFilterRepository.isExecuted(2)
+                searchShopFirstPageUseCase.isExecuted(2)
+                getDynamicFilterUseCase.isExecuted(2)
             }
         }
     }

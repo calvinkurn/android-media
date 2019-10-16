@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
-import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -23,6 +22,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.search.result.common.Event
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.*
+import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
@@ -32,15 +32,14 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.exists
 import com.tokopedia.topads.sdk.domain.model.Cpm
-import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.user.session.UserSessionInterface
 
 internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
         searchParameter: Map<String, Any>,
-        private val searchShopFirstPageRepository: Repository<SearchShopModel>,
-        private val searchShopLoadMoreRepository: Repository<SearchShopModel>,
-        private val dynamicFilterRepository: Repository<DynamicFilterModel>,
+        private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
+        private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
+        private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
@@ -133,7 +132,7 @@ internal class SearchShopViewModel(
     private suspend fun trySearchShop() {
         updateSearchShopLiveDataStateToLoading()
 
-        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageRepository)
+        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         processSearchShopFirstPageSuccess(searchShopModel)
 
@@ -144,12 +143,12 @@ internal class SearchShopViewModel(
         searchShopLiveData.postValue(Loading())
     }
 
-    private suspend fun requestSearchShopModel(startRow: Int, searchShopRepository: Repository<SearchShopModel>): SearchShopModel? {
+    private suspend fun requestSearchShopModel(startRow: Int, searchShopUseCase: UseCase<SearchShopModel>): SearchShopModel? {
         setSearchParameterStartRow(startRow)
 
         val requestParams = createSearchShopParam()
 
-        return searchShopRepository.getResponse(requestParams)
+        return searchShopUseCase.execute(requestParams)
     }
 
     private fun createSearchShopParam(): Map<String, Any> {
@@ -351,11 +350,29 @@ internal class SearchShopViewModel(
     private suspend fun tryGetDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        dynamicFilterModel = dynamicFilterRepository.getResponse(requestParams)
+        dynamicFilterModel = getDynamicFilterUseCase.execute(requestParams)
         dynamicFilterEventLiveData.postValue(Event(true))
 
         saveDynamicFilterModel()
         processFilterData()
+    }
+
+    private fun createGetDynamicFilterParams(): Map<String, Any> {
+        val requestParams = mutableMapOf<String, Any>()
+
+        requestParams.putAll(searchParameter)
+        requestParams.putAll(generateParamsNetwork(requestParams))
+        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP
+        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+
+        return requestParams
+    }
+
+    private fun generateParamsNetwork(requestParams: MutableMap<String, Any>): Map<String, String> {
+        return AuthHelper.generateParamsNetwork(
+                userSession.userId,
+                userSession.deviceId,
+                requestParams.convertValuesToString().toMutableMap())
     }
 
     private fun saveDynamicFilterModel() {
@@ -392,24 +409,6 @@ internal class SearchShopViewModel(
         updateSearchShopLiveDataStateToSuccess()
     }
 
-    private fun createGetDynamicFilterParams(): Map<String, Any> {
-        val requestParams = mutableMapOf<String, Any>()
-
-        requestParams.putAll(searchParameter)
-        requestParams.putAll(generateParamsNetwork(requestParams))
-        requestParams[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP
-        requestParams[SearchApiConst.DEVICE] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
-
-        return requestParams
-    }
-
-    private fun generateParamsNetwork(requestParams: MutableMap<String, Any>): Map<String, String> {
-        return AuthHelper.generateParamsNetwork(
-                userSession.userId,
-                userSession.deviceId,
-                requestParams.convertValuesToString().toMutableMap())
-    }
-
     private fun catchGetDynamicFilterException(e: Throwable?) {
         e?.printStackTrace()
 
@@ -431,7 +430,7 @@ internal class SearchShopViewModel(
     }
 
     private suspend fun trySearchMoreShop() {
-        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreRepository)
+        val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
 
         processSearchMoreShopSuccess(searchShopModel)
     }

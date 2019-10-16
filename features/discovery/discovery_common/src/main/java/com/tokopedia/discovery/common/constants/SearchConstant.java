@@ -64,6 +64,7 @@ public interface SearchConstant {
         String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
         String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
         String GET_DYNAMIC_FILTER_GQL_USE_CASE = "get_dynamic_filter_gql_use_case";
+        String GET_DYNAMIC_FILTER_SHOP_USE_CASE = "get_dynamic_filter_shop_use_case";
         String DYNAMIC_FILTER_REPOSITORY = "dynamic_filter_repository";
         String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
     }
@@ -78,8 +79,8 @@ public interface SearchConstant {
     }
 
     interface SearchShop {
-        String SEARCH_SHOP_FIRST_PAGE_REPOSITORY = "search_shop_first_page_repository";
-        String SEARCH_SHOP_LOAD_MORE_REPOSITORY = "search_shop_load_more_repository";
+        String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
+        String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";

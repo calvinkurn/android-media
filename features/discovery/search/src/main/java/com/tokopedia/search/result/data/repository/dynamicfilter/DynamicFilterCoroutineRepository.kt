@@ -6,7 +6,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterCoroutineDataSource
 import kotlinx.coroutines.withContext
 
-class DynamicFilterCoroutineRepository(
+internal class DynamicFilterCoroutineRepository(
         private val dynamicFilterCoroutineDataSource: DynamicFilterCoroutineDataSource,
         private val coroutineDispatcher: DispatcherProvider
 ): Repository<DynamicFilterModel> {

@@ -28,10 +28,10 @@ final class ShopListPresenter
         extends SearchSectionPresenter<ShopListSectionContract.View>
         implements ShopListSectionContract.Presenter {
     @Inject
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
     UseCase<SearchShopModel> searchShopFirstPageUseCase;
     @Inject
-    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
+    @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
     UseCase<SearchShopModel> searchShopLoadMoreUseCase;
     @Inject
     Mapper<SearchShopModel, ShopViewModel> shopViewModelMapper;

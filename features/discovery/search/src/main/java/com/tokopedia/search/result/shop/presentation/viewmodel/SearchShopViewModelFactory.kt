@@ -5,8 +5,8 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
@@ -14,12 +14,12 @@ import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewMod
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
-class SearchShopViewModelFactory(
+internal class SearchShopViewModelFactory(
         private val coroutineDispatcher: DispatcherProvider,
         private val searchParameter: Map<String, Any>,
-        private val searchShopFirstPageRepository: Repository<SearchShopModel>,
-        private val searchShopLoadMoreRepository: Repository<SearchShopModel>,
-        private val dynamicFilterRepository: Repository<DynamicFilterModel>,
+        private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
+        private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
+        private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
@@ -41,9 +41,9 @@ class SearchShopViewModelFactory(
         return SearchShopViewModel(
                 coroutineDispatcher,
                 searchParameter,
-                searchShopFirstPageRepository,
-                searchShopLoadMoreRepository,
-                dynamicFilterRepository,
+                searchShopFirstPageUseCase,
+                searchShopLoadMoreUseCase,
+                getDynamicFilterUseCase,
                 shopCpmViewModelMapper,
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,

@@ -1,22 +1,22 @@
-package com.tokopedia.search.result.shop.repository
+package com.tokopedia.search.result.shop.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
-import java.util.*
+import java.util.HashMap
 
-class SearchShopFirstPageRepository(
+internal class SearchShopFirstPageUseCase(
         private val queryString: String,
         private val graphqlCacheStrategy: GraphqlCacheStrategy,
         private val graphqlRepository: GraphqlRepository
-): Repository<SearchShopModel> {
+): UseCase<SearchShopModel>() {
 
-    override suspend fun getResponse(inputParameter: Map<String, Any>): SearchShopModel {
+    override suspend fun execute(inputParameter: Map<String, Any>): SearchShopModel {
         val graphqlRequest = GraphqlRequest(
                 queryString, SearchShopModel::class.java, createParametersForQuery(inputParameter))
 

@@ -5,19 +5,19 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
-import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.data.repository.dynamicfilter.DynamicFilterCoroutineRepositoryModule
+import com.tokopedia.search.result.common.UseCase
+import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.shop.repository.SearchShopRepositoryModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -25,13 +25,13 @@ import javax.inject.Named
 
 @SearchScope
 @Module(includes = [
-    SearchShopRepositoryModule::class,
+    SearchShopUseCaseModule::class,
+    GetDynamicFilterCoroutineUseCaseModule::class,
     ShopViewModelMapperModule::class,
-    DynamicFilterCoroutineRepositoryModule::class,
     SearchLocalCacheHandlerModule::class,
     GCMLocalCacheHandlerModule::class
 ])
-class SearchShopViewModelFactoryModule(
+internal class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
 ) {
 
@@ -39,12 +39,12 @@ class SearchShopViewModelFactoryModule(
     @Provides
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_REPOSITORY)
-            searchShopFirstPageRepository: Repository<SearchShopModel>,
-            @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_REPOSITORY)
-            searchShopLoadMoreRepository: Repository<SearchShopModel>,
-            @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY)
-            dynamicFilterRepository: Repository<DynamicFilterModel>,
+            @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
+            searchShopFirstPageUseCase: UseCase<SearchShopModel>,
+            @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
+            searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
+            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
+            getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
             shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
             shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
@@ -56,9 +56,9 @@ class SearchShopViewModelFactoryModule(
         return SearchShopViewModelFactory(
                 ProductionDispatcherProvider(),
                 searchParameter,
-                searchShopFirstPageRepository,
-                searchShopLoadMoreRepository,
-                dynamicFilterRepository,
+                searchShopFirstPageUseCase,
+                searchShopLoadMoreUseCase,
+                getDynamicFilterUseCase,
                 shopCpmViewModelMapper,
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
