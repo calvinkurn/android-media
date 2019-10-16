@@ -130,6 +130,7 @@
     <string name="ticker_info_description">Hanya bisa beli satu jenis tiket, lakukan transaksi baru untuk beli jenis tiket lainnya.</string>
 
     <string name="reset">Reset</string>
+    <string name="event_ended">Penjualan tiket untuk event ini telah berakhir</string>
     <!-- need to changed -->
 
 </resources>

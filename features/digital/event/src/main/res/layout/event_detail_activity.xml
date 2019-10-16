@@ -122,7 +122,7 @@
                 android:background="@color/yellow_200"
                 android:gravity="center"
                 android:visibility="gone"
-                android:text="Penjualan tiket untuk event ini telah berakhir"/>
+                android:text="@string/event_ended"/>
             </RelativeLayout>
 
             <include
