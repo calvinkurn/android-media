@@ -2550,4 +2550,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void setHasTriedToLoadRecommendation() {
         hasTriedToLoadRecommendation = true;
     }
+
+    @Override
+    public void onDeleteAllDisabledProduct() {
+        // Todo : delete all disabled item
+    }
 }
