@@ -1407,16 +1407,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public SnapHelper getSnapHelper() {
-        return new StartSnapHelper();
-    }
-
-    @Override
-    public RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode) {
-        return new SpacingItemDecoration(spacing, displayMode);
-    }
-
-    @Override
     public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
