@@ -254,7 +254,6 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.affiliateCommon)
@@ -299,7 +298,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.voucherGame)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsDashboard)
@@ -364,6 +362,7 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHomepage)
+    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)

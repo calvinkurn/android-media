@@ -48,12 +48,6 @@ public class ContactUsModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(contactUsAuthInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(ContactUsErrorResponse.class));
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(((ContactUsModuleRouter)context).getChuckInterceptor());
-
-        }
         return builder.build();
     }
 

@@ -43,6 +43,8 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
@@ -61,12 +63,6 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.contactus.ContactUsModuleRouter;
-import com.tokopedia.contactus.createticket.ContactUsConstant;
-import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
-import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
-import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
@@ -395,7 +391,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProfileModuleRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
-        ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
         TopChatRouter,
@@ -434,6 +429,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         KYCRouter {
 
     private static final String EXTRA = "extra";
+    public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
+    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -964,34 +961,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
-        return ContactUsCreateTicketActivity.getCallingIntent(
-                activity,
-                passData.getToolbarTitle(),
-                passData.getSolutionId(),
-                passData.getOrderId(),
-                passData.getDescriptionTitle(),
-                passData.getAttachmentTitle(),
-                passData.getDescription()
-        );
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
-        Bundle extras = new Bundle();
-        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
-                URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
-        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
         return intent;
     }
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
-        Bundle extras = new Bundle();
-        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
-                URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        extras.putString(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
-        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        intent.putExtra(EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
     }
 
@@ -1025,10 +1005,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
-        Bundle extras = new Bundle();
-        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
-                URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
+        intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         return intent;
     }
 
@@ -1631,7 +1609,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
+        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
     }
 
     @Override
@@ -1967,11 +1945,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getContactUsBaseURL() {
-        return TkpdBaseURL.ContactUs.URL_HELP;
-    }
-
-    @Override
     public Intent getChatBotIntent(Context context, String messageId) {
         return RouteManager.getIntent(context, ApplinkConst.CHATBOT
                 .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
@@ -1983,7 +1956,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHelpUsIntent(Context context) {
-        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
+        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
     }
 
     @Override
@@ -2098,10 +2071,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
     }
 
-    public Intent getInboxHelpIntent(Context context) {
-        return InboxListActivity.getCallingIntent(context);
-    }
-
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
@@ -2114,7 +2083,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
+        return RouteManager.getIntent(context, ApplinkConstInternalOperational.INTERNAL_INBOX_LIST);
     }
 
     @Override
