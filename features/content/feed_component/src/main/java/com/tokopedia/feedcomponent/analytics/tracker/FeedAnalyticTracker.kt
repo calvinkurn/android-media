@@ -210,16 +210,16 @@ class FeedAnalyticTracker
      * Screenshot 19
      *
      */
-    fun eventViewContentRecommendation(activityId: String, position: Int, authorType: String) {
+    fun eventViewContentRecommendation(userId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
                 Event.PROMO_VIEW,
                 Category.CONTENT_INTEREST_PICK,
                 Action.IMPRESSION_CONTENT_RECOM,
-                activityId,
+                userId,
                 getPromoViewData(
                         getPromotionsData(
                                 listOf(getPromotionData(
-                                        activityId,
+                                        userId,
                                         ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
                                         userSessionInterface.name,
                                         position))
