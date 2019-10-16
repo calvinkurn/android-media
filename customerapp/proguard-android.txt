@@ -217,5 +217,5 @@ public protected *;
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 
 -assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
-    public *** initTranslator(...);
+    public void initTranslator();
 }
