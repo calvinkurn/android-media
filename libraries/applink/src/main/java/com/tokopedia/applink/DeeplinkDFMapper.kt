@@ -26,8 +26,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.config.GlobalConfig
