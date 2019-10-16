@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/umrah_bg_my_umrah_widget"
+    android:elevation="@dimen/dp_4"
     android:padding="@dimen/dp_16">
 
     <android.support.v7.widget.AppCompatImageView

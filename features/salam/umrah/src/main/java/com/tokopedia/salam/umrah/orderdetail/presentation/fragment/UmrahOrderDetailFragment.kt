@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -198,7 +199,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         rv_action_button.layoutManager = buttonLayoutManager
         rv_action_button.adapter = buttonAdapter
 
-        tg_umrah_contact_us.text = data.contactUs.helpText
+        tg_umrah_contact_us.text = getTextFromHtml(data.contactUs.helpText)
         tg_umrah_contact_us.setOnClickListener {
             RouteManager.route(context, data.contactUs.helpUrl)
         }
@@ -217,6 +218,13 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
         RouteManager.route(context, buttonViewModel.buttonLink)
     }
+
+    private fun getTextFromHtml(htmlText: String): CharSequence =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                Html.fromHtml(htmlText)
+            }
 
     companion object {
 
