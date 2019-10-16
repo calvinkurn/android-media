@@ -153,6 +153,9 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_umrah_order_package.text = data.items[0].title
             tg_umrah_order_travel.text = metaData.travelAgent
             tg_booking_code.text = metaData.bookingCode
+            btn_show_detail_booking.setOnClickListener {
+                RouteManager.route(context, data.items[0].productUrl)
+            }
         }
 
         val jamaahLayoutManager = LinearLayoutManager(context)
@@ -187,6 +190,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         rv_action_button.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rv_action_button.layoutManager = buttonLayoutManager
         rv_action_button.adapter = buttonAdapter
+
+        tg_umrah_contact_us.text = data.contactUs.helpText
+        tg_umrah_contact_us.setOnClickListener {
+            RouteManager.route(context, data.contactUs.helpUrl)
+        }
 
     }
 
