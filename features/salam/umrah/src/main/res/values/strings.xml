@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Umrah</string>
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
@@ -12,5 +11,6 @@
     <string name="umrah_order_detail_show_e_voucher_label">Lihat E-Voucher</string>
     <string name="umrah_order_detail_payment_info_label">Informasi Pembayaran</string>
     <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
+    <string name="umrah_order_detail_activity_label">Detail Pesanan</string>
 
 </resources>

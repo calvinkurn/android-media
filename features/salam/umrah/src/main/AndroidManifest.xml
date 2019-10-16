@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
+            android:label="@string/umrah_order_detail_activity_label"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
