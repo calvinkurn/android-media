@@ -14,6 +14,7 @@ include "features:discovery:filter"
 include "features:discovery:productcard"
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
+include "features:discovery:recommendation_widget_common"
 
 include "features:merchant:gold_merchant_resource"
 

@@ -12,6 +12,7 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
 import android.graphics.drawable.GradientDrawable
+import com.tokopedia.kotlin.extensions.view.getDimens
 
 class GlobalNavWidget: BaseCustomView {
 
@@ -131,7 +132,10 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun createGlobalNavWidgetCardItemDecoration(): RecyclerView.ItemDecoration {
-        return GlobalNavWidgetCardItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
+        return GlobalNavWidgetCardItemDecoration(
+                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+        )
     }
 
     private fun handleDefaultTemplate(
