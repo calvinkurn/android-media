@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.LayoutInflater
@@ -195,7 +194,6 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         val buttonLayoutManager = LinearLayoutManager(context)
         val buttonAdapter = UmrahOrderDetailButtonAdapter(this)
         buttonAdapter.setData(umrahOrderDetailViewModel.transformToButtonModel(data.actionButtons))
-        rv_action_button.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rv_action_button.layoutManager = buttonLayoutManager
         rv_action_button.adapter = buttonAdapter
 
