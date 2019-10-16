@@ -178,7 +178,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+    private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
                                                   warehouseId: String,
                                                   forceRefresh: Boolean = false)
             : Deferred<ProductInfoP2ShopData> {
@@ -229,7 +229,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2GeneralAsync(
+    private fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
             forceRefresh: Boolean): Deferred<ProductInfoP2General> {
