@@ -30,14 +30,17 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
-        bundle.putString("message_id",list[0])
-        bundle.putString("deep_link_uri",intent.data.toString())
+        bundle.putString(MESSAGE_ID,list[0])
+        bundle.putString(DEEP_LINK_URI,intent.data.toString())
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
     }
 
     companion object {
+
+        const val MESSAGE_ID = "message_id"
+        const val DEEP_LINK_URI = "deep_link_uri"
 
         @JvmStatic
         fun getCallingIntent(messageId: String, context: Context): Intent {
