@@ -78,6 +78,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
@@ -465,7 +466,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         tv_trade_in_promo.setOnClickListener {
-            productId?.let{
+            productId?.let {
                 productDetailTracking.eventClickTradeInRibbon(it)
             }
             scrollToTradeInWidget()
@@ -1440,6 +1441,24 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         } else {
             merchantVoucherListWidget.gone()
         }
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&
+                productInfoP2.productFinancingRecommendationData.response.data.partnerCode.isNotBlank()) {
+            iv_ovo_installment_icon.show()
+            iv_arrow_next.show()
+
+            iv_ovo_installment_icon.setOnClickListener {
+                openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+            }
+
+            iv_arrow_next.setOnClickListener {
+                openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+            }
+        } else {
+            iv_ovo_installment_icon.hide()
+            iv_arrow_next.hide()
+        }
+
         productInfoP2.minInstallment?.let {
             label_installment.visible()
             label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
@@ -1485,6 +1504,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfo?.run {
             productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
         }
+
+    }
+
+    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
 
     }
 
@@ -2259,14 +2282,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun updateStickyContent() {
         productInfoViewModel.getStickyLoginContent(
-            onSuccess = {
-                this.tickerDetail = it
-                updateStickyState()
-                updateActionBarBackground()
-            },
-            onError = {
-                stickyLoginView.hide()
-            }
+                onSuccess = {
+                    this.tickerDetail = it
+                    updateStickyState()
+                    updateActionBarBackground()
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
         )
     }
 

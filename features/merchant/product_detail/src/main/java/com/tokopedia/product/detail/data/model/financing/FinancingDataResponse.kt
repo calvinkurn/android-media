@@ -1,16 +1,62 @@
 package com.tokopedia.product.detail.data.model.financing
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class FinancingDataResponse(
         @SerializedName("ft_installment_calculation")
-        val ftInstallmentCalculation: FtInstallmentCalcualtionDataResponse = FtInstallmentCalcualtionDataResponse()
-)
+        val ftInstallmentCalculation: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
+) : Parcelable {
 
-data class FtInstallmentCalcualtionDataResponse(
+    constructor(parcel: Parcel) : this(
+            parcel.readParcelable<FtInstallmentCalculationDataResponse>(FtInstallmentCalculationDataResponse::class.java.classLoader)!!)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(ftInstallmentCalculation, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FinancingDataResponse> {
+        override fun createFromParcel(parcel: Parcel): FinancingDataResponse {
+            return FinancingDataResponse(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FinancingDataResponse?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class FtInstallmentCalculationDataResponse(
         @SerializedName("data")
         val ftInstallmentCalculation: FtInstallmentCalcualtionData = FtInstallmentCalcualtionData()
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readParcelable<FtInstallmentCalcualtionData>(FtInstallmentCalcualtionData::class.java.classLoader)!!)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(ftInstallmentCalculation, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FtInstallmentCalculationDataResponse> {
+        override fun createFromParcel(parcel: Parcel): FtInstallmentCalculationDataResponse {
+            return FtInstallmentCalculationDataResponse(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FtInstallmentCalculationDataResponse?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class FtInstallmentCalcualtionData(
         @SerializedName("credit_card")
@@ -18,7 +64,37 @@ data class FtInstallmentCalcualtionData(
 
         @SerializedName("non_credit_card")
         val nonCreditCardInstallmentData: ArrayList<FtCalculationPartnerData> = ArrayList()
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            arrayListOf<FtCalculationPartnerData>().apply {
+                parcel.readList(this, FtCalculationPartnerData::class.java.classLoader)
+            },
+            arrayListOf<FtCalculationPartnerData>().apply {
+                parcel.readList(this, FtCalculationPartnerData::class.java.classLoader)
+            }
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FtInstallmentCalcualtionData> {
+        override fun createFromParcel(source: Parcel): FtInstallmentCalcualtionData {
+
+            return FtInstallmentCalcualtionData(source)
+        }
+
+        override fun newArray(size: Int): Array<FtInstallmentCalcualtionData?> {
+
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class FtCalculationPartnerData(
         @SerializedName("partner_code")
@@ -35,11 +111,45 @@ data class FtCalculationPartnerData(
 
         @SerializedName("instruction_list")
         val creditCardInstructionList: ArrayList<PaymentPartnerInstructionData> = ArrayList()
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            arrayListOf<CalculationInstallmentData>().apply {
+                parcel.readList(this, CalculationInstallmentData::class.java.classLoader)
+            },
+            arrayListOf<PaymentPartnerInstructionData>().apply {
+                parcel.readList(this, PaymentPartnerInstructionData::class.java.classLoader)
+            }
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(partnerCode)
+        parcel.writeString(partnerName)
+        parcel.writeString(partnerIcon)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FtCalculationPartnerData> {
+        override fun createFromParcel(parcel: Parcel): FtCalculationPartnerData {
+            return FtCalculationPartnerData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FtCalculationPartnerData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 data class CalculationInstallmentData(
         @SerializedName("term")
-        val creditCardinstallmentTerm: Int,
+        val creditCardInstallmentTerm: Int,
 
         @SerializedName("mdr_value")
         val mdrValue: Float,
@@ -60,8 +170,44 @@ data class CalculationInstallmentData(
         val monthlyPrice: Float,
 
         @SerializedName("os_monthly_price")
-        val crdeitCardinstallmentTerm: Float
-)
+        val osMonthlyPrice: Float
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readFloat(),
+            parcel.readString() ?: "",
+            parcel.readFloat(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readFloat(),
+            parcel.readFloat())
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(creditCardInstallmentTerm)
+        parcel.writeFloat(mdrValue)
+        parcel.writeString(mdrType)
+        parcel.writeFloat(interestRate)
+        parcel.writeInt(minimumAmount)
+        parcel.writeInt(maximumAmount)
+        parcel.writeFloat(monthlyPrice)
+        parcel.writeFloat(osMonthlyPrice)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CalculationInstallmentData> {
+        override fun createFromParcel(parcel: Parcel): CalculationInstallmentData {
+            return CalculationInstallmentData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CalculationInstallmentData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class PaymentPartnerInstructionData(
         @SerializedName("order")
@@ -72,4 +218,32 @@ data class PaymentPartnerInstructionData(
 
         @SerializedName("ins_image_url")
         val insImageUrl: String
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "") {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(order)
+        parcel.writeString(description)
+        parcel.writeString(insImageUrl)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<PaymentPartnerInstructionData> {
+        override fun createFromParcel(parcel: Parcel): PaymentPartnerInstructionData {
+            return PaymentPartnerInstructionData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PaymentPartnerInstructionData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}

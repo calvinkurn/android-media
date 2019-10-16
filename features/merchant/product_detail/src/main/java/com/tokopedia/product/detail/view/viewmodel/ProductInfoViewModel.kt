@@ -35,6 +35,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -330,15 +331,20 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
                 ProductSpecificationResponse::class.java, productCatalogParams)
 
-        val pdpFinancingParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+        val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
                 ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
-        val pdpFinancingRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
-                FinancingDataResponse::class.java, pdpFinancingParam)
+        val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
+                PDPInstallmentRecommendationResponse::class.java, pdpFinancingRecommendationParam)
+
+        val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
+        val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
+                FinancingDataResponse::class.java, pdpFinancingCalculationParam)
 
         val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                 helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest,
-                shopFeatureRequest, productCatalogRequest, pdpFinancingRequest)
+                shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         try {
@@ -405,6 +411,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (gqlResponse.getError(ProductSpecificationResponse::class.java)?.isNotEmpty() != true) {
                 val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
                 productInfoP2.productSpecificationResponse = productSpesification
+            }
+
+            if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isEmpty() == true) {
+                val installmentRecommendationData: PDPInstallmentRecommendationResponse =
+                        gqlResponse.getData(PDPInstallmentRecommendationResponse::class.java)
+                productInfoP2.productFinancingRecommendationData = installmentRecommendationData
             }
 
             if (gqlResponse.getError(FinancingDataResponse::class.java)?.isEmpty() == true) {
