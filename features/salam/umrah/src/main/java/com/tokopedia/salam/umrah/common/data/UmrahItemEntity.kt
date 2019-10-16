@@ -16,7 +16,7 @@ class UmrahItemEntity(
         @SerializedName("productUrl")
         @Expose
         val productUrl: String = "",
-        @SerializedName("metadata")
+        @SerializedName("metaData")
         @Expose
         val metadata: String = ""
 )
