@@ -1006,7 +1006,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun isFromAccountPage(): Boolean {
-        return source == "account"
+        return source == SOURCE_ACCOUNT
     }
 
     private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
@@ -1157,7 +1157,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if(!it.isRegistered){
+            if(!it.isRegistered && isFromAccountPage()){
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
@@ -1210,6 +1210,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         const val LOGIN_LOAD_TRACE = "gb_login_trace"
         const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
+
+        const val SOURCE_ACCOUNT = "account"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
