@@ -105,7 +105,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemViewType(int position) {
         Object object = cartDataList.get(position);
         if (object instanceof CartShopHolderData) {
-            return CartErrorItemViewHolder.Companion.getLAYOUT();
+            return CartShopViewHolder.TYPE_VIEW_ITEM_SHOP;
         } else if (object instanceof CartPromoSuggestionHolderData) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
         } else if (object instanceof PromoStackingData) {
@@ -132,6 +132,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartSelectAllViewHolder.Companion.getLAYOUT();
         } else if (object instanceof InsuranceCartShops) {
             return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
+        } else if (object instanceof CartErrorItemHolderData) {
+            return CartErrorItemViewHolder.Companion.getLAYOUT();
         } else {
             return super.getItemViewType(position);
         }
