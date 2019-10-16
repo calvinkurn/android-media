@@ -137,11 +137,11 @@ public class TopAdsGtmTracker {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
-                    "eventAction", "product recommendation click "+(isLogin?"-":"- non login -")+" topads",
+                    "eventAction", "product recommendation click " + (isLogin ? "-" : "- non login -") + " topads",
                     "eventLabel", tabName,
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
-                                    DataLayer.mapOf("list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomType+" - product topads"),
+                                    DataLayer.mapOf("list", "/ - p2" + (isLogin ? " - " : " - non login - ") + tabName + " - rekomendasi untuk anda - " + recomType + " - product topads"),
                                     "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
@@ -150,7 +150,7 @@ public class TopAdsGtmTracker {
                                             "category", categoryBreadcrumbs,
                                             "variant", "none/other",
                                             "position", position,
-                                            "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other"))))
+                                            "dimension83", product.getFreeOngkir().isActive() ? "bebas ongkir" : "none / other"))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
@@ -173,18 +173,18 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public void  addRecomendationProductViewImpressions(Product product, String categoryBreadcrumbs,
-                                                        String tabName, String recomendationType,
-                                                        boolean isLogin, int position) {
+    public void addRecomendationProductViewImpressions(Product product, String categoryBreadcrumbs,
+                                                       String tabName, String recomendationType,
+                                                       boolean isLogin, int position) {
         this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "variant", "none/other",
                 "category", categoryBreadcrumbs,
-                "list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomendationType+" - product topads",
+                "list", "/ - p2" + (isLogin ? " - " : " - non login - ") + tabName + " - rekomendasi untuk anda - " + recomendationType + " - product topads",
                 "position", position,
-                "dimension83", product.getFreeOngkir().isActive()?"bebas ongkir":"none / other"));
+                "dimension83", product.getFreeOngkir().isActive() ? "bebas ongkir" : "none / other"));
     }
 
     public void addInboxProductViewImpressions(Product product, int position, String recommendationType) {
@@ -194,7 +194,7 @@ public class TopAdsGtmTracker {
                 "brand", "none/other",
                 "variant", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/inbox - topads - rekomendasi untuk anda - "+recommendationType,
+                "list", "/inbox - topads - rekomendasi untuk anda - " + recommendationType,
                 "position", position));
     }
 
@@ -263,7 +263,7 @@ public class TopAdsGtmTracker {
         product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getId());
         product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getName());
         product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, (TextUtils.isEmpty(item.getCategoryBreadcrumb())) ? "none / other" : item.getCategoryBreadcrumb());
         product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
         product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPriceFormat().replaceAll("[^0-9]", "")));
         product.putLong(FirebaseAnalytics.Param.INDEX, 1);
@@ -294,7 +294,7 @@ public class TopAdsGtmTracker {
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationType + " - product topads"),
+                                DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - " + recommendationType + " - product topads"),
                                 "products", DataLayer.listOf(DataLayer.mapOf(
                                         "name", product.getName(),
                                         "id", product.getId(),
@@ -793,7 +793,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventRecommendationWishlistClick(boolean isAdded){
+    public static void eventRecommendationWishlistClick(boolean isAdded) {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "clickWishlist",
                 "eventCategory", "wishlist page",
