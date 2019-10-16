@@ -375,6 +375,28 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(keyEvent, bundle, context);
     }
 
+    public void sendCampaign(Map<String, Object> param) {
+        Bundle bundle = new Bundle();
+
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        String afUniqueId = getAfUniqueId(context);
+
+        bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("clientId", getClientIDString());
+
+        bundle.putString("screenName", (String)param.get("screenName"));
+
+        bundle.putString("gclid", (String)param.get(AppEventTracking.GTM.UTM_GCLID));
+        bundle.putString("utmSource", (String)param.get(AppEventTracking.GTM.UTM_SOURCE));
+        bundle.putString("utmMedium", (String)param.get(AppEventTracking.GTM.UTM_MEDIUM));
+        bundle.putString("utmCampaign", (String)param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
+        bundle.putString("utmContent", (String)param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
+        bundle.putString("utmTerm", (String)param.get(AppEventTracking.GTM.UTM_TERM));
+
+        logEvent("campaignTrack", bundle, context);
+    }
+
     public void pushGeneralGtmV5(Map<String, Object> params) {
         pushGeneral(params);
 
