@@ -35,7 +35,6 @@ include "features:digital:flight"
 //include "features:digital:flight_no_op"
 include "features:digital:hotel"
 include "features:digital:imagepreviewslider"
-include "features:digital:train"
 include "features:digital:travel_homepage"
 include ":features:digital:digital_homepage"
 

@@ -154,14 +154,6 @@ public class PromoCouponFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
-        if (getActivity() instanceof LoyaltyModuleRouter) {
-            ((LoyaltyModuleRouter) getActivity())
-                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
-        }
-    }
-
-    @Override
     public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
         loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
     }
