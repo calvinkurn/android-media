@@ -137,6 +137,7 @@ public class ProductListFragment
     private ProductListTypeFactory productListTypeFactory;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
+    private boolean tickerHasDismissed = false;
 
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
@@ -611,6 +612,16 @@ public class ProductListFragment
     @Override
     public void onTickerClicked(String queryParams) {
         performNewProductSearch(queryParams);
+    }
+
+    @Override
+    public void onTickerDismissed() {
+        tickerHasDismissed = true;
+    }
+
+    @Override
+    public boolean isTickerHasDismissed() {
+        return tickerHasDismissed;
     }
 
     @Override

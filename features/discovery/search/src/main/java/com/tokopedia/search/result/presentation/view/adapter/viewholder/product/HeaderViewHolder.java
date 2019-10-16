@@ -30,6 +30,10 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_header_layout;
-    private LinearLayout tickerContainer;
+    private Ticker tickerView;
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
@@ -61,7 +65,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
-        tickerContainer = itemView.findViewById(R.id.ticker_container);
+        tickerView = itemView.findViewById(R.id.tickerView);
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
@@ -117,23 +121,29 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void bindTickerView(final HeaderViewModel element) {
-        if (element.getTickerViewModel() != null) {
-            tickerContainer.removeAllViews();
-            View tickerView = LayoutInflater.from(context).inflate(R.layout.search_ticker_layout, null);
-            TextView tickerText = tickerView.findViewById(R.id.ticker_text_view);
-            if (!TextUtils.isEmpty(element.getTickerViewModel().getText())) {
-                tickerText.setText(Html.fromHtml(element.getTickerViewModel().getText()));
-                tickerText.setOnClickListener(v -> {
-                    if (tickerListener != null && !TextUtils.isEmpty(element.getTickerViewModel().getQuery())) {
-                        tickerListener.onTickerClicked(element.getTickerViewModel().getQuery());
-                    }
-                });
-                tickerText.setVisibility(View.VISIBLE);
-            } else {
-                tickerText.setVisibility(View.GONE);
-            }
-            tickerContainer.addView(tickerView);
+        if (tickerListener == null || tickerListener.isTickerHasDismissed() ||
+                element.getTickerViewModel() == null || TextUtils.isEmpty(element.getTickerViewModel().getText())) {
+            tickerView.setVisibility(View.GONE);
+            return;
         }
+
+        tickerView.setHtmlDescription(element.getTickerViewModel().getText());
+        tickerView.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                if (tickerListener != null && !TextUtils.isEmpty(element.getTickerViewModel().getQuery())) {
+                    tickerListener.onTickerClicked(element.getTickerViewModel().getQuery());
+                }
+            }
+
+            @Override
+            public void onDismiss() {
+                if (tickerListener != null) {
+                    tickerListener.onTickerDismissed();
+                }
+            }
+        });
+        tickerView.setVisibility(View.VISIBLE);
     }
 
     private void bindSuggestionView(final HeaderViewModel element) {
