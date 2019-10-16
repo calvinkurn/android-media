@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartErrorItemViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
@@ -20,6 +21,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionLi
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSelectAllViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartErrorItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
@@ -103,7 +105,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemViewType(int position) {
         Object object = cartDataList.get(position);
         if (object instanceof CartShopHolderData) {
-            return CartShopViewHolder.TYPE_VIEW_ITEM_SHOP;
+            return CartErrorItemViewHolder.Companion.getLAYOUT();
         } else if (object instanceof CartPromoSuggestionHolderData) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
         } else if (object instanceof PromoStackingData) {
@@ -194,6 +196,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false);
             return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
+        } else if (viewType == CartErrorItemViewHolder.Companion.getLAYOUT()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(CartErrorItemViewHolder.Companion.getLAYOUT(), parent, false);
+            return new CartErrorItemViewHolder(view, actionListener);
         }
 
         throw new RuntimeException("No view holder type found");
@@ -260,6 +266,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
             final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
             insuranceCartShopViewHolder.bindData(insuranceCartShops, position, PAGE_TYPE_CART);
+        } else if (viewType == CartErrorItemViewHolder.Companion.getLAYOUT()) {
+            ((CartErrorItemViewHolder) holder).bind(new CartErrorItemHolderData(1, "https://www.rodalink.com/pub/media/catalog/product/cache/small_image/301x250/beff4985b56e3afdbeabfc89641a4582/p/a/pa00195.jpg",
+                    "test", 20000000, null, false, null, null, false));
         }
     }
 
