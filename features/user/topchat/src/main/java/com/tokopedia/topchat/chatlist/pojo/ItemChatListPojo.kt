@@ -33,4 +33,12 @@ data class ItemChatListPojo(
     }
 
     fun ids() = listOf(msgId)
+
+    fun isUnread(): Boolean {
+        return attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+    }
+
+    fun markAsRead() {
+        attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_READ
+    }
 }

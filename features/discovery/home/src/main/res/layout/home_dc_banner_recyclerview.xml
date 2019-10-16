@@ -12,13 +12,17 @@
     <include
         layout="@layout/home_master_dynamic_channel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <android.support.constraint.ConstraintLayout
+    <com.tokopedia.unifycomponents.ContainerUnify
         android:id="@+id/backgroundBanner"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/background_banner_organic"
         app:layout_constraintTop_toBottomOf="@+id/channel_title_container">
 
@@ -26,7 +30,6 @@
             android:id="@+id/dc_banner_card"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
-            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
@@ -96,7 +99,6 @@
             android:id="@+id/dc_banner_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@+id/dc_banner_card" />
-    </android.support.constraint.ConstraintLayout>
+    </com.tokopedia.unifycomponents.ContainerUnify>
 </android.support.constraint.ConstraintLayout>
