@@ -396,41 +396,54 @@ public class SearchActivity extends BaseActivity
     }
 
     private void observeViewModel() {
-        if (searchViewModel != null) {
+        observeAutoCompleteEvent();
+        observeHideLoadingEvent();
+        observeChildViewVisibilityChangedEvent();
+    }
 
-            searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
-                if (booleanEvent != null) {
-                    Boolean content = booleanEvent.getContentIfNotHandled();
+    private void observeAutoCompleteEvent() {
+        if (searchViewModel == null) return;
 
-                    if (content != null && content) {
-                        showSearchInputView();
-                    }
+        searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    showSearchInputView();
                 }
-            });
+            }
+        });
+    }
 
-            searchViewModel.getHideLoadingEventLiveData().observe(this, booleanEvent -> {
-                if (booleanEvent != null) {
-                    Boolean content = booleanEvent.getContentIfNotHandled();
+    private void observeHideLoadingEvent() {
+        if (searchViewModel == null) return;
 
-                    if (content != null && content) {
-                        removeSearchPageLoading();
-                    }
+        searchViewModel.getHideLoadingEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    removeSearchPageLoading();
                 }
-            });
+            }
+        });
+    }
 
-            searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
-                if (childViewVisibilityChangedEvent != null) {
-                    ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
+    private void observeChildViewVisibilityChangedEvent() {
+        if (searchViewModel == null) return;
 
-                    if (childViewVisibilityChangedModel != null) {
-                        setupSearchNavigation(
-                                childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
-                                childViewVisibilityChangedModel.isSortEnabled()
-                        );
-                    }
+        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
+            if (childViewVisibilityChangedEvent != null) {
+                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
+
+                if (childViewVisibilityChangedModel != null) {
+                    setupSearchNavigation(
+                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
+                            childViewVisibilityChangedModel.isSortEnabled()
+                    );
                 }
-            });
-        }
+            }
+        });
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
