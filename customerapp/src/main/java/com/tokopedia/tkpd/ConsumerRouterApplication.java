@@ -54,7 +54,6 @@ import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-//import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -465,7 +464,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         ReferralRouter,
         ILoyaltyRouter,
-        //ChatbotRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
         NormalCheckoutRouter,

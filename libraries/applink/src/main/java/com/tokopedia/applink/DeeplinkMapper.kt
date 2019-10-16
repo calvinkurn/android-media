@@ -1,6 +1,7 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
@@ -36,7 +37,7 @@ object DeeplinkMapper {
                 return getRegisteredNavigationSearch(deeplink)
             }
             if(deeplink.startsWith(ApplinkConst.CHAT_BOT,true)){
-                return chatbotDeeplink(deeplink)
+                return getChatbotDeeplink(deeplink)
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
@@ -78,7 +79,6 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
-           // deeplink.startsWith(ApplinkConst.CHAT_BOT) ->
             else -> ""
         }
     }
@@ -99,8 +99,4 @@ object DeeplinkMapper {
         }
     }
 
-
-    private fun chatbotDeeplink(deeplink:String): String {
-        return deeplink.replace(ApplinkConst.CHAT_BOT, ApplinkConstInternalGlobal.CHAT_BOT)
-    }
 }

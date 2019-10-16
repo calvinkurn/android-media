@@ -163,6 +163,8 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
+    // ChatbotActivity
+    // tokopedia-android-internal://global/chatbot
     @JvmField
     val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
 

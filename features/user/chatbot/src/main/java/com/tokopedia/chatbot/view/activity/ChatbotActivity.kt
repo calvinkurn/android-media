@@ -32,9 +32,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
         bundle.putString("message_id",list[0])
         bundle.putString("deep_link_uri",intent.data.toString())
-//        if (intent.extras != null) {
-//            bundle.putAll(intent.extras)
-//        }
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
@@ -68,41 +65,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             intent.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
             return intent
         }
-    }
-
-    //object DeepLinkIntents {
-       // @JvmStatic
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, ChatbotActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-
-    //}
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //UriUtil.destructureUri("", )
-//        val params = UriUtil.destructureUri(ApplinkConst.CHATBOT, intent.data,true)
-//        val bundle = Bundle()
-//        bundle.putString("data",intent.data.toString())
-//        if(bundle!=null){
-//            getCallingIntent(this, bundle)
-//        }
-//        RouteManager.route(this,)
-//
-//        val extras = Bundle()
-//        var uri = "tokopedia://chatbot/76418634"
-//        var list = UriUtil.destructureUri(,uri);
-//        extras.put
-
-        val list = UriUtil.destructureUri(ApplinkConst.CHATBOT,intent.data,true)
-        //messageId = list[0]
-
-
-
     }
 
    fun upadateToolbar(profileName: String?, profileImage: String?) {

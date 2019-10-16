@@ -64,8 +64,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
 
-//        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
-//        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
         super.initView()
     }
 

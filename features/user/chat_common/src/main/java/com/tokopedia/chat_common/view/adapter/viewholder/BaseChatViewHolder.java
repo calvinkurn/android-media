@@ -40,7 +40,6 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         return R.id.date;
     }
 
-
     @Override
     public void bind(T viewModel) {
         if (viewModel instanceof BaseChatViewModel) {

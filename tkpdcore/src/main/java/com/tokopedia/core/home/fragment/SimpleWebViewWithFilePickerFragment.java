@@ -202,10 +202,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                 if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
                     String messageId = urlString.toLowerCase().replace("tokopedia://topchat/", "")
                             .replace("?is_chat_bot=true", "");
-//                    Intent intent = ((TkpdInboxRouter) getActivity().getApplicationContext())
-//                            .getChatBotIntent(getActivity(), messageId);
                     RouteManager.route(getActivity(), ApplinkConst.CHATBOT,messageId);
-                    //startActivity(intent);
                     return true;
                 } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {

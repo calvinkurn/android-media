@@ -47,10 +47,6 @@ open class BaseChatViewStateImpl(
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
 
-//    fun initRecylerView(recyclerView: RecyclerView){
-//        this.recyclerView = recyclerView
-//    }
-
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
         mainLoading = view.findViewById(getProgressId())
@@ -61,9 +57,8 @@ open class BaseChatViewStateImpl(
         notifier = view.findViewById(getNotifierId())
         chatMenuButton = view.findViewById(getChatMenuId())
 
-        (recyclerView?.layoutManager as LinearLayoutManager).stackFromEnd = false
-        (recyclerView?.layoutManager as LinearLayoutManager).reverseLayout = true
-
+        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
+        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
@@ -250,7 +245,5 @@ open class BaseChatViewStateImpl(
     open fun getSendButtonId() = R.id.send_but
     open fun getNotifierId() = R.id.notifier
     open fun getChatMenuId() = R.id.iv_chat_menu
-
-
 
 }
