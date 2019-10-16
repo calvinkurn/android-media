@@ -115,7 +115,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
 
     @NonNull
-    private RequestBodyAtcDigital getRequestBodyAtcDigital() {
+    protected RequestBodyAtcDigital getRequestBodyAtcDigital() {
         RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();

@@ -1,5 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.presenter
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
@@ -79,5 +81,26 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         } else {
             view.hideMyBillsSubscriptionView()
         }
+    }
+
+    override fun getRequestBodyAtcDigital(): RequestBodyAtcDigital {
+        val requestBody = super.getRequestBodyAtcDigital()
+        val fieldList = requestBody.attributes?.fields?.toMutableList()
+        fieldList?.run {
+            view.getShowSubscribePopUp()?.run {
+                val field = Field()
+                field.name = "show_subscribe_pop_up"
+                field.value = this
+                add(field)
+            }
+            view.getAutoSubscribe()?.run {
+                val field = Field()
+                field.name = "auto_subscribe"
+                field.value = this
+                add(field)
+            }
+            requestBody.attributes?.fields = fieldList
+        }
+        return requestBody
     }
 }

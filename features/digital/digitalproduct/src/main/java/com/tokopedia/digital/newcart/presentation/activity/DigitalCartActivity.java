@@ -57,8 +57,19 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
                     generateATokenRechargeCheckout(context)
             );
         }
-        return new Intent(context, DigitalCartActivity.class)
-                .putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+
+        // Add subscription applink parameter handling
+        Intent intent = new Intent(context, DigitalCartActivity.class);
+        String showSubscribePopUpArg = bundle.getString(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP);
+        String autoSubscribeArg = bundle.getString(DigitalCartMyBillsFragment.ARG_AUTO_SUBSCRIBE);
+        if (showSubscribePopUpArg != null) {
+            intent.putExtra(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP, showSubscribePopUpArg);
+        }
+        if (autoSubscribeArg != null) {
+            intent.putExtra(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP, autoSubscribeArg);
+        }
+
+        return intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
     private static String generateATokenRechargeCheckout(Context context) {

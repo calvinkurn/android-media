@@ -39,6 +39,9 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     private var interactionListener: InteractionListener? = null
 
+    private var showSubscribePopUp: String? = null
+    private var autoSubscribe: String? = null
+
     override fun setupView(view: View?) {
         progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
         containerLayout = view.findViewById<RelativeLayout>(R.id.container)
@@ -58,6 +61,8 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
+        showSubscribePopUp = arguments!!.getString(ARG_SHOW_SUBSCRIBE_POP_UP)
+        autoSubscribe = arguments!!.getString(ARG_AUTO_SUBSCRIBE)
         super.onCreate(savedInstanceState)
     }
 
@@ -68,6 +73,9 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     companion object {
+        const val ARG_SHOW_SUBSCRIBE_POP_UP = "show_subscribe_pop_up"
+        const val ARG_AUTO_SUBSCRIBE = "auto_subscribe"
+
         fun newInstance(cartDigitalInfoData: CartDigitalInfoData, passData: DigitalCheckoutPassData): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
@@ -82,6 +90,10 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         super.onViewCreated(view, savedInstanceState)
         presenter.onMyBillsViewCreated()
     }
+
+    override fun getShowSubscribePopUp(): String? = showSubscribePopUp
+
+    override fun getAutoSubscribe(): String? = autoSubscribe
 
     override fun renderCategoryInfo(categoryName: String?) {
         categoryTextView.text = categoryName
