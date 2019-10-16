@@ -303,7 +303,6 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
-import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -326,15 +325,6 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
-import com.tokopedia.train.common.TrainRouter;
-import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.train.common.di.utils.TrainComponentUtils;
-import com.tokopedia.train.common.domain.TrainRepository;
-import com.tokopedia.train.common.util.TrainAnalytics;
-import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
@@ -417,7 +407,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         TopAdsWebViewRouter,
         ChangePasswordRouter,
-        TrainRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
         MitraToppersRouter,
@@ -782,11 +771,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<ProfileBuyerInfo> getProfileInfo() {
-        return getProfile().map(new TrainGetBuyerProfileInfoMapper());
-    }
-
-    @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
@@ -794,7 +778,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTrainOrderListIntent(Context context) {
-        return getWebviewActivityWithIntent(context, TrainUrl.TRAIN_ORDER_LIST);
+        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
+        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
+        String PATH_USER_BOOKING_LIST = "/user/bookings";
+        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
+        return getWebviewActivityWithIntent(context, TRAIN_ORDER_LIST);
     }
 
     @Override
@@ -810,13 +799,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void setNewsletterEmailPref(Boolean newValue) {
         TrackApp.getInstance().getMoEngage().setNewsletterEmailPref(newValue);
-    }
-
-    @Override
-    public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
-                                                       String reservationId, String reservationCode) {
-        return LoyaltyActivity.newInstanceTrainCouponActive(activity, platform, "11",
-                reservationId, reservationCode);
     }
 
     @Override
@@ -1425,16 +1407,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public SnapHelper getSnapHelper() {
-        return new StartSnapHelper();
-    }
-
-    @Override
-    public RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode) {
-        return new SpacingItemDecoration(spacing, displayMode);
-    }
-
-    @Override
     public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
@@ -1443,18 +1415,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
         paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
         paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
-        return TopPayActivity.createInstance(activity, paymentPassData);
-    }
-
-    @Override
-    public Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setPaymentId(trainCheckoutViewModel.getTransactionId());
-        paymentPassData.setTransactionId(trainCheckoutViewModel.getTransactionId());
-        paymentPassData.setRedirectUrl(trainCheckoutViewModel.getRedirectURL());
-        paymentPassData.setCallbackFailedUrl(trainCheckoutViewModel.getCallbackURLFailed());
-        paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
-        paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
         return TopPayActivity.createInstance(activity, paymentPassData);
     }
 
@@ -1476,11 +1436,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getBannerWebViewIntent(Activity activity, String url) {
         return BannerWebView.getCallingIntent(activity, url);
-    }
-
-    @Override
-    public boolean isTrainNativeEnable() {
-        return remoteConfig.getBoolean(TrainRouter.TRAIN_ENABLE_REMOTE_CONFIG);
     }
 
     @Override
@@ -1993,39 +1948,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 });
     }
 
+    //Should delete check train voucher implementation if this class deleted
     @Override
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
-        TrainRepository trainRepository = TrainComponentUtils.getTrainComponent(this).trainRepository();
-        TrainCheckVoucherUseCase trainCheckVoucherUseCase = new TrainCheckVoucherUseCase(trainRepository);
-        return trainCheckVoucherUseCase.createObservable(trainCheckVoucherUseCase.createRequestParams(
-                trainReservationId, trainReservationCode, galaCode
-        )).map(trainCheckVoucherModel -> new VoucherViewModel(
-                true,
-                trainCheckVoucherModel.getMessage(),
-                null,
-                trainCheckVoucherModel.getVoucherCode(),
-                ((long) trainCheckVoucherModel.getDiscountAmountPlain()),
-                ((long) trainCheckVoucherModel.getCashbackAmountPlain())
-        ));
-    }
-
-    @Override
-    public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(new TrainDateUtil());
-        trainAnalytics.eventClickUseVoucherCode(voucherCode);
-    }
-
-    @Override
-    public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(new TrainDateUtil());
-        trainAnalytics.eventVoucherError(errorMessage);
-    }
-
-    @Override
-    public Intent getPromoListIntent(Activity activity, String menuId, String subMenuId) {
-        return PromoListActivity.newInstance(activity, menuId, subMenuId);
+        return Observable.just(new VoucherViewModel());
     }
 
     @Override
