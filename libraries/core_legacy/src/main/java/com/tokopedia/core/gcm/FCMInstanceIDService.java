@@ -66,18 +66,21 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             CommonUtils.dumper(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
-                SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
-                if (sessionHandler.isV4Login()) {
-                    IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
-                    FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-                    tokenUpdate.setOldToken(localToken);
-                    tokenUpdate.setNewToken(token);
-                    tokenUpdate.setOsType(String.valueOf(1));
-                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
-                    tokenUpdate.setUserId(sessionHandler.getLoginID());
-                    fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-                } else {
-                    FCMCacheManager.storeRegId(token, getBaseContext());
+                TkpdCoreRouter routerFromContext = RouterUtils.getRouterFromContext(getApplicationContext());
+                if (routerFromContext != null) {
+                    SessionHandler sessionHandler = routerFromContext.legacySessionHandler();
+                    if (sessionHandler.isV4Login()) {
+                        IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
+                        FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+                        tokenUpdate.setOldToken(localToken);
+                        tokenUpdate.setNewToken(token);
+                        tokenUpdate.setOsType(String.valueOf(1));
+                        tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
+                        tokenUpdate.setUserId(sessionHandler.getLoginID());
+                        fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
+                    } else {
+                        FCMCacheManager.storeRegId(token, getBaseContext());
+                    }
                 }
             }
         }

@@ -18,7 +18,11 @@ import com.tokopedia.core.TkpdCoreRouter;
 public class RouterUtils {
 
     public static TkpdCoreRouter getRouterFromContext(Context context) {
-        return (TkpdCoreRouter) context.getApplicationContext();
+        Context applicationContext = context.getApplicationContext();
+        if (applicationContext instanceof TkpdCoreRouter) {
+            return (TkpdCoreRouter) applicationContext;
+        }
+        return null;
     }
 
     public static Intent getActivityIntent(Context context, String activityFullPath) {
