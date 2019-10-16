@@ -27,6 +27,7 @@ import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -57,6 +58,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private TextView vDevOptionRN;
+    private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleReactDeveloperMode;
@@ -118,6 +120,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
 
+        reviewNotifBtn = findViewById(R.id.review_notification);
+
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
 
@@ -154,6 +158,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                 ApplinkConst.SETTING_DEVELOPER_OPTIONS
                         .replace("{type}", RN_DEV_LOGGER)
         ));
+
 
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
@@ -214,6 +219,12 @@ public class DeveloperOptionActivity extends BaseActivity {
                 startActivity(Chuck.getLaunchIntent(getApplicationContext()));
             }
         });
+
+        reviewNotifBtn.setOnClickListener(v ->{
+            Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+            notificationManagerCompat.notify(777,notifReview);
+                });
 
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 

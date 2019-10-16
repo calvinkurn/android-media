@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
+import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -34,6 +35,8 @@ public class PushNotification {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.REVIEW) {
+                notifyReview(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
@@ -85,6 +88,13 @@ public class PushNotification {
             notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
+    }
+
+    private static void notifyReview(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                     int notificationType, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifReview = new ReviewNotificationFactory(context)
+                .createNotification(applinkNotificationModel,notificationType,notificationType);
+        notificationManagerCompat.notify(notificationType,notifReview);
     }
 
     private static void notifyGroupChat(Context context, ApplinkNotificationModel applinkNotificationModel,

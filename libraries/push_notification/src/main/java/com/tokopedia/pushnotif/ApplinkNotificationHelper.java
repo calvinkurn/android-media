@@ -90,6 +90,8 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.SELLER;
                 case "resolution":
                     return Constant.NotificationId.RESOLUTION;
+                case "review":
+                    return Constant.NotificationId.REVIEW;
                 default:
                     return Constant.NotificationId.GENERAL;
             }

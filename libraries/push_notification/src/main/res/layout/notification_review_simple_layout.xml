@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingDefaultResource">
+
+    <ImageView
+        android:id="@+id/notificationImage"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignTop="@+id/notificationTitle"
+        android:layout_alignBottom="@+id/notificationText"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_big_notif_customerapp" />
+
+    <TextView
+        android:id="@+id/notificationTitle"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/notificationImage"
+        android:layout_toLeftOf="@+id/notificationImage"
+        android:maxLines="1"
+        android:text="Hi Karin!" />
+
+    <TextView
+        android:id="@+id/notificationText"
+        style="@style/TextAppearance.Compat.Notification.Info.Media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notificationTitle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_toStartOf="@+id/notificationImage"
+        android:layout_toLeftOf="@+id/notificationImage"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="Sudah [nn] hari, nih. Suka dengan [product] ini? Yuk, beri ulasan dan bagikan pengalamanmu ke pembeli lain!" />
+
+</RelativeLayout>
