@@ -78,9 +78,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     val newHeight = (behavior.peekHeight + (bottomSheet.height - behavior.peekHeight) * slideOffset)
-                    val resizableLayoutParams = webview.layoutParams
-                    resizableLayoutParams.height = newHeight.toInt()
-                    webview.layoutParams = resizableLayoutParams
+                    setWebviewContentHeight(newHeight.toInt())
                 }
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -142,6 +140,12 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     fun setUrl(url: String) {
         this.url = url
+    }
+
+    fun setWebviewContentHeight(height: Int) {
+        val resizableLayoutParams = webview.layoutParams
+        resizableLayoutParams.height = height
+        webview.layoutParams = resizableLayoutParams
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -275,7 +279,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                view?.minimumHeight = FIRST_STATE_HEIGHT
+                setWebviewContentHeight(behavior.peekHeight)
                 super.onPageFinished(view, url)
             }
         }
