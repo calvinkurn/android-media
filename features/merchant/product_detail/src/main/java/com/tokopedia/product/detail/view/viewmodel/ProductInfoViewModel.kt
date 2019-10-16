@@ -96,7 +96,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
-                        PARAM_PRODUCT_KEY to productParams.productName)
+                        PARAM_PRODUCT_KEY to productParams.productName,
+                        PARAM_SHOP_ID to userSessionInterface.shopId?.toInt())
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
                     ProductInfo.Response::class.java, paramsInfo)
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
@@ -104,10 +105,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val productInfoP1 = ProductInfoP1()
             var needRequestCod = false
 
-            data.getSuccessData<ProductInfo.Response>().data?.let {
-                productInfoP1.productInfo = it
+            data.getSuccessData<ProductInfo.Response>()?.let {
+                productInfoP1.productInfo = it.data!!
+                productInfoP1.topAdsGetProductManage = it.topAdsGetProductManage!!
                 productInfoP1Resp.value = Success(productInfoP1)
-                needRequestCod = it.shouldShowCod
+                needRequestCod = it!!.data!!.shouldShowCod
             }
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(productInfoP1.productInfo.basic.shopID,

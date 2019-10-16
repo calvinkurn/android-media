@@ -63,7 +63,10 @@ data class ProductInfo(
     data class Response(
             @SerializedName("getPDPInfo")
             @Expose
-            val data: ProductInfo? = null
+            val data: ProductInfo? = null,
+            @SerializedName("topAdsGetProductManage")
+            @Expose
+            val topAdsGetProductManage: TopAdsGetProductManage? = null
     )
 
     data class WishlistStatus(

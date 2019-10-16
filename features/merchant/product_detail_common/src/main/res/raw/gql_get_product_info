@@ -1,4 +1,4 @@
-query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
+query getPDPInfo($productID:Int!, $shopDomain: String!, $productKey: String!, $shopId:Int!){
     getPDPInfo(productID: $productID, shopDomain: $shopDomain, productKey: $productKey){
         basic {
             id
@@ -111,5 +111,17 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
           value
           stockWording
         }
+    }
+   	topAdsGetProductManage(type:1, shop_id:$shopId, item_id:$productID){
+			data {
+			  ad_id
+			  ad_type
+			  is_enable_ad
+			  item_id
+			  item_image
+			  item_name
+			  shop_id
+			  manage_link
+			}
     }
 }
