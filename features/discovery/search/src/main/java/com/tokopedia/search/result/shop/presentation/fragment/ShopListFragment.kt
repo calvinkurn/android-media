@@ -27,6 +27,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
+import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
@@ -62,7 +63,6 @@ class ShopListFragment:
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
     private var searchViewModel: SearchViewModel? = null
-    private var searchNavigationListener: SearchNavigationListener? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -70,19 +70,6 @@ class ShopListFragment:
                 "",
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        castContextToSearchNavigationListener(context)
-    }
-
-    // TODO:: Remove context casting, once SearchActivity already using ViewModel
-    private fun castContextToSearchNavigationListener(context: Context?) {
-        if (context is SearchNavigationListener) {
-            searchNavigationListener = context
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -297,26 +284,30 @@ class ShopListFragment:
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
-        setupSearchNavigation(isVisibleToUser)
         trackScreen()
+
+        val childViewVisibilityChangedModel = createChildViewVisibilityChangedModel(isVisibleToUser)
+        searchViewModel?.onChildViewVisibilityChanged(childViewVisibilityChangedModel)
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
 
-    private fun setupSearchNavigation(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && view != null) {
-            searchNavigationListener?.setupSearchNavigation(
-                    object : SearchNavigationListener.ClickListener {
-                        override fun onFilterClick() {
-                            openFilterPage()
-                        }
+    private fun createChildViewVisibilityChangedModel(isVisibleToUser: Boolean): ChildViewVisibilityChangedModel {
+        return ChildViewVisibilityChangedModel(
+                isChildViewVisibleToUser = isVisibleToUser,
+                isChildViewReady = view != null,
+                isFilterEnabled = true,
+                isSortEnabled = false,
+                searchNavigationOnClickListener = object : SearchNavigationListener.ClickListener {
+                    override fun onFilterClick() {
+                        openFilterPage()
+                    }
 
-                        override fun onSortClick() {}
+                    override fun onSortClick() {}
 
-                        override fun onChangeGridClick() {}
-                    },
-                    false)
-        }
+                    override fun onChangeGridClick() {}
+                }
+        )
     }
 
     private fun openFilterPage() {

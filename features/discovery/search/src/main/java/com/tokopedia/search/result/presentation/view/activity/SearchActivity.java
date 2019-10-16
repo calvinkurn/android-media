@@ -49,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
@@ -413,6 +414,19 @@ public class SearchActivity extends BaseActivity
 
                     if (content != null && content) {
                         removeSearchPageLoading();
+                    }
+                }
+            });
+
+            searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
+                if (childViewVisibilityChangedEvent != null) {
+                    ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
+
+                    if (childViewVisibilityChangedModel != null) {
+                        setupSearchNavigation(
+                                childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
+                                childViewVisibilityChangedModel.isSortEnabled()
+                        );
                     }
                 }
             });

@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.search.result.common.Event
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityModel
+import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 
 internal class SearchViewModel(
         coroutineDispatcher: DispatcherProvider
@@ -13,7 +13,7 @@ internal class SearchViewModel(
 
     private val showAutoCompleteEventLiveData = MutableLiveData<Event<Boolean>>()
     private val hideLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val childViewVisibleEventLiveData = MutableLiveData<Event<ChildViewVisibilityModel>>()
+    private val childViewVisibleEventLiveData = MutableLiveData<Event<ChildViewVisibilityChangedModel>>()
 
     fun showAutoCompleteView() {
         showAutoCompleteEventLiveData.postValue(Event(true))
@@ -23,11 +23,11 @@ internal class SearchViewModel(
         hideLoadingEventLiveData.postValue(Event(true))
     }
 
-    fun onChildViewVisibilityChanged(childViewVisibilityModel: ChildViewVisibilityModel) {
-        if (childViewVisibilityModel.isChildViewVisibleToUser
-                && childViewVisibilityModel.isChildViewReady) {
+    fun onChildViewVisibilityChanged(childViewVisibilityChangedModel: ChildViewVisibilityChangedModel) {
+        if (childViewVisibilityChangedModel.isChildViewVisibleToUser
+                && childViewVisibilityChangedModel.isChildViewReady) {
 
-            childViewVisibleEventLiveData.postValue(Event(childViewVisibilityModel))
+            childViewVisibleEventLiveData.postValue(Event(childViewVisibilityChangedModel))
         }
     }
 
@@ -39,7 +39,7 @@ internal class SearchViewModel(
         return hideLoadingEventLiveData
     }
 
-    fun getChildViewVisibleEventLiveData(): LiveData<Event<ChildViewVisibilityModel>> {
+    fun getChildViewVisibleEventLiveData(): LiveData<Event<ChildViewVisibilityChangedModel>> {
         return childViewVisibleEventLiveData
     }
 }
