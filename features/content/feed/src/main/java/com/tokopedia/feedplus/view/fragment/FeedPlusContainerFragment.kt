@@ -299,6 +299,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (toolbarType != TOOLBAR_GRADIENT) {
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_GRADIENT
+            status_bar_bg2.visibility = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
+                else -> View.GONE
+            }
             activity?.let {
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
                 tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
@@ -310,6 +315,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (toolbarType != TOOLBAR_WHITE) {
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
+            status_bar_bg.visibility = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                else -> View.GONE
+            }
             activity?.let {
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
                 tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
