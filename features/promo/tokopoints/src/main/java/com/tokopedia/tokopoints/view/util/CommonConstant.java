@@ -41,6 +41,7 @@ public interface CommonConstant {
     int UI_SETTLING_DELAY_MS = 250;
     int UI_SETTLING_DELAY_MS2 = 500;
     String ARGS_POINTS_AVAILABILITY = "points_availability";
+    String BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

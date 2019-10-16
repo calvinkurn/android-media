@@ -228,7 +228,7 @@
 
         <activity
             android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
-            android:label="@string/title_activity_people_deposit"
+            android:label="@string/saldo_detail_title_activity_people_deposit"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 

@@ -41,7 +41,6 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
             val nextChildPosition = childIndex + 1
 
             if (nextChildPosition >= childCount) {
-                drawBigDivider(c, parent, childView)
                 continue
             }
 

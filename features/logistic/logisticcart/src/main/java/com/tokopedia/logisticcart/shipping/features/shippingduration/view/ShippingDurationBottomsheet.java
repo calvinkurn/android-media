@@ -17,6 +17,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.logisticcart.R;
@@ -31,7 +32,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
