@@ -107,7 +107,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: SprintViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.thematicCardView.apply {
+                holder.thematicCardView.run {
                     setImageProductVisible(true)
                     setPriceVisible(true)
                     setSlashedPriceVisible(true)

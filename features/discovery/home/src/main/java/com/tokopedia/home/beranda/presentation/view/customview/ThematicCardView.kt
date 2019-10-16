@@ -13,13 +13,13 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by Lukas on 01/10/19
  */
-class ThematicCardView : FrameLayout {
+class ThematicCardView : BaseCustomView {
     companion object {
         const val LIGHT_GREY = "lightGrey"
         const val LIGHT_BLUE = "lightBlue"
@@ -71,18 +71,24 @@ class ThematicCardView : FrameLayout {
     private var labelCredibility: Label? = null
     private var blankSpaceConfig = BlankSpaceConfig()
 
-    constructor(context: Context): super(context){
+    constructor(context: Context): super(context) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet, defaultStyleAttr: Int): super(context, attributeSet, defaultStyleAttr){
+
+    constructor(
+            context: Context,
+            attrs: AttributeSet?,
+            defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private fun init(){
-        findViews(inflate(context, R.layout.thematic_card_view, this))
+        findViews(View.inflate(context, R.layout.thematic_card_view, this))
     }
 
 
@@ -112,33 +118,6 @@ class ThematicCardView : FrameLayout {
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
     }
-
-//    fun setName(title: String) {
-//        channelName.displayTextOrHide(title)
-//    }
-//
-//    fun setImageSrc(imageUrl: String){
-//        ImageHandler.loadImageThumbs(context, channelImage1, imageUrl)
-//    }
-//
-//    fun setPrice(price: String){
-//        channelPrice1.displayTextOrHide(price)
-//    }
-//
-//    fun setDiscount(discount: String){
-//        channelDiscount1.displayTextOrHide(discount)
-//    }
-//
-//    fun setSlashedPrice(slashedPrice: String){
-//        channelBeforeDiscPrice1.displayTextOrHide(slashedPrice)
-//        channelBeforeDiscPrice1.paintFlags = channelBeforeDiscPrice1.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//    }
-//
-//    fun setCashback(cashback: String){
-//        channelCashback.displayTextOrHide(cashback)
-//    }
-
-
 
     private fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
@@ -395,6 +374,10 @@ class ThematicCardView : FrameLayout {
         imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
         imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
         imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+    }
+
+    override fun setOnClickListener(clickListener: OnClickListener?) {
+        cardViewProductCard?.setOnClickListener(clickListener)
     }
 
     @DrawableRes
