@@ -7,6 +7,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigati
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 
 /**
@@ -31,6 +32,8 @@ object DeeplinkMapper {
                 return getRegisteredNavigationDigital(context, deeplink)
             } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)
+            } else if (deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT)) {
+                return getRegisteredNavigationMarketplace(deeplink)
             }
             if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)

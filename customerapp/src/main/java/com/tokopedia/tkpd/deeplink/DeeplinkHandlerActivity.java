@@ -14,7 +14,6 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -31,8 +30,6 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
@@ -187,7 +184,6 @@ import rx.schedulers.Schedulers;
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
-        CheckoutAppLinkModule.class,
         HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
@@ -255,7 +251,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
-                    new CheckoutAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new CustomerCareApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
