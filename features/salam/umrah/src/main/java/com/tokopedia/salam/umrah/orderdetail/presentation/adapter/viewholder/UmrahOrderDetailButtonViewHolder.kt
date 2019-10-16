@@ -19,11 +19,6 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(data: UmrahOrderDetailButtonViewModel) {
-
-        val linearLayoutParams = itemView.layoutParams as LinearLayout.LayoutParams
-        linearLayoutParams.setMargins(0, 0, 0, 8)
-        itemView.layoutParams = linearLayoutParams
-
         val button = UnifyButton(itemView.context)
         button.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

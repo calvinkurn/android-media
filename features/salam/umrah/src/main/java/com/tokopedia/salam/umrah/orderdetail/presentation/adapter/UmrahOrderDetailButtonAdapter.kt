@@ -15,9 +15,11 @@ class UmrahOrderDetailButtonAdapter(val listener: Listener) : RecyclerView.Adapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahOrderDetailButtonViewHolder {
         val linearLayout = LinearLayout(parent.context)
-        linearLayout.layoutParams = ViewGroup.LayoutParams(
+        val layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT)
+        layoutParams.setMargins(0, 0, 0, 8)
+        linearLayout.layoutParams = layoutParams
         linearLayout.orientation = LinearLayout.VERTICAL
 
         return UmrahOrderDetailButtonViewHolder(linearLayout)
