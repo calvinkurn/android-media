@@ -72,7 +72,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
             Glide.with(context)
                     .load(channel.header.backImage)
-                    .override(200, 200)
                     .into(backgroundThematic);
         }else {
             seeAllButton.hide()
