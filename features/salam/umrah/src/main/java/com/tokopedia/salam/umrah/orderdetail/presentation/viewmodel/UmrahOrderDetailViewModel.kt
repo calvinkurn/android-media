@@ -1,7 +1,6 @@
 package com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,6 +12,7 @@ import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,10 +42,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
             orderDetailData.value = Success(data.orderDetails)
         }) {
-            // orderDetailData.value = Fail(it)
-            val gson = Gson()
-            orderDetailData.value = Success(gson.fromJson(response,
-                    UmrahOrderDetailsEntity.Response::class.java).orderDetails)
+            orderDetailData.value = Fail(it)
         }
     }
 
@@ -60,10 +57,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
 
             myWidgetData.value = Success(transformToMyUmrahWidgetModel(data.umrahWidgetSaya))
         }) {
-            // orderDetailData.value = Fail(it)
-            val gson = Gson()
-            myWidgetData.value = Success(transformToMyUmrahWidgetModel(gson.fromJson(response,
-                    MyUmrahEntity.Response::class.java).umrahWidgetSaya))
+            myWidgetData.value = Fail(it)
         }
     }
 
@@ -127,7 +121,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     companion object {
         const val PARAM_ORDER_ID = "orderId"
         const val PARAM_ORDER_CATEGORY_STR = "orderCategoryStr"
-        const val UMRAH_CATEGORY = "UMRAH"
+        const val UMRAH_CATEGORY = "UMROH"
     }
 
 }

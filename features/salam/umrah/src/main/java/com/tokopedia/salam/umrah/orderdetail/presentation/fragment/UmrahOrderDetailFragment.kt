@@ -191,8 +191,12 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     }
 
     private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
-        my_umrah_widget.myUmrahModel = data
-        my_umrah_widget.buildView()
+        if (data.header.isNotEmpty()) {
+            my_umrah_widget.myUmrahModel = data
+            my_umrah_widget.buildView()
+        } else {
+            my_umrah_widget.visibility = View.GONE
+        }
     }
 
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {

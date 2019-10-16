@@ -1,15 +1,12 @@
 query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
   orderDetails(orderCategoryStr: $orderCategoryStr, orderId: $orderId)  {
-      __typename
       invoice {
           invoiceRefNum
-          __typename
           invoiceUrl
       }
       beforeOrderId
       title {
           imageUrl
-          __typename
           value
           label
           backgroundColor
@@ -22,7 +19,6 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
               appURL
               webURL
               method
-              __typename
           }
           name
           weight
@@ -33,25 +29,21 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           uriWeb
           value
           key
-          __typename
           mappingUri
           method
       }
       detail {
           imageUrl
-          __typename
           value
           label
           textColor
       }
       payMethod {
-          __typename
           value
           label
       }
       pricing {
           imageUrl
-          __typename
           value
           label
           backgroundColor
@@ -59,7 +51,6 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
       }
       paymentsData {
           imageUrl
-          __typename
           value
           label
           backgroundColor
@@ -68,7 +59,6 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
       status {
           status
           statusText
-          __typename
           iconUrl
           statusLabel
           fontSize
@@ -78,7 +68,6 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
       contactUs {
           helpUrl
           helpText
-          __typename
       }
       items {
           title
