@@ -743,85 +743,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.startActivity(ReferralActivity.getCallingIntent(context));
     }
 
-
-    private boolean isHotLink(List<String> linkSegment) {
-        return (linkSegment.size() == 2);
-    }
-
     private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
         return (linkSegment.size() == 1 && !isHotAlias(uriData));
     }
 
     private boolean isHotAlias(Uri uri) {
         return uri.getQueryParameter("alk") != null;
-    }
-
-    private boolean isSearch(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
-    }
-
-    private boolean isPulsa(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa");
-    }
-
-    private boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
-    }
-
-    private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 1
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("discovery")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("blog")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("kartu-kredit")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
-
-    }
-
-    private boolean isProduct(List<String> linkSegment) {
-        return (linkSegment.size() == 2
-                && !isBrowse(linkSegment)
-                && !isHot(linkSegment)
-                && !isCatalog(linkSegment)
-                && !isBlog(linkSegment)
-                && !linkSegment.get(0).equals("pulsa"));
-    }
-
-    private boolean isBlog(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
-    }
-
-    private boolean isCatalog(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("catalog");
-    }
-
-    private boolean isHot(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("hot");
-    }
-
-    private boolean isBrowse(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("search")
-        );
-    }
-
-    private boolean isCategory(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("p")
-        );
-    }
-
-    private boolean isHomepage(List<String> linkSegment) {
-        return linkSegment.size() == 0;
     }
 
     @Override
