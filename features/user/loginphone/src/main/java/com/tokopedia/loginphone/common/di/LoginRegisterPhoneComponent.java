@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
@@ -44,6 +43,4 @@ public interface LoginRegisterPhoneComponent {
     AbstractionRouter provideAbstractionRouter();
 
     UserSessionInterface userSession();
-
-    TkpdAuthInterceptor tkpdAuthInterceptor();
 }

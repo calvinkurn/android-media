@@ -7,10 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -54,17 +52,14 @@ import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-import com.tokopedia.checkout.CartConstant;
-import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
-import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -99,13 +94,10 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -113,7 +105,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -126,7 +117,6 @@ import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -145,13 +135,10 @@ import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter;
-import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
-import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
@@ -186,8 +173,6 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
-import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kol.KolComponentInstance;
@@ -205,7 +190,6 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -234,10 +218,8 @@ import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.normalcheckout.router.NormalCheckoutRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
@@ -263,10 +245,9 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
-import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
-import com.tokopedia.recentview.RecentViewInternalRouter;
+import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
+import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
+import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.ReferralRouter;
@@ -354,16 +335,10 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -373,7 +348,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -393,9 +367,9 @@ import tradein_common.router.TradeInRouter;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory.PRODUCT_DETAIL_PAGE;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CLICK_PDP;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory.PRODUCT_DETAIL_PAGE;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName.CLICK_PDP;
 
 
 /**
@@ -426,7 +400,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShopModuleRouter,
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
-        ICheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
@@ -434,8 +407,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         NetworkRouter,
-        InstantLoanChuckRouter,
-        InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
         SearchBarRouter,
@@ -464,9 +435,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         ReferralRouter,
         ILoyaltyRouter,
-        ExpressCheckoutRouter,
         ResolutionRouter,
-        NormalCheckoutRouter,
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
@@ -879,16 +848,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetHomeIntent(Context context) {
-        return MainParentActivity.getApplinkIntent(context, null);
-    }
-
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam) {
-        return ExpressCheckoutInternalRouter.createIntent(activity, atcRequestParam);
-    }
-
-    @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
     }
@@ -981,11 +940,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getLoginIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.LOGIN);
-    }
-
-    @Override
-    public boolean isInstantLoanEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true);
     }
 
     public void sendScreenName(@NonNull String screenName) {
@@ -1504,17 +1458,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public int getTopPayPaymentSuccessCode() {
-        return TopPayActivity.PAYMENT_SUCCESS;
+        return PaymentConstant.PAYMENT_SUCCESS;
     }
 
     @Override
     public int getTopPayPaymentFailedCode() {
-        return TopPayActivity.PAYMENT_FAILED;
+        return PaymentConstant.PAYMENT_FAILED;
     }
 
     @Override
     public int getTopPayPaymentCancelCode() {
-        return TopPayActivity.PAYMENT_CANCELLED;
+        return PaymentConstant.PAYMENT_CANCELLED;
     }
 
     @Override
@@ -1612,11 +1566,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, true);
-    }
-
-    @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
     }
@@ -1668,23 +1617,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 });
     }
 
-    @NotNull
-    @Override
-    public Observable<CheckoutData> checkoutProduct(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-        requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
-        requestParams.putBoolean(CheckoutUseCase.PARAM_IS_EXPRESS, isExpressCheckout);
-        return CartComponentInjector.newInstance(this).getCheckoutUseCase()
-                .createObservable(requestParams);
-    }
-
-    @NotNull
-    @Override
-    public Observable<String> updateAddress(com.tokopedia.usecase.RequestParams requestParams) {
-        return CartComponentInjector.newInstance(this).getEditAddressUseCase().createObservable(requestParams);
-    }
-
     @Override
     public Intent getCartIntent(Activity activity) {
         Intent intent = new Intent(activity, CartActivity.class);
@@ -1702,21 +1634,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
-    }
-
-    @NonNull
-    @Override
-    public Intent getCheckoutIntent(@NonNull Context context, ShipmentFormRequest shipmentFormRequest) {
-        return ShipmentActivity.createInstance(context, shipmentFormRequest);
-    }
-
-    @NonNull
-    @Override
-    public Intent getCheckoutIntent(@NonNull Context context, String deviceid) {
-        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
-                .deviceId(deviceid)
-                .build();
-        return ShipmentActivity.createInstance(context, shipmentFormRequest);
     }
 
     @NonNull
@@ -1746,100 +1663,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, int pageTracking,
-            String cartString, Promo promo
-    ) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", false, pageTracking, promo);
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
-            Promo promo
-    ) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", isOneClickShipment, pageTracking, promo);
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetRecentViewIntent() {
-        return RecentViewInternalRouter.getRecentViewIntent(getAppContext());
-    }
-
-    @Override
-    public Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo) {
-        return PromoCheckoutDetailMarketplaceActivity.Companion.createIntent(getAppContext(), promoCode, true, oneClickShipment, pageTracking, promo);
-    }
-
-    @Override
-    public Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
-                                                     Promo promo) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), promoCouponActive, promoCode, oneClickShipment, pageTracking, promo);
-    }
-
-    @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
 
     @Override
     public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
-        return new StringResponseConverter();
-    }
-
-    @Override
-    public void checkoutModuleRouterResetBadgeCart() {
-        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
-    }
-
-    @Override
-    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-        return PersistentCacheManager.instance.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetShopInfoIntent(String shopId) {
-        return ShopPageInternalRouter.getShopPageIntent(getAppContext(), shopId);
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetWhislistIntent() {
-        return SimpleHomeActivity.newWishlistInstance(this);
-    }
-
-    @Override
-    public Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    @Override
-    public PublicKey checkoutModuleRouterGeneratePublicKey() {
-        return FingerPrintDialog.generatePublicKey(getAppContext());
-    }
-
-    @Override
-    public String checkoutModuleRouterGetPublicKey(PublicKey publicKey) {
-        return FingerPrintDialog.getPublicKey(publicKey);
-    }
-
-    @Override
-    public boolean checkoutModuleRouterGetEnableFingerprintPayment() {
-        return getEnableFingerprintPayment();
-    }
-
-    @Override
-    public FingerprintInterceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor() {
-        return getAppComponent().fingerprintInterceptor();
-    }
-
-    @Override
-    public Converter.Factory checkoutModuleRouterGetWS4TkpdResponseConverter() {
-        return new TkpdResponseConverter();
-    }
-
-    @Override
-    public Converter.Factory checkoutModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
     }
 
@@ -1947,13 +1776,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isIndicatorVisible() {
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-        CartComponentInjector.newInstance(this)
-                .getGetMarketPlaceCartCounterUseCase()
-                .executeWithSubscriber(this, listener);
     }
 
     @Override
@@ -2232,11 +2054,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHelpUsIntent(Context context) {
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
-    }
-
-    @Override
-    public Intent getCodPageIntent(Context context, Data data) {
-        return CodActivity.newIntent(context, data);
     }
 
     @Override
@@ -2652,12 +2469,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
         UnifyTracking.eventDigitalEventTracking(this, text, failmsg);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCartIntent(@NotNull Context context) {
-        return TransactionCartRouter.createInstanceCartActivity(context);
     }
 
     private void initCMPushNotification() {

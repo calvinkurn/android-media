@@ -127,6 +127,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_tokopoint_amount"
+                    android:textColor="@color/Neutral_N700_96"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -188,6 +189,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_voucher_amount"
+                    android:textColor="@color/Neutral_N700_96"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -249,6 +251,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_tokomember_amount"
+                    android:textColor="@color/Neutral_N700_96"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -386,6 +389,7 @@
         app:layout_constraintTop_toTopOf="@id/image_profile_progress"
         app:layout_goneMarginStart="@dimen/dp_8"
         app:typographyType="heading_5"
+        android:textColor="@color/Neutral_N700_96"
         tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
     <com.tokopedia.unifyprinciples.Typography

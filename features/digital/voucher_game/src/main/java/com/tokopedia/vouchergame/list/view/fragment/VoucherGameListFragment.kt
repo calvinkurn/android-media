@@ -22,6 +22,7 @@ import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -61,6 +62,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,8 +99,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                     is Success -> {
                         with (it.data) {
                             if (catalog.label.isNotEmpty()) {
-                                (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
-                                voucherGameAnalytics.categoryName = catalog.label
+                                val categoryName = catalog.label
+                                (activity as BaseVoucherGameActivity).updateTitle(categoryName)
+                                voucherGameAnalytics.categoryName = categoryName
+                                voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
+                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName, id.toString())
+                                }
                             }
 
                             renderBanners(banners)
@@ -117,6 +124,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        voucherGameExtraParam.categoryId.toIntOrNull()?.let {
+            rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
+        }
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
