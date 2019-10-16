@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.UmrahOrderDetailButtonAdapter
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_umrah_order_detail.*
@@ -72,7 +74,12 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                     renderData(it.data)
                 }
                 is Fail -> {
-
+                    val data = it.throwable
+                    view?.let {
+                        pb_umrah_order_detail.visibility = View.GONE
+                        Toaster.showErrorWithAction(it, data.message
+                                ?: "", Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
+                    }
                 }
             }
         })
