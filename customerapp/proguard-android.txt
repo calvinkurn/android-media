@@ -215,3 +215,7 @@ public protected *;
 -keep class com.github.anrwatchdog.** { *; }
 
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+
+-assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
+    public *** initTranslator(...);
+}
