@@ -76,6 +76,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/umrah_dash_line" />
+
         </LinearLayout>
 
         <LinearLayout
