@@ -179,6 +179,14 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
+    fun providePDPFinancingCalculation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
@@ -215,13 +223,6 @@ class GqlRawQueryModule {
     @Named(RawQueryKeyConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
-    }
-
-    @ProductDetailScope
-    @Provides
-    @Named(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
-    fun providePDPFinancingCalculation(@ApplicationContext context: Context) :String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
     }
 
 }
