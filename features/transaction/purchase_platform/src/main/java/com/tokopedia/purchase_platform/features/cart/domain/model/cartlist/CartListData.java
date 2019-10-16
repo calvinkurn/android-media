@@ -20,7 +20,8 @@ public class CartListData implements Parcelable {
     private String errorMessage;
     private TickerData tickerData;
 
-    private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
+    private List<ShopGroupAvailableData> shopGroupAvailableDataList = new ArrayList<>();
+    private List<ShopGroupWithErrorData> shopGroupWithErrorDataList = new ArrayList<>();
     private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
@@ -111,12 +112,20 @@ public class CartListData implements Parcelable {
         this.globalCouponAttr = globalCouponAttr;
     }
 
-    public List<ShopGroupData> getShopGroupDataList() {
-        return shopGroupDataList;
+    public List<ShopGroupAvailableData> getShopGroupAvailableDataList() {
+        return shopGroupAvailableDataList;
     }
 
-    public void setShopGroupDataList(List<ShopGroupData> shopGroupDataList) {
-        this.shopGroupDataList = shopGroupDataList;
+    public void setShopGroupAvailableDataList(List<ShopGroupAvailableData> shopGroupAvailableDataList) {
+        this.shopGroupAvailableDataList = shopGroupAvailableDataList;
+    }
+
+    public List<ShopGroupWithErrorData> getShopGroupWithErrorDataList() {
+        return shopGroupWithErrorDataList;
+    }
+
+    public void setShopGroupWithErrorDataList(List<ShopGroupWithErrorData> shopGroupWithErrorDataList) {
+        this.shopGroupWithErrorDataList = shopGroupWithErrorDataList;
     }
 
     public boolean isAllSelected() {
@@ -148,7 +157,8 @@ public class CartListData implements Parcelable {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
         dest.writeParcelable(this.tickerData, flags);
-        dest.writeTypedList(this.shopGroupDataList);
+        dest.writeTypedList(this.shopGroupAvailableDataList);
+        dest.writeTypedList(this.shopGroupWithErrorDataList);
         dest.writeParcelable(this.cartPromoSuggestionHolderData, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
@@ -161,7 +171,8 @@ public class CartListData implements Parcelable {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
         this.tickerData = in.readParcelable(TickerData.class.getClassLoader());
-        this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
+        this.shopGroupAvailableDataList = in.createTypedArrayList(ShopGroupAvailableData.CREATOR);
+        this.shopGroupWithErrorDataList = in.createTypedArrayList(ShopGroupWithErrorData.CREATOR);
         this.cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
         this.allSelected = in.readByte() != 0;

@@ -20,7 +20,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefre
 import com.tokopedia.purchase_platform.features.cart.domain.model.ResetAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePrice;
@@ -427,7 +427,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processUpdateCartDataPromoMerchant
-            (List<CartItemData> cartItemDataList, ShopGroupData shopGroupData) {
+            (List<CartItemData> cartItemDataList, ShopGroupAvailableData shopGroupAvailableData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -449,7 +449,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupData))
+                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupAvailableData))
         );
     }
 
@@ -482,7 +482,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupData shopGroupData) {
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupAvailableData shopGroupAvailableData) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -510,7 +510,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (!data.isSuccess()) {
                         view.showToastMessageRed(data.getMessage());
                     } else {
-                        view.showMerchantVoucherListBottomsheet(shopGroupData);
+                        view.showMerchantVoucherListBottomsheet(shopGroupAvailableData);
                     }
                 }
             }
@@ -633,10 +633,10 @@ public class CartListPresenter implements ICartListPresenter {
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
-            if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                if (!cartShopHolderData.getShopGroupData().isError()) {
+            if (cartShopHolderData.getShopGroupAvailableData().getCartItemDataList() != null) {
+                if (!cartShopHolderData.getShopGroupAvailableData().isError()) {
                     if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
-                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
                             if (!cartItemHolderData.getCartItemData().isError()) {
                                 if (cartItemHolderData.isSelected()) {
                                     allCartItemDataList.add(cartItemHolderData);
@@ -647,7 +647,7 @@ public class CartListPresenter implements ICartListPresenter {
                         }
                     }
                 } else {
-                    errorProductCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
+                    errorProductCount += cartShopHolderData.getShopGroupAvailableData().getCartItemDataList().size();
                 }
             }
         }
@@ -1010,7 +1010,7 @@ public class CartListPresenter implements ICartListPresenter {
         List<CartShopHolderData> cartShopHolderDataList = view.getAllShopDataList();
 
         if (cartShopHolderDataList.size() == 1) {
-            for (CartItemHolderData cartItemHolderData : cartShopHolderDataList.get(0).getShopGroupData().getCartItemDataList()) {
+            for (CartItemHolderData cartItemHolderData : cartShopHolderDataList.get(0).getShopGroupAvailableData().getCartItemDataList()) {
                 if (!cartItemHolderData.isSelected()) {
                     checklistCondition = ITEM_CHECKED_PARTIAL_ITEM;
                     break;
@@ -1024,12 +1024,12 @@ public class CartListPresenter implements ICartListPresenter {
                     allSelectedItemShopCount++;
                 } else {
                     int selectedItem = 0;
-                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
                         if (!cartItemHolderData.isSelected()) {
                             selectedItem++;
                         }
                     }
-                    if (!selectPartialShopAndItem && selectedItem != cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                    if (!selectPartialShopAndItem && selectedItem != cartShopHolderData.getShopGroupAvailableData().getCartItemDataList().size()) {
                         selectPartialShopAndItem = true;
                     }
                 }
