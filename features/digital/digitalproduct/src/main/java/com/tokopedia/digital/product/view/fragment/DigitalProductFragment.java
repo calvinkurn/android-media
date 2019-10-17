@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
@@ -143,6 +144,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
     private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
+    private static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -386,8 +388,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
-            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity(),
-                    DigitalCheckETollBalanceNFCActivity.DIGITAL_NFC_FROM_PDP);
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConsInternalDigital.SMARTCARD, DIGITAL_NFC_FROM_PDP);
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }

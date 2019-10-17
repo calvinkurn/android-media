@@ -24,6 +24,11 @@
                 <data
                     android:host="@string/host_digital"
                     android:path="@string/path_emoney"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_emoney"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
 

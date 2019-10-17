@@ -102,6 +102,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick() {
                 emoneyAnalytics.onClickTopupEmoney()
+                //TODO implement navigation page to digital product
             }
         })
 
@@ -181,7 +182,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                 } else {
                     emoneyAnalytics.onErrorReadingCard()
                     Toast.makeText(activity, "OTHER CODE", Toast.LENGTH_SHORT).show()
-                    showError(resources.getString(R.string.emoney_card_is_not_supported))
+                    showError(resources.getString(R.string.emoney_card_isnot_supported))
                 }
             }
         } catch (e: IOException) {
@@ -245,7 +246,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
 
     private fun onErrorInquiryBalance(throwable: Throwable) {
         if (throwable is MessageErrorException) {
-            showError(throwable.message?:"")
+            showError(throwable.message ?: "")
         } else {
             showError(getString(R.string.emoney_update_balance_failed))
         }
