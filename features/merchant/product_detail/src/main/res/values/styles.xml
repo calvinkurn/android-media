@@ -15,7 +15,7 @@
     <style name="BtnTopAdsPDPIklankan">
         <item name="android:background">@drawable/bg_rounded_green</item>
         <item name="android:textColor">@color/color_href_link</item>
-        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_centerInParent">true</item>
@@ -23,7 +23,7 @@
     <style name="BtnTopAdsPDPRincian">
         <item name="android:background">@drawable/bg_rounded_grey_outline</item>
         <item name="android:textColor">@color/grey_500</item>
-        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_centerInParent">true</item>

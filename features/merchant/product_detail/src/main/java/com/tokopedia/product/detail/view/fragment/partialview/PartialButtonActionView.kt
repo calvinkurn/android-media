@@ -11,6 +11,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import androidx.core.widget.TextViewCompat.setTextAppearance
+
+
 
 class PartialButtonActionView private constructor(private val view: View,
                                                   private val listener: View.OnClickListener)
@@ -112,9 +115,11 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
             if(hasTopAdsActive){
-                btn_promote_topads.setTextAppearance(context, R.style.BtnTopAdsPDPRincian)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
+                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
             } else{
-                btn_promote_topads.setTextAppearance(context, R.style.BtnTopAdsPDPIklankan)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
+                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
             }
         }
     }
