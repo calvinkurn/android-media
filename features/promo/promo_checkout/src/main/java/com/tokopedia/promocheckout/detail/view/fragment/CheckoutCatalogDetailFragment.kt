@@ -144,7 +144,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val buttonDismiss = viewRedeemCoupon.findViewById<TextView>(R.id.button1)
 
         when (resCode) {
-            couponRedemptionCode_LOW_POINT -> button.text = getString(R.string.promo_popup_ok)
+            couponRedemptionCode_LOW_POINT -> {
+                button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility=View.GONE
+            }
             couponRedemptionCode_PROFILE_INCOMPLETE -> {
                 button.text = getString(R.string.promo_popup_button_positive_one)
                 buttonDismiss.text = getString(R.string.promo_popup_button_negative_one)
@@ -155,9 +158,11 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             }
             couponRedemptionCode_QUOTA_LIMIT_REACHED -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility=View.GONE
             }
             else -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility=View.GONE
             }
         }
 
