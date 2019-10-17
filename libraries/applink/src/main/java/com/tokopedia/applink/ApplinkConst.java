@@ -146,7 +146,6 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
-
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
     String SELLER_INFO = "tokopedia://sellerinfo";
