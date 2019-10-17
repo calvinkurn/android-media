@@ -33,14 +33,14 @@ data class FinancingDataResponse(
 
 data class FtInstallmentCalculationDataResponse(
         @SerializedName("data")
-        val ftInstallmentCalculation: FtInstallmentCalcualtionData = FtInstallmentCalcualtionData()
+        val data: FtInstallmentCalcualtionData = FtInstallmentCalcualtionData()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readParcelable<FtInstallmentCalcualtionData>(FtInstallmentCalcualtionData::class.java.classLoader)!!)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(ftInstallmentCalculation, flags)
+        parcel.writeParcelable(data, flags)
     }
 
     override fun describeContents(): Int {

@@ -101,11 +101,9 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_FINANCING_DATA
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -1231,6 +1229,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+
+        val bundleData = Bundle()
+        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
+        pdpInstallmentBottomSheet.arguments = bundleData
+
+        pdpInstallmentBottomSheet.setDismissListener {
+            shouldShowCartAnimation = true
+            updateCartNotification()
+        }
+        pdpInstallmentBottomSheet.show(
+                fragmentManager, "TAG"
+        )
+    }
+
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
         productInfo?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
@@ -1442,7 +1456,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             merchantVoucherListWidget.gone()
         }
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&
+        if (/*remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&*/
                 productInfoP2.productFinancingRecommendationData.response.data.partnerCode.isNotBlank()) {
             iv_ovo_installment_icon.show()
             iv_arrow_next.show()
@@ -1507,9 +1521,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
-
-    }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
         context?.let {

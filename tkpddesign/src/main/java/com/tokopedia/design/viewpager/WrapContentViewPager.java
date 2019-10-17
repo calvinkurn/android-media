@@ -48,6 +48,12 @@ public class  WrapContentViewPager extends ViewPager {
         requestLayout();
     }
 
+    public void onPageChanged(View mCurrentView) {
+        currentView = mCurrentView;
+        requestLayout();
+    }
+
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (getCurrentItem() == 0 && getChildCount() == 0) {

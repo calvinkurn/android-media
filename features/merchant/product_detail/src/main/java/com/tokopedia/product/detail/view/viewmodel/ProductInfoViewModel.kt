@@ -331,12 +331,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
                 ProductSpecificationResponse::class.java, productCatalogParams)
 
-        val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+        val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to 250000,
                 ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
         val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
                 PDPInstallmentRecommendationResponse::class.java, pdpFinancingRecommendationParam)
 
-        val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+        val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to 250000,
                 ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
         val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
                 FinancingDataResponse::class.java, pdpFinancingCalculationParam)
@@ -413,13 +413,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP2.productSpecificationResponse = productSpesification
             }
 
-            if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isEmpty() == true) {
+            if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isNotEmpty() != true) {
                 val installmentRecommendationData: PDPInstallmentRecommendationResponse =
                         gqlResponse.getData(PDPInstallmentRecommendationResponse::class.java)
                 productInfoP2.productFinancingRecommendationData = installmentRecommendationData
             }
 
-            if (gqlResponse.getError(FinancingDataResponse::class.java)?.isEmpty() == true) {
+            if (gqlResponse.getError(FinancingDataResponse::class.java)?.isNotEmpty() != true) {
                 val financingCalculationData: FinancingDataResponse = gqlResponse.getData(FinancingDataResponse::class.java)
                 productInfoP2.productFinancingCalculationData = financingCalculationData
             }

@@ -137,4 +137,12 @@
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
     <string name="recom_see_more_title">Lihat semua</string>
 
+    <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
+    <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>
+
+    <string-array name="ft_installment_type_title">
+        <item>@string/ft_label_without_credit_card</item>
+        <item>@string/ft_label_with_credit_card</item>
+    </string-array>
+
 </resources>

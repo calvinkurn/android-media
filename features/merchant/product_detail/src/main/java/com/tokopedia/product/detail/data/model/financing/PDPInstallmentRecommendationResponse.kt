@@ -9,7 +9,10 @@ data class PDPInstallmentRecommendationResponse(
 
 data class PDPInstallmentRecommendationData(
         @SerializedName("data")
-        val data: PDPInstallmentRecommendation = PDPInstallmentRecommendation()
+        val data: PDPInstallmentRecommendation = PDPInstallmentRecommendation(),
+
+        @SerializedName("message")
+        val message: String = ""
 )
 
 data class PDPInstallmentRecommendation(

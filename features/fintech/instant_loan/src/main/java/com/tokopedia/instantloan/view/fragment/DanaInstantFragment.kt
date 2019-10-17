@@ -46,13 +46,11 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     @Inject
     lateinit var userSession: UserSession
 
-    private var mCurrentTab: Int = 0
     private var mCurrentPagePosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun initInjector() {
@@ -339,11 +337,9 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     companion object {
 
         val LOGIN_REQUEST_CODE = 1005
-        private val TAB_POSITION = "tab_position"
 
-        fun createInstance(position: Int): DanaInstantFragment {
+        fun createInstance(): DanaInstantFragment {
             val args = Bundle()
-            args.putInt(TAB_POSITION, position)
             val danaInstantFragment = DanaInstantFragment()
             danaInstantFragment.arguments = args
             return danaInstantFragment
