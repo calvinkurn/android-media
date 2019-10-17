@@ -29,8 +29,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
  * Created by Alifa on 1/10/2017.
  */
 
-public class TopPicksWebView extends TkpdCoreWebViewActivity implements
-        FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
+public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLinkWebViewHandleListener {
 
     private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
@@ -83,18 +82,6 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
     public void openShop(String url) {
         Fragment fragment = FragmentShopPreview.createInstances(Uri.parse(url).getPathSegments().get(0), url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
     }
 
     @Override

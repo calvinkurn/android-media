@@ -11,8 +11,7 @@ import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
-public class ManageWebViewActivity extends BasePresenterActivity
-        implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class ManageWebViewActivity extends BasePresenterActivity {
 
     private static final String ARG_TITLE = "ARG_TITLE";
     private Uri mUri;
@@ -79,21 +78,6 @@ public class ManageWebViewActivity extends BasePresenterActivity
         return mPageTitle;
     }
 
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-        Toast.makeText(this, getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
-        finish();
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

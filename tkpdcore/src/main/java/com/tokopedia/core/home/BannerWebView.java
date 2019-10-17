@@ -26,8 +26,7 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 /**
  * Created by Nisie on 22/10/15.
  */
-public class BannerWebView extends TkpdCoreWebViewActivity implements
-        FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
+public class BannerWebView extends TkpdCoreWebViewActivity implements DeepLinkWebViewHandleListener {
 
     private static final String FLAG_APP = "?flag_app=1";
     private static final java.lang.String ARGS_PROMO_ID = "promo_id";
@@ -88,18 +87,6 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
     public void openShop(String url) {
         Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(Uri.parse(url).getPathSegments().get(0), url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
     }
 
     @Override

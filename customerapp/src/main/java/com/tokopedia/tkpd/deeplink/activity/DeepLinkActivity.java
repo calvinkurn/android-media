@@ -59,7 +59,6 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
         DetailFragmentInteractionListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener,
         ReportFragmentListener,
         ProductInfoResultReceiver.Receiver,
         ICatalogActionFragment {
@@ -245,18 +244,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getApplication() instanceof PdpRouter) {
             RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
     }
 
     @Override

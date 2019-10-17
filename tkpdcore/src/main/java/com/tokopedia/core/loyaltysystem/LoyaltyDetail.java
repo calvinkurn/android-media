@@ -11,7 +11,7 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
 import retrofit2.http.Url;
 
-public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class LoyaltyDetail extends TActivity {
 
     public static int FRAGMENT_VIEW = R.id.main_view;
     private String url;
@@ -39,15 +39,5 @@ public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.O
         getFragmentManager().beginTransaction().add(FRAGMENT_VIEW, fragment).commit();
     }
 
-    @Override
-    public void onWebViewSuccessLoad() {
-    }
 
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-    }
 }

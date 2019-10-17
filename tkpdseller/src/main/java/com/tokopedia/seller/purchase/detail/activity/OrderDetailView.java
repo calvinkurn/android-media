@@ -39,7 +39,6 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
         RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
         RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener,
         RequestPickupFragment.ConfirmRequestPickupListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener,
         ToolbarChangeListener {
 
     void onReceiveDetailData(OrderDetailData data);

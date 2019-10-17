@@ -340,7 +340,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    protected boolean shouldOverrideUrlLoading(@NonNull WebView webView,@Nullable String url) {
+    protected boolean shouldOverrideUrlLoading(@NonNull WebView webView,@NonNull String url) {
         if (getActivity() == null) {
             return false;
         }

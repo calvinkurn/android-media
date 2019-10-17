@@ -21,7 +21,7 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
  * Created by Herdi_WORK on 10.05.17.
  */
 
-public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements DeepLinkView, DeepLinkWebViewHandleListener, FragmentGeneralWebView.OnFragmentInteractionListener {
+public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements DeepLinkView, DeepLinkWebViewHandleListener {
     private Uri uriData;
     private Bundle extras;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
@@ -136,18 +136,4 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
 }

@@ -18,8 +18,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.FreeReturnActivit
  */
 
 public class FreeReturnActivity extends BasePresenterActivity<FreeReturnActivityListener.Presenter>
-        implements FreeReturnActivityListener.View, HasComponent,
-        FragmentGeneralWebView.OnFragmentInteractionListener {
+        implements FreeReturnActivityListener.View, HasComponent {
 
     private static final String PARAM_URL = "param_url";
 
@@ -93,18 +92,5 @@ public class FreeReturnActivity extends BasePresenterActivity<FreeReturnActivity
         return null;
     }
 
-    @Override
-    public void onWebViewSuccessLoad() {
 
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
 }

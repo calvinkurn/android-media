@@ -1045,21 +1045,6 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
-
-    @Override
     public void onRemoveTitle() {
         toolbar.setTitle("");
     }

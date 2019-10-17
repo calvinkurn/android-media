@@ -17,8 +17,7 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
  * Created by brilliant.oka on 15/03/17.
  */
 
-public class BrandsWebViewActivity extends TkpdCoreWebViewActivity implements
-        FragmentGeneralWebView.OnFragmentInteractionListener {
+public class BrandsWebViewActivity extends TkpdCoreWebViewActivity {
 
     public static final String EXTRA_URL = "url";
     private BrandsWebViewFragment fragment;
@@ -41,21 +40,6 @@ public class BrandsWebViewActivity extends TkpdCoreWebViewActivity implements
             fragmentTransaction.add(R.id.container, fragment);
             fragmentTransaction.commit();
         }
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
     }
 
     @Override

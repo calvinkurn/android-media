@@ -126,6 +126,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 putExtra(KEY_TITLE, title)
             }
         }
+    }
+
+    object DeeplinkIntent {
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -138,7 +141,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             taskStackBuilder.addNextIntent(destination)
             return taskStackBuilder
         }
-
     }
 
 }
