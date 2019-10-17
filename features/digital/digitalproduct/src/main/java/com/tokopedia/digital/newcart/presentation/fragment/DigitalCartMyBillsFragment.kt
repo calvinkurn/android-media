@@ -122,7 +122,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     override fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean) {
         // If user is already subsrcibed, hide checkbox for subscribing
         if (isSubscribed) {
-            mybillSubscription.visibility = View.GONE
+            mybillSubscription.getSubscriptionCheckbox().visibility = View.GONE
         } else {
             mybillSubscription.setChecked(checked)
         }
