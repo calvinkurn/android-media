@@ -194,9 +194,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     tvAttachmentHint.setVisibility(View.GONE);
                 }
 
-                if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
+                if (commentList.get(position).getAttachment() != null
+                        && commentList.get(position).getAttachment().size() > 0)  {
                     rvAttachedImage.setVisibility(View.VISIBLE);
-                } catch (NullPointerException e) {}
+                }
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
