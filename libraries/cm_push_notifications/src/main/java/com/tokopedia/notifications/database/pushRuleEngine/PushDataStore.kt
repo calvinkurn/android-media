@@ -4,6 +4,10 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 
 class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPushDataStore {
+    override suspend fun getNotificationById(notificationId: Int): BaseNotificationModel? {
+        return baseNotificationDao.getNotificationById(notificationId)
+    }
+
     override suspend fun deleteNotification(olderThanExpiryMillis: Long, status: NotificationStatus) {
         return baseNotificationDao.deleteNotification(olderThanExpiryMillis, status)
     }
@@ -23,6 +27,9 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
     override suspend fun updateNotificationStatusById(notificationId: Int, status: NotificationStatus) {
         baseNotificationDao.updateNotificationStatus(notificationId, status)
     }
+
+
+
 
 
 }

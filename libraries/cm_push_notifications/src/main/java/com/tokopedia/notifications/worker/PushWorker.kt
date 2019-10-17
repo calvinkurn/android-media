@@ -3,6 +3,7 @@ package com.tokopedia.notifications.worker
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.notifications.CMPushNotificationManager
+import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 .pushDataStore
                 .getNotificationByStatusList(status)
         baseNotificationModelList?.forEach { baseNotificationModel ->
-            CMPushNotificationManager.instance.cancelOfflineNotification(baseNotificationModel = baseNotificationModel)
+            PushController(appContext).cancelOfflineNotification(baseNotificationModel = baseNotificationModel)
             baseNotificationModel.status = NotificationStatus.COMPLETED
             PushRepository.getInstance(appContext).updateNotificationModel(baseNotificationModel)
         }
@@ -51,7 +52,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 .getNotificationByStatusList(NotificationStatus.ACTIVE)
         baseNotificationModelList?.forEach { baseNotificationModel ->
             if (baseNotificationModel.endTime <= System.currentTimeMillis()) {
-                CMPushNotificationManager.instance.cancelOfflineNotification(baseNotificationModel = baseNotificationModel)
+                PushController(appContext).cancelOfflineNotification(baseNotificationModel = baseNotificationModel)
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 PushRepository.getInstance(appContext).updateNotificationModel(baseNotificationModel)
             }
@@ -62,7 +63,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
         val baseNotificationModelList = PushRepository.getInstance(appContext).pushDataStore
                 .getPendingNotificationList(System.currentTimeMillis())
         baseNotificationModelList?.forEach { baseNotificationModel ->
-            CMPushNotificationManager.instance.postOfflineNotification(baseNotificationModel = baseNotificationModel)
+            PushController(appContext).postOfflineNotification(baseNotificationModel = baseNotificationModel)
             baseNotificationModel.status = NotificationStatus.ACTIVE
             PushRepository.getInstance(appContext).updateNotificationModel(baseNotificationModel)
         }

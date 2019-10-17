@@ -1,47 +1,36 @@
 package com.tokopedia.notifications.database.pushRuleEngine
 
 import android.content.Context
-import android.util.Log
-import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.RoomDB
 import com.tokopedia.notifications.model.BaseNotificationModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
 
-class PushRepository private constructor(val context: Context) : CoroutineScope {
+class PushRepository private constructor(val context: Context) {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+    private val roomDB: RoomDB by lazy {
+        RoomDB.getDatabase(context)
+    }
 
-    var roomDB: RoomDB = RoomDB.getDatabase(context)
-    var pushDataStore: IPushDataStore
+    val pushDataStore: IPushDataStore by lazy {
+        PushDataStore(roomDB.baseNotificationDao())
+    }
 
-    init {
-        pushDataStore = PushDataStore(roomDB.baseNotificationDao())
+    suspend fun updateNotificationModel(baseNotificationModel: BaseNotificationModel) {
+        pushDataStore.insertNotification(baseNotificationModel)
+    }
+
+    suspend fun insertNotificationModel(baseNotificationModel: BaseNotificationModel) {
+        pushDataStore.insertNotification(baseNotificationModel)
     }
 
     companion object {
-        @Volatile private var INSTANCE: PushRepository? = null
+        @Volatile
+        private var INSTANCE: PushRepository? = null
+
         fun getInstance(context: Context): PushRepository =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildPushRepository(context).also { INSTANCE = it }
-            }
+                INSTANCE ?: synchronized(this) {
+                    INSTANCE ?: buildPushRepository(context).also { INSTANCE = it }
+                }
 
         private fun buildPushRepository(context: Context) = PushRepository(context)
-    }
-
-    fun updateNotificationModel(baseNotificationModel: BaseNotificationModel) {
-        launchCatchError(block = {
-            pushDataStore.insertNotification(baseNotificationModel)
-        }, onError = {
-        })
-    }
-
-    fun insertNotificationModel(baseNotificationModel: BaseNotificationModel) {
-        launchCatchError(block = {
-            pushDataStore.insertNotification(baseNotificationModel)
-        }, onError = {
-        })
     }
 }

@@ -69,11 +69,21 @@ object PayloadConverter {
         //start end time,
         model.notificationMode = getNotificationMode(data)
 
-        model.startTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_START_TIME))
-            data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME).toLong()
+        model.startTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)) {
+            try {
+                data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME).toLong()
+            }catch (e : Exception){
+                0L
+            }
+        }
         else 0L
-        model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME))
-            data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME).toLong()
+        model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)){
+            try {
+                data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME).toLong()
+            }catch (e : Exception){
+                0L
+            }
+        }
         else 0L
         model.status = NotificationStatus.PENDING
 

@@ -19,7 +19,10 @@ abstract class BaseNotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertNotificationModel(notificationModel: BaseNotificationModel)
 
-    @Query(value = "DELETE FROM BaseNotificationModel WHERE endTime <= :olderThanExpiryMillis AND notificationStatus = :status")
+    @Query("DELETE FROM BaseNotificationModel WHERE endTime <= :olderThanExpiryMillis AND notificationStatus = :status")
     abstract fun deleteNotification(olderThanExpiryMillis: Long, status: NotificationStatus)
+
+    @Query("SELECT * FROM BaseNotificationModel WHERE notificationId= :notificationId")
+    abstract fun getNotificationById(notificationId: Int): BaseNotificationModel?
 
 }
