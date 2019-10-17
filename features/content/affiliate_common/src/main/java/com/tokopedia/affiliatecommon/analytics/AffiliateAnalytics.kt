@@ -30,13 +30,6 @@ constructor(private val userSession: UserSessionInterface) {
         private val PARAM_SHOP_ID = "shop_id"
     }
 
-    private object Category {
-
-    }
-
-    private object Action {
-    }
-
     private fun setDefaultData(screenName: String,
                                event: String,
                                category: String,

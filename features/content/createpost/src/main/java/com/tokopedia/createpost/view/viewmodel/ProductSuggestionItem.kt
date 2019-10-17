@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.view.viewmodel
 
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * @author by milhamj on 2019-09-17.

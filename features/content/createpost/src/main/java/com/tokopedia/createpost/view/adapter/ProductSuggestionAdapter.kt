@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.adapter
 
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -65,9 +66,10 @@ class ProductSuggestionAdapter(
                 } else {
                     setDefaultStyle(itemView)
                 }
-                attach_product_chat_image_layout.addOnImpressionListener(element.impressHolder) {
+                addOnImpressionListener(element.impressHolder) {
                     onSuggestionItemFirstView(element)
                 }
+
             }
 
         }
@@ -91,10 +93,5 @@ class ProductSuggestionAdapter(
             }
 
         }
-    }
-
-    interface ProductSuggestionListener {
-        fun onFirstProductImpression()
-        fun onProductClicked()
     }
 }
