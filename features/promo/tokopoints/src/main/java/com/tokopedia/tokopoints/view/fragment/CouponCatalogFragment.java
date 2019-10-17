@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -574,7 +575,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         ConstraintLayout giftSectionMainLayout = getView().findViewById(R.id.gift_section_main_layout);
         Typography giftImage = getView().findViewById(R.id.gift_image);
         Typography giftButton = getView().findViewById(R.id.gift_btn);
-        View bottomSeparator = getView().findViewById(R.id.bottom_separator);
+        View bottomSeparator = getView().findViewById(R.id.tp_bottom_separator);
         giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (getActivity(), R.drawable.ic_catalog_gift_btn), null, null, null);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
@@ -590,14 +591,20 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
 
-        TkpdWebView tvHowToUse = getView().findViewById(R.id.how_to_use_content);
-        TkpdWebView tvTnc = getView().findViewById(R.id.tnc_content);
+        FrameLayout tvHowToUse = getView().findViewById(R.id.how_to_use_content);
+        FrameLayout tvTnc = getView().findViewById(R.id.tnc_content);
         Typography tncSeeMore = getView().findViewById(R.id.tnc_see_more);
         Typography howToUseSeeMore = getView().findViewById(R.id.how_to_use_see_more);
 
-        tvTnc.loadData(getLessDisplayData(data.getTnc(), tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
-        tvHowToUse.loadData(getLessDisplayData(data.getHowToUse(), howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+        TkpdWebView webView = new TkpdWebView(getContext());
+        tvTnc.addView(webView);
 
+        webView.loadData(getLessDisplayData(data.getTnc(), tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+
+        webView = new TkpdWebView(getContext());
+        tvHowToUse.addView(webView);
+        webView.loadData(getLessDisplayData(data.getHowToUse(), howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+        SplitCompat.installActivity(getContext());
         tncSeeMore.setOnClickListener(v -> {
             loadWebViewInBottomsheet(data.getTnc(), getString(R.string.tnc_coupon_catalog));
         });
@@ -761,10 +768,10 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private void loadWebViewInBottomsheet(String data, String title) {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
+        SplitCompat.installActivity(getContext());
         WebView webView = view.findViewById(R.id.catalog_webview);
         ImageView closeBtn = view.findViewById(R.id.close_button);
         Typography titleView = view.findViewById(R.id.title_closeable);
-
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING);
         closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
         titleView.setText(title);

@@ -233,8 +233,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
-    }
+        return getActivity();    }
 
     @Override
     public Context getActivityContext() {
