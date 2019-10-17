@@ -48,7 +48,6 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         tvArrival = itemView.findViewById(R.id.arrival_time);
         tvAirline = itemView.findViewById(R.id.tv_airline);
         flightMultiAirlineView = itemView.findViewById(R.id.view_multi_airline);
-        airlineRefundableInfo = itemView.findViewById(R.id.airline_refundable_info);
         tvPrice = itemView.findViewById(R.id.total_price);
         tvDuration = itemView.findViewById(R.id.flight_time);
         savingPrice = itemView.findViewById(R.id.saving_price);
@@ -70,7 +69,6 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         tvPrice.setOnClickListener(detailClickListener);
         containerDetail.setOnClickListener(detailClickListener);
 
-        setRefundableInfo(flightJourneyViewModel);
         setSavingPrice(flightJourneyViewModel);
         setDiscountPriceTag(flightJourneyViewModel);
         setArrivalAddDay(flightJourneyViewModel);
@@ -166,11 +164,6 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
             flightMultiAirlineView.setAirlineLogo(flightJourneyViewModel.getAirlineDataList().get(0).getLogo());
             tvAirline.setText(flightJourneyViewModel.getAirlineDataList().get(0).getShortName());
         }
-    }
-
-    private void setRefundableInfo(FlightJourneyViewModel flightJourneyViewModel) {
-        airlineRefundableInfo.setVisibility(View.VISIBLE);
-        airlineRefundableInfo.setText(flightJourneyViewModel.isRefundable().getValueRes());
     }
 
     private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
