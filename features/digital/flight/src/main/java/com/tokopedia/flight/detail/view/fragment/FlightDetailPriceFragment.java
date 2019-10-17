@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.common.travel.utils.TravelCurrencyFormatUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -77,7 +78,7 @@ public class FlightDetailPriceFragment extends Fragment {
             double infantPriceTotal = flightDetailViewModel.getInfantNumericPrice() * flightDetailViewModel.getCountInfant();
             infantPrice.setText(getString(R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
         }
-        totalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(calculateTotal(flightDetailViewModel)));
+        totalPrice.setText(TravelCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel)));
     }
 
     private int calculateTotal(FlightDetailViewModel flightDetailViewModel) {

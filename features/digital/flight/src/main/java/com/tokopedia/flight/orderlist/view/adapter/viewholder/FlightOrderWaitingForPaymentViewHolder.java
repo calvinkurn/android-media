@@ -5,6 +5,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common.travel.utils.TravelCurrencyFormatUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -124,7 +125,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 if (element.getPayment().getNeedToPayAmount() > 0) {
                     tvPaymentCostLabel.setVisibility(View.VISIBLE);
                     tvPaymentCost.setVisibility(View.VISIBLE);
-                    tvPaymentCost.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(element.getPayment().getNeedToPayAmount()));
+                    tvPaymentCost.setText(TravelCurrencyFormatUtil.Companion.convertToIdrPrice(element.getPayment().getNeedToPayAmount()));
                 } else {
                     tvPaymentCostLabel.setVisibility(View.GONE);
                     tvPaymentCost.setVisibility(View.GONE);

@@ -31,6 +31,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.utils.TravelCurrencyFormatUtil;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -379,11 +380,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             discountAppliedLayout.setVisibility(View.GONE);
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
-        reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+        reviewFinalTotalPrice.setText(TravelCurrencyFormatUtil.Companion.convertToIdrPrice(totalFinal));
     }
 
     private String getFormattedDiscountPrice(double discountAmountPlain) {
-        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), TravelCurrencyFormatUtil.Companion.convertToIdrPrice((int) Math.round(discountAmountPlain)));
     }
 
     private void renderPromoTicker() {
@@ -598,7 +599,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void setTotalPrice(int totalPrice) {
         flightBookingReviewModel.setTotalPriceNumeric(totalPrice);
         flightBookingReviewModel.setTotalPrice(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
+                TravelCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice)
         );
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
         updateFinalTotal(getCurrentBookingReviewModel());

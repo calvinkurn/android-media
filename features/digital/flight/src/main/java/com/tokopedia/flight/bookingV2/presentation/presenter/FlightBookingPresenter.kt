@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.utils.TravelCurrencyFormatUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
@@ -91,8 +92,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun updateTotalPrice(totalPrice: Int) {
         view.getCurrentBookingParamViewModel().totalPriceNumeric = totalPrice
         view.getCurrentBookingParamViewModel().totalPriceFmt =
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
-        view.renderTotalPrices(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice))
+                TravelCurrencyFormatUtil.convertToIdrPrice(totalPrice)
+        view.renderTotalPrices(TravelCurrencyFormatUtil.convertToIdrPrice(totalPrice))
     }
 
     override fun onCountDownTimestampChanged(timestamp: String) {
@@ -347,7 +348,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
                 if (newTotalPrice != oldTotalPrice && getCurrentCartData().total > 0) {
                     resultTotalPrice = newTotalPrice
-                    view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(resultTotalPrice), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(oldTotalPrice))
+                    view.showPriceChangesDialog(TravelCurrencyFormatUtil.convertToIdrPrice(resultTotalPrice), TravelCurrencyFormatUtil.convertToIdrPrice(oldTotalPrice))
                 }
             }
             updateTotalPrice(resultTotalPrice)
@@ -623,9 +624,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         val baseCartData = getCurrentCartData()
         val fares = arrayListOf<Fare>()
         fares.add(Fare(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.adultNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.childNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.infantNumericPrice),
+                TravelCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.adultNumericPrice),
+                TravelCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.childNumericPrice),
+                TravelCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.infantNumericPrice),
                 departureFlightDetailViewModel.adultNumericPrice,
                 departureFlightDetailViewModel.childNumericPrice,
                 departureFlightDetailViewModel.infantNumericPrice
@@ -634,9 +635,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         if (returnFlightDetailViewModel != null) {
             fares.add(
                     Fare(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.adultNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.childNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.infantNumericPrice),
+                            TravelCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.adultNumericPrice),
+                            TravelCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.childNumericPrice),
+                            TravelCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.infantNumericPrice),
                             returnFlightDetailViewModel.adultNumericPrice,
                             returnFlightDetailViewModel.childNumericPrice,
                             returnFlightDetailViewModel.infantNumericPrice
