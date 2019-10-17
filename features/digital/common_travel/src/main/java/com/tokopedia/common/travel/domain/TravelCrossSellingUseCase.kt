@@ -43,7 +43,7 @@ class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRe
                         value = ""))
             }
 //            return Success(travelCrossSelling)
-            return Success(TravelCrossSelling(list))
+            return Success(TravelCrossSelling(items = list, meta = TravelCrossSelling.Meta(title = "Lengkapi Perjalananmu")))
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }

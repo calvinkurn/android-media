@@ -24,7 +24,6 @@ class TrackingCrossSellUtil {
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
-
     }
 
     fun crossSellClick(crossSellItems: List<TravelCrossSelling.Item>, position: Int) {
