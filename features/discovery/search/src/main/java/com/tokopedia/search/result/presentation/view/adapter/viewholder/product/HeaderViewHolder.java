@@ -1,9 +1,12 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
@@ -380,7 +385,25 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
                 }
             });
-            imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
+
+            Glide.with(itemView.getContext())
+                    .load(BACKGROUND[getAdapterPosition() % 5])
+                    .asBitmap()
+                    .centerCrop()
+                    .dontAnimate()
+                    .into(getRoundedImageViewTarget(imageView));
+        }
+
+        private BitmapImageViewTarget getRoundedImageViewTarget(ImageView imageView) {
+            return new BitmapImageViewTarget(imageView) {
+
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+                    roundedBitmapDrawable.setCornerRadius(8f);
+                    imageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            };
         }
     }
 }

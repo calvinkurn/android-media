@@ -307,17 +307,24 @@ query SearchProduct(
 
     global_search_navigation(keyword:$query, device:"android", size:5) {
         data {
+            source
             title
             keyword
             nav_template
+            background
             see_all_applink
             see_all_url
             list {
+                category_name
                 name
                 info
                 image_url
                 applink
                 url
+                subtitle
+                strikethrough
+                background_url
+                logo_url
             }
         }
     }
