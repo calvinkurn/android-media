@@ -5,8 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.SuggestionClickListener
-import com.tokopedia.createpost.SuggestionViewListener
+import com.tokopedia.createpost.SuggestionItemHandler
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.kotlin.extensions.view.*
@@ -18,8 +17,8 @@ import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*
  */
 
 class ProductSuggestionAdapter(
-        private var onSuggestionItemClicked: SuggestionClickListener,
-        private var onSuggestionItemFirstView: SuggestionViewListener
+        private var onSuggestionItemClicked: SuggestionItemHandler,
+        private var onSuggestionItemFirstView: SuggestionItemHandler
 ) : RecyclerView.Adapter<ProductSuggestionAdapter.SuggestionViewHolder>() {
 
     private val list: MutableList<ProductSuggestionItem> = arrayListOf()
@@ -49,8 +48,8 @@ class ProductSuggestionAdapter(
 
     class SuggestionViewHolder(
             v: View,
-            private var onSuggestionItemClicked: SuggestionClickListener,
-            private var onSuggestionItemFirstView: SuggestionViewListener)
+            private var onSuggestionItemClicked: SuggestionItemHandler,
+            private var onSuggestionItemFirstView: SuggestionItemHandler)
         : RecyclerView.ViewHolder(v) {
 
         fun bind(element: ProductSuggestionItem) {
