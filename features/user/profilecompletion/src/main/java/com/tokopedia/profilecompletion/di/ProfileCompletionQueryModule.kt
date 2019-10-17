@@ -196,4 +196,15 @@ class ProfileCompletionQueryModule {
     @Provides
     fun provideValidatePinGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ValidatePinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN)
+    fun provideRawQuerySkipOtpPin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_skip_otp_pin)
+
+
+    @Provides
+    fun provideSkipOtpPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<SkipOtpPinPojo> = GraphqlUseCase(graphqlRepository)
 }
