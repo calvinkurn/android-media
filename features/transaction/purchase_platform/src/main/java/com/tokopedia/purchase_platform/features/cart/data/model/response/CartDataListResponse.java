@@ -45,10 +45,10 @@ public class CartDataListResponse {
     @SerializedName("default_promo_dialog_tab")
     @Expose
     private String defaultPromoDialogTab = "";
-    @SerializedName("shop_group")
+    @SerializedName("shop_group_available")
     @Expose
     private List<ShopGroupAvailable> shopGroupAvailables = new ArrayList<>();
-    @SerializedName("shop_group_with_error")
+    @SerializedName("shop_group_with_errors")
     @Expose
     private List<ShopGroupWithError> shopGroupWithErrors = new ArrayList<>();
     @SerializedName("donation")
