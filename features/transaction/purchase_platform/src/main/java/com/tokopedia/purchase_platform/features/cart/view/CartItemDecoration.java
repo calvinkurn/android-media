@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartErrorItemViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecentViewViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSectionHeaderViewHolder;
@@ -58,6 +59,12 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof TickerAnnouncementViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof CartErrorItemViewHolder) {
+            if (((CartErrorItemViewHolder) viewHolder).getShowDivider()) {
+                outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_6);
+            } else {
+                outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+            }
         } else {
             outRect.bottom = verticalSpaceHeight;
         }
