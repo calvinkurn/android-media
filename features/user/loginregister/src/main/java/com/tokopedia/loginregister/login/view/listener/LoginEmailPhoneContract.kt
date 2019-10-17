@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.ArrayList
@@ -110,5 +111,7 @@ interface LoginEmailPhoneContract {
         fun reloginAfterSQ(validateToken: String)
 
         fun getTickerInfo()
+
+        fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
     }
 }

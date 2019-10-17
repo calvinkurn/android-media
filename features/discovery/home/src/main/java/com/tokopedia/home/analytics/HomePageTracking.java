@@ -183,6 +183,10 @@ public class HomePageTracking {
     }
 
     private static Map<String, Object> getSliderBannerClick(BannerSlidesModel slidesModel) {
+        String promoCode = "";
+        if (slidesModel.getPromoCode() != null) {
+            promoCode = slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode(): NO_PROMO_CODE;
+        }
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -197,7 +201,7 @@ public class HomePageTracking {
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
                                                 FIELD_POSITION, slidesModel.getPosition(),
-                                                FIELD_PROMO_CODE, slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode(): NO_PROMO_CODE
+                                                FIELD_PROMO_CODE, promoCode
                                         )
                                 )
                         )

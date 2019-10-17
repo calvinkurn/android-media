@@ -14,7 +14,6 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -31,11 +30,9 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
-import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.createpost.view.applink.CreatePostModule;
+import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -76,8 +73,6 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -136,8 +131,6 @@ import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.train.applink.TrainApplinkModule;
-import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
@@ -169,7 +162,6 @@ import rx.schedulers.Schedulers;
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
-        TrainApplinkModule.class,
         InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
@@ -182,19 +174,17 @@ import rx.schedulers.Schedulers;
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
+        CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
-        CheckoutAppLinkModule.class,
         HowtopayApplinkModule.class,
-        CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
-        InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         AffiliateApplinkModule.class,
@@ -238,7 +228,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
-                    new TrainApplinkModuleLoader(),
                     new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
@@ -250,19 +239,17 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),
                     new ProfileApplinkModuleLoader(),
+                    new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
-                    new CheckoutAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new CustomerCareApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
                     new TokopointApplinkModuleLoader(),
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
-                    new InstantLoanAppLinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
                     new AffiliateApplinkModuleLoader(),

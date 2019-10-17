@@ -23,4 +23,13 @@ data class IncomingChatWebSocketModel(val msgId: String = ""): BaseIncomingItemW
         this.time = time
         this.contact = contact
     }
+
+    constructor(
+            messageId: String,
+            message: String,
+            time: String
+    ) : this(messageId) {
+        this.message = message
+        this.time = time
+    }
 }

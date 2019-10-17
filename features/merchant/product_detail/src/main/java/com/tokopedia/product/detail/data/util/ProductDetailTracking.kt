@@ -891,6 +891,24 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickTradeInRibbon(productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_RIBBON_TRADE_IN,
+                productId
+        )
+    }
+
+    fun eventClickSeeMoreRecomWidget(widgetName: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                String.format(ProductTrackingConstant.Action.CLICK_SEE_MORE_WIDGET, widgetName),
+                ""
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"
