@@ -79,6 +79,8 @@
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
 
+    <string name="instant_loan_app_name">Dana Instan</string>
+
     <!-- Referral -->
     <string name="title_module_referral">Referral</string>
 </resources>

@@ -1,5 +1,5 @@
-query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
+query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: String, $sourceID: String, $detailID: String, $refreshCursor: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID, refreshCursor: $refreshCursor) {
     data {
       id
       createTime
@@ -471,6 +471,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
     meta {
       totalData
       lastCursor
+      firstPageCursor
       hasNextPage
       linkSelf
     }

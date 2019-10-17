@@ -18,6 +18,8 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -36,11 +38,15 @@ import javax.inject.Inject
 class PinOnboardingFragment: BaseDaggerFragment(){
 
     @Inject
+    lateinit var trackingPinUtil: TrackingPinUtil
+    @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
+
+    private var isFromLogin: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,16 +57,28 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initVar()
+
         ImageHandler.LoadImage(onboardImage, ONBOARD_PICT_URL)
 
         btnNext.setOnClickListener {
             addChangePinViewModel.getStatusPin()
         }
 
+        btnIgnore.setOnClickListener {
+            trackingPinUtil.trackClickLaterButton()
+            activity?.finish()
+        }
+
         initObserver()
     }
 
-    override fun getScreenName(): String = ""
+    override fun onStart() {
+        super.onStart()
+        trackingPinUtil.trackScreen(screenName)
+    }
+
+    override fun getScreenName(): String = TrackingPinConstant.Screen.SCREEN_POPUP_PIN_WELCOME
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
@@ -73,6 +91,12 @@ class PinOnboardingFragment: BaseDaggerFragment(){
                 is Fail -> onErrorGetStatusPin(it.throwable)
             }
         })
+    }
+
+    private fun initVar() {
+        val isFromLogin = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, false)
+        if(isFromLogin != null)
+            this.isFromLogin = isFromLogin
     }
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
@@ -111,7 +135,10 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     private fun goToAddPin(){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-        startActivityForResult(intent, REQUEST_CODE_ADD_PIN)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, isFromLogin)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun onSuccessAddPhoneNumber(data: Intent?){
@@ -126,12 +153,6 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         when (resultCode) {
             Activity.RESULT_OK -> {
                 when (requestCode) {
-                    REQUEST_CODE_ADD_PIN -> {
-                        activity?.let {
-                            it.setResult(Activity.RESULT_OK)
-                            it.finish()
-                        }
-                    }
                     REQUEST_CODE_ADD_PHONE -> {
                         onSuccessAddPhoneNumber(data)
                     }
@@ -156,10 +177,13 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         addChangePinViewModel.clear()
     }
 
+    fun onBackPressed(){
+        trackingPinUtil.trackClickBackButtonWelcome()
+    }
+
     companion object {
 
         const val REQUEST_CODE_ADD_PHONE = 100
-        const val REQUEST_CODE_ADD_PIN = 102
 
         const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/onboard_add_pin.png"
 

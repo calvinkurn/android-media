@@ -29,8 +29,10 @@
     <string name="path_add_bod">/add-bod</string>
     <string name="path_add_pin">/add-pin</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
+    <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
-    <string name="path_saldo_deposit">/saldo</string>
-    <string name="path_saldo_intro">/saldo-intro</string>
+    <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
+
 </resources>
