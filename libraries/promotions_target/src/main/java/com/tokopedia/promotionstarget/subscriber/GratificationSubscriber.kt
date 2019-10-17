@@ -5,6 +5,8 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
+import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
+import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
 import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
@@ -102,10 +104,10 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             supervisorScope {
                 val childJob = launch {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
-                    presenter.composeApi(gratificationData)
+                    val couponDetail = presenter.composeApi(gratificationData)
                     withContext(Dispatchers.Main) {
                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
-                            show(weakActivity, response)
+                            show(weakActivity, response, couponDetail)
                     }
                 }
                 mapOfJobs[activity] = childJob
@@ -113,11 +115,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun show(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse) {
+    private fun show(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse) {
         val dialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
-            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data)
+            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data, couponDetailResponse)
             mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
         }
     }

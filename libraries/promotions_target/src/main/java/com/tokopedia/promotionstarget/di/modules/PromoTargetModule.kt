@@ -3,6 +3,7 @@ package com.tokopedia.promotionstarget.di.modules
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.promotionstarget.R
+import com.tokopedia.promotionstarget.di.AUTO_APPLY
 import com.tokopedia.promotionstarget.di.CLAIM_POP_GRATIFICATION
 import com.tokopedia.promotionstarget.di.GET_COUPON_DETAIL
 import com.tokopedia.promotionstarget.di.GET_POP_GRATIFICATION
@@ -26,6 +27,11 @@ class PromoTargetModule {
     @PromoTargetScope
     @Named(CLAIM_POP_GRATIFICATION)
     fun provideClaimPopGratification(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_pop_gratification)
+
+    @Provides
+    @PromoTargetScope
+    @Named(AUTO_APPLY)
+    fun provideAutoApply(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_auto_apply)
 
     @Provides
     @PromoTargetScope

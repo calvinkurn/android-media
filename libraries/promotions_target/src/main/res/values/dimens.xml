@@ -52,4 +52,6 @@
     <dimen name="fontvs">12sp</dimen>
     <dimen name="t_promo_image_height">148dp</dimen>
 
+    <dimen name="tpromo_default_stroke_width">7dp</dimen>
+    <dimen name="tpromo_default_background_stroke_width">3dp</dimen>
 </resources>

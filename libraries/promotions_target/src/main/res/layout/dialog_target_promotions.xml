@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
@@ -37,7 +36,7 @@
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/t_promo_image_height"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
@@ -101,6 +100,23 @@
             app:rb_buttonColor="@color/t_promo_btn_green"
             app:rb_cornerRadius="@dimen/dp_8"
             tools:text="@string/app_name" />
+
+
+        <com.tokopedia.promotionstarget.ui.views.TargetPromoProgressBar
+            android:id="@+id/targetProgressBar"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:visibility="gone"
+            app:tpromo_background_progressbar_color="@color/t_promo_white_50"
+            app:tpromo_background_progressbar_width="5dp"
+            app:tpromo_progress_direction="to_right"
+            app:tpromo_progressbar_color="@color/white"
+            app:tpromo_progressbar_width="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnAction"
+            app:layout_constraintEnd_toEndOf="@+id/btnAction"
+            app:layout_constraintStart_toStartOf="@+id/btnAction"
+            app:layout_constraintTop_toTopOf="@+id/btnAction" />
+
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

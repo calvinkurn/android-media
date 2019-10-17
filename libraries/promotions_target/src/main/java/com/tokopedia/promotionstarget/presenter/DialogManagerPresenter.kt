@@ -1,5 +1,6 @@
 package com.tokopedia.promotionstarget.presenter
 
+import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.subscriber.GratificationData
 import com.tokopedia.promotionstarget.usecase.GetCouponDetailUseCase
@@ -17,7 +18,7 @@ class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase:
     }
 
 
-    suspend fun composeApi(gratificationData: GratificationData): Any {
+    suspend fun composeApi(gratificationData: GratificationData): GetCouponDetailResponse {
         val data = getGratificationAndShowDialog(gratificationData)
         val ids = mapperGratificationResponseToCouponIds(data)
         return getCatalogDetail(ids)
@@ -31,7 +32,7 @@ class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase:
         return ids!!
     }
 
-    private suspend fun getCatalogDetail(ids: List<String>): Any {
+    private suspend fun getCatalogDetail(ids: List<String>): GetCouponDetailResponse {
         return couponDetailUseCase.getResponse(ids)
     }
 

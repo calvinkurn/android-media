@@ -3,9 +3,10 @@ package com.tokopedia.promotionstarget.ui.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.ui.CouponListVH
 
-class CouponListAdapter(val couponList: ArrayList<CouponData>) : RecyclerView.Adapter<CouponListVH>() {
+class CouponListAdapter(val couponList: ArrayList<GetCouponDetail>) : RecyclerView.Adapter<CouponListVH>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CouponListVH {
         val vh = CouponListVH(LayoutInflater.from(viewGroup.context).inflate(CouponListVH.getLayout(), viewGroup, false))
@@ -22,4 +23,3 @@ class CouponListAdapter(val couponList: ArrayList<CouponData>) : RecyclerView.Ad
     }
 }
 
-data class CouponData(val id: Int)

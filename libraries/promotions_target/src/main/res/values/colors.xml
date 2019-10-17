@@ -5,5 +5,6 @@
     <color name="t_promo_btn_green">#03ac0e</color>
     <color name="t_promo_grey96">#f531353b</color>
     <color name="t_promo_grey68">#ae31353b</color>
+    <color name="t_promo_white_50">#50FAFAFA</color>
 
 </resources>

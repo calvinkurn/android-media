@@ -1,5 +1,7 @@
 package com.tokopedia.promotionstarget.usecase
 
+import com.google.gson.Gson
+import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.di.GET_COUPON_DETAIL
 import com.tokopedia.promotionstarget.gql.GqlUseCaseWrapper
@@ -26,7 +28,14 @@ class GetCouponDetailUseCase @Inject constructor(@Named(GET_COUPON_DETAIL) val c
             queryBuilder.append(prepareQueryForCouponDetail(it))
         }
         queryBuilder.append(END_TOKEN)
-        return gqlWrapper.getResponse(GetCouponDetailResponse::class.java, queryBuilder.toString(), emptyMap())
+        val map = gqlWrapper.getResponse(Map::class.java, queryBuilder.toString(), emptyMap())
+        val gson = Gson()
+        val json = gson.toJsonTree(map).asJsonObject
+        val couponList = ArrayList<GetCouponDetail>()
+        json.entrySet().iterator().forEach {
+            couponList.add(gson.fromJson(it.value, GetCouponDetail::class.java))
+        }
+        return GetCouponDetailResponse(couponList)
     }
 
     private fun prepareQueryForCouponDetail(couponId: String): String {

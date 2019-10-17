@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
+import com.tokopedia.promotionstarget.usecase.AutoApplyUseCase;
 import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase;
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM;
 
@@ -21,7 +22,7 @@ public class MyViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass == TargetPromotionsDialogVM.class) {
-            return (T) new TargetPromotionsDialogVM(Dispatchers.getMain(), new ClaimPopGratificationUseCase(""));
+            return (T) new TargetPromotionsDialogVM(Dispatchers.getMain(), new ClaimPopGratificationUseCase(""), new AutoApplyUseCase(""));
         } else {
             return super.create(modelClass);
         }
