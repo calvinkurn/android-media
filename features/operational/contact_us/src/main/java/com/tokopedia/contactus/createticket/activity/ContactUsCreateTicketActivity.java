@@ -54,7 +54,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_contact_us_create_ticket;
+        return R.layout.contactus_activity_create_ticket;
     }
 
     @Override

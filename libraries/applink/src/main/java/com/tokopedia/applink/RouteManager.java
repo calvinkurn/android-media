@@ -238,7 +238,15 @@ public class RouteManager {
         if (URLUtil.isNetworkUrl(applink)) {
             return true;
         }
-        return buildInternalExplicitIntent(context, applink) != null;
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, applink);
+        if (TextUtils.isEmpty(mappedDeeplink)) {
+            mappedDeeplink = applink;
+        }
+        String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
+        if (dynamicFeatureDeeplink != null) {
+            return buildInternalExplicitIntent(context, dynamicFeatureDeeplink) != null;
+        }
+        return buildInternalExplicitIntent(context, mappedDeeplink) != null;
     }
 
     public static String routeWithAttribution(Context context, String applink,
