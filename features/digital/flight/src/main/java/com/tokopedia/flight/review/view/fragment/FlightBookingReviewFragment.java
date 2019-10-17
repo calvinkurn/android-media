@@ -257,7 +257,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             public int getItemCount() {
                 return flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList().size();
             }
-        });
+        }, true);
         List<Visitable> departureRoute = new ArrayList<>();
         departureRoute.addAll(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
         FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(flightDetailRouteTypeFactory, departureRoute);
@@ -270,7 +270,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 public int getItemCount() {
                     return flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size();
                 }
-            });
+            }, true);
             List<Visitable> arrivalRoute = new ArrayList<>();
             arrivalRoute.addAll(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
             FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(arrivalFlightDetailRouteTypeFactory1, arrivalRoute);
