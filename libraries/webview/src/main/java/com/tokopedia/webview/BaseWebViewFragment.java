@@ -344,9 +344,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
-        if (url == null) {
-            return false;
-        }
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
