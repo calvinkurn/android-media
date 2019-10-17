@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="path_details" translatable="false">/challenge/{challenge-id}</string>
-    <string name="path_submission" translatable="false">/submission</string>
-    <string name="scheme_challenge" translatable="false">challenges</string>
-</resources>
