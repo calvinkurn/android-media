@@ -31,6 +31,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
+    var hasTopAdsActive: Boolean = false
     var isSpecialPrize: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
@@ -47,9 +48,10 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
+        this.hasTopAdsActive = hasTopAdsActive
         this.preOrder = preOrder
         renderButton()
     }
@@ -109,6 +111,11 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
+            if(hasTopAdsActive){
+                btn_promote_topads.setTextAppearance(context, R.style.BtnTopAdsPDPRincian)
+            } else{
+                btn_promote_topads.setTextAppearance(context, R.style.BtnTopAdsPDPIklankan)
+            }
         }
     }
 

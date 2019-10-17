@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
+import android.view.Menu
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -71,10 +72,7 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.product.Wholesale
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
@@ -216,6 +214,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     var productInfo: ProductInfo? = null
+    var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     var shopInfo: ShopInfo? = null
 
     private var refreshLayout: SwipeToRefresh? = null
@@ -1236,6 +1235,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
+                    (topAdsGetProductManage.data.isEnableAd == 1),
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
@@ -1386,6 +1386,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
+        topAdsGetProductManage = productInfoP1.topAdsGetProductManage
         et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
@@ -1483,6 +1484,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),
+                (topAdsGetProductManage.data.isEnableAd == 1),
                 data.preorder)
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
