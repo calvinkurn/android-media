@@ -2,6 +2,12 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    androidExtensions {
+        experimental = true
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -27,6 +33,9 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productShare)
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.linker)
@@ -62,6 +71,15 @@ dependencies {
     }
     implementation (rootProject.ext.miscDependencies.ucrop){
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
     implementation (rootProject.ext.miscDependencies.imagecropper){
@@ -73,6 +91,10 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

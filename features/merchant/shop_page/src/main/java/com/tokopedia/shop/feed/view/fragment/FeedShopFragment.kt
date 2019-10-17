@@ -66,7 +66,6 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
@@ -265,7 +264,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLoading = false
         if (element.isNotEmpty()) {
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
-                showFAB(whitelistDomain)
+                showFAB()
             } else {
                 hideFAB()
             }
@@ -618,11 +617,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         fab_feed.hide()
     }
 
-    fun showFAB(whitelistDomain: WhitelistDomain) {
+    fun showFAB() {
         fab_feed.show()
-        val author = whitelistDomain.authors[0]
         fab_feed.setOnClickListener {
-            onGoToLink(author.link)
+            goToCreatePost()
             shopAnalytics.eventClickCreatePost()
         }
 

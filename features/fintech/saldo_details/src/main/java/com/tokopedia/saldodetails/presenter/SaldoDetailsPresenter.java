@@ -13,6 +13,7 @@ import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
 import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
@@ -110,6 +111,36 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         GetMerchantCreditDetailsSubscriber getMerchantCreditDetailsSubscriber =
                 new GetMerchantCreditDetailsSubscriber(this);
         getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
+    }
+
+    @Override
+    public void getMCLLateCount() {
+
+        getMCLLateCountUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                return;
+            }
+                getView().hideWithdrawTicker();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
+                    if (gqlMclLateCountResponse != null) {
+                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
+                    } else
+                        getView().hideWithdrawTicker();
+                }
+            }
+        });
     }
 
     @Override
