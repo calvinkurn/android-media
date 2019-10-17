@@ -2,6 +2,7 @@ package com.tokopedia.common.travel.utils
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.util.*
 
 /**
  * @author by jessica on 2019-10-17
@@ -13,8 +14,10 @@ import java.text.DecimalFormatSymbols
 class TravelCurrencyFormatUtil {
 
     companion object {
+        const val ID_LOCALE = "id-ID"
+
         fun convertToIdrPrice(price: Int): String {
-            val kursIndonesia = DecimalFormat.getCurrencyInstance() as DecimalFormat
+            val kursIndonesia = DecimalFormat.getCurrencyInstance(Locale(ID_LOCALE)) as DecimalFormat
             kursIndonesia.maximumFractionDigits = 0
             val formatRp = DecimalFormatSymbols()
 
