@@ -115,6 +115,7 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
         };
     }
 
+    //TokocashData is not changed to WalletBalanceModel because it still in used by several classes in digital module
     private TokoCashData mapper(WalletBalanceModel walletBalanceModel) {
         TokoCashData tokoCashData = new TokoCashData();
         if (walletBalanceModel != null) {
