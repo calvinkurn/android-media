@@ -5,7 +5,6 @@
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="host_product" translatable="false">product</string>
-    <string name="host_webview" translatable="false">webview</string>
     <string name="path_add" translatable="false">/add</string>
     <string name="shop_settings_title">Pengaturan Toko</string>
     <string name="instant_loan_title">Dana Instan</string>
