@@ -48,13 +48,9 @@ class TrackingCrossSellUtil {
             val map = HashMap<String, Any>()
             val item = crossSellingItems.get(position)
             map[ID_LABEL] = position + 1
-            map[NAME_LABEL] = ""
-            map[CREATIVE_LABEL] = ""
-            map[CREATIVE_URL_LABEL] = ""
-            map[POSITION_LABEL] = ""
-            map[CATEGORY_LABEL] = ""
-            map[PROMO_ID_LABEL] = ""
-            map[PROMO_CODE_LABEL] = ""
+            map[NAME_LABEL] = item.product
+            map[CREATIVE_LABEL] = item.product
+            map[POSITION_LABEL] = position + 1
             list.add(map)
         }
         return DataLayer.listOf(*list.toTypedArray<Any>())
@@ -67,7 +63,7 @@ class TrackingCrossSellUtil {
         val CROSS_SELL_WIDGET_NATIVE = "digital - cross sell widget"
         val WIDGET_IMPRESSION = "view widget"
         val WIDGET_CLICK = "click widget"
-        val LENGKAPI_PERJALANANMU_LABEL = "view lengkapi perjalananmu"
+        val LENGKAPI_PERJALANANMU_LABEL = "view lengkapi perjalananu"
         val PROMOTIONS_LABEL = "promotions"
 
         val ID_LABEL = "id"
