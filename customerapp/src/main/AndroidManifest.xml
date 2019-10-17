@@ -327,7 +327,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
+            android:name="com.tokopedia.emoney.view.activity.EmoneyCheckBalanceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>

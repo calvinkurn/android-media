@@ -25,6 +25,7 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
 
+            digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
