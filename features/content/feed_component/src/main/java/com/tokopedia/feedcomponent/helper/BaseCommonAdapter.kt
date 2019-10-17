@@ -1,7 +1,9 @@
 package com.tokopedia.feedcomponent.helper
 
+import android.support.v7.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.helper.common.*
 import kotlin.reflect.KClass
 
@@ -46,6 +48,11 @@ open class BaseCommonAdapter : BaseDiffUtilAdapter<Any>() {
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
         return oldItem == newItem
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is AbstractViewHolder<*>) holder.onViewRecycled()
     }
 
     fun showLoadMore() {
