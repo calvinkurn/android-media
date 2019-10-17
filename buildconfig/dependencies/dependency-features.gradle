@@ -62,6 +62,8 @@ ext {
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
+            globalNavWidget                 : ":features:discovery:global_nav_widget",
+            globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
 
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",

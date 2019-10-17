@@ -2,17 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/globalNavContainerLayout"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -22,8 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/charcoal_grey_88"
-            app:typographyType="heading_3"
-            />
+            app:typographyType="heading_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/globalNavSeeAllButton"
@@ -32,15 +33,26 @@
             android:textColor="#03ac0e"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:text="@string/global_nav_see_all_text"
-            />
+            android:text="@string/global_nav_see_all_text" />
 
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/globalNavRecyclerView"
+        android:id="@+id/globalNavPillRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        tools:itemCount="1" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/globalNavCardRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:itemCount="1" />
 
 </LinearLayout>
