@@ -1,6 +1,7 @@
 package com.tokopedia.promotionstarget.subscriber
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,7 +11,9 @@ import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
 import com.tokopedia.promotionstarget.presenter.DialogManagerPresenter
 import com.tokopedia.promotionstarget.ui.TargetPromotionsDialog
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
@@ -18,10 +21,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val job = SupervisorJob()
     @Inject
     lateinit var presenter: DialogManagerPresenter
-    private val map = ConcurrentHashMap<Activity, Job>()
+    private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
+    private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
+    var waitingForLoginActivity: Activity? = null
 
-    val ceh = CoroutineExceptionHandler { _, exception ->
+    companion object {
+        val waitingForLogin = AtomicBoolean(false)
+    }
+
+
+    private val ceh = CoroutineExceptionHandler { _, exception ->
         println("Caught $exception")
     }
 
@@ -34,56 +44,98 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        cancelAll()
-        tryShowingGratificationDialog(activity)
-    }
-
-    override fun onActivityDestroyed(activity: Activity?) {
-        super.onActivityDestroyed(activity)
-        map[activity]?.cancel()
-        map.remove(activity)
-    }
-
-    fun tryShowingGratificationDialog(activity: Activity?) {
-        var showGratificationDialog = false
-        activity?.run {
-            val intent = this.intent
-//            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
-//            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
-            val campaignSlug = "CampaignSlug"
-            val page = "Hot"
-
-            showGratificationDialog = (!TextUtils.isEmpty(campaignSlug) && !TextUtils.isEmpty(page))
-
-            if (showGratificationDialog) {
-                val gratificationData = GratificationData(campaignSlug!!, page!!)
-
-                scope.launch(Dispatchers.IO + ceh) {
-                    supervisorScope {
-                        val childJob = launch {
-                            val response = presenter.getGratificationAndShowDialog(gratificationData)
-                            presenter.composeApi(gratificationData)
-                            withContext(Dispatchers.Main) {
-                                show(activity, response)
-                            }
-                        }
-                        map[activity] = childJob
-                    }
+        //todo Rahul remove later
+        if (activity != null) {
+            val isLoginActivity = activity.localClassName == "LoginActivity"
+            if (isLoginActivity) {
+                //Do nothing
+            } else {
+                val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
+                if (gratificationData != null) {
+                    cancelAll()
+                    showGratificationDialog(activity, gratificationData)
                 }
             }
         }
     }
 
-    private fun show(activity: Activity, data: GetPopGratificationResponse) {
-        val dialog = TargetPromotionsDialog()
-        dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data)
+    override fun onActivityDestroyed(activity: Activity?) {
+        super.onActivityDestroyed(activity)
+        mapOfJobs[activity]?.cancel()
+        mapOfJobs.remove(activity)
+        if (waitingForLoginActivity == activity) {
+            waitingForLoginActivity = null
+            waitingForLogin.set(false)
+        }
+    }
+
+    override fun onActivityResumed(activity: Activity?) {
+        super.onActivityResumed(activity)
+        if (waitingForLogin.get()) {
+            mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
+        }
+    }
+
+    private fun shouldOpenTargetedPromotionsDialog(activity: Activity?): GratificationData? {
+        var showGratificationDialog = false
+        var gratificationData: GratificationData? = null
+        if (activity != null) {
+
+            val intent = activity.intent
+//            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
+//            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
+
+            val campaignSlug = "CampaignSlug"
+            val page = "Hot"
+
+            showGratificationDialog = (!TextUtils.isEmpty(campaignSlug) && !TextUtils.isEmpty(page))
+            if (showGratificationDialog) {
+                gratificationData = GratificationData(campaignSlug, page)
+            }
+        }
+        return gratificationData
+    }
+
+    fun showGratificationDialog(activity: Activity, gratificationData: GratificationData) {
+        val weakActivity = WeakReference(activity)
+        scope.launch(Dispatchers.IO + ceh) {
+            supervisorScope {
+                val childJob = launch {
+                    val response = presenter.getGratificationAndShowDialog(gratificationData)
+                    presenter.composeApi(gratificationData)
+                    withContext(Dispatchers.Main) {
+                        if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
+                            show(weakActivity, response)
+                    }
+                }
+                mapOfJobs[activity] = childJob
+            }
+        }
+    }
+
+    private fun show(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse) {
+        val dialog = TargetPromotionsDialog(this)
+        if (weakActivity.get() != null) {
+            val activity = weakActivity.get()!!
+            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data)
+            mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
+        }
     }
 
     private fun cancelAll() {
-        map.forEach {
+        mapOfJobs.forEach {
             it.value.cancel()
         }
-        map.clear()
+        mapOfJobs.clear()
+
+        mapOfDialogs.forEach {
+            val dialogPair = it.value
+            dialogPair.second.dismiss()
+        }
+        mapOfDialogs.clear()
+
+        waitingForLogin.set(false)
+        waitingForLoginActivity = null
     }
 }
 

@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ViewFlipper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.R
@@ -21,15 +22,17 @@ import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
 import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.ui.adapter.CouponData
 import com.tokopedia.promotionstarget.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 //todo use weak reference of activity context
-class TargetPromotionsDialog {
+class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     val CONTAINER_COUPON = 0
     val CONTAINER_ERROR = 1
@@ -48,6 +51,8 @@ class TargetPromotionsDialog {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var originallyLoggedIn = false
 
 
     var uiType: TargetPromotionsCouponType = TargetPromotionsCouponType.SINGLE_COUPON
@@ -72,6 +77,9 @@ class TargetPromotionsDialog {
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
+        bottomSheet.setOnDismissListener {
+            GratificationSubscriber.waitingForLogin.set(false)
+        }
 
         initViews(view, activityContext, data)
         return bottomSheet
@@ -92,6 +100,9 @@ class TargetPromotionsDialog {
         pageSnaper.attachToRecyclerView(recyclerView)
 
         recyclerView.isNestedScrollingEnabled = false
+
+        val session = UserSession(activityContext)
+        originallyLoggedIn = session.isLoggedIn
 
         this.data = data
         initInjections(activityContext)
@@ -139,6 +150,15 @@ class TargetPromotionsDialog {
 
     }
 
+    fun onActivityResumeIfWaitingForLogin() {
+        if (GratificationSubscriber.waitingForLogin.get()) {
+            GratificationSubscriber.waitingForLogin.set(false)
+            btnAction.performClick()
+        } else {
+            //Do nothing
+        }
+    }
+
 
     private fun setListeners(data: GratificationDataContract, activityContext: Context) {
         viewModel.liveData.observe(activityContext as AppCompatActivity, Observer { it ->
@@ -148,14 +168,23 @@ class TargetPromotionsDialog {
         btnAction.setOnClickListener {
 
             if (data is GetPopGratificationResponse) {
-                val applink = data.popGratification?.popGratificationActionButton?.appLink
-                if (!TextUtils.isEmpty(applink)) {
-                    RouteManager.route(btnAction.context, applink)
-                }
 
-                val popGratificationBenefits = data.popGratification?.popGratificationBenefits
-                if (popGratificationBenefits != null && popGratificationBenefits.isNotEmpty()) {
-                    viewModel.claimCoupon()
+                val userSession = UserSession(activityContext)
+                if (userSession.isLoggedIn) {
+
+                    val applink = data.popGratification?.popGratificationActionButton?.appLink
+                    if (!TextUtils.isEmpty(applink)) {
+                        RouteManager.route(btnAction.context, applink)
+                    }
+
+                    val popGratificationBenefits = data.popGratification?.popGratificationBenefits
+                    if (popGratificationBenefits != null && popGratificationBenefits.isNotEmpty()) {
+                        viewModel.claimCoupon()
+                    }
+                } else {
+                    subscriber.waitingForLoginActivity = activityContext
+                    GratificationSubscriber.waitingForLogin.set(true)
+                    RouteManager.route(activityContext, ApplinkConst.LOGIN)
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.tokopedia.promotionstarget.presenter
 
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.subscriber.GratificationData
-import com.tokopedia.promotionstarget.usecase.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.usecase.GetCouponDetailUseCase
 import com.tokopedia.promotionstarget.usecase.GetPopGratificationUseCase
 import javax.inject.Inject
