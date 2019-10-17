@@ -133,22 +133,6 @@ class StaticBuyerModelGenerator private constructor() {
                 })
             }
 
-            if (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_INDI_CHALLENGES, true)) {
-                viewItems.add(InfoCardViewModel().apply {
-                    iconRes = R.drawable.ic_challenge_trophy
-                    mainText = context.getString(R.string.title_menu_challenge)
-                    secondaryText = context.getString(R.string.label_menu_challenge)
-                    applink = ApplinkConst.CHALLENGE
-                    titleTrack = AccountConstants.Analytics.PEMBELI
-                    sectionTrack = AccountConstants.Analytics.CLICK_CHALLENGE
-                    isNewTxtVisiblle = when (homeRouter.getBooleanRemoteConfig(
-                            RemoteConfigKey.APP_ENTRY_CHALLENGE_BARU, true)) {
-                        true -> View.VISIBLE
-                        else -> View.GONE
-                    }
-                })
-            }
-
             viewItems.add(MenuTitleViewModel().apply {
                 title = context.getString(R.string.tokopedia_care)
             })

@@ -227,7 +227,6 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState  {
         public static final int CONTACT_US = 41;
         public static final int REPORT = 42;
         public static final int LOGOUT = 43;
-        public static final int CHALLENGES = 38;
         public static final int SELLER_INDEX_HOME = TkpdState.DrawerPosition.INDEX_HOME;
         public static final int REGISTER_INITIAL = 45;
         public static final int SELLER_GM_SUBSCRIBE = 46;
