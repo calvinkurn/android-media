@@ -37,4 +37,11 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
 }
 
+project.ext {
+    artifactId = 'gold_merchant_common'
+    groupId = 'com.tokopedia.gm.common'
+    versionName = "1.0.0"
+    artifactName ="gold_merchant_common-release"
+}
+
 apply from: '../../../publish_local.gradle'
