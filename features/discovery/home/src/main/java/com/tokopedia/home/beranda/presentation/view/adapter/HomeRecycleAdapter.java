@@ -94,9 +94,8 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     //mapping another visitable to visitables from home_query
-    public void setItems(List<Visitable> visitables, HeaderViewModel headerViewModel) {
+    public void setItems(List<Visitable> visitables) {
         this.visitables = visitables;
-        addHomeHeaderViewModel(headerViewModel);
         notifyDataSetChanged();
     }
 

@@ -76,6 +76,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         super.onCreate(savedInstanceState)
         accountAnalytics = AccountAnalytics(activity)
         permissionCheckerHelper = PermissionCheckerHelper()
+        context?.let {
+            notifPreference = NotifPreference(it)
+        }
     }
 
     override fun onResume() {
