@@ -273,7 +273,7 @@ dependencies {
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.commonWallet)
-//    implementation project(rootProject.ext.features.wallet)
+    implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
