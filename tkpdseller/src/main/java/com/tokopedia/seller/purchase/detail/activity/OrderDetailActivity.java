@@ -38,6 +38,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -223,6 +225,8 @@ public class OrderDetailActivity extends TActivity
                         OrderDetailConstant.VALUE_EMPTY);
                 startActivity(BookingCodeActivity.createInstance(this, codeData));
             });
+
+            showCoachMarkBookingCode();
         } else {
             tvBookingCode.setVisibility(View.GONE);
             tvBookingCodePlaceholder.setVisibility(View.VISIBLE);
@@ -230,6 +234,10 @@ public class OrderDetailActivity extends TActivity
         // TODO : give condition to show/hide this rl
         RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
         rlWajibDicantumkan.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_wajib_tulis_kode_booking), R.string.bottomsheet_wajib_tulis_kode_booking_desc));
+    }
+
+    private void showCoachMarkBookingCode() {
+        CoachMark coachMark = new CoachMark();
     }
 
     private void showBottomSheetInfo(String title, int resIdDesc) {
