@@ -18,6 +18,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
+        <item name="android:text">@string/promote_topads</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
     <style name="BtnTopAdsPDPRincian">
@@ -26,6 +27,15 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
+        <item name="android:text">@string/rincian_topads</item>
         <item name="android:layout_centerInParent">true</item>
+    </style>
+    <style name="TopAdsDetailBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/TopAdsDetailBottomSheetStyle</item>
+    </style>
+
+    <style name="TopAdsDetailBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">1000dp</item>
     </style>
 </resources>

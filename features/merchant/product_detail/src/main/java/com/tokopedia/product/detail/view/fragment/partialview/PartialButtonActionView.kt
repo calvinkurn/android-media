@@ -19,6 +19,7 @@ class PartialButtonActionView private constructor(private val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
+    var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: (() -> Unit)? = null
     var addToCartClick: (() -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
@@ -107,7 +108,6 @@ class PartialButtonActionView private constructor(private val view: View,
 
     private fun showShopManageButton() {
         with(view) {
-            btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
             btn_buy.visibility = View.GONE
             container_btn_promote_topads.visibility = View.VISIBLE
             btn_byme.visibility = View.GONE
@@ -115,9 +115,11 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
             if(hasTopAdsActive){
+                btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
             } else{
+                btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
                 setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
             }
