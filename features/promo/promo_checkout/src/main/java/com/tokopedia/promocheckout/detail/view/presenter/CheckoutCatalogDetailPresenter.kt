@@ -57,8 +57,8 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                 } else {
                     val errorsMessage = response.getError(PromoCouponPreValidateResponse::class.java)[0].message.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     title = errorsMessage[0]
-                    message = errorsMessage[1]
-                    validateResponseCode = Integer.parseInt(errorsMessage[2])
+                    message=view.getAppContext()?.resources?.getString(R.string.promo_checkout_error_desc_redeem)
+                    validateResponseCode = Integer.parseInt(errorsMessage[1])
                 }
                 view.showValidationMessageDialog(item, title!!, message!!, validateResponseCode)
             }
@@ -97,7 +97,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                         val title = errorsMessage[0]
                         var desc: String? = null
                         var validateResponseCode = 0
-
+                        desc=view.getAppContext()?.resources?.getString(R.string.promo_checkout_error_desc_redeem)
                         if (errorsMessage.size >= 2) {
                             desc = errorsMessage[1]
                         }

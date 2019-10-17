@@ -41,6 +41,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     private var isOneClickShipment: Boolean = false
     private var promo: Promo? = null
+    private var pageNo=0
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -153,8 +154,14 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         }
     }
 
+    override fun onResume() {
+        isLoadingInitialData=true
+        promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        super.onResume()
+    }
     override fun loadData(page: Int) {
         if (isCouponActive) {
+            pageNo=page
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
             promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
