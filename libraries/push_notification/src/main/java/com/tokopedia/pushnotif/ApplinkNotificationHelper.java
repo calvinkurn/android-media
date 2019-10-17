@@ -90,6 +90,8 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.SELLER;
                 case "resolution":
                     return Constant.NotificationId.RESOLUTION;
+                case "chatbot":
+                    return Constant.NotificationId.CHAT_BOT;
                 default:
                     return Constant.NotificationId.GENERAL;
             }

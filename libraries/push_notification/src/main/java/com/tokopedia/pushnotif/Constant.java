@@ -34,6 +34,7 @@ public interface Constant {
         int RESOLUTION = 600;
         int GROUPCHAT = 700;
         int CHALLENGES = 2018;
+        int CHAT_BOT = 800;
     }
 
     interface Settings {
