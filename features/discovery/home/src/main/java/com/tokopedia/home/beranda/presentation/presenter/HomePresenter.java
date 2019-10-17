@@ -108,6 +108,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = Subscriptions.empty();
     }
 
+    public void setHomeHeader(HeaderViewModel homeHeader) {
+        headerViewModel = homeHeader;
+    }
+
     @Override
     public void detachView() {
         super.detachView();
@@ -199,7 +203,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
-        initHeaderViewModelData();
         HomeDataSubscriber homeLocalSubscriber = createHomeDataSubscriber();
         homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE);
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
@@ -223,7 +226,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private void initHeaderViewModelData() {
         if (userSession.isLoggedIn()) {
             if (headerViewModel == null) {
-                headerViewModel = new HeaderViewModel();
+                return;
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
@@ -237,7 +240,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setWalletDataSuccess();
         headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
@@ -252,7 +255,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void onHeaderTokocashError() {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
 
         headerViewModel.setWalletDataError();
@@ -263,7 +266,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setWalletDataSuccess();
         headerViewModel.setCashBackData(cashBackData);
@@ -274,7 +277,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void onHeaderTokopointError() {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setTokoPointDataError();
         headerViewModel.setTokoPointDrawerData(null);
@@ -285,7 +288,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void onRefreshTokoPoint() {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setTokoPointDataSuccess();
         headerViewModel.setTokoPointDrawerData(null);
@@ -300,7 +303,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (!userSession.isLoggedIn()) return;
 
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setWalletDataSuccess();
         headerViewModel.setHomeHeaderWalletActionData(null);
@@ -448,7 +451,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         public void onNext(List<HomeVisitable> visitables) {
             if (visitables.size()>VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                 if (homePresenter != null && homePresenter.isViewAttached()) {
-                    homePresenter.getView().setItems(new ArrayList<>(visitables), homePresenter.getHeaderViewModel(), repositoryFlag);
+                    homePresenter.getView().setItems(new ArrayList<>(visitables), repositoryFlag);
                     homePresenter.getView().addImpressionToTrackingQueue(visitables);
                     if (visitables.size() > 0) {
                         homePresenter.getView().showRecomendationButton();
@@ -602,7 +605,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData) {
         if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
+            return;
         }
         headerViewModel.setTokoPointDataSuccess();
 
