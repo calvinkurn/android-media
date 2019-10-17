@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
-import com.tokopedia.withdraw.domain.model.GqlSubmitWithDrawalResponse;
+import com.tokopedia.withdraw.domain.model.BaseFormSubmitResponse;
 import com.tokopedia.withdraw.domain.usecase.GqlSubmitWithdrawUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -49,10 +49,11 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
     }
 
     @Override
-    public void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal) {
+    public void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal, String programName) {
 
-        gqlSubmitWithdrawUseCase.setQuery(getView().loadRawString(R.raw.query_submit_withdraw));
-        gqlSubmitWithdrawUseCase.setRequestParams(userSession.getEmail(), withdrawal, bankAccount, password, isSellerWithdrawal);
+        gqlSubmitWithdrawUseCase.setQuery(getView().loadRawString(R.raw.query_success_page));
+        gqlSubmitWithdrawUseCase.setRequestParams(userSession.getEmail(), withdrawal, bankAccount,
+                password, isSellerWithdrawal, userSession.getUserId(), programName);
         gqlSubmitWithdrawUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -86,14 +87,19 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                GqlSubmitWithDrawalResponse gqlSubmitWithDrawalResponse = graphqlResponse.getData(GqlSubmitWithDrawalResponse.class);
+                BaseFormSubmitResponse baseFormSubmitResponse = graphqlResponse.getData(BaseFormSubmitResponse.class);
 
-                if (gqlSubmitWithDrawalResponse != null) {
-                    if ("success".equalsIgnoreCase(gqlSubmitWithDrawalResponse.getResponse().getStatus())) {
-                        getView().showSuccessWithdraw();
+                if (baseFormSubmitResponse != null) {
+                    if ("success".equalsIgnoreCase(baseFormSubmitResponse.getFormSubmitResponse().getStatus())) {
+                        if(baseFormSubmitResponse.getFormSubmitResponse().getMessage() != null && baseFormSubmitResponse.getFormSubmitResponse().getMessage().size() > 0) {
+                            getView().goToSuccessPage(bankAccount, baseFormSubmitResponse.getFormSubmitResponse().getMessage().get(0), withdrawal);
+                        }
+                        else {
+                            getView().goToSuccessPage(bankAccount, "", withdrawal);
+                        }
 
                     } else {
-                        getView().showError(gqlSubmitWithDrawalResponse.getResponse().getMessageError());
+                        getView().showError(baseFormSubmitResponse.getFormSubmitResponse().getMessageError());
                     }
                 }
             }

@@ -18,27 +18,33 @@
             android:id="@+id/img_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             app:srcCompat="@drawable/ic_check" />
 
-
-        <ImageView
-            android:id="@+id/img_logo"
+        <FrameLayout
+            android:id="@+id/fl_image_container"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_16"
-            app:srcCompat="@drawable/ic_icon_alert"
-            tools:visibility="visible" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_16"
+                app:srcCompat="@drawable/ic_icon_alert"
+                tools:visibility="visible" />
+
+        </FrameLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/img_logo"
+            android:layout_below="@id/fl_image_container"
             android:layout_marginTop="4dp"
             android:lineSpacingExtra="4sp"
             app:typographyType="body_2"
@@ -51,6 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginTop="4dp"
             android:layout_toStartOf="@id/img_check"
             android:layout_toLeftOf="@id/img_check"

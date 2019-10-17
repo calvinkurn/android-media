@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/sv_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.EmptyState
+            android:id="@+id/es_share_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyEmptyStateCTAFullWidth="true"
+            app:unifyEmptyStateDescription="@string/af_curated_empty_subtitle"
+            app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_share_post"
+            app:unifyEmptyStateOrientation="vertical"
+            app:unifyEmptyStatePrimaryCTAText="@string/af_share_now"
+            app:unifyEmptyStateTitle="@string/af_curated_empty_title"
+            app:unifyEmptyStateType="page"/>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/white"
+        app:cardCornerRadius="@dimen/dp_28"
+        app:cardUseCompatPadding="true">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_22"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:drawableStart="@drawable/ic_system_action_sort_grayscale_24"
+            android:drawableLeft="@drawable/ic_system_action_sort_grayscale_24"
+            android:drawablePadding="@dimen/dp_8"
+            android:gravity="center"
+            android:text="@string/text_button_sort"
+            tools:text="Sort" />
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

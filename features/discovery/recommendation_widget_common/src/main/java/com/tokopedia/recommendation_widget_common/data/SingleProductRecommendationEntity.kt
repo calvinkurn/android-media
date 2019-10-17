@@ -83,6 +83,17 @@ class SingleProductRecommendationEntity {
         var wholesalePrice: List<*>? = listOf<Any>()
         @SerializedName("minOrder")
         var minOrder: Int? = 0
+        @SerializedName("labelgroup")
+        var labelGroups: List<LabelGroup>? = listOf()
+
+        class LabelGroup {
+            @SerializedName("position")
+            var position: String = "0"
+            @SerializedName("title")
+            var title: String? = ""
+            @SerializedName("type")
+            var type: String? = ""
+        }
 
         class Shop {
             @SerializedName("id")

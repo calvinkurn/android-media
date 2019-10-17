@@ -38,7 +38,12 @@ class RecommendationItem(val productId: Int,
                          val badgesUrl: List<String?>,
                          val type: String,
                          val isFreeOngkirActive: Boolean,
-                         val freeOngkirImageUrl: String): ImpressHolder(){
+                         val freeOngkirImageUrl: String,
+                         val labelPromo: RecommendationLabel,
+                         val labelOffers: RecommendationLabel,
+                         val labelCredibility: RecommendationLabel): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }
+
+data class RecommendationLabel(var title: String = "", val type: String = "")

@@ -11,10 +11,13 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.checkout.domain.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateInsuranceProductDataUsecase;
 import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
@@ -24,6 +27,7 @@ import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -55,6 +59,7 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
+    private final InsuranceItemActionListener insuranceItemActionlistener;
     private final ActionListener cartActionListener;
     private final PromoActionListener promoActionListener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
@@ -64,6 +69,7 @@ public class CartListModule {
         this.cartListView = cartFragment;
         this.cartActionListener = cartFragment;
         this.cartItemActionListener = cartFragment;
+        this.insuranceItemActionlistener = cartFragment;
         this.promoActionListener = cartFragment;
         this.tickerAnnouncementActionListener = cartFragment;
     }
@@ -106,6 +112,24 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    GetInsuranceCartUseCase getInsuranceCartUseCase(@ApplicationContext Context context) {
+        return new GetInsuranceCartUseCase(context);
+    }
+
+    @Provides
+    @CartListScope
+    RemoveInsuranceProductUsecase getRemoveInsuranceProductUsecase(@ApplicationContext Context context) {
+        return new RemoveInsuranceProductUsecase(context);
+    }
+
+    @Provides
+    @CartListScope
+    UpdateInsuranceProductDataUsecase getUpdateInsuranceProductDataUsecase(@ApplicationContext Context context) {
+        return new UpdateInsuranceProductDataUsecase(context);
+    }
+
+    @Provides
+    @CartListScope
     CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
@@ -124,7 +148,7 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    GraphqlUseCase providesGraphqlUseCase()  {
+    GraphqlUseCase providesGraphqlUseCase() {
         return new GraphqlUseCase();
     }
 
@@ -170,14 +194,32 @@ public class CartListModule {
                                                  GetRecentViewUseCase getRecentViewUseCase,
                                                  GetWishlistUseCase getWishlistUseCase,
                                                  GetRecommendationUseCase getRecommendationUseCase,
-                                                 AddToCartUseCase addToCartUseCase) {
-        return new CartListPresenter(getCartListUseCase, deleteCartListUseCase,
-                updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
-                checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
-                updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                getRecommendationUseCase, addToCartUseCase);
+                                                 AddToCartUseCase addToCartUseCase,
+                                                 GetInsuranceCartUseCase getInsuranceCartUseCase,
+                                                 RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
+                                                 UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase) {
+        return new CartListPresenter(getCartListUseCase,
+                deleteCartListUseCase,
+                updateCartUseCase,
+                resetCartGetCartListUseCase,
+                checkPromoStackingCodeUseCase,
+                checkPromoStackingCodeMapper,
+                checkPromoCodeCartListUseCase,
+                compositeSubscription,
+                cartApiRequestParamGenerator,
+                addWishListUseCase,
+                removeWishListUseCase,
+                updateAndReloadCartUseCase,
+                userSessionInterface,
+                topAdsGqlUseCase,
+                getRecentViewUseCase,
+                getWishlistUseCase,
+                getRecommendationUseCase,
+                addToCartUseCase,
+                clearCacheAutoApplyStackUseCase,
+                getInsuranceCartUseCase,
+                removeInsuranceProductUsecase,
+                updateInsuranceProductDataUsecase);
     }
 
     @Provides
@@ -189,7 +231,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, promoActionListener, cartItemActionListener, tickerAnnouncementActionListener);
+        return new CartAdapter(cartActionListener, promoActionListener, cartItemActionListener, insuranceItemActionlistener, tickerAnnouncementActionListener);
     }
 
     @Provides

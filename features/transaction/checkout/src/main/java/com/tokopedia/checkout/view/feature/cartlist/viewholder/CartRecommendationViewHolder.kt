@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(val view: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(view) {
+class CartRecommendationViewHolder(view: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(view) {
 
     companion object {
         @JvmStatic

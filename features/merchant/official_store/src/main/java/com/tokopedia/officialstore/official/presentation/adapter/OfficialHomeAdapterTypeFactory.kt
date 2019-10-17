@@ -28,15 +28,15 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
     }
 
     override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
-        return ProductRecommendationViewHolder.LAYOUT
+        return ProductRecommendationViewModel.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent)
+            ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

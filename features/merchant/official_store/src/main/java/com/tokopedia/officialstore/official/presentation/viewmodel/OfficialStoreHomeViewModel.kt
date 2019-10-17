@@ -2,10 +2,8 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -13,9 +11,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicCh
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -68,21 +64,25 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<RecommendationWidget>>()
     }
 
-    fun loadFirstData(category: Category?) {
+    fun loadFirstData(category: Category?, page: Int) {
         launchCatchError(block = {
 //            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "").await())
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
 
         }) {
             // TODO just ignore or handle?
         }
     }
 
-    fun loadMore() {
-        // TODO get dynamic channel & product recommendation
+    fun loadMore(category: Category?, page: Int) {
+        launchCatchError(block = {
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
+        }) {
+
+        }
     }
 
     private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
@@ -131,11 +131,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreProductRecommendation(categoryId: String): Deferred<RecommendationWidget> {
+    private fun getOfficialStoreProductRecommendation(categoryId: String, page: Int): Deferred<RecommendationWidget> {
         return async(Dispatchers.IO) {
             val defaultValue = ""
             val pageName = "official-store"
-            val pageNumber = 1
+            val pageNumber = page
             var productRecommendation = RecommendationWidget(emptyList(), defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue,
                     defaultValue, pageNumber, 0, 0, true, pageName)
 
@@ -153,6 +153,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
             productRecommendation
         }
     }
+
+    fun addWishlist() {}
+
+    fun removeWishlist() {}
+
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
 
 
     // TODO clear job & observer

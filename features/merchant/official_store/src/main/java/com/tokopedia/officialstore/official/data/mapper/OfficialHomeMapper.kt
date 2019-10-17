@@ -7,6 +7,9 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class OfficialHomeMapper {
 
@@ -28,6 +31,13 @@ class OfficialHomeMapper {
                 adapter.addElement(2, DynamicChannelViewModel(dynamicChannel.channels))
                 adapter.notifyItemInserted(2)
             }
+        }
+
+        fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
+            productRecommendation.recommendationItemList.forEach {
+                adapter?.addElement(3, ProductRecommendationViewModel(it, listener))
+            }
+            adapter?.notifyItemInserted(3)
         }
     }
 }
