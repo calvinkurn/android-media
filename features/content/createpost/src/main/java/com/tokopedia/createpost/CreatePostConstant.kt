@@ -14,3 +14,4 @@ const val TYPE_AFFILIATE = "affiliate"
 const val TOKEN = "token"
 
 internal typealias SuggestionClickListener = (ProductSuggestionItem) -> Unit
+internal typealias SuggestionViewListener = (ProductSuggestionItem) -> Unit

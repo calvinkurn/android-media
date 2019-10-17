@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.SuggestionClickListener
+import com.tokopedia.createpost.SuggestionViewListener
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*
 
@@ -19,7 +17,8 @@ import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*
  */
 
 class ProductSuggestionAdapter(
-        private var onSuggestionItemClicked: SuggestionClickListener
+        private var onSuggestionItemClicked: SuggestionClickListener,
+        private var onSuggestionItemFirstView: SuggestionViewListener
 ) : RecyclerView.Adapter<ProductSuggestionAdapter.SuggestionViewHolder>() {
 
     private val list: MutableList<ProductSuggestionItem> = arrayListOf()
@@ -27,7 +26,8 @@ class ProductSuggestionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionViewHolder {
         return SuggestionViewHolder(
                 parent.inflateLayout(R.layout.item_af_product_suggestion),
-                onSuggestionItemClicked
+                onSuggestionItemClicked,
+                onSuggestionItemFirstView
         )
     }
 
@@ -48,7 +48,8 @@ class ProductSuggestionAdapter(
 
     class SuggestionViewHolder(
             v: View,
-            private var onSuggestionItemClicked: SuggestionClickListener)
+            private var onSuggestionItemClicked: SuggestionClickListener,
+            private var onSuggestionItemFirstView: SuggestionViewListener)
         : RecyclerView.ViewHolder(v) {
 
         fun bind(element: ProductSuggestionItem) {
@@ -64,7 +65,11 @@ class ProductSuggestionAdapter(
                 } else {
                     setDefaultStyle(itemView)
                 }
+                attach_product_chat_image_layout.addOnImpressionListener(element.impressHolder) {
+                    onSuggestionItemFirstView(element)
+                }
             }
+
         }
 
         private fun setAffiliateStyle(itemView: View) {
@@ -86,5 +91,10 @@ class ProductSuggestionAdapter(
             }
 
         }
+    }
+
+    interface ProductSuggestionListener {
+        fun onFirstProductImpression()
+        fun onProductClicked()
     }
 }
