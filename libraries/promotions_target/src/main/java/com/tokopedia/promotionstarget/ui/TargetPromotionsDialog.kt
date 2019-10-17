@@ -29,6 +29,7 @@ import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 //todo use weak reference of activity context
@@ -182,7 +183,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                         viewModel.claimCoupon()
                     }
                 } else {
-                    subscriber.waitingForLoginActivity = activityContext
+                    subscriber.waitingForLoginActivity = WeakReference(activityContext)
                     GratificationSubscriber.waitingForLogin.set(true)
                     RouteManager.route(activityContext, ApplinkConst.LOGIN)
                 }

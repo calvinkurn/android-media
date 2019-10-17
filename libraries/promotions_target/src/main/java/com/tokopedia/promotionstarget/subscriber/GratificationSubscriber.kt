@@ -24,7 +24,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
-    var waitingForLoginActivity: Activity? = null
+    var waitingForLoginActivity: WeakReference<Activity>? = null
 
     companion object {
         val waitingForLogin = AtomicBoolean(false)
@@ -63,8 +63,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         super.onActivityDestroyed(activity)
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        if (waitingForLoginActivity == activity) {
-            waitingForLoginActivity = null
+        if (waitingForLoginActivity?.get() == activity) {
+            waitingForLoginActivity?.clear()
             waitingForLogin.set(false)
         }
     }
