@@ -29,10 +29,10 @@
             android:id="@+id/cross_selling_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingStart="@dimen/dp_14"
+            android:paddingEnd="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
             android:clipToPadding="false"
             />
     </LinearLayout>

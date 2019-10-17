@@ -54,6 +54,7 @@
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
+            android:lineSpacingExtra="@dimen/sp_4"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/item_title"
