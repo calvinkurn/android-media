@@ -14,10 +14,9 @@ import java.util.*
 class TravelCurrencyFormatUtil {
 
     companion object {
-        const val ID_LOCALE = "id-ID"
 
         fun convertToIdrPrice(price: Int): String {
-            val kursIndonesia = DecimalFormat.getCurrencyInstance(Locale(ID_LOCALE)) as DecimalFormat
+            val kursIndonesia = DecimalFormat.getCurrencyInstance(Locale("in", "ID")) as DecimalFormat
             kursIndonesia.maximumFractionDigits = 0
             val formatRp = DecimalFormatSymbols()
 
