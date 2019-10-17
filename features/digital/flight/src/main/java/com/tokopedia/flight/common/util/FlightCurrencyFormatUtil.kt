@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.utils
+package com.tokopedia.flight.common.util
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -11,7 +11,7 @@ import java.util.*
  * Currently used for flight feature to format prices to rupiah format only
  */
 
-class TravelCurrencyFormatUtil {
+class FlightCurrencyFormatUtil {
 
     companion object {
 
@@ -20,14 +20,14 @@ class TravelCurrencyFormatUtil {
             kursIndonesia.maximumFractionDigits = 0
             val formatRp = DecimalFormatSymbols()
 
-            formatRp.currencySymbol = "Rp"
+            formatRp.currencySymbol = "Rp "
             formatRp.groupingSeparator = '.'
             formatRp.monetaryDecimalSeparator = '.'
             formatRp.decimalSeparator = '.'
             kursIndonesia.decimalFormatSymbols = formatRp
             val result = kursIndonesia.format(price.toLong())
 
-            return result.replace(",", ".")
+            return result.replace(",", "")
         }
     }
 

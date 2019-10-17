@@ -31,10 +31,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.common.travel.utils.TravelCurrencyFormatUtil;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -44,7 +43,6 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -380,11 +378,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             discountAppliedLayout.setVisibility(View.GONE);
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
-        reviewFinalTotalPrice.setText(TravelCurrencyFormatUtil.Companion.convertToIdrPrice(totalFinal));
+        reviewFinalTotalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalFinal));
     }
 
     private String getFormattedDiscountPrice(double discountAmountPlain) {
-        return String.format(getString(R.string.flight_review_minus_discount_prefix), TravelCurrencyFormatUtil.Companion.convertToIdrPrice((int) Math.round(discountAmountPlain)));
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), FlightCurrencyFormatUtil.Companion.convertToIdrPrice((int) Math.round(discountAmountPlain)));
     }
 
     private void renderPromoTicker() {
@@ -599,7 +597,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void setTotalPrice(int totalPrice) {
         flightBookingReviewModel.setTotalPriceNumeric(totalPrice);
         flightBookingReviewModel.setTotalPrice(
-                TravelCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice)
+                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice)
         );
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
         updateFinalTotal(getCurrentBookingReviewModel());
