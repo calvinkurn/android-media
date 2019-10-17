@@ -41,6 +41,7 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleView
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
@@ -109,6 +110,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .chatbotModule(context?.let { ChatbotModule(it) })
                     .build()
 
             chatbotComponent.inject(this)
