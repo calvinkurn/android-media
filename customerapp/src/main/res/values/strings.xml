@@ -154,7 +154,6 @@
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
     <string name="title_homepage_digital">Digital</string>
-
     <string name="title_saldo_deposit">Saldo Deposit</string>
 
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
