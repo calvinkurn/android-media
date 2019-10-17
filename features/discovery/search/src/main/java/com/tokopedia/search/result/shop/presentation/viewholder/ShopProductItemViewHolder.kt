@@ -1,9 +1,13 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
+import android.graphics.Bitmap
 import android.support.annotation.LayoutRes
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -20,7 +24,7 @@ class ShopProductItemViewHolder(
         val LAYOUT = R.layout.search_result_shop_item_product_card
     }
 
-    private val context = itemView.context
+    private var roundedImageViewTarget: BitmapImageViewTarget? = null
 
     fun bind(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct?) {
         if(shopItemProductView == null) return
@@ -33,11 +37,29 @@ class ShopProductItemViewHolder(
         if(shopItemProductView.imageUrl == "") return
 
         itemView.imageViewShopItemProductImage?.let { imageViewShopItemProductImage ->
-            ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, shopItemProductView.imageUrl)
+
+            roundedImageViewTarget = createRoundedImageViewTarget(imageViewShopItemProductImage)
+
+            Glide.with(itemView.context)
+                    .load(shopItemProductView.imageUrl)
+                    .asBitmap()
+                    .centerCrop()
+                    .dontAnimate()
+                    .into(roundedImageViewTarget)
         }
 
         itemView.imageViewShopItemProductImage?.setOnClickListener {
             shopListener?.onProductItemClicked(shopItemProductView)
+        }
+    }
+
+    private fun createRoundedImageViewTarget(imageView: ImageView): BitmapImageViewTarget {
+        return object : BitmapImageViewTarget(imageView) {
+            override fun setResource(resource: Bitmap) {
+                val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
+                roundedBitmapDrawable.cornerRadius = 6f
+                imageView.setImageDrawable(roundedBitmapDrawable)
+            }
         }
     }
 
@@ -53,5 +75,11 @@ class ShopProductItemViewHolder(
 
     private fun getIsShopItemProductPriceVisible(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct): Boolean {
         return shopItemProductView.priceFormat != ""
+    }
+
+    fun onViewRecycled() {
+        roundedImageViewTarget?.let {
+            Glide.clear(it)
+        }
     }
 }

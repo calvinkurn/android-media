@@ -11,8 +11,8 @@ import com.tokopedia.search.result.presentation.view.listener.ShopListener
 
 class ShopProductItemAdapter(
         private val context: Context,
-        private val shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>?,
-        private var shopListener: ShopListener?
+        private val shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>,
+        private val shopListener: ShopListener
 ) : RecyclerView.Adapter<ShopProductItemViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ShopProductItemViewHolder {
@@ -22,17 +22,15 @@ class ShopProductItemAdapter(
     }
 
     override fun getItemCount(): Int {
-        return shopProductItemList?.size ?: 0
+        return shopProductItemList.size
     }
 
     override fun onBindViewHolder(shopProductItemViewHolder: ShopProductItemViewHolder, position: Int) {
-        shopProductItemViewHolder.bind(shopProductItemList?.get(position))
+        shopProductItemViewHolder.bind(shopProductItemList[position])
     }
 
-    fun clear() {
-        shopListener = null
-
-        val size = shopProductItemList?.size ?: 0
-        notifyItemRangeRemoved(0, size)
+    override fun onViewRecycled(holder: ShopProductItemViewHolder) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
     }
 }

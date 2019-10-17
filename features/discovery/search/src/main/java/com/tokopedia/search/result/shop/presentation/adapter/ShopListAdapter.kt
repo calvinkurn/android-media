@@ -42,7 +42,6 @@ class ShopListAdapter(
 
     override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewRecycled(holder)
-
         holder.onViewRecycled()
     }
 

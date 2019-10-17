@@ -8,6 +8,7 @@ internal class SearchViewModelFactory(
         private val coroutineDispatcher: DispatcherProvider
 ): ViewModelProvider.Factory {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return createRedirectionViewModel() as T

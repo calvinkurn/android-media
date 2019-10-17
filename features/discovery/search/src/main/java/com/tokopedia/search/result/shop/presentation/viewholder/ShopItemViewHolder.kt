@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.BaseTarget
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 
 class ShopItemViewHolder(
     itemView: View,
-    private var shopListener: ShopListener?
+    private val shopListener: ShopListener
 ) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
 
     companion object {
@@ -64,15 +65,12 @@ class ShopItemViewHolder(
 
     private fun initCardViewShopCard(shopViewItem: ShopViewModel.ShopItem) {
         itemView.cardViewShopCard?.setOnClickListener {
-            shopListener?.onItemClicked(shopViewItem)
+            shopListener.onItemClicked(shopViewItem)
         }
     }
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.imageViewShopAvatar?.visible()
         itemView.imageViewShopAvatar?.let {
-//            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
-
             imageViewShopAvatarTarget = createCircleImageViewTarget(it)
 
             Glide.with(context)
@@ -127,15 +125,12 @@ class ShopItemViewHolder(
 
     private fun initButtonSeeShop(shopViewItem: ShopViewModel.ShopItem) {
         itemView.buttonSeeShop?.setOnClickListener {
-            shopListener?.onItemClicked(shopViewItem)
+            shopListener.onItemClicked(shopViewItem)
         }
     }
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.imageViewShopReputation?.visible()
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-//            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
-
             imageViewShopReputationTarget = createImageViewShopReputationTarget(imageViewShopReputation)
 
             Glide.with(context)
@@ -370,14 +365,13 @@ class ShopItemViewHolder(
     }
 
     override fun onViewRecycled() {
-        shopListener = null
+        imageViewShopAvatarTarget.clear()
+        imageViewShopReputationTarget.clear()
+    }
 
-        itemView.imageViewShopAvatar?.gone()
-        Glide.clear(imageViewShopAvatarTarget)
-
-        itemView.imageViewShopReputation?.gone()
-        Glide.clear(imageViewShopReputationTarget)
-
-        shopProductItemAdapter?.clear()
+    private fun BaseTarget<*>?.clear() {
+        this?.let {
+            Glide.clear(it)
+        }
     }
 }
