@@ -162,8 +162,7 @@ public class RouteManager {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
         }
         if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
-            intent = new Intent();
-            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+            intent = getHomeIntent(context);
             intent.setData(Uri.parse(mappedDeeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         } else {
@@ -183,11 +182,16 @@ public class RouteManager {
         // set fallback for implicit intent
 
         if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
-            intent = new Intent();
-            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+            intent = getHomeIntent(context);
             intent.setData(Uri.parse(deeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         }
+        return intent;
+    }
+
+    private static Intent getHomeIntent(Context context) {
+        Intent intent = new Intent();
+        intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
         return intent;
     }
 

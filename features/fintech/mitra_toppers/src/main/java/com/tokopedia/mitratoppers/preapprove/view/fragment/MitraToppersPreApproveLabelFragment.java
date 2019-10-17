@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.label.LabelView;
-import com.tokopedia.mitratoppers.MitraToppersComponentInstance;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.R;
+import com.tokopedia.mitratoppers.common.di.component.DaggerMitraToppersComponent;
 import com.tokopedia.mitratoppers.common.di.component.MitraToppersComponent;
+import com.tokopedia.mitratoppers.common.di.module.MitraToppersModule;
 import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.preapprove.view.activity.MitraToppersPreApproveWebViewActivity;
 import com.tokopedia.mitratoppers.preapprove.view.listener.MitraToppersPreApproveView;
@@ -58,8 +58,9 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
 
     @Override
     protected void initInjector() {
-        MitraToppersComponent mitraToppersComponent = MitraToppersComponentInstance.get(
-                (BaseMainApplication)getActivity().getApplication());
+        MitraToppersComponent mitraToppersComponent = DaggerMitraToppersComponent.builder()
+                        .baseAppComponent(((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent())
+                        .mitraToppersModule(new MitraToppersModule()).build();
         mitraToppersComponent.inject(this);
         mitraToppersPreApprovePresenter.attachView(this);
     }

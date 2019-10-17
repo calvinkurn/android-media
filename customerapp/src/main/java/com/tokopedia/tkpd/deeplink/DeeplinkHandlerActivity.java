@@ -147,6 +147,9 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
 import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
 import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -448,13 +451,18 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    @DeepLink(Constants.Applinks.BROWSER)
+    @DeepLink(ApplinkConst.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
+        String webUrl = extras.getString( "url", TokopediaUrl.Companion.getInstance().getWEB()
         );
         Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
+        String decodedUrl;
+        try {
+            decodedUrl = URLDecoder.decode(webUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            decodedUrl = webUrl;
+        }
+        destination.setData(Uri.parse(decodedUrl));
         return destination;
     }
 

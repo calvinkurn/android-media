@@ -57,7 +57,7 @@ import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeTo
  * Use webview fragment from libraries/webview
  */
 @Deprecated
-public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,
+public class FragmentGeneralWebView extends Fragment implements
         View.OnKeyListener {
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
@@ -65,8 +65,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public static final String EXTRA_NEED_LOGIN = "need_login";
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
     private static final String SEAMLESS = "seamless";
-    private static final String LOGIN_TYPE = "login_type";
-    private static final String QUERY_PARAM_PLUS = "plus";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
@@ -74,9 +72,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
     private static final int PICTURE_QUALITY = 60;
-    private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
-    private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
     private boolean showToolbar;
@@ -352,44 +348,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement FragmentGeneralWebView.OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onSuccessResult(String successResult) {
-        Log.d(TAG, "Success loaded " + successResult);
-        if (mListener != null) mListener.onWebViewSuccessLoad();
-    }
-
-    @Override
-    public void onProgressResult(String progressResult) {
-        Log.d(TAG, "Web on load " + progressResult);
-        progressBar.setVisibility(View.VISIBLE);
-        if (mListener != null) mListener.onWebViewProgressLoad();
-    }
-
-    @Override
-    public void onErrorResult(SslError errorResult) {
-        Log.d(TAG, "Error loaded " + errorResult.toString());
-        progressBar.setVisibility(View.GONE);
-        if (mListener != null) mListener.onWebViewErrorLoad();
-    }
-
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -417,24 +375,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             Toast.makeText(getActivity(), exitMessage, Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
         }
-    }
-
-
-    @Override
-    public boolean onOverrideUrl(String url) {
-        String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
-        if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                    .getLoginGoogleIntent(getActivity());
-            startActivityForResult(intent, LOGIN_GPLUS);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onWebTitlePageCompleted(String title) {
-
     }
 
     @Override
@@ -514,14 +454,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         } else if (requestCode == REQUEST_CODE_LOGIN) {
             openHomePage();
         }
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onWebViewSuccessLoad();
-
-        void onWebViewErrorLoad();
-
-        void onWebViewProgressLoad();
     }
 
     private class MyWebClient extends WebViewClient {

@@ -28,8 +28,7 @@ import com.tokopedia.url.TokopediaUrl;
  * @author anggaprasetiyo on 7/20/17.
  */
 
-public class AppLinkWebsiteActivity extends BasePresenterActivity
-        implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class AppLinkWebsiteActivity extends BasePresenterActivity {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
@@ -105,23 +104,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin, allowOverride);
     }
 
-    @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.WEBVIEW_PARENT_HOME})
-    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String webUrl = extras.getString(KEY_APP_LINK_QUERY_URL, WEB_URL);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
-            taskStackBuilder.addNextIntent(homeIntent);
-        }
-        Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
-
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
@@ -191,21 +173,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected void setActionVar() {
-
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
 
     }
 
