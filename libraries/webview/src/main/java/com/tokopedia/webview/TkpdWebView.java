@@ -81,8 +81,12 @@ public class TkpdWebView extends WebView {
         if (userSession == null) {
             loadUrl(urlToLoad);
         } else {
+            String path = Uri.parse(url).getPath();
+            if (path == null) {
+                path = "";
+            }
             loadUrl(urlToLoad, AuthHelper.getDefaultHeaderMapOld(
-                    Objects.requireNonNull(Uri.parse(url).getPath()),
+                    path,
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
                     AuthConstant.CONTENT_TYPE,

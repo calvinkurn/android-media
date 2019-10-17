@@ -1,8 +1,15 @@
 package com.tokopedia.applink
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
+import android.text.TextUtils
 import android.webkit.URLUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
@@ -10,8 +17,10 @@ object DeepLinkChecker {
     private val APP_EXCLUDED_URL = "app_excluded_url"
     private val APP_EXCLUDED_HOST = "app_excluded_host"
 
-    private val WEB_HOST = "www.tokopedia.com"
-    private val MOBILE_HOST = "m.tokopedia.com"
+    @JvmField
+    val WEB_HOST = "www.tokopedia.com"
+    @JvmField
+    val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -44,7 +53,7 @@ object DeepLinkChecker {
     const val SMCREFERRAL = 27
     const val RECOMMENDATION = 28
     const val ORDER_LIST = 29
-    const val CONTACT_US =30
+    const val CONTACT_US = 30
     const val HOTEL = 31
     const val SIMILAR_PRODUCT = 32
 
@@ -112,6 +121,151 @@ object DeepLinkChecker {
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
             (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+    }
+
+    /**
+     * will check if the url match with the native page, do the map, and launch the activity.
+     * @return true if it is successfully find the matching native page and launch the activity
+     * Example: https://www.tokopedia.com will launch MainParentActivity and will return true.
+     */
+    @JvmStatic
+    fun moveToNativePageFromWebView(activity: Activity, url: String): Boolean {
+        val deeplinkType = getDeepLinkType(activity, url)
+        when (deeplinkType) {
+            HOME -> {
+                val intent = RouteManager.getIntentNoFallback(activity, ApplinkConst.HOME)
+                if (intent != null) {
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                    activity.startActivity(intent)
+                }
+                return true
+            }
+            CATEGORY -> {
+                //TODO expect to be RouteManager.route(activity, url).
+                val departmentId = getLinkSegment(url)[1]
+                RouteManager.route(activity, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+                return true
+            }
+            BROWSE -> {
+                //TODO expect to be RouteManager.route(activity, url).
+                openBrowse(url, activity)
+                return true
+            }
+            HOT -> {
+                //TODO still use className
+                return openHot(url, activity)
+            }
+            CATALOG -> {
+                //TODO still use className
+                return openCatalog(url, activity)
+            }
+            PRODUCT -> {
+                RouteManager.route(activity, url)
+                return true
+            }
+            TOKOPOINT -> {
+                // it still point to webview. no need to override
+                return false
+            }
+            WALLET_OVO -> {
+                // it still point to webview. no need to override
+                return false
+            }
+            PROFILE -> {
+                //TODO expect to be RouteManager.route(activity, url).
+                val userId = getLinkSegment(url)[1]
+                return RouteManager.route(activity, ApplinkConst.PROFILE, userId)
+            }
+            CONTENT -> {
+                //TODO expect to be RouteManager.route(activity, url).
+                val contentId = getLinkSegment(url)[1]
+                return RouteManager.route(activity, ApplinkConst.PROFILE, contentId)
+            }
+            HOTEL -> {
+                return RouteManager.route(activity, url)
+            }
+            ORDER_LIST -> {
+                //TODO expect to be RouteManager.route(activity, url).
+                RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun openHot(url: String, context: Context): Boolean {
+        return openIfExist(context, getHotIntent(context, url))
+    }
+
+    private fun openCatalog(url: String, context: Context): Boolean {
+        return openIfExist(context, getCatalogIntent(context, url))
+    }
+
+    private fun openIfExist(context: Context, intent: Intent): Boolean {
+        if (intent.resolveActivity(context.packageManager) == null) {
+            return false
+        } else {
+            context.startActivity(intent)
+            return true
+        }
+    }
+
+    // function for enable Hansel
+    private fun getHotListClassName() = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
+
+    private fun getHotIntent(context: Context, url: String): Intent {
+        val intent = getIntentByClassName(context, getHotListClassName())
+        intent.putExtra("HOTLIST_URL", url)
+        return intent
+    }
+
+    private fun getCatalogIntent(context: Context, url: String): Intent {
+        val catalogId = getLinkSegment(url)[1]
+        val intent = getIntentByClassName(context, getCatalogDetailClassName())
+        intent.putExtra("ARG_EXTRA_CATALOG_ID", catalogId)
+        return intent
+    }
+
+    private fun openBrowse(url: String, context: Context) {
+        val uriData = Uri.parse(url)
+        val bundle = Bundle()
+
+        val departmentId = uriData.getQueryParameter("sc")
+        val searchQuery = uriData.getQueryParameter("q")
+
+        bundle.putBoolean("IS_DEEP_LINK_SEARCH", true)
+
+        val intent: Intent
+        if (departmentId.isNullOrEmpty()) {
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId))
+            intent.putExtras(bundle)
+        } else {
+            intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+        }
+        context.startActivity(intent)
+    }
+
+    private fun constructSearchApplink(query: String?, departmentId: String?): String {
+        val applink = if (query.isNullOrEmpty())
+            ApplinkConstInternalDiscovery.AUTOCOMPLETE
+        else
+            ApplinkConstInternalDiscovery.SEARCH_RESULT
+
+        return (applink
+            + "?"
+            + "q=" + query
+            + "&sc=" + departmentId)
+    }
+
+    private fun getIntentByClassName(context: Context, className: String): Intent {
+        return Intent().apply {
+            setClassName(context.packageName, className)
+        }
+    }
+
+    private fun getLinkSegment(url: String): List<String> {
+        return Uri.parse(url).pathSegments
     }
 
 }

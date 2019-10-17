@@ -25,17 +25,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private var needLogin = false
     private var title = ""
 
-    @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
-    fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
-        val webUrl = extras.getString(KEY_URL, TokopediaUrl.getInstance().WEB)
-        val taskStackBuilder = TaskStackBuilder.create(context)
-        val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-        taskStackBuilder.addNextIntent(RouteManager.getIntent(context, ApplinkConst.HOME))
-        val destination = getStartIntent(context, webUrl)
-        taskStackBuilder.addNextIntent(destination)
-        return taskStackBuilder
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
         if (!::url.isInitialized || url.isEmpty()) {
@@ -136,6 +125,18 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 putExtra(KEY_NEED_LOGIN, needLogin)
                 putExtra(KEY_TITLE, title)
             }
+        }
+
+        @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
+        @JvmStatic
+        fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
+            val webUrl = extras.getString(KEY_URL, TokopediaUrl.getInstance().WEB)
+            val taskStackBuilder = TaskStackBuilder.create(context)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            taskStackBuilder.addNextIntent(RouteManager.getIntent(context, ApplinkConst.HOME))
+            val destination = getStartIntent(context, webUrl)
+            taskStackBuilder.addNextIntent(destination)
+            return taskStackBuilder
         }
 
     }

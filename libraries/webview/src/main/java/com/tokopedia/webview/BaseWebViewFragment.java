@@ -5,10 +5,12 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -16,9 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,13 +31,11 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
+import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
@@ -318,16 +320,34 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
         }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, request.getUrl().toString());
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            handler.cancel();
+            progressBar.setVisibility(View.GONE);
+        }
+
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
-    protected boolean shouldOverrideUrlLoading(@NonNull WebView webView, @NonNull String url) {
+    protected boolean shouldOverrideUrlLoading(@NonNull WebView webView,@Nullable String url) {
         if (getActivity() == null) {
             return false;
         }
-        if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)) {
-            RouteManager.route(getActivity(), url);
-            return true;
-        } else if (url.contains(HCI_CAMERA_KTP)) {
+        if (url == null) {
+            return false;
+        }
+        if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -353,17 +373,41 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
+        boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
+        if (isNotNetworkUrl) {
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+            if (intent!= null) {
+                startActivity(intent);
+                return true;
+            } else {
+                // logging here, url might return blank page
+                // ask user to update app
+            }
+        }
+        String registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
+        if (!TextUtils.isEmpty(registeredNavigation)) {
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), registeredNavigation);
+            if (intent!= null) {
+                startActivity(intent);
+                return true;
+            }
+            return true;
+        }
         return shouldOverrideUrlToNative(url);
     }
 
-    private boolean shouldOverrideUrlToNative(String url) {
+    private boolean shouldOverrideUrlToNative(@NonNull String url) {
         if (!allowOverride) {
             return false;
         }
-        switch (DeepLinkChecker.getDeepLinkType(Objects.requireNonNull(getContext()), url)) {
-            case DeepLinkChecker.ORDER_LIST:
-                RouteManager.route(getContext(), ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url);
-                return true;
+        if (getActivity() == null) {
+            return false;
+        }
+        if (url.endsWith(".pl")) {
+            return false;
+        }
+        if (url.contains(DeepLinkChecker.WEB_HOST) || url.contains(DeepLinkChecker.MOBILE_HOST)) {
+            return DeepLinkChecker.moveToNativePageFromWebView(getActivity(), url);
         }
         return false;
     }

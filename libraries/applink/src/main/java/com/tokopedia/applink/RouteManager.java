@@ -97,14 +97,15 @@ public class RouteManager {
     /**
      * route to the activity corresponds to the given applink.
      * Will do nothing if applink is not supported.
+     * @return true if successfully routing to activity
      */
-    public static void route(Context context, String applinkPattern, String... parameter) {
+    public static boolean route(Context context, String applinkPattern, String... parameter) {
         if (context == null) {
-            return;
+            return false;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         if (uriString.isEmpty()) {
-            return;
+            return false;
         }
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         if (TextUtils.isEmpty(mappedDeeplink)) {
@@ -116,7 +117,7 @@ public class RouteManager {
             intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
-            return;
+            return true;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
             if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
@@ -126,13 +127,15 @@ public class RouteManager {
                 context.startActivity(intent);
             }
             context.startActivity(intent);
-            return;
+            return true;
         } else {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
         }
         if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
+            return true;
         }
+        return false;
     }
 
     /**

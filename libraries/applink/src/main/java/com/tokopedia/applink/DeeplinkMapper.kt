@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -38,6 +39,10 @@ object DeeplinkMapper {
             }
             if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)
+            }
+
+            if (GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME)) {
+                return ApplinkConst.SellerApp.SELLER_APP_HOME
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
