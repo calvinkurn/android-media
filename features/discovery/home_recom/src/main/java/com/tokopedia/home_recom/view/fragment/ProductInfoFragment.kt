@@ -475,7 +475,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             discountPercentage = "",
             labelOffers = RecommendationLabel(),
             labelCredibility = RecommendationLabel(),
-            labelPromo = RecommendationLabel()
+            labelPromo = RecommendationLabel(),
+            isGold = false
     )
 
     /**
