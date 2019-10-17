@@ -72,7 +72,7 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
         with(view) {
             btn_buy.visibility = View.GONE
-            btn_promote_topads.visibility = View.GONE
+            container_btn_promote_topads.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
             tv_buy_now.text = context.getString(
                 if (preOrder?.isPreOrderActive() == true) {
@@ -104,7 +104,7 @@ class PartialButtonActionView private constructor(private val view: View,
         with(view) {
             btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
             btn_buy.visibility = View.GONE
-            btn_promote_topads.visibility = View.VISIBLE
+            container_btn_promote_topads.visibility = View.VISIBLE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
@@ -119,7 +119,7 @@ class PartialButtonActionView private constructor(private val view: View,
             tv_buy.text = context.getString(R.string.no_stock)
             btn_buy.isEnabled = false
             btn_buy.visibility = View.VISIBLE
-            btn_promote_topads.visibility = View.GONE
+            container_btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
