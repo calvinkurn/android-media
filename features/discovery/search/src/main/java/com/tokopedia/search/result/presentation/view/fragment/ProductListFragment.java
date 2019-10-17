@@ -384,11 +384,11 @@ public class ProductListFragment
         for (Visitable object : list) {
             if (object instanceof ProductItemViewModel) {
                 ProductItemViewModel item = (ProductItemViewModel) object;
-                productItemViewModels.add(item);
                 if (!item.isTopAds()) {
                     String filterSortParams
                             = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
                     dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
+                    productItemViewModels.add(item);
                 }
             }
         }
