@@ -661,10 +661,10 @@ public class ProductListFragment
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
-        HashMap<String, String> params = searchParameter.getSearchParameterHashMap();
+        HashMap<String, String> params = new HashMap<>(quickFilterController.getParameter());
         params.putAll(tickerParams);
         refreshSearchParameter(params);
-        refreshFilterController(new HashMap<>(params));
+        refreshFilterController(params);
         clearDataFilterSort();
         reloadData();
     }
