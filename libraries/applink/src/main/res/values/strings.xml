@@ -11,7 +11,6 @@
     <string name="digital_topup_title">Digital Topup</string>
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_similar_search" >Pencarian Serupa</string>
-    <string name="im_challenge">im_challenge</string>
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_search_result" >Hasil Pencarian</string>
 </resources>
