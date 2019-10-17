@@ -611,7 +611,16 @@ public class ProductListFragment
 
     @Override
     public void onTickerClicked(String queryParams) {
-        performNewProductSearch(queryParams);
+        applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
+    }
+
+    private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
+        HashMap<String, String> params = searchParameter.getSearchParameterHashMap();
+        params.putAll(tickerParams);
+        refreshSearchParameter(params);
+        refreshFilterController(new HashMap<>(params));
+        clearDataFilterSort();
+        reloadData();
     }
 
     @Override
