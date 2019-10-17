@@ -1,14 +1,22 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
+import android.graphics.Bitmap
 import android.support.annotation.DimenRes
 import android.support.annotation.IdRes
 import android.support.constraint.ConstraintSet
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spanned
 import android.view.View
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
 import com.tokopedia.gm.resource.GMConstant
@@ -17,14 +25,14 @@ import com.tokopedia.productcard.utils.doIfVisible
 import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
+import com.tokopedia.search.result.shop.presentation.adapter.ShopProductItemAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 
 class ShopItemViewHolder(
     itemView: View,
-    private val shopListener: ShopListener
+    private var shopListener: ShopListener?
 ) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
 
     companion object {
@@ -32,7 +40,10 @@ class ShopItemViewHolder(
         val LAYOUT = R.layout.search_result_shop_card
     }
 
-    private val context = itemView.context
+    private var context = itemView.context
+    private var shopProductItemAdapter: ShopProductItemAdapter? = null
+    private var imageViewShopAvatarTarget: BitmapImageViewTarget? = null
+    private var imageViewShopReputationTarget: SimpleTarget<GlideDrawable>? = null
 
     override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
         if(shopViewItem == null) return
@@ -53,13 +64,34 @@ class ShopItemViewHolder(
 
     private fun initCardViewShopCard(shopViewItem: ShopViewModel.ShopItem) {
         itemView.cardViewShopCard?.setOnClickListener {
-            shopListener.onItemClicked(shopViewItem)
+            shopListener?.onItemClicked(shopViewItem)
         }
     }
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.imageViewShopAvatar?.visible()
         itemView.imageViewShopAvatar?.let {
-            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
+//            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
+
+            imageViewShopAvatarTarget = createCircleImageViewTarget(it)
+
+            Glide.with(context)
+                    .load(shopViewItem.image)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                    .into(imageViewShopAvatarTarget)
+        }
+    }
+
+    private fun createCircleImageViewTarget(imageView: ImageView): BitmapImageViewTarget {
+        return object : BitmapImageViewTarget(imageView) {
+            override fun setResource(resource: Bitmap) {
+                val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
+                circularBitmapDrawable.isCircular = true
+                imageView.setImageDrawable(circularBitmapDrawable)
+            }
         }
     }
 
@@ -95,13 +127,32 @@ class ShopItemViewHolder(
 
     private fun initButtonSeeShop(shopViewItem: ShopViewModel.ShopItem) {
         itemView.buttonSeeShop?.setOnClickListener {
-            shopListener.onItemClicked(shopViewItem)
+            shopListener?.onItemClicked(shopViewItem)
         }
     }
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.imageViewShopReputation?.visible()
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
+//            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
+
+            imageViewShopReputationTarget = createImageViewShopReputationTarget(imageViewShopReputation)
+
+            Glide.with(context)
+                    .load(shopViewItem.reputationImageUri)
+                    .dontAnimate()
+                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(imageViewShopReputationTarget)
+        }
+    }
+
+    private fun createImageViewShopReputationTarget(imageViewShopReputation: ImageView): SimpleTarget<GlideDrawable> {
+        return object : SimpleTarget<GlideDrawable>() {
+            override fun onResourceReady(resource: GlideDrawable?, glideAnimation: GlideAnimation<in GlideDrawable>?) {
+                imageViewShopReputation.setImageDrawable(resource)
+            }
         }
     }
 
@@ -123,7 +174,9 @@ class ShopItemViewHolder(
     }
 
     private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModel.ShopItem) {
-        recyclerViewShopProductItem.adapter = createRecyclerViewShopProductItemAdapter(shopViewItem.productList)
+        shopProductItemAdapter = createRecyclerViewShopProductItemAdapter(shopViewItem.productList)
+
+        recyclerViewShopProductItem.adapter = shopProductItemAdapter
 
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
 
@@ -134,7 +187,7 @@ class ShopItemViewHolder(
 
     private fun createRecyclerViewShopProductItemAdapter(
             productList: List<ShopViewModel.ShopItem.ShopItemProduct>
-    ): RecyclerView.Adapter<ShopProductItemViewHolder> {
+    ): ShopProductItemAdapter {
         return ShopProductItemAdapter(context, createShopItemProductPreviewList(productList), shopListener)
     }
 
@@ -314,5 +367,17 @@ class ShopItemViewHolder(
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context.resources.getDimensionPixelSize(id)
+    }
+
+    override fun onViewRecycled() {
+        shopListener = null
+
+        itemView.imageViewShopAvatar?.gone()
+        Glide.clear(imageViewShopAvatarTarget)
+
+        itemView.imageViewShopReputation?.gone()
+        Glide.clear(imageViewShopReputationTarget)
+
+        shopProductItemAdapter?.clear()
     }
 }

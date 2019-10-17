@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter
+package com.tokopedia.search.result.shop.presentation.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -11,8 +11,8 @@ import com.tokopedia.search.result.presentation.view.listener.ShopListener
 
 class ShopProductItemAdapter(
         private val context: Context,
-        private val shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>,
-        private val shopListener: ShopListener
+        private val shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>?,
+        private var shopListener: ShopListener?
 ) : RecyclerView.Adapter<ShopProductItemViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ShopProductItemViewHolder {
@@ -22,10 +22,17 @@ class ShopProductItemAdapter(
     }
 
     override fun getItemCount(): Int {
-        return shopProductItemList.size
+        return shopProductItemList?.size ?: 0
     }
 
     override fun onBindViewHolder(shopProductItemViewHolder: ShopProductItemViewHolder, position: Int) {
-        shopProductItemViewHolder.bind(shopProductItemList[position])
+        shopProductItemViewHolder.bind(shopProductItemList?.get(position))
+    }
+
+    fun clear() {
+        shopListener = null
+
+        val size = shopProductItemList?.size ?: 0
+        notifyItemRangeRemoved(0, size)
     }
 }
