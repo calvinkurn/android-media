@@ -26,7 +26,6 @@ import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
-import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
@@ -146,7 +145,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         when (resCode) {
             couponRedemptionCode_LOW_POINT -> {
                 button.text = getString(R.string.promo_popup_ok)
-                buttonDismiss.visibility=View.GONE
+                buttonDismiss.visibility = View.GONE
             }
             couponRedemptionCode_PROFILE_INCOMPLETE -> {
                 button.text = getString(R.string.promo_popup_button_positive_one)
@@ -158,11 +157,11 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             }
             couponRedemptionCode_QUOTA_LIMIT_REACHED -> {
                 button.text = getString(R.string.promo_popup_ok)
-                buttonDismiss.visibility=View.GONE
+                buttonDismiss.visibility = View.GONE
             }
             else -> {
                 button.text = getString(R.string.promo_popup_ok)
-                buttonDismiss.visibility=View.GONE
+                buttonDismiss.visibility = View.GONE
             }
         }
 
