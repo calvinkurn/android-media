@@ -293,8 +293,7 @@
                 android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_16">
 
-                <!--requested to be replaced by ticker-->
-
+                <!--DO NOT DELETE - requested to be replaced by ticker-->
                 <!--<TextView
                     android:id="@+id/further_information_text"
                     android:layout_width="wrap_content"
