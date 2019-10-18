@@ -732,7 +732,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 verificationWarningTickerView.setDescriptionWithLink(
                         KycWidgetUtil.getDescription(getContext(), status),
                         KycWidgetUtil.getHighlight(getContext(), status),
-                        () -> RouteManager.route(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD));
+                        () -> {
+                            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
+                            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER);
+                            startActivity(intent);
+                        });
 
                 if (TextUtils.isEmpty(KycWidgetUtil.getDescription(getContext(), status))) {
                     verificationWarningTickerView.setVisibility(View.GONE);
