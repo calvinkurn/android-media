@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -24,12 +20,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ShopStatisticDetail;
@@ -732,12 +732,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 verificationWarningTickerView.setDescriptionWithLink(
                         KycWidgetUtil.getDescription(getContext(), status),
                         KycWidgetUtil.getHighlight(getContext(), status),
-                        () -> {
-                            if (getActivity().getApplicationContext() instanceof ApplinkRouter) {
-                                ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
-                                applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
-                            }
-                        });
+                        () -> RouteManager.route(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD));
 
                 if (TextUtils.isEmpty(KycWidgetUtil.getDescription(getContext(), status))) {
                     verificationWarningTickerView.setVisibility(View.GONE);
