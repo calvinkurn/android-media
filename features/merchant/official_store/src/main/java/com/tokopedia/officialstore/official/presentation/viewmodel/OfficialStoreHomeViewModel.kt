@@ -56,9 +56,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult by lazy {
-        MutableLiveData<Result<DynamicChannel>>()
-    }
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
     private val _officialStoreProductRecommendation by lazy {
         MutableLiveData<Result<RecommendationWidget>>()
@@ -69,7 +67,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 //            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-            _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
+            getOfficialStoreDynamicChannel("")
             _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "").await())
 
         }) {
@@ -111,20 +109,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreDynamicChannel(channelType: String): Deferred<DynamicChannel> {
-        return async(Dispatchers.IO) {
-            var dynamicChannel = DynamicChannel()
-
-            try {
-                getOfficialStoreDynamicChannelUseCase.params = GetOfficialStoreDynamicChannelUseCase
-                        .setupParams(channelType)
-                dynamicChannel = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                _officialStoreDynamicChannelResult.value = Fail(t)
-            }
-
-            dynamicChannel
-        }
+    private fun getOfficialStoreDynamicChannel(channelType: String) {
+        getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+        getOfficialStoreDynamicChannelUseCase.execute(
+                { dynamicChannel -> _officialStoreDynamicChannelResult.value = Success(dynamicChannel) },
+                { throwable -> _officialStoreDynamicChannelResult.value = Fail(throwable) }
+        )
     }
 
     private fun getOfficialStoreProductRecommendation(categoryId: String): Deferred<RecommendationWidget> {

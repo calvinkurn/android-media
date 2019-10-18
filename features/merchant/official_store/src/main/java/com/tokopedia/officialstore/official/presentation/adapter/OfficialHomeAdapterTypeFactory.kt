@@ -4,14 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.DynamicChannelViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelThematicViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialBannerViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialFeaturedShopViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelLegoViewHolder
 
 class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
 
@@ -24,7 +25,7 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
     }
 
     override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        return DynamicChannelViewHolder.LAYOUT
+        return dynamicChannelViewModel.getLayoutType()
     }
 
     override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
@@ -35,7 +36,8 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
-            DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
+            DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent)
+            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent)
             ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

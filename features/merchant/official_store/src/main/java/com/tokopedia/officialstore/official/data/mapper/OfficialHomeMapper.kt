@@ -1,10 +1,12 @@
 package com.tokopedia.officialstore.official.data.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
@@ -28,8 +30,13 @@ class OfficialHomeMapper {
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
             if (adapter?.getDataByPosition(1) is OfficialFeaturedShopViewModel) {
-                adapter.addElement(2, DynamicChannelViewModel(dynamicChannel.channels))
-                adapter.notifyItemInserted(2)
+                val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
+
+                dynamicChannel.channels.forEach { channel ->
+                    views.add(DynamicChannelViewModel(channel))
+                }
+
+                adapter.addElement(views)
             }
         }
 
@@ -38,8 +45,8 @@ class OfficialHomeMapper {
             val pageName = "official-store"
             val pageNumber = 1
 
-            adapter?.addElement(3, ProductRecommendationViewModel(productRecommendation.recommendationItemList.get(0), listener))
-            adapter?.notifyItemInserted(3)
+//            adapter?.addElement(3, ProductRecommendationViewModel(productRecommendation.recommendationItemList.get(0), listener))
+//            adapter?.notifyItemInserted(3)
         }
     }
 }
