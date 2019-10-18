@@ -808,10 +808,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            if (!needToShowGeolocationComponent()) {
-                adapter.removeGeolocationViewModel();
-            }
-            adapter.setItems(items);
+            adapter.setItems( needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
@@ -842,6 +839,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
         return needToShowGeolocationComponent;
+    }
+
+    private List<Visitable> removeGeolocationComponent(List<Visitable> items){
+        List<Visitable> local = new ArrayList<>(items);
+        for (Visitable visitable : local){
+            if(visitable instanceof GeolocationPromptViewModel){
+                local.remove(visitable);
+                break;
+            }
+        }
+        return local;
     }
 
     @Override
@@ -951,10 +959,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
-        if (!needToShowGeolocationComponent()) {
-            adapter.removeGeolocationViewModel();
-        }
-        adapter.updateHomeQueryItems(visitables);
+        adapter.updateHomeQueryItems(needToShowGeolocationComponent() ? visitables : removeGeolocationComponent(visitables));
     }
 
     @Override
