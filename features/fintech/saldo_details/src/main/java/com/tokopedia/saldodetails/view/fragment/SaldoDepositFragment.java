@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -27,15 +24,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
-import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -43,6 +45,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -564,41 +567,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-    public void showTicker() {
-
-        if (showMclBlockTickerFirebaseFlag) {
-            String tickerMsg = getString(R.string.saldolock_tickerDescription);
-            int startIndex = tickerMsg.indexOf(getResources().getString(R.string.tickerClickableText));
-            String late = Integer.toString(mclLateCount);
-            tickerMsg = String.format(getResources().getString(R.string.saldolock_tickerDescription), late);
-            SpannableString ss = new SpannableString(tickerMsg);
-
-            tvTickerMessage.setMovementMethod(LinkMovementMethod.getInstance());
-
-            if (startIndex != -1) {
-                ss.setSpan(new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View view) {
-                        RouteManager.route(context, String.format("%s?url=%s",
-                                ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL));
-                    }
-
-                    @Override
-                    public void updateDrawState(@NonNull TextPaint ds) {
-                        super.updateDrawState(ds);
-                        ds.setUnderlineText(false);
-                        ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                    }
-                }, startIndex - 1, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-
-
-            tvTickerMessage.setText(ss);
-            ivDismissTicker.setOnClickListener(v -> layoutTicker.setVisibility(View.GONE));
-            layoutTicker.setVisibility(View.VISIBLE);
-        }
-    }
-
         @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
@@ -648,7 +616,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         if (showMclBlockTickerFirebaseFlag) {
             String tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription);
-            int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+            int startIndex = tickerMsg.indexOf(getResources().getString(com.tokopedia.saldodetails.R.string.tickerClickableText));
             String late = Integer.toString(mclLateCount);
             tickerMsg = String.format(getResources().getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);

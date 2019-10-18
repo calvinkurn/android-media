@@ -183,7 +183,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 }
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
-                } else {
+                } else {SaldoDepositFragment
                     tvComment.setText(MethodChecker.fromHtml(item.getMessage()));
                 }
                 tvComment.setVisibility(View.VISIBLE);
