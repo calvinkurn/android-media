@@ -4,10 +4,6 @@ interface DigitalCartMyBillsContract {
     interface View : DigitalBaseContract.View {
         fun isSubscriptionChecked(): Boolean
 
-        fun getShowSubscribePopUp(): String?
-
-        fun getAutoSubscribe(): String?
-
         fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean)
 
         fun updateCheckoutButtonText(buttonTitle: String?)

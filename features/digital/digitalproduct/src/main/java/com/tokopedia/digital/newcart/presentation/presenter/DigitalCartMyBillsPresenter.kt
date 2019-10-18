@@ -82,25 +82,4 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             view.hideMyBillsSubscriptionView()
         }
     }
-
-    override fun getRequestBodyAtcDigital(): RequestBodyAtcDigital {
-        val requestBody = super.getRequestBodyAtcDigital()
-        val fieldList = requestBody.attributes?.fields?.toMutableList()
-        fieldList?.run {
-            view.getShowSubscribePopUp()?.run {
-                val field = Field()
-                field.name = "show_subscribe_pop_up"
-                field.value = this
-                add(field)
-            }
-            view.getAutoSubscribe()?.run {
-                val field = Field()
-                field.name = "auto_subscribe"
-                field.value = this
-                add(field)
-            }
-            requestBody.attributes?.fields = fieldList
-        }
-        return requestBody
-    }
 }

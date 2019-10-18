@@ -38,6 +38,7 @@ import com.tokopedia.digital.newcart.domain.model.VoucherAttributeDigital;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
@@ -115,7 +116,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
 
     @NonNull
-    protected RequestBodyAtcDigital getRequestBodyAtcDigital() {
+    private RequestBodyAtcDigital getRequestBodyAtcDigital() {
         RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();
@@ -130,6 +131,22 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             Field field = new Field();
             field.setName("zone_id");
             field.setValue(zoneId);
+            fieldList.add(field);
+        }
+        // Handle subscription params
+        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
+        String showSubscribePopUpParam = subParams.getShowSubscribePopUp();
+        if (showSubscribePopUpParam != null && !showSubscribePopUpParam.isEmpty()) {
+            Field field = new Field();
+            field.setName("show_subscribe_pop_up");
+            field.setValue(showSubscribePopUpParam);
+            fieldList.add(field);
+        }
+        String autoSubscribe = subParams.getAutoSubscribe();
+        if (autoSubscribe != null && !autoSubscribe.isEmpty()) {
+            Field field = new Field();
+            field.setName("auto_subscribe");
+            field.setValue(showSubscribePopUpParam);
             fieldList.add(field);
         }
         Attributes attributes = new Attributes();

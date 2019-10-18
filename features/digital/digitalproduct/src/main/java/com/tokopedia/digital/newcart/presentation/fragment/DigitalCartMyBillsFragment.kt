@@ -20,6 +20,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBillsView
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartMyBillsPresenter
 import javax.inject.Inject
 
@@ -38,9 +39,6 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     lateinit var digitalCartMyBillsPresenter: DigitalCartMyBillsPresenter
 
     private var interactionListener: InteractionListener? = null
-
-    private var showSubscribePopUp: String? = null
-    private var autoSubscribe: String? = null
 
     override fun setupView(view: View?) {
         progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
@@ -61,8 +59,8 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
-        showSubscribePopUp = arguments!!.getString(ARG_SHOW_SUBSCRIBE_POP_UP)
-        autoSubscribe = arguments!!.getString(ARG_AUTO_SUBSCRIBE)
+//        showSubscribePopUp = arguments!!.getString(ARG_SHOW_SUBSCRIBE_POP_UP)
+//        autoSubscribe = arguments!!.getString(ARG_AUTO_SUBSCRIBE)
         super.onCreate(savedInstanceState)
     }
 
@@ -73,14 +71,14 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     companion object {
-        const val ARG_SHOW_SUBSCRIBE_POP_UP = "show_subscribe_pop_up"
-        const val ARG_AUTO_SUBSCRIBE = "auto_subscribe"
-
-        fun newInstance(cartDigitalInfoData: CartDigitalInfoData, passData: DigitalCheckoutPassData): DigitalCartMyBillsFragment {
+        fun newInstance(cartDigitalInfoData: CartDigitalInfoData,
+                        passData: DigitalCheckoutPassData,
+                        subParams: DigitalSubscriptionParams): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
             bundle.putParcelable(ARG_PASS_DATA, passData)
+            bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, subParams)
             fragment.arguments = bundle
             return fragment
         }
@@ -90,10 +88,6 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         super.onViewCreated(view, savedInstanceState)
         presenter.onMyBillsViewCreated()
     }
-
-    override fun getShowSubscribePopUp(): String? = showSubscribePopUp
-
-    override fun getAutoSubscribe(): String? = autoSubscribe
 
     override fun renderCategoryInfo(categoryName: String?) {
         categoryTextView.text = categoryName

@@ -22,6 +22,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragm
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.user.session.UserSession;
 
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>,
@@ -29,6 +30,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         DigitalCartDealsFragment.InteractionListener,
         DigitalCartMyBillsFragment.InteractionListener {
     private DigitalCheckoutPassData cartPassData;
+    private DigitalSubscriptionParams subParams;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, DigitalCartActivity.class)
@@ -60,16 +62,18 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
         // Add subscription applink parameter handling
         Intent intent = new Intent(context, DigitalCartActivity.class);
-        String showSubscribePopUpArg = bundle.getString(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP);
-        String autoSubscribeArg = bundle.getString(DigitalCartMyBillsFragment.ARG_AUTO_SUBSCRIBE);
+        DigitalSubscriptionParams subParams = new DigitalSubscriptionParams();
+        String showSubscribePopUpArg = bundle.getString(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP);
+        String autoSubscribeArg = bundle.getString(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE);
         if (showSubscribePopUpArg != null) {
-            intent.putExtra(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP, showSubscribePopUpArg);
+            subParams.setShowSubscribePopUp(showSubscribePopUpArg);
         }
         if (autoSubscribeArg != null) {
-            intent.putExtra(DigitalCartMyBillsFragment.ARG_SHOW_SUBSCRIBE_POP_UP, autoSubscribeArg);
+            subParams.setAutoSubscribe(autoSubscribeArg);
         }
-
-        return intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA, subParams);
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+        return intent;
     }
 
     private static String generateATokenRechargeCheckout(Context context) {
@@ -90,12 +94,13 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     protected Fragment getNewFragment() {
-        return DigitalCartDefaultFragment.newInstance(cartPassData);
+        return DigitalCartDefaultFragment.newInstance(cartPassData, subParams);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
+        subParams = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA);
         super.onCreate(savedInstanceState);
     }
 
@@ -110,8 +115,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
-        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData));
+    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                               DigitalCheckoutPassData cartPassData,
+                                               DigitalSubscriptionParams subParams) {
+        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData, subParams));
     }
 
     private void inflateFragment(Fragment fragment) {
