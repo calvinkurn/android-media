@@ -115,6 +115,10 @@ class ThematicCardView : FrameLayout {
         imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
     }
 
+    fun setBlankSpaceConfig(blankSpaceConfig: BlankSpaceConfig){
+        this.blankSpaceConfig = blankSpaceConfig
+    }
+
     fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageThumbs(context, it, productImageUrl)
@@ -125,10 +129,10 @@ class ThematicCardView : FrameLayout {
         textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
     }
 
-    fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
-        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
-            it.text = labelPromoModel.title
-            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+    fun initLabelPromo(title: String, labelType: String) {
+        labelPromo.shouldShowWithAction(title.isNotEmpty()) {
+            it.text = title
+            it.setLabelType(getLabelTypeFromString(labelType))
         }
     }
 
