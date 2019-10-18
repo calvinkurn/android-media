@@ -342,8 +342,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), FlightErrorUtil.getMessageFromException(getActivity(), e), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData,
-                        GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+                flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+                if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+
             }
         }).showRetrySnackbar();
     }
