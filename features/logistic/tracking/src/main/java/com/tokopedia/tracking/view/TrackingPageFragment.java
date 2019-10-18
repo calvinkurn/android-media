@@ -36,7 +36,6 @@ import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerData;
@@ -301,16 +300,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                 tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
             }
         }
-
-        /*String exampleTitle = "Estimasi Pickup";
-        String exampleNotes = "Estimasi kurir SiCepat sampai ke alamat penjemputan 12 jam sejak Request Pickup. Bila terjadi kendala, hubungi ";
-        String exampleUrl = "Pusat Bantuan";
-        String exampleUrlText = "https://www.tokopedia.com/help/article/a-0568";
-        String formattedDesc = formatTitleHtml(exampleNotes, exampleUrlText, exampleUrl);
-        tickerInfoCourier.setHtmlDescription(formattedDesc);
-        tickerInfoCourier.setTickerTitle(exampleTitle);
-        tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
-        tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);*/
     }
 
     private String formatTitleHtml(String desc, String urlText, String url) {
