@@ -19,7 +19,7 @@
 
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
-            android:label="Upload Foto"
+            android:label="@string/kyc_upload_title"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

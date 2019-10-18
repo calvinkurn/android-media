@@ -16,6 +16,8 @@
     <string name="ticker_unverified"><![CDATA[Tingkatkan kepercayaan calon pembeli dengan upload KTP.
      <font color=\'#42b549\'><a href="https://m.tokopedia.com/terms/merchantkyc">Pelajari Selengkapnya</a></font>]]></string>
 
+    <string name="kyc_upload_title">Upload Foto</string>
+
     <string name="kyc_intro_title">Verifikasi Dokumen Data Diri</string>
     <string name="kyc_intro_text">Demi keamanan akun Anda, lakukan verifikasi dokumen data diri dengan unggah foto KTP.</string>
     <string name="kyc_intro_button">Lanjut</string>

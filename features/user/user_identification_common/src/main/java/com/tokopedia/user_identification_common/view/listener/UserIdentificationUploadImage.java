@@ -20,8 +20,6 @@ public interface UserIdentificationUploadImage  {
     interface View extends CustomerView {
         Context getContext();
 
-        void goToNextActivity();
-
         void onSuccessUpload();
 
         void onErrorUpload(String error);

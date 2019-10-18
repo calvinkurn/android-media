@@ -250,12 +250,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void goToNextActivity() {
-//        Intent intent = new Intent(getContext(), UserIdentificationInfoActivity.class);
-//        startActivity(intent);
-    }
-
-    @Override
     public void onSuccessUpload() {
         hideLoading();
         getActivity().setResult(Activity.RESULT_OK);
