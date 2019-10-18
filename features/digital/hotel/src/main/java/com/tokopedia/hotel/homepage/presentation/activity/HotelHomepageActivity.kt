@@ -18,8 +18,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var type: String = ""
     private var checkIn: String = ""
     private var checkOut: String = ""
-    private var room: Int = 0
-    private var adult: Int = 0
+    private var room: Int = 1
+    private var adult: Int = 1
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 

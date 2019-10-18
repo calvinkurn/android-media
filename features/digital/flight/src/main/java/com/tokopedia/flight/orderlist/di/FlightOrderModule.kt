@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.di
 
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase
@@ -40,7 +41,12 @@ class FlightOrderModule {
 
     @FlightOrderScope
     @Provides
-    internal fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
+
+    @FlightOrderScope
+    @Provides
+    fun provideTrackingCrossSellUtil(): TrackingCrossSellUtil = TrackingCrossSellUtil()
+
 }
