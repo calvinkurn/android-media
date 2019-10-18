@@ -808,11 +808,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(items);
-
-            if (needToShowGeolocationComponent()) {
-                adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+            if (!needToShowGeolocationComponent()) {
+                adapter.removeGeolocationViewModel();
             }
+            adapter.setItems(items);
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
