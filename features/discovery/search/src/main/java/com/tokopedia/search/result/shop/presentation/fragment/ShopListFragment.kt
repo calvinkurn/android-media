@@ -27,7 +27,7 @@ import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration
+import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -142,16 +142,16 @@ internal class ShopListFragment:
     }
 
     private fun createShopListTypeFactory(): ShopListTypeFactory {
-        return ShopListTypeFactoryImpl(RecyclerView.RecycledViewPool(), this, this, this)
+        return ShopListTypeFactoryImpl(this, this, this)
     }
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                    activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                    activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                    activity.resources.getDimensionPixelSize(R.dimen.dp_16),
-                    activity.resources.getDimensionPixelSize(R.dimen.dp_16)
-            )
+                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(R.dimen.dp_16),
+                activity.resources.getDimensionPixelSize(R.dimen.dp_16)
+        )
     }
 
     private fun observeViewModelData() {

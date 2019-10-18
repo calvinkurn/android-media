@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration
+package com.tokopedia.search.result.shop.presentation.itemdecoration
 
 import android.graphics.Rect
 import android.support.v7.widget.CardView

@@ -5,8 +5,7 @@ import android.support.annotation.DimenRes
 import android.support.annotation.IdRes
 import android.support.constraint.ConstraintSet
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
 import android.widget.ImageView
@@ -19,21 +18,18 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchShop.SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.doIfVisible
 import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.shop.presentation.adapter.ShopProductItemAdapter
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopProductItemDecoration
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 
 internal class ShopItemViewHolder(
     itemView: View,
-    private val shopProductItemRecyclerViewPool: RecyclerView.RecycledViewPool,
     private val shopListener: ShopListener
 ) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
 
@@ -43,9 +39,11 @@ internal class ShopItemViewHolder(
     }
 
     private var context = itemView.context
-    private var shopProductItemAdapter: ShopProductItemAdapter? = null
     private var imageViewShopAvatarTarget: BitmapImageViewTarget? = null
     private var imageViewShopReputationTarget: SimpleTarget<GlideDrawable>? = null
+    private var imageViewProductPreviewTarget1: BitmapImageViewTarget? = null
+    private var imageViewProductPreviewTarget2: BitmapImageViewTarget? = null
+    private var imageViewProductPreviewTarget3: BitmapImageViewTarget? = null
 
     override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
         if(shopViewItem == null) return
@@ -153,64 +151,99 @@ internal class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
-        val isProductListVisible = shopViewItem.productList.isNotEmpty()
+        showProductPreviews(shopViewItem)
 
-        itemView.recyclerViewShopProductItem?.showWithCondition(isProductListVisible)
-        itemView.textViewShopHasNoProduct?.showWithCondition(!isProductListVisible)
+        itemView.textViewShopHasNoProduct?.showWithCondition(shopViewItem.productList.isEmpty())
 
         if (shopViewItem.productList.isNotEmpty()) {
             showShopProductItemPreview(shopViewItem)
         }
     }
 
+    private fun showProductPreviews(shopViewItem: ShopViewModel.ShopItem) {
+        itemView.imageViewShopItemProductImage1.showWithCondition(shopViewItem.productList.isNotEmpty())
+        itemView.imageViewShopItemProductImage2.showWithCondition(shopViewItem.productList.isNotEmpty())
+        itemView.imageViewShopItemProductImage3.showWithCondition(shopViewItem.productList.isNotEmpty())
+
+        itemView.textViewShopItemProductPrice1.showWithCondition(shopViewItem.productList.isNotEmpty())
+        itemView.textViewShopItemProductPrice2.showWithCondition(shopViewItem.productList.size > 1)
+        itemView.textViewShopItemProductPrice3.showWithCondition(shopViewItem.productList.size > 2)
+    }
+
     private fun showShopProductItemPreview(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.recyclerViewShopProductItem?.let { recyclerViewShopProductItem ->
-            initShopProductItemRecyclerView(recyclerViewShopProductItem, shopViewItem)
+        if (shopViewItem.productList.isNotEmpty()) {
+            itemView.imageViewShopItemProductImage1.let {
+                imageViewProductPreviewTarget1 = createRoundedImageViewTarget(it)
+            }
+
+            showProductItemPreviewPerItem(
+                    shopViewItem.productList[0],
+                    imageViewProductPreviewTarget1,
+                    itemView.imageViewShopItemProductImage1,
+                    itemView.textViewShopItemProductPrice1
+            )
+        }
+
+        if (shopViewItem.productList.size > 1) {
+            itemView.imageViewShopItemProductImage2.let {
+                imageViewProductPreviewTarget2 = createRoundedImageViewTarget(it)
+            }
+
+            showProductItemPreviewPerItem(
+                    shopViewItem.productList[1],
+                    imageViewProductPreviewTarget2,
+                    itemView.imageViewShopItemProductImage2,
+                    itemView.textViewShopItemProductPrice2
+            )
+        }
+
+        if (shopViewItem.productList.size > 2) {
+            itemView.imageViewShopItemProductImage3.let {
+                imageViewProductPreviewTarget3 = createRoundedImageViewTarget(it)
+            }
+
+            showProductItemPreviewPerItem(
+                    shopViewItem.productList[2],
+                    imageViewProductPreviewTarget3,
+                    itemView.imageViewShopItemProductImage3,
+                    itemView.textViewShopItemProductPrice3
+            )
         }
     }
 
-    private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModel.ShopItem) {
-        shopProductItemAdapter = createRecyclerViewShopProductItemAdapter(shopViewItem.productList)
+    private fun showProductItemPreviewPerItem(
+            productPreviewItem: ShopViewModel.ShopItem.ShopItemProduct,
+            roundedImageViewTarget: BitmapImageViewTarget?,
+            imageViewShopItemProductImage: AppCompatImageView?,
+            textViewShopItemProductPrice: Typography?
+    ) {
+        val imageUrl = productPreviewItem.imageUrl
+        val priceFormat = productPreviewItem.priceFormat
 
-        recyclerViewShopProductItem.swapAdapter(shopProductItemAdapter, true)
-
-        recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
-
-        recyclerViewShopProductItem.setRecycledViewPool(shopProductItemRecyclerViewPool)
-
-        if (!hasItemDecoration(recyclerViewShopProductItem)) {
-            recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())
-        }
-    }
-
-    private fun createRecyclerViewShopProductItemAdapter(
-            productList: List<ShopViewModel.ShopItem.ShopItemProduct>
-    ): ShopProductItemAdapter {
-        return ShopProductItemAdapter(context, createShopItemProductPreviewList(productList), shopListener)
-    }
-
-    private fun createShopItemProductPreviewList(
-            productList: List<ShopViewModel.ShopItem.ShopItemProduct>
-    ): List<ShopViewModel.ShopItem.ShopItemProduct> {
-        val productPreviewList = productList.take(SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT).toMutableList()
-
-        while(productPreviewList.size < SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT) {
-            productPreviewList += ShopViewModel.ShopItem.ShopItemProduct()
+        imageViewShopItemProductImage?.let {
+            Glide.with(itemView.context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .centerCrop()
+                    .dontAnimate()
+                    .into(roundedImageViewTarget)
         }
 
-        return productPreviewList
+        imageViewShopItemProductImage?.setOnClickListener {
+            shopListener.onProductItemClicked(productPreviewItem)
+        }
+
+        textViewShopItemProductPrice?.text = MethodChecker.fromHtml(priceFormat)
     }
 
-    private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(context, SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT, GridLayoutManager.VERTICAL, false)
-    }
-
-    private fun hasItemDecoration(recyclerViewShopProductItem: RecyclerView): Boolean {
-        return recyclerViewShopProductItem.itemDecorationCount != 0
-    }
-
-    private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {
-        return ShopProductItemDecoration(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
+    private fun createRoundedImageViewTarget(imageView: ImageView): BitmapImageViewTarget {
+        return object : BitmapImageViewTarget(imageView) {
+            override fun setResource(resource: Bitmap) {
+                val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
+                roundedBitmapDrawable.cornerRadius = 6f
+                imageView.setImageDrawable(roundedBitmapDrawable)
+            }
+        }
     }
 
     private fun initShopVoucherLabel(shopViewItem: ShopViewModel.ShopItem) {
@@ -323,8 +356,8 @@ internal class ShopItemViewHolder(
     }
 
     private fun getTopConstraintViewForLabelVoucher(): View? {
-        return if (itemView.recyclerViewShopProductItem?.isVisible == true) {
-            itemView.recyclerViewShopProductItem
+        return if (itemView.textViewShopItemProductPrice1?.isVisible == true) {
+            itemView.textViewShopItemProductPrice1
         }
         else {
             itemView.textViewShopHasNoProduct
@@ -370,6 +403,9 @@ internal class ShopItemViewHolder(
     override fun onViewRecycled() {
         imageViewShopAvatarTarget.clear()
         imageViewShopReputationTarget.clear()
+        imageViewProductPreviewTarget1.clear()
+        imageViewProductPreviewTarget2.clear()
+        imageViewProductPreviewTarget3.clear()
     }
 
     private fun BaseTarget<*>?.clear() {
