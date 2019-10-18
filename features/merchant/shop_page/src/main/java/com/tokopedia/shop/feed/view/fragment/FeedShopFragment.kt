@@ -3,12 +3,12 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -66,6 +66,7 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
