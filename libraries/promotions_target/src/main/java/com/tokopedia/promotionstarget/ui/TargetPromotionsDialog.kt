@@ -102,11 +102,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         bottomSheet.show()
         bottomSheet.setOnDismissListener {
             //            GratificationSubscriber.waitingForLogin.set(false)
-            if (TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply) {
+            if (!TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply) {
                 viewModel.autoApply(couponCodeAfterClaim!!)
             }
         }
-
+        bottomSheetDialog = bottomSheet
         initViews(view, activityContext, data, couponDetailResponse, gratificationData)
         return bottomSheet
     }
@@ -170,10 +170,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
                 val imageUrl = data.popGratification?.imageUrl
                 val imageUrlMobile = data.popGratification?.imageUrlMobile
-                val showError = TextUtils.isEmpty(imageUrl) || TextUtils.isEmpty(imageUrlMobile)
+                val showError = !TextUtils.isEmpty(imageUrl) || !TextUtils.isEmpty(imageUrlMobile)
                 if (showError) {
                     val urlToDisplay = if (TextUtils.isEmpty(imageUrl)) imageUrlMobile else imageUrl
                     uiType = TargetPromotionsCouponType.COUPON_ERROR
+                    imageView.loadImageGlide(urlToDisplay)
                 }
                 viewFlipper.displayedChild = CONTAINER_IMAGE
             }
@@ -347,6 +348,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         activity.run {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
             viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
+
         }
     }
 }

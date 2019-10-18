@@ -5,7 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
+import com.tokopedia.promotionstarget.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
@@ -15,7 +15,6 @@ import com.tokopedia.promotionstarget.ui.TargetPromotionsDialog
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
@@ -26,7 +25,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
-//    var waitingForLoginActivity: WeakReference<Activity>? = null
+    //    var waitingForLoginActivity: WeakReference<Activity>? = null
     val arrayActivityNames = arrayListOf<String>(
             "com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity",
             "com.tokopedia.loginregister.login.view.activity.LoginActivity",
@@ -56,16 +55,16 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         if (activity != null) {
 
 //            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
-            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
-            if (!isAllowedActivity) {
-                //Do nothingsubscriber.waitingForLoginActivity
-            } else {
-                val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
-                if (gratificationData != null) {
-                    cancelAll()
-                    showGratificationDialog(activity, gratificationData)
-                }
+//            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
+//            if (!isAllowedActivity) {
+            //Do nothingsubscriber.waitingForLoginActivity
+//            } else {
+            val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
+            if (gratificationData != null) {
+                cancelAll()
+                showGratificationDialog(activity, gratificationData)
             }
+//            }
         }
     }
 
@@ -89,24 +88,24 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?): GratificationData? {
         var showGratificationDialog = false
         var gratificationData: GratificationData? = null
+        //todo Rahul remove test data
         if (activity != null) {
-
             val intent = activity.intent
-//            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
-//            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
+            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
+            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
 
-            val campaignSlug = "CampaignSlug"
-            val page = "Hot"
+//            val campaignSlug = "CampaignSlug"
+//            val page = "Hot"
 
             showGratificationDialog = (!TextUtils.isEmpty(campaignSlug) && !TextUtils.isEmpty(page))
             if (showGratificationDialog) {
-                gratificationData = GratificationData(campaignSlug, page)
+                gratificationData = GratificationData(campaignSlug!!, page!!)
             }
         }
         return gratificationData
     }
 
-    fun showGratificationDialog(activity: Activity, gratificationData: GratificationData) {
+    private fun showGratificationDialog(activity: Activity, gratificationData: GratificationData) {
         val weakActivity = WeakReference(activity)
         scope.launch(Dispatchers.IO + ceh) {
             supervisorScope {

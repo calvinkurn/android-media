@@ -23,15 +23,15 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
 
     val couponClaimLiveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
     val autoApplyLiveData: MutableLiveData<Result<AutoApplyResponse>> = MutableLiveData()
+    private val HTTP_CODE_OK = "200"
 
-    //todo Rahul remove default values
     fun claimCoupon(campaignSlug: String, page: String) {
 
         launchCatchError(block = {
             val data = claimPopGratificationUseCase.let {
                 it.getResponse(it.getQueryParams(campaignSlug, page))
             }
-            if (data.popGratificationClaim?.resultStatus?.code == "200") {
+            if (data.popGratificationClaim?.resultStatus?.code == HTTP_CODE_OK) {
                 couponClaimLiveData.value = Success(data)
             } else {
                 couponClaimLiveData.value = Fail(Throwable("Unknown Exception"))
