@@ -21,34 +21,28 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
                                                    val autoApplyUseCase: AutoApplyUseCase
 ) : BaseViewModel(dispatcher) {
 
-    val liveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
-    val fakeLiveData: MutableLiveData<Result<String>> = MutableLiveData()
+    val couponClaimLiveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
     val autoApplyLiveData: MutableLiveData<Result<AutoApplyResponse>> = MutableLiveData()
 
     //todo Rahul remove default values
-    fun claimCoupon(campaignSlug: String = "POPGRATIF_LIMITED_2", page: String = "TEST") {
+    fun claimCoupon(campaignSlug: String, page: String) {
 
         launchCatchError(block = {
             val data = claimPopGratificationUseCase.let {
                 it.getResponse(it.getQueryParams(campaignSlug, page))
             }
-
-            liveData.value = Success(data)
+            if (data.popGratificationClaim?.resultStatus?.code == "200") {
+                couponClaimLiveData.value = Success(data)
+            } else {
+                couponClaimLiveData.value = Fail(Throwable("Unknown Exception"))
+            }
 
         }, onError = {
             //todo check for no internet
-            liveData.value = Fail(it)
+            couponClaimLiveData.value = Fail(it)
         })
     }
 
-    fun claimFakeCoupon() {
-        launchCatchError(block = {
-            delay(5000L)
-            fakeLiveData.value = Success("H")
-        }, onError = {
-            autoApplyLiveData.value = Fail(it)
-        })
-    }
 
     fun autoApply(code: String) {
         launchCatchError(block = {

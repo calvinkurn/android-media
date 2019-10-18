@@ -115,7 +115,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val couponDetail = presenter.composeApi(gratificationData)
                     withContext(Dispatchers.Main) {
                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
-                            show(weakActivity, response, couponDetail)
+                            show(weakActivity, response, couponDetail, gratificationData)
                     }
                 }
                 mapOfJobs[activity] = childJob
@@ -123,11 +123,14 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun show(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse) {
+    private fun show(weakActivity: WeakReference<Activity>,
+                     data: GetPopGratificationResponse,
+                     couponDetailResponse: GetCouponDetailResponse,
+                     gratificationData: GratificationData) {
         val dialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
-            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data, couponDetailResponse)
+            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data, couponDetailResponse, gratificationData)
             mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
         }
     }
