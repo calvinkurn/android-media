@@ -67,8 +67,11 @@ public class ProductViewModelMapper {
 
     private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalNavModel globalNavModel) {
         return new GlobalNavViewModel(
+                globalNavModel.getData().getSource(),
                 globalNavModel.getData().getTitle(),
                 globalNavModel.getData().getKeyword(),
+                globalNavModel.getData().getNavTemplate(),
+                globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
@@ -81,11 +84,16 @@ public class ProductViewModelMapper {
         int position = 1;
         for (SearchProductModel.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
+                    item.getCategoryName(),
                     item.getName(),
                     item.getInfo(),
                     item.getImageUrl(),
                     item.getApplink(),
                     item.getUrl(),
+                    item.getSubtitle(),
+                    item.getStrikethrough(),
+                    item.getBackgroundUrl(),
+                    item.getLogoUrl(),
                     position
             ));
             position++;
