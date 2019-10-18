@@ -60,7 +60,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    private static final int REQUEST_CODE_LOGIN = 123321;
+    private static final int REQUEST_CODE_LOGIN = 1233;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
