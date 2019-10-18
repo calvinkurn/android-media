@@ -54,6 +54,10 @@ public interface AffiliateEventTracking {
         String CLICK_PROFILE = "click profile";
         String OTHERS = "others";
         String CLICK_AFFILIATE_CDP_EXTERNAL = "external";
+        String IMPRESSION_SUGGESTION_MERCHANT = "impression product suggestion as merchant";
+        String IMPRESSION_SUGGESTION_AFFILIATE = "impression product suggestion as affiliate";
+        String CLICK_SUGGESTION_MERCHANT = "click product suggestion as merchant";
+        String CLICK_SUGGESTION_AFFILIATE = "click product suggestion as affiliate";
     }
 
     interface EventLabel {
