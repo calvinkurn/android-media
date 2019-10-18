@@ -103,11 +103,12 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         getListCouponUseCase.addRequest(graphqlRequest)
         getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
-
+                view.hideProgressBar()
             }
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
+                    view.hideProgressBar()
                     view.showGetListLastSeenError(e)
                 }
             }
