@@ -11,7 +11,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import kotlinx.android.synthetic.main.search_result_shop_total_count_layout.view.*
 
-class ShopTotalCountViewHolder(itemView: View): AbstractViewHolder<ShopTotalCountViewModel>(itemView) {
+internal class ShopTotalCountViewHolder(itemView: View): AbstractViewHolder<ShopTotalCountViewModel>(itemView) {
 
     companion object {
         @LayoutRes

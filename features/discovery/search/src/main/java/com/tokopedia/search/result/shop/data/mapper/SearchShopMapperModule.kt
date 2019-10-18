@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.data.mapper.searchshop
+package com.tokopedia.search.result.shop.data.mapper
 
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -9,7 +9,7 @@ import rx.functions.Func1
 
 @SearchScope
 @Module
-class SearchShopMapperModule {
+internal class SearchShopMapperModule {
 
     @SearchScope
     @Provides

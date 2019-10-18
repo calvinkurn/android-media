@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
-class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
+internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
 
     override fun convert(source: SearchShopModel): ShopViewModel {
         val searchShopData = source.aceSearchShop

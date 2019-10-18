@@ -28,11 +28,12 @@ import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopProductItemAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopProductItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.ShopListener
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 
-class ShopItemViewHolder(
+internal class ShopItemViewHolder(
     itemView: View,
+    private val shopProductItemRecyclerViewPool: RecyclerView.RecycledViewPool,
     private val shopListener: ShopListener
 ) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
 
@@ -171,9 +172,11 @@ class ShopItemViewHolder(
     private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModel.ShopItem) {
         shopProductItemAdapter = createRecyclerViewShopProductItemAdapter(shopViewItem.productList)
 
-        recyclerViewShopProductItem.adapter = shopProductItemAdapter
+        recyclerViewShopProductItem.swapAdapter(shopProductItemAdapter, true)
 
         recyclerViewShopProductItem.layoutManager = createRecyclerViewShopProductItemLayoutManager()
+
+        recyclerViewShopProductItem.setRecycledViewPool(shopProductItemRecyclerViewPool)
 
         if (!hasItemDecoration(recyclerViewShopProductItem)) {
             recyclerViewShopProductItem.addItemDecoration(createRecyclerViewShopProductItemDecoration())

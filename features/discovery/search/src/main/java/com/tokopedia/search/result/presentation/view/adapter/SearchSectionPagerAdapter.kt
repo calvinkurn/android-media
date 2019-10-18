@@ -12,7 +12,7 @@ import com.tokopedia.search.result.presentation.view.fragment.ProductListFragmen
 import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
 import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
-class SearchSectionPagerAdapter(
+internal class SearchSectionPagerAdapter(
         fragmentManager: FragmentManager,
         private val searchParameter: SearchParameter
 ) : FragmentStatePagerAdapter(fragmentManager) {

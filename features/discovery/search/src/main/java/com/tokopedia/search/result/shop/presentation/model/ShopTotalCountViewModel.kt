@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
-data class ShopTotalCountViewModel(
+internal data class ShopTotalCountViewModel(
         val totalShopCount: Int = 0
 ): Parcelable, Visitable<ShopListTypeFactory> {
 

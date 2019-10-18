@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
-data class ShopEmptySearchViewModel(
+internal data class ShopEmptySearchViewModel(
         val sectionTitle: String = "",
         val query: String = "",
         val isFilterActive: Boolean = false

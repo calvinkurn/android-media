@@ -4,9 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.result.shop.presentation.model.*
 
-interface ShopListTypeFactory {
-
-    fun type(shopHeader: ShopHeaderViewModel): Int
+internal interface ShopListTypeFactory {
 
     fun type(shopCpmViewModel: ShopCpmViewModel): Int
 

@@ -10,11 +10,11 @@ import com.tokopedia.search.result.shop.presentation.diffutil.ShopListDiffUtilCa
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import java.util.*
 
-class ShopListAdapter(
+internal class ShopListAdapter(
         private val shopListTypeFactory: ShopListTypeFactory
 ): RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
-    private val list = ArrayList<Visitable<*>>()
+    private var list = ArrayList<Visitable<*>>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
         val context = parent.context

@@ -11,7 +11,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import kotlinx.android.synthetic.main.search_result_shop_cpm_layout.view.*
 
-class ShopCpmViewHolder(
+internal class ShopCpmViewHolder(
         itemView: View,
         val bannerAdsListener: BannerAdsListener?
 ): AbstractViewHolder<ShopCpmViewModel>(itemView) {

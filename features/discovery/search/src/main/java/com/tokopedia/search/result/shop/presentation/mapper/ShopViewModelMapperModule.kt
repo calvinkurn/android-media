@@ -4,7 +4,6 @@ import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import dagger.Module
@@ -12,19 +11,12 @@ import dagger.Provides
 
 @SearchScope
 @Module
-class ShopViewModelMapperModule {
+internal class ShopViewModelMapperModule {
 
     @SearchScope
     @Provides
     fun provideShopViewModelMapper(): Mapper<SearchShopModel, ShopViewModel> {
         return ShopViewModelMapper()
-    }
-
-
-    @SearchScope
-    @Provides
-    fun provideShopHeaderViewModelMapper(): Mapper<SearchShopModel, ShopHeaderViewModel> {
-        return ShopHeaderViewModelMapper()
     }
 
     @SearchScope

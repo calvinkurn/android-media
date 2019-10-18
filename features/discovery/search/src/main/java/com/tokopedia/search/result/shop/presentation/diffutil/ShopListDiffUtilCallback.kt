@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
-class ShopListDiffUtilCallback(
+internal class ShopListDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
         private val newList: List<Visitable<*>> = listOf()
 ): DiffUtil.Callback() {

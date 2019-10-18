@@ -5,11 +5,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.search.R
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.listener.ShopListener
 
-class ShopProductItemAdapter(
+internal class ShopProductItemAdapter(
         private val context: Context,
         private val shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>,
         private val shopListener: ShopListener

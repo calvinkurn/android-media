@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
-data class SearchShopModel(
+internal data class SearchShopModel(
         @SerializedName("aceSearchShop")
         @Expose
         val aceSearchShop: AceSearchShop = AceSearchShop(),

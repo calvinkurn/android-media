@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
-data class ShopViewModel(
+internal data class ShopViewModel(
         val source: String = "",
         val searchUrl: String = "",
         val paging: Paging = Paging(),

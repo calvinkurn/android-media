@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
-data class ShopCpmViewModel(
+internal data class ShopCpmViewModel(
         val cpmModel: CpmModel = CpmModel()
 ): Parcelable, Visitable<ShopListTypeFactory> {
 

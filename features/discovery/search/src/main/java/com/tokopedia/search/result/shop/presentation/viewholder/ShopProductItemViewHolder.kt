@@ -11,10 +11,10 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.presentation.view.listener.ShopListener
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import kotlinx.android.synthetic.main.search_result_shop_item_product_card.view.*
 
-class ShopProductItemViewHolder(
+internal class ShopProductItemViewHolder(
     itemView: View,
     private val shopListener: ShopListener?
 ) : RecyclerView.ViewHolder(itemView) {

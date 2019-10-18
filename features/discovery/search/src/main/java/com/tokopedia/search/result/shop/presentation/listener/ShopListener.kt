@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.presentation.view.listener
+package com.tokopedia.search.result.shop.presentation.listener
 
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
-interface ShopListener {
+internal interface ShopListener {
 
     fun onItemClicked(shopItem: ShopViewModel.ShopItem)
 

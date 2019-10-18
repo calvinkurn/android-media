@@ -31,7 +31,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.ShopListener
+import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -42,7 +42,7 @@ import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
-class ShopListFragment:
+internal class ShopListFragment:
         TkpdBaseV4Fragment(),
         ShopListener,
         EmptyStateListener,
@@ -142,7 +142,7 @@ class ShopListFragment:
     }
 
     private fun createShopListTypeFactory(): ShopListTypeFactory {
-        return ShopListTypeFactoryImpl(this, this, this)
+        return ShopListTypeFactoryImpl(RecyclerView.RecycledViewPool(), this, this, this)
     }
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
