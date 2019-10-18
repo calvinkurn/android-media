@@ -24,6 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/background_banner_organic"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@+id/channel_title_container">
 
         <android.support.constraint.ConstraintLayout
