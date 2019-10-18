@@ -150,11 +150,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         retryButton = view.findViewById(R.id.retry_pickup_button);
         descriptionLayout = view.findViewById(R.id.description_layout);
         retryStatus = view.findViewById(R.id.tv_retry_status);
+
+        // DO NOT DELETE - TO BE REPLACED LATER
         /*TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
                         .fromHtml(getString(R.string.further_information_text_html)),
                 TextView.BufferType.SPANNABLE);
         furtherInformationText.setOnClickListener(onFurtherInformationClicked());*/
+
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
         tickerInfoCourier = view.findViewById(R.id.ticker_info_courier);
         fetchData();
