@@ -54,17 +54,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         //todo Rahul remove later
         if (activity != null) {
 
-//            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
-//            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
-//            if (!isAllowedActivity) {
-            //Do nothingsubscriber.waitingForLoginActivity
-//            } else {
+            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
+            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
+            if (!isAllowedActivity) {
+//            Do nothingsubscriber.waitingForLoginActivity
+            } else {
             val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
             if (gratificationData != null) {
                 cancelAll()
                 showGratificationDialog(activity, gratificationData)
             }
-//            }
+            }
         }
     }
 
@@ -91,11 +91,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         //todo Rahul remove test data
         if (activity != null) {
             val intent = activity.intent
-            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
-            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
+//            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
+//            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
 
-//            val campaignSlug = "CampaignSlug"
-//            val page = "Hot"
+            val campaignSlug = "CampaignSlug"
+            val page = "Hot"
 
             showGratificationDialog = (!TextUtils.isEmpty(campaignSlug) && !TextUtils.isEmpty(page))
             if (showGratificationDialog) {

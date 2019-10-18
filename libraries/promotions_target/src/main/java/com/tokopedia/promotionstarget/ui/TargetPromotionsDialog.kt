@@ -7,6 +7,8 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageView
@@ -16,6 +18,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.ViewFlipper
@@ -54,7 +57,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var couponListAdapter: CouponListAdapter
     private lateinit var viewFlipper: ViewFlipper
-    private lateinit var bottomSheetDialog: Dialog
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var nestedScrollView: NestedScrollView
     private lateinit var progressBar: ProgressBar
 
@@ -174,7 +177,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 if (showError) {
                     val urlToDisplay = if (TextUtils.isEmpty(imageUrl)) imageUrlMobile else imageUrl
                     uiType = TargetPromotionsCouponType.COUPON_ERROR
-                    imageView.loadImageGlide(urlToDisplay)
+                    imageView.loadImageGlide(urlToDisplay) { success ->
+                        expandBottomSheet()
+                    }
                 }
                 viewFlipper.displayedChild = CONTAINER_IMAGE
             }
@@ -349,6 +354,13 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
             viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
 
+        }
+    }
+
+    private fun expandBottomSheet(){
+        val fm = nestedScrollView.parent
+        if (fm is FrameLayout) {
+//            BottomSheetBehavior.from(fm).state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 }
