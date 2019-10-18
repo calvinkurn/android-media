@@ -12,7 +12,7 @@ import com.tokopedia.track.TrackAppUtils
 
 class NormalCheckoutTracking {
     companion object {
-        private const val KEY_DIMENSION_24 = "dimension24"
+        private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_DIMENSION_81 = "dimension81"
         const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
@@ -44,7 +44,7 @@ class NormalCheckoutTracking {
                 "click - beli on variants page - before login",
                 productId ?: ""
         )
-        mapEvent[KEY_DIMENSION_24] = productId ?: ""
+        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -142,6 +142,7 @@ class NormalCheckoutTracking {
                 "eventCategory" to category,
                 "eventAction" to actionLabel,
                 "eventLabel" to productVariantString,
+                KEY_PRODUCT_ID to selectedProductInfo.basic.id,
                 "ecommerce" to mutableMapOf(
                     "currencyCode" to "IDR",
                     "add" to mutableMapOf(
@@ -163,9 +164,8 @@ class NormalCheckoutTracking {
                             "dimension45" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER),
                             "dimension54" to getMultiOriginAttribution(multiOrigin),
-                                "dimension83" to dimension83,
-                                KEY_DIMENSION_24 to selectedProductInfo.basic.id,
-                                KEY_DIMENSION_81 to  shopType
+                            "dimension83" to dimension83,
+                            KEY_DIMENSION_81 to  shopType
 
                         )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
@@ -213,6 +213,7 @@ class NormalCheckoutTracking {
             putString(FirebaseAnalytics.Param.ITEM_BRAND, selectedProductInfo.brand.name)
             putString(FirebaseAnalytics.Param.ITEM_CATEGORY, selectedProductInfo.category.detail.joinToString("/") { it.name })
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, productVariantString)
+            putString(KEY_PRODUCT_ID, selectedProductInfo.basic.id.toString())
             putDouble(FirebaseAnalytics.Param.PRICE, selectedProductInfo.basic.price.toDouble())
             putLong(FirebaseAnalytics.Param.INDEX, 1)
             putLong(FirebaseAnalytics.Param.QUANTITY, qty.toLong())
@@ -220,7 +221,6 @@ class NormalCheckoutTracking {
             putString("dimension45", cartId ?: NONE_OTHER)
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
             putString("dimension83", dimension83)
-            putString(KEY_DIMENSION_24, selectedProductInfo.basic.id.toString())
             putString(KEY_DIMENSION_81, shopType)
 
         }
@@ -248,7 +248,7 @@ class NormalCheckoutTracking {
                 "click - tambah ke keranjang on variants page - before login",
                 productId ?: ""
         )
-        mapEvent[KEY_DIMENSION_24] = productId ?: ""
+        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -260,7 +260,7 @@ class NormalCheckoutTracking {
                 SELECT_SIZE_VARIANT,
                 size
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -272,7 +272,7 @@ class NormalCheckoutTracking {
                 SELECT_COLOR_VARIANT,
                 color
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

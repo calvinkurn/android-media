@@ -61,7 +61,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Action.CLICK_SHIPPING,
                 ""
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -98,7 +98,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                     "non variant"
                 }
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -130,7 +130,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
                 variant ?: ""
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -225,7 +225,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "click - cek keranjang",
                 productId
         )
-        mapEvent[KEY_DIMENSION_24] =  productId
+        mapEvent[KEY_PRODUCT_ID] =  productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -236,7 +236,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "click - variants",
                 eventLabel
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -273,7 +273,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
                 putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
-                putString(KEY_DIMENSION_24, product.productId.toString())
+                putString(KEY_PRODUCT_ID, product.productId.toString())
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -299,7 +299,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
                                         DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
-                                        KEY_DIMENSION_24, product.productId.toString()
+                                        KEY_PRODUCT_ID, product.productId.toString()
                                 )
                         ))
                 ))
@@ -372,7 +372,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
                 putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
                 putString(DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER)
-                putString(KEY_DIMENSION_24, product.productId.toString())
+                putString(KEY_PRODUCT_ID, product.productId.toString())
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
@@ -401,7 +401,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         PROMO_POSITION, position + 1,
                         LIST, listValue,
                         DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
-                        KEY_DIMENSION_24, product.productId.toString()
+                        KEY_PRODUCT_ID, product.productId.toString()
                 )
         ))
         )
@@ -515,7 +515,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                     KEY_LABEL to productId)
         }
         params[KEY_USER_ID] = userId
-        params[KEY_DIMENSION_24] = productId
+        params[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(params)
     }
 
@@ -535,7 +535,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.Message.LABEL.toLowerCase()
         )
-        mapEvent[KEY_DIMENSION_24] =  productId
+        mapEvent[KEY_PRODUCT_ID] =  productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -547,7 +547,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "add wishlist",
                 productId
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -559,7 +559,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "add wishlist - non logged in",
                 productId
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -581,7 +581,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.ImageReview.ACTION_SEE_ALL,
                 productId.toString()
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -592,7 +592,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM,
                 "product_id: $productId - review_id : $reviewId"
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
     }
 
@@ -603,7 +603,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "click - review gallery on most helpful review",
                 "product_id: $productId - review_id : $reviewId"
         )
-        mapEvent[KEY_DIMENSION_24] = productId ?: 0
+        mapEvent[KEY_PRODUCT_ID] = productId ?: 0
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -656,6 +656,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "eventCategory", "product page",
                 "eventAction", "view product page",
                 "eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name,
+                KEY_PRODUCT_ID, productInfo?.basic?.id,
                 "ecommerce", DataLayer.mapOf(
                 "currencyCode", "IDR",
                 "detail", DataLayer.mapOf(
@@ -671,7 +672,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         "dimension55", dimension55,
                         "dimension54", getMultiOriginAttribution(multiOrigin),
                         "dimension83", dimension83,
-                        KEY_DIMENSION_24, productInfo?.basic?.id,
                         KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString
 
                 ))).apply {
@@ -711,6 +711,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other")
             putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getEnhanceCategoryFormatted(productInfo?.category?.detail))
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other")
+            putString(KEY_PRODUCT_ID, productInfo?.basic?.id.toString())
             putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble()
                     ?: 0.toDouble())
             putLong(FirebaseAnalytics.Param.INDEX, 1)
@@ -718,7 +719,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
             putString("dimension55", dimension55)
             putString("dimension83", dimension83)
-            putString(KEY_DIMENSION_24, productInfo?.basic?.id.toString())
             putString(KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString)
         }
 
@@ -989,7 +989,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val DATA_DIMENSION_83 = "dimension83"
         private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         private const val VALUE_NONE_OTHER = "none / other"
-        private const val KEY_DIMENSION_24 = "dimension24"
+        private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_DIMENSION_81 = "dimension81"
     }
 }
