@@ -157,6 +157,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var partialVariantAndRateEstView: PartialVariantAndRateEstView
     lateinit var productDescrView: PartialProductDescrFullView
     lateinit var actionButtonView: PartialButtonActionView
+    lateinit var topAdsDetailSheet: TopAdsDetailSheet
     lateinit var productShopView: PartialShopView
     lateinit var attributeInfoView: PartialAttributeInfoView
     lateinit var imageReviewViewView: PartialImageReviewView
@@ -549,7 +550,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         actionButtonView.rincianTopAdsClick = {
             context?.let {
-                TopAdsDetailSheet.newInstance(it).show()
+                topAdsDetailSheet.show()
+            }
+        }
+
+        topAdsDetailSheet.editTopAdsClick = {
+            shopInfo?.let { shopInfo ->
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productInfo?.basic?.id?.toString())
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let { RouteManager.route(it, applink) }
             }
         }
 
@@ -878,6 +891,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         })
+        context?.let {
+            topAdsDetailSheet = TopAdsDetailSheet.newInstance(it)
+        }
     }
 
     private fun initShowSearchPDP() {

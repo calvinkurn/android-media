@@ -3,9 +3,11 @@ package com.tokopedia.product.detail.view.widget
 import android.content.Context
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.R
+import kotlinx.android.synthetic.main.pdp_topads_detail_sheet.*
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -13,6 +15,7 @@ import com.tokopedia.product.detail.R
 class TopAdsDetailSheet {
 
     private var dialog: BottomSheetDialog? = null
+    var editTopAdsClick: (() -> Unit)? = null
 
     private fun setupView(context: Context) {
         dialog!!.setOnShowListener { dialogInterface ->
@@ -23,7 +26,20 @@ class TopAdsDetailSheet {
                 behavior.isHideable = false
             }
         }
-
+        dialog?.let {
+            it.action_to_topads_dashboard.setOnClickListener {
+                RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+            }
+            it.action_edit_ads.setOnClickListener{
+                editTopAdsClick?.invoke()
+            }
+            it.toggle_switch_ads.setOnCheckedChangeListener { buttonView, isChecked ->
+                when(isChecked){
+                    true -> it.txt_active_status.setText(context.getString(R.string.aktif))
+                    false -> it.txt_active_status.setText(context.getString(R.string.tidak_aktif))
+                }
+            }
+        }
     }
 
     fun show() {
