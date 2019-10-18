@@ -26,7 +26,7 @@
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerViewShopProductItem" />
+            app:layout_constraintBottom_toTopOf="@+id/dummyViewForAvatarAndSeeShop" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/buttonSeeShop"
@@ -45,7 +45,7 @@
             android:text="@string/shop_see_shop_button"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerViewShopProductItem"
+            app:layout_constraintBottom_toTopOf="@+id/dummyViewForAvatarAndSeeShop"
             app:buttonCompatSize="medium"
             app:buttonCompatType="ghost" />
         
@@ -112,6 +112,15 @@
             app:layout_constraintLeft_toRightOf="@id/imageViewShopAvatar"
             app:layout_constraintRight_toLeftOf="@id/buttonSeeShop"
             tools:src="@drawable/ic_badge_gold" />
+
+        <View
+            android:id="@+id/dummyViewForAvatarAndSeeShop"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation" />
 
         <com.tokopedia.search.result.presentation.view.widget.SquareImageView
             android:id="@+id/imageViewShopItemProductImage1"
