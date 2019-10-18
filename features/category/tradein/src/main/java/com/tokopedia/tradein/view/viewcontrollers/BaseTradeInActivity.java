@@ -109,4 +109,13 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
     }
 
+    @Override
+    public View getRootView() {
+        return findViewById(R.id.root_view);
+    }
+
+    @Override
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
 }
