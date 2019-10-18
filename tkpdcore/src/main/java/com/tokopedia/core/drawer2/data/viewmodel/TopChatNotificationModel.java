@@ -6,6 +6,8 @@ package com.tokopedia.core.drawer2.data.viewmodel;
 
 public class TopChatNotificationModel {
     private final int notifUnreads;
+    private int notifUnreadsSeller = 0;
+    private int notifUnreadsBuyer = 0;
 
     public TopChatNotificationModel(int notifUnreads) {
         this.notifUnreads = notifUnreads;
@@ -13,5 +15,21 @@ public class TopChatNotificationModel {
 
     public int getNotifUnreads() {
         return notifUnreads;
+    }
+
+    public int getNotifUnreadsSeller() {
+        return notifUnreadsSeller;
+    }
+
+    public int getNotifUnreadsBuyer() {
+        return notifUnreadsBuyer;
+    }
+
+    public void setNotifUnreadsSeller(int notifUnreadsSeller) {
+        this.notifUnreadsSeller = notifUnreadsSeller;
+    }
+
+    public void setNotifUnreadsBuyer(int notifUnreadsBuyer) {
+        this.notifUnreadsBuyer = notifUnreadsBuyer;
     }
 }
