@@ -163,8 +163,12 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         }
     }
 
-    override fun onDestroyView() {
+    override fun onStop() {
         mIsRestoredfromBackStack = true
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
         promoCheckoutListMarketplacePresenter.detachView()
         super.onDestroyView()
     }
