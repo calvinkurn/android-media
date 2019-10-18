@@ -52,11 +52,10 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
 
 import java.util.ArrayList;
@@ -611,13 +610,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
-            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
-                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        } else {
-            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
-                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        }
+        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override

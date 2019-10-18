@@ -5,11 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -66,8 +67,11 @@ public class ProductViewModelMapper {
 
     private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalNavModel globalNavModel) {
         return new GlobalNavViewModel(
+                globalNavModel.getData().getSource(),
                 globalNavModel.getData().getTitle(),
                 globalNavModel.getData().getKeyword(),
+                globalNavModel.getData().getNavTemplate(),
+                globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
@@ -80,11 +84,16 @@ public class ProductViewModelMapper {
         int position = 1;
         for (SearchProductModel.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
+                    item.getCategoryName(),
                     item.getName(),
                     item.getInfo(),
                     item.getImageUrl(),
                     item.getApplink(),
                     item.getUrl(),
+                    item.getSubtitle(),
+                    item.getStrikethrough(),
+                    item.getBackgroundUrl(),
+                    item.getLogoUrl(),
                     position
             ));
             position++;
@@ -174,6 +183,7 @@ public class ProductViewModelMapper {
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
+        productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         return productItem;
     }
 
@@ -227,6 +237,10 @@ public class ProductViewModelMapper {
                 );
 
         return labelGroupViewModel;
+    }
+
+    private FreeOngkirViewModel convertToFreeOngkirViewModel(SearchProductModel.FreeOngkir freeOngkir) {
+        return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {

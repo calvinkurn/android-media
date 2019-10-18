@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
 import com.tokopedia.home.beranda.domain.model.SpotlightItem;
+import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -28,11 +29,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
+import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,19 +65,22 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getSlides() != null
-                    && homeData.getSlides().getSlides() != null
-                    && !homeData.getSlides().getSlides().isEmpty()) {
-                list.add(mappingBanner(homeData.getSlides().getSlides(), homeData.isCache()));
-            } else {
-                list.add(mappingBanner(new ArrayList<BannerSlidesModel>(), homeData.isCache()));
+            list.add(mappingBanner(homeData.getSlides(), homeData.isCache()));
+
+            if (homeData.getHomeFlag() != null) {
+                if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
+                    list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
+                }
             }
 
             if (homeData.getTicker() != null
                     && homeData.getTicker().getTickers() != null
                     && !homeData.getTicker().getTickers().isEmpty()
                     && !HomeFragment.HIDE_TICKER) {
-                list.add(mappingTicker(homeData.getTicker().getTickers()));
+                HomeVisitable ticker = mappingTicker(homeData.getTicker().getTickers());
+                if (ticker != null) {
+                    list.add(ticker);
+                }
             }
 
             if (homeData.getDynamicHomeIcon() != null
@@ -272,14 +275,30 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private HomeVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
+        ArrayList<Ticker.Tickers> tmpTickers = new ArrayList<>();
+        for (Ticker.Tickers tmpTicker: tickers) {
+            if (!tmpTicker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
+                tmpTickers.add(tmpTicker);
+            }
+        }
+
+        if (tmpTickers.size() <= 0) {
+            return null;
+        }
+
         TickerViewModel viewModel = new TickerViewModel();
-        viewModel.setTickers(tickers);
+        viewModel.setTickers(tmpTickers);
         return viewModel;
     }
 
-    private HomeVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
+    private HomeVisitable mappingBanner(BannerDataModel slides, boolean isCache) {
         return homeVisitableFactory.createBannerVisitable(
                 slides, isCache);
+    }
+
+    private HomeVisitable mappingOvoTokpoint(boolean hasTokopoints, boolean isCache) {
+        return homeVisitableFactory.createOvoTokopointVisitable(
+                hasTokopoints, isCache);
     }
 
     private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {

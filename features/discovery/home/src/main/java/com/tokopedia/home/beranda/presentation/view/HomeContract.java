@@ -38,7 +38,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag);
+        void setItems(List<Visitable> items, int repositoryFlag);
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
@@ -88,7 +88,9 @@ public interface HomeContract {
 
         boolean hasGeolocationPermission();
 
-        void setStickyContent(StickyLoginTickerPojo stickyContent);
+        void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
+
+        void hideStickyLogin();
     }
 
     interface Presenter extends CustomerPresenter<View> {

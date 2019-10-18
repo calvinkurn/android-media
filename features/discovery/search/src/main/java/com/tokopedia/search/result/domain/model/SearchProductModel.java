@@ -499,6 +499,9 @@ public class SearchProductModel {
         @SerializedName("shop")
         @Expose
         private Shop shop = new Shop();
+        @SerializedName("free_ongkir")
+        @Expose
+        private FreeOngkir freeOngkir = new FreeOngkir();
 
         public String getId() {
             return id;
@@ -638,6 +641,10 @@ public class SearchProductModel {
 
         public Shop getShop() {
             return shop;
+        }
+
+        public FreeOngkir getFreeOngkir() {
+            return freeOngkir;
         }
     }
 
@@ -806,6 +813,24 @@ public class SearchProductModel {
         }
     }
 
+    public static class FreeOngkir {
+        @SerializedName("is_active")
+        @Expose
+        private boolean isActive;
+
+        @SerializedName("img_url")
+        @Expose
+        private String imageUrl;
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+    }
+
     public static class GlobalNavModel {
         @SerializedName("data")
         private GlobalNavData data = new GlobalNavData();
@@ -816,6 +841,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavData {
+        @SerializedName("source")
+        private String source = "";
+
         @SerializedName("title")
         private String title = "";
 
@@ -825,6 +853,9 @@ public class SearchProductModel {
         @SerializedName("nav_template")
         private String navTemplate = "";
 
+        @SerializedName("background")
+        private String background = "";
+
         @SerializedName("see_all_applink")
         private String seeAllApplink = "";
 
@@ -833,6 +864,8 @@ public class SearchProductModel {
 
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
+
+        public String getSource() { return source; }
 
         public String getTitle() {
             return title;
@@ -845,6 +878,8 @@ public class SearchProductModel {
         public String getNavTemplate() {
             return navTemplate;
         }
+
+        public String getBackground() { return background; }
 
         public String getSeeAllApplink() {
             return seeAllApplink;
@@ -860,6 +895,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavItem {
+        @SerializedName("category_name")
+        private String categoryName = "";
+
         @SerializedName("name")
         private String name = "";
 
@@ -874,6 +912,22 @@ public class SearchProductModel {
 
         @SerializedName("url")
         private String url = "";
+
+        @SerializedName("subtitle")
+        private String subtitle = "";
+
+        @SerializedName("strikethrough")
+        private String strikethrough = "";
+
+        @SerializedName("background_url")
+        private String backgroundUrl = "";
+
+        @SerializedName("logo_url")
+        private String logoUrl = "";
+
+        public String getCategoryName() {
+            return categoryName;
+        }
 
         public String getName() {
             return name;
@@ -893,6 +947,22 @@ public class SearchProductModel {
 
         public String getUrl() {
             return url;
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+        public String getStrikethrough() {
+            return strikethrough;
+        }
+
+        public String getBackgroundUrl() {
+            return backgroundUrl;
+        }
+
+        public String getLogoUrl() {
+            return logoUrl;
         }
     }
 }

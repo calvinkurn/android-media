@@ -18,10 +18,7 @@ import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
@@ -57,21 +54,23 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
-    private final TetraDebugger tetraDebugger;
+    private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
-        tetraDebugger = TetraDebugger.Companion.instance(context);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(context);
+        }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
-        pushGeneral(value);
+        pushGeneralGtmV5(value);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class GTMAnalytics extends ContextAnalytics {
         map.put(KEY_CATEGORY, category);
         map.put(KEY_ACTION, action);
         map.put(KEY_LABEL, label);
-        pushGeneral(map);
+        pushGeneralGtmV5(map);
     }
 
     @Override
@@ -149,8 +148,35 @@ public class GTMAnalytics extends ContextAnalytics {
 
     }
 
-    public void sendScreen(String screenName) {
-        pushEvent("openScreen", DataLayer.mapOf("screenName", screenName));
+    public void sendScreen(String screenName, Map<String, String> customDimension) {
+        // v4 sendScreen
+        Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
+        if (customDimension != null && customDimension.size() > 0) {
+            map.putAll(customDimension);
+        }
+        pushEvent("openScreen", map);
+
+
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
+
+
+        // V5 sendScreen
+        Bundle bundle = new Bundle();
+        bundle.putString("screenName", screenName);
+        bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("clientId", getClientIDString());
+
+        if(customDimension != null) {
+            for (String key : customDimension.keySet()) {
+                if (customDimension.get(key) != null) {
+                    bundle.putString(key, customDimension.get(key));
+                }
+            }
+        }
+
+        logEvent("openScreen", bundle, context);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
@@ -179,7 +205,7 @@ public class GTMAnalytics extends ContextAnalytics {
         map.put(USER_ID, userId);
         map.put(SHOP_TYPE, shopType);
         map.put(SHOP_ID, shopId);
-        if (customDimension!= null) {
+        if (customDimension != null) {
             map.putAll(customDimension);
         }
         pushGeneral(map);
@@ -192,7 +218,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
-        tetraDebugger.send(values);
+        if (tetraDebugger != null) {
+            tetraDebugger.send(values);
+        }
     }
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
@@ -225,61 +253,10 @@ public class GTMAnalytics extends ContextAnalytics {
         return newList;
     }
 
-    public GTMAnalytics sendCampaign(Campaign campaign) {
-        pushEvent("campaignTrack", campaign.getCampaign());
-        return this;
-    }
-
-    public GTMAnalytics clearCampaign(Campaign campaign) {
-        pushGeneral(campaign.getNullCampaignMap());
-        return this;
-    }
-
-    public GTMAnalytics eventCheckout(Checkout checkout, String paymentId) {
-
-        pushGeneral(
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
-                        AppEventTracking.PAYMENT_ID, paymentId,
-                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
-                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
-                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-                        )));
-
-        return this;
-    }
-
-    /**
-     * look identical with {@link #eventCheckout(Checkout)}
-     * @param checkout
-     * @return
-     */
-    public GTMAnalytics eventCheckout(Checkout checkout) {
-
-        pushGeneral(
-                DataLayer.mapOf(
-                        AppEventTracking.EVENT, AppEventTracking.Event.EVENT_CHECKOUT,
-                        AppEventTracking.EVENT_CATEGORY, AppEventTracking.Category.ECOMMERCE,
-                        AppEventTracking.EVENT_ACTION, AppEventTracking.Action.CHECKOUT,
-                        AppEventTracking.EVENT_LABEL, checkout.getStep(),
-                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
-                                AppEventTracking.Event.EVENT_CHECKOUT, checkout.getCheckoutMapEvent()
-                        )));
-
-        return this;
-    }
-
-    public void clearCheckoutDataLayer() {
-        pushGeneral(DataLayer.mapOf("step", null, "products", null,
-                "currencyCode", null, "actionField", null, "ecommerce", null));
-    }
-
     public void sendScreenAuthenticated(String screenName) {
         if (TextUtils.isEmpty(screenName)) return;
         eventAuthenticate(null);
-        sendScreen(screenName);
+        sendScreen(screenName, null);
     }
 
     public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
@@ -341,16 +318,8 @@ public class GTMAnalytics extends ContextAnalytics {
         pushEvent(Authenticated.KEY_CD_NAME, map);
     }
 
-    public void sendScreen(String screenName, Map<String, String> customDimension) {
-        Map<String, Object> map = DataLayer.mapOf("screenName", screenName);
-        if (customDimension != null && customDimension.size() > 0) {
-            map.putAll(customDimension);
-        }
-        pushEvent("openScreen", map);
-    }
-
     public GTMAnalytics eventAddtoCart(GTMCart cart) {
-        pushEvent( "addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
+        pushEvent("addToCart", DataLayer.mapOf("ecommerce", cart.getCartMap()));
         return this;
     }
 
@@ -360,7 +329,7 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    public void pushClickEECommerce(Bundle bundle){
+    public void pushClickEECommerce(Bundle bundle) {
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
@@ -377,11 +346,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String BEGINCHECKOUT = "begin_checkout";
     private static final String CHECKOUT_PROGRESS = "checkout_progress";
 
-    public void pushEECommerce(String keyEvent, Bundle bundle){
-        // always allow sending gtm v5 in debug mode, and use remote config value in production
-        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
-            return;
-
+    public void pushEECommerce(String keyEvent, Bundle bundle) {
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
@@ -389,7 +354,7 @@ public class GTMAnalytics extends ContextAnalytics {
             bundle.remove("list");
         }
 
-        switch (keyEvent.toLowerCase()){
+        switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
                 break;
@@ -412,11 +377,30 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(keyEvent, bundle, context);
     }
 
-    public void pushGeneralGtmV5(Map<String, Object> params){
-        sendGeneralEvent(params);
-        
-        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
-            return;
+    public void sendCampaign(Map<String, Object> param) {
+        Bundle bundle = new Bundle();
+
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        String afUniqueId = getAfUniqueId(context);
+
+        bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("clientId", getClientIDString());
+
+        bundle.putString("screenName", (String)param.get("screenName"));
+
+        bundle.putString("gclid", (String)param.get(AppEventTracking.GTM.UTM_GCLID));
+        bundle.putString("utmSource", (String)param.get(AppEventTracking.GTM.UTM_SOURCE));
+        bundle.putString("utmMedium", (String)param.get(AppEventTracking.GTM.UTM_MEDIUM));
+        bundle.putString("utmCampaign", (String)param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
+        bundle.putString("utmContent", (String)param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
+        bundle.putString("utmTerm", (String)param.get(AppEventTracking.GTM.UTM_TERM));
+
+        logEvent("campaignTrack", bundle, context);
+    }
+
+    public void pushGeneralGtmV5(Map<String, Object> params) {
+        pushGeneral(params);
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
@@ -426,7 +410,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }
 
-    public void pushGeneralGtmV5(String event, String category, String action, String label){
+    public void pushGeneralGtmV5(String event, String category, String action, String label) {
         sendGeneralEvent(event, category, action, label);
 
         Bundle bundle = new Bundle();
@@ -437,34 +421,11 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(event, bundle, context);
     }
 
-    public void sendScreenV5(String screenName) {
-        sendScreenV5(screenName, new HashMap<>());
-    }
-
-    public void sendScreenV5(String screenName, Map<String, String> additionalParams) {
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
-        final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
-
-        Bundle bundle = new Bundle();
-        bundle.putString("screenName", screenName);
-        bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
-        bundle.putString("clientId", getClientIDString());
-
-        for(String key : additionalParams.keySet()) {
-            if (additionalParams.get(key) != null) {
-                bundle.putString(key, additionalParams.get(key));
-            }
-        }
-
-        logEvent("openScreen", bundle, context);
-    }
-
-    public void logEvent(String eventName, Bundle bundle,Context context){
+    public void logEvent(String eventName, Bundle bundle, Context context) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             log(context, eventName, bundle);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -491,26 +452,12 @@ public class GTMAnalytics extends ContextAnalytics {
                     Map<String, Object> maps = new HashMap<>();
                     maps.put("user_id", uid);
                     getTagManager().getDataLayer().push(maps);
-                    tetraDebugger.setUserId(userId);
+                    if (tetraDebugger != null) {
+                        tetraDebugger.setUserId(userId);
+                    }
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
-    }
-
-    public void eventLogAnalytics(String screenName, String errorDesc) {
-        Log.d(TAG, "Sending Push Event Error");
-        pushEvent( "trackException", DataLayer.mapOf(
-                "screenName", screenName,
-                "exception.description", errorDesc,
-                "exception.isFatal", "true"));
-    }
-
-    public GTMAnalytics eventDetail(ProductDetail detail) {
-        pushGeneral( DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "detail", detail.getDetailMap()
-        )));
-
-        return this;
     }
 
     public void eventOnline(String uid) {
@@ -518,13 +465,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 "onapps", DataLayer.mapOf("LoginId", uid));
     }
 
-    public GTMAnalytics sendEvent(Map<String, Object> events) {
-        pushGeneral(events);
-        return this;
-    }
-
     public void event(String name, Map<String, Object> data) {
-        pushEvent( name, data);
+        pushEvent(name, data);
     }
 
     /**
@@ -545,22 +487,12 @@ public class GTMAnalytics extends ContextAnalytics {
         );
     }
 
-    private void clearEventTracking() {
-        pushGeneral(
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null
-                )
-        );
-    }
-
-    private void pushIris(String eventName, Map<String, Object>values) {
+    private void pushIris(String eventName, Map<String, Object> values) {
         if (iris != null) {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            if(values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
                 iris.saveEvent(values);
             }
         }
