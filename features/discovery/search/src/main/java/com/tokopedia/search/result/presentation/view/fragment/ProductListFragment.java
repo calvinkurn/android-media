@@ -60,6 +60,7 @@ import com.tokopedia.search.result.presentation.view.listener.QuickFilterListene
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -103,6 +104,7 @@ public class ProductListFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView,
         ProductListSectionContract.View,
         ProductListener,
+        TickerListener,
         SuggestionListener,
         GuidedSearchListener,
         RelatedSearchListener,
@@ -143,6 +145,7 @@ public class ProductListFragment
     private ProductListTypeFactory productListTypeFactory;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
+    private boolean tickerHasDismissed = false;
 
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
@@ -261,6 +264,7 @@ public class ProductListFragment
 
     private void setupAdapter() {
         productListTypeFactory = new ProductListTypeFactoryImpl(
+                this,
                 this, this,
                 this, this,
                 this, this,
@@ -380,11 +384,11 @@ public class ProductListFragment
         for (Visitable object : list) {
             if (object instanceof ProductItemViewModel) {
                 ProductItemViewModel item = (ProductItemViewModel) object;
-                productItemViewModels.add(item);
                 if (!item.isTopAds()) {
                     String filterSortParams
                             = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
                     dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
+                    productItemViewModels.add(item);
                 }
             }
         }
@@ -487,7 +491,7 @@ public class ProductListFragment
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         trackingQueue.sendAll();
     }
 
@@ -621,7 +625,7 @@ public class ProductListFragment
 
         Product product = createTopAdsProductForTracking(item);
 
-        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos);
+        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
     }
 
     private Product createTopAdsProductForTracking(ProductItemViewModel item) {
@@ -649,6 +653,30 @@ public class ProductListFragment
     @Override
     public void onWishlistButtonClicked(final ProductItemViewModel productItem) {
         presenter.handleWishlistButtonClicked(productItem);
+    }
+
+    @Override
+    public void onTickerClicked(String queryParams) {
+        applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
+    }
+
+    private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
+        HashMap<String, String> params = new HashMap<>(quickFilterController.getParameter());
+        params.putAll(tickerParams);
+        refreshSearchParameter(params);
+        refreshFilterController(params);
+        clearDataFilterSort();
+        reloadData();
+    }
+
+    @Override
+    public void onTickerDismissed() {
+        tickerHasDismissed = true;
+    }
+
+    @Override
+    public boolean isTickerHasDismissed() {
+        return tickerHasDismissed;
     }
 
     @Override
