@@ -40,13 +40,13 @@ class FeedMainToolbar : MainToolbar {
         val imageViewImageSearch = findViewById<ImageView>(R.id.btn_search)
 
         imageViewImageSearch.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT)
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
 
     }
 
     private fun initToolbarIcon() {
-        (findViewById<ImageView>(R.id.btn_search)).visibility = View.GONE
+        (findViewById<ImageView>(R.id.btn_wishlist)).visibility = View.GONE
     }
 
     override fun inflateResource(context: Context) {
