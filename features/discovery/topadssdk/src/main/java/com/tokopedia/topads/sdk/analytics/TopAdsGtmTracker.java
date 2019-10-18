@@ -108,7 +108,7 @@ public class TopAdsGtmTracker {
             bundle.putString("screenName", screenName);
             bundle.putParcelableArrayList("items", dataBundleList);
             TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
-            clearDataLayerList();
+//            clearDataLayerList();
         }
     }
 
