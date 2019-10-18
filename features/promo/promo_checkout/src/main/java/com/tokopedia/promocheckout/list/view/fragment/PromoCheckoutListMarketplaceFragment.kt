@@ -33,6 +33,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     private var isOneClickShipment: Boolean = false
     private var promo: Promo? = null
     private var pageNo = 0
+    private var mIsRestoredfromBackStack: Boolean = false
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -42,8 +43,9 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_COUPON_ACTIVE) ?: true
-        promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
+        mIsRestoredfromBackStack = false
+        isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
+        promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
@@ -120,17 +122,13 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun initInjector() {
         super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
-        val EXTRA_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
-        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
+        val PROMO_CODE = "PROMO_CODE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
@@ -139,8 +137,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                            promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
+            bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putString(PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
@@ -150,8 +148,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onResume() {
-        isLoadingInitialData = true
-        promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        if (mIsRestoredfromBackStack) {
+            isLoadingInitialData = true
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        }
         super.onResume()
     }
 
@@ -164,6 +164,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onDestroyView() {
+        mIsRestoredfromBackStack = true
         promoCheckoutListMarketplacePresenter.detachView()
         super.onDestroyView()
     }
