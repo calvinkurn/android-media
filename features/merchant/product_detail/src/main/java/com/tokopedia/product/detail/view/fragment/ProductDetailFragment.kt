@@ -1255,7 +1255,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
-                    (topAdsGetProductManage.data.isEnableAd == 1),
+                    (topAdsGetProductManage.data.adId.isNotEmpty()),
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
@@ -1504,7 +1504,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),
-                (topAdsGetProductManage.data.isEnableAd == 1),
+                (topAdsGetProductManage.data.adId.isNotEmpty()),
                 data.preorder)
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
