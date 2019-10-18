@@ -122,7 +122,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation" />
 
-        <com.tokopedia.search.result.presentation.view.widget.SquareImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageViewShopItemProductImage1"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -131,7 +131,8 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:src="@color/shop_item_product_empty_color"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageViewShopItemProductImage2"
@@ -154,7 +155,7 @@
             tools:text="@string/shop_product_item_price"
             tools:visibility="visible"/>
 
-        <com.tokopedia.search.result.presentation.view.widget.SquareImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageViewShopItemProductImage2"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -163,7 +164,8 @@
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:src="@color/shop_item_product_empty_color"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
             app:layout_constraintStart_toEndOf="@id/imageViewShopItemProductImage1"
             app:layout_constraintEnd_toStartOf="@+id/imageViewShopItemProductImage3" />
@@ -185,7 +187,7 @@
             tools:text="@string/shop_product_item_price"
             tools:visibility="visible" />
 
-        <com.tokopedia.search.result.presentation.view.widget.SquareImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageViewShopItemProductImage3"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -194,7 +196,8 @@
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:src="@color/shop_item_product_empty_color"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
             app:layout_constraintStart_toEndOf="@id/imageViewShopItemProductImage2"
             app:layout_constraintEnd_toEndOf="parent" />

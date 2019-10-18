@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.BaseTarget
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -39,11 +38,6 @@ internal class ShopItemViewHolder(
     }
 
     private var context = itemView.context
-    private var imageViewShopAvatarTarget: BitmapImageViewTarget? = null
-    private var imageViewShopReputationTarget: SimpleTarget<GlideDrawable>? = null
-    private var imageViewProductPreviewTarget1: BitmapImageViewTarget? = null
-    private var imageViewProductPreviewTarget2: BitmapImageViewTarget? = null
-    private var imageViewProductPreviewTarget3: BitmapImageViewTarget? = null
 
     override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
         if(shopViewItem == null) return
@@ -70,7 +64,7 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopAvatar?.let {
-            imageViewShopAvatarTarget = createCircleImageViewTarget(it)
+            val imageViewShopAvatarTarget = createCircleImageViewTarget(it)
 
             Glide.with(context)
                     .load(shopViewItem.image)
@@ -130,7 +124,7 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            imageViewShopReputationTarget = createImageViewShopReputationTarget(imageViewShopReputation)
+            val imageViewShopReputationTarget = createImageViewShopReputationTarget(imageViewShopReputation)
 
             Glide.with(context)
                     .load(shopViewItem.reputationImageUri)
@@ -151,60 +145,65 @@ internal class ShopItemViewHolder(
     }
 
     private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
-        showProductPreviews(shopViewItem)
+        clearProductPreviewOnClickListener()
 
-        itemView.textViewShopHasNoProduct?.showWithCondition(shopViewItem.productList.isEmpty())
+        val productPreviewItemSize = shopViewItem.productList.size
 
-        if (shopViewItem.productList.isNotEmpty()) {
+        setProductPreviewComponentVisibility(productPreviewItemSize)
+
+        if (productPreviewItemSize > 0) {
             showShopProductItemPreview(shopViewItem)
         }
     }
 
-    private fun showProductPreviews(shopViewItem: ShopViewModel.ShopItem) {
-        itemView.imageViewShopItemProductImage1.showWithCondition(shopViewItem.productList.isNotEmpty())
-        itemView.imageViewShopItemProductImage2.showWithCondition(shopViewItem.productList.isNotEmpty())
-        itemView.imageViewShopItemProductImage3.showWithCondition(shopViewItem.productList.isNotEmpty())
+    private fun clearProductPreviewOnClickListener() {
+        itemView.imageViewShopItemProductImage1?.setOnClickListener(null)
+        itemView.imageViewShopItemProductImage2?.setOnClickListener(null)
+        itemView.imageViewShopItemProductImage3?.setOnClickListener(null)
+    }
 
-        itemView.textViewShopItemProductPrice1.showWithCondition(shopViewItem.productList.isNotEmpty())
-        itemView.textViewShopItemProductPrice2.showWithCondition(shopViewItem.productList.size > 1)
-        itemView.textViewShopItemProductPrice3.showWithCondition(shopViewItem.productList.size > 2)
+    private fun setProductPreviewComponentVisibility(productPreviewItemSize: Int) {
+        setProductPreviewImagesVisibility(productPreviewItemSize)
+        setProductPreviewPriceVisibility(productPreviewItemSize)
+        setTextViewNoProductVisibility(productPreviewItemSize)
+    }
+
+    private fun setProductPreviewImagesVisibility(productPreviewItemSize: Int) {
+        itemView.imageViewShopItemProductImage1?.showWithCondition(productPreviewItemSize > 0)
+        itemView.imageViewShopItemProductImage2?.showWithCondition(productPreviewItemSize > 0)
+        itemView.imageViewShopItemProductImage3?.showWithCondition(productPreviewItemSize > 0)
+    }
+
+    private fun setProductPreviewPriceVisibility(productPreviewItemSize: Int) {
+        itemView.textViewShopItemProductPrice1?.showWithCondition(productPreviewItemSize > 0)
+        itemView.textViewShopItemProductPrice2?.showWithCondition(productPreviewItemSize > 1)
+        itemView.textViewShopItemProductPrice3?.showWithCondition(productPreviewItemSize > 2)
+    }
+
+    private fun setTextViewNoProductVisibility(productPreviewItemSize: Int) {
+        itemView.textViewShopHasNoProduct?.showWithCondition(productPreviewItemSize == 0)
     }
 
     private fun showShopProductItemPreview(shopViewItem: ShopViewModel.ShopItem) {
         if (shopViewItem.productList.isNotEmpty()) {
-            itemView.imageViewShopItemProductImage1.let {
-                imageViewProductPreviewTarget1 = createRoundedImageViewTarget(it)
-            }
-
             showProductItemPreviewPerItem(
                     shopViewItem.productList[0],
-                    imageViewProductPreviewTarget1,
                     itemView.imageViewShopItemProductImage1,
                     itemView.textViewShopItemProductPrice1
             )
         }
 
         if (shopViewItem.productList.size > 1) {
-            itemView.imageViewShopItemProductImage2.let {
-                imageViewProductPreviewTarget2 = createRoundedImageViewTarget(it)
-            }
-
             showProductItemPreviewPerItem(
                     shopViewItem.productList[1],
-                    imageViewProductPreviewTarget2,
                     itemView.imageViewShopItemProductImage2,
                     itemView.textViewShopItemProductPrice2
             )
         }
 
         if (shopViewItem.productList.size > 2) {
-            itemView.imageViewShopItemProductImage3.let {
-                imageViewProductPreviewTarget3 = createRoundedImageViewTarget(it)
-            }
-
             showProductItemPreviewPerItem(
                     shopViewItem.productList[2],
-                    imageViewProductPreviewTarget3,
                     itemView.imageViewShopItemProductImage3,
                     itemView.textViewShopItemProductPrice3
             )
@@ -213,7 +212,6 @@ internal class ShopItemViewHolder(
 
     private fun showProductItemPreviewPerItem(
             productPreviewItem: ShopViewModel.ShopItem.ShopItemProduct,
-            roundedImageViewTarget: BitmapImageViewTarget?,
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?
     ) {
@@ -226,7 +224,7 @@ internal class ShopItemViewHolder(
                     .asBitmap()
                     .centerCrop()
                     .dontAnimate()
-                    .into(roundedImageViewTarget)
+                    .into(createRoundedImageViewTarget(it))
         }
 
         imageViewShopItemProductImage?.setOnClickListener {
@@ -398,19 +396,5 @@ internal class ShopItemViewHolder(
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context.resources.getDimensionPixelSize(id)
-    }
-
-    override fun onViewRecycled() {
-        imageViewShopAvatarTarget.clear()
-        imageViewShopReputationTarget.clear()
-        imageViewProductPreviewTarget1.clear()
-        imageViewProductPreviewTarget2.clear()
-        imageViewProductPreviewTarget3.clear()
-    }
-
-    private fun BaseTarget<*>?.clear() {
-        this?.let {
-            Glide.clear(it)
-        }
     }
 }

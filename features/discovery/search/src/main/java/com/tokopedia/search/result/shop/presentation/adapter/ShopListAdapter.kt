@@ -40,11 +40,6 @@ internal class ShopListAdapter(
         holder.bind(data)
     }
 
-    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
-        super.onViewRecycled(holder)
-        holder.onViewRecycled()
-    }
-
     fun updateList(newList: List<Visitable<*>>) {
         val diffResult = DiffUtil.calculateDiff(ShopListDiffUtilCallback(list, newList))
 
