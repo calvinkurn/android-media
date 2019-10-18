@@ -100,10 +100,12 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)
-            if (elementID != null) {
-                values[CLICKED_ELEMENT_ID] = elementID
 
+            elementID?.let {
+                values[CLICKED_ELEMENT_ID] = elementID
             }
+
+
             irisAnalytics.saveEvent(values)
         }
 
