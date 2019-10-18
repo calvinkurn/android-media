@@ -6,10 +6,9 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
-import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
+import com.tokopedia.core.drawer2.data.viewmodel.ChatNotificationModel;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -19,30 +18,29 @@ import rx.functions.Func2;
 public class NewNotificationUseCase extends UseCase<NotificationModel> {
 
     NotificationUseCase notificationUseCase;
-    TopChatNotificationUseCase topChatNotificationUseCase;
+    GetChatNotificationUseCase getChatNotificationUseCase;
 
     public NewNotificationUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
                                   NotificationUseCase notificationUseCase,
-                                  TopChatNotificationUseCase topChatNotificationUseCase) {
+                                  GetChatNotificationUseCase getChatNotificationUseCase) {
         super(threadExecutor, postExecutionThread);
         this.notificationUseCase = notificationUseCase;
-        this.topChatNotificationUseCase = topChatNotificationUseCase;
+        this.getChatNotificationUseCase = getChatNotificationUseCase;
     }
 
     @Override
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
         Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
-        Observable<TopChatNotificationModel> notifTopChat = topChatNotificationUseCase.createObservable
-                (requestParams);
+        Observable<ChatNotificationModel> notifTopChat = getChatNotificationUseCase.createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
 
-        return Observable.zip(notif, notifTopChat, new Func2<NotificationModel, TopChatNotificationModel, NotificationModel>() {
+        return Observable.zip(notif, notifTopChat, new Func2<NotificationModel, ChatNotificationModel, NotificationModel>() {
             @Override
-            public NotificationModel call(NotificationModel notificationModel, TopChatNotificationModel topChatNotificationModel) {
+            public NotificationModel call(NotificationModel notificationModel, ChatNotificationModel chatNotificationModel) {
                 NotificationData data = notificationModel.getNotificationData();
                 data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
-                        topChatNotificationModel.getNotifUnreads());
-                data.getInbox().setInboxMessage(topChatNotificationModel.getNotifUnreads());
+                        chatNotificationModel.getNotifUnreads());
+                data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreads());
                 notificationModel.setNotificationData(
                         data
                 );
