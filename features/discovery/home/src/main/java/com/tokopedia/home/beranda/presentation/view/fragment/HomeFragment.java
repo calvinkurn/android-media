@@ -951,8 +951,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
-        if (needToShowGeolocationComponent()) {
-            adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+        if (!needToShowGeolocationComponent()) {
+            adapter.removeGeolocationViewModel();
         }
         adapter.updateHomeQueryItems(visitables);
     }
