@@ -230,7 +230,7 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier);
 
-        void sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+        void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel);
 
         void sendAnalyticsOnClickSelectedCourierShipmentRecommendation(String courierName);
 
