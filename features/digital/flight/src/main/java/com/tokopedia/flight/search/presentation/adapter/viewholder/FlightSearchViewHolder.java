@@ -62,7 +62,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     public void bind(final FlightJourneyViewModel flightJourneyViewModel) {
         tvDeparture.setText(String.format("%s %s", flightJourneyViewModel.getDepartureTime(), flightJourneyViewModel.getDepartureAirport()));
         tvArrival.setText(String.format("%s %s", flightJourneyViewModel.getArrivalTime(), flightJourneyViewModel.getArrivalAirport()));
-        tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightJourneyViewModel.getFare().getAdultNumeric()));
+        tvPrice.setText(flightJourneyViewModel.getFare().getAdult());
         setDuration(flightJourneyViewModel);
         setAirline(flightJourneyViewModel);
         View.OnClickListener detailClickListener = v -> onFlightSearchListener.onDetailClicked(flightJourneyViewModel, getAdapterPosition());
@@ -170,12 +170,10 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         if (flightJourneyViewModel.isBestPairing()) {
             bestPairingTag.setVisibility(View.VISIBLE);
             discountTag.setVisibility(View.GONE);
-            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
+            tvPrice.setText(flightJourneyViewModel.getFare().getAdultCombo());
         } else if (flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
             bestPairingTag.setVisibility(View.GONE);
-            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
+            tvPrice.setText(flightJourneyViewModel.getFare().getAdultCombo());
         } else {
             bestPairingTag.setVisibility(View.GONE);
         }
