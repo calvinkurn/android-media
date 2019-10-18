@@ -256,6 +256,7 @@ public class WishListImpl implements WishList {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
         mPaging.resetPage();
+        dataWishlist.clear();
         if (context != null)
             fetchDataFromInternet(context);
     }
