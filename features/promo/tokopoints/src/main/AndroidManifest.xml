@@ -19,7 +19,7 @@
             android:name=".view.activity.CatalogListingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -36,7 +36,7 @@
             android:name=".view.activity.TokoPointsHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -53,7 +53,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -75,7 +75,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -91,7 +91,7 @@
             android:name=".view.activity.CouponDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
-            <intent-filter android:autoVerify="true">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
