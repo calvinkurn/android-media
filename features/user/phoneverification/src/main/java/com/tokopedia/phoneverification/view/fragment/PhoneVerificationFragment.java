@@ -176,19 +176,15 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     }
 
     public void setRequestOtpButtonListener(){
-        requestOtpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isValid()) {
-                    Intent intent = VerificationActivity.getCallingIntent(
-                            getActivity(),
-                            getPhoneNumber(),
-                            RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                            true,
-                            RequestOtpUseCase.MODE_SMS
-                    );
-                    startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
-                }
+        requestOtpButton.setOnClickListener(v -> {
+            if (isValid()) {
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                        getActivity(),
+                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                        getPhoneNumber(),
+                        ""
+                );
+                startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
             }
         });
     }
