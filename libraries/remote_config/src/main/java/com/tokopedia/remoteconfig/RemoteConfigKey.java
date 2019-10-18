@@ -169,4 +169,6 @@ public class RemoteConfigKey {
 
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
+
+    public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
 }
