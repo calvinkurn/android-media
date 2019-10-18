@@ -77,9 +77,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         compositeSubscription = new CompositeSubscription();
     }
 
-    public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData, String crossSellingQuery) {
+    public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
         getView().showProgressDialog();
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
+    }
+
+    public void getCrossSellingItems(String orderId, String crossSellingQuery) {
         crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 

@@ -26,10 +26,10 @@ class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatc
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val crossSellData = MutableLiveData<Result<TravelCrossSelling>>()
 
-    fun getOrderDetail(orderDetailQuery: String, crossSellQuery: String, orderId: String, orderCategory: String) {
+    fun getOrderDetail(orderDetailQuery: String, crossSellQuery: String?, orderId: String, orderCategory: String) {
         launch {
             orderDetailData.value = useCase.execute(orderDetailQuery, orderId, orderCategory, true)
-            crossSellData.value = crossSellingUseCase.execute(crossSellQuery, orderId, TravelCrossSellingUseCase.PARAM_HOTEL_PRODUCT)
+            if (crossSellQuery != null) crossSellData.value = crossSellingUseCase.execute(crossSellQuery, orderId, TravelCrossSellingUseCase.PARAM_HOTEL_PRODUCT)
         }
     }
 

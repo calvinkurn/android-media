@@ -77,8 +77,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
-            hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT) ?: 1
-            hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM) ?: 1
+            hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
+            hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM, 1) ?: 1
             hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
             if (hotelHomepageModel.checkInDate.isNotBlank()) hotelHomepageModel.checkInDateFmt =

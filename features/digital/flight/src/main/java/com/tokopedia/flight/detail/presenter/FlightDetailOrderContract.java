@@ -111,7 +111,9 @@ public interface FlightDetailOrderContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData, String crossSellingQuery);
+        void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData);
+
+        void getCrossSellingItems(String orderId, String crossSellingQuery);
 
         void actionCancelOrderButtonClicked();
 

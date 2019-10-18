@@ -70,6 +70,9 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -102,6 +105,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     FlightModuleRouter flightModuleRouter;
     @Inject
     TrackingCrossSellUtil trackingCrossSellUtil;
+
+    private RemoteConfig remoteConfig;
 
     private TextView orderId;
     private ImageView copyOrderId;
@@ -172,6 +177,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
         isCancellation = getArguments().getBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, false);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -234,8 +240,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
-        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData,
-                GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
         flightDetailOrderPresenter.onGetProfileData();
     }
 

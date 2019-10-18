@@ -50,6 +50,9 @@ import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBott
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -77,6 +80,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     @Inject
     lateinit var trackingCrossSellUtil: TrackingCrossSellUtil
 
+    lateinit var remoteConfig: RemoteConfig
+
     private var orderId: String = ""
     private var orderCategory: String = ""
 
@@ -96,6 +101,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             orderId = it.getString(KEY_ORDER_ID, "")
             orderCategory = it.getString(KEY_ORDER_CATEGORY, "")
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -150,10 +157,18 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     private fun getOrderDetailData() {
         if (userSessionInterface.isLoggedIn) {
-            orderDetailViewModel.getOrderDetail(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
-                    orderId, orderCategory)
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
+                orderDetailViewModel.getOrderDetail(
+                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
+                        orderId, orderCategory)
+            } else {
+                orderDetailViewModel.getOrderDetail(
+                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        null,
+                        orderId, orderCategory)
+            }
+
 
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
