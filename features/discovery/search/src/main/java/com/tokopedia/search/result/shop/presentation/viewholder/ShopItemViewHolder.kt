@@ -5,6 +5,7 @@ import android.support.annotation.DimenRes
 import android.support.annotation.IdRes
 import android.support.constraint.ConstraintSet
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
+import android.support.v7.widget.AppCompatImageButton
 import android.support.v7.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
