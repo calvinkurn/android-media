@@ -44,7 +44,8 @@ class TrackingCrossSellUtil {
 
         for (position in firstSeenItemPosition..lastSeenItemPosition) {
             val map = HashMap<String, Any>()
-            val item = crossSellingItems.get(position)
+
+            val item = if (firstSeenItemPosition == lastSeenItemPosition) crossSellingItems.get(0) else crossSellingItems.get(position)
             map[ID_LABEL] = position + 1
             map[NAME_LABEL] = item.product
             map[CREATIVE_LABEL] = item.product
