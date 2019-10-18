@@ -53,6 +53,7 @@ include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
 include "features:discovery:wishlist_common"
 include "features:discovery:search"
+include "features:discovery:global_nav_widget"
 
 include "features:fintech:mitra_toppers"
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/globalNavItemContainer"
+    android:id="@+id/globalNavPillItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
@@ -18,7 +18,7 @@
             android:scaleType="fitXY"/>
 
         <ImageView
-            android:id="@+id/globalNavItemImage"
+            android:id="@+id/globalNavPillItemImage"
             android:layout_width="@dimen/dp_72"
             android:layout_height="@dimen/dp_72"
             android:padding="@dimen/dp_16"
@@ -27,7 +27,7 @@
     </RelativeLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/globalNavItemName"
+        android:id="@+id/globalNavPillItemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
@@ -38,7 +38,7 @@
         android:gravity="center_horizontal"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/globalNavItemInfo"
+        android:id="@+id/globalNavPillItemInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
