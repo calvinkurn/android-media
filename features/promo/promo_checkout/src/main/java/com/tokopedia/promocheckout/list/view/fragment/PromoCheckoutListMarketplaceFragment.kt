@@ -33,6 +33,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     private var isOneClickShipment: Boolean = false
     private var promo: Promo? = null
     private var pageNo = 0
+    private var mIsRestoredfromBackStack: Boolean = false
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -42,6 +43,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mIsRestoredfromBackStack = false
         isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
@@ -146,8 +148,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onResume() {
-        isLoadingInitialData = true
-        promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        if (mIsRestoredfromBackStack) {
+            isLoadingInitialData = true
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+        }
         super.onResume()
     }
 
@@ -160,6 +164,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onDestroyView() {
+        mIsRestoredfromBackStack = true
         promoCheckoutListMarketplacePresenter.detachView()
         super.onDestroyView()
     }
