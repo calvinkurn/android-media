@@ -3,10 +3,6 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by henrypriyono on 10/30/17.
- */
-
 public class TickerViewModel implements Parcelable {
     private String text;
     private String query;
