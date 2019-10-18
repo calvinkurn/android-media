@@ -151,6 +151,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         if (mIsRestoredfromBackStack) {
             isLoadingInitialData = true
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
         super.onResume()
     }
