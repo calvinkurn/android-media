@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
@@ -19,6 +20,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
+import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
@@ -164,11 +166,12 @@ public class CMInAppManager implements CmInAppListener {
 
     @Override
     public void onCMInAppShown(CMInApp cmInApp) {
-
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_RECEIVED, cmInApp);
     }
 
     @Override
     public void onCMinAppDismiss() {
+        //todo @shubham add IRIS event
         Activity activity = getCurrentActivity();
         if (activity != null) {
             View mainView = activity.findViewById(R.id.mainContainer);
@@ -180,15 +183,27 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     @Override
-    public void onCMInAppLinkClick(Uri deepLinkUri, String screenName) {
+    public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
+        //todo @shubham add IRIS event
         Log.d("InApp", deepLinkUri.toString());
         Intent appLinkIntent = RouteManager.getIntent(application.getApplicationContext(), deepLinkUri.toString());
         if (getCurrentActivity() != null)
             getCurrentActivity().startActivity(appLinkIntent);
+        switch (elementType.getViewType()) {
+            case ElementType.BUTTON:
+                IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_CLICKED, cmInApp, elementType.getElementId());
+                break;
+            case ElementType.MAIN:
+            default:
+                IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_CLICKED, cmInApp);
+        }
+
     }
 
     @Override
-    public void onCMInAppClosed() {
+    public void onCMInAppClosed(CMInApp cmInApp) {
+        //todo @shubham add IRIS event
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_DISMISSED, cmInApp);
 
     }
 
