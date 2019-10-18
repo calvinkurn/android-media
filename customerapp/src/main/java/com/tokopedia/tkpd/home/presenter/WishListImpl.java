@@ -256,6 +256,7 @@ public class WishListImpl implements WishList {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
         mPaging.resetPage();
+        dataWishlist.clear();
         if (context != null)
             fetchDataFromInternet(context);
     }
@@ -632,6 +633,8 @@ public class WishListImpl implements WishList {
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
+            product.setFreeOngkir(wishlists.get(i).getFreeOngkir().getActive());
+            product.setImageFreeOngkir(wishlists.get(i).getFreeOngkir().getImageUrl());
             products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {

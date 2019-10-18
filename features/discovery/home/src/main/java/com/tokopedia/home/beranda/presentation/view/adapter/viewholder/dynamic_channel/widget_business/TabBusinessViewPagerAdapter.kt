@@ -28,4 +28,9 @@ class TabBusinessViewPagerAdapter(
         return list.size
     }
 
+    override fun getPageTitle(position: Int): CharSequence? {
+        return if (list.isNotEmpty()) {
+            list[position].name
+        } else ""
+    }
 }
