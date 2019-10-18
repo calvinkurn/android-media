@@ -51,7 +51,7 @@ data class TravelCrossSelling(
     )
 
     class Response(
-            @SerializedName("response")
+            @SerializedName("crossSell")
             val response: TravelCrossSelling = TravelCrossSelling()
     )
 }

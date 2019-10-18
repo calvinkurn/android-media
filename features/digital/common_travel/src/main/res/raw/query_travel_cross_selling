@@ -1,5 +1,5 @@
-query crossSellQuery($orderId: String, $orderCategory: String) {
-  crossSell(orderId: $orderId, orderCategory: $orderCategory) {
+query crossSellQuery($orderID: String!, $orderCategory: CrossSellOrderCategory!) {
+  crossSell(orderID: $orderID, orderCategory: $orderCategory) {
       items {
         product
         title

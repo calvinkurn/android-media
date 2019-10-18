@@ -32,18 +32,9 @@ class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRe
             val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
-//            val travelCrossSelling = useCase.executeOnBackground().getSuccessData<TravelCrossSelling.Response>().response
+            val travelCrossSelling = useCase.executeOnBackground().getSuccessData<TravelCrossSelling.Response>().response
 
-            var list = listOf<TravelCrossSelling.Item>().toMutableList()
-            for (i in 1..5) {
-                list.add(TravelCrossSelling.Item(product = "FLIGHT", title = "Tambah tiket pesawat", content = "Balik ke Jakarta", prefix = "",
-                        uri = "tokopedia://pesawat/search?dest=DPS_Denpasar_CGK_Jakarta_2019-11-04&a=1&c=0&i=0&s=1&auto_search=1",
-                        uriWeb = "https://www.tokopedia.com/flight/search/?term=DPS-CGK-20191104&amp;a=1&amp;c=0&amp;i=0&amp;k=1",
-                        imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/25/8966428/8966428_9eeb33f3-4c63-40b7-83d6-26dc1c4c4100.png",
-                        value = ""))
-            }
-//            return Success(travelCrossSelling)
-            return Success(TravelCrossSelling(items = list, meta = TravelCrossSelling.Meta(title = "Lengkapi Perjalananmu")))
+            return Success(travelCrossSelling)
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }
@@ -66,10 +57,10 @@ class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRe
     }
 
     companion object {
-        const val PARAM_FLIGHT_PRODUCT = "FLIGHTS"
-        const val PARAM_HOTEL_PRODUCT = "HOTELS"
+        const val PARAM_FLIGHT_PRODUCT = "FLIGHT"
+        const val PARAM_HOTEL_PRODUCT = "HOTEL"
 
-        const val ORDER_ID = "orderId"
+        const val ORDER_ID = "orderID"
         const val ORDER_CATEGORY = "orderCategory"
     }
 }
