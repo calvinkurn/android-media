@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.PushNotifCheckerViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
 
 class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDecoration() {
@@ -47,7 +46,7 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
 
             val nextChildView = parent.getChildAt(nextChildPosition)
             val nextChildViewHolder = parent.getChildViewHolder(nextChildView)
-            if (nextChildViewHolder is SettingSectionViewHolder || nextChildViewHolder is PushNotifCheckerViewHolder) {
+            if (nextChildViewHolder is SettingSectionViewHolder) {
                 drawBigDivider(c, parent, childView)
             }
         }
