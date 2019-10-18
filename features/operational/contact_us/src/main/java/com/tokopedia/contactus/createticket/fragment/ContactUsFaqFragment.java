@@ -67,8 +67,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         session = new UserSession(context);
     }
 
