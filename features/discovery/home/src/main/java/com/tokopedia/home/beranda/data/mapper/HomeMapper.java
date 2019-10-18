@@ -300,14 +300,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 hasTokopoints, isCache);
     }
 
-    private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
-        UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
-        for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
-        }
-        return viewModel;
-    }
-
     private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
                                                 boolean isCache) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
