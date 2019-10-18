@@ -115,7 +115,9 @@ public class QuickSingleFilterView extends BaseCustomView {
                     }
                 } else {
                     setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
-                    setSelectedFilterName(getselectedFilterName(quickFilterItem.getName()));
+                    if (quickFilterItem.getName() != null) {
+                        setSelectedFilterName(getselectedFilterName(quickFilterItem.getName()));
+                    }
                 }
                 adapterFilter.notifyDataSetChanged();
             }
