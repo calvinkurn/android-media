@@ -2369,7 +2369,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void eventClickFilterReview(Context context,
                                        String filterName,
                                        String productId) {
-        String KEY_DIMENSION_24 = "dimension24";
+        String KEY_PRODUCT_ID = "productId";
         Map<String, Object> mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
@@ -2379,7 +2379,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 ),
                 productId
         );
-        mapEvent.put(KEY_DIMENSION_24, productId);
+        mapEvent.put(KEY_PRODUCT_ID, productId);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 
@@ -2387,7 +2387,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void eventImageClickOnReview(Context context,
                                         String productId,
                                         String reviewId) {
-        String KEY_DIMENSION_24 = "dimension24";
+        String KEY_PRODUCT_ID = "productId";
         Map<String, Object> mapEvent = TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
@@ -2398,7 +2398,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         reviewId
                 )
         );
-        mapEvent.put(KEY_DIMENSION_24, productId);
+        mapEvent.put(KEY_PRODUCT_ID, productId);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
     }
 

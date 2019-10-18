@@ -12,7 +12,7 @@ object ImageReviewGalleryTracking {
 
     private val CLICK_PDP = "clickPDP"
     private val PRODUCT_DETAIL_PAGE = "product detail page"
-    private const val KEY_DIMENSION_24 = "dimension24"
+    private const val KEY_PRODUCT_ID = "productId"
 
     fun eventClickReviewGalleryItem(context: Context, productId: String) {
         val mapEvent = TrackAppUtils.gtmData(
@@ -21,7 +21,7 @@ object ImageReviewGalleryTracking {
                 "click - review gallery on review gallery list page",
                 productId
         )
-        mapEvent[KEY_DIMENSION_24] = productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 }
