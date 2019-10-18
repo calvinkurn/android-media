@@ -47,6 +47,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
@@ -1565,8 +1566,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsOnClickChangeCourierShipmentRecommendation() {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir();
+    public void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel) {
+        String label = "";
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getOntimeDelivery() != null) {
+            OntimeDelivery otdg = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getOntimeDelivery();
+            if (otdg.getAvailable()) {
+                label = getString(R.string.otdg_gtm_label);
+            }
+        }
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir(label);
     }
 
     @Override
@@ -2035,6 +2045,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onImpressionOntimeDelivery(String message) {
+        checkoutAnalyticsCourierSelection.eventViewImpressionOntimeDeliveryGuarantee(message);
+    }
+
+    @Override
     public void onNeedUpdateRequestData() {
         shipmentAdapter.checkHasSelectAllCourier(true);
     }
@@ -2331,7 +2346,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         ShipmentCartItemModel shipmentCartItemModel,
                                         List<ShopShipment> shopShipmentList,
                                         int cartPosition) {
-        sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+        sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel);
         if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
                 shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
             shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);

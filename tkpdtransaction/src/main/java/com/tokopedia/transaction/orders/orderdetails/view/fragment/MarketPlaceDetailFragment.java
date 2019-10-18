@@ -389,7 +389,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 mTickerInfos.setDescriptionClickEvent(new TickerCallback() {
                     @Override
                     public void onDescriptionViewClick(CharSequence charSequence) {
-                        RouteManager.route(getContext(), url);
+                        RouteManager.route(getContext(),
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
                     }
 
                     @Override

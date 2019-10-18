@@ -17,11 +17,13 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
 
 public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
 
     private final ProductListener productListener;
+    private final TickerListener tickerListener;
     private final SuggestionListener suggestionListener;
     private final GuidedSearchListener guidedSearchListener;
     private final RelatedSearchListener relatedSearchListener;
@@ -33,6 +35,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final Config topAdsConfig;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
+                                      TickerListener tickerListener,
                                       SuggestionListener suggestionListener,
                                       GuidedSearchListener guidedSearchListener,
                                       RelatedSearchListener relatedSearchListener,
@@ -44,6 +47,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                                       Config config) {
 
         this.productListener = productListener;
+        this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
         this.guidedSearchListener = guidedSearchListener;
         this.relatedSearchListener = relatedSearchListener;
@@ -119,7 +123,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
+            viewHolder = new HeaderViewHolder(view, tickerListener, suggestionListener, quickFilterListener,
                     guidedSearchListener, bannerAdsListener);
         } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
