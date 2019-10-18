@@ -83,7 +83,7 @@ ext {
     unifyCoachMarkVersion = '1.0.5'
     unifyCalendarVersion = '0.0.5'
     unifyBannerVersion = '0.0.6'
-    unifyDialogVersion = '0.0.1'
+    unifyDialogVersion = '0.0.2'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
