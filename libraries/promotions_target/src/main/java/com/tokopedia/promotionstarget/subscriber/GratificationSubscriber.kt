@@ -26,10 +26,16 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
-    var waitingForLoginActivity: WeakReference<Activity>? = null
+//    var waitingForLoginActivity: WeakReference<Activity>? = null
+    val arrayActivityNames = arrayListOf<String>(
+            "com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity",
+            "com.tokopedia.loginregister.login.view.activity.LoginActivity",
+            "com.tokopedia.session.register.view.activity.SmartLockActivity"
+    )
+    val allowedActivityNames = arrayListOf<String>("com.tokopedia.navigation.presentation.activity.MainParentActivity")
 
     companion object {
-        val waitingForLogin = AtomicBoolean(false)
+//        val waitingForLogin = AtomicBoolean(false)
     }
 
 
@@ -48,9 +54,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
         //todo Rahul remove later
         if (activity != null) {
-            val isLoginActivity = activity.localClassName == "LoginActivity"
-            if (isLoginActivity) {
-                //Do nothing
+
+//            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
+            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
+            if (!isAllowedActivity) {
+                //Do nothingsubscriber.waitingForLoginActivity
             } else {
                 val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
                 if (gratificationData != null) {
@@ -65,17 +73,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         super.onActivityDestroyed(activity)
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        if (waitingForLoginActivity?.get() == activity) {
-            waitingForLoginActivity?.clear()
-            waitingForLogin.set(false)
-        }
+//        if (waitingForLoginActivity?.get() == activity) {
+//            waitingForLoginActivity?.clear()
+//            waitingForLogin.set(false)
+//        }
     }
 
     override fun onActivityResumed(activity: Activity?) {
         super.onActivityResumed(activity)
-        if (waitingForLogin.get()) {
-            mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
-        }
+//        if (waitingForLogin.get()) {
+//            mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
+//        }
     }
 
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?): GratificationData? {
@@ -136,8 +144,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
         mapOfDialogs.clear()
 
-        waitingForLogin.set(false)
-        waitingForLoginActivity = null
+//        waitingForLogin.set(false)
+//        waitingForLoginActivity = null
     }
 }
 

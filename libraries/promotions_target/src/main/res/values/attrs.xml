@@ -19,6 +19,11 @@
         <attr name="rb_buttonColor" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="RoundTextView">
+        <attr name="rtv_cornerRadius" format="dimension" />
+        <attr name="rtv_buttonColor" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="CouponView">
         <attr name="cvCircleColor" format="color" />
         <attr name="cvCircleRadius" format="dimension" />

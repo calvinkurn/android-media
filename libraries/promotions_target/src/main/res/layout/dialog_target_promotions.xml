@@ -82,7 +82,8 @@
             app:typographyType="body_3"
             tools:text="@string/app_name" />
 
-        <com.tokopedia.promotionstarget.ui.views.RoundButton
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnAction"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
@@ -91,31 +92,34 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/t_promo_bg_round"
+            android:gravity="center"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSubTitle"
-            app:rb_buttonColor="@color/t_promo_btn_green"
-            app:rb_cornerRadius="@dimen/dp_8"
+            app:typographyType="body_1"
             tools:text="@string/app_name" />
 
 
-        <com.tokopedia.promotionstarget.ui.views.TargetPromoProgressBar
+        <ProgressBar
             android:id="@+id/targetProgressBar"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            android:indeterminateTintMode="src_atop"
+            android:max="100"
+            android:progress="100"
             android:visibility="gone"
-            app:tpromo_background_progressbar_color="@color/t_promo_white_50"
-            app:tpromo_background_progressbar_width="5dp"
-            app:tpromo_progress_direction="to_right"
-            app:tpromo_progressbar_color="@color/white"
-            app:tpromo_progressbar_width="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/btnAction"
             app:layout_constraintEnd_toEndOf="@+id/btnAction"
             app:layout_constraintStart_toStartOf="@+id/btnAction"
-            app:layout_constraintTop_toTopOf="@+id/btnAction" />
+            app:layout_constraintTop_toTopOf="@+id/btnAction"
+            tools:background="@color/red_30"
+            tools:visibility="visible" />
 
 
     </android.support.constraint.ConstraintLayout>

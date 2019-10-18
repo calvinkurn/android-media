@@ -10,11 +10,15 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.*
+import android.support.v7.widget.AppCompatImageView
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
+import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.ViewFlipper
 import com.tokopedia.applink.ApplinkConst
@@ -33,7 +37,6 @@ import com.tokopedia.promotionstarget.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
-import com.tokopedia.promotionstarget.ui.views.TargetPromoProgressBar
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
@@ -50,24 +53,23 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var tvTitle: Typography
     private lateinit var tvSubTitle: Typography
     private lateinit var imageView: AppCompatImageView
-    private lateinit var btnAction: AppCompatButton
+    private lateinit var btnAction: Typography
     private lateinit var recyclerView: RecyclerView
     private lateinit var couponListAdapter: CouponListAdapter
     private lateinit var viewFlipper: ViewFlipper
     private lateinit var bottomSheetDialog: Dialog
     private lateinit var nestedScrollView: NestedScrollView
-    private lateinit var progressBar: TargetPromoProgressBar
+    private lateinit var progressBar: ProgressBar
 
     lateinit var viewModel: TargetPromotionsDialogVM
-    private var liveData: MutableLiveData<Result<ClaimPopGratificationResponse>>? = null
-    private var fakeLiveData: MutableLiveData<Result<String>>? = null
     private var data: GratificationDataContract? = null
-
+    var originalBtnText: String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var originallyLoggedIn = false
+    val REQUEST_CODE = 29
 
 
     var uiType: TargetPromotionsCouponType = TargetPromotionsCouponType.SINGLE_COUPON
@@ -96,7 +98,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
         bottomSheet.setOnDismissListener {
-            GratificationSubscriber.waitingForLogin.set(false)
+//            GratificationSubscriber.waitingForLogin.set(false)
         }
 
         initViews(view, activityContext, data, couponDetailResponse)
@@ -136,7 +138,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (data is GetPopGratificationResponse) {
             tvTitle.text = data.popGratification?.title
             tvSubTitle.text = data.popGratification?.text
-            btnAction.text = data.popGratification?.popGratificationActionButton?.text
+            originalBtnText = data.popGratification?.popGratificationActionButton?.text
+            btnAction.text = originalBtnText
 
             val couponDetailList = ArrayList<GetCouponDetail>()
             if (couponDetailResponse.couponList != null) {
@@ -165,20 +168,18 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
             //todo remove test code
             viewFlipper.displayedChild = CONTAINER_COUPON
-        } else if (data is ClaimPopGratificationResponse) {
-
-
         }
 
     }
 
     fun onActivityResumeIfWaitingForLogin() {
-        if (GratificationSubscriber.waitingForLogin.get()) {
-            GratificationSubscriber.waitingForLogin.set(false)
-            btnAction.performClick()
-        } else {
-            //Do nothing
-        }
+//        if (GratificationSubscriber.waitingForLogin.get()) {
+//            GratificationSubscriber.waitingForLogin.set(false)
+//            btnAction.performClick()
+//        } else {
+//            //Do nothing
+//        }
+//        subscriber.waitingForLoginActivity?.clear()
     }
 
     private fun setErrorUiForPopGratification() {
@@ -188,11 +189,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         tvSubTitle.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
 
         if (lessThanThreeTimes) {
-            btnAction.text = context.getString(R.string.t_promo_coba_lagi)
+            originalBtnText = context.getString(R.string.t_promo_coba_lagi)
         } else {
-            btnAction.text = context.getString(R.string.t_promo_ke_homepage)
+            originalBtnText = context.getString(R.string.t_promo_ke_homepage)
         }
-
+        btnAction.text = originalBtnText
         imageView.loadImageGlide(R.drawable.t_promo_server_error)
     }
 
@@ -200,7 +201,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         viewFlipper.displayedChild = CONTAINER_IMAGE
         tvTitle.text = data.popGratificationClaim?.title
         tvSubTitle.text = data.popGratificationClaim?.text
-        btnAction.text = data.popGratificationClaim?.popGratificationActionButton?.text
+        originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
+        btnAction.text = originalBtnText
         imageView.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
         performAnimationToGotoClaimUI()
     }
@@ -239,21 +241,19 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
             toggleProgressBar(true)
             toggleBtnText(false)
-
             if (data is GetPopGratificationResponse) {
                 performActionClaimCoupon(data, activityContext)
             } else if (data is ClaimPopGratificationResponse) {
                 performActionAfterCouponIsClaimed(data, activityContext)
             }
-//            viewModel.claimFakeCoupon()
         }
     }
 
     private fun toggleBtnText(show: Boolean) {
         if (show) {
-            btnAction.visibility = View.VISIBLE
+            btnAction.text = originalBtnText
         } else {
-            btnAction.visibility = View.GONE
+            btnAction.text = ""
         }
     }
 
@@ -307,9 +307,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 viewModel.claimCoupon()
             }
         } else {
-            subscriber.waitingForLoginActivity = WeakReference(activityContext)
-            GratificationSubscriber.waitingForLogin.set(true)
-            RouteManager.route(activityContext, ApplinkConst.LOGIN)
+//            subscriber.waitingForLoginActivity = WeakReference(activityContext)
+//            GratificationSubscriber.waitingForLogin.set(true)
+            val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
+            activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
+//            RouteManager.route(activityContext, ApplinkConst.LOGIN)
         }
     }
 
