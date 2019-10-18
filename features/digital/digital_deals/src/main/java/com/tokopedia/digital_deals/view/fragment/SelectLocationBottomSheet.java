@@ -1,7 +1,9 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -10,6 +12,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
@@ -29,16 +33,21 @@ import com.tokopedia.digital_deals.view.adapter.DealsPopularLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.RequestParams;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class SelectLocationBottomSheet extends BaseDaggerFragment implements DealsLocationContract.View, DealsLocationAdapter.SelectCityListener, DealsPopularLocationAdapter.SelectPopularLocationListener, SearchInputView.Listener, SearchInputView.ResetListener, SearchInputView.FocusChangeListener {
+public class SelectLocationBottomSheet extends BaseDaggerFragment implements View.OnClickListener, DealsLocationContract.View, DealsLocationAdapter.SelectCityListener, DealsPopularLocationAdapter.SelectPopularLocationListener, SearchInputView.Listener, SearchInputView.ResetListener, SearchInputView.FocusChangeListener {
 
 
     private RecyclerView rvSearchResults, rvLocationResults;
@@ -50,12 +59,17 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     private LinearLayout shimmerLayout;
     private String selectedLocation;
     private ConstraintLayout noLocationLayout;
+    private TextView detectLocation;
     private SelectedLocationListener selectedLocationListener;
     @Inject
     DealsLocationPresenter mPresenter;
     boolean isLoading = false;
     private LinearLayoutManager layoutManager;
     private DealsPopularLocationAdapter dealsPopularLocationAdapter;
+    private PermissionCheckerHelper permissionCheckerHelper;
+    private CloseableBottomSheetDialog locationSettingBottomSheet;
+    private boolean isDeniedFirstTime = false;
+    private Location location;
 
     public static Fragment createInstance(String selectedLocation, Location location) {
         Fragment fragment = new SelectLocationBottomSheet();
@@ -73,6 +87,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         nestedScrollView = locationView.findViewById(R.id.nested_scroll_view);
         rvSearchResults = locationView.findViewById(R.id.rv_city_results);
         rvLocationResults = locationView.findViewById(R.id.rv_location_results);
+        detectLocation = locationView.findViewById(R.id.detect_current_location);
         crossIcon = locationView.findViewById(R.id.cross_icon_bottomsheet);
         titletext = locationView.findViewById(R.id.location_bottomsheet_title);
         searchInputView = locationView.findViewById(R.id.search_input_view);
@@ -85,10 +100,14 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
         searchInputView.setResetListener(this);
+        detectLocation.setOnClickListener(this);
         searchInputView.setSearchHint(getContext().getResources().getString(R.string.location_search_hint));
         mainContent = locationView.findViewById(R.id.mainContent);
         shimmerLayout = locationView.findViewById(R.id.shimmer_layout);
 
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        locationSettingBottomSheet = CloseableBottomSheetDialog.createInstance(getActivity());
+        location = getArguments().getParcelable(Utils.LOCATION_OBJECT);
 
         titletext.setText(getContext().getResources().getString(R.string.select_location_bottomsheet_title));
         crossIcon.setVisibility(View.VISIBLE);
@@ -133,6 +152,15 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         } else {
             shimmerLayout.setVisibility(View.GONE);
             mainContent.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setCurrentLocation(LocationResponse locationResponse) {
+        if (locationResponse != null && locationResponse.getLocations() != null && locationResponse.getLocations().size() > 0) {
+            Utils.getSingletonInstance().updateLocation(getContext(), locationResponse.getLocations().get(0));
+            selectedLocationListener.onLocationItemUpdated(true);
+            getFragmentManager().popBackStack();
         }
     }
 
@@ -271,6 +299,67 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         noLocationLayout.setVisibility(View.GONE);
     }
 
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.detect_current_location) {
+            if (!isDeniedFirstTime) {
+                permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(String permissionText) {
+                        Log.d("Naveen", "permission denied");
+                        isDeniedFirstTime = true;
+                        selectedLocationListener.onLocationItemUpdated(true);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(String permissionText) {
+                        Log.d("Naveen", "Never ask again"+ permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        Log.d("Naveen", "permission allowed");
+                        isDeniedFirstTime = false;
+                        mPresenter.getNearestLocation(location.getCoordinates());
+                    }
+                }, getContext().getResources().getString(R.string.deals_use_current_location));
+            } else {
+                openLocationSettingBottomSheet();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    private void openLocationSettingBottomSheet() {
+        View categoryView = getLayoutInflater().inflate(R.layout.deals_current_location_bottomsheet, null);
+        ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+        UnifyButton openLocationSettings = categoryView.findViewById(R.id.goto_location_settings);
+        crossIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationSettingBottomSheet.dismiss();
+            }
+        });
+
+        openLocationSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                getContext().startActivity(intent);
+            }
+        });
+
+        locationSettingBottomSheet.setCustomContentView(categoryView, "", false);
+        locationSettingBottomSheet.show();
+        locationSettingBottomSheet.setCanceledOnTouchOutside(true);
+    }
 
     public interface SelectedLocationListener {
         void onLocationItemUpdated(boolean isLocationUpdated);

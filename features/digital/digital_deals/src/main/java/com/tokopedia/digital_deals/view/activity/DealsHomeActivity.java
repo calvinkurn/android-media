@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -96,5 +97,10 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
         dealsHomeFragment.refreshHomePage(isLocationUpdated);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

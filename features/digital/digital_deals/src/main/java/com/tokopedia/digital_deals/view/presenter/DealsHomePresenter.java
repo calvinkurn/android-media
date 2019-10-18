@@ -623,7 +623,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Log.d("Naveen", "NSQ Event Sent home page");
             }
         });
     }
