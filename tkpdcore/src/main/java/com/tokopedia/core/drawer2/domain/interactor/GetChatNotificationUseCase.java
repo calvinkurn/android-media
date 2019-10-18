@@ -59,11 +59,11 @@ public class GetChatNotificationUseCase extends UseCase<TopChatNotificationModel
 
     private Action1<TopChatNotificationModel> saveToCache() {
         return topChatNotificationModel -> {
-            int notifUnreadsBuyer = topChatNotificationModel.getNotifUnreadsBuyer();
-            drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsBuyer);
+            int notifUnreadsSeller = topChatNotificationModel.getNotifUnreadsSeller();
+            drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller);
             drawerCache.putInt(
                     DrawerNotification.CACHE_TOTAL_NOTIF,
-                    drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF, 0) + notifUnreadsBuyer
+                    drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF, 0) + notifUnreadsSeller
             );
             drawerCache.applyEditor();
         };
