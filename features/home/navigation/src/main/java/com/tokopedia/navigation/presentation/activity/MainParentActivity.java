@@ -475,7 +475,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-            ft.commitAllowingStateLoss();
+            ft.commitNowAllowingStateLoss();
         });
     }
 
@@ -619,14 +619,16 @@ public class MainParentActivity extends BaseActivity implements
      * Notification
      */
     private void setBadgeNotifCounter(Fragment fragment) {
-        if (fragment == null)
-            return;
+        handler.post(() -> {
+            if (fragment == null)
+                return;
 
-        if (fragment instanceof AllNotificationListener && notification != null) {
-            ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
-        }
+            if (fragment instanceof AllNotificationListener && notification != null) {
+                ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+            }
 
-        invalidateOptionsMenu();
+            invalidateOptionsMenu();
+        });
     }
 
     @Override

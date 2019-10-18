@@ -12,6 +12,7 @@ import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.layout_activity_dob.*
+import kotlinx.android.synthetic.main.layout_activity_dob.progress_bar_layout
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -174,11 +175,13 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         }
     }
 
-    override fun getRootViewId(): Int {
-        return R.id.root_view
+
+
+    override fun showProgressBar() {
+        progress_bar_layout.visibility = View.VISIBLE
     }
 
-    override fun getProgressBarId(): Int {
-        return R.id.progress_bar_layout
+    override fun hideProgressBar() {
+        progress_bar_layout.visibility = View.GONE
     }
 }

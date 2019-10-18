@@ -39,8 +39,6 @@ ext {
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
-            train                           : ":features:digital:train",
-//            train                         : ":features:digital:train_no_op",
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
@@ -65,6 +63,8 @@ ext {
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
+            globalNavWidget                 : ":features:discovery:global_nav_widget",
+            globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
 
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",

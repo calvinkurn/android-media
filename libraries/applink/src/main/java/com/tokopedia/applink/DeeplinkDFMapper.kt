@@ -77,6 +77,7 @@ object DeeplinkDFMapper {
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
     private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
+    private val DFM_CONTACT_US = "contact_us"
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
     private val DFM_SALDO_INTRO = "saldo_deposit"
     private val DFM_TRADEIN = "tradein"
@@ -108,6 +109,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB)
                     || it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
             add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
             add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_MONEYIN, R.string.money_in))
@@ -260,5 +262,5 @@ class DFP(
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {
-    return startsWith(prefix.substringBefore("{"))
+    return startsWith(prefix.substringBefore("{")) || startsWith(prefix.substringBefore("?"))
 }

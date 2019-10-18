@@ -49,10 +49,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
 
-    abstract protected int getRootViewId();
-
-    abstract protected int getProgressBarId();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,13 +133,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         startActivityForResult(intent, requestCode);
     }
 
-    public void showProgressBar() {
-        getProgressBar().setVisibility(View.VISIBLE);
-    }
+    protected abstract void showProgressBar();
 
-    public void hideProgressBar() {
-        getProgressBar().setVisibility(View.GONE);
-    }
+    protected abstract void hideProgressBar();
 
     @Override
     protected void setupStatusBar() {
@@ -165,11 +157,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     public View getRootView() {
-        return findViewById(getRootViewId());
-    }
-
-    public View getProgressBar() {
-        return findViewById(getProgressBarId());
+        return findViewById(R.id.root_view);
     }
 
     public int getRequestCode() {
@@ -244,10 +232,13 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         transaction.commit();
     }
 
-    protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
+
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        accessDialog.setLayoutResId(resId);
         accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
