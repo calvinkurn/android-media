@@ -263,7 +263,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 if (getActivity().getApplication() instanceof TkpdInboxRouter) {
                     UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                             AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
-                    RouteManager.getIntent(getContext(), ApplinkConst.TOPCHAT_IDLESS);
+                    RouteManager.route(getContext(), ApplinkConst.TOPCHAT_IDLESS);
                 }
             }
         });
