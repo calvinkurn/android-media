@@ -120,6 +120,9 @@ public class SearchProductModel {
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
+        @SerializedName("ticker")
+        @Expose
+        private Ticker ticker = new Ticker();
         @SerializedName("related")
         @Expose
         private Related related = new Related();
@@ -177,6 +180,10 @@ public class SearchProductModel {
 
         public Redirection getRedirection() {
             return this.redirection;
+        }
+
+        public Ticker getTicker() {
+            return ticker;
         }
 
         public Suggestion getSuggestion() {
@@ -336,6 +343,24 @@ public class SearchProductModel {
 
         public int getDepartmentId() {
             return departmentId;
+        }
+    }
+
+    public static class Ticker {
+
+        @SerializedName("text")
+        @Expose
+        private String text;
+        @SerializedName("query")
+        @Expose
+        private String query;
+
+        public String getText() {
+            return text;
+        }
+
+        public String getQuery() {
+            return query;
         }
     }
 
