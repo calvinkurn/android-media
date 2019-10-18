@@ -11,8 +11,7 @@ import com.tokopedia.track.TrackAppUtils.*
 
 class TrackingCrossSellUtil {
 
-    fun crossSellImpression(crossSellingItems: List<TravelCrossSelling.Item>, firstSeenItemPosition: Int,
-                            lastSeenItemPosition: Int) {
+    fun crossSellImpression(crossSellingItems: List<TravelCrossSelling.Item>) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PROMO_VIEW
         map[EVENT_CATEGORY] = CROSS_SELL_WIDGET_NATIVE
@@ -20,21 +19,21 @@ class TrackingCrossSellUtil {
         map[EVENT_LABEL] = LENGKAPI_PERJALANANMU_LABEL
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
-                PROMOTIONS_LABEL, getPromoList(crossSellingItems, firstSeenItemPosition, lastSeenItemPosition)
+                PROMOTIONS_LABEL, getPromoList(crossSellingItems, 0, crossSellingItems.size - 1)
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun crossSellClick(crossSellItems: List<TravelCrossSelling.Item>, position: Int) {
+    fun crossSellClick(item: TravelCrossSelling.Item, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PROMO_CLICK
         map[EVENT_CATEGORY] = CROSS_SELL_WIDGET_NATIVE
         map[EVENT_ACTION] = WIDGET_CLICK
-        map[EVENT_LABEL] = String.format("%s - %s", position + 1, crossSellItems.get(position).product)
+        map[EVENT_LABEL] = String.format("%s - %s", position + 1, item.product)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
-                PROMOTIONS_LABEL, getPromoList(crossSellItems, position, position)
+                PROMOTIONS_LABEL, getPromoList(listOf(item), position, position)
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -68,10 +67,6 @@ class TrackingCrossSellUtil {
         val ID_LABEL = "id"
         val NAME_LABEL = "name"
         val CREATIVE_LABEL = "creative"
-        val CREATIVE_URL_LABEL = "creative_url"
         val POSITION_LABEL = "position"
-        val CATEGORY_LABEL = "category"
-        val PROMO_ID_LABEL = "promo_id"
-        val PROMO_CODE_LABEL = "promo_code"
     }
 }

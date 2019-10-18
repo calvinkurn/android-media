@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
@@ -72,6 +73,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var trackingCrossSellUtil: TrackingCrossSellUtil
 
     private var orderId: String = ""
     private var orderCategory: String = ""
@@ -225,10 +229,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     private fun renderCrossSelling(crossSelling: TravelCrossSelling) {
         if (crossSelling.items.isNotEmpty()) {
+            trackingCrossSellUtil.crossSellImpression(crossSelling.items)
             cross_sell_widget.show()
             cross_sell_widget.buildView(crossSelling)
             cross_sell_widget.setListener(object: TravelCrossSellAdapter.OnItemClickListener{
-                override fun onItemClickListener(item: TravelCrossSelling.Item) {
+                override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
+                    trackingCrossSellUtil.crossSellClick(item, position)
                     RouteManager.route(context, item.uri)
                 }
 

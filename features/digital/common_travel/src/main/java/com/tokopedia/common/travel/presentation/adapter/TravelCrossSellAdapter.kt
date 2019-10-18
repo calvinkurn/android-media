@@ -26,7 +26,7 @@ class TravelCrossSellAdapter: RecyclerView.Adapter<TravelCrossSellAdapter.CrossS
 
     override fun onBindViewHolder(holder: CrossSellingVH, position: Int) {
         holder.bind(products.get(position))
-        holder.itemView.setOnClickListener { listener?.onItemClickListener(products.get(position)) }
+        holder.itemView.setOnClickListener { listener?.onItemClickListener(products.get(position), position) }
     }
 
     fun setItem(products: List<TravelCrossSelling.Item>) {
@@ -47,7 +47,7 @@ class TravelCrossSellAdapter: RecyclerView.Adapter<TravelCrossSellAdapter.CrossS
     }
 
     interface OnItemClickListener {
-        fun onItemClickListener(item: TravelCrossSelling.Item)
+        fun onItemClickListener(item: TravelCrossSelling.Item, position: Int)
     }
 
 }

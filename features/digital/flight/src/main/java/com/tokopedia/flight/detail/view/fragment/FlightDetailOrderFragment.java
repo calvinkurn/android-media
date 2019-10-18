@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter;
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -99,6 +100,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     @Inject
     FlightModuleRouter flightModuleRouter;
+    @Inject
+    TrackingCrossSellUtil trackingCrossSellUtil;
 
     private TextView orderId;
     private ImageView copyOrderId;
@@ -395,9 +398,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void showCrossSellingItems(TravelCrossSelling travelCrossSelling) {
+        trackingCrossSellUtil.crossSellImpression(travelCrossSelling.getItems());
         travelCrossSellWidget.setVisibility(View.VISIBLE);
         travelCrossSellWidget.buildView(travelCrossSelling);
-        travelCrossSellWidget.setListener(item -> {
+        travelCrossSellWidget.setListener((item, position) -> {
+            trackingCrossSellUtil.crossSellClick(item, position);
             RouteManager.route(getContext(), item.getUri());
         });
     }
