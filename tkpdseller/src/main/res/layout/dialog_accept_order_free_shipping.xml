@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_30"/>
 
     <LinearLayout
@@ -32,8 +32,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16">
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/ic_checklist_confirmation_1"
@@ -56,7 +56,8 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"/>
+                android:layout_marginRight="@dimen/dp_10"
+                android:lineSpacingMultiplier="0.8"/>
 
         </RelativeLayout>
 
@@ -66,8 +67,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16">
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/ic_checklist_confirmation_2"
@@ -90,7 +91,8 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"/>
+                android:layout_marginRight="@dimen/dp_10"
+                android:lineSpacingMultiplier="0.8"/>
 
         </RelativeLayout>
 
@@ -100,8 +102,8 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16">
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10">
 
             <ImageView
                 android:id="@+id/ic_checklist_confirmation_3"
@@ -124,7 +126,8 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"/>
+                android:layout_marginRight="@dimen/dp_10"
+                android:lineSpacingMultiplier="0.8"/>
 
         </RelativeLayout>
 

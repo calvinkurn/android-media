@@ -55,6 +55,7 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
@@ -84,6 +85,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -97,6 +100,8 @@ import kotlin.jvm.functions.Function1;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORDER_ID;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
@@ -231,7 +236,7 @@ public class OrderDetailActivity extends TActivity
             tvBookingCode.setVisibility(View.GONE);
             tvBookingCodePlaceholder.setVisibility(View.VISIBLE);
         }
-        // TODO : give condition to show/hide this rl
+
         RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
         rlWajibDicantumkan.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_wajib_tulis_kode_booking), R.string.bottomsheet_wajib_tulis_kode_booking_desc));
     }
@@ -487,9 +492,13 @@ public class OrderDetailActivity extends TActivity
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
 
-        // TODO :  give condition whether to show/hide this rl
         RelativeLayout rlHarusSesuai = findViewById(R.id.rl_harus_sesuai);
-        rlHarusSesuai.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_courier), R.string.bottomsheet_harus_sesuai_desc));
+        if (data.isFreeShipping()) {
+            rlHarusSesuai.setVisibility(View.VISIBLE);
+            rlHarusSesuai.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_courier), R.string.bottomsheet_harus_sesuai_desc));
+        } else {
+            rlHarusSesuai.setVisibility(View.GONE);
+        }
 
         setResponseTimeView(data);
         setPreorderView(data);
@@ -751,11 +760,12 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        // TODO : give condition to check whether show AcceptOrderDialog or DialogUnify
-
-        /*AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
-        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());*/
-        showFreeShippingConfirmationDialog();
+        if (data.isFreeShipping()) {
+            showFreeShippingConfirmationDialog();
+        } else {
+            AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
+            dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+        }
     }
 
     private void showFreeShippingConfirmationDialog() {
@@ -802,8 +812,19 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onRequestPickup(OrderDetailData data) {
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
-            RequestPickupFragment requestPickupFragment = RequestPickupFragment
+            /*RequestPickupFragment requestPickupFragment = RequestPickupFragment
                     .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();*/
+
+            Bundle bundle = new Bundle();
+            bundle.putString(PARAM_CONFIRM_PICKUP_ORDER_ID, data.getOrderId());
+            bundle.putString(PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS, data.getOriginAddress());
+            ConfirmRequestPickupFragment requestPickupFragment = ConfirmRequestPickupFragment
+                    .newInstance(bundle);
+            requestPickupFragment.setListeners(this);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
@@ -1158,5 +1179,10 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onChangeTitle(String toolbarTitle) {
         toolbar.setTitle(toolbarTitle);
+    }
+
+    @Override
+    public void onClickRequestPickupBtn(@NotNull String orderId) {
+        presenter.processInstantCourierShipping(this, orderId);
     }
 }

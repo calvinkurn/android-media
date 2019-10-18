@@ -362,4 +362,15 @@
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
     <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
 
+    <string name="request_pickup_title">Konfirmasi Request Pick-Up</string>
+    <string name="request_pickup_location_label">Lokasi Tokomu:</string>
+    <string name="request_pickup_location_icon">Icon Location</string>
+    <string name="request_pickup_location_desc_sample">Tokopedia Tower Ciputra World 2 \n Prof. DR. Satrio No. Kav. 11, RT.3/RW.3, \n Karet Semanggi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950</string>
+    <string name="request_pickup_info_title">Pastikan</string>
+    <string name="request_pickup_info_label_1">Pesanan sudah terbungkus rapi</string>
+    <string name="request_pickup_info_label_2">Kode booking, alamat, dan nomor telepon tertulis di kemasan paket</string>
+    <string name="request_pickup_info_label_3">Tidak perlu memberikan ongkir ke kurir</string>
+    <string name="request_pickup_info_icon">Icon info confirm request pickup</string>
+    <string name="request_pickup_info_button">Request Pick-Up</string>
+
 </resources>
