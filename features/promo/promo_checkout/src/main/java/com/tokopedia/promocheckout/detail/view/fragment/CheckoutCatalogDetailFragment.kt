@@ -337,6 +337,8 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
                 if (clashingInfoDetailUiModel != null) {
                     activity?.finish()
                 }
+                childFragmentManager.beginTransaction().remove(this).commit()
+                childFragmentManager.popBackStack()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
