@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -549,7 +550,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         if (id == com.tokopedia.digital_deals.R.id.action_promo) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
-            RouteManager.route(getActivity().getApplication(), DealsUrl.WebUrl.PROMOURL);
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, DealsUrl.WebUrl.PROMOURL);
         } else if (id == com.tokopedia.digital_deals.R.id.action_booked_history) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
@@ -562,7 +563,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
-            RouteManager.route(getActivity().getApplication(), DealsUrl.WebUrl.FAQURL);
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, DealsUrl.WebUrl.FAQURL);
         }
         return true;
     }

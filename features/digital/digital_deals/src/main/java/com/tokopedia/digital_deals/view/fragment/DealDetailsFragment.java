@@ -42,6 +42,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
@@ -484,7 +485,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     public void startGeneralWebView(String url) {
-        RouteManager.route(getActivity().getApplication(), url);
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override

@@ -72,7 +72,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
                 com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
-        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -81,7 +81,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     public void replaceFragment(DealsDetailsResponse dealDetail, int flag) {
         this.dealDetail = dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, SelectDealQuantityFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, SelectDealQuantityFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -94,7 +94,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         bundle.putString(TncBottomSheetFragment.TEXT, text);
         transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
                 com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
-        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, TncBottomSheetFragment.createInstance(bundle));
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, TncBottomSheetFragment.createInstance(bundle));
         transaction.addToBackStack(null);
         transaction.commit();
     }

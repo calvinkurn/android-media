@@ -72,6 +72,7 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -630,7 +631,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startGeneralWebView(String url) {
-        RouteManager.route(getActivity().getApplication(), url);
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override

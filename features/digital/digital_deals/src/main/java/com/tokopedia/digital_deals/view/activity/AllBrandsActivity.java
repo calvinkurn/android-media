@@ -283,19 +283,19 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         if (id == com.tokopedia.digital_deals.R.id.action_promo) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
-            RouteManager.route(this.getApplication(), DealsUrl.WebUrl.PROMOURL);
+            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, DealsUrl.WebUrl.PROMOURL);
         } else if (id == com.tokopedia.digital_deals.R.id.action_booked_history) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
             if (userSession.isLoggedIn()) {
                 RouteManager.route(this, ApplinkConst.DEALS_ORDER);
             } else {
-                RouteManager.route(this.getApplication(), ApplinkConst.LOGIN);
+                RouteManager.route(this, ApplinkConst.LOGIN);
             }
         } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
-            RouteManager.route(this.getApplication(), DealsUrl.WebUrl.FAQURL);
+            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, DealsUrl.WebUrl.FAQURL);
         }
         return true;
     }

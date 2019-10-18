@@ -32,6 +32,16 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return com.tokopedia.digital_deals.R.id.toolbar_checkout;
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.digital_deals.R.id.deals_checkout_parent_view;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         drawable=toolbar.getNavigationIcon();
         updateTitle(getResources().getString(com.tokopedia.digital_deals.R.string.activity_checkout_title));
@@ -64,7 +74,7 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
                 com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up);
-        transaction.add(com.tokopedia.digital_deals.R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_checkout_parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(LOCATION_FRAGMENT);
         transaction.commit();
     }

@@ -15,6 +15,9 @@ object DeeplinkMapperDeals {
             // tokopedia://deals
             uri.pathSegments.size == 0->
                 "tokopedia-android-internal://global/deals"
+            //tokopedia://deals/order
+            uri.pathSegments.size == 1 && uri.pathSegments[0] == "order"->
+                ""
             // tokopedia://deals/{id}
             uri.pathSegments.size == 1->
                 "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG${uri.pathSegments[0]}/"
