@@ -41,6 +41,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
+    @JvmField
+    val PARAM_IS_FROM_LOGIN = "is_from_login"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -121,6 +123,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-onboarding
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
+    // PinCompleteActivity
+    // tokopedia-android-internal://global/add-pin-complete
+    @JvmField
+    val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
 
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
@@ -203,4 +210,13 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // PushNotificationCheckerActivity
+    // tokopedia-android-internal://global/push-notification-troubleshooter
+    @JvmField
+    val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 }

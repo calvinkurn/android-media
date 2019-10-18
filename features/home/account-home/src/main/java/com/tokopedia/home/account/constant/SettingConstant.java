@@ -32,6 +32,9 @@ public class SettingConstant {
     public static final int SETTING_DEBIT_INSTANT = 35;
     public static final int SETTING_DEV_OPTIONS = 0;
     public static final int SETTING_APP_REVIEW_ID = 10;
+    public static final int SETTING_APP_ADVANCED_SETTING = 11;
+    public static final int SETTING_APP_ADVANCED_CLEAR_CACHE = 1;
+    public static final int SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2;
 
 
     public static class Url {

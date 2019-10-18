@@ -806,9 +806,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag) {
+    public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(items, headerViewModel);
+            adapter.setItems(items);
 
             if (needToShowGeolocationComponent()) {
                 adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
@@ -816,7 +816,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items, headerViewModel);
+            adapter.setItems(items);
         }
     }
 
