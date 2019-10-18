@@ -46,8 +46,6 @@ public interface ICartListPresenter {
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
-    void processResetAndRefreshCartData();
-
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);

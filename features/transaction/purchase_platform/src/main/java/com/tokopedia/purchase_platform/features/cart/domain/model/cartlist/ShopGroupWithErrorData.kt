@@ -22,6 +22,7 @@ data class ShopGroupWithErrorData(
         var isFulfillment: Boolean = false,
         var fulfillmentName: String = "",
         var hasPromoList: Boolean = false,
+        var cartString: String = "",
 
         var isWarning: Boolean = false,
         var warningTitle: String? = null,
@@ -31,7 +32,7 @@ data class ShopGroupWithErrorData(
             parcel.createTypedArrayList(CartItemHolderData.CREATOR) ?: emptyList(),
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
+            parcel.readString(),
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -41,6 +42,7 @@ data class ShopGroupWithErrorData(
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
             parcel.readString()) {
@@ -60,6 +62,7 @@ data class ShopGroupWithErrorData(
         parcel.writeByte(if (isFulfillment) 1 else 0)
         parcel.writeString(fulfillmentName)
         parcel.writeByte(if (hasPromoList) 1 else 0)
+        parcel.writeString(cartString)
         parcel.writeByte(if (isWarning) 1 else 0)
         parcel.writeString(warningTitle)
         parcel.writeString(warningDescription)

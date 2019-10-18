@@ -171,7 +171,6 @@ class CartModule {
     fun provideICartListPresenter(getCartListUseCase: GetCartListUseCase,
                                   deleteCartListUseCase: DeleteCartListUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
-                                  resetCartGetCartListUseCase: ResetCartGetCartListUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   checkPromoCodeCartListUseCase: CheckPromoCodeCartListUseCase,
@@ -190,7 +189,7 @@ class CartModule {
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase): ICartListPresenter {
         return CartListPresenter(getCartListUseCase, deleteCartListUseCase,
-                updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
+                updateCartUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface,

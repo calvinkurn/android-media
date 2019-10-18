@@ -12,9 +12,9 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDetail;
@@ -22,7 +22,6 @@ import com.tokopedia.purchase_platform.features.cart.data.model.response.CartLis
 import com.tokopedia.purchase_platform.features.cart.data.model.response.DeleteCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ResetCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroup;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupAvailable;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.UpdateCartDataResponse;
@@ -34,7 +33,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Reset
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePrice;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
 
@@ -236,20 +235,20 @@ public class CartMapper implements ICartMapper {
                     cartItemDataOrigin.setFreeShippingBadgeUrl(data.getProduct().getFreeShipping().getBadgeUrl());
                 }
                 if (data.getProduct().getWholesalePrice() != null) {
-                    List<WholesalePrice> wholesalePrices = new ArrayList<>();
+                    List<WholesalePriceData> wholesalePriceData = new ArrayList<>();
                     for (com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
-                        WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
-                        wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
-                        wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
-                        wholesalePriceDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
-                        wholesalePriceDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
-                        wholesalePriceDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
-                        wholesalePriceDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
+                        WholesalePriceData wholesalePriceDataDomainModel = new WholesalePriceData();
+                        wholesalePriceDataDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
+                        wholesalePriceDataDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
+                        wholesalePriceDataDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
+                        wholesalePriceDataDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
+                        wholesalePriceDataDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
+                        wholesalePriceDataDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
 
-                        wholesalePrices.add(wholesalePriceDomainModel);
+                        wholesalePriceData.add(wholesalePriceDataDomainModel);
                     }
-                    Collections.reverse(wholesalePrices);
-                    cartItemDataOrigin.setWholesalePrice(wholesalePrices);
+                    Collections.reverse(wholesalePriceData);
+                    cartItemDataOrigin.setWholesalePriceData(wholesalePriceData);
                 }
 
                 CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();
@@ -270,7 +269,7 @@ public class CartMapper implements ICartMapper {
 
                 cartItemData.setOriginData(cartItemDataOrigin);
                 cartItemData.setUpdatedData(cartItemDataUpdated);
-                cartItemData.setErrorData(cartItemMessageErrorData);
+                cartItemData.setMessageErrorData(cartItemMessageErrorData);
                 cartItemData.setFulfillment(shopGroupAvailable.isFulFillment());
 
                 cartItemData.setSingleChild(shopGroupAvailable.getCartDetails().size() == 1);
@@ -280,7 +279,7 @@ public class CartMapper implements ICartMapper {
                     cartItemData.setErrorMessageTitle(data.getErrors().get(0));
                     com.tokopedia.purchase_platform.features.cart.data.model.response.SimilarProduct dataSimilarProduct = data.getSimilarProduct();
                     if (dataSimilarProduct != null && !TextUtils.isEmpty(dataSimilarProduct.getText()) && !TextUtils.isEmpty(dataSimilarProduct.getUrl())) {
-                        cartItemData.setSimilarProduct(new SimilarProduct(dataSimilarProduct.getText(), dataSimilarProduct.getUrl()));
+                        cartItemData.setSimilarProductData(new SimilarProductData(dataSimilarProduct.getText(), dataSimilarProduct.getUrl()));
                     }
 
                     if (data.getErrors().size() > 1) {
@@ -331,12 +330,12 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestionHolderData.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
         cartListData.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
 
-        GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
+        GlobalCouponAttrData globalCouponAttrData = new GlobalCouponAttrData();
         if (cartDataListResponse.getGlobalCouponAttr() != null && cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
-            globalCouponAttr.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
-            globalCouponAttr.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
+            globalCouponAttrData.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
+            globalCouponAttrData.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
         }
-        cartListData.setGlobalCouponAttr(globalCouponAttr);
+        cartListData.setGlobalCouponAttrData(globalCouponAttrData);
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         AutoapplyStack autoapplyStack = cartDataListResponse.getAutoapplyStack();
@@ -375,7 +374,7 @@ public class CartMapper implements ICartMapper {
                             voucherOrdersItemData.setIsAutoapply(true);
                             voucherOrdersItemDataList.add(voucherOrdersItemData);
                         }
-                        autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+                        autoApplyStackData.setVoucherOrdersItemDataList(voucherOrdersItemDataList);
                     }
                 }
             }
@@ -473,20 +472,20 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setOfficialStore(data.getShop().getOfficialStore().isOfficial() == 1);
             cartItemDataOrigin.setOfficialStoreLogoUrl(data.getShop().getOfficialStore().getOsLogoUrl());
             if (data.getProduct().getWholesalePrice() != null) {
-                List<WholesalePrice> wholesalePrices = new ArrayList<>();
+                List<WholesalePriceData> wholesalePriceData = new ArrayList<>();
                 for (com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
-                    WholesalePrice wholesalePriceDomainModel = new WholesalePrice();
-                    wholesalePriceDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
-                    wholesalePriceDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
-                    wholesalePriceDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
-                    wholesalePriceDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
-                    wholesalePriceDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
-                    wholesalePriceDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
+                    WholesalePriceData wholesalePriceDataDomainModel = new WholesalePriceData();
+                    wholesalePriceDataDomainModel.setPrdPrc(wholesalePriceDataModel.getPrdPrc());
+                    wholesalePriceDataDomainModel.setPrdPrcFmt(wholesalePriceDataModel.getPrdPrcFmt());
+                    wholesalePriceDataDomainModel.setQtyMax(wholesalePriceDataModel.getQtyMax());
+                    wholesalePriceDataDomainModel.setQtyMaxFmt(wholesalePriceDataModel.getQtyMaxFmt());
+                    wholesalePriceDataDomainModel.setQtyMin(wholesalePriceDataModel.getQtyMin());
+                    wholesalePriceDataDomainModel.setQtyMinFmt(wholesalePriceDataModel.getQtyMinFmt());
 
-                    wholesalePrices.add(wholesalePriceDomainModel);
+                    wholesalePriceData.add(wholesalePriceDataDomainModel);
                 }
-                Collections.reverse(wholesalePrices);
-                cartItemDataOrigin.setWholesalePrice(wholesalePrices);
+                Collections.reverse(wholesalePriceData);
+                cartItemDataOrigin.setWholesalePriceData(wholesalePriceData);
             }
 
             CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();
@@ -508,7 +507,7 @@ public class CartMapper implements ICartMapper {
 
             cartItemData.setOriginData(cartItemDataOrigin);
             cartItemData.setUpdatedData(cartItemDataUpdated);
-            cartItemData.setErrorData(cartItemMessageErrorData);
+            cartItemData.setMessageErrorData(cartItemMessageErrorData);
 
             if (data.getErrors() != null && data.getErrors().size() > 0) {
                 cartItemData.setError(true);
@@ -581,7 +580,7 @@ public class CartMapper implements ICartMapper {
                 voucherOrdersItemData.setIsAutoapply(true);
                 voucherOrdersItemDataList.add(voucherOrdersItemData);
             }
-            autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+            autoApplyStackData.setVoucherOrdersItemDataList(voucherOrdersItemDataList);
             cartListData.setAutoApplyStackData(autoApplyStackData);
         }
 

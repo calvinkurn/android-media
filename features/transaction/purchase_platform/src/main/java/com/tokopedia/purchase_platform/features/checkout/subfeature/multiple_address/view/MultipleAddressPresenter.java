@@ -170,7 +170,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                             recipientAddressModel,
                             cartItemDataList.get(i).getOriginData(),
                             cartItemDataList.get(i).getUpdatedData(),
-                            cartItemDataList.get(i).getErrorData())
+                            cartItemDataList.get(i).getMessageErrorData())
             );
             addressAdapterData.setProductImageUrl(
                     cartItemDataList.get(i).getOriginData().getProductImage()

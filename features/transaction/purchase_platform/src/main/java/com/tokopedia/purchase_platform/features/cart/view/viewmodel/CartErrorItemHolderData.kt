@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewmodel
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData
 
 data class CartErrorItemHolderData(
         var productId: Int,
@@ -10,6 +10,6 @@ data class CartErrorItemHolderData(
         var error: String?,
         var isWishlisted: Boolean,
         var tickerMessage: String?,
-        var similarProduct: SimilarProduct?,
+        var similarProductData: SimilarProductData?,
         var showDivider: Boolean
 )

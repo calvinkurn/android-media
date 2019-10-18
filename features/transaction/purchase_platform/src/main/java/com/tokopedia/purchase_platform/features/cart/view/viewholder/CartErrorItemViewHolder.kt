@@ -75,9 +75,9 @@ class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener
     }
 
     private fun renderSimilarProduct(data: CartErrorItemHolderData) {
-        if (data.similarProduct != null) {
+        if (data.similarProductData != null) {
             itemView.group_similar_product_on_cart_error.visibility = View.VISIBLE
-            itemView.tv_similar_product_on_cart_error.text = data.similarProduct!!.text
+            itemView.tv_similar_product_on_cart_error.text = data.similarProductData!!.text
             itemView.tv_similar_product_on_cart_error.setOnClickListener {
                 TODO("action listener similar product")
             }

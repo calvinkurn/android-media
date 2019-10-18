@@ -29,6 +29,9 @@ data class ShopGroupWithError(
         val errors: List<String> = emptyList(),
 
         @SerializedName("sort_key")
-        val sortKey: Int = 0
+        val sortKey: Int = 0,
+
+        @SerializedName("cart_string")
+        val cartString: String = ""
 
 )

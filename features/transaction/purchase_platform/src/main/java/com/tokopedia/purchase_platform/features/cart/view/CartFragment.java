@@ -1270,18 +1270,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
 
             if (!flagAutoApplyStack) {
-                if (cartListData.getGlobalCouponAttr() != null) {
-                    if (cartListData.getGlobalCouponAttr().getDescription() != null) {
-                        if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
-                            builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
-                            builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                if (cartListData.getGlobalCouponAttrData() != null) {
+                    if (cartListData.getGlobalCouponAttrData().getDescription() != null) {
+                        if (!cartListData.getGlobalCouponAttrData().getDescription().isEmpty()) {
+                            builderGlobal.title(cartListData.getGlobalCouponAttrData().getDescription());
+                            builderGlobal.titleDefault(cartListData.getGlobalCouponAttrData().getDescription());
                         }
                     }
 
-                    if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
-                        if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
-                            builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
-                            builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                    if (cartListData.getGlobalCouponAttrData().getQuantityLabel() != null) {
+                        if (!cartListData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
+                            builderGlobal.counterLabel(cartListData.getGlobalCouponAttrData().getQuantityLabel());
+                            builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttrData().getQuantityLabel());
                         }
                     }
                 }
@@ -1335,10 +1335,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartAdapter.addPromoStackingVoucherData(promoStackingData);
         if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
             onPromoGlobalTrackingImpression(promoStackingData);
-        }
-
-        if (cartListData.getCartPromoSuggestionHolderData().isVisible()) {
-            cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestionHolderData());
         }
 
         if (cartListData.isError()) {
@@ -1809,7 +1805,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
             showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
-            dPresenter.processResetAndRefreshCartData();
+            dPresenter.processInitialGetCartData(getCartId(), false, false);
         } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
             showToastMessageGreen(getString(R.string.message_payment_success));
             refreshHandler.setRefreshing(true);
@@ -1845,16 +1841,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
 
                 if (cartListData != null && promoStackingData != null) {
-                    if (cartListData.getGlobalCouponAttr() != null) {
-                        if (cartListData.getGlobalCouponAttr().getDescription() != null) {
-                            if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
-                                promoStackingData.setTitleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                    if (cartListData.getGlobalCouponAttrData() != null) {
+                        if (cartListData.getGlobalCouponAttrData().getDescription() != null) {
+                            if (!cartListData.getGlobalCouponAttrData().getDescription().isEmpty()) {
+                                promoStackingData.setTitleDefault(cartListData.getGlobalCouponAttrData().getDescription());
                             }
                         }
 
-                        if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
-                            if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
-                                promoStackingData.setCounterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                        if (cartListData.getGlobalCouponAttrData().getQuantityLabel() != null) {
+                            if (!cartListData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
+                                promoStackingData.setCounterLabelDefault(cartListData.getGlobalCouponAttrData().getQuantityLabel());
                             }
                         }
                     }

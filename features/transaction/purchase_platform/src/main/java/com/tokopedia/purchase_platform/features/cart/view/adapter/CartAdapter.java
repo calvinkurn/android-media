@@ -318,15 +318,15 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addNotAvailableHeader(DisabledItemHeaderHolderData disabledItemHeaderHolderData) {
-        cartDataList.add(disabledItemHeaderHolderData);
+//        cartDataList.add(disabledItemHeaderHolderData);
     }
 
     public void addNotAvailableShop(DisabledShopHolderData disabledShopHolderData) {
-        cartDataList.add(disabledShopHolderData);
+//        cartDataList.add(disabledShopHolderData);
     }
 
     public void addNotAvailableProduct(Object o) { // Todo : change object to view model
-        cartDataList.add(o);
+//        cartDataList.add(o);
     }
 
     public List<CartShopHolderData> getAllShopGroupDataList() {
