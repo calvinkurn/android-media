@@ -168,7 +168,14 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideICartListPresenter(getCartListUseCase: GetCartListUseCase,
+    @Named("shopGroupSimplifiedQuery")
+    fun provideGetCartListSimplifiedQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_shop_group_simplified)
+    }
+
+    @Provides
+    @CartScope
+    fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartListUseCase: DeleteCartListUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
@@ -188,7 +195,7 @@ class CartModule {
                                   getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase): ICartListPresenter {
-        return CartListPresenter(getCartListUseCase, deleteCartListUseCase,
+        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,

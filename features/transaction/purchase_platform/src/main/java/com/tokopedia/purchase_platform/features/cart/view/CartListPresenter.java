@@ -51,6 +51,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Whole
 import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListSimplifiedUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
@@ -113,7 +114,7 @@ public class CartListPresenter implements ICartListPresenter {
     public static final String ITEM_REQUEST = "5";
 
     private ICartListView view;
-    private final GetCartListUseCase getCartListUseCase;
+    private final GetCartListSimplifiedUseCase getCartListSimplifiedUseCase;
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartListUseCase deleteCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
@@ -138,7 +139,7 @@ public class CartListPresenter implements ICartListPresenter {
     private boolean insuranceChecked = true;
 
     @Inject
-    public CartListPresenter(GetCartListUseCase getCartListUseCase,
+    public CartListPresenter(GetCartListSimplifiedUseCase getCartListSimplifiedUseCase,
                              DeleteCartListUseCase deleteCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
@@ -158,7 +159,7 @@ public class CartListPresenter implements ICartListPresenter {
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
                              UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase) {
-        this.getCartListUseCase = getCartListUseCase;
+        this.getCartListSimplifiedUseCase = getCartListSimplifiedUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartListUseCase = deleteCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
@@ -250,7 +251,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
         requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
 
-        compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
