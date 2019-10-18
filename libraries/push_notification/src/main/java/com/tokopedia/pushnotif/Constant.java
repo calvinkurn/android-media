@@ -121,4 +121,8 @@ public interface Constant {
          int GCM_SELLER_INFO = 1300;
     }
 
+    interface Host{
+         String CHATBOT = "chatbot";
+    }
+
 }

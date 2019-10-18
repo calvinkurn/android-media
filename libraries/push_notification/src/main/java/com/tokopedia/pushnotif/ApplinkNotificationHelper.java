@@ -13,6 +13,8 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import static com.tokopedia.pushnotif.Constant.Host.CHATBOT;
+
 /**
  * @author ricoharisin .
  */
@@ -90,7 +92,7 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.SELLER;
                 case "resolution":
                     return Constant.NotificationId.RESOLUTION;
-                case "chatbot":
+                case CHATBOT:
                     return Constant.NotificationId.CHAT_BOT;
                 default:
                     return Constant.NotificationId.GENERAL;
