@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
-import com.tokopedia.core.drawer2.data.viewmodel.ChatNotificationModel;
+import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
 
 import rx.Observable;
 import rx.functions.Func2;
@@ -32,11 +32,11 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
     @Override
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
         Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
-        Observable<ChatNotificationModel> notifTopChat = getChatNotificationUseCase.createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
+        Observable<TopChatNotificationModel> notifTopChat = getChatNotificationUseCase.createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
 
-        return Observable.zip(notif, notifTopChat, new Func2<NotificationModel, ChatNotificationModel, NotificationModel>() {
+        return Observable.zip(notif, notifTopChat, new Func2<NotificationModel, TopChatNotificationModel, NotificationModel>() {
             @Override
-            public NotificationModel call(NotificationModel notificationModel, ChatNotificationModel chatNotificationModel) {
+            public NotificationModel call(NotificationModel notificationModel, TopChatNotificationModel chatNotificationModel) {
                 NotificationData data = notificationModel.getNotificationData();
                 data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
                         chatNotificationModel.getNotifUnreads());
