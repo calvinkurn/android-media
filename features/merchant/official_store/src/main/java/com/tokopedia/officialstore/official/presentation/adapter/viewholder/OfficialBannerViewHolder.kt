@@ -13,7 +13,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
 
-    private var banner: Banner? = null
+    private var banner: BannerView? = null
 
     init {
         banner = view?.findViewById(R.id.banner_official)

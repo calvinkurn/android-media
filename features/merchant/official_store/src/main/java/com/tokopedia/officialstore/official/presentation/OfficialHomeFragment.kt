@@ -19,6 +19,7 @@ import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
@@ -175,29 +176,29 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         }
 
 //        if (parentFragment is RecyclerViewScrollListener) {
-////            val scrollListener = parentFragment as RecyclerViewScrollListener
-////            layoutManager?.let {
-////                var firstVisibleInListview = it.findFirstVisibleItemPosition()
-////                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-////                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-////                        super.onScrolled(recyclerView, dx, dy)
-////                        val currentFirstVisible = it.findFirstVisibleItemPosition()
-////
-////                        // scroll up
-////                        if (currentFirstVisible > firstVisibleInListview) {
-////                            scrollListener.onScrollUp()
-////                        } else { // scroll down
-////                            scrollListener.onScrollDown()
-////                        }
-////                        firstVisibleInListview = currentFirstVisible
-////
-////                        // TODO logic load more
-////                        // please see ProductDetailFragment > function addLoadMoreImpression
-////                        viewModel.loadMore()
-////                    }
-////
-////                })
-////            }
+//            val scrollListener = parentFragment as RecyclerViewScrollListener
+//            layoutManager?.let {
+//                var firstVisibleInListview = it.findFirstVisibleItemPositions(null)
+//                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                        super.onScrolled(recyclerView, dx, dy)
+//                        val currentFirstVisible = it.findFirstVisibleItemPositions(layoutManager.getChildCount())
+//
+//                        // scroll up
+//                        if (currentFirstVisible > firstVisibleInListview) {
+//                            scrollListener.onScrollUp()
+//                        } else { // scroll down
+//                            scrollListener.onScrollDown()
+//                        }
+//                        firstVisibleInListview = currentFirstVisible
+//
+//                        // TODO logic load more
+//                        // please see ProductDetailFragment > function addLoadMoreImpression
+//                        viewModel.loadMore()
+//                    }
+//
+//                })
+//            }
 //        }
 
     }
