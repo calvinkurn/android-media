@@ -16,7 +16,7 @@ class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepos
                                                         val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getEmoneyInquiryBalance(paramCommand: String, rawQuery: String, idCard: String,
+    fun getEmoneyInquiryBalance(paramCommand: String, rawQuery: String, idCard: Int,
                                 mapAttributesParam: HashMap<String, Any>,
                                 onSuccess: (HashMap<String, Any>, RechargeEmoneyInquiry) -> Unit,
                                 onError: (Throwable) -> Unit) {

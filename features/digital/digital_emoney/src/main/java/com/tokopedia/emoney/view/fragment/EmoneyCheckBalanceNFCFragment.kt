@@ -38,6 +38,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.RemoteConfig
+import id.co.bri.sdk.Brizzi
+import id.co.bri.sdk.BrizziCardObject
+import id.co.bri.sdk.Callback
+import id.co.bri.sdk.exception.BrizziException
 import java.io.IOException
 import javax.inject.Inject
 
@@ -51,6 +55,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
     private lateinit var isoDep: IsoDep
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var emoneyInquiryBalanceViewModel: EmoneyInquiryBalanceViewModel
+    private lateinit var brizziInstance: Brizzi
 
     private var intentFiltersArray: Array<IntentFilter>? = null
     private var techListsArray: Array<Array<String>>? = null
@@ -94,8 +99,12 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
+        brizziInstance = Brizzi.getInstance()
+        brizziInstance.Init("dCcZEHJ5oub9YTUTe6KQcOE5DwEUG4e8", "IlFDLgR31ACt7aqH")
+        brizziInstance.setUserName("Tokopedia")
+        brizziInstance.setNfcAdapter(activity)
 
+        nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         pendingIntent = PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
 
@@ -174,15 +183,31 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                         emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
                                 EmoneyInquiryBalanceViewModel.PARAM_INQUIRY,
                                 GraphqlHelper.loadRawString(it.resources, R.raw.query_emoney_inquiry_balance),
-                                "",
+                                0,
                                 mapAttributes,
                                 this::onSuccessInquiryBalance,
                                 this::onErrorInquiryBalance)
                     }
                 } else {
-                    emoneyAnalytics.onErrorReadingCard()
-                    Toast.makeText(activity, "OTHER CODE", Toast.LENGTH_SHORT).show()
-                    showError(resources.getString(R.string.emoney_card_isnot_supported))
+                    if (::brizziInstance.isInitialized) {
+                        val intentBrizzi = Intent()
+                        brizziInstance.getBalanceInquiry(intentBrizzi, object : Callback {
+                            override fun OnFailure(brizziException: BrizziException?) {
+                                //TODO log data failed
+                                Toast.makeText(activity, "failed " +  brizziException?.message, Toast.LENGTH_SHORT).show()
+                            }
+
+                            override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                                //TODO log data success
+                                Toast.makeText(activity, brizziCardObject.balance, Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        showError(resources.getString(R.string.emoney_card_isnot_supported))
+                    }
+//                    emoneyAnalytics.onErrorReadingCard()
+//                    Toast.makeText(activity, "OTHER CODE", Toast.LENGTH_SHORT).show()
+//                    showError(resources.getString(R.string.emoney_card_isnot_supported))
                 }
             }
         } catch (e: IOException) {
@@ -228,7 +253,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                             emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
                                     EmoneyInquiryBalanceViewModel.PARAM_SEND_COMMAND,
                                     GraphqlHelper.loadRawString(it.resources, R.raw.query_emoney_inquiry_balance),
-                                    rechargeEmoneyInquiry.id,
+                                    rechargeEmoneyInquiry.id.toInt(),
                                     mapAttributes,
                                     this::onSuccessInquiryBalance,
                                     this::onErrorInquiryBalance)
