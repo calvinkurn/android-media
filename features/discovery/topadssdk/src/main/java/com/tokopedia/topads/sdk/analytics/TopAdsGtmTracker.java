@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -106,9 +107,9 @@ public class TopAdsGtmTracker {
             bundle.putString("eventLabel", keyword);
             bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, "/searchproduct - topads productlist");
             bundle.putString("screenName", screenName);
-            bundle.putParcelableArrayList("items", dataBundleList);
+            bundle.putParcelableArrayList("items", new ArrayList<Bundle>(dataBundleList));
             TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
-//            clearDataLayerList();
+            clearDataLayerList();
         }
     }
 
