@@ -11,7 +11,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
@@ -26,7 +26,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final GuidedSearchListener guidedSearchListener;
     private final RelatedSearchListener relatedSearchListener;
     private final QuickFilterListener quickFilterListener;
-    private final GlobalNavWidgetListener globalNavWidgetListener;
+    private final GlobalNavListener globalNavListener;
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
     private final RecommendationListener recommendationListener;
@@ -37,7 +37,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                                       GuidedSearchListener guidedSearchListener,
                                       RelatedSearchListener relatedSearchListener,
                                       QuickFilterListener quickFilterListener,
-                                      GlobalNavWidgetListener globalNavWidgetListener,
+                                      GlobalNavListener globalNavListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
                                       RecommendationListener recommendationListener,
@@ -48,7 +48,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.guidedSearchListener = guidedSearchListener;
         this.relatedSearchListener = relatedSearchListener;
         this.quickFilterListener = quickFilterListener;
-        this.globalNavWidgetListener = globalNavWidgetListener;
+        this.globalNavListener = globalNavListener;
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
         this.recommendationListener = recommendationListener;
@@ -128,7 +128,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
         } else if (type == GlobalNavViewHolder.LAYOUT) {
-            viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
+            viewHolder = new GlobalNavViewHolder(view, globalNavListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
         } else if(type == RecommendationTitleViewHolder.LAYOUT){
