@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
@@ -23,9 +24,10 @@ import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButto
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.util.TkpdWebViewClient;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.webview.TkpdWebView;
+import com.tokopedia.webview.TkpdWebViewClient;
 
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
@@ -48,7 +50,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private TkpdWebView webView;
     private ProgressBar progressBar;
     public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
-
+    private UserSessionInterface session;
     ContactUsFaqListener listener;
     String url;
 
@@ -65,6 +67,12 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        session = new UserSession(context);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }
@@ -77,9 +85,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
-        webView.loadAuthUrlWithFlags(url);
-
-
+        webView.loadAuthUrlWithFlags(url, session.getUserId(), session.getAccessToken());
     }
 
     @Override
@@ -122,8 +128,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         if (webView != null) {
             webView.clearCache(true);
         }
-        webView = view.findViewById(com.tokopedia.abstraction.R.id.webview);
-        progressBar = view.findViewById(com.tokopedia.abstraction.R.id.progressbar);
+        webView = view.findViewById(R.id.webview);
+        progressBar = view.findViewById(R.id.progressbar);
 
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
@@ -262,7 +268,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             try {
                 if (url.getLastPathSegment().equals("contact-us.pl")) {
                     webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
-                            .BASE_CONTACT_US, context));
+                            .BASE_CONTACT_US, context), session.getUserId(), session.getAccessToken());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
