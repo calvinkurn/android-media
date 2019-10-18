@@ -8,10 +8,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
-import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMclLateCountResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
@@ -111,36 +109,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         GetMerchantCreditDetailsSubscriber getMerchantCreditDetailsSubscriber =
                 new GetMerchantCreditDetailsSubscriber(this);
         getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
-    }
-
-    @Override
-    public void getMCLLateCount() {
-
-        getMCLLateCountUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                return;
-            }
-                getView().hideWithdrawTicker();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null) {
-                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
-                    if (gqlMclLateCountResponse != null) {
-                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
-                    } else
-                        getView().hideWithdrawTicker();
-                }
-            }
-        });
     }
 
     @Override
