@@ -387,5 +387,6 @@
     <string name="sizechart_guideline">Panduan Ukuran</string>
     <string name="title_choose_other_template">Pilih Template Lain</string>
     <string name="label_button_apply_credit">Ajukan Kredit</string>
+    <string name="otdg_gtm_label">Jaminan Pengiriman Tepat Waktu</string>
 
 </resources>

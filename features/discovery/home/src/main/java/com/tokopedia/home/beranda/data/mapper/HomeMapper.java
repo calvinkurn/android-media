@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
 import com.tokopedia.home.beranda.domain.model.SpotlightItem;
+import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -25,6 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
@@ -64,13 +66,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getSlides() != null
-                    && homeData.getSlides().getSlides() != null
-                    && !homeData.getSlides().getSlides().isEmpty()) {
-                list.add(mappingBanner(homeData.getSlides().getSlides(), homeData.isCache()));
-            } else {
-                list.add(mappingBanner(new ArrayList<BannerSlidesModel>(), homeData.isCache()));
-            }
+            list.add(mappingBanner(homeData.getSlides(), homeData.isCache()));
 
             if (homeData.getTicker() != null
                     && homeData.getTicker().getTickers() != null
@@ -81,6 +77,14 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     list.add(ticker);
                 }
             }
+
+            if (homeData.getHomeFlag() != null) {
+                if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
+                    list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
+                }
+            }
+
+            list.add(new GeolocationPromptViewModel());
 
             if (homeData.getDynamicHomeIcon() != null
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
@@ -290,9 +294,14 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModel;
     }
 
-    private HomeVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
+    private HomeVisitable mappingBanner(BannerDataModel slides, boolean isCache) {
         return homeVisitableFactory.createBannerVisitable(
                 slides, isCache);
+    }
+
+    private HomeVisitable mappingOvoTokpoint(boolean hasTokopoints, boolean isCache) {
+        return homeVisitableFactory.createOvoTokopointVisitable(
+                hasTokopoints, isCache);
     }
 
     private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
