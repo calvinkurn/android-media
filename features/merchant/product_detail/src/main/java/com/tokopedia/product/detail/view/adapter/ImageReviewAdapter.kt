@@ -36,7 +36,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     inner class ImageReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
-            with(itemView) {
+            with(view) {
                 ImageHandler.loadImageRounded(view.context, image_review, item.imageUrlThumbnail, 16F)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()

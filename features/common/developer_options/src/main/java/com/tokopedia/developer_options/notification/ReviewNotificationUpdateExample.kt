@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.support.v4.app.NotificationManagerCompat
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 class ReviewNotificationUpdateExample : BroadcastReceiver() {
 
@@ -22,7 +22,7 @@ class ReviewNotificationUpdateExample : BroadcastReceiver() {
         }
 
         context?.let {
-            val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
+            val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW)
             pmSubscribeRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
 
             val pmSubscribeIntent = PendingIntent.getActivity(
