@@ -756,13 +756,12 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        // TODO : remark the condition!!
-        // if (data.isFreeShipping()) {
+        if (data.isFreeShipping()) {
             showFreeShippingConfirmationDialog();
-        /*} else {
+        } else {
             AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
             dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
-        }*/
+        }
     }
 
     private void showFreeShippingConfirmationDialog() {
