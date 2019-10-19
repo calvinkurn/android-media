@@ -5,11 +5,8 @@ import com.tokopedia.promotionstarget.data.GratificationDataContract
 import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
 import com.tokopedia.promotionstarget.data.claim.ResultStatus
 
-class GetPopGratificationResponse : GratificationDataContract {
-
-    @SerializedName("popGratification")
-    val popGratification: PopGratification? = null
-}
+class GetPopGratificationResponse(@SerializedName("popGratification")
+                                  val popGratification: PopGratification? = null) : GratificationDataContract
 
 data class PopGratification(
         @SerializedName("resultStatus")

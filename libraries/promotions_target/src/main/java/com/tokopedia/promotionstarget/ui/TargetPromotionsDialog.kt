@@ -7,14 +7,10 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.*
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +24,8 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.GratificationDataContract
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
+import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
+import com.tokopedia.promotionstarget.data.claim.PopGratificationClaim
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
@@ -60,13 +58,18 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var nestedScrollView: NestedScrollView
     private lateinit var progressBar: ProgressBar
+    private lateinit var imageViewRight: AppCompatImageView
+    private lateinit var tvTitleRight: AppCompatTextView
+    private lateinit var tvSubTitleRight: AppCompatTextView
 
     lateinit var viewModel: TargetPromotionsDialogVM
     private var data: GratificationDataContract? = null
     private lateinit var gratificationData: GratificationData
-    var originalBtnText: String? = null
-    var couponCodeAfterClaim: String? = null
-    var shouldCallAutoApply = true
+    private var originalBtnText: String? = null
+    private var couponCodeAfterClaim: String? = null
+    private var shouldCallAutoApply = true
+    private val rightViewList = ArrayList<View>()
+    private val leftViewList = ArrayList<View>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,6 +79,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private val MAX_RETRY_COUNT = 4
     private var retryCount = 0
     private var skipBtnAction = false
+    private var screenWidth = 0f
 
     var uiType: TargetPromotionsCouponType = TargetPromotionsCouponType.SINGLE_COUPON
 
@@ -124,6 +128,20 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         viewFlipper = root.findViewById(R.id.viewFlipper)
         nestedScrollView = root.findViewById(R.id.nestedScrollView)
         progressBar = root.findViewById(R.id.targetProgressBar)
+        imageViewRight = root.findViewById(R.id.imageViewRight)
+        tvTitleRight = root.findViewById(R.id.tvTitleRight)
+        tvSubTitleRight = root.findViewById(R.id.tvSubTitleRight)
+
+        screenWidth = activityContext.resources.displayMetrics.widthPixels.toFloat()
+        rightViewList.add(imageViewRight)
+        rightViewList.add(tvSubTitleRight)
+        rightViewList.add(tvTitleRight)
+
+        leftViewList.add(viewFlipper)
+        leftViewList.add(tvSubTitle)
+        leftViewList.add(tvTitle)
+
+        initialAnimation()
 
         recyclerView.layoutManager = LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
 
@@ -140,6 +158,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         initInjections(activityContext)
         setUiData(data, couponDetailResponse)
         setListeners(data, activityContext)
+    }
+
+    private fun initialAnimation() {
+
+        rightViewList.forEach {
+            it.translationX = screenWidth
+            it.alpha = 0f
+        }
     }
 
 
@@ -217,12 +243,19 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun setUiForSuccessClaimGratification(data: ClaimPopGratificationResponse) {
-        viewFlipper.displayedChild = CONTAINER_IMAGE
-        tvTitle.text = data.popGratificationClaim?.title
-        tvSubTitle.text = data.popGratificationClaim?.text
+//        viewFlipper.displayedChild = CONTAINER_IMAGE
+
+//        tvTitle.text = data.popGratificationClaim?.title
+//        tvSubTitle.text = data.popGratificationClaim?.text
+        tvTitleRight.text = data.popGratificationClaim?.title
+        tvSubTitleRight.text = data.popGratificationClaim?.text
+
+
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
-        imageView.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
+//        imageView.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
+        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
+
         performAnimationToGotoClaimUI()
         couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode
     }
@@ -253,28 +286,34 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         })
 
         btnAction.setOnClickListener {
-            if (!skipBtnAction) {
-
-                val retryAvailable = retryCount < MAX_RETRY_COUNT
-                if (retryAvailable) {
-
-                    toggleProgressBar(true)
-                    toggleBtnText(false)
-                    if (data is GetPopGratificationResponse) {
-                        performActionToClaimCoupon(data, activityContext)
-                    } else if (data is ClaimPopGratificationResponse) {
-                        performActionAfterCouponIsClaimed(data)
-                    } else {
-                        shouldCallAutoApply = false
-                        bottomSheetDialog.dismiss()
-                    }
-                } else {
-                    RouteManager.route(btnAction.context, ApplinkConst.HOME)
-                    shouldCallAutoApply = false
-                    bottomSheetDialog.dismiss()
-                }
-                skipBtnAction = true
-            }
+            val r = ClaimPopGratificationResponse(PopGratificationClaim(title = "Title",
+                    text = "Subtitle",
+                    popGratificationActionButton = PopGratificationActionButton(text = "ActionButton"),
+                    dummyCouponCode = "123",
+                    imageUrlMobile = "https://dummyimage.com/280x210/000/fff"))
+            setUiForSuccessClaimGratification(r)
+//            if (!skipBtnAction) {
+//
+//                val retryAvailable = retryCount < MAX_RETRY_COUNT
+//                if (retryAvailable) {
+//
+//                    toggleProgressBar(true)
+//                    toggleBtnText(false)
+//                    if (data is GetPopGratificationResponse) {
+//                        performActionToClaimCoupon(data, activityContext)
+//                    } else if (data is ClaimPopGratificationResponse) {
+//                        performActionAfterCouponIsClaimed(data)
+//                    } else {
+//                        shouldCallAutoApply = false
+//                        bottomSheetDialog.dismiss()
+//                    }
+//                } else {
+//                    RouteManager.route(btnAction.context, ApplinkConst.HOME)
+//                    shouldCallAutoApply = false
+//                    bottomSheetDialog.dismiss()
+//                }
+//                skipBtnAction = true
+//            }
         }
     }
 
@@ -297,6 +336,25 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun performAnimationToGotoClaimUI() {
+
+        val alphaDuration = 300L
+        leftViewList.forEach {
+            it.animate().setDuration(alphaDuration).alpha(0f)
+        }
+
+        imageView.animate().setDuration(alphaDuration).translationX(-screenWidth)
+        tvTitle.animate().setStartDelay(100L).setDuration(alphaDuration).translationX(-screenWidth)
+        tvSubTitle.animate().setStartDelay(150L).setDuration(alphaDuration).translationX(-screenWidth)
+
+        val startDelay = alphaDuration
+        rightViewList.forEach {
+            it.animate().setStartDelay(startDelay).setDuration(alphaDuration).alpha(1f)
+        }
+
+        imageViewRight.animate().setStartDelay(startDelay).setDuration(alphaDuration).translationX(0f)
+        tvTitleRight.animate().setStartDelay(startDelay + 100L).setDuration(alphaDuration).translationX(0f)
+        tvSubTitleRight.animate().setStartDelay(startDelay + 150L).setDuration(alphaDuration).translationX(0f)
+
 
 //        val vg = viewFlipper.parent.parent.parent as ViewGroup
 //        val touchOutside: View = vg.findViewById(R.id.touch_outside)
@@ -357,7 +415,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    private fun expandBottomSheet(){
+    private fun expandBottomSheet() {
         val fm = nestedScrollView.parent
         if (fm is FrameLayout) {
 //            BottomSheetBehavior.from(fm).state = BottomSheetBehavior.STATE_EXPANDED
