@@ -55,10 +55,6 @@ class ConfirmRequestPickupFragment: Fragment() {
     }
 
     private fun setupLayout() {
-        card_address?.clearShadow(true)
-        view?.context?.let {
-            card_address?.setBackgroundColor(ContextCompat.getColor(it, R.color.grey_300))
-        }
         shop_address?.text = originAddress
     }
 

@@ -242,6 +242,10 @@ public class OrderDetailActivity extends TActivity
         bottomSheetUnify.clearClose(false);
         bottomSheetUnify.clearHeader(false);
         bottomSheetUnify.setTitle(title);
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
 
         View childView = View.inflate(this, R.layout.bottomsheet_info, null);
         Typography bottomSheetDesc = childView.findViewById(R.id.bottomsheet_desc);
@@ -752,12 +756,13 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        if (data.isFreeShipping()) {
+        // TODO : remark the condition!!
+        // if (data.isFreeShipping()) {
             showFreeShippingConfirmationDialog();
-        } else {
+        /*} else {
             AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
             dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
-        }
+        }*/
     }
 
     private void showFreeShippingConfirmationDialog() {
