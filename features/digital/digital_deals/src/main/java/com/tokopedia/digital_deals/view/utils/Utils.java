@@ -83,6 +83,9 @@ public class Utils {
     private SparseIntArray unLikedEventMap;
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "24";
+    public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+    public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+    public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
 
 
     synchronized public static Utils getSingletonInstance() {

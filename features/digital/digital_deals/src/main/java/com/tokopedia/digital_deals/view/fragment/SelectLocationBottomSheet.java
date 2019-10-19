@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -37,15 +39,19 @@ import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.RequestParams;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class SelectLocationBottomSheet extends BaseDaggerFragment implements View.OnClickListener, DealsLocationContract.View, DealsLocationAdapter.SelectCityListener, DealsPopularLocationAdapter.SelectPopularLocationListener, SearchInputView.Listener, SearchInputView.ResetListener, SearchInputView.FocusChangeListener {
 
@@ -70,6 +76,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     private CloseableBottomSheetDialog locationSettingBottomSheet;
     private boolean isDeniedFirstTime = false;
     private Location location;
+    private SharedPreferences sharedPrefs;
 
     public static Fragment createInstance(String selectedLocation, Location location) {
         Fragment fragment = new SelectLocationBottomSheet();
@@ -118,6 +125,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
                 getFragmentManager().popBackStack();
             }
         });
+
         renderPopularLocations();
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrolX, scrollY, oldScrollX, oldScrollY) -> {
@@ -305,7 +313,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         int id = v.getId();
         if (id == R.id.detect_current_location) {
             if (!isDeniedFirstTime) {
-                permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+                permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(String permissionText) {
                         Log.d("Naveen", "permission denied");
@@ -321,8 +329,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
                     @Override
                     public void onPermissionGranted() {
                         Log.d("Naveen", "permission allowed");
+                        detectAndSendLocation();
                         isDeniedFirstTime = false;
-                        mPresenter.getNearestLocation(location.getCoordinates());
                     }
                 }, getContext().getResources().getString(R.string.deals_use_current_location));
             } else {
@@ -359,6 +367,42 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         locationSettingBottomSheet.setCustomContentView(categoryView, "", false);
         locationSettingBottomSheet.show();
         locationSettingBottomSheet.setCanceledOnTouchOutside(true);
+    }
+
+
+    public void detectAndSendLocation() {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(getActivity()
+                        .getApplicationContext()),
+                getActivity().getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation() {
+        return (deviceLocation) -> {
+            saveLocation(getActivity(), deviceLocation.getLatitude(), deviceLocation.getLongitude());
+            return null;
+        };
+    }
+
+    public void saveLocation(Context context, double latitude, double longitude) {
+//        SharedPreferences.Editor editor;
+//        if (context != null && !TextUtils.isEmpty(Utils.KEY_LOCATION)) {
+//            sharedPrefs = context.getSharedPreferences(Utils.KEY_LOCATION, Context.MODE_PRIVATE);
+//            editor = sharedPrefs.edit();
+//        } else {
+//            return;
+//        }
+        Log.d("Naveen", "Lat is "+ String.valueOf(latitude));
+        Log.d("Naveen", "Long is "+ String.valueOf(longitude));
+
+        mPresenter.getNearestLocation(String.format("%s,%s", String.valueOf(latitude), String.valueOf(longitude)));
+//        editor.putString(Utils.KEY_LOCATION_LAT, String.valueOf(latitude));
+//        editor.putString(Utils.KEY_LOCATION_LONG, String.valueOf(longitude));
+//        editor.apply();
     }
 
     public interface SelectedLocationListener {

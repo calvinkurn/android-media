@@ -98,9 +98,4 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         this.isLocationUpdated = isLocationUpdated;
         dealsHomeFragment.refreshHomePage(isLocationUpdated);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 }
