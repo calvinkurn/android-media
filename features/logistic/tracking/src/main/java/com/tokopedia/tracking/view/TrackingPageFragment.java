@@ -38,6 +38,7 @@ import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback;
@@ -301,6 +302,17 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                 tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
                 tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
                 tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
+                tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                        RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
             }
         }
     }

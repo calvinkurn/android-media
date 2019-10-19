@@ -182,12 +182,12 @@
                     android:layout_centerVertical="true"/>
 
                 <ImageView
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginStart="@dimen/dp_5"
                     android:contentDescription="@string/icon_harus_sesuai"
-                    app:srcCompat="@drawable/ic_info"
+                    app:srcCompat="@drawable/ic_info_free_shipping"
                     android:layout_toRightOf="@id/label_harus_sesuai"
                     android:layout_toEndOf="@id/label_harus_sesuai"
                     android:layout_centerVertical="true" />
