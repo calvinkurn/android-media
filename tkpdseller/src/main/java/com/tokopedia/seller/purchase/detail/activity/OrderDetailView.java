@@ -7,6 +7,7 @@ import com.tokopedia.seller.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.seller.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.seller.purchase.detail.fragment.CancelOrderFragment;
+import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
 import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
@@ -39,7 +40,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
         RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
         RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener,
         RequestPickupFragment.ConfirmRequestPickupListener,
-        ToolbarChangeListener {
+        ToolbarChangeListener,
+        ConfirmRequestPickupFragment.ActionListener {
 
     void onReceiveDetailData(OrderDetailData data);
 

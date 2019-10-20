@@ -343,7 +343,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?) {
+            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
                 setSelectedSort(HashMap(selectedSort))
                 selectedSort.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
