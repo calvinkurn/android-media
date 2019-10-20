@@ -52,7 +52,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = HOMEPAGE_SCREEN_NAME
 
     override fun getNewFragment(): Fragment = if (type.isNotEmpty())
         HotelHomepageFragment.getInstance(id, name, type)
@@ -78,5 +78,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val TYPE_DISTRICT = "district"
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
+
+        const val HOMEPAGE_SCREEN_NAME = "/hotel/homepage"
     }
 }

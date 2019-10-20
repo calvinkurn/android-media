@@ -26,6 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
@@ -67,12 +68,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             list.add(mappingBanner(homeData.getSlides(), homeData.isCache()));
 
-            if (homeData.getHomeFlag() != null) {
-                if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
-                    list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
-                }
-            }
-
             if (homeData.getTicker() != null
                     && homeData.getTicker().getTickers() != null
                     && !homeData.getTicker().getTickers().isEmpty()
@@ -83,12 +78,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 }
             }
 
+            if (homeData.getHomeFlag() != null) {
+                if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
+                    list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
+                }
+            }
+
+            list.add(new GeolocationPromptViewModel());
+
             if (homeData.getDynamicHomeIcon() != null
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(
                         homeData.getDynamicHomeIcon().getDynamicIcon(),
-                        homeData.getDynamicHomeIcon().getEnhanceImpressionDynamicIconHomePage(),
                         homeData.isCache()
                 ));
             }
@@ -301,23 +303,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 hasTokopoints, isCache);
     }
 
-    private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
-        UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
-        for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
-        }
-        return viewModel;
-    }
-
     private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
-                                                Map<String, Object> trackingData,
                                                 boolean isCache) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl(), icon.getBu_identifier()));
         }
         if (!isCache) {
-            viewModelDynamicIcon.setTrackingData(trackingData);
+            viewModelDynamicIcon.setTrackingData(
+                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.getItemList())
+            );
             viewModelDynamicIcon.setTrackingCombined(false);
         }
         return viewModelDynamicIcon;

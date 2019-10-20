@@ -764,7 +764,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     fun eventClickCloseSocmedButton(){
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
+                EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
