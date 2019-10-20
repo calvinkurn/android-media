@@ -9,7 +9,12 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
-        <activity android:name=".categoryrevamp.view.activity.CategoryNavActivity"
+        <activity
+            android:name=".newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".categoryrevamp.view.activity.CategoryNavActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
