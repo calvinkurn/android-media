@@ -6,6 +6,6 @@ package com.tokopedia.referral.view.presenter
 
 interface IReferralFriendsWelcomePresenter {
     fun getSubHeaderFromFirebase(owner: String) : String
-    fun initialize()
+    fun initialize(code: String)
     fun copyVoucherCode(code: String)
 }

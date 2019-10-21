@@ -34,7 +34,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
     private TextView referralCodeTextView;
     private ImageView imgTick;
     private TextView btnCopyReferralCode;
-
+    private String code, owner;
     @Inject
     ReferralFriendsWelcomePresenter presenter;
     @Inject
@@ -58,7 +58,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
 
     protected void initialPresenter() {
         presenter.attachView(this);
-        presenter.initialize();
+        presenter.initialize(code);
     }
 
     protected int getFragmentLayout() {
@@ -70,6 +70,10 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(getFragmentLayout(), container, false);
+        if(getArguments()!=null){
+            code = getArguments().getString(Constants.Key.Companion.CODE);
+            owner=getArguments().getString(Constants.Key.Companion.OWNER);
+        }
         return view;
     }
 
@@ -110,8 +114,8 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
             showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
 
-        referralCodeTextView.setText(getArguments().getString(Constants.Key.Companion.CODE));
-        welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase(getArguments().getString(Constants.Key.Companion.OWNER))));
+        referralCodeTextView.setText(code);
+        welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase(owner)));
 
     }
 

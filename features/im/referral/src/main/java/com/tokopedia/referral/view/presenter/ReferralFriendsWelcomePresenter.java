@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<FriendsWelcomeView> implements IReferralFriendsWelcomePresenter {
 
-    private final String CODE_KEY = "code";
     private UserSession userSession;
     private RemoteConfig remoteConfig;
     private ReferralAnalytics referralAnalytics;
@@ -41,9 +40,8 @@ public class ReferralFriendsWelcomePresenter extends BaseDaggerPresenter<Friends
     }
 
     @Override
-    public void initialize() {
-        if (getView().getActivity().getIntent() != null && getView().getActivity().getIntent().getExtras() != null) {
-            String code = getView().getActivity().getIntent().getExtras().getString(CODE_KEY);
+    public void initialize(String code) {
+        if (!TextUtils.isEmpty(code)) {
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), Constants.Values.Companion.REFERRAL);
             if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(Constants.Key.Companion.REFERRAL_CODE, ""))) {
                 if (userSession.isLoggedIn()) {
