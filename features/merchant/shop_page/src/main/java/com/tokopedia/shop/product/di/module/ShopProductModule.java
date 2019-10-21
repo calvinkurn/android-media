@@ -14,7 +14,6 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.shop.R;
@@ -141,12 +140,6 @@ public class ShopProductModule {
     @Provides
     public GMCommonRepository provideGMCommonRepository(GMCommonDataSource gmCommonDataSource) {
         return new GMCommonRepositoryImpl(gmCommonDataSource);
-    }
-
-    @ShopProductScope
-    @Provides
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     // WishList
