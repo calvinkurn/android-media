@@ -128,7 +128,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClick();
+                setTokenClicked();
                 timesFullEggClicked++;
             }
         });

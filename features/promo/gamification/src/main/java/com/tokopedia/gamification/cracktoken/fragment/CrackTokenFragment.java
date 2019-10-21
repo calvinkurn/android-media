@@ -607,7 +607,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         hideInfoTitle();
         vibrate();
         fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
-        widgetTokenView.setTokenClicked();
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())
