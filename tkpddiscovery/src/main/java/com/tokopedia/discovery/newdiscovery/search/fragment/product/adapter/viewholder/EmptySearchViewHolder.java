@@ -23,12 +23,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -219,8 +217,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         if(selectedFilterFromEmptyStateListener != null && !selectedFilterFromEmptyStateListener.isEmpty()) {
             populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
-        } else if (boundedEmptySearchModel.getFilterFlagSelectedModel() != null) {
-            populateSelectedFilterToRecylerView(convertToOptionList(boundedEmptySearchModel.getFilterFlagSelectedModel()));
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
@@ -229,50 +225,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
         selectedFilterRecyclerView.setVisibility(View.VISIBLE);
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
-    }
-
-    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
-        List<Option> optionList = new ArrayList<>();
-        if (filterFlagSelectedModel.getSavedTextInput() != null) {
-            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
-                    || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
-                optionList.add(generatePriceOption());
-            }
-        }
-
-        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
-            optionList.add(generateCategoryOption(filterFlagSelectedModel));
-        }
-
-        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
-            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
-        }
-
-        return optionList;
-    }
-
-    private Option generatePriceOption() {
-        Option option = new Option();
-        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
-        option.setKey(Option.KEY_PRICE_MIN);
-        option.setValue("0");
-        return option;
-    }
-
-    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
-        Option option = new Option();
-        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
-        option.setKey(Option.KEY_CATEGORY);
-        option.setValue(filterFlagSelectedModel.getCategoryId());
-        return option;
-    }
-
-    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
-        List<Option> optionList = new ArrayList<>();
-        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
-            optionList.add(OptionHelper.generateOptionFromUniqueId(entry.getKey()));
-        }
-        return optionList;
     }
 
     private void loadBannerAdsIfNotNull() {
@@ -308,7 +260,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         @Override
         public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_empty_state_selected_filter_item, parent, false);
             return new SelectedFilterItemViewHolder(view, clickListener);
         }
 

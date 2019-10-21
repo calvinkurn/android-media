@@ -13,27 +13,35 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'ovop2p'
-    groupId = 'com.tokopedia.ovop2p'
-    versionName = "${tkpdOvoP2PTransfer}"
-    artifactName = "ovop2p-release"
-}
-
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.webview)
+    
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }
+
+project.ext {
+    artifactId = 'ovop2p'
+    groupId = 'com.tokopedia.ovop2p'
+    versionName = "1.0.0"
+    artifactName = "ovop2p-release"
+}
+
+apply from: '../../publish_local.gradle'

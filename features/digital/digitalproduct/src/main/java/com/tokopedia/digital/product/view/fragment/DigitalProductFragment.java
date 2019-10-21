@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -49,7 +50,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -83,7 +83,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -91,6 +90,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
@@ -257,7 +257,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
-        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
+        // (Temporary) Ignore unparsable categoryId error
+        try {
+            if (categoryId != null)
+                presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
+        } catch (Exception e) {
+            // do nothing
+        }
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -630,7 +636,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(
             Map<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
+        return AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
     }
 
     @Override
@@ -792,7 +798,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void onProductDetailLinkClicked(String url) {
-        startActivity(digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), url));
+        RouteManager.route(getContext(), url);
     }
 
     @Override

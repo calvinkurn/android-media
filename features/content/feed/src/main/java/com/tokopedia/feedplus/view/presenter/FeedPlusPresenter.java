@@ -1,12 +1,18 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
@@ -14,6 +20,7 @@ import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.feedplus.view.subscriber.FeedPlusDeletePostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
@@ -53,6 +60,8 @@ public class FeedPlusPresenter
     private final GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase;
     private final GetDynamicFeedUseCase getDynamicFeedUseCase;
     private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
+    private final AddToCartUseCase atcUseCase;
+    private final DeletePostUseCase deletePostUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -65,7 +74,9 @@ public class FeedPlusPresenter
                       SendVoteUseCase sendVoteUseCase,
                       GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase,
                       GetDynamicFeedUseCase getDynamicFeedUseCase,
-                      TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
+                      TrackAffiliateClickUseCase trackAffiliateClickUseCase,
+                      AddToCartUseCase atcUseCase,
+                      DeletePostUseCase deletePostUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.doFavoriteShopUseCase = favoriteShopUseCase;
@@ -75,6 +86,8 @@ public class FeedPlusPresenter
         this.getDynamicFeedFirstPageUseCase = getDynamicFeedFirstPageUseCase;
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
+        this.atcUseCase = atcUseCase;
+        this.deletePostUseCase = deletePostUseCase;
     }
 
     @Override
@@ -288,7 +301,8 @@ public class FeedPlusPresenter
         currentCursor = "";
 
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "",
+                        GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -325,14 +339,8 @@ public class FeedPlusPresenter
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
-                            WhitelistDomain whitelistDomain = new WhitelistDomain();
-                            if (firstPageDomainModel.getWhitelistDomain() != null
-                                    && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
-                                whitelistDomain = firstPageDomainModel.getWhitelistDomain();
-                            }
                             getView().onSuccessGetFeedFirstPage(
-                                    new ArrayList<>(model.getPostList()),
-                                    new WhitelistViewModel(whitelistDomain)
+                                    new ArrayList<>(model.getPostList())
                             );
 
                             if (model.getHasNext()) {
@@ -371,7 +379,8 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor,
+                        GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -417,5 +426,45 @@ public class FeedPlusPresenter
         trackAffiliateClickUseCase.execute(
                 TrackAffiliateClickUseCase.Companion.createRequestParams(url),
                 new TrackPostClickSubscriber());
+    }
+
+    @Override
+    public void addPostTagItemToCart(PostTagItem postTagItem) {
+        if (!postTagItem.getShop().isEmpty()) {
+            atcUseCase.execute(
+                    AddToCartUseCase.getMinimumParams(postTagItem.getId(), postTagItem.getShop().get(0).getShopId()),
+                    new Subscriber<AddToCartDataModel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (GlobalConfig.isAllowDebuggingTools()) e.printStackTrace();
+                            getView().onAddToCartFailed(postTagItem.getApplink());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartDataModel addToCartDataModel) {
+                            if (addToCartDataModel.getData().getSuccess() == 0) {
+                                getView().onAddToCartFailed(postTagItem.getApplink());
+                            } else {
+                                getView().onAddToCartSuccess();
+                            }
+                        }
+                    }
+            );
+        } else {
+            getView().onAddToCartFailed(postTagItem.getApplink());
+        }
+    }
+
+    @Override
+    public void deletePost(int id, int rowNumber) {
+        deletePostUseCase.execute(
+                DeletePostUseCase.Companion.createRequestParams(String.valueOf(id)),
+                new FeedPlusDeletePostSubscriber(viewListener, id, rowNumber)
+        );
     }
 }

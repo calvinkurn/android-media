@@ -66,12 +66,21 @@ public class Product {
     @SerializedName("recommendation_type")
     @Expose
     private String recommendationType = "";
+    @SerializedName("labels")
+    @Expose
+    private List<Label> labels = new ArrayList<>();
+    @SerializedName("label_group")
+    @Expose
+    private List<LabelGroup> labelGroup = new ArrayList<>();
     @SerializedName("badges")
     @Expose
     private List<Badge> badges = new ArrayList<>();
     @SerializedName("shop")
     @Expose
     private Shop shop;
+    @SerializedName("free_ongkir")
+    @Expose
+    private FreeOngkirInformation freeOngkirInformation;
 
     public String getId() {
         return id;
@@ -241,6 +250,22 @@ public class Product {
         isTopads = topads;
     }
 
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
+    }
+
+    public List<LabelGroup> getLabelGroup() {
+        return labelGroup;
+    }
+
+    public void setLabelGroup(List<LabelGroup> labelGroup) {
+        this.labelGroup = labelGroup;
+    }
+
     public List<Badge> getBadges() {
         return badges;
     }
@@ -255,5 +280,13 @@ public class Product {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public FreeOngkirInformation getFreeOngkirInformation() {
+        return freeOngkirInformation;
+    }
+
+    public void setFreeOngkirInformation(FreeOngkirInformation freeOngkirInformation) {
+        this.freeOngkirInformation = freeOngkirInformation;
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard
 
 import com.tokopedia.track.TrackApp
 
-class TopAdsDashboardTracking(private val router: TopAdsDashboardRouter) {
+class TopAdsDashboardTracking {
     companion object {
         val TOP_ADS_SELLER_APP = "topAdsSellerApp"
         val TOP_ADS_PRODUCT = "TopAds - Product"

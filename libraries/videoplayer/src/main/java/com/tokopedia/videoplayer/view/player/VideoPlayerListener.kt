@@ -1,10 +1,11 @@
 package com.tokopedia.videoplayer.view.player
 
-import com.tokopedia.videoplayer.utils.PlayerException
-import com.tokopedia.videoplayer.utils.RepeatMode
+import android.os.Parcel
+import android.os.Parcelable
+import com.tokopedia.videoplayer.state.PlayerException
 import java.io.Serializable
 
-interface VideoPlayerListener: Serializable {
+interface VideoPlayerListener: Parcelable {
     /**
      * Handle state changed on ExoPlayer
      * you can see any states of playback here: `com.google.android.exoplayer2.Player`
@@ -17,9 +18,6 @@ interface VideoPlayerListener: Serializable {
      */
     fun onPlayerError(error: PlayerException)
 
-    /**
-     * Repeat mode
-     * @param(REPEAT_MODE_OFF, REPEAT_MODE_ONE, and REPEAT_MODE_ALL)
-     */
-    fun repeatMode(): Int = RepeatMode.REPEAT_MODE_OFF
+    override fun writeToParcel(dest: Parcel?, flags: Int) {}
+    override fun describeContents(): Int = 0
 }

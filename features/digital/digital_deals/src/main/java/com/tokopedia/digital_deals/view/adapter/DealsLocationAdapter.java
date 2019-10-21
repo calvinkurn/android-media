@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +32,12 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     private Context context;
     private List<Location> locations;
-    private ActionListener actionListener;
+    private SelectCityListener actionListener;
     private boolean isPopular;
     DealsAnalytics dealsAnalytics;
     private String selectedLocation;
 
-    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener, String selectedLocation) {
+    public DealsLocationAdapter(List<Location> locations, SelectCityListener actionListener, String selectedLocation) {
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener = actionListener;
@@ -73,10 +74,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView locationName, selectedLocText;
+        private TextView locationName;
         private ImageView locImage;
         private View itemView;
-        private LinearLayout mainContent;
+        private ConstraintLayout mainContent;
         private int index;
         private String name;
 
@@ -86,7 +87,6 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             mainContent = itemView.findViewById(R.id.mainContent);
             locationName = itemView.findViewById(R.id.tv_location_name);
             locImage = itemView.findViewById(R.id.location_img);
-            selectedLocText = itemView.findViewById(R.id.selected_location_name);
 
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             if (lp instanceof FlexboxLayoutManager.LayoutParams) {
@@ -105,14 +105,8 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         }
 
         public void bindData(Location location) {
-            if (location.getName().equalsIgnoreCase(selectedLocation)) {
-                mainContent.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_green_selected_border));
-                selectedLocText.setVisibility(View.VISIBLE);
-            } else {
-                selectedLocText.setVisibility(View.INVISIBLE);
-            }
             locationName.setText(location.getName());
-            ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, locImage, location.getIcon(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
 
@@ -128,12 +122,12 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             }
             Location location = Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
-            actionListener.onLocationItemSelected(location != null);
+            actionListener.onCityItemSelected(location != null);
         }
     }
 
-    public interface ActionListener {
-        void onLocationItemSelected(boolean locationUpdated);
+    public interface SelectCityListener {
+        void onCityItemSelected(boolean locationUpdated);
     }
 
 }

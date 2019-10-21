@@ -1,0 +1,18 @@
+query feedGetUserFollowers($userID: Int!, $cursor: String, $limit: Int){
+  feedGetUserFollowers(userID: $userID, cursor: $cursor, limit: $limit) {
+    meta {
+      nextCursor
+      currentTotal
+      currentCursor
+      limit
+    }
+    data {
+      id
+      name
+      photo
+      badges
+      applink
+      isFollow
+    }
+  }
+}

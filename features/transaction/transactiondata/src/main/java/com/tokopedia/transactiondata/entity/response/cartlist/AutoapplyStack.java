@@ -50,6 +50,9 @@ public class AutoapplyStack {
 	@SerializedName("cashback_voucher_description")
 	private String cashbackVoucherDescription;
 
+	@SerializedName("tracking_details")
+	private List<TrackingDetail> trackingDetails;
+
 	public void setCodes(List<String> codes){
 		this.codes = codes;
 	}
@@ -168,5 +171,13 @@ public class AutoapplyStack {
 
 	public String getCashbackVoucherDescription(){
 		return cashbackVoucherDescription;
+	}
+
+	public List<TrackingDetail> getTrackingDetails() {
+		return trackingDetails;
+	}
+
+	public void setTrackingDetails(List<TrackingDetail> trackingDetails) {
+		this.trackingDetails = trackingDetails;
 	}
 }

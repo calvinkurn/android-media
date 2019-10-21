@@ -8,7 +8,10 @@ publishing {
             groupId project.groupId
             artifactId project.artifactId
             version project.versionName
-            artifact("$buildDir/outputs/aar/"+project.artifactName+".aar")
+            if(project.plugins.findPlugin("android-library"))
+                artifact("$buildDir/outputs/aar/"+project.artifactName+".aar")
+            else
+                artifact("$buildDir/libs/"+project.artifactName+".jar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 

@@ -4,9 +4,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 
 /**
  * Author errysuprayogi on 20,May,2019
@@ -17,29 +18,26 @@ abstract class AutoAdsBaseActivity : BaseSimpleActivity(), HasComponent<AutoAdsC
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     fun gotoCreateProductAd() {
-        val router = application as TopAdsAutoRouter
         if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsGroupNewPromoIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_GROUP_NEW_PROMO))
         } else {
-            router.openTopAdsDashboardApplink(this)
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
     }
 
     fun onSummaryGroupClicked() {
-        val router = application as TopAdsAutoRouter
         if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsGroupAdListIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_GROUP_ADS_LIST))
         } else {
-            router.openTopAdsDashboardApplink(this)
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
     }
 
     fun gotoCreateKeyword() {
-        val router = application as TopAdsAutoRouter
         if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsKeywordNewChooseGroupIntent(this, true, null))
+            startActivity(RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_KEYWORD_NEW_CHOOSE_GROUP, true.toString(), ""))
         } else {
-            router.openTopAdsDashboardApplink(this)
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
     }
 }

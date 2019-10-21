@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.comment.di;
 
+import com.tokopedia.feedcomponent.di.FeedComponentModule;
+import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.DeleteKolCommentUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.GetKolCommentsUseCase;
 import com.tokopedia.kol.feature.comment.domain.interactor.SendKolCommentUseCase;
@@ -15,7 +17,7 @@ import dagger.Provides;
  * @author by milhamj on 18/04/18.
  */
 
-@Module
+@Module(includes = {FeedComponentModule.class})
 public class KolCommentModule {
     private final KolComment.View viewListener;
     private final KolComment.View.ViewHolder viewHolderListener;
@@ -30,10 +32,13 @@ public class KolCommentModule {
     @Provides
     KolComment.Presenter providesPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
                                            SendKolCommentUseCase sendKolCommentUseCase,
-                                           DeleteKolCommentUseCase deleteKolCommentUseCase) {
+                                           DeleteKolCommentUseCase deleteKolCommentUseCase,
+                                           GetMentionableUserUseCase getMentionableUserUseCase) {
         return new KolCommentPresenter(getKolCommentsUseCase,
                 sendKolCommentUseCase,
-                deleteKolCommentUseCase);
+                deleteKolCommentUseCase,
+                getMentionableUserUseCase
+        );
     }
 
     @KolCommentScope

@@ -1,17 +1,24 @@
 package com.tokopedia.loginregister.registerinitial.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.telephony.SubscriptionManager
+import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -30,9 +37,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -46,9 +56,9 @@ import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegist
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -56,6 +66,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -79,7 +90,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        private val REQUEST_WELCOME_PAGE = 106
         private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
@@ -90,21 +100,27 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         private val GPLUS = "gplus"
         private val PHONE_NUMBER = "phonenumber"
 
-        fun createInstance(): RegisterInitialFragment {
-            return RegisterInitialFragment()
+        fun createInstance(bundle : Bundle): RegisterInitialFragment {
+            val fragment = RegisterInitialFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
     lateinit var optionTitle: TextView
+    lateinit var separator: View
     lateinit var partialRegisterInputView: PartialRegisterInputView
-    lateinit var registerContainer: LinearLayout
     lateinit var registerButton: LoginTextView
     lateinit var loginButton: TextView
     lateinit var container: ScrollView
     lateinit var progressBar: RelativeLayout
     lateinit var tickerAnnouncement: Ticker
+    private lateinit var socmedButton: ButtonCompat
+    private lateinit var bottomSheet: BottomSheetUnify
+    private lateinit var socmedButtonsContainer: LinearLayout
 
     private var phoneNumber: String? = ""
+    private var source : String = ""
 
     @Inject
     lateinit var presenter: RegisterInitialPresenter
@@ -118,6 +134,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -157,6 +176,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -186,9 +207,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(PHONE_NUMBER)) {
-            phoneNumber = savedInstanceState.getString(PHONE_NUMBER)
-        }
+        phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
+        source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
     }
 
     private fun clearData() {
@@ -210,9 +230,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
+        separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
-        registerContainer = view.findViewById(R.id.register_container)
         registerButton = view.findViewById(R.id.register)
+        socmedButton = view.findViewById(R.id.socmed_btn)
         loginButton = view.findViewById(R.id.login_button)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
@@ -266,15 +287,43 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         presenter.getTickerInfo()
     }
 
+    @SuppressLint("RtlHardcoded")
     protected fun prepareView() {
         activity?.run {
+            val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
+            socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
+
+            bottomSheet = BottomSheetUnify()
+            bottomSheet.setTitle(getString(R.string.choose_social_media))
+            bottomSheet.setChild(viewBottomSheetDialog)
+            bottomSheet.setCloseClickListener {
+                registerAnalytics.trackClickCloseSocmedButton()
+                bottomSheet.dismiss()
+            }
+
+            socmedButton.setOnClickListener {
+                registerAnalytics.trackClickSocmedButton()
+                bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
+            }
+
             registerButton.visibility = View.GONE
             partialRegisterInputView.visibility = View.GONE
+            partialRegisterInputView.setButtonValidator(true)
+            checkPermissionGetPhoneNumber()
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
-                optionTitle.typeface = Typeface.DEFAULT
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            }else{
+                separator.visibility = View.GONE
+                optionTitle.setText(R.string.register_now)
+                optionTitle.typeface = Typeface.DEFAULT_BOLD
+                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
+                layoutParams.setMargins(0, 32, 0, 0)
+                optionTitle.layoutParams = layoutParams
+                optionTitle.setPadding(0, 0, 0, 0)
+                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
             }
 
             registerButton.setColor(Color.WHITE)
@@ -344,7 +393,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         activity?.let {
             registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
-            val intent = RegisterEmailActivity.getCallingIntentWithEmail(it, email)
+            val intent = RegisterEmailActivity.getCallingIntentWithEmail(it, email, source)
             startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
         }
     }
@@ -403,13 +452,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo(false)
-            } else if (requestCode == REQUEST_WELCOME_PAGE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    goToProfileCompletionPage()
-                }
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+                presenter.getUserInfo()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -480,9 +523,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) !is ProgressBar) {
-            registerContainer.addView(pb, registerContainer.childCount)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+            socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
     }
 
@@ -507,10 +550,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 resources.getDimensionPixelSize(R.dimen.dp_52))
-        val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f,
-                resources.displayMetrics).toInt()
+        layoutParams.setMargins(0, 10, 0, 10)
 
-        layoutParams.setMargins(0, topMargin, 0, 0)
+        socmedButtonsContainer.removeAllViews()
 
         for (i in listProvider.indices) {
             val item = listProvider[i]
@@ -524,7 +566,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
                 setDiscoverOnClickListener(item, loginTextView)
 
-                registerContainer.addView(loginTextView, registerContainer.childCount,
+                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
                         layoutParams)
             }
         }
@@ -542,6 +584,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterFacebookClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
             presenter.getFacebookCredential(this, callbackManager)
@@ -551,6 +594,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterGoogleClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             val intent = mGoogleSignInClient.signInIntent
@@ -560,9 +604,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun dismissLoadingDiscover() {
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) is ProgressBar) {
-            registerContainer.removeViewAt(registerContainer.childCount - 1)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+            socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
         }
     }
 
@@ -736,9 +780,23 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     private fun onSuccessRegister() {
-        registerAnalytics.trackSuccessRegister(userSession.loginMethod)
-        startActivityForResult(WelcomePageActivity.newInstance(activity),
-                REQUEST_WELCOME_PAGE)
+        activity?.let{
+            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+
+            if(isFromAccount()) {
+                val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                startActivity(intent)
+            }
+
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
+
+
+    }
+
+    private fun isFromAccount(): Boolean {
+        return source == "account"
     }
 
     override fun onGoToChangeName() {
@@ -772,16 +830,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun onGoToPhoneVerification(): () -> Unit {
-        return {
-            activity?.let {
-                (it.applicationContext as ApplinkRouter)
-                        .goToApplinkActivity(activity, ApplinkConst.PHONE_VERIFICATION)
-            }
-        }
-    }
-
-
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if (listTickerInfo.isNotEmpty()) {
             tickerAnnouncement.visibility = View.VISIBLE
@@ -792,9 +840,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -810,9 +858,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -846,17 +894,75 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         error.printStackTrace()
     }
 
+    fun checkPermissionGetPhoneNumber(){
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object: PermissionCheckerHelper.PermissionCheckListener{
+            override fun onPermissionDenied(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                }
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                }
+            }
+
+            override fun onPermissionGranted() {
+                getPhoneNumber()
+            }
+
+        })
+    }
+
+    @SuppressLint("MissingPermission", "HardwareIds")
+    fun getPhoneNumber(){
+        activity?.let {
+            val phoneNumbers = arrayListOf<String>()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                if(subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0){
+                    for (info in subscription.activeSubscriptionInfoList) {
+                        if(!info.number.isNullOrEmpty() &&
+                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                PartialRegisterInputUtils.isValidPhone(info.number))
+                            phoneNumbers.add(info.number)
+                    }
+                }
+            }else{
+                val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+                if(!telephony.line1Number.isNullOrEmpty() &&
+                        PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                        PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
+                    phoneNumbers.add(telephony.line1Number)
+            }
+
+            if(!phoneNumbers.isEmpty())
+                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(PHONE_NUMBER, phoneNumber)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }
 
     override fun onBackPressed() {
         registerAnalytics.trackClickOnBackButtonRegister()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+        }
     }
 }

@@ -217,7 +217,7 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
     }
 
     @Override
-    public void onUserDataValidated() {
+    public void onUserDataValidated(String userId) {
         presenter.uploadPhotoIdImage(newEmail, newPhoneNumber, userId);
     }
 

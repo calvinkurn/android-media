@@ -84,6 +84,8 @@ public class WidgetTokenView extends FrameLayout {
     private Animation rotateRightAnimation;
     private Animation rotateLeftAnimation;
 
+    private int timesFullEggClicked = 0;
+
     public interface WidgetTokenListener {
         void onClick();
 
@@ -109,6 +111,14 @@ public class WidgetTokenView extends FrameLayout {
         this.listener = listener;
     }
 
+    public int getTimesFullEggClicked() {
+        return timesFullEggClicked;
+    }
+
+    public void setTimesFullEggClicked(int timesFullEggClicked) {
+        this.timesFullEggClicked = timesFullEggClicked;
+    }
+
     private void init() {
         rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_token, this, true);
         imageViewFull = rootView.findViewById(R.id.imagefull);
@@ -119,13 +129,12 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTokenClicked && isBounceAnimationFirstTimeAndBeforeBound())
-                    clearTokenAnimationAndCrack();
-                isTokenClicked = true;
-
+                listener.onClick();
+                timesFullEggClicked++;
             }
         });
 
+        setTimesFullEggClicked(0);
         hide();
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -536,7 +545,7 @@ public class WidgetTokenView extends FrameLayout {
         }
     }
 
-    public void releaseMediaPlayer(){
+    public void releaseMediaPlayer() {
         if (crackMediaPlayer != null) {
             crackMediaPlayer.release();
         }
@@ -544,8 +553,8 @@ public class WidgetTokenView extends FrameLayout {
 
     /**
      * This is method is clearing all Animation and releasing media player
-     *  called from onDestroyView of Fragment
-     * */
+     * called from onDestroyView of Fragment
+     */
     public void releaseResourcesOnDestroy() {
         clearTokenAnimation();
         releaseMediaPlayer();
@@ -557,4 +566,9 @@ public class WidgetTokenView extends FrameLayout {
         listener.onClick();
     }
 
+    public void setTokenClicked() {
+        if (!isTokenClicked && isBounceAnimationFirstTimeAndBeforeBound())
+            clearTokenAnimationAndCrack();
+        isTokenClicked = true;
+    }
 }

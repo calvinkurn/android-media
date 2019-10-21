@@ -12,10 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
 import com.tokopedia.product.detail.data.util.LABEL_GRAM
@@ -26,12 +27,14 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimation
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationComponent
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.RatesEstimationServiceAdapter
 import com.tokopedia.product.detail.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.MAINAPP_FREE_ONGKIR_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rates_estimation_detail.*
 import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
-
 import javax.inject.Inject
 
 class RatesEstimationDetailFragment : BaseDaggerFragment() {
@@ -43,11 +46,13 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    lateinit var remoteConfig: RemoteConfig
+
     private var shopDomain: String = ""
     private var productWeightUnit: String = LABEL_GRAM
     private var productWeight: Float = 0f
     private var origin: String? = null
-    private var forDeliveryInfo: Boolean = false
+    private var isFreeOngkir: Boolean = false
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -62,6 +67,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(RatesEstimationDetailViewModel::class.java)
+            remoteConfig = FirebaseRemoteConfigImpl(this)
         }
     }
 
@@ -87,7 +93,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
             origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
-            forDeliveryInfo = it.getBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO)
+            isFreeOngkir = it.getBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, false)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -135,6 +141,13 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
 
+        if (isFreeOngkir) {
+            ticker_free_ongkir.setTextDescription(remoteConfig.getString(MAINAPP_FREE_ONGKIR_MSG, ""))
+            ticker_free_ongkir.show()
+        } else {
+            ticker_free_ongkir.hide()
+        }
+
         shipping_destination.text = shop.cityName
         val title = userSession.name
         val spannableString = SpannableString(title)
@@ -145,7 +158,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
-        if (ratesEstimationModel.isBlackbox || forDeliveryInfo) {
+        if (ratesEstimationModel.isBlackbox) {
             (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
             if (recycler_view.itemDecorationCount > 0)
                 recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)
@@ -156,23 +169,20 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         adapter.isBlackbox = ratesEstimationModel.isBlackbox
         adapter.updateShippingServices(ratesEstimation.services)
         setViewState(VIEW_CONTENT)
-        if (forDeliveryInfo) {
-            app_bar_layout.visibility = View.GONE
-        }
     }
 
     companion object {
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, forDeliveryInfo: Boolean) =
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, isFreeOngkir: Boolean) =
                 RatesEstimationDetailFragment().apply {
                     arguments = Bundle().apply {
                         putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                         putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
-                        putBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, forDeliveryInfo)
+                        putBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, isFreeOngkir)
                     }
                 }
     }

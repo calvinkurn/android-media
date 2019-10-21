@@ -2,32 +2,16 @@ package com.tokopedia.tkpd;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 
@@ -39,9 +23,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-
-    private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
-    private View mainLayout;
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -60,13 +41,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        isApkTempered = false;
-        try {
-            getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Exception e) {
-            isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
-        }
+        checkApkTempered();
 
         startWarmStart();
         startSplashTrace();
@@ -78,8 +53,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             finish();
         }
 
-        renderDynamicImage();
-
         finishWarmStart();
 
         CMPushNotificationManager.getInstance()
@@ -88,16 +61,28 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     }
 
+    private void checkApkTempered() {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+    }
+
     @Override
     public void finishSplashScreen() {
         if (isApkTempered) {
             return;
         }
 
-        Intent homeIntent = MainParentActivity.start(this);
+        Intent homeIntent = new Intent(this, MainParentActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(homeIntent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finishSplashTrace();
-        finish();
+        finishAffinity();
     }
 
     private void startWarmStart() {
@@ -114,39 +99,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void finishSplashTrace() {
         splashTrace.stopTrace();
-    }
-
-    private void renderDynamicImage() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        String imageUrl = remoteConfig.getString(KEY_SPLASH_IMAGE_URL);
-
-        if (TextUtils.isEmpty(imageUrl)) {
-            return;
-        }
-        setContentView(R.layout.activity_splash);
-        mainLayout = findViewById(R.id.layout_splash);
-        Glide.with(this)
-                .asBitmap()
-                .load(imageUrl)
-                .dontAnimate()
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .priority(Priority.HIGH)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
-                            }
-                        } catch (Exception ignored) { }
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                    }
-                });
     }
 
     @Override

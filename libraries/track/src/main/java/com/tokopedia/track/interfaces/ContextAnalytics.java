@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.os.Bundle;
 import androidx.annotation.Nullable;
 
-import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ContextAnalytics implements Analytics {
@@ -55,6 +54,7 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendRegistrationStartEvent(String medium){}
 
     public void sendMoengageRegisterEvent(String fullName, String mobileNo){}
+
     public void sendAppsflyerRegisterEvent(String userId, String method){}
 
     public void setUserData(Map<String, Object> value, final String source){}
@@ -70,6 +70,7 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {}
 
     public void getAdsID(final AFAdsIDCallback callback) {}
+
     public String getGoogleAdId() {return "";}
 
     public void sendDeeplinkData(Activity activity) {}
@@ -83,11 +84,26 @@ public abstract class ContextAnalytics implements Analytics {
     public void pushUserId(String userId){}
 
     public void eventOnline(String uid) {}
+
     public void eventError(String screenName, String errorDesc) {}
+
     public void clearEnhanceEcommerce() {}
+
     public void pushEvent(String eventName, Map<String, Object> values){}
 
     public void sendGTMGeneralEvent(String event, String category, String action, String label,
                                     String shopId, String shopType, String userId,
                                     @Nullable Map<String, Object> customDimension) { }
+
+    public void pushGeneralGtmV5(String event, String category, String action, String label){}
+
+    public void pushGeneralGtmV5(Map<String, Object> params){}
+
+    public void pushClickEECommerce(Bundle bundle){}
+
+    public void pushEECommerce(String param, Bundle bundle){}
+
+    public void sendScreenV5(String screenName) {}
+
+    public void sendScreenV5(String screenName, Map<String, String> additionalParams) {}
 }

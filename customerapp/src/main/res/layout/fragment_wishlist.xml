@@ -46,6 +46,7 @@
             android:nestedScrollingEnabled="false"
             android:scrollbars="vertical"
             android:visibility="gone"
+            android:background="@color/white"
             app:reverseLayout="true" />
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>

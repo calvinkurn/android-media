@@ -2,13 +2,13 @@ package com.tokopedia.home.beranda.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home.beranda.domain.gql.feed.*
+import com.tokopedia.home.beranda.domain.gql.feed.Banner
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
+import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
-
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import rx.functions.Func1
 import java.util.*
 
@@ -81,19 +81,29 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                     product.recommendationType,
                     product.imageUrl,
                     product.price,
-                    product.rating!!,
-                    product.countReview!!,
+                    product.rating ?: 0,
+                    product.countReview ?: 0,
                     product.clickUrl,
                     product.trackerImageUrl,
                     product.slashedPrice,
-                    product.discountPercentage!!,
-                    product.priceInt!!,
-                    product.isTopads!!,
+                    if (isLabelDiscountVisible(product)) "${product.discountPercentage}%" else "",
+                    product.priceInt ?: 0,
+                    product.isTopads ?: false,
                     position + 1,
+                    product.labelGroup,
+                    product.labels,
                     product.badges,
-                    product.shop.city
+                    product.shop.city,
+                    product.wishlistUrl,
+                    product.isWishlist,
+                    product.freeOngkirInformation.isActive,
+                    product.freeOngkirInformation.imageUrl
             ))
         }
         return homeFeedViewModels
+    }
+
+    private fun isLabelDiscountVisible(productItem: Product): Boolean {
+        return productItem.discountPercentage > 0
     }
 }

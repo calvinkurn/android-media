@@ -83,20 +83,23 @@
         <item name="android:background">@drawable/bg_card_success</item>
         <item name="android:textSize">@dimen/sp_10</item>
         <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CardFailedStatusStyle">
         <item name="android:background">@drawable/bg_card_failed</item>
         <item name="android:textSize">@dimen/sp_10</item>
         <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CardProcessStatusStyle">
         <item name="android:background">@drawable/bg_card_process</item>
         <item name="android:textSize">@dimen/sp_10</item>
         <item name="android:textColor">#CA8600</item>
+        <item name="android:textStyle">bold</item>
     </style>
-  
+
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorAccent">@color/tkpd_main_green</item>
     </style>

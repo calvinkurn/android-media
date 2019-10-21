@@ -6,4 +6,8 @@
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
+
+    <string name="applink_saldo_deposit_title">Saldo</string>
+    <string name="applink_saldo_intro_title">Saldo Intro</string>
+
 </resources>

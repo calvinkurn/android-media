@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -167,13 +169,16 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
 
-                try {
-                    if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)&&(item.getRating()==null|| item.getRating().equals(""))){
-                        settingRatingButtonsVisibility(View.VISIBLE);
-                        ratingThumbsUp.clearColorFilter();
-                        ratingThumbsDown.clearColorFilter();
-                    }
-                if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)|| item.getId()==null){
+                if(!utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && isRoleAgent(item)
+                        &&(item.getRating()==null|| item.getRating().isEmpty())){
+                      settingRatingButtonsVisibility(View.VISIBLE);
+                      ratingThumbsUp.clearColorFilter();
+                      ratingThumbsDown.clearColorFilter();
+                }
+
+                if((utils.CLOSED.equalsIgnoreCase(mPresenter.getTicketStatus()) && item.getRating()!=null
+                        && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))
+                        || !isRoleAgent(item)|| item.getId()==null){
                       settingRatingButtonsVisibility(View.GONE);
                 }
                 if (searchMode) {
@@ -189,9 +194,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     tvAttachmentHint.setVisibility(View.GONE);
                 }
 
-                if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
+                if (commentList.get(position).getAttachment() != null
+                        && commentList.get(position).getAttachment().size() > 0)  {
                     rvAttachedImage.setVisibility(View.VISIBLE);
-                } catch (NullPointerException e) {}
+                }
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
@@ -209,6 +215,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
                     ratingThumbsDown.setVisibility(View.GONE);
                     mPresenter.onClick(true, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventHelpful);
                 }
             });
 
@@ -217,9 +224,24 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful);
                 }
             });
 
+        }
+
+        private void sendGTMEvent(String eventLabel) {
+            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+                    InboxTicketTracking.Category.EventHelpMessageInbox,
+                    InboxTicketTracking.Action.EventClickCsatPerReply,
+                    eventLabel);
+        }
+
+        private boolean isRoleAgent(CommentsItem item) {
+            if(item!=null && item.getCreatedBy()!=null && item.getCreatedBy().getRole()!=null){
+                    return item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT);
+                }
+           return false;
         }
 
         private void settingRatingButtonsVisibility(int visibility) {

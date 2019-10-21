@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -15,10 +16,14 @@ import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
+import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -88,8 +93,12 @@ public class FingerprintModelGenerator {
         }
         return "";
     }
-    
+
     private static String generateFingerprintData(Context context) {
+        Timber.w("P2" + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+            + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+            + " | "+Build.TAGS);
+
         String deviceName   = Utilities.getDeviceModel();
         String deviceFabrik = Utilities.getDeviceFabrik();
         String deviceOS     = Utilities.getDeviceOS();
@@ -103,8 +112,12 @@ public class FingerprintModelGenerator {
         String deviceLanguage = Utilities.getLanguage();
         String ssid         = Utilities.getSSID(context);
         String carrier      = Utilities.getCarrierName(context);
+        String isNakama = "False";
+        if(context instanceof UserSessionInterface)
+            isNakama = Utilities.isNakama((UserSessionInterface)context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                .isNakama(isNakama)
                 .deviceName(deviceName)
                 .deviceManufacturer(deviceFabrik)
                 .model(deviceName)

@@ -8,9 +8,10 @@ def main(argv):
     gradle = "./gradlew" 
     adb = "adb"
     deviceId = "galaxy.tkpd:7545"
+    path_noop = "."
 
     try:
-        opts, args = getopt.getopt(argv,"h",["token=","config=", "head=", "user=", "gradle=", "adb=", "deviceId="])
+        opts, args = getopt.getopt(argv,"h",["token=","config=", "head=", "user=", "gradle=", "adb=", "deviceId=", "path_noop="])
     except getopt.GetoptError:
         print("System Error")
         sys.exit(2)
@@ -32,30 +33,34 @@ def main(argv):
             adb = arg
         elif opt in ("--deviceId"):
             deviceId = arg
+        elif opt in ("--path_noop"):
+            path_noop = arg
 
     if token is None or config is None or head is None :
         print 'Input value has been detected as null'
         print 'check.py --token <git auth token> --config <configuration file\'s path> --head <head branch>'
         sys.exit(1)
     else:
-        detectAffectedModule(token, config, head, user, gradle, adb, deviceId)
+        detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path_noop)
 
-def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
+def detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path_noop):
     configuration = getConfig(config)
     if configuration is None :
         exit(1)
     doCommand("git reset --hard HEAD")
+    doCommand("git remote -v")
     doCommand("git clean -f -d")
     doCommand("git fetch " + configuration["remote_name"])
-    doCommand("git checkout " + configuration["master"])
+    doCommand("git checkout -b " + configuration["master"]+" "+configuration["remote_name"]+"/"+configuration["master"])
     doCommand("git pull " + configuration["remote_name"] + " " + configuration["master"])
-    doCommand("git checkout " + head)
+    doCommand("git checkout -b " + head+" "+configuration["remote_name"]+"/"+head)
     doCommand("git pull " + configuration["remote_name"] + " " + head)
-    doCommand("git diff --name-only " + head + ".." + configuration["master"] + " > file_changes.log")
+    doCommand("git diff --name-only " + head + "..." + configuration["master"] + " > file_changes.log")
     modulesAffected = []
     pathAffected = []
     doCommand("rm -rf coverageResults")
     doCommand("mkdir coverageResults")
+    doCommand("python label_remover.py "+ path_noop+" "+path_noop)
     
     with open("./file_changes.log", "r") as f:
         for path in configuration["modules"]:
@@ -66,7 +71,8 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId):
 
     doCommand(adb + " connect " + deviceId)
     for module in modulesAffected:
-        print doCommand(gradle + " " + module + "customjacocoTestCoverageVerification --stacktrace")
+        print doCommand(gradle + " " + module + "customjacocoTestCoverageVerification -Pcoverage --stacktrace")
+        
 
     doCommand(gradle + " sonarqube -Dsonar.host.url=http://10.164.8.12:9111")
     

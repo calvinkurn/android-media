@@ -4,9 +4,11 @@ import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.navigation.R;
+import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
 
 public class RecomItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -67,6 +69,6 @@ public class RecomItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
-        return ((GridLayoutManager) parent.getLayoutManager()).getSpanCount();
+        return ((StaggeredGridLayoutManager) parent.getLayoutManager()).getSpanCount();
     }
 }

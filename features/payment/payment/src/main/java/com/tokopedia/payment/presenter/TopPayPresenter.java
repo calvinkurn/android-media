@@ -1,12 +1,12 @@
 package com.tokopedia.payment.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by kris on 3/14/17. Tokopedia
@@ -27,6 +29,7 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     private PaymentFingerprintUseCase paymentFingerprintUseCase;
     private GetPostDataOtpUseCase getPostDataOtpUseCase;
     private UserSessionInterface userSession;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public TopPayPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
                            SavePublicKeyUseCase savePublicKeyUseCase,
@@ -72,6 +75,16 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     @Override
     public String getUserId() {
         return userSession.getUserId();
+    }
+
+    @Override
+    public void clearTimeoutSubscription() {
+        compositeSubscription.clear();
+    }
+
+    @Override
+    public void addTimeoutSubscription(Subscription subscribe) {
+        compositeSubscription.add(subscribe);
     }
 
     private Subscriber<HashMap<String, String>> getSubscriberPostDataOTP(final String urlOtp) {
@@ -175,6 +188,7 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     public void detachView() {
         paymentFingerprintUseCase.unsubscribe();
         saveFingerPrintUseCase.unsubscribe();
+        compositeSubscription.unsubscribe();
         super.detachView();
     }
 }

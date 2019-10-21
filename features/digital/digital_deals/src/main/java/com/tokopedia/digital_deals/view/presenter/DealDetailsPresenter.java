@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
@@ -15,9 +16,17 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqTravelDataUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqEntertainmentModel;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqRecentDataModel;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqRecentSearchModel;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqTravelRecentSearchModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
@@ -44,6 +53,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private GetDealDetailsUseCase getDealDetailsUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private GetDealLikesUseCase getDealLikesUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
+    private PostNsqTravelDataUseCase postNsqTravelDataUseCase;
     private DealsDetailsResponse dealsDetailsResponse;
     public static final String HOME_DATA = "home_data";
     public final static String TAG = "url";
@@ -56,10 +67,12 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
 
     @Inject
-    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase, GetDealLikesUseCase getDealLikesUseCase) {
+    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase, GetDealLikesUseCase getDealLikesUseCase, PostNsqEventUseCase postNsqEventUseCase, PostNsqTravelDataUseCase postNsqTravelDataUseCase) {
         this.getDealDetailsUseCase = getDealDetailsUseCase;
         this.getSearchNextUseCase = getSearchNextUseCase;
         this.getDealLikesUseCase = getDealLikesUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
+        this.postNsqTravelDataUseCase = postNsqTravelDataUseCase;
     }
 
     @Override
@@ -71,6 +84,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     public void onDestroy() {
         getDealDetailsUseCase.unsubscribe();
         getSearchNextUseCase.unsubscribe();
+        postNsqEventUseCase.unsubscribe();
+        postNsqTravelDataUseCase.unsubscribe();
     }
 
     public void getDealDetails() {
@@ -289,6 +304,81 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getView().addFooter();
             }
         }
+    }
+
+    public void sendNsqEvent(String userId, DealsDetailsResponse data) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setProductId(data.getId());
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction("product-detail");
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                CommonUtils.dumper("enter error");
+                throwable.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), () -> sendNsqEvent(userId, data));
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", " Deal Detail NSQ Event 1");
+            }
+        });
+
+    }
+
+    public void sendNsqTravelEvent(String userId, DealsDetailsResponse data) {
+        NsqTravelRecentSearchModel nsqTravelRecentSearchModel = new NsqTravelRecentSearchModel();
+        NsqServiceModel nsqServiceModel1 = new NsqServiceModel();
+        nsqTravelRecentSearchModel.setService("travel_recent_search");
+        NsqMessage nsqMessage1 = new NsqMessage();
+        nsqMessage1.setUserId(Integer.parseInt(userId));
+        nsqTravelRecentSearchModel.setNsqMessage(nsqMessage1);
+        NsqRecentSearchModel nsqRecentSearchModel = new NsqRecentSearchModel();
+        nsqRecentSearchModel.setDataType("deal");
+        NsqRecentDataModel nsqRecentDataModel = new NsqRecentDataModel();
+        NsqEntertainmentModel nsqEntertainmentModel = new NsqEntertainmentModel();
+        nsqEntertainmentModel.setValue(data.getDisplayName());
+        nsqEntertainmentModel.setPrice(Utils.getSingletonInstance().convertToCurrencyString(data.getSalesPrice()));
+        nsqEntertainmentModel.setImageUrl(data.getMediaUrl().get(0).getUrl());
+        nsqEntertainmentModel.setId(data.getBrand().getTitle());
+        nsqEntertainmentModel.setPricePrefix(Utils.getSingletonInstance().convertToCurrencyString(data.getMrp()));
+        nsqEntertainmentModel.setUrl("https://www.tokopedia.com/deals/i/" + data.getSeoUrl() + "/");
+        nsqEntertainmentModel.setAppUrl("tokopedia://deals/"+data.getSeoUrl());
+        nsqRecentDataModel.setNsqEntertainmentModel(nsqEntertainmentModel);
+        nsqRecentSearchModel.setNsqRecentDataModel(nsqRecentDataModel);
+        nsqTravelRecentSearchModel.setNsqRecentSearchModel(nsqRecentSearchModel);
+        postNsqTravelDataUseCase.setTravelDataRequestModel(nsqTravelRecentSearchModel);
+        postNsqTravelDataUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                CommonUtils.dumper("enter error");
+                throwable.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), () -> sendNsqTravelEvent(userId, data));
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", " Deal Detail NSQ Event 2");
+            }
+        });
     }
 
 

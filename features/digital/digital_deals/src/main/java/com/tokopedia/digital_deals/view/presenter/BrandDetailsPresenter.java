@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -10,11 +11,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.BrandDetailsResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -34,6 +39,7 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     public final static String TAG = "url";
     public final static String BRAND_DATA = "brand_data";
     private GetBrandDetailsUseCase getBrandDetailsUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private List<ProductItem> categoryViewModels;
     private Brand brand;
     private boolean isLoading;
@@ -42,8 +48,9 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     private Page page;
 
     @Inject
-    public BrandDetailsPresenter(GetBrandDetailsUseCase getBrandDetailsUseCase) {
+    public BrandDetailsPresenter(GetBrandDetailsUseCase getBrandDetailsUseCase, PostNsqEventUseCase postNsqEventUseCase) {
         this.getBrandDetailsUseCase = getBrandDetailsUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
     }
 
     @Override
@@ -54,6 +61,7 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     @Override
     public void onDestroy() {
         getBrandDetailsUseCase.unsubscribe();
+        postNsqEventUseCase.unsubscribe();
     }
 
 
@@ -178,5 +186,32 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
 
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
         checkIfToLoad(layoutManager);
+    }
+
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", "NSQ Event Sent brand Detail");
+            }
+        });
     }
 }

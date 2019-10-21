@@ -12,6 +12,12 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
+    <FrameLayout
+        android:id="@+id/dimBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ae31353b" />
+
     <ProgressBar
         android:id="@+id/pgLoader"
         android:layout_width="@dimen/dp_80"
@@ -20,5 +26,8 @@
         tools:visibility="visible"
         android:background="@drawable/circular_progress_bar_green"
         android:layout_centerInParent="true"/>
+
+
+
 
 </RelativeLayout>

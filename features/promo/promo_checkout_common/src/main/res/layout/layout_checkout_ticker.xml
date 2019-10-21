@@ -13,8 +13,7 @@
         android:layout_margin="@dimen/dp_4"
         app:cardCornerRadius="@dimen/dp_4"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:cardElevation="@dimen/dp_3">
+        tools:visibility="visible">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -28,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:drawablePadding="@dimen/dp_8"
-                android:drawableStart="@drawable/ic_coupon_green_promo_checkout"
                 android:gravity="center"
                 android:text="@string/use_promo_code_or_coupon"
                 android:textStyle="bold"
@@ -96,7 +94,8 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:adjustViewBounds="true"
-                        tools:src="@drawable/ic_coupon_grey_promo_checkout" />
+                        tools:src="@drawable/ic_coupon_grey_promo_checkout"
+                        />
 
                     <TextView
                         android:id="@+id/titleCoupon"

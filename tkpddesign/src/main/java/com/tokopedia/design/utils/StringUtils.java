@@ -1,7 +1,7 @@
 package com.tokopedia.design.utils;
 
 import android.text.TextUtils;
-
+import android.util.Patterns;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -100,5 +100,10 @@ public class StringUtils {
 
     public static String removeComma(String numericString){
         return numericString.replace(",", "");
+    }
+
+    public static Boolean isValidEmail(String contactEmail) {
+        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
+                !contactEmail.contains(".@") && !contactEmail.contains("@.");
     }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.item.main.base.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -38,8 +37,11 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -134,6 +136,12 @@ public class AddProductserviceModule {
     @Provides
     FetchDraftProductUseCase provideFetchDraftProductUseCase(ProductDraftRepository productDraftRepository) {
         return new FetchDraftProductUseCase(productDraftRepository);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @AddProductServiceScope

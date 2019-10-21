@@ -7,15 +7,15 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.logisticdata.data.entity.rates.Attribute;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentItemData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -222,25 +222,26 @@ public class RatesDataConverter {
         shipmentItemData.setType(WordUtils.capitalize(attribute.getServiceName()));
         shipmentItemData.setMultiplePriceRange(attribute.getServiceRangePrice());
         shipmentItemData.setDeliveryTimeRange(attribute.getServiceEtd());
-        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts(), shipmentItemData));
+        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute, shipmentItemData));
         return shipmentItemData;
     }
 
-    private List<CourierItemData> getCourierItemDataList(List<com.tokopedia.logisticdata.data.entity.rates.Product> products,
+    private List<CourierItemData> getCourierItemDataList(Attribute attribute,
                                                          ShipmentItemData shipmentItemData) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
-        for (com.tokopedia.logisticdata.data.entity.rates.Product product : products) {
-            courierItemDataList.add(getCourierItemData(product, shipmentItemData));
+        for (com.tokopedia.logisticdata.data.entity.rates.Product product : attribute.getProducts()) {
+            courierItemDataList.add(getCourierItemData(attribute.getServiceId(), product, shipmentItemData));
         }
         return courierItemDataList;
     }
 
-    private CourierItemData getCourierItemData(com.tokopedia.logisticdata.data.entity.rates.Product product,
+    private CourierItemData getCourierItemData(int serviceId, com.tokopedia.logisticdata.data.entity.rates.Product product,
                                                ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
         courierItemData.setName(product.getShipperName());
         courierItemData.setShipperId(product.getShipperId());
+        courierItemData.setServiceId(serviceId);
         courierItemData.setShipperProductId(product.getShipperProductId());
         courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());
         courierItemData.setInsurancePrice(product.getInsurancePrice());
@@ -259,6 +260,12 @@ public class RatesDataConverter {
         courierItemData.setUt(product.getUt());
 
         return courierItemData;
+    }
+
+    public static String getLogisticPromoCode(ShipmentCartItemModel itemModel) {
+        if (itemModel != null && itemModel.getVoucherLogisticItemUiModel() != null) {
+            return itemModel.getVoucherLogisticItemUiModel().getCode();
+        } else return "";
     }
 
 }

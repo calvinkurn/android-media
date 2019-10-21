@@ -18,23 +18,22 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
-import com.tokopedia.design.banner.BannerPagerAdapter
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.setMargin
 
 class BannerViewDynamicBackground : BannerView {
 
     private lateinit var imgBannerBackground: ImageView
 
     private lateinit var cardBannerView: Banner
+    private lateinit var bannerRoot: View
 
     private var currentBitmapDrawable: BitmapDrawable? = null
 
@@ -46,16 +45,16 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
-        view.findViewById<View>(R.id.overlay_round)
-                .setBackground(MethodChecker.getDrawable(
-                        view.getContext(), R.drawable.background_banner_image_mask));
+        view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
+                view.context, R.drawable.background_banner_image_mask);
+        bannerRoot = view.findViewById(R.id.banner_root)
         bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(R.id.banner_indicator_container)
-        bannerSeeAll = view.findViewById(R.id.banner_see_all)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
+        bannerSeeAll = view.findViewById(R.id.banner_see_all)
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {
                 cardBannerView.setMargin(
                         cardBannerView.left,
@@ -84,7 +83,7 @@ class BannerViewDynamicBackground : BannerView {
         bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
-        banner_root.visibility = View.VISIBLE
+        bannerRoot.visibility = View.VISIBLE
         val url = promoImageUrls[0]
 
         if (bannerRecyclerView.itemDecorationCount == 0) {
@@ -110,7 +109,7 @@ class BannerViewDynamicBackground : BannerView {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val manager : LinearLayoutManager =
-                        recyclerView!!.layoutManager as LinearLayoutManager
+                        recyclerView.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
                 if (
                         position != currentImagePosition && position != -1) {
@@ -154,7 +153,7 @@ class BannerViewDynamicBackground : BannerView {
         }
     }
 
-    override fun getBannerAdapter(): BannerPagerAdapter {
+    override fun getBannerAdapter(): BannerViewPagerAdapter {
         return CardBannerPagerAdapter(promoImageUrls, onPromoClickListener)
     }
 

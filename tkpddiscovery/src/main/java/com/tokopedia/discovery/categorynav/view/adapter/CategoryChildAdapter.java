@@ -22,7 +22,7 @@ import java.util.List;
  * @author by alifa on 7/10/17.
  */
 
-public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
+public class CategoryChildAdapter extends MultiLevelExpIndListAdapter {
 
     private CategoryChildAdapter.OnItemClickListener clickListener;
     private int activePosition=0;

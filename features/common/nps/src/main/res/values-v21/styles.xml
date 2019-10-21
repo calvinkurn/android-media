@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-
+<resources>
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressTint">@color/yellow_600</item>
         <item name="android:progressBackgroundTint">@color/grey_400</item>
@@ -11,5 +10,4 @@
         <item name="android:scaleX">0.7</item>
         <item name="android:scaleY">0.7</item>
     </style>
-
 </resources>

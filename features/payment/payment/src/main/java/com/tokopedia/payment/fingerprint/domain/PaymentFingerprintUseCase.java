@@ -1,6 +1,6 @@
 package com.tokopedia.payment.fingerprint.domain;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.usecase.RequestParams;
@@ -39,7 +39,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
 
     @Override
     public Observable<ResponsePaymentFingerprint> createObservable(final RequestParams requestParams) {
-        Map<String, String> params = AuthUtil.generateParamsNetwork(
+        Map<String, String> params = AuthHelper.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
         );
         requestParams.putAllString(params);

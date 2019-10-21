@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -78,12 +79,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:visibility="gone"
+                tools:visibility="gone">
 
                 <TextView
+                    android:visibility="gone"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_margin="@dimen/dp_16"
-                    android:text="@string/promo_title_last_seen" />
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/promo_title_category" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewLastSeenPromo"
@@ -91,17 +97,20 @@
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_promo_last_seen" />
             </LinearLayout>
 
+            <include
+                android:id="@+id/container_exchnage_coupon"
+                layout="@layout/fragment_list_exchange_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:text="@string/promo_label_my_coupon" />
 
         </LinearLayout>
@@ -119,6 +128,5 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_list_promo_checkout"
         tools:visibility="gone" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

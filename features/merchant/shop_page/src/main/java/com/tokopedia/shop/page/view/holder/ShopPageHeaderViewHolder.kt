@@ -15,6 +15,10 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -35,18 +39,11 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         private const val IS_MODERATED = 1
         private const val MODERATE_OPTION_ONE = 0
         private const val MODERATE_OPTION_TWO = 1
+        private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
-    fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopFavourited = TextApiUtils.isValueTrue(shopInfo.favoriteData.alreadyFavorited.toString())
+    fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shopName.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
-        if (shopInfo.favoriteData.totalFavorite > 1) {
-            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
-                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
-        } else { // if 0 or 1, only print as follower (without s)
-            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
-        }
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.shopAssets.avatar)
         when {
@@ -64,6 +61,32 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         } else {
             displayAsBuyer()
         }
+
+        if(shopInfo.freeOngkir.isActive)
+            showLabelFreeOngkir(remoteConfig)
+        else
+            view.label_free_ongkir.hide()
+    }
+
+    private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
+        val labelTitle = remoteConfig.getString(LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
+        if (labelTitle.isNotEmpty()) {
+            view.label_free_ongkir.show()
+            view.label_free_ongkir.text = labelTitle
+        }
+    }
+
+    fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData){
+        isShopFavourited = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        if (favoriteData.totalFavorite > 1) {
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
+                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
+        } else { // if 0 or 1, only print as follower (without s)
+            view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
+                    favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
+        }
+
+        updateFavoriteButton()
     }
 
     fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {

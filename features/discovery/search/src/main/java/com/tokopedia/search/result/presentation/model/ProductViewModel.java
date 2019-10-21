@@ -3,9 +3,8 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -19,6 +18,9 @@ public class ProductViewModel implements Parcelable {
     private String query;
     private String shareUrl;
     private String additionalParams;
+    private String autocompleteApplink;
+    private String responseCode;
+    private String errorMessage;
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
@@ -31,6 +33,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
+    private int defaultView;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -139,6 +142,30 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = additionalParams;
     }
 
+    public String getAutocompleteApplink() {
+        return autocompleteApplink;
+    }
+
+    public void setAutocompleteApplink(String autocompleteApplink) {
+        this.autocompleteApplink = autocompleteApplink;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public SuggestionViewModel getSuggestionModel() {
         return suggestionModel;
     }
@@ -163,6 +190,14 @@ public class ProductViewModel implements Parcelable {
         this.globalNavViewModel = globalNavViewModel;
     }
 
+    public int getDefaultView() {
+        return defaultView;
+    }
+
+    public void setDefaultView(int defaultView) {
+        this.defaultView = defaultView;
+    }
+
     public int getTotalItem() {
         return getProductList().size() + getAdsModel().getData().size();
     }
@@ -179,6 +214,8 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.query);
         dest.writeString(this.shareUrl);
         dest.writeString(this.additionalParams);
+        dest.writeString(this.autocompleteApplink);
+        dest.writeString(this.responseCode);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
@@ -191,6 +228,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
         dest.writeParcelable(this.globalNavViewModel, flags);
+        dest.writeInt(this.defaultView);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -199,6 +237,8 @@ public class ProductViewModel implements Parcelable {
         this.query = in.readString();
         this.shareUrl = in.readString();
         this.additionalParams = in.readString();
+        this.autocompleteApplink = in.readString();
+        this.responseCode = in.readString();
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
@@ -211,6 +251,7 @@ public class ProductViewModel implements Parcelable {
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());
         this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
+        this.defaultView = in.readInt();
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

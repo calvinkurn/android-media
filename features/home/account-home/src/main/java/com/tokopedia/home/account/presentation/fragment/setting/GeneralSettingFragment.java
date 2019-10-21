@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,8 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +33,16 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.data.util.NotifPreference;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
-import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
@@ -50,13 +54,21 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
@@ -75,10 +87,14 @@ import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECK
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
+    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
+
     @Inject
     LogoutPresenter presenter;
     @Inject
     WalletPref walletPref;
+    @Inject
+    NotifPreference notifPreference;
 
     private View loadingView;
     private View baseSettingView;
@@ -216,8 +232,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING);
                 accountAnalytics.eventClickSetting(NOTIFICATION);
-                startActivity(NotificationSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TNC_ID:
                 accountAnalytics.eventClickSetting(TERM_CONDITION);
@@ -250,6 +266,30 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
     }
 
+    private void sendNotif(){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
+        boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
+        if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
+            notifPreference.setDisplayedGimmickNotif(true);
+            presenter.sendNotif(
+                    notifCenterSendNotifData -> {
+                        doLogout();
+                        return null;
+                    },
+                    throwable -> {
+                        doLogout();
+                        if(getView() != null){
+                            String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
+                            Toaster.INSTANCE.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
+                        }
+                        return null;
+                    });
+        }else {
+            doLogout();
+        }
+    }
+
     private void goToPlaystore() {
 
         Uri uri = Uri.parse("market://details?id=" + getActivity().getApplication().getPackageName());
@@ -272,7 +312,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         dialog.setBtnCancel(getString(R.string.account_home_label_cancel));
         dialog.setOnOkClickListener(v -> {
             dialog.dismiss();
-            doLogout();
+            sendNotif();
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
         dialog.show();
@@ -399,6 +439,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
         }
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().fetchByType(null);
+
+        SharedPreferences stickyPref = getActivity().getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE);
+        stickyPref.edit().clear().apply();
+
     }
 
     @Override

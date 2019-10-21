@@ -1,19 +1,31 @@
 package com.tokopedia.loginregister.registerinitial.view.customview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,15 +36,19 @@ import org.jetbrains.annotations.NotNull;
 public class PartialRegisterInputView extends BaseCustomView {
 
     TkpdHintTextInputLayout wrapperEmailPhone;
-    EditText etInputEmailPhone;
+    AutoCompleteTextView etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
-    TextView btnAction;
+    ButtonCompat btnAction;
 
     TextInputEditText etPassword;
     TkpdHintTextInputLayout wrapperPassword;
     TextView btnForgotPassword;
     TextView btnChange;
+
+    RegisterAnalytics registerAnalytics = new RegisterAnalytics();
+
+    private static Boolean isButtonValidatorActived = false;
 
     private PartialRegisterInputViewListener listener;
 
@@ -62,7 +78,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.layout_partial_register_input, this);
-        etInputEmailPhone = (EditText) view.findViewById(R.id.input_email_phone);
+        etInputEmailPhone = view.findViewById(R.id.input_email_phone);
         etPassword = view.findViewById(R.id.password);
         tvMessage = view.findViewById(R.id.message);
         tvError = view.findViewById(R.id.error_message);
@@ -75,7 +91,29 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void renderData() {
+        etInputEmailPhone.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            etInputEmailPhone.setImportantForAutofill(IMPORTANT_FOR_AUTOFILL_NO);
+        }
+        Drawable background = ContextCompat.getDrawable(getContext(), R.drawable.bg_rounded_corner_autocomplete_partial_input);
+        etInputEmailPhone.setDropDownBackgroundDrawable(background);
+        etInputEmailPhone.setOnItemClickListener((parent, view, position, id) -> {
+            registerAnalytics.trackClickPhoneNumberSuggestion();
+        });
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
+        etInputEmailPhone.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if(isValidValue(v.getText().toString()) && isButtonValidatorActived){
+                    btnAction.performClick();
+                }
+                handled = true;
+            }
+            return handled;
+        });
+
         etPassword.addTextChangedListener(watcher(wrapperPassword));
 
         btnAction.setOnClickListener(new ClickRegister());
@@ -118,6 +156,8 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setWrapperError(wrapper, null);
+                if(s != null && isButtonValidatorActived)
+                    validateValue(s.toString());
             }
 
             @Override
@@ -126,8 +166,65 @@ public class PartialRegisterInputView extends BaseCustomView {
         };
     }
 
+    public void setButtonValidator(Boolean status){
+        isButtonValidatorActived = status;
+        if(status) onInvalidValue();
+        else onValidValue();
+    }
+
+    private Boolean isValidValue(String value){
+        return PartialRegisterInputUtils.isValidPhone(value) || PartialRegisterInputUtils.isValidEmail(value);
+    }
+
+    private void validateValue(String value){
+        switch (PartialRegisterInputUtils.getType(value)){
+            case PartialRegisterInputUtils.PHONE_TYPE: {
+                if(PartialRegisterInputUtils.isValidPhone(value))
+                    onValidValue();
+                else if(!value.isEmpty())
+                    onInvalidValue();
+                break;
+            }
+            case PartialRegisterInputUtils.EMAIL_TYPE: {
+                if(PartialRegisterInputUtils.isValidEmail(value))
+                    onValidValue();
+                else if(!value.isEmpty())
+                    onInvalidValue();
+                break;
+            }
+        }
+
+    }
+
+    private void onValidValue(){
+        hideError();
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY);
+    }
+
+    private void onInvalidValue(){
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
+    }
+
     public String getTextValue() {
         return etInputEmailPhone.getText().toString();
+    }
+
+    public void setAdapterInputEmailPhone(ArrayAdapter<String> adapter){
+        if(adapter.getItem(0) != null){
+            etInputEmailPhone.setText(adapter.getItem(0));
+            etInputEmailPhone.setSelection(etInputEmailPhone.getText().length());
+        }
+        etInputEmailPhone.setAdapter(adapter);
+        etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                ((AutoCompleteTextView)v).showDropDown();
+            else
+                ((AutoCompleteTextView)v).dismissDropDown();
+        });
+    }
+
+    public ListAdapter getAdapterInputEmailPhone(){
+        return etInputEmailPhone.getAdapter();
     }
 
     private class ClickRegister implements OnClickListener {
@@ -150,6 +247,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void showLoginEmailView(@NotNull String email) {
+        isButtonValidatorActived = false;
+
         wrapperPassword.setVisibility(View.VISIBLE);
         btnForgotPassword.setVisibility(View.VISIBLE);
         btnChange.setVisibility(View.VISIBLE);
@@ -164,6 +263,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void showDefaultView() {
+        isButtonValidatorActived = true;
+
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
@@ -179,5 +280,4 @@ public class PartialRegisterInputView extends BaseCustomView {
         setWrapperError(wrapperEmailPhone, null);
         setWrapperError(wrapperPassword, null);
     }
-
 }

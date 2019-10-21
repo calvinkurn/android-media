@@ -1,21 +1,20 @@
 package com.tokopedia.useridentification.view.presenter;
 
-import android.graphics.Bitmap;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.domain.pojo.RegisterIdentificationPojo;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
+import com.tokopedia.useridentification.util.SchedulerProvider;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.useridentification.view.viewmodel.ImageUploadModel;
@@ -32,6 +31,7 @@ import javax.inject.Inject;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -50,15 +50,17 @@ public class UserIdentificationUploadImagePresenter extends
     private static final String RESOLUTION_300 = "300";
     private static final String PARAM_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String PARAM_USER_ID = "userId"; //override for imageuploader
     private static final String PARAM_RESOLUTION = "param_resolution";
-    private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
+    private static final String DEFAULT_UPLOAD_PATH = "/kyc/upload";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
     private CompositeSubscription compositeSubscription;
 
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private final UploadIdentificationUseCase uploadIdentificationUseCase;
     private final RegisterIdentificationUseCase registerIdentificationUseCase;
-    private final UserSession userSession;
+    private final SchedulerProvider schedulerProvider;
+    private final UserSessionInterface userSession;
 
     @Inject
     public UserIdentificationUploadImagePresenter(UploadImageUseCase<AttachmentImageModel>
@@ -66,13 +68,66 @@ public class UserIdentificationUploadImagePresenter extends
                                                   UploadIdentificationUseCase
                                                           uploadIdentificationUseCase,
                                                   RegisterIdentificationUseCase registerIdentificationUseCase,
-                                                  UserSession userSession,
-                                                  CompositeSubscription compositeSubscription) {
+                                                  UserSessionInterface userSession,
+                                                  CompositeSubscription compositeSubscription,
+                                                  SchedulerProvider schedulerProvider) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.uploadIdentificationUseCase = uploadIdentificationUseCase;
         this.registerIdentificationUseCase = registerIdentificationUseCase;
         this.userSession = userSession;
         this.compositeSubscription = compositeSubscription;
+        this.schedulerProvider = schedulerProvider;
+    }
+
+    @Override
+    public Observable<ImageUploadModel> uploadImageUseCase(ImageUploadModel imageUploadModel) {
+        return Observable.zip(Observable.just(imageUploadModel),
+                uploadImageUseCase.createObservable(createParam(imageUploadModel.getFilePath())),
+                (imageUploadModel1, uploadDomainModel) -> {
+                    imageUploadModel1.setPicObjKyc(uploadDomainModel
+                            .getDataResultImageUpload()
+                            .getPictureObj());
+                    return imageUploadModel1;
+                });
+    }
+
+    @Override
+    public Observable<ImageUploadModel> uploadIdentificationUseCase(List<ImageUploadModel> imageUploadModels, int projectId) {
+        return Observable.from(imageUploadModels)
+                .flatMap((Func1<ImageUploadModel, Observable<ImageUploadModel>>) imageUploadModel ->
+                        Observable.zip(Observable.just(imageUploadModel),
+                        uploadIdentificationUseCase.createObservable(
+                                UploadIdentificationUseCase.getRequestParam(
+                                        imageUploadModel.getKycType(),
+                                        imageUploadModel.getPicObjKyc(),
+                                        imageUploadModel.getFileName(),
+                                        projectId
+                                )
+                        ), (imageUploadModel1, graphqlResponse) -> {
+                            UploadIdentificationPojo pojo = graphqlResponse.getData(UploadIdentificationPojo.class);
+                            imageUploadModel1.setError(pojo != null ? pojo.getKycUpload().getError() : null);
+                            imageUploadModel1.setIsSuccess(pojo != null ? pojo.getKycUpload().getIsSuccess() : 0);
+                            return imageUploadModel1;
+                        }));
+    }
+
+    @Override
+    public Observable<Boolean> registerIdentificationUseCase(int projectId) {
+        return registerIdentificationUseCase.createObservable(
+                RegisterIdentificationUseCase.getRequestParam(projectId)
+        ).flatMap((Func1<GraphqlResponse, Observable<Boolean>>) graphqlResponse -> {
+            RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
+            return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
+        });
+    }
+
+    @Override
+    public Observable<Boolean> isAllMutationSuccess(List<ImageUploadModel> imageUploadModels) {
+        int totalSuccess = 0;
+        for (ImageUploadModel imageUploadModel : imageUploadModels) {
+            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
+        }
+        return Observable.just(totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS);
     }
 
     @Override
@@ -81,99 +136,38 @@ public class UserIdentificationUploadImagePresenter extends
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<ImageUploadModel, Observable<ImageUploadModel>>() {
                     @Override
-                    public Observable<ImageUploadModel> call(ImageUploadModel
-                                                                     imageUploadModel) {
-                        return Observable.zip(Observable.just(imageUploadModel),
-                                uploadImageUseCase.createObservable(
-                                        createParam(imageUploadModel.getFilePath())
-                                ), new Func2<ImageUploadModel,
-                                        ImageUploadDomainModel<AttachmentImageModel>,
-                                        ImageUploadModel>() {
-                                    @Override
-                                    public ImageUploadModel call(ImageUploadModel
-                                                                         imageUploadModel,
-                                                                 ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        imageUploadModel.setPicObjKyc(uploadDomainModel
-                                                .getDataResultImageUpload().getData()
-                                                .getPicObj());
-                                        return imageUploadModel;
-                                    }
-                                });
+                    public Observable<ImageUploadModel> call(ImageUploadModel imageUploadModel) {
+                        return uploadImageUseCase(imageUploadModel);
                     }
                 }).toList()
                 .flatMap(new Func1<List<ImageUploadModel>, Observable<ImageUploadModel>>() {
                     @Override
-                    public Observable<ImageUploadModel> call(List<ImageUploadModel>
-                                                                     imageUploadModels) {
-                        return Observable.from(imageUploadModels)
-                                .flatMap(new Func1<ImageUploadModel,
-                                        Observable<ImageUploadModel>>() {
-                                    @Override
-                                    public Observable<ImageUploadModel> call
-                                            (ImageUploadModel imageUploadModel) {
-                                        return Observable.zip(Observable.just
-                                                        (imageUploadModel),
-                                                uploadIdentificationUseCase.createObservable(
-                                                        UploadIdentificationUseCase.getRequestParam(
-                                                                imageUploadModel.getKycType(),
-                                                                imageUploadModel.getPicObjKyc(),
-                                                                imageUploadModel.getFileName(),
-                                                                projectId
-                                                        )
-                                                ), new Func2<ImageUploadModel,
-                                                        GraphqlResponse, ImageUploadModel>() {
-                                                    @Override
-                                                    public ImageUploadModel call(ImageUploadModel imageUploadModel,
-                                                                                 GraphqlResponse graphqlResponse) {
-                                                        UploadIdentificationPojo pojo =
-                                                                graphqlResponse.getData(UploadIdentificationPojo.class);
-                                                        imageUploadModel.setError(pojo.getKycUpload().getError());
-                                                        imageUploadModel.setIsSuccess(pojo.getKycUpload().getIsSuccess());
-                                                        return imageUploadModel;
-                                                    }
-                                                });
-                                    }
-                                });
+                    public Observable<ImageUploadModel> call(List<ImageUploadModel> imageUploadModels) {
+                        return uploadIdentificationUseCase(imageUploadModels, projectId);
                     }
-                })
-                .toList()
+                }).toList()
                 .flatMap(new Func1<List<ImageUploadModel>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(List<ImageUploadModel> imageUploadModels) {
-                        int totalSuccess = 0;
-                        for (ImageUploadModel imageUploadModel : imageUploadModels) {
-                            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
-                        }
-                        return Observable.just(totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS);
+                        return isAllMutationSuccess(imageUploadModels);
                     }
                 })
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
-                        return registerIdentificationUseCase.createObservable(
-                                RegisterIdentificationUseCase.getRequestParam(projectId)
-                        ).flatMap(new Func1<GraphqlResponse, Observable<Boolean>>() {
-                            @Override
-                            public Observable<Boolean> call(GraphqlResponse graphqlResponse) {
-                                RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
-                                return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
-                            }
-                        });
+                        return registerIdentificationUseCase(projectId);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .unsubscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
+                    public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getContext
-                                (), throwable));
+                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getContext(), throwable));
                     }
 
                     @Override
@@ -181,13 +175,30 @@ public class UserIdentificationUploadImagePresenter extends
                         if (aBoolean) {
                             getView().onSuccessUpload();
                         } else {
-                            getView().onErrorUpload(String.format(
-                                    getView().getContext().getString(R.string.error_upload_image_kyc),
-                                    KYCConstant.ERROR_UPLOAD_IMAGE));
+                            getView().onErrorUpload(
+                                    String.format(getView().getContext().getString(R.string.error_upload_image_kyc),
+                                    KYCConstant.ERROR_UPLOAD_IMAGE)
+                            );
                         }
                     }
                 })
         );
+    }
+
+    @Override
+    public RequestParams createParam(String cameraLoc) {
+        Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
+        RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
+        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId());
+        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId
+                () + UUID.randomUUID() + System.currentTimeMillis());
+        maps.put(PARAM_WEB_SERVICE, webService);
+        maps.put(PARAM_ID, id);
+        maps.put(PARAM_RESOLUTION, resolution);
+        maps.put(PARAM_USER_ID, userId);
+        return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH,
+                DEFAULT_UPLOAD_TYPE, maps);
     }
 
     private List<ImageUploadModel> parseToModel(UserIdentificationStepperModel model) {
@@ -195,19 +206,6 @@ public class UserIdentificationUploadImagePresenter extends
         list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_KTP, model.getKtpFile()));
         list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_SELFIE, model.getFaceFile()));
         return list;
-    }
-
-    private RequestParams createParam(String cameraLoc) {
-        Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
-        RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
-        RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
-        RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId
-                () + UUID.randomUUID() + System.currentTimeMillis());
-        maps.put(PARAM_WEB_SERVICE, webService);
-        maps.put(PARAM_ID, id);
-        maps.put(PARAM_RESOLUTION, resolution);
-        return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH,
-                DEFAULT_UPLOAD_TYPE, maps);
     }
 
     @Override

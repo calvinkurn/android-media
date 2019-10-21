@@ -1,16 +1,10 @@
 package com.tokopedia.useridentification.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
@@ -24,20 +18,6 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     public interface Listener {
         void onTrackBackPressed();
-    }
-
-    @DeepLink(ApplinkConst.KYC)
-    public static Intent getDeeplinkIntent(Context context, Bundle extras) {
-        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-
-        String source = extras.getString(KYCConstant.PARAM_KYC_SRC);
-        Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
-        intent.setData(uri);
-        boolean isSourceSeller = TextUtils.equals(source, KYCConstant.VALUE_KYC_SRC_SELLER);
-        intent.putExtra(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
-        intent.putExtras(extras);
-
-        return intent;
     }
 
     @Override

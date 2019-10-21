@@ -27,7 +27,7 @@ public class FlightOrderAdapter extends BaseListAdapter<Visitable, FlightOrderTy
 
         void onDetailOrderClicked(String invoiceId);
 
-        void onHelpOptionClicked(String invoiceId, int status);
+        void onHelpOptionClicked(String contactUsUrl);
 
         void onReBookingClicked(FlightOrderBaseViewModel item);
 

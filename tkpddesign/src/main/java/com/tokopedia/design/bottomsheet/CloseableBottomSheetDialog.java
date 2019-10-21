@@ -50,7 +50,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     public static CloseableBottomSheetDialog createInstance(Context context) {
         final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
-                (context);
+                (context, R.style.TransparentBottomSheetDialogTheme);
         closeableBottomSheetDialog.isRounded = false;
         closeableBottomSheetDialog.setListener(new CloseClickedListener() {
             @Override

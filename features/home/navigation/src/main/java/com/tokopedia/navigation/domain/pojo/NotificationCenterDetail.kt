@@ -45,5 +45,9 @@ data class UserInfo(
         @Expose
         @SerializedName("fullname")
         val fullName: String = ""
-)
+) {
+        fun hasShop() : Boolean {
+                return shopId != "0"
+        }
+}
 

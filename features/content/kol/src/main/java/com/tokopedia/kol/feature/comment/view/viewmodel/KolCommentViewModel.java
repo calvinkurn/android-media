@@ -20,10 +20,11 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
     protected boolean isOfficial;
     protected String userId;
     protected boolean canDeleteComment;
+    protected String userBadges;
 
     public KolCommentViewModel(String id, String userId, String avatarUrl, String name,
                                String review, String time, boolean isOfficial,
-                               boolean canDeleteComment) {
+                               boolean canDeleteComment, String userBadges) {
         this.id = id;
         this.userId = userId;
         this.avatarUrl = avatarUrl;
@@ -32,32 +33,9 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         this.time = time;
         this.isOfficial = isOfficial;
         this.canDeleteComment = canDeleteComment;
+        this.userBadges = userBadges;
     }
 
-
-    protected KolCommentViewModel(Parcel in) {
-        id = in.readString();
-        avatarUrl = in.readString();
-        name = in.readString();
-        review = in.readString();
-        time = in.readString();
-        url = in.readString();
-        isOfficial = in.readByte() != 0;
-        userId = in.readString();
-        canDeleteComment = in.readByte() != 0;
-    }
-
-    public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {
-        @Override
-        public KolCommentViewModel createFromParcel(Parcel in) {
-            return new KolCommentViewModel(in);
-        }
-
-        @Override
-        public KolCommentViewModel[] newArray(int size) {
-            return new KolCommentViewModel[size];
-        }
-    };
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -99,6 +77,10 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         this.url = url;
     }
 
+    public String getUserBadges() {
+        return userBadges;
+    }
+
     @Override
     public int type(KolCommentTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -125,6 +107,10 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
     }
 
 
+    public String getUserId() {
+        return userId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,19 +118,40 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(avatarUrl);
-        dest.writeString(name);
-        dest.writeString(review);
-        dest.writeString(time);
-        dest.writeString(url);
-        dest.writeByte((byte) (isOfficial ? 1 : 0));
-        dest.writeString(userId);
-        dest.writeByte((byte) (canDeleteComment ? 1 : 0));
+        dest.writeString(this.id);
+        dest.writeString(this.avatarUrl);
+        dest.writeString(this.name);
+        dest.writeString(this.review);
+        dest.writeString(this.time);
+        dest.writeString(this.url);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeString(this.userId);
+        dest.writeByte(this.canDeleteComment ? (byte) 1 : (byte) 0);
+        dest.writeString(this.userBadges);
     }
 
-    public String getUserId() {
-        return userId;
+    protected KolCommentViewModel(Parcel in) {
+        this.id = in.readString();
+        this.avatarUrl = in.readString();
+        this.name = in.readString();
+        this.review = in.readString();
+        this.time = in.readString();
+        this.url = in.readString();
+        this.isOfficial = in.readByte() != 0;
+        this.userId = in.readString();
+        this.canDeleteComment = in.readByte() != 0;
+        this.userBadges = in.readString();
     }
 
+    public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {
+        @Override
+        public KolCommentViewModel createFromParcel(Parcel source) {
+            return new KolCommentViewModel(source);
+        }
+
+        @Override
+        public KolCommentViewModel[] newArray(int size) {
+            return new KolCommentViewModel[size];
+        }
+    };
 }

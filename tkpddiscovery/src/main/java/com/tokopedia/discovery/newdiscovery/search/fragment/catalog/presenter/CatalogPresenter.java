@@ -2,8 +2,9 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
@@ -78,8 +79,7 @@ public class CatalogPresenter extends BrowseSectionFragmentPresenterImpl<Catalog
     }
 
     private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
-        return new HashMap<>(
-                com.tokopedia.network.utils.AuthUtil.generateParamsNetwork(userSession.getUserId(),
+        return new HashMap<>(AuthHelper.generateParamsNetwork(userSession.getUserId(),
                         userSession.getDeviceId(),
                         requestParams.getParamsAllValueInString()));
     }

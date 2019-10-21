@@ -1,8 +1,6 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -13,7 +11,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.R
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.user.session.UserSessionInterface
 
 
@@ -21,15 +18,15 @@ import com.tokopedia.user.session.UserSessionInterface
  * @author by nisie on 26/03/19.
  */
 class KolPostDetailViewHolder(private val kolView: View,
-                              private val listener: DynamicPostListener,
-                              private val cardTitleListener: CardTitleView.CardTitleListener,
-                              private val imagePostListener: ImagePostViewHolder.ImagePostListener,
-                              private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                              private val pollOptionListener: PollAdapter.PollOptionListener,
-                              private val gridItemListener: GridPostAdapter.GridItemListener,
-                              private val videoViewListener: VideoViewHolder.VideoViewListener,
-                              private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
-                              private val userSession : UserSessionInterface) :
+                              listener: DynamicPostListener,
+                              cardTitleListener: CardTitleView.CardTitleListener,
+                              imagePostListener: ImagePostViewHolder.ImagePostListener,
+                              youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                              pollOptionListener: PollAdapter.PollOptionListener,
+                              gridItemListener: GridPostAdapter.GridItemListener,
+                              videoViewListener: VideoViewHolder.VideoViewListener,
+                              feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
+                              userSession : UserSessionInterface) :
         DynamicPostViewHolder(kolView, listener, cardTitleListener,
                 imagePostListener, youtubePostListener, pollOptionListener, gridItemListener,
                 videoViewListener, feedMultipleImageViewListener, userSession) {
@@ -41,16 +38,4 @@ class KolPostDetailViewHolder(private val kolView: View,
         val footerCta = footer.findViewById<View>(R.id.footerCta)
         footerCta.visibility = View.GONE
     }
-
-    override fun bindCaption(caption: Caption, template: TemplateBody) {
-        captionTv.shouldShowWithAction(template.caption) {
-            if (caption.text.isEmpty()) {
-                captionTv.visibility = View.GONE
-            } else {
-                captionTv.text = caption.text.replace(NEWLINE, " ")
-            }
-        }
-
-    }
-
 }

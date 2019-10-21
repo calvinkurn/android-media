@@ -33,16 +33,28 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_line_separator" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_refund_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:autoLink="web"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:tickerShapeType="loose"
+                app:tickerType="warning"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/dp_2"
                 android:paddingTop="@dimen/dp_2"
+                android:paddingBottom="@dimen/dp_2"
                 android:weightSum="2">
 
                 <TextView
@@ -82,8 +94,8 @@
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
 
             <LinearLayout
                 android:id="@+id/layout_expendable_passenger"
@@ -120,72 +132,75 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/container_bottom_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_20"
-            android:paddingRight="@dimen/dp_20"
-            android:paddingTop="@dimen/dp_10">
+            android:padding="@dimen/dp_16">
 
-            <TextView
-                style="@style/TextView.Title.Bold"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingTop="@dimen/dp_10"
-                android:text="@string/flight_cancellation_detail_refund_information_label" />
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_16"
+                android:text="@string/flight_cancellation_detail_refund_information_label"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_20"
+                app:typographyType="body_1"
+                app:typographyWeight="bold" />
 
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_bottom_top_info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false">
 
-                <TextView
-                    style="@style/TextView.Small"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/estimate_refund"
-                    android:text="@string/flight_cancellation_estimate_refund_label" />
-
-                <TextView
-                    android:id="@+id/estimate_refund"
-                    style="@style/TextView.Small.Bold"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    tools:text="Rp. 500.0000" />
-            </RelativeLayout>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <View
+                android:id="@+id/bottom_first_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/container_pnr"
-                android:layout_marginBottom="@dimen/margin_8"
                 android:layout_marginTop="@dimen/margin_8"
                 android:background="@color/black_twenty_percent" />
 
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_bottom_middle_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10">
+                android:nestedScrollingEnabled="false">
 
-                <TextView
-                    style="@style/TextView.Small.Bold"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/total_price"
-                    android:text="@string/flight_cancellation_total_refund_label" />
+            </androidx.recyclerview.widget.RecyclerView>
 
-                <TextView
-                    android:id="@+id/total_price"
-                    style="@style/TextView.Title.OrangeRed.Bold"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    tools:text="Rp. 500.0000" />
-            </RelativeLayout>
+            <View
+                android:id="@+id/bottom_second_separator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:background="@color/black_twenty_percent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_bottom_bottom_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:nestedScrollingEnabled="false">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_bottom_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:nestedScrollingEnabled="false">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
         </LinearLayout>
 
     </LinearLayout>

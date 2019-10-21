@@ -3,6 +3,7 @@ package com.tokopedia.ovop2p.util
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
@@ -10,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -139,5 +142,14 @@ object OvoP2pUtil {
     fun getDeviceId(context: Context): String{
         var userSession = UserSession(context)
         return userSession.deviceId
+    }
+
+    fun getDiscoveryPageIntent(context: Context): Intent{
+        val intent = RouteManager.getIntent(
+                context,
+                ApplinkConst.DISCOVERY_PAGE.replace(Constants.DeepLinkConstants.PAGE_ID, Constants.DeepLinkConstants.DISCOVERY_PAGE)
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        return intent
     }
 }

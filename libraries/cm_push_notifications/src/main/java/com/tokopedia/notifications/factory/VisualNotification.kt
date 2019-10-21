@@ -20,7 +20,7 @@ class VisualNotification(context: Context, baseNotificationModel: BaseNotificati
         builder.setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         var remoteViews = RemoteViews(context.applicationContext.packageName,
-                R.layout.layout_visual_collapsed)
+                R.layout.cm_layout_visual_collapsed)
 
         val collapsedBitmap: Bitmap? = getBitmap(baseNotificationModel.visualCollapsedImageUrl)
         val expandedBitmap: Bitmap? = getBitmap(baseNotificationModel.visualExpandedImageUrl)
@@ -32,7 +32,7 @@ class VisualNotification(context: Context, baseNotificationModel: BaseNotificati
         builder.setCustomContentView(remoteViews)
 
         remoteViews = RemoteViews(context.applicationContext.packageName,
-                R.layout.layout_visual_expand)
+                R.layout.cm_layout_visual_expand)
         remoteViews.setImageViewBitmap(R.id.iv_expanded, expandedBitmap)
 
         builder.setCustomBigContentView(remoteViews)

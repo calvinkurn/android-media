@@ -1,25 +1,33 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
+import android.text.TextUtils
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.cardview.widget.CardView
-import android.util.AttributeSet
-import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.design.image.SquareImageView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -53,7 +61,7 @@ abstract class ProductCardView: BaseCustomView {
      */
     protected var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
-    protected var imageProduct: ImpressedImageView? = null
+    protected var imageProduct: SquareImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
     protected var textViewShopName: Typography? = null
@@ -71,8 +79,10 @@ abstract class ProductCardView: BaseCustomView {
     protected var imageViewRating5: ImageView? = null
     protected var textViewReviewCount: Typography? = null
     protected var labelCredibility: Label? = null
+    protected var imageFreeOngkirPromo: ImageView? = null
     protected var labelOffers: Label? = null
     protected var imageTopAds: ImageView? = null
+    protected var blankSpaceConfig = BlankSpaceConfig()
 
     constructor(context: Context): super(context) {
         init()
@@ -133,6 +143,7 @@ abstract class ProductCardView: BaseCustomView {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         labelOffers = inflatedView.findViewById(R.id.labelOffers)
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds)
     }
@@ -153,9 +164,11 @@ abstract class ProductCardView: BaseCustomView {
         setProductNameMarginTop()
         setPriceMarginTop()
         setLocationMarginLeft()
+        setLocationConstraintEnd()
         setReviewCountMarginLeft()
+        setImageFreeOngkirPromoConstraint()
         setLabelOffersConstraint()
-        setImageTopAdsConstraint()
+        setTopAdsTopConstraint()
     }
 
     protected open fun setProductNameMarginTop() {
@@ -194,6 +207,32 @@ abstract class ProductCardView: BaseCustomView {
         else R.dimen.dp_8
     }
 
+    protected open fun setLocationConstraintEnd() {
+        textViewShopLocation?.doIfVisible { textViewShopLocation ->
+            imageTopAds?.doIfVisible { imageTopAds ->
+                configureTextViewLocationConstraintBasedOnPosition(imageTopAds, textViewShopLocation)
+            }
+        }
+    }
+
+    protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
+        if(isTextLocationIsAtBottomOfCard()) {
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+        }
+        else {
+            imageProduct?.doIfVisible { imageProduct ->
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, R.dimen.dp_8)
+            }
+        }
+    }
+
+    protected open fun isTextLocationIsAtBottomOfCard(): Boolean {
+        return labelCredibility.isNullOrNotVisible
+                && linearLayoutImageRating.isNullOrNotVisible
+                && textViewReviewCount.isNullOrNotVisible
+                && labelOffers.isNullOrNotVisible
+    }
+
     protected open fun setReviewCountMarginLeft() {
         textViewReviewCount?.doIfVisible { textViewReviewCount ->
             val marginStartDp = getReviewCountMarginLeft()
@@ -206,13 +245,35 @@ abstract class ProductCardView: BaseCustomView {
         else R.dimen.dp_8
     }
 
+    protected open fun setImageFreeOngkirPromoConstraint() {
+        imageFreeOngkirPromo?.doIfVisible { imageFreeOngkirPromo ->
+            val imageFreeOngkirPromoTopConstraintView = getImageFreeOngkirTopConstraintView()
+
+            imageFreeOngkirPromoTopConstraintView?.let {
+                setViewConstraint(
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                )
+            }
+        }
+    }
+
+    protected open fun getImageFreeOngkirTopConstraintView(): View? {
+        return when {
+            labelCredibility.isNotNullAndVisible -> labelCredibility
+            linearLayoutImageRating.isNotNullAndVisible -> linearLayoutImageRating
+            textViewReviewCount.isNotNullAndVisible -> textViewReviewCount
+            textViewShopLocation.isNotNullAndVisible -> textViewShopLocation
+            else -> null
+        }
+    }
+
     protected open fun setLabelOffersConstraint() {
         labelOffers?.doIfVisible { labelOffers ->
             val labelOffersTopConstraintView = getLabelOffersTopConstraintView()
 
             labelOffersTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
                 )
             }
         }
@@ -220,37 +281,28 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun getLabelOffersTopConstraintView(): View? {
         return when {
-            labelCredibility.isNotNullAndVisible -> {
-                labelCredibility
-            }
-            linearLayoutImageRating.isNotNullAndVisible -> {
-                linearLayoutImageRating
-            }
-            textViewReviewCount.isNotNullAndVisible -> {
-                textViewReviewCount
-            }
-            textViewShopLocation.isNotNullAndVisible -> {
-                textViewShopLocation
-            }
-            else -> null
+            imageFreeOngkirPromo.isNotNullAndVisible -> imageFreeOngkirPromo
+            else -> getImageFreeOngkirTopConstraintView()
         }
     }
 
-    protected open fun setImageTopAdsConstraint() {
+    protected open fun setTopAdsTopConstraint() {
         imageTopAds?.doIfVisible { imageTopAds ->
-            textViewShopLocation?.doIfVisible { textViewShopLocation ->
-                if(isTextLocationIsAtBottomOfCard()) {
-                    setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
-                }
+            val imageTopAdsTopConstraintView = getImageTopAdsTopConstraintView()
+
+            imageTopAdsTopConstraintView?.let {
+                setViewConstraint(
+                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, R.dimen.dp_0
+                )
             }
         }
     }
 
-    protected open fun isTextLocationIsAtBottomOfCard(): Boolean {
-        return labelCredibility.isNullOrNotVisible
-                && linearLayoutImageRating.isNullOrNotVisible
-                && textViewReviewCount.isNullOrNotVisible
-                && labelOffers.isNullOrNotVisible
+    private fun getImageTopAdsTopConstraintView(): View? {
+        return when {
+            labelOffers.isNotNullAndVisible -> labelOffers
+            else -> getLabelOffersTopConstraintView()
+        }
     }
 
     open fun getCardViewRadius(): Float {
@@ -259,6 +311,191 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun getCardViewMaxElevation(): Float {
         return cardViewProductCard?.maxCardElevation ?: 0f
+    }
+
+    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = this.blankSpaceConfig) {
+        this.blankSpaceConfig = blankSpaceConfig
+
+        initProductImage(productCardModel.productImageUrl)
+        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
+        initShopName(productCardModel.shopName)
+        initLabelPromo(productCardModel.labelPromo)
+        initProductName(productCardModel.productName)
+        initLabelDiscount(productCardModel.discountPercentage)
+        initSlashedPrice(productCardModel.slashedPrice)
+        initProductPrice(productCardModel.formattedPrice)
+        initShopBadgeList(productCardModel.shopBadgeList)
+        initShopLocation(productCardModel.shopLocation)
+        initRating(productCardModel.ratingCount)
+        initReview(productCardModel.reviewCount)
+        initLabelCredibility(productCardModel.labelCredibility)
+        initLabelOffers(productCardModel.labelOffers)
+        initFreeOngkir(productCardModel.freeOngkir)
+        initTopAdsIcon(productCardModel.isTopAds)
+
+        realignLayout()
+    }
+
+    private fun initProductImage(productImageUrl: String) {
+        imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
+            ImageHandler.loadImageThumbs(context, it, productImageUrl)
+        }
+    }
+
+    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
+        buttonWishlist.shouldShowWithAction(isWishlistVisible) {
+            if (isWishlisted) {
+                it.setImageResource(R.drawable.product_card_ic_wishlist_red)
+            } else {
+                it.setImageResource(R.drawable.product_card_ic_wishlist)
+            }
+        }
+    }
+
+    private fun initShopName(shopName: String) {
+        textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
+    }
+
+    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
+        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
+            it.text = labelPromoModel.title
+            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+        }
+    }
+
+    private fun initProductName(productName: String) {
+        if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
+        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
+    }
+
+    private fun initLabelDiscount(discountPercentage: String) {
+        val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
+
+        labelDiscount.configureVisibilityWithBlankSpaceConfig(
+                isLabelDiscountVisible, blankSpaceConfig.discountPercentage) {
+            it.text = MethodChecker.fromHtml(discountPercentage)
+        }
+    }
+
+    private fun getIsLabelDiscountVisible(discountPercentage: String): Boolean {
+        return discountPercentage.isNotEmpty()
+                && discountPercentage.trim() != "0"
+    }
+
+    private fun initSlashedPrice(slashedPrice: String) {
+        textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
+                slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
+            it.text = slashedPrice
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun initProductPrice(formattedPrice: String) {
+        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
+    }
+
+    private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+        removeAllShopBadges()
+
+        linearLayoutShopBadges.shouldShowWithAction(hasAnyBadgesShown(shopBadgeList)) {
+            loopBadgesListToLoadShopBadgeIcon(shopBadgeList)
+        }
+    }
+
+    private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
+        return shopBadgeList.any { badge -> badge.isShown }
+    }
+
+    private fun loopBadgesListToLoadShopBadgeIcon(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+        for (badgeItem in shopBadgeList) {
+            if (badgeItem.isShown) {
+                loadShopBadgesIcon(badgeItem.imageUrl)
+            }
+        }
+    }
+
+    private fun loadShopBadgesIcon(url: String) {
+        if(!TextUtils.isEmpty(url)) {
+            val view = LayoutInflater.from(context).inflate(R.layout.product_card_badge_layout, null)
+
+            ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    loadShopBadgeSuccess(view, resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    loadShopBadgeFailed(view)
+                }
+            })
+        }
+    }
+
+    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
+        val image = view.findViewById<ImageView>(R.id.badge)
+
+        if (bitmap.height <= 1 && bitmap.width <= 1) {
+            view.visibility = View.GONE
+        } else {
+            image.setImageBitmap(bitmap)
+            view.visibility = View.VISIBLE
+            addShopBadge(view)
+        }
+    }
+
+    private fun loadShopBadgeFailed(view: View) {
+        view.visibility = View.GONE
+    }
+
+    private fun initShopLocation(shopLocation: String) {
+        textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
+    }
+
+    private fun initRating(ratingCount: Int) {
+        linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
+                ratingCount > 0, blankSpaceConfig.ratingCount) {
+            setRating(ratingCount)
+        }
+    }
+
+    private fun initReview(reviewCount: Int) {
+        textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
+                reviewCount > 0, blankSpaceConfig.reviewCount) {
+            it.text = getReviewCountFormattedAsText(reviewCount)
+        }
+    }
+
+    private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
+        labelCredibility.configureVisibilityWithBlankSpaceConfig(
+                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
+            it.text = labelCredibilityModel.title
+            it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
+        }
+    }
+
+    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
+        labelOffers.configureVisibilityWithBlankSpaceConfig(
+                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
+            it.text = labelOffersModel.title
+            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
+        }
+    }
+
+    private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
+        val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
+
+        imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
+                shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
+            ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
+        }
+    }
+
+    private fun initTopAdsIcon(isVisible: Boolean) {
+        imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     open fun setImageProductVisible(isVisible: Boolean) {
@@ -271,8 +508,8 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: () -> Unit) {
-        imageProduct?.setViewHintListener(holder, viewHintListener)
+    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: ViewHintListener) {
+        imageProduct?.addOnImpressionListener(holder, viewHintListener)
     }
 
     open fun setButtonWishlistVisible(isVisible: Boolean) {
@@ -339,9 +576,17 @@ abstract class ProductCardView: BaseCustomView {
         labelDiscount?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setSlashedPriceInvisible(isInvisible: Boolean) {
+        textViewSlashedPrice?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setLabelDiscountText(discount: Int) {
-        val discountText = Integer.toString(discount) + "%"
+        val discountText = "$discount%"
         labelDiscount?.text = discountText
+    }
+
+    open fun setLabelDiscountText(discount: String) {
+        labelDiscount?.text = discount
     }
 
     open fun setSlashedPriceVisible(isVisible: Boolean) {
@@ -387,6 +632,10 @@ abstract class ProductCardView: BaseCustomView {
         linearLayoutImageRating?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
+    open fun setImageRatingInvisible(isInvisible: Boolean) {
+        linearLayoutImageRating?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
     open fun setRating(rating: Int) {
         imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
         imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
@@ -403,6 +652,14 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setReviewCountVisible(isVisible: Boolean) {
         textViewReviewCount?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    open fun setReviewCountInvisible(isInvisible: Boolean) {
+        textViewReviewCount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    open fun setLinesProductTitle(lines: Int){
+        textViewProductName?.setLines(lines)
     }
 
     open fun setReviewCount(reviewCount: Int) {
@@ -439,6 +696,10 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setImageTopAdsVisible(isVisible: Boolean) {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    open fun setLabelDiscountInvisible(isInvisible: Boolean){
+        labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
     protected open fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {

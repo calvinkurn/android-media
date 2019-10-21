@@ -2,9 +2,12 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPromoLastSeen"
     android:layout_width="@dimen/dp_300"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_2"
     android:padding="@dimen/dp_4"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_4">
 
@@ -32,7 +35,7 @@
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_5"
-                app:srcCompat="@drawable/ic_voucher_promo_green" />
+                app:srcCompat="@drawable/ic_voucher" />
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"

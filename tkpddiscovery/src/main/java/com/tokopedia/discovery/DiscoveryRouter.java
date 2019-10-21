@@ -15,14 +15,6 @@ public interface DiscoveryRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getShopPageIntentByDomain(Context context, String domain);
-
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Intent gotoSearchAutoCompletePage(Context context);
-
-    Intent gotoSearchPage(Context context);
-
     boolean isSupportApplink(String appLink);
 
     void goToApplinkActivity(Context context, String applink);

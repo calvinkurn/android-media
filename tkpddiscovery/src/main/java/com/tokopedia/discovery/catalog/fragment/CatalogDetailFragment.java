@@ -2,6 +2,7 @@ package com.tokopedia.discovery.catalog.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -17,7 +18,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core2.R;
@@ -396,5 +396,10 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     public void onDestroyView() {
         presenter.unsubscribeObservable();
         super.onDestroyView();
+    }
+
+    @Override
+    public Context getContext() {
+        return getActivity();
     }
 }

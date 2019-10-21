@@ -10,4 +10,8 @@ object ApplinkConsInternalHome {
 
     //temp manage shop for sellerapp
     const val MANAGE_SHOP_SELLERAPP_TEMP = "$INTERNAL_HOME/seller/manage-shop"
+
+    const val HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi/.*\\/"
+
+    const val HOME_SIMILAR_PRODUCT = "$INTERNAL_HOME/rekomendasi/d/.*"
 }

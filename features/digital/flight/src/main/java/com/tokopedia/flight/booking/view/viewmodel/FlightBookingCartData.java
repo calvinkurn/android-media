@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class FlightBookingCartData implements Parcelable {
     private String id;
     private int refreshTime;
-    private FlightBookingPhoneCodeViewModel defaultPhoneCode;
+    private CountryPhoneCode defaultPhoneCode;
     private FlightDetailViewModel departureTrip;
     private FlightDetailViewModel returnTrip;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
@@ -29,7 +30,7 @@ public class FlightBookingCartData implements Parcelable {
     protected FlightBookingCartData(Parcel in) {
         id = in.readString();
         refreshTime = in.readInt();
-        defaultPhoneCode = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        defaultPhoneCode = in.readParcelable(CountryPhoneCode.class.getClassLoader());
         departureTrip = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
         returnTrip = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
@@ -143,11 +144,11 @@ public class FlightBookingCartData implements Parcelable {
         this.returnTrip = returnTrip;
     }
 
-    public FlightBookingPhoneCodeViewModel getDefaultPhoneCode() {
+    public CountryPhoneCode getDefaultPhoneCode() {
         return defaultPhoneCode;
     }
 
-    public void setDefaultPhoneCode(FlightBookingPhoneCodeViewModel defaultPhoneCode) {
+    public void setDefaultPhoneCode(CountryPhoneCode defaultPhoneCode) {
         this.defaultPhoneCode = defaultPhoneCode;
     }
 

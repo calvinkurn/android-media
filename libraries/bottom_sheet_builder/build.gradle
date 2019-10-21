@@ -21,3 +21,12 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+project.ext {
+    artifactId = 'bottom-sheet-builder'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "bottom_sheet_builder-release"
+}
+
+apply from: '../../publish_local.gradle'

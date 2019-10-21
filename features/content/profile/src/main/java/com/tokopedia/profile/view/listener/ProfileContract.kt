@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 
@@ -36,6 +37,10 @@ interface ProfileContract {
 
         fun onErrorShouldChangeUsername(errorMessage: String, link: String)
 
+        fun onAddToCartSuccess()
+
+        fun onAddToCartFailed(pdpAppLink: String)
+
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -54,6 +59,8 @@ interface ProfileContract {
         fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
 
         fun deletePost(id: Int, rowNumber: Int)
+
+        fun addPostTagItemToCart(postTagItem: PostTagItem)
 
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 

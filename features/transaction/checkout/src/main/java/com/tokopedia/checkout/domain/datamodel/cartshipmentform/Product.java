@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ public class Product implements Parcelable {
     private String productName;
     private String productPriceFmt;
     private int productPrice;
+    private int productOriginalPrice;
     private int productWholesalePrice;
     private String productWholesalePriceFmt;
     private String productWeightFmt;
@@ -51,6 +52,8 @@ public class Product implements Parcelable {
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
     private String productPreOrderInfo;
     private TradeInInfo tradeInInfo;
+    private boolean freeShipping;
+    private String freeShippingBadgeUrl;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -100,6 +103,10 @@ public class Product implements Parcelable {
 
     public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public void setProductOriginalPrice(int productOriginalPrice) {
+        this.productOriginalPrice = productOriginalPrice;
     }
 
     public void setProductWholesalePrice(int productWholesalePrice) {
@@ -224,6 +231,10 @@ public class Product implements Parcelable {
 
     public int getProductPrice() {
         return productPrice;
+    }
+
+    public int getProductOriginalPrice() {
+        return productOriginalPrice;
     }
 
     public int getProductWholesalePrice() {
@@ -358,6 +369,22 @@ public class Product implements Parcelable {
         this.tradeInInfo = tradeInInfo;
     }
 
+    public boolean isFreeShipping() {
+        return freeShipping;
+    }
+
+    public void setFreeShipping(boolean freeShipping) {
+        this.freeShipping = freeShipping;
+    }
+
+    public String getFreeShippingBadgeUrl() {
+        return freeShippingBadgeUrl;
+    }
+
+    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
+        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    }
+
     public Product() {
     }
 
@@ -376,6 +403,7 @@ public class Product implements Parcelable {
         dest.writeString(this.productName);
         dest.writeString(this.productPriceFmt);
         dest.writeInt(this.productPrice);
+        dest.writeInt(this.productOriginalPrice);
         dest.writeInt(this.productWholesalePrice);
         dest.writeString(this.productWholesalePriceFmt);
         dest.writeString(this.productWeightFmt);
@@ -406,6 +434,8 @@ public class Product implements Parcelable {
         dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
         dest.writeParcelable(this.tradeInInfo, flags);
+        dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
+        dest.writeString(this.freeShippingBadgeUrl);
     }
 
     protected Product(Parcel in) {
@@ -417,6 +447,7 @@ public class Product implements Parcelable {
         this.productName = in.readString();
         this.productPriceFmt = in.readString();
         this.productPrice = in.readInt();
+        this.productOriginalPrice = in.readInt();
         this.productWholesalePrice = in.readInt();
         this.productWholesalePriceFmt = in.readString();
         this.productWeightFmt = in.readString();
@@ -447,6 +478,8 @@ public class Product implements Parcelable {
         this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
         this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
+        this.freeShipping = in.readByte() != 0;
+        this.freeShippingBadgeUrl = in.readString();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

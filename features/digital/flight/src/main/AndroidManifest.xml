@@ -29,16 +29,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".searchV3.presentation.activity.FlightSearchActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".search.presentation.activity.FlightSearchReturnActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -78,10 +69,11 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
-            android:label="@string/activity_label_flight_booking_phone_code"
+            android:name=".passenger.view.activity.FlightBookingPassengerActivity"
+            android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.White.Flight"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".booking.view.activity.FlightBookingNationalityActivity"
             android:label="@string/activity_label_flight_nationality"

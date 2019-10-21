@@ -66,6 +66,7 @@
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

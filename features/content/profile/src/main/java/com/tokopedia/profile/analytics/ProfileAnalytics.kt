@@ -2,6 +2,8 @@ package com.tokopedia.profile.analytics
 
 import android.app.Activity
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -25,6 +27,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         private const val SINGLE = "single"
         private const val MULTIPLE = "multiple"
         private const val FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
+        private const val FORMAT_RECOMMENDATION_PROMOTION_NAME = "%s - %s"
 
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -85,6 +88,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_EMPTY_CTA = "cta byme"
         const val IMPRESSION_OTHER_POST = "impression post lainnya"
         const val CLICK_OTHER_POST = "click post lainnya"
+        const val CLICK_READ_MORE = "click read more"
     }
 
     object Label {
@@ -101,6 +105,12 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val VIDEO = "video"
         const val PRODUCT = "product"
 
+    }
+
+    object Promotion {
+        object Name {
+            const val EMPTY_POST_RECOMMENDATION = "empty profile post recommendation"
+        }
     }
 
     private fun getDefaultData(screenName: String, event: String, category: String, action: String,
@@ -300,27 +310,53 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-    fun eventClickOtherPost(profileId: String, postUserId: String) {
+    fun eventClickOtherPost(viewedProfileId: String, position: Int, feedDatum: FeedPostRelated.Datum, currentUserId: String, currentUserName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             getDefaultData(
                 Screen.PROFILE,
                 Event.EVENT_CLICK_SOCIAL_COMMERCE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.CLICK_OTHER_POST,
-                "$profileId - $postUserId"
-            )
+                Action.CLICK_OTHER_POST, "$viewedProfileId - ${feedDatum.content.tracking.authorID}"
+            ).also {
+                it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceClick(
+                        listOf(
+                                ProfileEnhancedTracking.Promotion(
+                                        id = feedDatum.id.toIntOrZero(),
+                                        name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
+                                        creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
+                                        position = position,
+                                        category = "",
+                                        promoId = currentUserId.toIntOrZero(),
+                                        promoCode = currentUserName
+                                )
+                        )
+                )
+            }
         )
     }
 
-    fun eventImpressionOtherPost(profileId: String, postUserId: String) {
+    fun eventImpressionOtherPost(viewedProfileId: String, feedDatumList: List<FeedPostRelated.Datum>, currentUserId: String, currentUserName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             getDefaultData(
                 Screen.PROFILE,
                 Event.EVENT_CLICK_SOCIAL_COMMERCE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.IMPRESSION_OTHER_POST,
-                "$profileId - $postUserId"
-            )
+                Action.IMPRESSION_OTHER_POST, viewedProfileId
+            ).also {
+                it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceView(
+                        feedDatumList.mapIndexed { position, feedDatum ->
+                            ProfileEnhancedTracking.Promotion(
+                                    id = feedDatum.id.toIntOrZero(),
+                                    name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
+                                    creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
+                                    position = position,
+                                    category = "",
+                                    promoId = currentUserId.toIntOrZero(),
+                                    promoCode = currentUserName
+                            )
+                        }
+                )
+            }
         )
     }
 

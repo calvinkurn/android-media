@@ -19,7 +19,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.groupchat.channel.di.DaggerChannelComponent;
@@ -249,8 +250,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
                     data.getExtras().getString(GroupChatActivity.TOTAL_VIEW, ""));
         } else if (requestCode == REQUEST_LOGIN
                 && resultCode == Activity.RESULT_CANCELED) {
-            Intent intent = ((GroupChatModuleRouter) getActivity().getApplicationContext())
-                    .getHomeIntent(getActivity());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             getActivity().finish();

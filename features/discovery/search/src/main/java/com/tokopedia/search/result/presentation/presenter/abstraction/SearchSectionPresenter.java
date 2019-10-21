@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.abstraction;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
 import com.tokopedia.usecase.RequestParams;

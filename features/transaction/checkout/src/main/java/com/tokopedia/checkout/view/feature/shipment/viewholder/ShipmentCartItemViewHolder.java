@@ -2,8 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
+import android.graphics.Paint;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -12,12 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -34,6 +36,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView mIvProductImage;
     private Typography mTvProductName;
     private Typography mTvProductPrice;
+    private Typography mTvProductOriginalPrice;
     private Typography mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
@@ -53,6 +56,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
+    private ImageView imgFreeShipping;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -60,6 +64,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mIvProductImage = itemView.findViewById(R.id.iv_product_image);
         mTvProductName = itemView.findViewById(R.id.tv_product_name);
         mTvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        mTvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         mTvProductCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
@@ -79,7 +84,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
-
+        imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -92,17 +97,70 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
         ImageHandler.LoadImage(mIvProductImage, cartItem.getImageUrl());
         mTvProductName.setText(cartItem.getName());
-        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (long) cartItem.getPrice(), false));
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItem.getQuantity()),
                 WeightFormatterUtil.getFormattedWeight(cartItem.getWeight(), cartItem.getQuantity())));
 
+        renderProductPrice(cartItem);
+        renderNotesToSeller(cartItem);
+        renderPurchaseProtection(cartItem);
+        renderProductPropertyFreeReturn(cartItem);
+        renderProductPropertyPreOrder(cartItem);
+        renderProductPropertyCashback(cartItem);
+        renderProductPropertiesLayout(cartItem);
+        renderProductPropertiesFreeShipping(cartItem);
+    }
+
+    private void renderProductPrice(CartItemModel cartItem) {
+        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (long) cartItem.getPrice(), false));
+        if (cartItem.getOriginalPrice() > 0) {
+            mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
+            mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mTvProductOriginalPrice.setVisibility(View.VISIBLE);
+        } else {
+            mTvProductOriginalPrice.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderNotesToSeller(CartItemModel cartItem) {
         boolean isEmptyNotes = TextUtils.isEmpty(cartItem.getNoteToSeller());
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
+        mTvNoteToSellerLabel.setVisibility(View.GONE);
+    }
 
+    private void renderProductPropertiesLayout(CartItemModel cartItem) {
+        if (cartItem.isFreeReturn() || cartItem.isPreOrder() || cartItem.isCashback()) {
+            mllProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            mllProductPoliciesLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyCashback(CartItemModel cartItem) {
+        mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
+        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
+                " " + cartItem.getCashback() + "    ";
+        mTvCashback.setText(cashback);
+    }
+
+    private void renderProductPropertyPreOrder(CartItemModel cartItem) {
+        if (cartItem.isPreOrder()) {
+            mTvPreOrder.setText(cartItem.getPreOrderInfo());
+            mTvPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            mTvPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderProductPropertyFreeReturn(CartItemModel cartItem) {
+        mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
+        mTvFreeReturnLabel.setVisibility(View.GONE);
+    }
+
+    private void renderPurchaseProtection(CartItemModel cartItem) {
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
@@ -129,24 +187,16 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
                 mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
             }
         }
+    }
 
-        mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
-        mTvFreeReturnLabel.setVisibility(View.GONE);
-        if (cartItem.isPreOrder()) {
-            mTvPreOrder.setText(cartItem.getPreOrderInfo());
-            mTvPreOrder.setVisibility(View.VISIBLE);
+    private void renderProductPropertiesFreeShipping(CartItemModel cartItemModel) {
+        if (cartItemModel.isFreeShipping() && !TextUtils.isEmpty(cartItemModel.getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                    imgFreeShipping, cartItemModel.getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
         } else {
-            mTvPreOrder.setVisibility(View.GONE);
-        }
-        mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
-                " " + cartItem.getCashback() + "    ";
-        mTvCashback.setText(cashback);
-        mTvNoteToSellerLabel.setVisibility(View.GONE);
-        if (cartItem.isFreeReturn() || cartItem.isPreOrder() || cartItem.isCashback()) {
-            mllProductPoliciesLayout.setVisibility(View.VISIBLE);
-        } else {
-            mllProductPoliciesLayout.setVisibility(View.GONE);
+            imgFreeShipping.setVisibility(View.GONE);
         }
     }
 
@@ -176,6 +226,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
+        mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
         mTvFreeReturnLabel.setTextColor(colorGreyNonActiveText);
         mTvPreOrder.setTextColor(colorGreyNonActiveText);
         mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
@@ -199,6 +250,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void enableItemView() {
         mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.black_70));
         mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.orange_red));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), R.color.n_700_44));
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));

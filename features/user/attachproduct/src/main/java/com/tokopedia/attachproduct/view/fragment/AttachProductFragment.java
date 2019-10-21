@@ -182,7 +182,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public int getDefaultInitialPage() {
-        return 0;
+        return 1;
     }
 
     @NonNull

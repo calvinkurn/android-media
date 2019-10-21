@@ -14,31 +14,55 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFi
  */
 class NotificationUpdateFilterSectionItemViewHolder(
         itemView: View,
-        var itemSectionListener: ItemSectionListener,
-        var filterType: String
-)
-    : AbstractViewHolder<NotificationUpdateFilterSectionItemViewModel>(itemView) {
+        val itemSectionListener: FilterSectionListener
+) : AbstractViewHolder<NotificationUpdateFilterSectionItemViewModel>(itemView) {
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_filter_item_section
+    private val category: TextView = itemView.findViewById(R.id.chips_item)
+
+    interface FilterSectionListener {
+        fun onFilterClicked(element: NotificationUpdateFilterSectionItemViewModel)
     }
 
-    private val category: TextView
+    override fun bind(element: NotificationUpdateFilterSectionItemViewModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isEmpty()) return
+        val payload = payloads[0]
+        when (payload) {
+            PAYLOAD_DESELECTED -> deselectChip(element)
+            PAYLOAD_SELECTED -> selectChip(element)
+        }
+    }
 
-    init {
-        category = itemView.findViewById(R.id.chips_item)
+    private fun selectChip(element: NotificationUpdateFilterSectionItemViewModel) {
+        setChipBackground(element)
+    }
+
+    private fun deselectChip(element: NotificationUpdateFilterSectionItemViewModel) {
+        element.selected = false
+        setChipBackground(element)
+    }
+
+    private fun setChipBackground(element: NotificationUpdateFilterSectionItemViewModel) {
+        if(element.selected) {
+            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_item_filter_pressed)
+        } else {
+            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_filter_green_border)
+        }
     }
 
     override fun bind(element: NotificationUpdateFilterSectionItemViewModel) {
         category.text = element.text
-        if(element.selected) {
-            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_item_filter_pressed)
-        } else {
-            category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_item_filter_neutral)
-        }
+        setChipBackground(element)
         category.setOnClickListener {
-            itemSectionListener.itemSectionPicked(adapterPosition, filterType)
+            element.selected = !element.selected
+            itemSectionListener.onFilterClicked(element)
         }
     }
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_filter_item_section
+        const val PAYLOAD_DESELECTED = "payload_deselected"
+        const val PAYLOAD_SELECTED = "payload_selected"
+    }
+
 }

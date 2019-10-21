@@ -80,6 +80,7 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_USERID, userData.getUserId())
                     .addContentItems(branchUniversalObjects)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
                     .logEvent(context);
         } catch (Exception ex) {
             ex.printStackTrace();

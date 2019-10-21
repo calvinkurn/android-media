@@ -11,6 +11,7 @@ import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
+import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
@@ -25,6 +26,7 @@ import com.tokopedia.applink.DeepLinkChecker.RECOMMENDATION
 import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
+import com.tokopedia.applink.DeepLinkChecker.SIMILAR_PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
@@ -63,6 +65,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 1, mapOf(0 to "people")) to PROFILE)
             add(Pattern(GT, 0, mapOf(0 to "content")) to CONTENT)
             add(Pattern(GT, 0, mapOf(0 to "kupon-thr")) to SMCREFERRAL)
+            add(Pattern(GT, 1, mapOf(0 to "seru")) to SMCREFERRAL)
             add(Pattern(GT, 0, mapOf(0 to "emas")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "reksa-dana")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "bantuan")) to OTHER)
@@ -73,6 +76,10 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "reset.pl")) to OTHER)
             add(Pattern(GT,0, mapOf(0 to "order-list")) to ORDER_LIST)
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
+            add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
+            add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
+            add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
+            add(Pattern(GT, 2, mapOf(0 to "rekomendasi", 2 to "d")) to SIMILAR_PRODUCT)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, null) to SHOP)

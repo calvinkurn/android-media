@@ -1,0 +1,77 @@
+
+//scan all folder find setting.gradle
+class compositeModel {
+    String pathComposite
+    List<tupleComposite> listModuleComposite = new ArrayList<>()
+
+    compositeModel(String pathComposite) {
+        this.pathComposite = pathComposite.replace("/settings.gradle", "")
+    }
+
+    def setList(List<tupleComposite> listModuleComposite) {
+        this.listModuleComposite = listModuleComposite
+    }
+}
+class tupleComposite {
+    String module;
+    String project;
+    String moduleName;
+
+    tupleComposite(String project, String module, String moduleName) {
+        this.project = project
+        this.module = module
+        this.moduleName = moduleName
+    }
+}
+List<compositeModel> pathComposite = new ArrayList<>()
+
+if (new File("$rootDir/.compositeScan-enable").exists()) {
+    def fileTreeComposite = fileTree(dir: "${rootDir}", include: '**/settings.gradle')
+    fileTreeComposite.each { file ->
+        pathComposite.add(new compositeModel("$file"))
+    }
+    pathComposite.each { file ->
+        List<String> listModule = new ArrayList<>()
+        if ("$rootDir" != file.pathComposite) {
+            new File("${file.pathComposite}/settings.gradle").eachLine { line ->
+                if (line.startsWith("include") && line.contains(",")) {
+                    def tempString = line.replace("include ", "").split(",")
+                    tempString.each {
+                        listModule.add("${it.replace("\'", "").replace(":", "").replace(" ", "").trim()}")
+                    }
+                } else if (line.startsWith("include")) {
+                    listModule.add("${line.replace("include \":", "").replace("\"", "").trim()}")
+                }
+            }
+        }
+        List<tupleComposite> tupleComposite = new ArrayList<>()
+        listModule.each { module ->
+            def groupId
+            def artifactId
+            new File("${file.pathComposite}/$module/build.gradle").eachLine {
+                if (it.trim().startsWith("groupId")) {
+                    groupId = it.replace("groupId =", "").replace("\'", "").trim()
+                }
+                if (it.trim().startsWith("artifactId")) {
+                    artifactId = it.replace("artifactId =", "").replace("\'", "").trim()
+                }
+            }
+            tupleComposite.add(new tupleComposite(groupId, artifactId, module))
+        }
+        file.setList(tupleComposite)
+    }
+
+    pathComposite.each { file ->
+        if ("$rootDir" != file.pathComposite) {
+            if (new File("${file.pathComposite}/.composite-enable").exists()) {
+                includeBuild("${file.pathComposite.replace("$rootDir/", "").trim()}") {
+                    dependencySubstitution {
+                        file.listModuleComposite.each {
+                            substitute module("${it.project}:${it.module}") with project(":${it.moduleName}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
