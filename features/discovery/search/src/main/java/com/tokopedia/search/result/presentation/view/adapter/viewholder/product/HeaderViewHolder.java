@@ -1,9 +1,12 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
@@ -26,9 +31,14 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +47,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_header_layout;
+    private Ticker tickerView;
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
+    private TickerListener tickerListener;
     private SuggestionListener suggestionListener;
     private QuickFilterListener quickFilterListener;
     private QuickFilterAdapter quickFilterAdapter;
@@ -48,14 +60,17 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private GuidedSearchAdapter guidedSearchAdapter;
 
     public HeaderViewHolder(View itemView,
+                            TickerListener tickerListener,
                             SuggestionListener suggestionListener,
                             QuickFilterListener quickFilterListener,
                             GuidedSearchListener guidedSearchListener,
                             BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
+        this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
+        tickerView = itemView.findViewById(R.id.tickerView);
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
@@ -97,6 +112,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public void bind(final HeaderViewModel element) {
         bindAdsBannerView(element);
 
+        bindTickerView(element);
+
         bindSuggestionView(element);
 
         bindQuickFilterView(element);
@@ -106,6 +123,32 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private void bindAdsBannerView(final HeaderViewModel element) {
         adsBannerView.displayAds(element.getCpmModel());
+    }
+
+    private void bindTickerView(final HeaderViewModel element) {
+        if (tickerListener == null || tickerListener.isTickerHasDismissed() ||
+                element.getTickerViewModel() == null || TextUtils.isEmpty(element.getTickerViewModel().getText())) {
+            tickerView.setVisibility(View.GONE);
+            return;
+        }
+
+        tickerView.setHtmlDescription(element.getTickerViewModel().getText());
+        tickerView.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                if (tickerListener != null && !TextUtils.isEmpty(element.getTickerViewModel().getQuery())) {
+                    tickerListener.onTickerClicked(element.getTickerViewModel().getQuery());
+                }
+            }
+
+            @Override
+            public void onDismiss() {
+                if (tickerListener != null) {
+                    tickerListener.onTickerDismissed();
+                }
+            }
+        });
+        tickerView.setVisibility(View.VISIBLE);
     }
 
     private void bindSuggestionView(final HeaderViewModel element) {
@@ -342,7 +385,25 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
                 }
             });
-            imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
+
+            Glide.with(itemView.getContext())
+                    .load(BACKGROUND[getAdapterPosition() % 5])
+                    .asBitmap()
+                    .centerCrop()
+                    .dontAnimate()
+                    .into(getRoundedImageViewTarget(imageView));
+        }
+
+        private BitmapImageViewTarget getRoundedImageViewTarget(ImageView imageView) {
+            return new BitmapImageViewTarget(imageView) {
+
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+                    roundedBitmapDrawable.setCornerRadius(8f);
+                    imageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            };
         }
     }
 }

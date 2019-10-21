@@ -1,12 +1,9 @@
 package com.tokopedia.atc_common.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
-import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -20,7 +17,8 @@ import javax.inject.Named
  */
 
 class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
-                                           private val graphqlUseCase: GraphqlUseCase) : UseCase<AddToCartDataModel>() {
+                                           private val graphqlUseCase: GraphqlUseCase,
+                                           private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -45,7 +43,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                         putObject(
                                 REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
                                 AddToCartRequestParams(
-                                    productId = productId.toLong(),
+                                        productId = productId.toLong(),
                                         shopId = shopId.toInt(),
                                         quantity = quantity,
                                         notes = notes
@@ -79,42 +77,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
-            addToCartGqlResponse.addToCartResponse.let {
-                val errorReporter = ErrorReporterModel()
-                errorReporter.eligible = it.errorReporter.eligible
-
-                val errorReporterTextModel = ErrorReporterTextModel()
-                errorReporterTextModel.submitTitle = it.errorReporter.texts.submitTitle
-                errorReporterTextModel.submitDescription = it.errorReporter.texts.submitDescription
-                errorReporterTextModel.submitButton = it.errorReporter.texts.submitButton
-                errorReporterTextModel.cancelButton = it.errorReporter.texts.cancelButton
-                errorReporter.texts = errorReporterTextModel
-
-                val dataModel = DataModel()
-                dataModel.success = it.data.success
-                dataModel.cartId = it.data.cartId
-                dataModel.productId = it.data.productId
-                dataModel.quantity = it.data.quantity
-                dataModel.notes = it.data.notes
-                dataModel.shopId = it.data.shopId
-                dataModel.customerId = it.data.customerId
-                dataModel.warehouseId = it.data.warehouseId
-                dataModel.trackerAttribution = it.data.trackerAttribution
-                dataModel.trackerListName = it.data.trackerListName
-                dataModel.ucUtParam = it.data.ucUtParam
-                dataModel.isTradeIn = it.data.isTradeIn
-                dataModel.message = it.data.message
-
-                val addToCartDataModel = AddToCartDataModel()
-                addToCartDataModel.status = it.status
-                addToCartDataModel.errorMessage = it.errorMessage
-                addToCartDataModel.data = dataModel
-                addToCartDataModel.errorReporter = errorReporter
-                addToCartDataModel.responseJson = Gson().toJson(addToCartGqlResponse)
-
-                addToCartDataModel
-            }
-
+            addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
         }
 
     }

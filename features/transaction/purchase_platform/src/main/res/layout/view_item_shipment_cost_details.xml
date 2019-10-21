@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_shipment_cost"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/item_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/checkout_module_color_background" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shop_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_divider"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:text="@string/label_shop_summary"
+        android:textColor="@color/text_black"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_item_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_shop_summary"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Total Harga (1 Barang)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_shop_summary"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_toEndOf="@+id/tv_total_item_label"
+        android:layout_toRightOf="@+id/tv_total_item_label"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="RelativeOverlap"
+        tools:text="Rp1.400.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_booking_fee_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_total_item_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/booking_fee_label"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_booking_fee_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_total_item_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_fee_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_booking_fee_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Ongkos Kirim (1kg)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_booking_fee_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="-" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_insurance_fee_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_shipping_fee_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/checkout_module_label_asuransi"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_insurance_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_shipping_fee_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="-" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_macro_insurance_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/checkout_module_label_macro_insurance"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="-" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_macro_insurance_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp22.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_trade_in_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_macro_insurance_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/checkout_module_label_trade_in"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_trade_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_macro_insurance_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp10.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_purchase_protection_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_trade_in_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Proteksi Produk (3 Barang)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_purchase_protection_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_trade_in_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="-" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seller_cost_addition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_purchase_protection_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="Biaya Tambahan Penjual"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seller_cost_addition_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_purchase_protection_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_promo_or_coupon_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_seller_cost_addition"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_promo"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_seller_cost_addition_fee"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/price_label"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_donation_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_promo_or_coupon_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_donation"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_donation_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_promo"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_emas_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_donation_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_emas"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_emas_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_donation_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_order_prioritas_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_emas_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/order_prioritas_label"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_order_prioritas_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_emas_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_discount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_order_prioritas_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText"
+        tools:text="Total Diskon"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_discount_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_order_prioritas_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_discount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_discount_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText"
+        tools:text="Potongan Ongkos Kirim"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_discount_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_discount_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_discount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_shipping_discount_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText"
+        tools:text="Diskon Barang"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_discount_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_shipping_discount_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000"
+        tools:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/rl_total_cashback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_product_discount_price">
+
+        <View
+            android:id="@+id/item_shipment_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:background="@color/checkout_module_color_background" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_cashback_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_shipment_divider"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:text="Total Cashback"
+            android:textColor="@color/text_black"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:ignore="HardcodedText" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_cashback_amount"
+            style="@style/TextMidMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_shipment_divider"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_toStartOf="@+id/iv_total_info"
+            android:layout_toLeftOf="@+id/iv_total_info"
+            android:gravity="end"
+            android:textColor="@color/total_benefit"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp100.000" />
+
+        <ImageView
+            android:id="@+id/iv_total_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_shipment_divider"
+            android:layout_alignTop="@+id/tv_total_cashback_label"
+            android:layout_alignBottom="@+id/tv_total_cashback_label"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_coupon_info" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

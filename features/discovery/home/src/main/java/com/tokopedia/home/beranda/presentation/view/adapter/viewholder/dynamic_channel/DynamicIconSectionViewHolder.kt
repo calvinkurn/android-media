@@ -19,7 +19,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.DynamicIconDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -50,7 +50,7 @@ class DynamicIconSectionViewHolder(val view: View,
         val width = size.x
 
         if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(DynamicIconDecoration(
+            recyclerView.addItemDecoration(CarouselDecoration(
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16),
                     width,
                     5,
@@ -103,8 +103,7 @@ class DynamicIconSectionViewHolder(val view: View,
         }
 
         private fun eventClickDynamicIcon(context: Context, homeIconItem: HomeIconItem, position: Int) {
-            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context,
-                    homeIconItem.getEnhanceClickDynamicIconHomePage(position))
+            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context, homeIconItem, position);
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.title, position + 1, homeIconItem.applink)

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 public class FlightSelectPassengerValidator {
     private static final int MAX_PASSENGER_VALUE = 7;
+    private static final int MAX_INFANT_VALUE = 4;
 
     @Inject
     public FlightSelectPassengerValidator() {
@@ -31,6 +32,10 @@ public class FlightSelectPassengerValidator {
     public boolean validateTotalPassenger(int adult, int children) {
         int total = adult + children;
         return total <= MAX_PASSENGER_VALUE;
+    }
+
+    public boolean validateInfantMoreThanFour(int infant) {
+        return infant <= MAX_INFANT_VALUE;
     }
 
     public boolean validateInfantNotGreaterThanAdult(int adult, int infant) {
