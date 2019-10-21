@@ -39,8 +39,8 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
             public NotificationModel call(NotificationModel notificationModel, TopChatNotificationModel chatNotificationModel) {
                 NotificationData data = notificationModel.getNotificationData();
                 data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
-                        chatNotificationModel.getNotifUnreads());
-                data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreads());
+                        chatNotificationModel.getNotifUnreadsSeller());
+                data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreadsSeller());
                 notificationModel.setNotificationData(
                         data
                 );
