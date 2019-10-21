@@ -400,13 +400,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
-        if (url.endsWith(".pl")) {
-            return false;
-        }
-        if (url.contains(DeepLinkChecker.WEB_HOST) || url.contains(DeepLinkChecker.MOBILE_HOST)) {
-            return DeepLinkChecker.moveToNativePageFromWebView(getActivity(), url);
-        }
-        return false;
+        return DeepLinkChecker.moveToNativePageFromWebView(getActivity(), url);
     }
 
     protected void onLoadFinished() {

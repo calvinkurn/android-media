@@ -130,6 +130,12 @@ object DeepLinkChecker {
      */
     @JvmStatic
     fun moveToNativePageFromWebView(activity: Activity, url: String): Boolean {
+        if (url.endsWith(".pl")) {
+            return false
+        }
+        if (!url.contains(WEB_HOST) && !url.contains(MOBILE_HOST)) {
+            return false
+        }
         val deeplinkType = getDeepLinkType(activity, url)
         when (deeplinkType) {
             HOME -> {
@@ -232,13 +238,13 @@ object DeepLinkChecker {
         val bundle = Bundle()
 
         val departmentId = uriData.getQueryParameter("sc")
-        val searchQuery = uriData.getQueryParameter("q")
-
         bundle.putBoolean("IS_DEEP_LINK_SEARCH", true)
-
         val intent: Intent
         if (departmentId.isNullOrEmpty()) {
-            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId))
+            intent = RouteManager.getIntent(context, constructSearchApplink(uriData))
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtras(bundle)
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
@@ -246,16 +252,15 @@ object DeepLinkChecker {
         context.startActivity(intent)
     }
 
-    private fun constructSearchApplink(query: String?, departmentId: String?): String {
-        val applink = if (query.isNullOrEmpty())
+    private fun constructSearchApplink(uriData: Uri): String {
+        val q = uriData.getQueryParameter("q")
+
+        val applink = if (TextUtils.isEmpty(q))
             ApplinkConstInternalDiscovery.AUTOCOMPLETE
         else
             ApplinkConstInternalDiscovery.SEARCH_RESULT
 
-        return (applink
-            + "?"
-            + "q=" + query
-            + "&sc=" + departmentId)
+        return applink + "?" + uriData.query
     }
 
     private fun getIntentByClassName(context: Context, className: String): Intent {
