@@ -350,26 +350,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onSearchSubmitted(text: String) {
         ProductManageTracking.eventProductManageSearch()
-        isLoadingInitialData = true
-        val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
-
-        if (productManageViewModels.isNotEmpty()) {
-            val textLowerCase = text.toLowerCase()
-
-            for (data in productManageViewModels) {
-                if (data.productName.toLowerCase().contains(textLowerCase)) {
-                    tempShopEtalaseViewModels.add(data)
-                }
-            }
-        }
-
-        if (tempShopEtalaseViewModels.size == 0) {
-            containerChechBoxBulk.visibility = View.GONE
-        } else {
-            containerChechBoxBulk.visibility = View.VISIBLE
-        }
-
-        renderList(tempShopEtalaseViewModels, false)
+        loadInitialData()
     }
 
     override fun onSearchTextChanged(text: String?) {
