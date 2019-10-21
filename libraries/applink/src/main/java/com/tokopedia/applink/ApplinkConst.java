@@ -232,6 +232,7 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String KYC = "tokopedia://kyc?projectId={projectId}";
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
