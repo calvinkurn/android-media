@@ -46,7 +46,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
         title.setText(element.getTitle());
         subtitle.setText(element.getDescription());
 
-        ImageHandler.loadImage2(image, element.getImage(), com.tokopedia.abstraction.R.drawable.loading_page);
+        ImageHandler.loadImage2(image, element.getImage(), com.tokopedia.design.R.drawable.loading_page);
         ImageHandler.loadImageCircle2(profile.getContext(), profile, element.getAdminPicture(), R
                 .drawable.loading_page);
 
