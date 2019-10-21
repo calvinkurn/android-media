@@ -63,6 +63,7 @@ ext {
             youtubeutil             : ":libraries:youtubeutil",
 
             tkpdabstraction         : ":tkpdabstraction",
-            tkpddesign              : ":tkpddesign"
+            tkpddesign              : ":tkpddesign",
+            translator              : ":libraries:translator"
     ]
 }

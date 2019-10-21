@@ -42,7 +42,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    debugImplementation project (":libraries:translator")
+    debugImplementation project(rootProject.ext.libraries.translator)
 }
 
 project.ext {
