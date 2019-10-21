@@ -63,7 +63,7 @@ public interface HomeContract {
 
         void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
 
-        void showRecomendationButton();
+        void configureRecommendationButton(boolean isShow);
 
         Observable<TokopointHomeDrawerData> getTokopoint();
 

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
@@ -20,6 +21,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
@@ -87,6 +89,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetPendingCasbackUseCase getPendingCasbackUseCase;
 
     @Inject
+    HomeMapper homeMapper;
+
+    @Inject
     Lazy<GetHomeTokopointsDataUseCase> getHomeTokopointsDataUseCaseLazy;
 
     @Inject
@@ -129,6 +134,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @NonNull
     private Observable<List<HomeVisitable>> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .map(homeMapper)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -184,6 +190,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(homeMapper)
                 .subscribe(new Subscriber<List<HomeVisitable>>() {
                     @Override
                     public void onCompleted() {
@@ -214,12 +221,14 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .doOnNext(visitables ->
+                .doOnNext(homeViewModel ->
                 {
+                    getView().configureRecommendationButton(homeViewModel.getHomeData().getHomeFlag().getHasRecomNavButton());
                     HomeDataSubscriber homeNetworkSubscriber = createHomeDataSubscriber();
                     homeNetworkSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
                     compositeSubscription.add(getDataFromNetwork().subscribe(homeNetworkSubscriber));
                 })
+                .map(homeMapper)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(throwable -> {
                     homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
@@ -459,9 +468,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 if (homePresenter != null && homePresenter.isViewAttached()) {
                     homePresenter.getView().setItems(new ArrayList<>(visitables), repositoryFlag);
                     homePresenter.getView().addImpressionToTrackingQueue(visitables);
-                    if (visitables.size() > 0) {
-                        homePresenter.getView().showRecomendationButton();
-                    }
                     if (homePresenter.isDataValid(visitables)) {
                         homePresenter.getView().removeNetworkError();
                     } else {
@@ -473,7 +479,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 onError(new Throwable());
             }
         }
-
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
