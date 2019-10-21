@@ -335,6 +335,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun renderList(list: MutableList<ProductManageViewModel>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
         /**
          * Keep checklist after user search or filter
          */
@@ -590,7 +595,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
     }
 
-    override fun onErrorBulkUpdateProduct(e: Throwable?) {
+    override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
                 //No OP
@@ -748,7 +753,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
-        context?.let{
+        context?.let {
             val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
                     .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
                     .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.itemId)
