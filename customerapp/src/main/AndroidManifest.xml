@@ -286,10 +286,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
-        <activity
-            android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
             android:launchMode="singleTop"
             android:theme="@style/DialogTheme"/>
