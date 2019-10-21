@@ -277,7 +277,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     companion object {
-        val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
+        val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val PAGE_TRACKING = "PAGE_TRACKING"
     }
