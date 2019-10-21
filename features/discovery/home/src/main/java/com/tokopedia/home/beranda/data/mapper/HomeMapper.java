@@ -91,7 +91,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(
                         homeData.getDynamicHomeIcon().getDynamicIcon(),
-                        homeData.getDynamicHomeIcon().getEnhanceImpressionDynamicIconHomePage(),
                         homeData.isCache()
                 ));
             }
@@ -304,23 +303,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 hasTokopoints, isCache);
     }
 
-    private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
-        UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
-        for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
-        }
-        return viewModel;
-    }
-
     private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
-                                                Map<String, Object> trackingData,
                                                 boolean isCache) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl(), icon.getBu_identifier()));
         }
         if (!isCache) {
-            viewModelDynamicIcon.setTrackingData(trackingData);
+            viewModelDynamicIcon.setTrackingData(
+                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.getItemList())
+            );
             viewModelDynamicIcon.setTrackingCombined(false);
         }
         return viewModelDynamicIcon;

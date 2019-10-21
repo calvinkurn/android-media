@@ -127,6 +127,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
+    private LinearLayout promoContainer;
     private boolean isPassengerInfoPageNeedToRefresh = false;
     private boolean isCouponVoucherChanged = false;
 
@@ -197,6 +198,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         promoTicker = (TickerCheckoutView) view.findViewById(R.id.flight_promo_ticker_view);
+        promoContainer = (LinearLayout) view.findViewById(R.id.flight_promo_ticker_container);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         tickerView = view.findViewById(R.id.flight_ticker_view);
 
@@ -736,12 +738,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void showVoucherContainer() {
-        promoTicker.setVisibility(View.VISIBLE);
+        promoContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideVoucherContainer() {
-        promoTicker.setVisibility(View.GONE);
+        promoContainer.setVisibility(View.GONE);
     }
 
     @Override

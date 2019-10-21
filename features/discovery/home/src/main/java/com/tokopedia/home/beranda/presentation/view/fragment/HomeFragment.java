@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -99,8 +100,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
@@ -145,6 +144,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
+    private static final String SOURCE_ACCOUNT = "account";
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -469,6 +469,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
+                /**
+                 * set notification gimmick
+                 */
+                homeMainToolbar.setNotificationNumber(0);
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -592,6 +596,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void onGoToLogin() {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT);
         Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
@@ -1185,23 +1190,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     /**
-     * Tokocash & Tokopoint
+     * Tokopoint
      */
-    @Override
-    public Observable<HomeHeaderWalletAction> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
-            return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
-        }
-        return null;
-    }
-
-    @Override
-    public Observable<PendingCashback> getTokocashPendingCashback() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
-            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
-        }
-        return null;
-    }
 
     @Override
     public Observable<TokopointHomeDrawerData> getTokopoint() {
