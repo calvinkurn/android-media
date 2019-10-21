@@ -122,6 +122,8 @@ public class OrderDetailButtonLayout extends LinearLayout{
                 data,
                 presenter,
                 context);
+        if (data.isFreeShipping()) confirmShipping.setVisibility(View.GONE);
+        else confirmShipping.setVisibility(View.VISIBLE);
 
         Button requestPickup;
         requestPickup = mainView.findViewById(R.id.request_pickup);

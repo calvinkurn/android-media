@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.commonWallet)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.resourcesCommon)
