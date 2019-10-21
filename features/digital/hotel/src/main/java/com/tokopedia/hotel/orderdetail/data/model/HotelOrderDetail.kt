@@ -2,7 +2,6 @@ package com.tokopedia.hotel.orderdetail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 
 /**
  * @author by jessica on 09/05/19
