@@ -3,11 +3,13 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.lottie.LottieAnimationView
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -19,8 +21,11 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageRevi
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import kotlinx.android.synthetic.main.fragment_create_review.*
+import java.util.*
+
 
 class CreateReviewFragment : BaseDaggerFragment() {
+
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
@@ -33,11 +38,35 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
     private var selectedImage: ArrayList<String> = arrayListOf()
-    private var isImageAdded : Boolean = false
+    private var listOfLottie: List<Pair<Boolean, LottieAnimationView>> = listOf()
+    private var isImageAdded: Boolean = false
+    private var handle = Handler()
+    private var count = 0
+    private var lastReview = 0
+    private var reviewClickAt = 0
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count <= 4) {
+                if (count > reviewClickAt && count <= lastReview) {
+                    listOfLottie[count].second.reverseAnimationSpeed()
+                    listOfLottie[count].second.playAnimation()
+                }
+
+                count++
+                handle.postDelayed(this, 100)
+            } else {
+                lastReview = reviewClickAt
+                count = 0
+                handle.removeCallbacks(this)
+            }
+        }
+
+    }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,6 +78,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         stepper_review.max = 3F
         stepper_review.progress = 1F
+
+        listOfLottie = listOf(Pair(false, lottie_star_1), Pair(false, lottie_star_2), Pair(false, lottie_star_3), Pair(false, lottie_star_4), Pair(false, lottie_star_5))
+        listOfLottie.forEachIndexed { index, pair ->
+            pair.second.setOnClickListener {
+                reviewClickAt = index
+                handle.post(runnable)
+            }
+        }
 
         edit_text_review.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -100,7 +137,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
 
                     if (selectedImage.isNotEmpty()) {
-                        if(!isImageAdded) {
+                        if (!isImageAdded) {
                             isImageAdded = true
                             stepper_review.progress = stepper_review.progress + 1F
                         }
@@ -111,7 +148,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
 
     private fun initImageData() {
         imageData.clear()
