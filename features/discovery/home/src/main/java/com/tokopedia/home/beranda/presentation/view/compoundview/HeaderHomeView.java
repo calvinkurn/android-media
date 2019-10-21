@@ -38,6 +38,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.home.R;
@@ -46,7 +47,6 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -82,7 +82,7 @@ public class HeaderHomeView extends BaseCustomView {
     private AppCompatImageView ivLogoTokoPoint;
     private ProgressBar tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
-    private WalletAnalytics walletAnalytics;
+    private CommonWalletAnalytics walletAnalytics;
     private TextView mTextCouponCount;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
@@ -108,7 +108,7 @@ public class HeaderHomeView extends BaseCustomView {
         if (listener == null)
             return;
 
-        walletAnalytics = new WalletAnalytics();
+        walletAnalytics = new CommonWalletAnalytics();
 
         if (headerViewModel.isUserLogin()) {
             render();
