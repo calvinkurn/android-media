@@ -291,14 +291,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    fun displayProduct(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-        this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
-        this.isGoldMerchant = shopInfo.goldOS.isGold == 1
-        this.shopId = shopInfo.shopCore.shopID
-        loadInitialData()
-    }
-
     fun setShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
