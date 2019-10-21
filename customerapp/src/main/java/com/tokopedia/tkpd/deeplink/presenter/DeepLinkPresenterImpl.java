@@ -742,11 +742,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return applink + "?" + uriData.getQuery();
     }
 
-
-    private boolean isHotLink(List<String> linkSegment) {
-        return (linkSegment.size() == 2);
-    }
-
     private void openReferralScreen(Uri uriData) {
         context.startActivity(ReferralActivity.getCallingIntent(context));
     }
