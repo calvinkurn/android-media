@@ -26,42 +26,42 @@ class RecommendationItemViewHolder (
     }
 
     override fun bind(recommendationItemViewModel: RecommendationItemViewModel) {
-        productCardViewHintListener?.apply {
-            val recommendationItem = recommendationItemViewModel.recommendationItem
-            setProductModel(
-                    ProductCardModel(
-                            slashedPrice = recommendationItem.slashedPrice,
-                            productName = recommendationItem.name,
-                            formattedPrice = recommendationItem.price,
-                            productImageUrl = recommendationItem.imageUrl,
-                            isTopAds = recommendationItem.isTopAds,
-                            discountPercentage = recommendationItem.discountPercentage.toString(),
-                            reviewCount = recommendationItem.countReview,
-                            ratingCount = recommendationItem.rating,
-                            shopLocation = recommendationItem.location,
-                            isWishlistVisible = true,
-                            isWishlisted = recommendationItem.isWishlist,
-                            shopBadgeList = recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = recommendationItem.isFreeOngkirActive,
-                                    imageUrl = recommendationItem.freeOngkirImageUrl
-                            )
-                    )
+        val view = productCardViewHintListener ?: return
+        val recommendationItem = recommendationItemViewModel.recommendationItem
+        view.setProductModel(
+            ProductCardModel(
+                slashedPrice = recommendationItem.slashedPrice,
+                productName = recommendationItem.name,
+                formattedPrice = recommendationItem.price,
+                productImageUrl = recommendationItem.imageUrl,
+                isTopAds = recommendationItem.isTopAds,
+                discountPercentage = recommendationItem.discountPercentage.toString(),
+                reviewCount = recommendationItem.countReview,
+                ratingCount = recommendationItem.rating,
+                shopLocation = recommendationItem.location,
+                isWishlistVisible = true,
+                isWishlisted = recommendationItem.isWishlist,
+                shopBadgeList = recommendationItem.badgesUrl.map {
+                    ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                },
+                freeOngkir = ProductCardModel.FreeOngkir(
+                    isActive = recommendationItem.isFreeOngkirActive,
+                    imageUrl = recommendationItem.freeOngkirImageUrl
+                )
             )
-            setButtonWishlistOnClickListener {
-                listener.onWishlistClick(recommendationItem, recommendationItem.isWishlist){ success, throwable ->
-                    /** do nothing **/
+        )
+        view.setButtonWishlistOnClickListener {
+            listener.onWishlistClick(recommendationItem, recommendationItem.isWishlist, object: (Boolean, Throwable?) -> Unit {
+                override fun invoke(p1: Boolean, p2: Throwable?) {
+
                 }
-            }
-
-            setOnClickListener {
-                listener.onProductClick(recommendationItem, "", adapterPosition)
-            }
-
-            setImageProductViewHintListener(recommendationItemViewModel, createImageProductViewHintListener(recommendationItemViewModel))
+            })
         }
+
+        view.setOnClickListener {
+            listener.onProductClick(recommendationItem, "", adapterPosition)
+        }
+        view.setImageProductViewHintListener(recommendationItemViewModel, createImageProductViewHintListener(recommendationItemViewModel))
     }
 
     private fun createImageProductViewHintListener(recommendationItemViewModel: RecommendationItemViewModel): ViewHintListener {

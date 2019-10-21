@@ -94,4 +94,9 @@
     <string name="inbox">Inbox</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
+
+    <!--Ovo Wallet-->
+    <string name="wallet_title">Ovo</string>
+    <string name="wallet_title_header_ovo">TokoCash to OVO</string>
+    <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
 </resources>
