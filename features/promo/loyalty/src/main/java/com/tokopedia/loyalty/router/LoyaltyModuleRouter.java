@@ -8,8 +8,6 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.List;
-
 import rx.Observable;
 
 public interface LoyaltyModuleRouter {
@@ -21,10 +19,6 @@ public interface LoyaltyModuleRouter {
     Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
 
     Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams);
-
-    void trainSendTrackingOnClickUseVoucherCode(String voucherCode);
-
-    void trainSendTrackingOnCheckVoucherCodeError(String errorMessage);
 
     void sharePromoLoyalty(Activity activity, PromoData promoData);
 

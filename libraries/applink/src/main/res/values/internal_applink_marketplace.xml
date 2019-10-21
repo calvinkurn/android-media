@@ -31,7 +31,7 @@
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
-    <string name="path_qr_scanner" translatable="false">/qr-scanner</string>
+    <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
 
@@ -50,6 +50,7 @@
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
+    <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
 
