@@ -48,7 +48,7 @@ internal infix fun Collection<Any>?.shouldHaveSize(expectedSize: Int) {
     }
 }
 
-internal infix fun Collection<Any>?.shouldContain(expectedValue: Any) {
+internal infix fun <T> Collection<T>?.shouldContain(expectedValue: T) {
     if (this == null) {
         throw AssertionError("Collection is null")
     }

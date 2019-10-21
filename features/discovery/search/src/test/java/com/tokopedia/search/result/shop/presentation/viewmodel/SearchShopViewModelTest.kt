@@ -1618,7 +1618,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(selectedFilterOptionUniqueId)
             }
 
             Then("Search Parameter should not contain the selected filter anymore") {
@@ -1670,7 +1670,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(null)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(null)
             }
 
             Then("Search Parameter should not change") {
@@ -1715,7 +1715,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(selectedFilterOptionUniqueId)
             }
 
             Then("Search Parameter should only contain the remaining location filter (${SearchApiConst.FCITY} = 2,3)") {
@@ -1776,7 +1776,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(selectedFilterOptionUniqueId)
             }
 
             Then("Search Parameter should not contain any category filter anymore") {
@@ -1834,7 +1834,7 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(selectedFilterOptionUniqueId)
             }
 
             Then("Search Parameter should not contain any price filter") {
@@ -1858,7 +1858,7 @@ internal class SearchShopViewModelTest : Spek({
             }
         }
 
-        Scenario("Remove selected filter but search shop is not empty search (Should not happen in real case)") {
+        Scenario("Remove selected filter but search shop is not empty search") {
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
             val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val selectedFilterOptionUniqueId = OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, "true", "Official Store")
@@ -1870,8 +1870,11 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopViewModel = createSearchShopViewModel()
             }
 
-            Given("search shop and dynamic filter API call will be successful and return data") {
+            Given("search shop API will be successful and return data") {
                 searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+            }
+
+            Given("dynamic filter API call will be successful and return data") {
                 getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
@@ -1884,14 +1887,88 @@ internal class SearchShopViewModelTest : Spek({
             }
 
             When("handle remove selected filter") {
-                searchShopViewModel.onViewRemoveSelectedFilter(selectedFilterOptionUniqueId)
+                searchShopViewModel.onViewRemoveSelectedFilterAfterEmptySearch(selectedFilterOptionUniqueId)
             }
 
-            Then("Search Parameter should not change") {
+            Then("Search Parameter should not change. Remove selected filter only applicable during empty search") {
                 val searchParameter = searchShopViewModel.getSearchParameter()
 
                 searchParameter shouldBe initialSearchParameter
             }
         }
     }
+
+    Feature("Handle View Get Active Filter as List of Option After Empty Search") {
+        createTestInstance()
+
+        Scenario("Get active filter as option list") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            lateinit var activeFilterOptionList: List<Option>
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("search shop API will be successful and return empty search shop list") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
+            }
+
+            Given("dynamic filter API call will be successful and return data") {
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
+            When("get active filter as option list") {
+                activeFilterOptionList = searchShopViewModel.getActiveFilterOptionListForEmptySearch()
+            }
+
+            Then("Active Filter Option List should be generated by comparing search parameter map and filter list from API") {
+                val expectedActiveFilterOptionList = mutableListOf<Option>().also {
+                    it.add(officialOption)
+                }
+
+                activeFilterOptionList shouldHaveSize expectedActiveFilterOptionList.size
+                expectedActiveFilterOptionList.forEach { expectedOption ->
+                    activeFilterOptionList shouldContain expectedOption
+                }
+            }
+        }
+
+        Scenario("Get active filter as option list but search shop is not empty search") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            lateinit var activeFilterOptionList: List<Option>
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("search shop API will be successful and return data") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
+            }
+
+            Given("dynamic filter API call will be successful and return data") {
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+            }
+
+            Given("view get search shop first page and get dynamic filter successfully") {
+                searchShopViewModel.onViewVisibilityChanged(isViewAdded = true, isViewVisible = true)
+            }
+
+            When("get active filter as option list") {
+                activeFilterOptionList = searchShopViewModel.getActiveFilterOptionListForEmptySearch()
+            }
+
+            Then("Active Filter Option List should be empty. Get Active Filter as Option List only applicable during empty search") {
+                activeFilterOptionList.size shouldBe 0
+            }
+        }
+    }
 })
+

@@ -524,7 +524,7 @@ internal class SearchShopViewModel(
         searchParameter.putAll(queryParameters)
     }
 
-    fun onViewRemoveSelectedFilter(uniqueId: String?) {
+    fun onViewRemoveSelectedFilterAfterEmptySearch(uniqueId: String?) {
         if (uniqueId == null) return
         if (!isEmptySearchShop) return
 
@@ -556,7 +556,7 @@ internal class SearchShopViewModel(
 
     fun getSearchParameter() = searchParameter.toMap()
 
-    fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
+    fun getSearchParameterQuery() : String = (searchParameter[SearchApiConst.Q] ?: "").toString()
 
     fun getSearchShopLiveData(): LiveData<State<List<Visitable<*>>>> {
         return searchShopLiveData
@@ -574,7 +574,7 @@ internal class SearchShopViewModel(
         return openFilterPageEventLiveData
     }
 
-    fun getActiveFilterOptionList(): List<Option> {
+    fun getActiveFilterOptionListForEmptySearch(): List<Option> {
         return filterController.getActiveFilterOptionList()
     }
 
@@ -586,16 +586,11 @@ internal class SearchShopViewModel(
         return productPreviewImpressionTrackingEventLiveData
     }
 
-    fun getActiveFilterMap(): Map<String, String> {
+    fun getActiveFilterMapForEmptySearchTracking(): Map<String, String> {
         return filterController.getActiveFilterMap()
     }
 
     fun getEmptySearchTrackingEventLiveData(): LiveData<Event<Boolean>> {
         return emptySearchTrackingEventLiveData
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        clear()
     }
 }

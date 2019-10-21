@@ -264,20 +264,20 @@ internal class ShopListFragment:
     }
 
     private fun trackEventShopItemImpression(trackingObjectList: List<Any>) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackImpressionSearchResultShop(trackingObjectList, keyword)
     }
 
     private fun trackEventProductPreviewImpression(trackingObjectList: List<Any>) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
+        val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.eventImpressionSearchResultShopProductPreview(trackingObjectList, keyword)
     }
 
     private fun trackEventEmptySearch(isTrackEmptySearch: Boolean) {
         if (isTrackEmptySearch) {
             activity?.let { activity ->
-                val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-                val selectedFilterMap = searchShopViewModel?.getActiveFilterMap() ?: mapOf()
+                val keyword = searchShopViewModel?.getSearchParameterQuery()
+                val selectedFilterMap = searchShopViewModel?.getActiveFilterMapForEmptySearchTracking() ?: mapOf()
                 SearchTracking.eventSearchNoResult(activity, keyword, screenName, selectedFilterMap)
             }
         }
@@ -405,7 +405,7 @@ internal class ShopListFragment:
     }
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
-        searchShopViewModel?.onViewRemoveSelectedFilter(uniqueId)
+        searchShopViewModel?.onViewRemoveSelectedFilterAfterEmptySearch(uniqueId)
     }
 
     override fun getRegistrationId(): String {
@@ -417,12 +417,12 @@ internal class ShopListFragment:
     }
 
     override fun getSelectedFilterAsOptionList(): MutableList<Option> {
-        return searchShopViewModel?.let {
-            OptionHelper.combinePriceFilterIfExists(
-                    it.getActiveFilterOptionList(),
+        val activeFilterOptionList = searchShopViewModel?.getActiveFilterOptionListForEmptySearch() ?: return mutableListOf()
+
+        return OptionHelper.combinePriceFilterIfExists(
+                    activeFilterOptionList,
                     resources.getString(R.string.empty_state_selected_filter_price_name)
             )
-        } ?: mutableListOf()
     }
 
     fun backToTop() {
