@@ -11,21 +11,33 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicCh
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
+import rx.Subscriber
 import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase,
         private val getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase,
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val getRecommendationUseCase: GetOfficialStoreRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
@@ -48,6 +60,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         _officialStoreProductRecommendation
     }
 
+    val topAdsWishlistResult: LiveData<Result<WishlistModel>> by lazy {
+        _topAdsWishlistResult
+    }
+
+    val wishlistResult: LiveData<Result<WishlistModel>> by lazy {
+        _wishlistResult
+    }
+
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
     }
@@ -62,6 +82,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private val _officialStoreProductRecommendation by lazy {
         MutableLiveData<Result<RecommendationWidget>>()
+    }
+
+    private val _topAdsWishlistResult by lazy {
+        MutableLiveData<Result<WishlistModel>>()
+    }
+
+    private val _wishlistResult by lazy {
+        MutableLiveData<Result<WishlistModel>>()
     }
 
     fun loadFirstData(category: Category?, page: Int) {
@@ -154,9 +182,67 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun addWishlist() {}
+    private fun addTopAdsWishlist(model: RecommendationItem): Deferred<WishlistModel> {
+        val params = RequestParams.create()
+        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
 
-    fun removeWishlist() {}
+        return async(Dispatchers.IO) {
+            var wishlistResponse = WishlistModel()
+
+            try {
+                val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
+                dataTopAdsWishlist.first().let {
+                    wishlistResponse = it
+                }
+            } catch (t: Throwable) {
+                _topAdsWishlistResult.value = Fail(t)
+            }
+            wishlistResponse
+        }
+    }
+
+    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+        if (model.isTopAds) {
+            launchCatchError (block = {
+                _topAdsWishlistResult.value = Success(addTopAdsWishlist(model).await())
+                callback.invoke(true, null)
+            }) {
+                callback.invoke(false, it)
+            }
+
+        } else {
+            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+
+                override fun onSuccessRemoveWishlist(productId: String?) { }
+
+            })
+        }
+    }
+
+    fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+
+            override fun onSuccessAddWishlist(productId: String?) { }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                callback.invoke(true, null)
+            }
+        })
+    }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
