@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.data.IS_COUPON_ACTIVE
+import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -127,8 +129,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
-        val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
-        val PROMO_CODE = "PROMO_CODE"
+        val EXTRA_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
+        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
@@ -137,8 +139,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                            promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
-            bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(PROMO_CODE, promoCode ?: "")
+            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)

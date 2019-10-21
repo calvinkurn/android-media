@@ -96,20 +96,18 @@ class AffiliateDashboardFragment :
         }
     }
 
-    private val coachMarkIncome: CoachMark by lazy {
-        with(CoachMarkBuilder()) {
-            allowNextButton(false)
-        }.build()
+    private val coachMarkAffIncome: CoachMark by lazy {
+        CoachMarkBuilder()
+                .allowPreviousButton(false)
+                .build()
+    }
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
     }
 
     private val coachMarkIncomeItem: CoachMarkItem by lazy {
         CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
-    }
-
-    private val coachMarkFirstTimeUser: CoachMark by lazy {
-        CoachMarkBuilder()
-                .allowNextButton(false)
-                .build()
     }
 
     private val coachMarkCuratedTrafficItem: CoachMarkItem by lazy {
@@ -335,14 +333,13 @@ class AffiliateDashboardFragment :
 
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
-        val maxDate = getMaxDate()
-        val calendarPickerView = pickerView?.init(getMinDate(), maxDate, holidayList)
+        val calendarPickerView = pickerView?.init(getMinDate(), getMaxDate(), holidayList)
                 ?.inMode(CalendarPickerView.SelectionMode.RANGE)
         pickerView?.setOnDateSelectedListener(getOnSelectedDateListener())
 
         startDate?.let { startDate ->
             endDate?.let { endDate ->
-                if (startDate != null && endDate != null) calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
+                calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
             }
         }
     }
@@ -355,8 +352,7 @@ class AffiliateDashboardFragment :
 
     private fun getMaxDate(): Date {
         val maxTime = Calendar.getInstance(Locale.getDefault())
-        maxTime.set(Calendar.DAY_OF_MONTH, maxTime.getActualMaximum(Calendar.DAY_OF_MONTH))
-        maxTime.add(Calendar.MONTH, 1)
+        maxTime.add(Calendar.DAY_OF_MONTH, 1)
         maxTime.set(Calendar.HOUR_OF_DAY, 0)
         maxTime.set(Calendar.MINUTE, 0)
         maxTime.set(Calendar.SECOND, 0)
@@ -421,13 +417,13 @@ class AffiliateDashboardFragment :
         esShareNow.gone()
 
         if (affiliatePrefs.isFirstTimeOpenDashboard(userSession.userId)) {
-            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
+            coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
             affiliatePrefs.setFirstTimeOpenDashboard(userSession.userId)
         }
     }
 
     private fun showTooltip() {
-        coachMarkIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
+        coachMarkAffIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
     }
 
     private fun showChangesAppliedToaster() {
