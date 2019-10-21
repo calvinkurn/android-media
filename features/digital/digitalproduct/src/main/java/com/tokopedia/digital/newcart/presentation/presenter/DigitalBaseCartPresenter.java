@@ -135,19 +135,21 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
         // Handle subscription params
         DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
-        String showSubscribePopUpParam = subParams.getShowSubscribePopUp();
-        if (showSubscribePopUpParam != null && !showSubscribePopUpParam.isEmpty()) {
-            Field field = new Field();
-            field.setName("show_subscribe_pop_up");
-            field.setValue(showSubscribePopUpParam);
-            fieldList.add(field);
-        }
-        String autoSubscribe = subParams.getAutoSubscribe();
-        if (autoSubscribe != null && !autoSubscribe.isEmpty()) {
-            Field field = new Field();
-            field.setName("auto_subscribe");
-            field.setValue(showSubscribePopUpParam);
-            fieldList.add(field);
+        if (subParams != null) {
+            String showSubscribePopUpParam = subParams.getShowSubscribePopUp();
+            if (showSubscribePopUpParam != null && !showSubscribePopUpParam.isEmpty()) {
+                Field field = new Field();
+                field.setName("show_subscribe_pop_up");
+                field.setValue(showSubscribePopUpParam);
+                fieldList.add(field);
+            }
+            String autoSubscribe = subParams.getAutoSubscribe();
+            if (autoSubscribe != null && !autoSubscribe.isEmpty()) {
+                Field field = new Field();
+                field.setName("auto_subscribe");
+                field.setValue(showSubscribePopUpParam);
+                fieldList.add(field);
+            }
         }
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
