@@ -132,7 +132,8 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
                     data.freeOngkirInformation?.imageUrl?:"",
                     labelPromo,
                     labelOffers,
-                    labelCredibility
+                    labelCredibility,
+                    data.shop?.isGold ?: false
             )
 
         }
