@@ -201,18 +201,24 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.SHOP)
         stickyLoginUseCase.execute(
-                onSuccess = {
-                    if (it.response.tickers.isNotEmpty()) {
-                        onSuccess.invoke(it.response.tickers[0])
-                    } else {
-                        onError?.invoke(Throwable(DATA_NOT_FOUND))
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            return@execute
+                        }
                     }
-                },
-                onError = {
-                    onError?.invoke(it)
+                    onError?.invoke(Throwable(""))
+                } else {
+                    onError?.invoke(Throwable(DATA_NOT_FOUND))
                 }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
         )
     }
 
@@ -222,6 +228,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()
         requestModerateShopUseCase.unsubscribe()
+        stickyLoginUseCase.cancelJobs()
     }
 
     companion object {

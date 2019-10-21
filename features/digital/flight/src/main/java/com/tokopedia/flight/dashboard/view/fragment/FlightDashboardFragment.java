@@ -52,11 +52,10 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
 
 import java.util.ArrayList;
@@ -481,12 +480,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
                                        String tagFragment) {
+        String minDateStr = null;
+        String selectedDateStr = null;
+        if (minDate != null) minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
+        if (selectedDate != null) selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
+
         SelectionRangeCalendarWidget flightCalendarDialog = SelectionRangeCalendarWidget.Companion.getInstance(
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
-                1, 360,
-                getString(R.string.flight_min_date_label),
-                getString(R.string.flight_max_date_label));
+                minDateStr, selectedDateStr,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR, SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED, getString(R.string.flight_min_date_label),
+                getString(R.string.flight_max_date_label), SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY, true);
+
         flightCalendarDialog.setListener((dateIn, dateOut) -> {
             Calendar calendarDepartureSelected = Calendar.getInstance();
             calendarDepartureSelected.setTime(dateIn);
@@ -611,13 +614,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
-            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
-                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        } else {
-            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
-                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        }
+        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override

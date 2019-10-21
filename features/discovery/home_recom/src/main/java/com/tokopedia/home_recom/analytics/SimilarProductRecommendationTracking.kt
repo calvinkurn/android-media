@@ -28,7 +28,7 @@ object SimilarProductRecommendationTracking {
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product recommendation - non login"
 
-    private const val IMPRESSION = "impression"
+    private const val IMPRESSION = "impressions"
     private const val CLICK = "click"
     private const val ECOMMERCE = "ecommerce"
     private const val CURRENCY_CODE = "currencyCode"
@@ -44,6 +44,7 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_PRODUCT_POSITION = "position"
     private const val FIELD_ACTION_FIELD = "actionField"
     private const val FIELD_ATTRIBUTE = "attribution"
+    private const val FIELD_DIMENSION_83 = "dimension83"
 
     private const val LIST_PRODUCT_RECOMMENDATION = "/similarrecommendation - rekomendasi untuk anda - %s - ref: %s%s"
     private const val LIST_PRODUCT_RECOMMENDATION_NON_LOGIN = "/similarrecommendation - non login - rekomendasi untuk anda - %s - ref: %s%s"
@@ -53,6 +54,7 @@ object SimilarProductRecommendationTracking {
     private const val VALUE_NONE_OTHER = "none / other"
     private const val VALUE_IDR = "IDR"
     private const val VALUE_EMPTY = ""
+    private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -75,24 +77,10 @@ object SimilarProductRecommendationTracking {
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                         FIELD_PRODUCT_LIST, list,
                         FIELD_PRODUCT_POSITION, position,
-                        FIELD_ATTRIBUTE, VALUE_EMPTY
+                        FIELD_ATTRIBUTE, VALUE_EMPTY,
+                        FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         )
-        )
-    }
-
-    private fun convertPrimaryProductToDataImpressionObject(item: RecommendationItem,
-                                                            list: String,
-                                                            position: String): Any {
-        return DataLayer.mapOf(
-                FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId,
-                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
-                FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                FIELD_PRODUCT_LIST, list,
-                FIELD_PRODUCT_POSITION, position
         )
     }
 
@@ -107,7 +95,8 @@ object SimilarProductRecommendationTracking {
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
-                FIELD_PRODUCT_POSITION, position
+                FIELD_PRODUCT_POSITION, position,
+                FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         )
     }
 

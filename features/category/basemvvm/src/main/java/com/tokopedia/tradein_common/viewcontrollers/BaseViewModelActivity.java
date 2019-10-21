@@ -71,7 +71,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.Companion.showError(this.findViewById(android.R.id.content),
+                    Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                             message,
                             Snackbar.LENGTH_LONG);
                 } catch (Exception e) {
@@ -83,7 +83,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                    Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                             message,
                             Snackbar.LENGTH_LONG, getButtonStringOnError(), (v) -> retryOnError());
                 } catch (Exception e) {
@@ -117,14 +117,14 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     public void showMessageWithAction(String message, String actionText, View.OnClickListener listener) {
-        Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_INDEFINITE, actionText, listener);
 
     }
 
     public void showMessage(String message) {
-        Toaster.Companion.showError(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG);
     }
@@ -133,13 +133,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         startActivityForResult(intent, requestCode);
     }
 
-    public void showProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
-    }
+    protected abstract void showProgressBar();
 
-    public void hideProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
-    }
+    protected abstract void hideProgressBar();
 
     @Override
     protected void setupStatusBar() {
@@ -232,14 +228,17 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
+        transaction.replace(getRootViewId(), fragment);
         transaction.commit();
     }
 
-    protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
+
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        accessDialog.setLayoutResId(resId);
         accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);

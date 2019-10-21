@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -34,7 +35,6 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
-import com.tokopedia.tokocash.tracker.WalletAnalytics
 import kotlin.math.roundToInt
 
 /**
@@ -57,7 +57,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
     }
 
-    private val walletAnalytics: WalletAnalytics = WalletAnalytics()
+    private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
 
     override fun bind(element: HeaderViewModel) {
         if (element.isUserLogin) renderLogin(element)
@@ -80,7 +80,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.LOGIN)
+            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
@@ -215,10 +215,12 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
+            tvBalanceTokoPoint.visibility = View.GONE
         } else if (element.tokopointsDrawerHomeData == null && !element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener(null)
             tokopointProgressBarLayout.visibility = View.VISIBLE
             tokopointActionContainer.visibility = View.GONE
+            tvBalanceTokoPoint.visibility = View.GONE
         } else {
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
