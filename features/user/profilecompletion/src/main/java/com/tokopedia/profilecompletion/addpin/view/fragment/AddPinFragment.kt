@@ -281,18 +281,15 @@ class AddPinFragment: BaseDaggerFragment(){
     }
 
     fun onBackPressedFromConfirm(): Boolean{
-        trackingPinUtil.trackClickBackButtonConfirmation()
         return if(isConfirmPin){
+            trackingPinUtil.trackClickBackButtonConfirmation()
             displayInitPin()
             trackingPinUtil.trackScreen(screenName)
             true
         }else{
+            trackingPinUtil.trackClickBackButtonInput()
             false
         }
-    }
-
-    fun onBackPressed(){
-        trackingPinUtil.trackClickBackButtonInput()
     }
 
     override fun onDestroy() {

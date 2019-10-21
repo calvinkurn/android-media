@@ -34,6 +34,8 @@ import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
@@ -232,25 +234,43 @@ class ChatListActivity : BaseTabActivity()
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
         debug(TAG, incomingChatWebSocketModel.toString())
-        val fragment: ChatListFragment? = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        val contactId = incomingChatWebSocketModel.getContactId()
+        val tag = incomingChatWebSocketModel.getTag()
+        val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
         fragment?.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
         debug(TAG, incomingTypingWebSocketModel.toString())
-        val fragment: ChatListFragment? = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        val contactId = incomingTypingWebSocketModel.getContactId()
+        val tag = incomingTypingWebSocketModel.getTag()
+        val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
         fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(tag: String?): ChatListFragment {
-        if (isBuyerOnly()) {
-            return fragmentAdapter.getItem(0) as ChatListFragment
-        }
-        return when (tag) {
-            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
-            else -> fragmentAdapter.getItem(1) as ChatListFragment
-        }
+    private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment? {
+        if (isBuyerOnly()) return getBuyerFragment()
+        if (isFromBuyer(fromUid, tag)) return getSellerFragment()
+        if (isFromSeller(fromUid, tag)) return getBuyerFragment()
+        return null
+    }
+
+    private fun isFromBuyer(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_BUYER && fromUid != userSession.userId)
+    }
+
+    private fun isFromSeller(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_SELLER && fromUid != userSession.userId)
+    }
+
+    private fun getBuyerFragment(): ChatListFragment {
+        val buyerPosition = if (isBuyerOnly()) 0 else 1
+        return fragmentAdapter.getItem(buyerPosition) as ChatListFragment
+    }
+
+    private fun getSellerFragment(): ChatListFragment {
+        return fragmentAdapter.getItem(0) as ChatListFragment
     }
 
     private fun isBuyerOnly(): Boolean {

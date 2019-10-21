@@ -14,6 +14,7 @@ import java.util.List;
 
 public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
+    private TickerViewModel tickerViewModel;
     private SuggestionViewModel suggestionViewModel;
     private List<Option> quickFilterList = new ArrayList<>();
     private GuidedSearchViewModel guidedSearch;
@@ -33,6 +34,14 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
     public void setCpmModel(CpmModel cpmModel) {
         this.cpmModel = cpmModel;
+    }
+
+    public TickerViewModel getTickerViewModel() {
+        return tickerViewModel;
+    }
+
+    public void setTickerViewModel(TickerViewModel tickerViewModel) {
+        this.tickerViewModel = tickerViewModel;
     }
 
     public void setSuggestionViewModel(SuggestionViewModel suggestionModel) {

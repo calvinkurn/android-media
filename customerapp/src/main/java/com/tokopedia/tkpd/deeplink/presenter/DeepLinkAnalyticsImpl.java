@@ -3,10 +3,13 @@ package com.tokopedia.tkpd.deeplink.presenter;
 import android.app.Activity;
 import android.net.Uri;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.track.TrackApp;
 
 
 /**
@@ -25,7 +28,12 @@ public class DeepLinkAnalyticsImpl implements DeepLinkAnalyticsPresenter {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(activity, campaign);
-        UnifyTracking.eventCampaign(activity, campaignUri);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUri
+        ).getEvent());
     }
 
     public void processUTM(Activity activity, Uri applink){
