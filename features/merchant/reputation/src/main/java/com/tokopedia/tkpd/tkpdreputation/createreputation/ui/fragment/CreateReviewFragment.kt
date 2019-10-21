@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.airbnb.lottie.LottieAnimationView
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -19,6 +18,7 @@ import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ReviewLottieModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
@@ -26,9 +26,9 @@ import java.util.*
 
 class CreateReviewFragment : BaseDaggerFragment() {
 
-
     companion object {
         const val REQUEST_CODE_IMAGE = 111
+        const val TOTAL_REVIEW_STARS = 4
         fun createInstance() = CreateReviewFragment()
     }
 
@@ -38,23 +38,32 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
     private var selectedImage: ArrayList<String> = arrayListOf()
-    private var listOfLottie: List<Pair<Boolean, LottieAnimationView>> = listOf()
+    private var listOfLottie: MutableList<ReviewLottieModel> = mutableListOf()
     private var isImageAdded: Boolean = false
     private var handle = Handler()
     private var count = 0
     private var lastReview = 0
     private var reviewClickAt = 0
 
-    val runnable = object : Runnable {
+    private val normalAnimation = object : Runnable {
         override fun run() {
-            if (count <= 4) {
-                if (count > reviewClickAt && count <= lastReview) {
-                    listOfLottie[count].second.reverseAnimationSpeed()
-                    listOfLottie[count].second.playAnimation()
+            if (count <= TOTAL_REVIEW_STARS) {
+                val reviewData = listOfLottie[count]
+                if (isResversedAnim(reviewData)) {
+                    reviewData.isAnimated = false
+                    reviewData.reviewView.reverseAnimationSpeed()
+                    reviewData.reviewView.playAnimation()
+                } else if (isNormalAnim(reviewData)) {
+                    if (isAnimReversed(reviewData)) {
+                        reviewData.reviewView.reverseAnimationSpeed()
+                        reviewData.reviewView.playAnimation()
+                    } else {
+                        reviewData.reviewView.playAnimation()
+                    }
+                    reviewData.isAnimated = true
                 }
-
                 count++
-                handle.postDelayed(this, 100)
+                handle.postDelayed(this, 50)
             } else {
                 lastReview = reviewClickAt
                 count = 0
@@ -62,6 +71,17 @@ class CreateReviewFragment : BaseDaggerFragment() {
             }
         }
 
+        private fun isResversedAnim(reviewData: ReviewLottieModel): Boolean {
+            return count > reviewClickAt && reviewClickAt <= lastReview && reviewData.isAnimated
+        }
+
+        private fun isNormalAnim(reviewData: ReviewLottieModel): Boolean {
+            return count <= reviewClickAt && !reviewData.isAnimated
+        }
+
+        private fun isAnimReversed(reviewData: ReviewLottieModel): Boolean {
+            return reviewData.reviewView.speed < 0.0
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -78,12 +98,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         stepper_review.max = 3F
         stepper_review.progress = 1F
-
-        listOfLottie = listOf(Pair(false, lottie_star_1), Pair(false, lottie_star_2), Pair(false, lottie_star_3), Pair(false, lottie_star_4), Pair(false, lottie_star_5))
-        listOfLottie.forEachIndexed { index, pair ->
-            pair.second.setOnClickListener {
+        setupViewData()
+        listOfLottie.forEachIndexed { index, it ->
+            it.reviewView.setOnClickListener {
                 reviewClickAt = index
-                handle.post(runnable)
+                handle.post(normalAnimation)
             }
         }
 
@@ -109,6 +128,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         initImageData()
+    }
+
+    private fun setupViewData() {
+        listOfLottie = mutableListOf(ReviewLottieModel(false, lottie_star_1), ReviewLottieModel(false, lottie_star_2), ReviewLottieModel(false, lottie_star_3),
+                ReviewLottieModel(false, lottie_star_4), ReviewLottieModel(false, lottie_star_5))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
