@@ -47,7 +47,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     private String shopId;
 
     // this field only used first time for new fragment
-    private String keyword;
+    private String keyword = "";
     private String etalaseId;
     private String sort;
     private String attribution;
@@ -109,8 +109,11 @@ public class ShopProductListActivity extends BaseSimpleActivity
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
+            if (null == keyword) {
+                keyword = "";
+            }
         } else {
-            keyword = savedInstanceState.getString(SAVED_KEYWORD);
+            keyword = savedInstanceState.getString(SAVED_KEYWORD,"");
         }
 
         super.onCreate(savedInstanceState);

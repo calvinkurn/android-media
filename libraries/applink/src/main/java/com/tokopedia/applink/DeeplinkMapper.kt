@@ -1,10 +1,10 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
@@ -27,29 +27,39 @@ object DeeplinkMapper {
      */
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
-        if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
-            return getRegisteredNavigationFromHttp(context, deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
-            if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-                return getRegisteredNavigationDigital(context, deeplink)
-            } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
-                return getRegisteredNavigationSearch(deeplink)
-            } else if (deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT)) {
-                return getRegisteredNavigationMarketplace(deeplink)
+        /**
+            If deeplink have query parameters then we need to keep the query and map the url without query
+        */
+        val mappedDeepLink: String = when {
+            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
+                when {
+                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                        getRegisteredNavigationDigital(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
+                        getRegisteredNavigationSearch(deeplink)
+                    deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) ->
+                        getRegisteredNavigationMarketplace(deeplink)
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
+                        ApplinkConst.SellerApp.SELLER_APP_HOME
+                    else -> {
+                        val query = Uri.parse(deeplink).query
+                        if(query?.isNotEmpty() == true){
+                            val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
+                            if(navFromTokopedia.isNotEmpty()) {
+                                navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
+                                navFromTokopedia += "?$query"
+                            }
+                            navFromTokopedia
+                        } else getRegisteredNavigationFromTokopedia(deeplink)
+                    }
+                }
             }
-            if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
-                return getRegisteredNavigationSearch(deeplink)
-            }
-
-            if (GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME)) {
-                return ApplinkConst.SellerApp.SELLER_APP_HOME
-            }
-            return getRegisteredNavigationFromTokopedia(deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
-            return getRegisteredNavigationFromSellerapp(deeplink)
-        } else {
-            return deeplink
+            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
+            else -> deeplink
         }
+        return mappedDeepLink
     }
 
     /**
@@ -77,7 +87,8 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
