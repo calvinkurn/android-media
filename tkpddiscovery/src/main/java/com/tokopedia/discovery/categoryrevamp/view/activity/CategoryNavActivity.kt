@@ -29,6 +29,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
@@ -42,7 +43,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
-import rx.Subscriber
 import javax.inject.Inject
 
 
@@ -139,12 +139,13 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-     fun initInjector() {
+    fun initInjector() {
         categoryNavComponent = DaggerCategoryNavComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication)
                         .baseAppComponent).build()
-         categoryNavComponent.inject(this)
+        categoryNavComponent.inject(this)
     }
+
     private fun initSwitchButton() {
 
         icon_sort.setOnClickListener {
@@ -219,11 +220,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             when (it) {
                 is Success -> {
                     progressBar.visibility = View.GONE
-                    if(it.data.isBanned == 1) {
-                       setEmptyView(it.data)
-                    }else {
+                    if (it.data.isBanned == 1) {
+                        setEmptyView(it.data)
+                    } else {
                         layout_banned_screen.visibility = View.GONE
                         searchNavContainer?.visibility = View.VISIBLE
+                        if (it.data.isAdult == 1) {
+                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
+                        }
                         initViewPager()
                         loadSection()
                         initSwitchButton()
@@ -239,13 +243,13 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
     }
 
-    private fun setEmptyView(data :Data?){
+    private fun setEmptyView(data: Data?) {
         layout_banned_screen.visibility = View.VISIBLE
         searchNavContainer?.visibility = View.GONE
-        if(data == null) {
+        if (data == null) {
             txt_header.text = "There is some error on server"
             txt_no_data_description.text = "try again"
-        }else {
+        } else {
             txt_header.text = data?.bannedMsgHeader
             txt_no_data_description.text = data?.bannedMessage
         }
@@ -390,7 +394,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         }
     }
 
-    private fun moveToAutoCompleteActivity(departMentName : String) {
+    private fun moveToAutoCompleteActivity(departMentName: String) {
         RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departMentName)
     }
 
@@ -422,6 +426,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data)
         handleDefaultActivityResult(requestCode, resultCode, data)
     }
 
