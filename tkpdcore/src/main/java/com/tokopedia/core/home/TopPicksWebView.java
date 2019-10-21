@@ -13,14 +13,10 @@ import android.view.MenuItem;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
-import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentTopPicksWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
@@ -76,12 +72,6 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLink
             fragmentTransaction.commit();
         }
 
-    }
-
-
-    public void openShop(String url) {
-        Fragment fragment = FragmentShopPreview.createInstances(Uri.parse(url).getPathSegments().get(0), url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

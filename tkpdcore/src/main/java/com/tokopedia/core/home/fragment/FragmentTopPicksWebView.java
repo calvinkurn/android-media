@@ -21,9 +21,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
 /**
@@ -111,31 +109,7 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-            if (((Uri.parse(url).getHost().contains(BASE_URL))
-                    || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
-                    && !url.endsWith(".pl")) {
-                switch ((DeepLinkChecker.getDeepLinkType(url))) {
-                    case DeepLinkChecker.BROWSE:
-                        DeepLinkChecker.openBrowse(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.HOT:
-                        DeepLinkChecker.openHot(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.HOT_LIST:
-                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
-                        return true;
-                    case DeepLinkChecker.CATALOG:
-                        DeepLinkChecker.openCatalog(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.PRODUCT:
-                        DeepLinkChecker.openProduct(url, getActivity());
-                        return true;
-                    default:
-                        return false;
-                }
-            } else {
-                return false;
-            }
+        return com.tokopedia.applink.DeepLinkChecker.moveToNativePageFromWebView(getActivity(),url);
     }
 
     @Override

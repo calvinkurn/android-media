@@ -124,7 +124,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
-        const val SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN"
+        const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
@@ -156,10 +156,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
             .apply { putExtra(SHOP_ID, shopId) }
-
-        @JvmStatic
-        fun createIntentWithDomain(context: Context, shopDomain: String) = Intent(context, ShopPageActivity::class.java)
-            .apply { putExtra(SHOP_DOMAIN, shopDomain) }
     }
 
     object DeepLinkIntents {

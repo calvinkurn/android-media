@@ -199,11 +199,13 @@ object DeepLinkChecker {
         return false
     }
 
-    private fun openHot(url: String, context: Context): Boolean {
+    @JvmStatic
+    fun openHot(url: String, context: Context): Boolean {
         return openIfExist(context, getHotIntent(context, url))
     }
 
-    private fun openCatalog(url: String, context: Context): Boolean {
+    @JvmStatic
+    fun openCatalog(url: String, context: Context): Boolean {
         return openIfExist(context, getCatalogIntent(context, url))
     }
 
@@ -233,7 +235,8 @@ object DeepLinkChecker {
         return intent
     }
 
-    private fun openBrowse(url: String, context: Context) {
+    @JvmStatic
+    fun openBrowse(url: String, context: Context):Boolean {
         val uriData = Uri.parse(url)
         val bundle = Bundle()
 
@@ -249,7 +252,7 @@ object DeepLinkChecker {
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
         }
-        context.startActivity(intent)
+        return openIfExist(context, intent)
     }
 
     private fun constructSearchApplink(uriData: Uri): String {

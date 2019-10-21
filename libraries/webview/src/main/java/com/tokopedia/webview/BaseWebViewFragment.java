@@ -301,7 +301,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
+    void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
         uploadMessageBeforeLolipop = uploadMessage;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -313,6 +313,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            try {
+                getActivity().setProgressBarIndeterminateVisibility(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             progressBar.setVisibility(View.VISIBLE);
         }
 

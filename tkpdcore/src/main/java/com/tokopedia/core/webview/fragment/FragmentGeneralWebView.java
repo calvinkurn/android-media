@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
@@ -42,7 +43,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
 import com.tokopedia.user.session.UserSession;
@@ -303,49 +303,7 @@ public class FragmentGeneralWebView extends Fragment implements
             return false;
         }
 
-        if (((uri.getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
-                || uri.getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                && !url.endsWith(".pl")) {
-            CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
-            switch (DeepLinkChecker.getDeepLinkType(url)) {
-                case DeepLinkChecker.CATEGORY:
-                    DeepLinkChecker.openCategory(url, getActivity());
-                    return true;
-                case DeepLinkChecker.BROWSE:
-                    DeepLinkChecker.openBrowse(url, getActivity());
-                    return true;
-                case DeepLinkChecker.HOT:
-                    DeepLinkChecker.openHot(url, getActivity());
-                    return true;
-                case DeepLinkChecker.CATALOG:
-                    DeepLinkChecker.openCatalog(url, getActivity());
-                    return true;
-                case DeepLinkChecker.PRODUCT:
-                    DeepLinkChecker.openProduct(url, getActivity());
-                    return true;
-                case DeepLinkChecker.HOME:
-                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                    return true;
-                case DeepLinkChecker.TOKOPOINT:
-                    DeepLinkChecker.openTokoPoint(getActivity(), url);
-                    return true;
-                case DeepLinkChecker.WALLET_OVO:
-                    return false;
-                case DeepLinkChecker.PROFILE:
-                    DeepLinkChecker.openProfile(getActivity(), url);
-                    return false;
-                case DeepLinkChecker.CONTENT:
-                    DeepLinkChecker.openContent(getActivity(), url);
-                    return false;
-                case DeepLinkChecker.HOTEL:
-                    DeepLinkChecker.openHotel(getActivity(), url);
-                    return true;
-                default:
-                    return false;
-            }
-        } else {
-            return false;
-        }
+        return DeepLinkChecker.moveToNativePageFromWebView(getActivity(), url);
     }
 
     @Override

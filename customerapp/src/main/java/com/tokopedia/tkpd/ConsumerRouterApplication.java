@@ -83,8 +83,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
@@ -870,17 +868,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
-        activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
+        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, mobileUrl);
     }
 
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
-    }
-
-    @Override
-    public Intent getBrandsWebViewIntent(Context context, String url) {
-        return BrandsWebViewActivity.newInstance(context, url);
     }
 
     @Override
@@ -1348,7 +1341,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getBannerWebViewIntent(Activity activity, String url) {
-        return BannerWebView.getCallingIntent(activity, url);
+        return RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override
@@ -1519,9 +1512,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToWebview(Context context, String url) {
-        Intent intent = new Intent(this, BannerWebView.class);
-        intent.putExtra(BannerWebView.EXTRA_URL, url);
-        context.startActivity(intent);
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     public void init() {
@@ -1559,11 +1550,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
-    }
-
-    @Override
-    public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageInternalRouter.getShopPageIntentByDomain(context, domain);
     }
 
     @Override
