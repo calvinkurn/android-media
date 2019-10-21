@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
@@ -17,6 +19,8 @@ import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -95,5 +99,15 @@ public class CampaignModule {
                                                             AbstractionRouter abstractionRouter) {
         return new CampaignAuthInterceptor(context, abstractionRouter);
 
+    }
+
+    @Provides
+    UserSessionInterface providesUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 }

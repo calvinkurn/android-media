@@ -110,9 +110,10 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/request_pickup_step_3_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/request_pickup_step_3" />
+                    android:text="@string/request_pickup_step_3_seller" />
 
                 <TextView
                     android:id="@+id/request_pickup_info"
