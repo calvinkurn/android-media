@@ -321,6 +321,8 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
+        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
+        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";
