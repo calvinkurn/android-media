@@ -10,7 +10,7 @@ import android.view.ViewGroup
 class AdapterDelegatesManager<T: Any> {
 
     private val typedAdapterDelegatesMap: MutableMap<Class<*>, Int> = mutableMapOf()
-    private val specialAdapterDelegates: MutableList<Int> = mutableListOf()
+    private val specialAdapterDelegates: MutableList<Int> by lazy { mutableListOf<Int>() }
 
     private val adapterDelegates: SparseArrayCompat<AdapterDelegate<T>> = SparseArrayCompat()
 
