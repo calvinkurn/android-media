@@ -37,7 +37,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) -> getRegisteredNavigationSearch(deeplink)
                     deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) -> getRegisteredNavigationMarketplace(deeplink)
-                    deeplink.startsWith(ApplinkConst.CHATBOT,true) -> getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) -> getChatbotDeeplink(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
