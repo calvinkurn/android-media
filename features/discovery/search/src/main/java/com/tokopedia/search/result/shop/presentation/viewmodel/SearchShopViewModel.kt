@@ -61,7 +61,7 @@ internal class SearchShopViewModel(
     private var hasLoadData = false
     private var hasNextPage = false
     private var isEmptySearchShop = false
-    private var dynamicFilterModel: DynamicFilterModel? = null
+    private var isFilterDataAvailable = false
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
@@ -350,11 +350,13 @@ internal class SearchShopViewModel(
     private suspend fun tryGetDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        dynamicFilterModel = getDynamicFilterUseCase.execute(requestParams)
+        val dynamicFilterModel = getDynamicFilterUseCase.execute(requestParams)
         dynamicFilterEventLiveData.postValue(Event(true))
 
-        saveDynamicFilterModel()
-        processFilterData()
+        isFilterDataAvailable = dynamicFilterModel.data?.filter?.size ?: 0 > 0
+
+        saveDynamicFilterModel(dynamicFilterModel)
+        processFilterData(dynamicFilterModel)
     }
 
     private fun createGetDynamicFilterParams(): Map<String, Any> {
@@ -375,38 +377,32 @@ internal class SearchShopViewModel(
                 requestParams.convertValuesToString().toMutableMap())
     }
 
-    private fun saveDynamicFilterModel() {
-        dynamicFilterModel?.let {
-            searchLocalCacheHandler.saveDynamicFilterModelLocally(SCREEN_SEARCH_PAGE_SHOP_TAB, it)
+    private fun saveDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
+        searchLocalCacheHandler.saveDynamicFilterModelLocally(SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
+    }
+
+    private fun processFilterData(dynamicFilterModel: DynamicFilterModel) {
+        if (isEmptySearchShop) {
+            processFilterIntoFilterController(dynamicFilterModel)
+            updateEmptySearchViewModelWithFilter()
         }
     }
 
-    private fun processFilterData() {
-        dynamicFilterModel?.data?.filter?.let { filterList ->
-            initializeFilterController(filterList)
-
-            if (shouldUpdateEmptySearchViewModel()) {
-                updateEmptySearchViewModelWithFilter(filterController.isFilterActive())
-            }
+    private fun processFilterIntoFilterController(dynamicFilterModel: DynamicFilterModel) {
+        dynamicFilterModel.data?.filter?.let { filterList ->
+            val initializedFilterList = FilterHelper.initializeFilterList(filterList)
+            filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
         }
     }
 
-    private fun initializeFilterController(filterList: List<Filter>) {
-        val initializedFilterList = FilterHelper.initializeFilterList(filterList)
-        filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
-    }
+    private fun updateEmptySearchViewModelWithFilter() {
+        if (filterController.isFilterActive()) {
+            searchShopMutableList.clear()
 
-    private fun shouldUpdateEmptySearchViewModel(): Boolean {
-        return searchShopMutableList.exists<ShopEmptySearchViewModel>()
-                && filterController.isFilterActive()
-    }
-
-    private fun updateEmptySearchViewModelWithFilter(isFilterActive: Boolean) {
-        searchShopMutableList.clear()
-
-        val visitableList = createVisitableListWithEmptySearchViewModel(isFilterActive)
-        updateSearchShopListWithNewData(visitableList)
-        updateSearchShopLiveDataStateToSuccess()
+            val visitableList = createVisitableListWithEmptySearchViewModel(filterController.isFilterActive())
+            updateSearchShopListWithNewData(visitableList)
+            updateSearchShopLiveDataStateToSuccess()
+        }
     }
 
     private fun catchGetDynamicFilterException(e: Throwable?) {
@@ -501,20 +497,18 @@ internal class SearchShopViewModel(
     private fun clearDataBeforeReload() {
         searchShopMutableList.clear()
 
-        dynamicFilterModel = null
+        hasNextPage = false
+        isEmptySearchShop = false
+        isFilterDataAvailable = false
     }
 
     fun onViewOpenFilterPage() {
-        if (isFilterDataAvailable()) {
+        if (isFilterDataAvailable) {
             openFilterPageEventLiveData.postValue(Event(true))
         }
         else {
             openFilterPageEventLiveData.postValue(Event(false))
         }
-    }
-
-    private fun isFilterDataAvailable(): Boolean {
-        return dynamicFilterModel?.data?.filter?.size ?: 0 > 0
     }
 
     fun onViewApplyFilter(queryParameters: Map<String, String>?) {
@@ -532,6 +526,7 @@ internal class SearchShopViewModel(
 
     fun onViewRemoveSelectedFilter(uniqueId: String?) {
         if (uniqueId == null) return
+        if (!isEmptySearchShop) return
 
         removeFilterFromFilterController(uniqueId)
 
