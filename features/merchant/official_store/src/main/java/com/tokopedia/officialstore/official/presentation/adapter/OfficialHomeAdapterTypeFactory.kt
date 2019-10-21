@@ -12,8 +12,11 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Dynam
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
-class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
+class OfficialHomeAdapterTypeFactory(
+        val recommendationListener: RecommendationListener
+) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
         return OfficialBannerViewHolder.LAYOUT
@@ -36,7 +39,7 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
-            ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent)
+            ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

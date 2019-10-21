@@ -12,11 +12,15 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 
 
-class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRecommendationViewModel>(view) {
+class ProductRecommendationViewHolder(
+        view: View,
+        val recommendationListener: RecommendationListener
+): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
 
@@ -67,10 +71,10 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
                     if (success) {
                         element.productItem.isWishlist = !element.productItem.isWishlist
                         setButtonWishlistImage(element.productItem.isWishlist)
-                        if(element.productItem.isWishlist) {
-                            showSuccessAddWishlist((context as Activity).findViewById(R.id.content), "Sukses menambah wishlist")
+                        if (element.productItem.isWishlist) {
+                            showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
                         } else {
-                            showSuccessRemoveWishlist((context as Activity).findViewById(R.id.content), "Sukses menghapus wishlist")
+                            showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
                         }
                     } else {
                         showError(rootView, throwable)
@@ -81,14 +85,13 @@ class ProductRecommendationViewHolder(view: View): AbstractViewHolder<ProductRec
     }
 
     private fun showSuccessAddWishlist(view: View, message: String) {
-        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                "Lihat Wishlist", View.OnClickListener {
-            RouteManager.route(view.context, ApplinkConst.WISHLIST)
-        })
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction("Lihat Wishlist") { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
+                .show()
     }
 
     private fun showSuccessRemoveWishlist(view: View, message: String) {
-        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showError(view: View, throwable: Throwable?) {

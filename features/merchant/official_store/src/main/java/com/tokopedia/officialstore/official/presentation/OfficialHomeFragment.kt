@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.officialstore.BuildConfig
@@ -26,36 +28,43 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
+import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
+import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
-
     companion object {
+
         const val DEFAULT_PAGE = 1
         const val GRID_SPAN_COUNT = 1
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
+        private const val PDP_EXTRA_PRODUCT_ID = "product_id"
+        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
-
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var recyclerView: RecyclerView? = null
+
     private var layoutManager: StaggeredGridLayoutManager? = null
     private var endlesScrollListener: EndlessRecyclerViewScrollListener? = null
-
     private var category: Category? = null
+
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
@@ -76,7 +85,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         recyclerView?.layoutManager = layoutManager
         endlesScrollListener = getEndlessRecyclerViewScrollListener()
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory()
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -87,8 +96,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 // Load more product recom
-                val nextPage = page + 1
-                viewModel.loadMore(category, nextPage)
+                viewModel.loadMore(category, page)
             }
         }
     }
@@ -105,6 +113,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     private fun refreshData() {
         adapter?.clearAllElements()
+        endlesScrollListener?.resetState()
         viewModel.loadFirstData(category, DEFAULT_PAGE)
     }
 
@@ -156,7 +165,21 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
+                    hideLoadMoreLoading()
                 }
+                is Fail -> {
+                    if (BuildConfig.DEBUG) {
+                        it.throwable.printStackTrace()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeTopAdsWishlist() {
+        viewModel.topAdsWishlistResult.observe(this, Observer {
+            when (it) {
+                is Success -> { }
                 is Fail -> {
                     if (BuildConfig.DEBUG) {
                         it.throwable.printStackTrace()
@@ -212,6 +235,10 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         // Show error
     }
 
+    private fun hideLoadMoreLoading() {
+        endlesScrollListener?.updateStateAfterGetData()
+    }
+
     override fun getScreenName(): String {
         return ""
     }
@@ -237,7 +264,14 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode === REQUEST_FROM_PDP) {
-            // Update wishlist
+            data?.let {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
+                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                updateWishlist(wishlistStatusFromPdp, position)
+            }
+            lastClickLayoutType = null
+            lastParentPosition = null
         }
     }
 
@@ -259,17 +293,35 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         }
     }
 
+    private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        if (position > -1 && adapter != null) {
+            if (adapter?.list?.get(position) is ProductRecommendationViewModel) {
+                (adapter!!.list.get(position) as ProductRecommendationViewModel).productItem.isWishlist = isWishlist
+                adapter!!.notifyItemChanged(position)
+            }
+        }
+    }
+
     override fun onProductImpression(item: RecommendationItem) {
         // TO_DO: Implement Product Impression
         Log.d("Test: ", "onProductImpression")
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        // TO_DO: Implement Wishlist Click
         if (viewModel.isLoggedIn()) {
-            Log.d("Test: ", "onWishlistClick is loggedin")
+            // Implement tracking
+            if (isAddWishlist) {
+                viewModel.addWishlist(item, callback)
+                if (item.isTopAds) {
+                    observeTopAdsWishlist()
+                } else {
+
+                }
+            } else {
+                viewModel.removeWishlist(item, callback)
+            }
         } else {
-            Log.d("Test: ", "onWishlistClick is not loggedin")
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 }

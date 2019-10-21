@@ -35,9 +35,9 @@ class OfficialHomeMapper {
 
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
             productRecommendation.recommendationItemList.forEach {
-                adapter?.addElement(3, ProductRecommendationViewModel(it, listener))
+                adapter?.addElement(ProductRecommendationViewModel(it, listener))
             }
-            adapter?.notifyItemInserted(3)
+            adapter?.notifyItemInserted(adapter.lastIndex)
         }
     }
 }
