@@ -42,7 +42,8 @@ class AttributesEmoneyInquiry(
         val payload: String = "",
         @SerializedName("status")
         @Expose
-        val status: Int = 0
+        val status: Int = 0,
+        var formattedCardNumber: String = ""
 )
 
 class RechargeEmoneyInquiryError(

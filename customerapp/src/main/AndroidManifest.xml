@@ -4,8 +4,7 @@
     package="com.tokopedia.tkpd">
 
     <!-- add library brizzi and force it to use minSdkVersion same as Tokopedia -->
-    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="16"
-        tools:overrideLibrary="com.tokopedia.core, id.co.bri.sdk.brizzi"/>
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core, id.co.bri.sdk.brizzi"/>
 
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>

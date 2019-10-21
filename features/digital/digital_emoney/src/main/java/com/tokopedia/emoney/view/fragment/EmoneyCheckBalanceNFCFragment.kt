@@ -100,9 +100,8 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         brizziInstance = Brizzi.getInstance()
-        brizziInstance.Init("dCcZEHJ5oub9YTUTe6KQcOE5DwEUG4e8", "IlFDLgR31ACt7aqH")
+        brizziInstance.Init("R04XSUbnm1GXNmDiXx9ysWMpFWBr", "IlFDLgR31ACt7aqH")
         brizziInstance.setUserName("Tokopedia")
-        brizziInstance.setNfcAdapter(activity)
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         pendingIntent = PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
@@ -175,10 +174,11 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                 if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
                     activity?.let {
                         val mapAttributes = HashMap<String, kotlin.Any>()
-                        mapAttributes.put(EmoneyInquiryBalanceViewModel.PARAM_CARD_ATTRIBUTE, responseCardAttribute)
-                        mapAttributes.put(EmoneyInquiryBalanceViewModel.PARAM_CARD_INFO, responseCardInfo)
-                        mapAttributes.put(EmoneyInquiryBalanceViewModel.PARAM_ISSUER_ID, ISSUER_ID_EMONEY)
-                        mapAttributes.put(EmoneyInquiryBalanceViewModel.PARAM_CARD_UUID, responseCardUID)
+                        mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_CARD_ATTRIBUTE] = responseCardAttribute
+                        mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_CARD_INFO] = responseCardInfo
+                        mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
+                        mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_CARD_UUID] = responseCardUID
+                        mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_LAST_BALANCE] = responseCardLastBalance
 
                         emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
                                 EmoneyInquiryBalanceViewModel.PARAM_INQUIRY,
@@ -189,25 +189,27 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                                 this::onErrorInquiryBalance)
                     }
                 } else {
-                    if (::brizziInstance.isInitialized) {
-                        val intentBrizzi = Intent()
-                        brizziInstance.getBalanceInquiry(intentBrizzi, object : Callback {
-                            override fun OnFailure(brizziException: BrizziException?) {
-                                //TODO log data failed
-                                Toast.makeText(activity, "failed " +  brizziException?.message, Toast.LENGTH_SHORT).show()
-                            }
+                    isoDep.close()
+                    activity?.let {
+                        if (::brizziInstance.isInitialized) {
+                            brizziInstance.getBalanceInquiry(it.intent, object : Callback {
+                                override fun OnFailure(brizziException: BrizziException?) {
+                                    //TODO log data failed
+                                    Toast.makeText(activity, brizziException?.message, Toast.LENGTH_SHORT).show()
+                                }
 
-                            override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                                //TODO log data success
-                                Toast.makeText(activity, brizziCardObject.balance, Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                    } else {
-                        showError(resources.getString(R.string.emoney_card_isnot_supported))
-                    }
+                                override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                                    //TODO log data success
+                                    Toast.makeText(activity, brizziCardObject.balance, Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                        } else {
+                            showError(resources.getString(R.string.emoney_card_isnot_supported))
+                        }
 //                    emoneyAnalytics.onErrorReadingCard()
 //                    Toast.makeText(activity, "OTHER CODE", Toast.LENGTH_SHORT).show()
 //                    showError(resources.getString(R.string.emoney_card_isnot_supported))
+                    }
                 }
             }
         } catch (e: IOException) {
@@ -250,6 +252,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                         // to get card payload
                         val response = NFCUtils.toHex(responseInByte)
                         activity?.let {
+                            mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_PAYLOAD] = response
                             emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
                                     EmoneyInquiryBalanceViewModel.PARAM_SEND_COMMAND,
                                     GraphqlHelper.loadRawString(it.resources, R.raw.query_emoney_inquiry_balance),
