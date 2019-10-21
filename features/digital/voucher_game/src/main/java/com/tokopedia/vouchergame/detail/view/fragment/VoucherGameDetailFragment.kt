@@ -83,7 +83,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         set(value) {
             field = value
             setInputFieldsError(!value)
-            toggleCheckoutButton()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,7 +186,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
-        toggleCheckoutButton()
     }
 
     override fun processEnquiry(data: TelcoEnquiryData) {
@@ -490,18 +488,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         enquireFields()
     }
 
-    private fun toggleCheckoutButton() {
-        checkout_view.setBuyButtonState(isEnquired)
-    }
-
     override fun onClickNextBuyButton() {
-        if (isEnquired) {
-            if (::voucherGameOperatorData.isInitialized) {
-                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.name, product = selectedProduct)
-            }
-            processCheckout()
+        if (::voucherGameOperatorData.isInitialized) {
+            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                    voucherGameOperatorData.name, product = selectedProduct)
         }
+        processCheckout()
     }
 
     private fun processCheckout() {
