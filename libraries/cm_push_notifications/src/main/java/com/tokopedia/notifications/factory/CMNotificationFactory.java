@@ -45,7 +45,9 @@ public class CMNotificationFactory {
             return null;
         }
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
-        IrisAnalyticsEvents.INSTANCE.sendPushReceiveEvent(context, baseNotificationModel);
+
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(context,IrisAnalyticsEvents.PUSH_RECEIVED,baseNotificationModel);
+
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
             return null;

@@ -39,6 +39,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -98,6 +99,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     private var remoteConfig: RemoteConfig? = null
 
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
+    private var onSuccessGetShopInfoListener: OnSuccessGetShopInfoListener? = null
+    private var onInitTrackingListener: OnInitTrackingListener? = null
     private var needReloadData: Boolean = false
     private val etalaseChipAdapter: EtalaseChipAdapter by lazy {
         EtalaseChipAdapter(null, null, this)
@@ -108,6 +111,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     interface OnShopProductListFragmentListener {
         fun updateUIByShopName(shopName: String)
         fun updateUIByEtalaseName(etalaseName: String?)
+    }
+
+    interface OnSuccessGetShopInfoListener{
+        fun updateShopInfo(shopInfo: ShopInfo)
+    }
+
+    interface OnInitTrackingListener{
+        fun updateShopPageTracking(shopPageTracking: ShopPageTrackingBuyer?)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -146,7 +157,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_list_search
+        emptyModel.urlRes = EMPTY_PRODUCT_SEARCH_IMAGE_URL
         if (TextUtils.isEmpty(keyword)) {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 emptyModel.title = getString(R.string.shop_product_empty_title_desc)
@@ -154,17 +165,9 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                 emptyModel.title = getString(R.string.shop_product_empty_title_etalase_desc)
             }
         } else {
-            if (TextUtils.isEmpty(selectedEtalaseId)) {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_no_etalase)
-            } else {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_etalase)
-            }
+            emptyModel.title = getString(R.string.shop_product_empty_product_title)
         }
-        if (TextUtils.isEmpty(selectedEtalaseId)) {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_no_etalase)
-        } else {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_etalase)
-        }
+        emptyModel.content = getString(R.string.shop_product_empty_product_content)
         return emptyModel
     }
 
@@ -193,7 +196,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         setHasOptionsMenu(true)
 
         super.onCreate(savedInstanceState)
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let {
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            onInitTrackingListener?.updateShopPageTracking(shopPageTracking)
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductListViewModel::class.java)
     }
 
@@ -519,7 +525,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     override fun onEmptyButtonClicked() {
-        RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
+        redirectToSearchResultPage()
+    }
+
+    private fun redirectToSearchResultPage() {
+        RouteManager.route(
+                context,
+                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
+        )
     }
 
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -528,6 +541,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
+        onSuccessGetShopInfoListener?.updateShopInfo(shopInfo)
         loadInitialData()
     }
 
@@ -750,6 +764,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         onShopProductListFragmentListener = context as OnShopProductListFragmentListener
+        onSuccessGetShopInfoListener = context as OnSuccessGetShopInfoListener
+        onInitTrackingListener = context as OnInitTrackingListener
         shopModuleRouter = context.applicationContext as ShopModuleRouter
     }
 

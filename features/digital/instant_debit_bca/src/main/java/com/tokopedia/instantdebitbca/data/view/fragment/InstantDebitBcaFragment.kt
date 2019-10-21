@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.instantdebitbca.R
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase
@@ -22,9 +23,7 @@ import com.tokopedia.instantdebitbca.data.view.interfaces.InstantDebitBcaContrac
 import com.tokopedia.instantdebitbca.data.view.presenter.InstantDebitBcaPresenter
 import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil
 import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.user.session.UserSessionInterface
-import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
@@ -87,8 +86,8 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
 
     override fun openWidgetBca(accessToken: String) {
         if(::widgetBca.isInitialized) {
-            widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
-                    userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID)
+            widgetBca.openWidget(accessToken, AuthKey.API_KEY_INSTANT_DEBIT_BCA, AuthKey.API_SEED_INSTANT_DEBIT_BCA,
+                    userSession.userId, AuthKey.INSTANT_DEBIT_BCA_MERCHANT_ID)
         }
     }
 

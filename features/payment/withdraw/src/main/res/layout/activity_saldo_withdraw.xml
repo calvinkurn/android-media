@@ -45,7 +45,7 @@
                 android:layout_marginRight="@dimen/dp_12"
                 android:padding="@dimen/dp_4"
                 android:text="@string/withdraw_help"
-                android:textColor="@color/unify_G500"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/sp_12" />
         </RelativeLayout>
 

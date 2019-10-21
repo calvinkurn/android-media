@@ -164,20 +164,11 @@ class CreatePostPresenter @Inject constructor(
     override fun getFeedDetail(postId: String, isAffiliate: Boolean) {
         view?.showLoading()
         getFeedUseCase.execute(GetDynamicFeedUseCase.createRequestParams(
-                if (isAffiliate) userSession.userId else userSession.shopId,
-                source = SOURCE_DETAIL, sourceId = postId), object : Subscriber<FeedDetail?>() {
-            override fun onNext(t: FeedDetail?) {
-                if (t == null) onError(MessageErrorException(MESSAGE_POST_NOT_FOUND))
-                else view?.onSuccessGetPostEdit(t)
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                view?.onErrorGetPostEdit(e)
-            }
-
-        })
+                userId = if (isAffiliate) userSession.userId else userSession.shopId,
+                source = SOURCE_DETAIL,
+                sourceId = postId),
+                getFeedDetailSubscriber()
+        )
     }
 
     override fun fetchProductSuggestion(type: String,
@@ -191,6 +182,22 @@ class CreatePostPresenter @Inject constructor(
         }
         getProductSuggestionUseCase.type = type
         getProductSuggestionUseCase.execute(onSuccess, onError)
+    }
+
+    private fun getFeedDetailSubscriber(): Subscriber<FeedDetail?> {
+        return object : Subscriber<FeedDetail?>() {
+            override fun onNext(t: FeedDetail?) {
+                if (t == null) onError(MessageErrorException(MESSAGE_POST_NOT_FOUND))
+                else view?.onSuccessGetPostEdit(t)
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+                view?.onErrorGetPostEdit(e)
+            }
+
+        }
     }
 
     private fun getFollowersCount(response: GraphqlResponse): Int {

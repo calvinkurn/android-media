@@ -76,8 +76,6 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -117,10 +115,6 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
-import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
-import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
-import com.tokopedia.search.applink.SearchApplinkModule;
-import com.tokopedia.search.applink.SearchApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -170,7 +164,6 @@ import rx.schedulers.Schedulers;
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
-        SearchApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
@@ -199,7 +192,6 @@ import rx.schedulers.Schedulers;
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
-        InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         AffiliateApplinkModule.class,
@@ -212,7 +204,6 @@ import rx.schedulers.Schedulers;
         PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
-        SaldoDetailsAppLinkModule.class,
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
@@ -241,7 +232,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
-                    new SearchApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
@@ -269,7 +259,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
-                    new InstantLoanAppLinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
                     new AffiliateApplinkModuleLoader(),
@@ -282,7 +271,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
-                    new SaldoDetailsAppLinkModuleLoader(),
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),

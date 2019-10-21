@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
@@ -14,6 +15,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -21,7 +23,10 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -40,6 +45,15 @@ public class GraphqlClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+            tkpdOkHttpBuilder.addInterceptor(chain -> {
+                Request.Builder newRequest = chain.request().newBuilder();
+                newRequest.addHeader("User-Agent", getUserAgent());
+                return chain.proceed(newRequest.build());
+            });
+
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+            }
 
             sRetrofit = CommonNetwork.createRetrofit(
                     GraphqlUrl.BASE_URL,

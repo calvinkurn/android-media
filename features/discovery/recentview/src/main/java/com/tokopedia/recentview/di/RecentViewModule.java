@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.recentview.data.api.RecentViewApi;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.user.session.UserSession;
@@ -47,9 +48,16 @@ public class RecentViewModule {
 
     @RecentViewScope
     @Provides
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @RecentViewScope
+    @Provides
     MojitoInterceptor provideMojitoInterceptor(@ApplicationContext Context context,
-                                               AbstractionRouter abstractionRouter) {
-        return new MojitoInterceptor(context, abstractionRouter);
+                                               NetworkRouter networkRouter,
+                                               UserSessionInterface userSession) {
+        return new MojitoInterceptor(context, networkRouter, userSession);
     }
 
     @RecentViewScope

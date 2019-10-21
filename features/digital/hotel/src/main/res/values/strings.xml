@@ -229,4 +229,7 @@
     <string name="hotel_url_no_indonesian_review">https://ecs7.tokopedia.net/img/android/hotel/noIndonesianReview.png</string>
     <string name="hotel_url_no_match_search_suggestion">https://ecs7.tokopedia.net/img/android/hotel/noMatchSearchSuggestion.png</string>
     <string name="hotel_url_no_review">https://ecs7.tokopedia.net/img/android/hotel/noReview.png</string>
+
+    <string name="hotel_min_date_label">Check-in</string>
+    <string name="hotel_max_date_label">Check-out</string>
 </resources>

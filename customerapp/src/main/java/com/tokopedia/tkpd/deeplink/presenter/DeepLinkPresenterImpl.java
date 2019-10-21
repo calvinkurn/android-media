@@ -182,7 +182,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PRODUCT:
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
                         openShopInfo(linkSegment, uriData);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -536,6 +536,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_INFO,
                                 shopId);
+                    } else if(isShopHome(linkSegment)){
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_HOME,
+                                shopId);
                     } else {
                         Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
                         context.startActivity(intent);
@@ -557,6 +561,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
+    }
+
+    private boolean isShopHome(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("home");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
@@ -725,7 +734,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         
         String applink = TextUtils.isEmpty(q) ?
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConst.DISCOVERY_SEARCH;
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
     }
