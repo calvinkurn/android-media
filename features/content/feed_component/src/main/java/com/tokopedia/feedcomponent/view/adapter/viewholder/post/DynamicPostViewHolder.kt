@@ -431,6 +431,7 @@ open class DynamicPostViewHolder(v: View,
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
                     else -> LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 }
+                itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
                 itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition, authorType), PostTagTypeFactoryImpl(listener))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
