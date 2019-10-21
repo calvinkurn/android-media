@@ -4,4 +4,7 @@
 
     <string name="os_query_search">Cari di Official Store</string>
 
+    <string name="os_featured_shop_title">Featured Brand</string>
+    <string name="os_featured_shop_link">Semua Brand</string>
+
 </resources>
