@@ -307,7 +307,7 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
             "errors": [],
             "user_address_id": 0,
             "cart_string": "480579-0-2240",
-            "total_cart_details_error": 0,
+            "total_cart_details_error": 3,
             "total_cart_price": "246",
             "sort_key": 33377691,
             "is_fulfillment_service": false,
@@ -371,7 +371,335 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
               "is_fulfillment": false
             },
             "checkbox_state": true,
-            "cart_details": []
+            "cart_details": [
+            {
+                "errors": ["toko jelek"],
+                "cart_id": "33375058",
+                "checkbox_state": true,
+                "similar_product_url": "",
+                "similar_product": {
+                  "text": "",
+                  "url": ""
+                },
+                "messages": [],
+                "product": {
+                  "product_tracker_data": {
+                    "attribution": "none/other",
+                    "tracker_list_name": "none/other"
+                  },
+                  "isWishlist": false,
+                  "product_id": 15161678,
+                  "product_name": "celana bahan",
+                  "product_price_fmt": "Rp10.000",
+                  "product_price": 10000,
+                  "parent_id": 0,
+                  "category_id": 1826,
+                  "category": "Fashion Pria / Celana / Celana Panjang",
+                  "catalog_id": 0,
+                  "wholesale_price": [],
+                  "product_weight_fmt": "1kg",
+                  "product_weight": 1,
+                  "product_condition": 1,
+                  "product_status": 1,
+                  "product_url": "https://staging.tokopedia.com//celana-bahan",
+                  "product_returnable": 0,
+                  "is_freereturns": 0,
+                  "is_preorder": 0,
+                  "product_cashback": "",
+                  "product_min_order": 1,
+                  "product_max_order": 10000,
+                  "product_rating": "0.000000",
+                  "product_invenage_value": 10000,
+                  "product_switch_invenage": 1,
+                  "product_price_currency": 1,
+                  "product_invenage_total": {
+                    "is_counted_by_user": false,
+                    "is_counted_by_product": false,
+                    "by_user": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_user_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    },
+                    "by_product": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_product_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    }
+                  },
+                  "price_changes": {
+                    "changes_state": 0,
+                    "amount_difference": 0,
+                    "original_amount": 0,
+                    "description": ""
+                  },
+                  "product_image": {
+                    "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_200_square": "https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg"
+                  },
+                  "product_all_images": "[{\"file_path\":\"product-1/2018/1/18/5514029\",\"file_name\":\"5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg\",\"status\":2}]",
+                  "product_notes": "",
+                  "product_quantity": 1,
+                  "product_weight_unit_code": 2,
+                  "product_weight_unit_text": "kg",
+                  "last_update_price": "1516246265",
+                  "is_update_price": false,
+                  "product_preorder": {
+                    "duration_text": "",
+                    "duration_day": "0",
+                    "duration_unit_code": "0",
+                    "duration_unit_text": "",
+                    "duration_value": "0"
+                  },
+                  "product_showcase": {
+                    "id": 1403336
+                  },
+                  "product_alias": "celana-bahan",
+                  "sku": "",
+                  "campaign_id": 0,
+                  "product_original_price": 0,
+                  "product_price_original_fmt": "",
+                  "is_slash_price": false,
+                  "free_returns": {
+                    "free_returns_logo": "https://ecs7.tokopedia.net/img/icon-frs.png"
+                  },
+                  "product_finsurance": 0,
+                  "is_wishlisted": true,
+                  "is_ppp": false,
+                  "is_cod": false,
+                  "warehouse_id": 548,
+                  "is_parent": false,
+                  "is_campaign_error": false
+                }
+              },
+              {
+                "errors": ["product jelek"],
+                "cart_id": "33375059",
+                "checkbox_state": true,
+                "similar_product_url": "",
+                "similar_product": {
+                  "text": "",
+                  "url": ""
+                },
+                "messages": [],
+                "product": {
+                  "product_tracker_data": {
+                    "attribution": "none/other",
+                    "tracker_list_name": "none/other"
+                  },
+                  "isWishlist": false,
+                  "product_id": 15161678,
+                  "product_name": "celana bahan",
+                  "product_price_fmt": "Rp10.000",
+                  "product_price": 10000,
+                  "parent_id": 0,
+                  "category_id": 1826,
+                  "category": "Fashion Pria / Celana / Celana Panjang",
+                  "catalog_id": 0,
+                  "wholesale_price": [],
+                  "product_weight_fmt": "1kg",
+                  "product_weight": 1,
+                  "product_condition": 1,
+                  "product_status": 1,
+                  "product_url": "https://staging.tokopedia.com//celana-bahan",
+                  "product_returnable": 0,
+                  "is_freereturns": 0,
+                  "is_preorder": 0,
+                  "product_cashback": "",
+                  "product_min_order": 1,
+                  "product_max_order": 10000,
+                  "product_rating": "0.000000",
+                  "product_invenage_value": 10000,
+                  "product_switch_invenage": 1,
+                  "product_price_currency": 1,
+                  "product_invenage_total": {
+                    "is_counted_by_user": false,
+                    "is_counted_by_product": false,
+                    "by_user": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_user_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    },
+                    "by_product": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_product_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    }
+                  },
+                  "price_changes": {
+                    "changes_state": 0,
+                    "amount_difference": 0,
+                    "original_amount": 0,
+                    "description": ""
+                  },
+                  "product_image": {
+                    "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_200_square": "https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg"
+                  },
+                  "product_all_images": "[{\"file_path\":\"product-1/2018/1/18/5514029\",\"file_name\":\"5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg\",\"status\":2}]",
+                  "product_notes": "",
+                  "product_quantity": 1,
+                  "product_weight_unit_code": 2,
+                  "product_weight_unit_text": "kg",
+                  "last_update_price": "1516246265",
+                  "is_update_price": false,
+                  "product_preorder": {
+                    "duration_text": "",
+                    "duration_day": "0",
+                    "duration_unit_code": "0",
+                    "duration_unit_text": "",
+                    "duration_value": "0"
+                  },
+                  "product_showcase": {
+                    "id": 1403336
+                  },
+                  "product_alias": "celana-bahan",
+                  "sku": "",
+                  "campaign_id": 0,
+                  "product_original_price": 0,
+                  "product_price_original_fmt": "",
+                  "is_slash_price": false,
+                  "free_returns": {
+                    "free_returns_logo": "https://ecs7.tokopedia.net/img/icon-frs.png"
+                  },
+                  "product_finsurance": 0,
+                  "is_wishlisted": true,
+                  "is_ppp": false,
+                  "is_cod": false,
+                  "warehouse_id": 548,
+                  "is_parent": false,
+                  "is_campaign_error": false
+                }
+              },
+              {
+                "errors": [],
+                "cart_id": "33375069",
+                "checkbox_state": true,
+                "similar_product_url": "",
+                "similar_product": {
+                  "text": "",
+                  "url": ""
+                },
+                "messages": [],
+                "product": {
+                  "product_tracker_data": {
+                    "attribution": "none/other",
+                    "tracker_list_name": "none/other"
+                  },
+                  "isWishlist": false,
+                  "product_id": 15161678,
+                  "product_name": "celana bahan",
+                  "product_price_fmt": "Rp10.000",
+                  "product_price": 10000,
+                  "parent_id": 0,
+                  "category_id": 1826,
+                  "category": "Fashion Pria / Celana / Celana Panjang",
+                  "catalog_id": 0,
+                  "wholesale_price": [],
+                  "product_weight_fmt": "1kg",
+                  "product_weight": 1,
+                  "product_condition": 1,
+                  "product_status": 1,
+                  "product_url": "https://staging.tokopedia.com//celana-bahan",
+                  "product_returnable": 0,
+                  "is_freereturns": 0,
+                  "is_preorder": 0,
+                  "product_cashback": "",
+                  "product_min_order": 1,
+                  "product_max_order": 10000,
+                  "product_rating": "0.000000",
+                  "product_invenage_value": 10000,
+                  "product_switch_invenage": 1,
+                  "product_price_currency": 1,
+                  "product_invenage_total": {
+                    "is_counted_by_user": false,
+                    "is_counted_by_product": false,
+                    "by_user": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_user_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    },
+                    "by_product": {
+                      "in_cart": 0,
+                      "last_stock_less_than": 0
+                    },
+                    "by_product_text": {
+                      "in_cart": "",
+                      "last_stock_less_than": "",
+                      "complete": ""
+                    }
+                  },
+                  "price_changes": {
+                    "changes_state": 0,
+                    "amount_difference": 0,
+                    "original_amount": 0,
+                    "description": ""
+                  },
+                  "product_image": {
+                    "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_200_square": "https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg",
+                    "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2018/1/18/5514029/5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg"
+                  },
+                  "product_all_images": "[{\"file_path\":\"product-1/2018/1/18/5514029\",\"file_name\":\"5514029_146653fe-9a56-459a-bbdc-d9435541883d_960_720.jpg\",\"status\":2}]",
+                  "product_notes": "",
+                  "product_quantity": 1,
+                  "product_weight_unit_code": 2,
+                  "product_weight_unit_text": "kg",
+                  "last_update_price": "1516246265",
+                  "is_update_price": false,
+                  "product_preorder": {
+                    "duration_text": "",
+                    "duration_day": "0",
+                    "duration_unit_code": "0",
+                    "duration_unit_text": "",
+                    "duration_value": "0"
+                  },
+                  "product_showcase": {
+                    "id": 1403336
+                  },
+                  "product_alias": "celana-bahan",
+                  "sku": "",
+                  "campaign_id": 0,
+                  "product_original_price": 0,
+                  "product_price_original_fmt": "",
+                  "is_slash_price": false,
+                  "free_returns": {
+                    "free_returns_logo": "https://ecs7.tokopedia.net/img/icon-frs.png"
+                  },
+                  "product_finsurance": 0,
+                  "is_wishlisted": true,
+                  "is_ppp": false,
+                  "is_cod": false,
+                  "warehouse_id": 548,
+                  "is_parent": false,
+                  "is_campaign_error": false
+                }
+              }
+            ]
           }
         ]
       }

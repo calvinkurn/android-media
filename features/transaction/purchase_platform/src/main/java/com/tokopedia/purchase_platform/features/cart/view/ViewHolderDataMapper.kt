@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupWithErrorData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledItemHeaderHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledShopHolderData
 import javax.inject.Inject
@@ -23,5 +25,22 @@ class ViewHolderDataMapper @Inject constructor() {
                 shopLocation = if (shopGroupWithErrorData.isFulfillment) shopGroupWithErrorData.fulfillmentName else "",
                 errorLabel = shopGroupWithErrorData.errorLabel
         )
+    }
+
+    fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
+        return cartItemHolderData.cartItemData.let {
+            DisabledCartItemHolderData(
+                    it.originData.cartId,
+                    it.originData.productId,
+                    it.originData.productImage,
+                    it.originData.productName,
+                    it.originData.pricePlan,
+                    it.errorMessageTitle,
+                    it.originData.isWishlisted,
+                    it.errorMessageDescription,
+                    it.similarProductData,
+                    showDivider,
+                    it)
+        }
     }
 }

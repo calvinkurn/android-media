@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingRight="@dimen/dp_16"
+    android:background="@color/white">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_shop_name"
@@ -38,6 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_3"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"

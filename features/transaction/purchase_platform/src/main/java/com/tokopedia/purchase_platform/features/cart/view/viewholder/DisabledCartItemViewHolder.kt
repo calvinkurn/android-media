@@ -6,10 +6,10 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartErrorItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 
-class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
+class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
@@ -17,7 +17,7 @@ class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener
 
     var showDivider: Boolean = false
 
-    fun bind(data: CartErrorItemHolderData) {
+    fun bind(data: DisabledCartItemHolderData) {
         renderProductInfo(data)
         renderError(data)
         renderTickerMessage(data)
@@ -27,13 +27,13 @@ class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener
         renderDivider(data)
     }
 
-    private fun renderProductInfo(data: CartErrorItemHolderData) {
+    private fun renderProductInfo(data: DisabledCartItemHolderData) {
         itemView.tv_product_name.text = data.productName
         itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false)
         itemView.iv_image_product.loadImageRounded(data.productImage)
     }
 
-    private fun renderError(data: CartErrorItemHolderData) {
+    private fun renderError(data: DisabledCartItemHolderData) {
         itemView.label_product_error.apply {
             if (data.error != null) {
                 text = data.error
@@ -44,24 +44,29 @@ class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener
         }
     }
 
-    private fun renderTickerMessage(data: CartErrorItemHolderData) {
+    private fun renderTickerMessage(data: DisabledCartItemHolderData) {
         itemView.ticker_message.apply {
-            visibility = if (data.tickerMessage != null) {
+            if (data.tickerMessage != null) {
                 setTextDescription(data.tickerMessage!!)
-                View.VISIBLE
+                visibility = View.VISIBLE
+                post {
+                    measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                    requestLayout()
+                }
             } else {
-                View.GONE
+                visibility = View.GONE
             }
         }
     }
 
-    private fun renderDeleteButton(data: CartErrorItemHolderData) {
+    private fun renderDeleteButton(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
-            TODO("action listener delete product")
+            actionListener.onDeleteDisabledItem(data.data)
         }
     }
 
-    private fun renderWishlistButton(data: CartErrorItemHolderData) {
+    private fun renderWishlistButton(data: DisabledCartItemHolderData) {
         itemView.img_wishlist.apply {
             if (data.isWishlisted) {
                 setImageResource(R.drawable.ic_wishlist_checkout_on)
@@ -69,24 +74,29 @@ class CartErrorItemViewHolder(itemView: View, val actionListener: ActionListener
                 setImageResource(R.drawable.ic_wishlist_checkout_off)
             }
             setOnClickListener {
-                TODO("action listener wishlist product")
+                if (data.isWishlisted) {
+                    actionListener.onRemoveFromWishlist(data.productId)
+                } else {
+                    actionListener.onAddToWishlist(data.productId)
+                }
             }
         }
     }
 
-    private fun renderSimilarProduct(data: CartErrorItemHolderData) {
-        if (data.similarProductData != null) {
+    private fun renderSimilarProduct(data: DisabledCartItemHolderData) {
+        if (data.similarProduct != null) {
             itemView.group_similar_product_on_cart_error.visibility = View.VISIBLE
-            itemView.tv_similar_product_on_cart_error.text = data.similarProductData!!.text
+            itemView.tv_similar_product_on_cart_error.text = data.similarProduct!!.text
             itemView.tv_similar_product_on_cart_error.setOnClickListener {
-                TODO("action listener similar product")
+                actionListener.onSimilarProductUrlClicked(data.similarProduct!!.url)
             }
+            actionListener.onShowTickerOutOfStock(data.productId)
         } else {
             itemView.group_similar_product_on_cart_error.visibility = View.GONE
         }
     }
 
-    private fun renderDivider(data: CartErrorItemHolderData) {
+    private fun renderDivider(data: DisabledCartItemHolderData) {
         showDivider = data.showDivider
         itemView.group_divider.visibility = if (data.showDivider) {
             View.VISIBLE

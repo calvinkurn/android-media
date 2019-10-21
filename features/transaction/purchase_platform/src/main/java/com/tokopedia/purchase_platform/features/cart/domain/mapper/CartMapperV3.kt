@@ -211,7 +211,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.updatedData = mapUpdatedData(cartDetail, cartDataListResponse)
             it.messageErrorData = mapMessageErrorData(cartDataListResponse.messages)
             mapCartItemDataWarning(cartDetail, it)
-            mapCartItemDatError(cartDetail, it)
+            mapCartItemDataError(cartDetail, it)
 
             when (shopGroup) {
                 is ShopGroupAvailable -> {
@@ -243,7 +243,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
         }
     }
 
-    private fun mapCartItemDatError(cartDetail: CartDetail, it: CartItemData) {
+    private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
         if (cartDetail.errors != null && cartDetail.errors.size > 0) {
             it.isError = true
             it.errorMessageTitle = cartDetail.errors[0]

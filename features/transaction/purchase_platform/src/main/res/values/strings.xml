@@ -163,8 +163,10 @@
     <string name="label_dialog_action_delete_and_add_to_wishlist">Pindahkan ke Wishlist</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist_macro_insurance">Hapus Terpilih &amp; Tambah Wishlist</string>
     <string name="label_dialog_title_delete_item">Hapus %1d barang dari keranjang?</string>
+    <string name="label_dialog_title_delete_disabled_item">%1d barang yang nggak bisa dibeli akan dihapus dari keranjangmu</string>
     <string name="label_dialog_title_delete_item_macro_insurance">Hapus Barang Terpilih?</string>
     <string name="label_dialog_action_delete">Hapus Barang</string>
+    <string name="label_dialog_action_cancel">Kembali</string>
     <string name="label_dialog_action_delete_macro_insurance">Hapus Terpilih</string>
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
     <string name="label_message_showcase_shipment_courier_recommendation_blackbox">Pilih tipe pengiriman yang didukung oleh toko ini.</string>
