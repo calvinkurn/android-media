@@ -9,6 +9,7 @@
         android:layout_width="@dimen/tab_home_feed_width"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
+        android:background="@drawable/ripple_collapse"
         app:cardCornerRadius="@dimen/dp_10"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
