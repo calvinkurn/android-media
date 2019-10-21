@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/cross_icon_bottomsheet"
+        android:id="@+id/location_cross_icon_bottomsheet"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_vertical"
@@ -28,13 +28,13 @@
 
     <TextView
         android:id="@+id/deals_text_select_location_1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/deal_product_text_color"
         android:letterSpacing="-0.01"
         android:lineSpacingExtra="6sp"
-        android:gravity="center_horizontal|center_vertical"
+        android:gravity="center"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/dp_24"
         app:layout_constraintTop_toBottomOf="@+id/deals_img_select_location"
@@ -46,11 +46,13 @@
 
     <TextView
         android:id="@+id/deals_text_select_location_2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/clr_ae31353b"
         android:lineSpacingExtra="6sp"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginRight="@dimen/dp_32"
         app:layout_constraintTop_toBottomOf="@+id/deals_text_select_location_1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

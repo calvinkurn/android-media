@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -20,6 +21,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +35,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -56,6 +60,7 @@ import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -107,6 +112,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private AppBarLayout appBarLayout;
     private UserSession userSession;
     private boolean isLocationUpdated;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     private Menu mMenu;
 
@@ -133,6 +139,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
             this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
         }
+        permissionCheckerHelper = new PermissionCheckerHelper();
         userSession = new UserSession(getActivity());
     }
 
@@ -142,13 +149,39 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         setHasOptionsMenu(true);
         setViewIds(view);
 
-
-        mPresenter.getCategoryDetails(true);
-        mPresenter.getBrandsList(true);
+        checkForCurrentLocation();
         if (userSession.isLoggedIn()) {
             mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
         }
         return view;
+    }
+
+    private void checkForCurrentLocation() {
+        permissionCheckerHelper.checkPermission(CategoryDetailHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                Log.d("Naveen", "permission denied");
+                mPresenter.getCategoryDetails(true);
+                mPresenter.getBrandsList(true);
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+                Log.d("Naveen", "Never ask again"+ permissionText);
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Log.d("Naveen", "permission allowed");
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper);
+
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+                String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+                String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+                mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+            }
+        }, getContext().getResources().getString(R.string.deals_use_current_location));
     }
 
 
@@ -546,6 +579,13 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
+    public void setCurrentLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        mPresenter.getCategoryDetails(true);
+        mPresenter.getBrandsList(true);
+    }
+
+    @Override
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_promo) {
@@ -580,5 +620,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             mPresenter.getBrandsList(true);
             mPresenter.getCategoryDetails(true);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
 }

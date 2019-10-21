@@ -3,11 +3,13 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -40,9 +42,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.coachmark.CoachMark;
@@ -71,6 +75,7 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -134,6 +139,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private boolean isFirstTime = false;
     private TextView promoheading;
     private UserSession userSession;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
         DealsHomeFragment fragment = new DealsHomeFragment();
@@ -150,6 +156,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (getArguments() != null) {
             isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
         }
+        permissionCheckerHelper = new PermissionCheckerHelper();
     }
 
     @Override
@@ -185,15 +192,30 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void checkLocationStatus() {
 
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        permissionCheckerHelper.checkPermission(DealsHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                Log.d("Naveen", "permission denied");
+                setDefaultLocation();
+            }
 
-        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
-            mPresenter.getLocations();
-        } else if (location != null){
-            tvLocationName.setText(location.getName());
-            mPresenter.getDealsList(true);
-            mPresenter.getBrandsHome();
-        }
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+                Log.d("Naveen", "Never ask again"+ permissionText);
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Log.d("Naveen", "permission allowed");
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper);
+
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+                String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+                String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+                mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+            }
+        }, getContext().getResources().getString(R.string.deals_use_current_location));
     }
 
     private void startShowCase() {
@@ -573,6 +595,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    @Override
     public int getRequestCode() {
         return DealsHomeActivity.REQUEST_CODE_LOGIN;
     }
@@ -744,6 +772,19 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvLocationName.setText(locations.get(0).getName());
         mPresenter.getDealsList(true);
         mPresenter.getBrandsHome();
+    }
+
+    @Override
+    public void setDefaultLocation() {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
     }
 
     @Override

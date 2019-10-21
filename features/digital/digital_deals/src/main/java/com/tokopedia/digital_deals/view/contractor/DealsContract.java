@@ -73,6 +73,8 @@ public class DealsContract {
         String getSearchInputText();
 
         void updateInitialLocation(List<Location> locations);
+
+        void setDefaultLocation();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

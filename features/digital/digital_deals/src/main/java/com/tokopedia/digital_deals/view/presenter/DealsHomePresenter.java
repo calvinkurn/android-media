@@ -24,7 +24,9 @@ import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetInitialLocationUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationCityUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
@@ -79,6 +81,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     public final static String TAG = "url";
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
+    private GetNearestLocationUseCase getNearestLocationUseCase;
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
     private GetInitialLocationUseCase getInitialLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
@@ -102,7 +105,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, PostNsqEventUseCase postNsqEventUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, PostNsqEventUseCase postNsqEventUseCase, GetNearestLocationUseCase getNearestLocationUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
@@ -110,6 +113,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getInitialLocationUseCase = getInitialLocationUseCase;
         this.postNsqEventUseCase = postNsqEventUseCase;
+        this.getNearestLocationUseCase = getNearestLocationUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -134,6 +138,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (postNsqEventUseCase != null) {
             postNsqEventUseCase.unsubscribe();
+        }
+        if (getNearestLocationUseCase != null) {
+            getNearestLocationUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -623,6 +630,41 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
+    }
+
+
+    public void getNearestLocation(String coordinates) {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putString(Utils.LOCATION_COORDINATES, coordinates);
+        getNearestLocationUseCase.setRequestParams(params);
+        getNearestLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().updateInitialLocation(locationResponse.getLocations());
+                } else {
+                    getView().setDefaultLocation();
+                }
             }
         });
     }

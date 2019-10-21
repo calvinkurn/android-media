@@ -50,6 +50,8 @@ public class DealsCategoryDetailContract {
         void showViews();
 
         void startLocationFragment(List<Location> locations);
+
+        void setCurrentLocation(List<Location> locations);
     }
 
     public interface Presenter extends CustomerPresenter<DealsCategoryDetailContract.View> {

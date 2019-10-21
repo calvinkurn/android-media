@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -66,6 +67,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     private String selectedLocation;
     private ConstraintLayout noLocationLayout;
     private TextView detectLocation;
+    private ConstraintLayout detectLocationLayout;
     private SelectedLocationListener selectedLocationListener;
     @Inject
     DealsLocationPresenter mPresenter;
@@ -95,6 +97,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         rvSearchResults = locationView.findViewById(R.id.rv_city_results);
         rvLocationResults = locationView.findViewById(R.id.rv_location_results);
         detectLocation = locationView.findViewById(R.id.detect_current_location);
+        detectLocationLayout = locationView.findViewById(R.id.cl_detect_current_location);
         crossIcon = locationView.findViewById(R.id.cross_icon_bottomsheet);
         titletext = locationView.findViewById(R.id.location_bottomsheet_title);
         searchInputView = locationView.findViewById(R.id.search_input_view);
@@ -107,13 +110,13 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
         searchInputView.setResetListener(this);
-        detectLocation.setOnClickListener(this);
+        detectLocationLayout.setOnClickListener(this);
         searchInputView.setSearchHint(getContext().getResources().getString(R.string.location_search_hint));
         mainContent = locationView.findViewById(R.id.mainContent);
         shimmerLayout = locationView.findViewById(R.id.shimmer_layout);
 
         permissionCheckerHelper = new PermissionCheckerHelper();
-        locationSettingBottomSheet = CloseableBottomSheetDialog.createInstance(getActivity());
+        locationSettingBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         location = getArguments().getParcelable(Utils.LOCATION_OBJECT);
 
         titletext.setText(getContext().getResources().getString(R.string.select_location_bottomsheet_title));
@@ -311,7 +314,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.detect_current_location) {
+        if (id == R.id.cl_detect_current_location) {
             if (!isDeniedFirstTime) {
                 permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
@@ -347,7 +350,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
 
     private void openLocationSettingBottomSheet() {
         View categoryView = getLayoutInflater().inflate(R.layout.deals_current_location_bottomsheet, null);
-        ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+        ImageView crossIcon = categoryView.findViewById(R.id.location_cross_icon_bottomsheet);
         UnifyButton openLocationSettings = categoryView.findViewById(R.id.goto_location_settings);
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -359,11 +362,12 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         openLocationSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                intent.setData(uri);
                 getContext().startActivity(intent);
             }
         });
-
         locationSettingBottomSheet.setCustomContentView(categoryView, "", false);
         locationSettingBottomSheet.show();
         locationSettingBottomSheet.setCanceledOnTouchOutside(true);

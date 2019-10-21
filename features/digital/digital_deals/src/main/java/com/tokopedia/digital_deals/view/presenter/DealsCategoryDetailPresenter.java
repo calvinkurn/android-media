@@ -14,6 +14,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
@@ -55,7 +56,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
-
+    private GetNearestLocationUseCase getNearestLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetLocationListRequestUseCase getLocationListRequestUseCase;
     private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
@@ -69,12 +70,13 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
 
     @Inject
-    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, PostNsqEventUseCase postNsqEventUseCase) {
+    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, PostNsqEventUseCase postNsqEventUseCase, GetNearestLocationUseCase getNearestLocationUseCase) {
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getNextCategoryPageUseCase = getNextCategoryPageUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getLocationListRequestUseCase = getLocationListRequestUseCase;
         this.postNsqEventUseCase = postNsqEventUseCase;
+        this.getNearestLocationUseCase = getNearestLocationUseCase;
     }
 
     @Override
@@ -88,6 +90,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getNextCategoryPageUseCase.unsubscribe();
         getAllBrandsUseCase.unsubscribe();
         postNsqEventUseCase.unsubscribe();
+        getNearestLocationUseCase.unsubscribe();
     }
 
     @Override
@@ -379,6 +382,40 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 Log.d("Naveen", "NSQ Event Sent category event");
+            }
+        });
+    }
+
+    public void getNearestLocation(String coordinates) {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putString(Utils.LOCATION_COORDINATES, coordinates);
+        getNearestLocationUseCase.setRequestParams(params);
+        getNearestLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().setCurrentLocation(locationResponse.getLocations());
+                } else {
+
+                }
             }
         });
     }

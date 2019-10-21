@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
@@ -40,6 +42,9 @@ import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ValuesItem;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -53,6 +58,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
 public class Utils {
@@ -86,6 +94,7 @@ public class Utils {
     public static final String KEY_LOCATION = "KEY_FP_LOCATION";
     public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
     public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+    private SharedPreferences sharedPrefs;
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -410,4 +419,41 @@ public class Utils {
         sharedPreferencesEditor.apply();
     }
 
+    public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper) {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(activity
+                        .getApplicationContext()),
+                activity.getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(activity), activity,
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation(Activity activity) {
+        return new Function1<DeviceLocation, Unit>() {
+            @Override
+            public Unit invoke(DeviceLocation deviceLocation) {
+                Utils.this.saveLocation(activity, deviceLocation.getLatitude(), deviceLocation.getLongitude());
+                return null;
+            }
+        };
+    }
+
+    public void  saveLocation(Context context, double latitude, double longitude) {
+        SharedPreferences.Editor editor;
+        if (context != null && !TextUtils.isEmpty(Utils.KEY_LOCATION)) {
+            sharedPrefs = context.getSharedPreferences(Utils.KEY_LOCATION, Context.MODE_PRIVATE);
+            editor = sharedPrefs.edit();
+        } else {
+            return;
+        }
+        Log.d("Naveen", "Lat is "+ String.valueOf(latitude));
+        Log.d("Naveen", "Long is "+ String.valueOf(longitude));
+
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,TkpdCache.DEALS_LOCATION);
+        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(latitude));
+        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(longitude));
+        localCacheHandler.applyEditor();
+    }
 }

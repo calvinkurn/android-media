@@ -68,6 +68,7 @@
                 android:background="@color/grey_300" />
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_detect_current_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
