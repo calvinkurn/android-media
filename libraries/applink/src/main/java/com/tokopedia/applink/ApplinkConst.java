@@ -253,6 +253,7 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
     String OVO_WALLET = "tokopedia://ovo";
 
@@ -321,6 +322,8 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
+        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
+        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";
