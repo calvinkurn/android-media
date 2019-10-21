@@ -110,6 +110,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_KEMBALI = "click kembali - cancelation";
     private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
     private static final String CLICK_VIEW_COMPLAIN ="click view complain";
+    private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -408,7 +409,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopText(pricing.label());
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomText(pricing.value());
+        if (pricing.label().contains(TOTAL_SHIPPING_PRICE) && pricing.value().contains("Rp 0"))
+            doubleTextView.setBottomText(getResources().getString(R.string.tkpdtransaction_bebas_ongkir));
+        else
+            doubleTextView.setBottomText(pricing.value());
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
