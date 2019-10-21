@@ -322,7 +322,6 @@ internal class ShopItemViewHolder(
     private fun setLabelVoucherCashbackMargin() {
         itemView.labelVoucherCashback?.doIfVisible {
             if(itemView.labelVoucherFreeShipping.isNullOrNotVisible) {
-                setViewMargins(it.id, ConstraintSet.LEFT, com.tokopedia.design.R.dimen.dp_0)
                 setViewMargins(it.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_0)
             }
         }
@@ -333,6 +332,15 @@ internal class ShopItemViewHolder(
 
         topConstraintViewForLabelVoucher?.let {
             setLabelVoucherConstraintTop(it)
+        }
+    }
+
+    private fun getTopConstraintViewForLabelVoucher(): View? {
+        return if (itemView.textViewShopItemProductPrice1?.isVisible == true) {
+            itemView.textViewShopItemProductPrice1
+        }
+        else {
+            itemView.textViewShopHasNoProduct
         }
     }
 
@@ -351,15 +359,6 @@ internal class ShopItemViewHolder(
                     topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
                     com.tokopedia.design.R.dimen.dp_4
             )
-        }
-    }
-
-    private fun getTopConstraintViewForLabelVoucher(): View? {
-        return if (itemView.textViewShopItemProductPrice1?.isVisible == true) {
-            itemView.textViewShopItemProductPrice1
-        }
-        else {
-            itemView.textViewShopHasNoProduct
         }
     }
 
