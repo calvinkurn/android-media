@@ -99,8 +99,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
@@ -1185,23 +1183,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     /**
-     * Tokocash & Tokopoint
+     * Tokopoint
      */
-    @Override
-    public Observable<HomeHeaderWalletAction> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
-            return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
-        }
-        return null;
-    }
-
-    @Override
-    public Observable<PendingCashback> getTokocashPendingCashback() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
-            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
-        }
-        return null;
-    }
 
     @Override
     public Observable<TokopointHomeDrawerData> getTokopoint() {

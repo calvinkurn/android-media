@@ -5,29 +5,31 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
+import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
-import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
@@ -79,6 +81,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetFeedTabUseCase getFeedTabUseCase;
     @Inject
     SendGeolocationInfoUseCase sendGeolocationInfoUseCase;
+    @Inject
+    GetWalletBalanceUseCase getWalletBalanceUseCase;
+    @Inject
+    GetPendingCasbackUseCase getPendingCasbackUseCase;
 
     @Inject
     Lazy<GetHomeTokopointsDataUseCase> getHomeTokopointsDataUseCaseLazy;
@@ -449,7 +455,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         @Override
         public void onNext(List<HomeVisitable> visitables) {
-            if (visitables.size()>VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+            if (visitables.size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                 if (homePresenter != null && homePresenter.isViewAttached()) {
                     homePresenter.getView().setItems(new ArrayList<>(visitables), repositoryFlag);
                     homePresenter.getView().addImpressionToTrackingQueue(visitables);
@@ -514,21 +520,19 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
      * Tokocash & Tokopoint
      */
     private void getTokocashBalance() {
-        if (getView().getTokocashBalance() != null) {
-            compositeSubscription.add(getView().getTokocashBalance().subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new TokocashHomeSubscriber(this)));
-        }
+        compositeSubscription.add(getWalletBalanceUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new TokocashHomeSubscriber(this)));
     }
 
     public void getTokocashPendingBalance() {
-        if (getView().getTokocashPendingCashback() != null) {
-            compositeSubscription.add(getView().getTokocashPendingCashback().subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new PendingCashbackHomeSubscriber(this)));
-        }
+        compositeSubscription.add(getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new PendingCashbackHomeSubscriber(this)));
     }
 
     public void getTokopoint() {
@@ -541,7 +545,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void getSearchHint(){
+    public void getSearchHint() {
         Observable<GraphqlResponse> graphqlResponseObservable = getKeywordSearchObservable();
         if (graphqlResponseObservable != null) {
             compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
@@ -561,7 +565,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return null;
     }
 
-    private Observable<GraphqlResponse> getKeywordSearchObservable(){
+    private Observable<GraphqlResponse> getKeywordSearchObservable() {
         if (getKeywordSearchUseCaseLazy != null) {
             GetKeywordSearchUseCase getKeywordSearchUseCase = getKeywordSearchUseCaseLazy.get();
             getKeywordSearchUseCase.clearRequest();
