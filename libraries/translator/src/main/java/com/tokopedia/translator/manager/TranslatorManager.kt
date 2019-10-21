@@ -32,7 +32,6 @@ import com.tokopedia.translator.repository.source.GetDataService
 import com.tokopedia.translator.repository.source.RetrofitClientInstance
 import com.tokopedia.translator.ui.CommonUtil
 import com.tokopedia.translator.ui.SharedPrefsUtils
-import com.tokopedia.translator.ui.TranslatorSettingView
 import com.tokopedia.translator.ui.TranslatorSettingView.*
 import com.tokopedia.translator.util.ViewUtil
 import org.json.JSONObject
