@@ -114,7 +114,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     companion object {
-
+        fun isBannedNavigationEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
+        }
         @JvmStatic
         fun isCategoryRevampEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
