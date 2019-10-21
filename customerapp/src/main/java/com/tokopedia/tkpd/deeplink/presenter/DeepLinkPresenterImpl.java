@@ -742,10 +742,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return applink + "?" + uriData.getQuery();
     }
 
-    private void openReferralScreen(Uri uriData) {
-        context.startActivity(ReferralActivity.getCallingIntent(context));
-    }
-
     private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
         return (linkSegment.size() == 1 && !isHotAlias(uriData));
     }
