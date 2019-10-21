@@ -15,19 +15,24 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.util.TkpdWebViewClient;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.webview.TkpdWebView;
+import com.tokopedia.webview.TkpdWebViewClient;
 
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.applink.RouteManager;
 
 /**
  * Created by nisie on 8/12/16.
@@ -44,7 +49,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     public final static int ATTACH_FILE_REQUEST = 1;
     private TkpdWebView webView;
     private ProgressBar progressBar;
-
+    public static final String URL_HELP = TokopediaUrl.Companion.getInstance().getWEB() + "help?utm_source=android";
+    private UserSessionInterface session;
     ContactUsFaqListener listener;
     String url;
 
@@ -61,6 +67,12 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        session = new UserSession(context);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }
@@ -69,13 +81,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     protected void onFirstTimeLaunched() {
         String url;
         if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
-            url = TkpdBaseURL.ContactUs.URL_HELP;
+            url = URL_HELP;
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
-        webView.loadAuthUrlWithFlags(url);
-
-
+        webView.loadAuthUrlWithFlags(url, session.getUserId(), session.getAccessToken());
     }
 
     @Override
@@ -147,7 +157,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     protected void setActionVar() {
 
     }
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -258,7 +268,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             try {
                 if (url.getLastPathSegment().equals("contact-us.pl")) {
                     webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
-                            .BASE_CONTACT_US, context));
+                            .BASE_CONTACT_US, context), session.getUserId(), session.getAccessToken());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
@@ -282,16 +292,12 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 } else if (url.toString().contains(CHATBOT_SCHEME)
                         && getActivity().getApplicationContext() instanceof ContactUsModuleRouter) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = ((ContactUsModuleRouter) getActivity()
-                            .getApplicationContext())
-                            .getChatBotIntent(context, messageId);
+                    Intent chatBotIntent = RouteManager.getIntent(context, ApplinkConst.CHATBOT
+                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
                     startActivity(chatBotIntent);
                     return true;
-                } else if (url.toString().contains(APPLINK_SCHEME)
-                        && getActivity().getApplicationContext() instanceof ContactUsModuleRouter) {
-                    ((ContactUsModuleRouter) getActivity().getApplicationContext())
-                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
-                                    Bundle());
+                } else if (url.toString().contains(APPLINK_SCHEME)) {
+                    RouteManager.route(getActivity(), url.toString());
                     return true;
                 } else {
                     return false;
