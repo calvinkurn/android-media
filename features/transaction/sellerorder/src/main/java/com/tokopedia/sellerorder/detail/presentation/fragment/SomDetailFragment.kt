@@ -282,6 +282,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             adapter = somBottomSheetTextOnlyAdapter
         }
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
         bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
     }
