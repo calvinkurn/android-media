@@ -73,12 +73,12 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     companion object {
         fun newInstance(cartDigitalInfoData: CartDigitalInfoData,
                         passData: DigitalCheckoutPassData,
-                        subParams: DigitalSubscriptionParams): DigitalCartMyBillsFragment {
+                        subParams: DigitalSubscriptionParams?): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
             bundle.putParcelable(ARG_PASS_DATA, passData)
-            bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, subParams)
+            subParams?.let { bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, it) }
             fragment.arguments = bundle
             return fragment
         }
