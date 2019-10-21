@@ -73,7 +73,14 @@ public class UriUtil {
         return result;
     }
 
-
+    /**
+     * Destructure uri to Bundle
+     *
+     * @param uriPatternString example: "tokopedia-android-internal://marketplace/shop/{id_1}/etalase/{id_2}/"
+     * @param uri              example: "tokopedia-android-internal://marketplace/shop/123/etalase/345"
+     * @param bundle            it can be nullable if not then it will add key value in this bundle
+     * @return bundle of ("id_1":123,"id_2":345)
+     */
 
     public static Bundle destructiveUriBundle(@NonNull String uriPatternString, Uri uri, Bundle bundle){
         try {

@@ -1401,19 +1401,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void onTokopointCheckNowClicked(String applink) {
-        if (TextUtils.isEmpty(applink)) {
-            return;
-        }
-
-        if (getActivity() != null
-                && RouteManager.isSupportApplink(getActivity(), applink)) {
-            openApplink(applink);
-        } else {
-            openWebViewURL(applink, getActivity());
-        }
-    }
 
     @Override
     public HomeEggListener getEggListener() {

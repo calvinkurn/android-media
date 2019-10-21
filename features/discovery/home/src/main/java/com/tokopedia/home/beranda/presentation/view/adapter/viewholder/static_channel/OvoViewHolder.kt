@@ -80,7 +80,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
+            RouteManager.route(context,ApplinkConst.TOKOPOINTS)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }

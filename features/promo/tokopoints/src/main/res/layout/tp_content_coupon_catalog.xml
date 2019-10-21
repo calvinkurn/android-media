@@ -105,7 +105,7 @@
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
-            <FrameLayout
+            <com.tokopedia.webview.TkpdWebView
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
-            <FrameLayout
+            <com.tokopedia.webview.TkpdWebView
                 android:id="@+id/how_to_use_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

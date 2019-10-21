@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -591,20 +590,12 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
 
-        FrameLayout tvHowToUse = getView().findViewById(R.id.how_to_use_content);
-        FrameLayout tvTnc = getView().findViewById(R.id.tnc_content);
+        TkpdWebView tvHowToUse = getView().findViewById(R.id.how_to_use_content);
+        TkpdWebView tvTnc = getView().findViewById(R.id.tnc_content);
         Typography tncSeeMore = getView().findViewById(R.id.tnc_see_more);
         Typography howToUseSeeMore = getView().findViewById(R.id.how_to_use_see_more);
-
-        TkpdWebView webView = new TkpdWebView(getContext());
-        tvTnc.addView(webView);
-
-        webView.loadData(getLessDisplayData(data.getTnc(), tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
-
-        webView = new TkpdWebView(getContext());
-        tvHowToUse.addView(webView);
-        webView.loadData(getLessDisplayData(data.getHowToUse(), howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
-        SplitCompat.installActivity(getContext());
+        tvTnc.loadData(getLessDisplayData(data.getTnc(), tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+        tvHowToUse.loadData(getLessDisplayData(data.getHowToUse(), howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
         tncSeeMore.setOnClickListener(v -> {
             loadWebViewInBottomsheet(data.getTnc(), getString(R.string.tnc_coupon_catalog));
         });
@@ -768,7 +759,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private void loadWebViewInBottomsheet(String data, String title) {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
-        SplitCompat.installActivity(getContext());
         WebView webView = view.findViewById(R.id.catalog_webview);
         ImageView closeBtn = view.findViewById(R.id.close_button);
         Typography titleView = view.findViewById(R.id.title_closeable);

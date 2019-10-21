@@ -682,7 +682,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
         llBottomBtn.setVisibility(View.VISIBLE);
-        SplitCompat.installActivity(getActivity());
         //excluding extra padding from tabs
         TabUtil.wrapTabIndicatorToTitle(tabs,
                 (int) getResources().getDimension(com.tokopedia.tokopoints.R.dimen.tp_margin_medium),

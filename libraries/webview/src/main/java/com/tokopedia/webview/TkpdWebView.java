@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
@@ -28,14 +29,21 @@ public class TkpdWebView extends WebView {
 
     public TkpdWebView(Context context) {
         super(context);
+        init(context);
+    }
+
+    private void init(Context context) {
+        SplitCompat.installActivity(context);
     }
 
     public TkpdWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public TkpdWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
     }
 
     public void loadUrlWithFlags(String url) {

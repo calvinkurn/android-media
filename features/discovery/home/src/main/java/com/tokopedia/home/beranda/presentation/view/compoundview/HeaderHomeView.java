@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.home.R;
@@ -174,7 +175,7 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onCheckNowListener() {
         return v -> {
             HomePageTracking.eventTokopointNonLogin(getContext());
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS);
+            RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
         };
     }
 

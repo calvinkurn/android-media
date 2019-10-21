@@ -68,7 +68,6 @@ interface HomeCategoryListener {
 
     fun onSpotlightItemClicked(actionLink: String)
 
-    fun onTokopointCheckNowClicked(applink: String)
 
     fun launchPermissionChecker()
 

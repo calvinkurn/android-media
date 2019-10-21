@@ -133,7 +133,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override

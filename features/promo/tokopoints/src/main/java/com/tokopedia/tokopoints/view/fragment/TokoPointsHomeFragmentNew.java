@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -194,7 +195,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             rewardsPointLayout.setLayoutParams(rewardsPointLayoutLP);
 
             RelativeLayout.LayoutParams tvEmptyLP = (RelativeLayout.LayoutParams) emptyTitle.getLayoutParams();
-            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.dp_56));
+            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(com.tokopedia.design.R.dimen.dp_56));
             emptyTitle.setLayoutParams(tvEmptyLP);
         }
 
