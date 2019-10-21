@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -42,7 +43,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
-import rx.Subscriber
 import javax.inject.Inject
 
 
@@ -220,7 +220,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
                 is Success -> {
                     progressBar.visibility = View.GONE
                     if(it.data.isBanned == 1) {
-                       setEmptyView(it.data)
+                       setBannedPage(it.data)
                     }else {
                         layout_banned_screen.visibility = View.GONE
                         searchNavContainer?.visibility = View.VISIBLE
@@ -232,15 +232,23 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
                 }
                 is Fail -> {
                     progressBar.visibility = View.GONE
-                    setEmptyView(null)
+                    setBannedPage(null)
                 }
             }
         })
         categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
     }
 
-    private fun setEmptyView(data :Data?){
+    private fun setBannedPage(data :Data?){
         layout_banned_screen.visibility = View.VISIBLE
+        if (isBannedNavigationEnabled(this))  {
+            category_btn_banned_navigation.visibility = View.VISIBLE
+            category_btn_banned_navigation.setOnClickListener() {
+                var browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data?.appRedirection))
+                startActivity(browserIntent)
+            }
+        }
+
         searchNavContainer?.visibility = View.GONE
         if(data == null) {
             txt_header.text = "There is some error on server"

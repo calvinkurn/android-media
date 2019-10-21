@@ -1,35 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_20">
+    android:gravity="center">
 
     <ImageView
-        android:id="@+id/img_no_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/cat_ic_banned_item" />
+        android:id="@+id/img_banned_product"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/cat_ic_banned_item"
+        app:layout_constraintBottom_toTopOf="@+id/txt_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_header"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="252dp"
+        android:gravity="center_horizontal"
         android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        tools:text="Oops, Produk Nggak Ditemukan" />
+        tools:text="Pencarian terbatas di Android" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_no_data_description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:gravity="center"
         android:paddingTop="@dimen/dp_5"
-        app:typographyType="heading_5"
-        tools:text="Coba kurangi salah satu filter yang kamu gunakan :" />
+        app:layout_constraintEnd_toEndOf="@+id/txt_header"
+        app:layout_constraintStart_toStartOf="@+id/txt_header"
+        app:layout_constraintTop_toBottomOf="@+id/txt_header"
+        app:typographyType="heading_4"
+        tools:text="Transaksi barang bernikotin/tembakau dibatasi. Coba cari dengan mobile web." />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/category_btn_banned_navigation"
+        android:layout_width="@dimen/dp_250"
+        android:layout_height="@dimen/dp_48"
+        android:visibility="gone"
+        android:background="@drawable/bg_green_rounded_tradein"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:text="Buka Mobile Web"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_no_data_description"
+        app:layout_constraintWidth_default="wrap" />
+
+</android.support.constraint.ConstraintLayout>

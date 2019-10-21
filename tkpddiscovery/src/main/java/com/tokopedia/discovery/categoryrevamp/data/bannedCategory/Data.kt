@@ -17,7 +17,7 @@ class Data {
     @SerializedName("bannedMsgHeader")
     var bannedMsgHeader: String? = null
 
-    @SerializedName("app_redirection")
+    @SerializedName("appRedirection")
     var appRedirection: String? = null
 
     @SerializedName("isBanned")
