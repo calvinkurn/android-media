@@ -113,23 +113,25 @@ class CartMapperData : ICartMapperData {
             relationships.relationOperator = Relation(relationDataOperator)
             relationships.relationProduct = Relation(relationDataProduct)
 
-            cartDigitalInfoData.crossSellingType = responseCartData.attributes!!.crossSellingType
-            responseCartData.attributes?.crossSellingConfig?.run {
-                val crossSellingConfig = CrossSellingConfig()
-                crossSellingConfig.isSkipAble = isSkipAble
+            responseCartData.attributes?.run {
+                cartDigitalInfoData.crossSellingType = crossSellingType
+                crossSellingConfig?.run {
+                    val crossSellingConfig = CrossSellingConfig()
+                    crossSellingConfig.isSkipAble = isSkipAble
 
-                val crossSellingWording = if (cartDigitalInfoData.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED) {
-                    wordingIsSubscribed
-                } else {
-                    wording
-                }
-                crossSellingWording?.run {
-                    crossSellingConfig.headerTitle = headerTitle
-                    crossSellingConfig.bodyTitle = bodyTitle
-                    crossSellingConfig.bodyContentBefore = bodyContentBefore
-                    crossSellingConfig.bodyContentAfter = bodyContentAfter
-                    crossSellingConfig.checkoutButtonText = checkoutButtonText
-                    cartDigitalInfoData.crossSellingConfig = crossSellingConfig
+                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED) {
+                        wordingIsSubscribed
+                    } else {
+                        wording
+                    }
+                    crossSellingWording?.run {
+                        crossSellingConfig.headerTitle = headerTitle
+                        crossSellingConfig.bodyTitle = bodyTitle
+                        crossSellingConfig.bodyContentBefore = bodyContentBefore
+                        crossSellingConfig.bodyContentAfter = bodyContentAfter
+                        crossSellingConfig.checkoutButtonText = checkoutButtonText
+                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
+                    }
                 }
             }
 

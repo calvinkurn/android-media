@@ -59,7 +59,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
-        isSubscribed = arguments!!.getBoolean(ARG_IS_SUBSCRIBED)
+        isSubscribed = arguments?.getBoolean(ARG_IS_SUBSCRIBED) ?: false
         super.onCreate(savedInstanceState)
     }
 
