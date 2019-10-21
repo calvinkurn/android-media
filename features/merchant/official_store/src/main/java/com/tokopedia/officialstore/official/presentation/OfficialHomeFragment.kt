@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -28,16 +27,12 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
-import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
-import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
@@ -198,31 +193,27 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
             refreshData()
         }
 
-//        if (parentFragment is RecyclerViewScrollListener) {
-//            val scrollListener = parentFragment as RecyclerViewScrollListener
-//            layoutManager?.let {
-//                var firstVisibleInListview = it.findFirstVisibleItemPositions(null)
-//                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                        super.onScrolled(recyclerView, dx, dy)
-//                        val currentFirstVisible = it.findFirstVisibleItemPositions(layoutManager.getChildCount())
-//
-//                        // scroll up
-//                        if (currentFirstVisible > firstVisibleInListview) {
-//                            scrollListener.onScrollUp()
-//                        } else { // scroll down
-//                            scrollListener.onScrollDown()
-//                        }
-//                        firstVisibleInListview = currentFirstVisible
-//
-//                        // TODO logic load more
-//                        // please see ProductDetailFragment > function addLoadMoreImpression
-//                        viewModel.loadMore()
-//                    }
-//
-//                })
-//            }
-//        }
+        if (parentFragment is RecyclerViewScrollListener) {
+            val scrollListener = parentFragment as RecyclerViewScrollListener
+            layoutManager?.let {
+                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+
+                        if (dy > 0) {
+                            scrollListener.onScrollUp()
+                        } else {
+                            scrollListener.onScrollDown()
+                        }
+
+                        // TODO logic load more
+                        // please see ProductDetailFragment > function addLoadMoreImpression
+                        // viewModel.loadMore()
+                    }
+
+                })
+            }
+        }
 
     }
 

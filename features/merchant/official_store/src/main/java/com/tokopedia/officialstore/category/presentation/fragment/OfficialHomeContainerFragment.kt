@@ -12,6 +12,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -82,10 +86,22 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     override fun onScrollDown() {
         // visible icon tab layout
+        for (x in 0 until tabLayout?.tabCount.orZero()) {
+            val tab = tabLayout?.getTabAt(x)
+            tab?.customView?.let {
+               it.findViewById<View>(R.id.image_view_category_icon)?.visible()
+            }
+        }
     }
 
     override fun onScrollUp() {
         // gone icon tab layout
+        for (x in 0 until tabLayout?.tabCount.orZero()) {
+            val tab = tabLayout?.getTabAt(x)
+            tab?.customView?.let {
+                it.findViewById<View>(R.id.image_view_category_icon)?.gone()
+            }
+        }
     }
 
     // from: GlobalNav, to show notification maintoolbar

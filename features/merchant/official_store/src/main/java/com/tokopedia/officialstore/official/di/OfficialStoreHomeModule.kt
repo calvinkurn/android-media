@@ -9,11 +9,7 @@ import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.category.di.OfficialStoreCategoryScope
 import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -66,6 +62,7 @@ class OfficialStoreHomeModule {
 //                graphqlUseCase,
 //                userSessionInterface)
 //    }
+
     @OfficialStoreHomeScope
     @Provides
     fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
