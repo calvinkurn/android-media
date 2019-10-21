@@ -843,6 +843,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 String html = (otd.getText_detail() != null) ? otd.getText_detail() : "";
                 String url = otd.getUrl_detail();
                 tickerOtd.setVisibility(View.VISIBLE);
+                mActionListener.onImpressionOntimeDelivery(html);
                 tickerOtd.setHtmlDescription(html);
                 tickerOtd.setTickerTitle(otd.getText_label());
                 tickerOtd.setDescriptionClickEvent(new TickerCallback() {
