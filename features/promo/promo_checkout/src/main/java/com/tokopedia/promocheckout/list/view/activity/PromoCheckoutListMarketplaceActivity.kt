@@ -15,18 +15,14 @@ import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketpla
 
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
-
-    lateinit var promocheckoutlistfragment: PromoCheckoutListMarketplaceFragment
-
     override fun getNewFragment(): Fragment {
-        promocheckoutlistfragment = PromoCheckoutListMarketplaceFragment.createInstance(
+        return PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
                 intent?.extras?.getBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, false),
                 intent?.extras?.getInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, 1) ?: 1,
                 intent?.extras?.getParcelable(PromoCheckoutListMarketplaceFragment.CHECK_PROMO_FIRST_STEP_PARAM) as Promo
         )
-        return promocheckoutlistfragment
     }
 
     override fun getComponent(): PromoCheckoutListComponent {
@@ -50,11 +46,16 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
 
     override fun onBackPressed() {
 
-        val hasFragment = supportFragmentManager.backStackEntryCount > 0
-        if (hasFragment) {
-            supportFragmentManager.popBackStack()
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            } else
+                super.onBackPressed()
         } else {
             super.onBackPressed()
+
         }
     }
 }
+
