@@ -24,7 +24,6 @@
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
-/tkpdtokocash/      @tokopedia/minion-mark
 /tkpdabstraction/   @tokopedia/core-team
 /customerapp/       @tokopedia/core-team
 
@@ -148,6 +147,8 @@
 /features/digital/digital_deals         @tokopedia/minion-darth
 /libraries/oms                          @tokopedia/minion-darth
 
+/features/fintech/wallet                @tokopedia/minion-solo
+/features/fintech/common_wallet         @tokopedia/minion-solo
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
@@ -156,7 +157,6 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
-/features/fintech/tokocash              @tokopedia/minion-solo
 /features/kyc                           @tokopedia/minion-yoda
 
 /features/im/challenges                 @tokopedia/minion-yoda
