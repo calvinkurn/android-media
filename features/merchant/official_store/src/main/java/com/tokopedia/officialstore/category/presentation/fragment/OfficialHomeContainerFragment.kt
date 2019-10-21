@@ -24,6 +24,7 @@ import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeCon
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
@@ -148,6 +149,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                             context,
                             R.color.Purple_P600
                     ))
+                    text_view_category_title?.setWeight(Typography.BOLD)
                 }
             }
 
@@ -157,6 +159,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                             context,
                             R.color.Neutral_N700_96
                     ))
+                    text_view_category_title?.setWeight(Typography.REGULAR)
                 }
             }
 
@@ -166,6 +169,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                             context,
                             R.color.Purple_P600
                     ))
+                    text_view_category_title?.setWeight(Typography.BOLD)
                 }
             }
         })

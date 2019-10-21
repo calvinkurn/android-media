@@ -66,8 +66,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun loadFirstData(category: Category?, page: Int) {
         launchCatchError(block = {
-//            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
+            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
             _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())

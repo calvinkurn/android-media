@@ -7,15 +7,18 @@
     android:orientation="vertical">
 
     <ImageView
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:id="@+id/image_view_category_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_gravity="center"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:layout_margin="@dimen/spacing_lvl2"
         android:id="@+id/text_view_category_title"
         android:layout_width="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
