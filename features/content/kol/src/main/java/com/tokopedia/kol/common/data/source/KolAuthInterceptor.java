@@ -1,10 +1,8 @@
 package com.tokopedia.kol.common.data.source;
 
 import android.content.Context;
-import android.net.Network;
 import android.os.Build;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
