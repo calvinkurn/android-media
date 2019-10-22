@@ -33,8 +33,6 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -124,8 +122,6 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
-import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
@@ -133,8 +129,6 @@ import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.train.applink.TrainApplinkModule;
-import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
@@ -166,11 +160,9 @@ import rx.schedulers.Schedulers;
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
-        TrainApplinkModule.class,
         InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
-        TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
@@ -185,7 +177,6 @@ import rx.schedulers.Schedulers;
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
-        CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
         NotifCenterApplinkModule.class,
@@ -234,11 +225,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
-                    new TrainApplinkModuleLoader(),
                     new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
-                    new TokoCashApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new DealsDeepLinkModuleLoader(),
@@ -252,7 +241,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new CustomerCareApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
                     new TokopointApplinkModuleLoader(),
                     new NotifCenterApplinkModuleLoader(),

@@ -23,7 +23,6 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
@@ -1348,7 +1347,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onShipmentClicked() {
-        productDetailTracking.eventShippingClicked()
+        productDetailTracking.eventShippingClicked(productId ?: "")
         if (productInfoViewModel.isUserSessionActive()) {
             val productP3value = productInfoViewModel.productInfoP3resp.value
             if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
@@ -1847,7 +1846,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
-                putChatProductInfoTo(intent)
+                productInfoViewModel.putChatProductInfoTo(intent, productId, productInfo, userInputVariant)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1855,54 +1854,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         productDetailTracking.eventSendMessage()
-        productDetailTracking.eventSendChat()
-    }
-
-    private fun putChatProductInfoTo(intent: Intent?) {
-        if (intent == null) return
-        val variants = mapSelectedProductVariants()
-        val productImageUrl = getProductImageUrl()
-        val productName = getProductName()
-        val productPrice = getProductPrice()
-        val productUrl = getProductUrl()
-        val productColorVariant = variants?.get("colour")?.get("value")
-        val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("value")
-        with(intent) {
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
-        }
-    }
-
-    private fun getProductImageUrl(): String? {
-        val images = productInfo?.pictures
-        return images?.get(0)?.urlThumbnail
-    }
-
-    private fun getProductName(): String? {
-        return productInfo?.basic?.name
-    }
-
-    private fun getProductPrice(): String? {
-        return productInfo?.basic?.price?.getCurrencyFormatted()
-    }
-
-    private fun getProductUrl(): String? {
-        return productInfo?.basic?.url
-    }
-
-    private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
-        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
-    }
-
-    private fun getProductVariant(): ProductVariant? {
-        return productInfoViewModel.p2General.value?.variantResp
+        productDetailTracking.eventSendChat(productId ?: "")
     }
 
     /**
@@ -1928,7 +1880,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onVariantClicked() {
-        productDetailTracking.eventClickVariant(generateVariantString())
+        productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
         goToNormalCheckout(ATC_AND_BUY)
     }
 
@@ -2156,7 +2108,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
-            productDetailTracking.eventCartMenuClicked(generateVariantString())
+            productDetailTracking.eventCartMenuClicked(generateVariantString(), productId ?: "")
         }
     }
 
