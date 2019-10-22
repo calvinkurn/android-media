@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_shipment_recipient_address_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,11 +27,18 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/separator_color" />
 
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tab_unify_trade_in_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        tools:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/rl_image_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator"
+        android:layout_below="@id/tab_unify_trade_in_address"
         android:background="@color/white"
         android:padding="@dimen/dp_16">
 
@@ -40,21 +48,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/item_recipient_address" />
+            <include
+                android:id="@+id/layout_address_normal"
+                layout="@layout/layout_address_normal"
+                tools:visibility="gone" />
 
-            <com.tokopedia.design.pickuppoint.PickupPointLayout
-                android:id="@+id/pickup_point_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/white"
-                android:gravity="center_horizontal"
-                android:visibility="gone" />
+            <include
+                android:id="@+id/layout_address_drop_off"
+                layout="@layout/layout_address_drop_off"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_trade_in"
+            android:id="@+id/ll_trade_in_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_detail_shipment_recipient"

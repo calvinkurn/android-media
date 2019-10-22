@@ -45,6 +45,7 @@ public class ShipmentDataConverter {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             boolean isTradeIn = false;
+            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
@@ -53,6 +54,7 @@ public class ShipmentDataConverter {
                         for (Product product : groupShop.getProducts()) {
                             if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
+                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -61,7 +63,7 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            return createRecipientAddressModel(userAddress, isTradeIn);
+            return createRecipientAddressModel(userAddress, isTradeIn, isTradeInDropOffEnable);
         }
         return null;
     }
@@ -69,7 +71,7 @@ public class ShipmentDataConverter {
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
         // Trade in is only available on OCS.
         // OCS is not available to send to multiple address
-        return createRecipientAddressModel(userAddress, false);
+        return createRecipientAddressModel(userAddress, false, false);
     }
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -81,7 +83,7 @@ public class ShipmentDataConverter {
     }
 
     @NonNull
-    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn) {
+    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn, boolean isTradeInDropOffEnable) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));

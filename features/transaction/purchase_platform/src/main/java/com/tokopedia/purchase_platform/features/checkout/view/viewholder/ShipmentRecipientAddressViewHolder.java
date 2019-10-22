@@ -1,6 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -21,6 +25,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.unifycomponents.TabsUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
@@ -41,8 +46,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvRecipientPhone;
     private TextView tvRecipientChangeAddress;
     private TextView tvSendToMultipleAddress;
-    private LinearLayout llTradeIn;
+    private LinearLayout llTradeInInfo;
     private TextView tvTradeInInfo;
+    private TabsUnify tabUnifyTradeInAddress;
+    private RelativeLayout layoutAddressNormal;
+    private ConstraintLayout layoutAddressDropOff;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -59,13 +67,29 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         tvSendToMultipleAddress = itemView.findViewById(R.id.tv_send_to_multiple_address);
-        llTradeIn = itemView.findViewById(R.id.ll_trade_in);
+        llTradeInInfo = itemView.findViewById(R.id.ll_trade_in_info);
         tvTradeInInfo = itemView.findViewById(R.id.tv_trade_in_info);
+        tabUnifyTradeInAddress = itemView.findViewById(R.id.tab_unify_trade_in_address);
+        layoutAddressNormal = itemView.findViewById(R.id.layout_address_normal);
+        layoutAddressDropOff = itemView.findViewById(R.id.layout_address_drop_off);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
+        renderBaseAddress(recipientAddress, cartIds);
+
+        if (recipientAddress.isTradeIn()) {
+            renderTradeInAddress(recipientAddress);
+        } else {
+            renderNormalAddress();
+        }
+        renderTradeInAddressWithTabs(recipientAddress);
+
+        setShowCase(rlRecipientAddressLayout, showCaseObjectList);
+    }
+
+    private void renderBaseAddress(RecipientAddressModel recipientAddress, String cartIds) {
         if (recipientAddress.isDisableMultipleAddress()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {
@@ -85,15 +109,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
         tvSendToMultipleAddress.setOnClickListener(v -> shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds));
-
-        if (recipientAddress.isTradeIn()) {
-            formatTradeInInfo(recipientAddress);
-            llTradeIn.setVisibility(View.VISIBLE);
-        } else {
-            llTradeIn.setVisibility(View.GONE);
-        }
-
-        setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
@@ -104,6 +119,69 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         );
     }
 
+    private void renderTradeInAddress(RecipientAddressModel recipientAddress) {
+        renderTradeInInfo(recipientAddress);
+        llTradeInInfo.setVisibility(View.VISIBLE);
+        if (recipientAddress.isTradeInDropOffEnable()) {
+            renderTradeInAddressWithTabs(recipientAddress);
+        } else {
+            renderTradeInAddressWithoutTabs();
+        }
+    }
+
+    private void renderTradeInAddressWithoutTabs() {
+        tabUnifyTradeInAddress.setVisibility(View.GONE);
+    }
+
+    private void renderTradeInAddressWithTabs(RecipientAddressModel recipientAddress) {
+        tabUnifyTradeInAddress.setVisibility(View.VISIBLE);
+        if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() == 0) {
+            tabUnifyTradeInAddress.addNewTab("Antar");
+            tabUnifyTradeInAddress.addNewTab("Titik Ambil");
+        }
+        tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                recipientAddress.setSelectedTabIndex(tab.getPosition());
+                if (tab.getPosition() == 0) {
+                    layoutAddressDropOff.setVisibility(View.GONE);
+                    layoutAddressNormal.setVisibility(View.VISIBLE);
+                } else if (tab.getPosition() == 1) {
+                    layoutAddressNormal.setVisibility(View.GONE);
+                    layoutAddressDropOff.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+        if (recipientAddress.getSelectedTabIndex() == 0) {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
+            }
+        } else {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
+            }
+        }
+    }
+
+    private void renderNormalAddress() {
+        llTradeInInfo.setVisibility(View.GONE);
+        tabUnifyTradeInAddress.setVisibility(View.GONE);
+        layoutAddressDropOff.setVisibility(View.GONE);
+        layoutAddressNormal.setVisibility(View.VISIBLE);
+    }
+
     private String getFullAddress(RecipientAddressModel recipientAddress) {
         return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
@@ -112,7 +190,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 + recipientAddress.getRecipientPhoneNumber();
     }
 
-    private void formatTradeInInfo(RecipientAddressModel recipientAddressModel) {
+    private void renderTradeInInfo(RecipientAddressModel recipientAddressModel) {
         tvTradeInInfo.setText(String.format(tvTradeInInfo.getContext().getString(R.string.checkout_shipment_label_tradein), recipientAddressModel.getRecipientPhoneNumber()));
         String clickableText = "Ganti nomor";
         int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);

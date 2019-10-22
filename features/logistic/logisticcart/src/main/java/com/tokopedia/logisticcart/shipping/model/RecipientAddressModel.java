@@ -47,38 +47,10 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isFooter;
 
     private boolean isTradeIn;
+    private boolean isTradeInDropOffEnable;
+    private int selectedTabIndex;
 
     public RecipientAddressModel() {
-    }
-
-    private RecipientAddressModel(Builder builder) {
-        setId(builder.id);
-        setAddressStatus(builder.addressStatus);
-        setAddressName(builder.addressName);
-        setProvinceName(builder.provinceName);
-        setPostalCode(builder.postalCode);
-        setCityName(builder.cityName);
-        setStreet(builder.street);
-        setCountryName(builder.countryName);
-        setRecipientName(builder.recipientName);
-        setRecipientPhoneNumber(builder.recipientPhoneNumber);
-        setDestinationDistrictId(builder.destinationDistrictId);
-        setDestinationDistrictName(builder.destinationDistrictName);
-        setLatitude(builder.latitude);
-        setLongitude(builder.longitude);
-        setCityId(builder.cityId);
-        setProvinceId(builder.provinceId);
-        setTokenPickup(builder.tokenPickup);
-        setUnixTime(builder.unixTime);
-        setSelected(builder.selected);
-        setStateExtraPaddingTop(builder.stateExtraPaddingTop);
-        setDisableMultipleAddress(builder.isDisableMultipleAddress);
-        setCornerAddress(builder.isCornerAddress);
-        setCornerId(builder.cornerId);
-        setUserCornerId(builder.userCornerId);
-        setHeader(builder.isHeader);
-        setFooter(builder.isFooter);
-        setTradeIn(builder.isTradeIn);
     }
 
     public String getId() {
@@ -297,6 +269,22 @@ public class RecipientAddressModel implements Parcelable {
         isTradeIn = tradeIn;
     }
 
+    public boolean isTradeInDropOffEnable() {
+        return isTradeInDropOffEnable;
+    }
+
+    public void setTradeInDropOffEnable(boolean tradeInDropOffEnable) {
+        isTradeInDropOffEnable = tradeInDropOffEnable;
+    }
+
+    public int getSelectedTabIndex() {
+        return selectedTabIndex;
+    }
+
+    public void setSelectedTabIndex(int selectedTabIndex) {
+        this.selectedTabIndex = selectedTabIndex;
+    }
+
     public int getPartnerId() {
         return partnerId;
     }
@@ -386,179 +374,6 @@ public class RecipientAddressModel implements Parcelable {
         return result;
     }
 
-
-    public static final class Builder {
-        private String id = "";
-        private int addressStatus = 0;
-        private String addressName = "";
-        private String provinceName = "";
-        private String postalCode = "";
-        private String cityName = "";
-        private String street = "";
-        private String countryName = "";
-        private String recipientName = "";
-        private String recipientPhoneNumber = "";
-        private String destinationDistrictId = "";
-        private String destinationDistrictName = "";
-        private String latitude = "";
-        private String longitude = "";
-        private String cityId = "";
-        private String provinceId = "";
-        private String tokenPickup = "";
-        private String unixTime = "";
-        private boolean selected = false;
-        private boolean stateExtraPaddingTop = false;
-        private boolean isDisableMultipleAddress = false;
-        private boolean isCornerAddress = false;
-        private String cornerId = "";
-        private String userCornerId = "";
-        private boolean isHeader = false;
-        private boolean isFooter = false;
-        private boolean isTradeIn = false;
-
-        public Builder() {
-        }
-
-        public Builder id(String val) {
-            id = val;
-            return this;
-        }
-
-        public Builder addressStatus(int val) {
-            addressStatus = val;
-            return this;
-        }
-
-        public Builder addressName(String val) {
-            addressName = val;
-            return this;
-        }
-
-        public Builder provinceName(String val) {
-            provinceName = val;
-            return this;
-        }
-
-        public Builder postalCode(String val) {
-            postalCode = val;
-            return this;
-        }
-
-        public Builder cityName(String val) {
-            cityName = val;
-            return this;
-        }
-
-        public Builder street(String val) {
-            street = val;
-            return this;
-        }
-
-        public Builder countryName(String val) {
-            countryName = val;
-            return this;
-        }
-
-        public Builder recipientName(String val) {
-            recipientName = val;
-            return this;
-        }
-
-        public Builder recipientPhoneNumber(String val) {
-            recipientPhoneNumber = val;
-            return this;
-        }
-
-        public Builder destinationDistrictId(String val) {
-            destinationDistrictId = val;
-            return this;
-        }
-
-        public Builder destinationDistrictName(String val) {
-            destinationDistrictName = val;
-            return this;
-        }
-
-        public Builder latitude(String val) {
-            latitude = val;
-            return this;
-        }
-
-        public Builder longitude(String val) {
-            longitude = val;
-            return this;
-        }
-
-        public Builder cityId(String val) {
-            cityId = val;
-            return this;
-        }
-
-        public Builder provinceId(String val) {
-            provinceId = val;
-            return this;
-        }
-
-        public Builder tokenPickup(String val) {
-            tokenPickup = val;
-            return this;
-        }
-
-        public Builder unixTime(String val) {
-            unixTime = val;
-            return this;
-        }
-
-        public Builder selected(boolean val) {
-            selected = val;
-            return this;
-        }
-
-        public Builder stateExtraPaddingTop(boolean val) {
-            stateExtraPaddingTop = val;
-            return this;
-        }
-
-        public Builder isDisableMultipleAddress(boolean val) {
-            isDisableMultipleAddress = val;
-            return this;
-        }
-
-        public Builder isCornerAddress(boolean val) {
-            isCornerAddress = val;
-            return this;
-        }
-
-        public Builder cornerId(String val) {
-            cornerId = val;
-            return this;
-        }
-
-        public Builder userCornerId(String val) {
-            userCornerId = val;
-            return this;
-        }
-
-        public Builder isHeader(boolean val) {
-            isHeader = val;
-            return this;
-        }
-
-        public Builder isFooter(boolean val) {
-            isFooter = val;
-            return this;
-        }
-
-        public Builder isTradeIn(boolean val) {
-            isTradeIn = val;
-            return this;
-        }
-
-        public RecipientAddressModel build() {
-            return new RecipientAddressModel(this);
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -595,6 +410,8 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isHeader ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFooter ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isTradeInDropOffEnable ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.selectedTabIndex);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -627,6 +444,8 @@ public class RecipientAddressModel implements Parcelable {
         this.isHeader = in.readByte() != 0;
         this.isFooter = in.readByte() != 0;
         this.isTradeIn = in.readByte() != 0;
+        this.isTradeInDropOffEnable = in.readByte() != 0;
+        this.selectedTabIndex = in.readInt();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
