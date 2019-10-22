@@ -56,6 +56,7 @@ ext {
     tkpdTokocashVersion = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdTopAdsSDKVersion = '2.22'
+    tkpdTopDetailSheetVersion = '2.22'
     tkpdTrainVersion = '2.22'
     tkpdTransactionVersion = '2.22'
     tkpdUpdateInactivePhoneVersion = '2.22'
@@ -156,7 +157,8 @@ ext {
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
             topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            topAdsAutoAds        : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
+            topAdsAutoAds           : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
+            topAdsDetailSheet       : "com.tokopedia.topads:top_ads_detail_sheet:${tkpdTopDetailSheetVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
             userIdentification      : "com.tokopedia.user:user:${tkpdUserIdentification}",
@@ -301,6 +303,7 @@ ext {
 //            topAdsDashboard           : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
+            topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsManagement                : ":features:top_ads:top_ads_management",
 //            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",

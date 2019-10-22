@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">top_ads_detail_sheet</string>
+    <string name="aktif">Aktif</string>
+    <string name="tidak_aktif">Tidak Aktif</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.topads.detail_sheet
 
 import android.content.Context
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -6,7 +6,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.product.detail.R
 import kotlinx.android.synthetic.main.pdp_topads_detail_sheet.*
 
 /**

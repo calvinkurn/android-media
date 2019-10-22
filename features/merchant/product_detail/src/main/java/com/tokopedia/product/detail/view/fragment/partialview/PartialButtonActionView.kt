@@ -116,11 +116,11 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_add_to_cart.visibility = View.GONE
             if(hasTopAdsActive){
                 btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
+                btn_promote_topads.setText(context.getString(R.string.rincian_topads))
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
             } else{
                 btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
+                btn_promote_topads.setText(context.getString(R.string.promote_topads))
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
             }
         }
