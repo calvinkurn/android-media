@@ -2,14 +2,21 @@ package com.tokopedia.ovo.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 
+import java.util.List;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY_PATTERN;
 import static com.tokopedia.ovo.view.PaymentQRSummaryFragment.LOCAL_CACHE_ID;
 
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
@@ -24,6 +31,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e("sandeep","entered in detail activity");
         LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
         String saveInstanceCacheId = localCache.getString(CACHE_ID);
         SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(
@@ -32,12 +40,16 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
             saveInstanceCacheManager = new SaveInstanceCacheManager(getApplicationContext(), saveInstanceCacheId);
         String txnId = saveInstanceCacheManager.get(TRANSACTION_ID, String.class);
         String tfId = saveInstanceCacheManager.get(TRANSFER_ID, String.class);
+        Uri uri = getIntent().getData();
         if (txnId != null)
             transactionId = Integer.parseInt(txnId);
         else if(getIntent().getStringExtra(TRANSACTION_ID) != null){
             transactionId = Integer.parseInt(getIntent().getStringExtra(TRANSACTION_ID));
         }
-        if (getIntent().getStringExtra(TRANSFER_ID) != null) {
+        if (uri != null) {
+            List<String> param = UriUtil.destructureUri(OQR_PIN_URL_ENTRY_PATTERN, uri, true);
+            transferId = Integer.parseInt(param.get(0));
+        } else if (getIntent().getStringExtra(TRANSFER_ID) != null) {
             transferId = Integer.parseInt(getIntent().getStringExtra(TRANSFER_ID));
         } else {
             if (tfId != null)

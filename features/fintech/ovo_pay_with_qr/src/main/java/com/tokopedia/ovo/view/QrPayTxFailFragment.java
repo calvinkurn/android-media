@@ -73,7 +73,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
         backToMain = view.findViewById(com.tokopedia.ovo.R.id.back_to_main);
         tryAgain = view.findViewById(com.tokopedia.ovo.R.id.try_again);
         callSection.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickButuhBantuan,
@@ -81,7 +81,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
             startActivity(OvoWebViewActivity.getWebViewIntent(getActivity(), HELP_URL, getString(com.tokopedia.ovo.R.string.oqr_contact_us)));
         });
         backToMain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickKembaliTidakBerhasil,
@@ -89,7 +89,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
             startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.HOME));
         });
         tryAgain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.cobaLagi,
@@ -109,7 +109,7 @@ public class QrPayTxFailFragment extends BaseDaggerFragment implements QrOvoPayT
     @Override
     public void setFailThankYouData(GoalQRThanks data) {
         failDescription.setText(data.getMessage());
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPageTransaksi,

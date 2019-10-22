@@ -87,7 +87,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         backToMain = view.findViewById(com.tokopedia.ovo.R.id.back_to_main);
         transferId = getArguments().getInt(TRANSFER_ID);
         backToMain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickKembaliBerhasil,
@@ -114,7 +114,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         merchantName.setText(data.getMerchant().getName());
         merchantDescription.setText(data.getMerchant().getDescription());
         transactionCode.setText(String.valueOf(getArguments().getInt(TRANSACTION_ID)));
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPageTransaksiBerhasil,

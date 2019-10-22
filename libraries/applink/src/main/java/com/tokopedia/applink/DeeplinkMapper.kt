@@ -1,10 +1,11 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
@@ -34,6 +35,8 @@ object DeeplinkMapper {
                 return getRegisteredNavigationSearch(deeplink)
             } else if (deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT)) {
                 return getRegisteredNavigationMarketplace(deeplink)
+            } else if (deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK)) {
+                return getRegisteredNavigationForFintech(deeplink)
             }
             if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
                 return getRegisteredNavigationSearch(deeplink)

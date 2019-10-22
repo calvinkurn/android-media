@@ -176,7 +176,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             }
             cancelBtn.setOnClickListener(view1 -> getActivity().finish());
         }
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPagePaymentSummary,
@@ -307,8 +307,6 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             }
             inputAmount.addTextChangedListener(this);
             inputAmount.setSelection(inputAmount.getText().length());
-
-
         }
     }
 
@@ -327,7 +325,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             } else {
                 confirmQrRequest();
             }
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickBayar,
