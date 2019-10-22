@@ -45,65 +45,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
     private boolean needLogin;
     private boolean allowOverride;
 
-
-    private static final String WEB_URL = TokopediaUrl.Companion.getInstance().getWEB();
-
-    public static Intent newInstance(Context context, String url) {
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url)
-                .putExtra(KEY_APP_LINK_QUERY_TITLEBAR, true)
-                .putExtra(KEY_APP_LINK_QUERY_NEED_LOGIN, false)
-                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, true);
-
-    }
-
-    public static Intent newInstance(Context context, String url, boolean showToolbar,
-                                     boolean needLogin, boolean allowOverride) {
-
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url)
-                .putExtra(KEY_APP_LINK_QUERY_TITLEBAR, showToolbar)
-                .putExtra(KEY_APP_LINK_QUERY_NEED_LOGIN, needLogin)
-                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, allowOverride);
-    }
-
-    @SuppressWarnings("unused")
-    public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, WEB_URL
-        );
-        boolean showToolbar;
-        boolean needLogin;
-        boolean allowOverride;
-
-        try {
-            showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
-                    "true"));
-        } catch (ParseException e) {
-            showToolbar = true;
-        }
-
-        try {
-            needLogin = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_NEED_LOGIN,
-                    "false"));
-        } catch (ParseException e) {
-            needLogin = false;
-        }
-
-        try {
-            allowOverride = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE,
-                    "true"));
-        } catch (ParseException e) {
-            allowOverride = true;
-        }
-
-        if (TextUtils.isEmpty(webUrl)) {
-            webUrl = WEB_URL;
-        }
-
-        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin, allowOverride);
-    }
-
     @Override
     protected boolean isLightToolbarThemes() {
         return true;

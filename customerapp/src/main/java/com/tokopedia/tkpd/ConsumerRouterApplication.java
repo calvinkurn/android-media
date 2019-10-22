@@ -265,7 +265,6 @@ import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
-import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -1344,7 +1343,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getWebviewActivity(Activity activity, String url) {
-        return AppLinkWebsiteActivity.newInstance(activity, url);
+        return RouteManager.route(activity, url);
     }
 
     @Override
