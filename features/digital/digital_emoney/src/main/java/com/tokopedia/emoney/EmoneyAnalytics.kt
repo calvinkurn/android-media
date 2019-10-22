@@ -114,6 +114,7 @@ class EmoneyAnalytics {
     interface Label {
         companion object {
             val EMONEY = "emoney"
+            val BRIZZI = "brizzi"
         }
     }
 }

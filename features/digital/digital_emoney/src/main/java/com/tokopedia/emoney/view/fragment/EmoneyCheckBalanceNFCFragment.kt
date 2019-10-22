@@ -220,36 +220,55 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                                 this::onErrorInquiryBalance)
                     }
                 } else {
+                    //success scan card brizzi
                     isoDep.close()
-                    activity?.let {
-                        if (::brizziInstance.isInitialized) {
-                            showLoading()
-                            brizziInstance.getBalanceInquiry(it.intent, object : Callback {
-                                override fun OnFailure(brizziException: BrizziException?) {
-                                    //TODO log data failed
-                                    val message = brizziException?.message
-                                    showError(message?:"")
-
-                                    //TODO log to analytics when card is not supported
-//                                    emoneyAnalytics.onErrorReadingCard()
-//                                    showError(resources.getString(R.string.emoney_card_isnot_supported))
-                                }
-
-                                override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                                    //TODO log data success
-                                    showCardLastBalance(mapperBrizzi(brizziCardObject))
-                                    Toast.makeText(activity, brizziCardObject.balance, Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                        }
-                    }
+                    getInquiryBrizziBalance()
                 }
             }
         } catch (e: IOException) {
             e.printStackTrace()
             showError(resources.getString(R.string.emoney_failed_read_card))
         }
+    }
 
+    private fun getInquiryBrizziBalance() {
+        activity?.let {
+            if (::brizziInstance.isInitialized) {
+                showLoading()
+                brizziInstance.getBalanceInquiry(it.intent, object : Callback {
+                    override fun OnFailure(brizziException: BrizziException?) {
+                        //TODO log brizzi view model
+                        //TODO log data failed
+                        val message = brizziException?.message
+                        showError(message?:"")
+
+                        //TODO log to analytics when card is not supported
+//                        emoneyAnalytics.onErrorReadingCard()
+//                        showError(resources.getString(R.string.emoney_card_isnot_supported))
+                    }
+
+                    override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                        //TODO log brizzi view model
+                        //TODO log data success
+                        if (brizziCardObject.pendingBalance.toInt() == 0) {
+
+                        } else {
+                            brizziInstance.doUpdateBalance(it.intent, brizziCardObject.reffNumberHost, object: Callback {
+                                override fun OnFailure(p0: BrizziException?) {
+                                    //TODO log brizzi view model
+                                    //TODO show error
+                                }
+
+                                override fun OnSuccess(p0: BrizziCardObject) {
+                                    //TODO log brizzi view model
+                                    showCardLastBalance(mapperBrizzi(brizziCardObject))
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        }
     }
 
     //TODO remove hardcode after brizzi token finish

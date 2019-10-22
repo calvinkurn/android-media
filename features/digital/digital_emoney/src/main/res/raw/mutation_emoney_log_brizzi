@@ -1,0 +1,7 @@
+mutation brizziInquiryLog($issuer_id: Int!, $inquiry_id: Int!, $card_number: String, $rc: String, $last_balance: Int!){
+  rechargeEmoneyInquiryLog(issuer_id: $issuer_id, inquiry_id: $inquiry_id, card_number: $card_number, rc: $rc, last_balance: $last_balance){
+    inquiry_id
+    status
+    message
+  }
+}
