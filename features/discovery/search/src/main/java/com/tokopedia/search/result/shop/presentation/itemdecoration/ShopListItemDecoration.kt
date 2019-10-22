@@ -40,6 +40,11 @@ class ShopListItemDecoration(private val left: Int,
         }
     }
 
+    private fun isShopItem(parent: RecyclerView, viewPosition: Int): Boolean {
+        val viewType = getRecyclerViewViewType(parent, viewPosition)
+        return viewType != -1 && allowedViewTypes.contains(viewType)
+    }
+
     private fun getHorizontalCardViewOffset(view: View): Int {
         if (view is CardView) {
 
@@ -62,11 +67,6 @@ class ShopListItemDecoration(private val left: Int,
         }
 
         return 0
-    }
-
-    private fun isShopItem(parent: RecyclerView, viewPosition: Int): Boolean {
-        val viewType = getRecyclerViewViewType(parent, viewPosition)
-        return viewType != -1 && allowedViewTypes.contains(viewType)
     }
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
