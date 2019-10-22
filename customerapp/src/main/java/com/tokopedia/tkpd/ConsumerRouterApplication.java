@@ -184,7 +184,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
@@ -352,7 +351,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
-        LoyaltyRouter,
         ReputationRouter,
         AbstractionRouter,
         FlightModuleRouter,
@@ -1399,14 +1397,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TokoPointDrawerData> getTokopointUseCase() {
-        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-        params.putString(GetTokopointUseCase.KEY_PARAM,
-                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
-        return this.tokopointComponent.getTokopointUseCase().createObservable(params);
-    }
-
-    @Override
     public Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome() {
         com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
         params.putString(GetTokopointUseCase.KEY_PARAM,
@@ -1571,10 +1561,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openTokopointWebview(Context context, String url, String title) {
         context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
-    }
-
-    public Intent getPromoDetailIntent(Context context, String slug) {
-        return PromoDetailActivity.getCallingIntent(context, slug);
     }
 
     @Override
@@ -1806,11 +1792,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                                           String trainReservationCode,
                                                           String galaCode) {
         return Observable.just(new VoucherViewModel());
-    }
-
-    @Override
-    public Intent getPromoListIntent(Activity activity) {
-        return PromoListActivity.newInstance(activity);
     }
 
     @Override

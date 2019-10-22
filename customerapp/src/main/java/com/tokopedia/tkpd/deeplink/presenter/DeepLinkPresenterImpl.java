@@ -18,7 +18,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
@@ -49,7 +48,6 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
-import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
@@ -253,8 +251,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openGroupChat(linkSegment);
                     screenName = AppScreen.GROUP_CHAT;
                     break;
-                case DeepLinkChecker.PROMO:
-                    openPromo(linkSegment);
+                case DeepLinkChecker.PROMO_DETAIL:
+                    DeepLinkChecker.openPromoDetail(uriData.toString(), context);
+                    context.finish();
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.PROMO_LIST:
+                    DeepLinkChecker.openPromoList(uriData.toString(), context);
+                    context.finish();
                     screenName = "";
                     break;
                 case DeepLinkChecker.SALE:
@@ -323,20 +327,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openPromo(List<String> linkSegment) {
-        LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-
-        Intent intent;
-        if (linkSegment.size() <= 1) {
-            intent = router.getPromoListIntent(context);
-        } else {
-            intent = router.getPromoDetailIntent(context, linkSegment.get(1));
-        }
-
-        context.startActivity(intent);
-        context.finish();
-    }
-
     private void openHotel() {
         RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
@@ -345,8 +335,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openSale(List<String> linkSegment) {
         Intent intent;
         if (linkSegment.size() <= 1) {
-            LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-            intent = router.getPromoListIntent(context);
+            intent = RouteManager.getIntent(context, ApplinkConst.PROMO_LIST);
         } else {
             String SLUG_PARAM = "{slug}";
             String applink = ApplinkConst.PROMO_SALE_NO_SLASH.

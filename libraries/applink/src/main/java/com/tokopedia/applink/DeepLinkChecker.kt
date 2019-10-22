@@ -32,7 +32,6 @@ object DeepLinkChecker {
     const val HOT_LIST = 6
     const val CATEGORY = 7
     const val HOME = 8
-    const val PROMO = 9
     const val ETALASE = 10
     const val APPLINK = 11
     const val INVOICE = 12
@@ -56,6 +55,8 @@ object DeepLinkChecker {
     const val CONTACT_US = 30
     const val HOTEL = 31
     const val SIMILAR_PRODUCT = 32
+    const val PROMO_DETAIL = 33
+    const val PROMO_LIST = 34
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -209,6 +210,16 @@ object DeepLinkChecker {
         return openIfExist(context, getCatalogIntent(context, url))
     }
 
+    @JvmStatic
+    fun openPromoDetail(url: String, context: Context): Boolean {
+        return openIfExist(context, getPromoDetailIntent(context, url))
+    }
+
+    @JvmStatic
+    fun openPromoList(url: String, context: Context): Boolean {
+        return openIfExist(context, getPromoListIntent(context, url))
+    }
+
     private fun openIfExist(context: Context, intent: Intent): Boolean {
         if (intent.resolveActivity(context.packageManager) == null) {
             return false
@@ -233,6 +244,15 @@ object DeepLinkChecker {
         val intent = getIntentByClassName(context, getCatalogDetailClassName())
         intent.putExtra("ARG_EXTRA_CATALOG_ID", catalogId)
         return intent
+    }
+
+    private fun getPromoDetailIntent(context: Context, url: String): Intent {
+        val promoSlug = getLinkSegment(url)[1]
+        return RouteManager.getIntent(context, ApplinkConst.PROMO_DETAIL, promoSlug)
+    }
+
+    private fun getPromoListIntent(context: Context, url: String): Intent {
+        return RouteManager.getIntent(context, ApplinkConst.PROMO_LIST)
     }
 
     @JvmStatic
