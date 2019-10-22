@@ -111,7 +111,7 @@ object CMNotificationUtils {
             appId = UUID.randomUUID().toString()
             cacheHandler.saveStringValue(CMConstant.UNIQUE_APP_ID_CACHE_KEY, appId)
         }
-        return appId
+        return appId ?: ""
     }
 
     fun saveToken(context: Context, token: String) {
@@ -119,10 +119,17 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
+    fun getToken(context: Context): String?
+            = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
+
+
     fun saveUserId(context: Context, userId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)
         cacheHandler.saveStringValue(CMConstant.USERID_CACHE_KEY, userId)
     }
+
+    fun getUserId(context: Context) : String?
+            = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)
@@ -169,7 +176,7 @@ object CMNotificationUtils {
     }
 
     fun hasActionButton(baseNotificationModel: BaseNotificationModel): Boolean {
-        return baseNotificationModel.actionButton != null && baseNotificationModel.actionButton.size > 0
+        return baseNotificationModel.actionButton.isNotEmpty()
 
     }
 
@@ -207,12 +214,12 @@ object CMNotificationUtils {
 }
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
-                                    block: suspend (()->Unit),
-                                    onError: (Throwable)-> Unit) =
-        launch (context){
-            try{
+                                    block: suspend (() -> Unit),
+                                    onError: (Throwable) -> Unit) =
+        launch(context) {
+            try {
                 block.invoke()
-            } catch (t: Throwable){
+            } catch (t: Throwable) {
                 onError(t)
             }
         }

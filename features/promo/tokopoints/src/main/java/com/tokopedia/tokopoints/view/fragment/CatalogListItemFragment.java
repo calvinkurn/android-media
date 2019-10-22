@@ -28,15 +28,16 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainer;
+    private ServerErrorView serverErrorView;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
     private long mRefreshTime;
@@ -66,8 +68,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         public void run() {
             List<Integer> items = new ArrayList<>();
             for (BaseItem each : mAdapter.getItems()) {
-                if(each instanceof CatalogsValueEntity) {
-                    CatalogsValueEntity entity= (CatalogsValueEntity) each;
+                if (each instanceof CatalogsValueEntity) {
+                    CatalogsValueEntity entity = (CatalogsValueEntity) each;
                     if (entity.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
                         items.add(entity.getId());
                     }
@@ -109,6 +111,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
         }
         mContainer = rootView.findViewById(R.id.container);
+        serverErrorView = rootView.findViewById(R.id.server_error_view);
         return rootView;
     }
 
@@ -155,6 +158,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     public void showError() {
         mContainer.setDisplayedChild(CONTAINER_ERROR);
         mSwipeToRefresh.setRefreshing(false);
+        serverErrorView.showErrorUi(NetworkDetector.isConnectedToInternet(getAppContext()));
     }
 
     @Override
@@ -536,7 +540,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
     }
 
     @Override
@@ -560,7 +566,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void onEmptyList(Object rawObject) {
-
+        onEmptyCatalog();
     }
 
     @Override

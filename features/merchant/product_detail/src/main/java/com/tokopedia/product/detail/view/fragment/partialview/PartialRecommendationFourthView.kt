@@ -2,18 +2,19 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
 class PartialRecommendationFourthView private constructor(private val view: View,
-                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    : BaseRecommendationView(view.context) {
+                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener,
+                                                          productDetailTracking: ProductDetailTracking)
+    : BaseRecommendationView(view.context, productDetailTracking) {
 
     companion object {
-        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener) =
-                PartialRecommendationFourthView(_view,_userActiveListener)
+        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener, productDetailTracking: ProductDetailTracking) =
+                PartialRecommendationFourthView(_view,_userActiveListener, productDetailTracking)
     }
 
     override fun getListener(): RecommendationProductAdapter.UserActiveListener = userActiveListener
@@ -24,6 +25,6 @@ class PartialRecommendationFourthView private constructor(private val view: View
 
     override fun getRecyclerView(): RecyclerView = view.product_recom_4
 
-    override fun getLayoutProgress(): ProgressBar = view.loading_recom_4
+    override fun getLayoutProgress(): View = view.loading_recom_4
 
 }

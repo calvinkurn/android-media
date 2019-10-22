@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.var.RecyclerViewItem;
 
@@ -64,7 +65,7 @@ public interface WishList {
     /**
      * @return data for this
      */
-    List<RecyclerViewItem> getData();
+    List<Visitable> getData();
 
     void fetchDataFromInternet(Context context);
 
@@ -80,7 +81,7 @@ public interface WishList {
 
     void addToCart(String productId);
 
-    boolean isLoadedFirstPage();
+    boolean isFirstPage();
 
     void searchWishlist(String query);
 
@@ -90,5 +91,9 @@ public interface WishList {
 
     void refreshDataOnSearch(CharSequence query);
 
-    void onResume(Context context);
+    void getFirstRecomData();
+
+    void loadMoreRecomendation(int page);
+
+    void clearData();
 }

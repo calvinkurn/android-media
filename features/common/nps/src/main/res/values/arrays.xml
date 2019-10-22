@@ -7,4 +7,12 @@
         <item>@string/fb_cat_reduce</item>
         <item>@string/fb_cat_etc</item>
     </string-array>
+
+    <string-array name="app_ratings">
+        <item>@string/rating_one</item>
+        <item>@string/rating_two</item>
+        <item>@string/rating_three</item>
+        <item>@string/rating_four</item>
+        <item>@string/rating_five</item>
+    </string-array>
 </resources>

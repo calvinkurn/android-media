@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.kotlin.extensions.view.hide
@@ -353,7 +352,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     private fun openHomePage() {
         activity?.run {
-            startActivity((applicationContext as GroupChatModuleRouter).getHomeIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConst.HOME))
             finish()
         }
 

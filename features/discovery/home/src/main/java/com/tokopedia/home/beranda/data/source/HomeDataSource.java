@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
-import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.domain.model.HomeData;
@@ -53,7 +52,7 @@ public class HomeDataSource {
         this.gson = gson;
     }
 
-    public Observable<List<TrackedVisitable>> getCache() {
+    public Observable<List<HomeVisitable>> getCache() {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
             public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
@@ -70,7 +69,7 @@ public class HomeDataSource {
         }).map(homeMapper);
     }
 
-    public Observable<List<TrackedVisitable>> getHomeData() {
+    public Observable<List<HomeVisitable>> getHomeData() {
         return homeDataApi.getHomeData(getRequestPayload())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())

@@ -6,21 +6,21 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 
 /**
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingNationalityViewHolder extends AbstractViewHolder<FlightBookingPhoneCodeViewModel> {
+public class FlightBookingNationalityViewHolder extends AbstractViewHolder<CountryPhoneCode> {
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_booking_nationality;
 
     private TextView countryName;
 
     @Override
-    public void bind(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-        countryName.setText(flightBookingPhoneCodeViewModel.getCountryName());
+    public void bind(CountryPhoneCode phoneCode) {
+        countryName.setText(phoneCode.getCountryName());
     }
 
     public FlightBookingNationalityViewHolder(View layoutView) {

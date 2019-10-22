@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -29,16 +29,14 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
-import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
-import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
@@ -144,7 +142,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         hideLoading();
         showError(getString(R.string.error_no_internet_connection));
     }
@@ -192,7 +190,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();
-                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(),"user/pin");
+                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(), "user/pin");
                     RouteManager.route(getActivity(),
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
                     break;
@@ -227,11 +225,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void intentToAddPassword() {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            startActivityForResult(
-                    ((AccountHomeRouter) getActivity().getApplicationContext())
-                            .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
-
+        if (getActivity() != null) {
+            startActivityForResult(RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_ADD_PASSWORD);
         }
     }
 
@@ -241,8 +237,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         if (userSession.hasShop()) {
             goToKyc();
         } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()));
+            startActivity(RouteManager.getIntent(getContext(), OPEN_SHOP));
         }
     }
 

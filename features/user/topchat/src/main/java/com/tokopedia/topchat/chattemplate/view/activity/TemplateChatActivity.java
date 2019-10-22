@@ -13,9 +13,11 @@ import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 public class TemplateChatActivity extends BaseSimpleActivity {
 
     private static final String TAG = "TEMPLATE_CHAT_FRAGMENT";
+    public static final String PARAM_IS_SELLER = "PARAM_IS_SELLER";
 
-    public static Intent createInstance(Context context) {
+    public static Intent createInstance(Context context, Boolean isSeller) {
         Intent intent = new Intent(context, TemplateChatActivity.class);
+        intent.putExtra(PARAM_IS_SELLER, isSeller);
         return intent;
     }
 

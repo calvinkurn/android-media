@@ -2,22 +2,16 @@ package com.tokopedia.home.beranda.domain.interactor;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home.BuildConfig;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
-import com.tokopedia.kotlin.util.ContainNullException;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
-
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -52,14 +46,7 @@ public class GetHomeFeedUseCase extends UseCase<HomeFeedListModel> {
 
     private Func1<HomeFeedListModel, HomeFeedListModel> checkForNull() {
         return responseMap -> {
-            NullCheckerKt.isContainNull(responseMap, errorMessage -> {
-                String message = String.format("Found %s in %s", errorMessage, GetHomeFeedUseCase.class.getSimpleName());
-                ContainNullException exception = new ContainNullException(message);
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(exception);
-                }
-                throw exception;
-            });
+            NullCheckerKt.throwIfNull(responseMap, GetHomeFeedUseCase.class);
             return responseMap;
         };
     }

@@ -250,9 +250,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
-                view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                view.onGoToPhoneVerification()))
+                view.onErrorGetUserInfo()))
     }
 
     override fun getTickerInfo(){
@@ -268,7 +266,4 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getProfileUseCase.unsubscribe()
         tickerInfoUseCase.unsubscribe()
     }
-
-
-
 }

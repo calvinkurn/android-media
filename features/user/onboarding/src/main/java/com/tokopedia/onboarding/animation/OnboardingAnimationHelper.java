@@ -102,12 +102,9 @@ public class OnboardingAnimationHelper {
         if (view != null) {
             ValueAnimator valueAnimator = ValueAnimator.ofInt(-(int) (view.getWidth() * 1.5), 0);
 
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    float val = (Integer) valueAnimator.getAnimatedValue();
-                    view.setTranslationX(val);
-                }
+            valueAnimator.addUpdateListener(valueAnimator1 -> {
+                float val = (Integer) valueAnimator1.getAnimatedValue();
+                view.setTranslationX(val);
             });
             return valueAnimator;
         }

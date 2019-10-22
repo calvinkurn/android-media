@@ -48,7 +48,6 @@ import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
@@ -68,9 +67,11 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, PopupMenu.OnMenuItemClickListener{
 
     private final boolean IS_SHORT_LAYOUT = true;
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
+    private static final String CATEGORY_FRAGMENT = "CategoryDetailHomeFragment";
     private final String SCREEN_NAME = "/digital/deals/category";
     private RecyclerView recyclerViewDeals;
     private RecyclerView recyclerViewBrands;
@@ -105,6 +106,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     List<ProductItem> categoryItems = new ArrayList<>();
     private AppBarLayout appBarLayout;
     private UserSession userSession;
+    private boolean isLocationUpdated;
 
     private Menu mMenu;
 
@@ -114,8 +116,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         mPresenter.attachView(this);
     }
 
-    public static Fragment createInstance(Bundle bundle) {
-        Fragment fragment = new CategoryDetailHomeFragment();
+    public static CategoryDetailHomeFragment createInstance(Bundle bundle, boolean isLocationUpdated) {
+        CategoryDetailHomeFragment fragment = new CategoryDetailHomeFragment();
+        bundle.putBoolean(LOCATION_UPDATE, isLocationUpdated);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -124,9 +127,12 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
-        this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
-        this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+            this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
+            this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
+            this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
+        }
         userSession = new UserSession(getActivity());
     }
 
@@ -139,6 +145,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
         mPresenter.getCategoryDetails(true);
         mPresenter.getBrandsList(true);
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
+        }
         return view;
     }
 
@@ -267,6 +276,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             dealsAdapter.setDealType(DealsAnalytics.CATEGORY_DEALS);
             dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
+            if (deals != null && deals.size() > 1) {
+                recyclerViewDeals.setClipToPadding(false);
+                recyclerViewDeals.setPadding(0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16), 0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_100));
+            }
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
         } else {
@@ -374,14 +387,27 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     };
 
     @Override
-    public String getCategoryParams() {
-        Uri uri = null;
+    public String getCategoryUrl() {
+        if (categoriesModel != null && !TextUtils.isEmpty(categoriesModel.getCategoryUrl())) {
+            return categoriesModel.getCategoryUrl();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public RequestParams getCategoryParams() {
+        RequestParams params = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getContext());
         if (location != null) {
-            uri = Utils.replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
-            return uri.toString();
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                params.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                params.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+            }
         }
-        return categoriesModel.getCategoryUrl();
+        return params;
     }
 
     @Override
@@ -390,8 +416,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
         requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         Location location = Utils.getSingletonInstance().getLocation(getContext());
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+            }
+        }
         return requestParams;
     }
 
@@ -506,30 +538,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (locationUpdated && location != null) {
-            mPresenter.getBrandsList(true);
-            mPresenter.getCategoryDetails(true);
-            toolbarTitle.setText(location.getName());
-        }
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
-    }
-
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
-    }
-
-    @Override
     public void startLocationFragment(List<Location> locations) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, toolbarTitle.getText().toString(), this), "", false);
-        selectLocationFragment.show();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
+        getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
     }
 
     @Override
@@ -557,5 +570,15 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                     .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.FAQURL);
         }
         return true;
+    }
+
+    public void refreshPage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (isLocationUpdated && location != null) {
+            toolbarTitle.setText(location.getName());
+            popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
+            mPresenter.getBrandsList(true);
+            mPresenter.getCategoryDetails(true);
+        }
     }
 }

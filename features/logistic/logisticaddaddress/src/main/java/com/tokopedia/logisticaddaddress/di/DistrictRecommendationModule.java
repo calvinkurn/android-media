@@ -16,12 +16,14 @@ import com.tokopedia.logisticaddaddress.data.service.KeroApi;
 import com.tokopedia.logisticaddaddress.data.service.MyShopAddressApi;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
+import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider;
+import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider;
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModelMapper;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationPresenter;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
@@ -162,12 +164,6 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    AddressViewModelMapper provideViewModelMapper() {
-        return new AddressViewModelMapper();
-    }
-
-    @Provides
-    @DistrictRecommendationScope
     DistrictRecommendationRepository provideDistrictRecommendationRepository(
             DistrictRecommendationDataStore districtRecommendationDataStore,
             DistrictRecommendationEntityMapper districtRecommendationEntityMapper
@@ -206,10 +202,16 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    DistrictRecommendationContract.Presenter provideDistrictRecommendationPresenter(
+    DiscomContract.Presenter provideDistrictRecommendationPresenter(
             GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation,
-            AddressViewModelMapper addressViewModelMapper) {
-        return new DistrictRecommendationPresenter(getDistrictRequestUseCase, getDistrictRecommendation, addressViewModelMapper);
+            DistrictRecommendationMapper mapper) {
+        return new DiscomPresenter(getDistrictRequestUseCase, getDistrictRecommendation, mapper);
+    }
+
+    @Provides
+    @DistrictRecommendationScope
+    SchedulerProvider provideSchedulerProvider() {
+        return new MainSchedulerProvider();
     }
 
 }

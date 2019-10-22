@@ -108,7 +108,7 @@ public class CountDownView extends FrameLayout {
             handleExpiredTime(listener);
             return;
         }
-        stopAutoRefreshCounter();
+        clearCountDownView();
         refreshCounterHandler = new Handler();
         runnableRefreshCounter = new TimerRunnable(
                 serverTime, expiredTime, serverTimeOffset, listener
@@ -116,6 +116,13 @@ public class CountDownView extends FrameLayout {
         startAutoRefreshCounter();
     }
 
+    public void clearCountDownView() {
+        if (refreshCounterHandler != null) {
+            refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
+        }
+        refreshCounterHandler = null;
+        runnableRefreshCounter = null;
+    }
 
     public void setupTimerFromRemianingMillis(final long expiredTime,
                                               final CountDownListener listener) {
@@ -137,7 +144,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private void handleExpiredTime(CountDownListener listener) {
-        stopAutoRefreshCounter();
+        clearCountDownView();
         setTime(0, 0, 0);
         if (listener != null) {
             listener.onCountDownFinished();
@@ -150,6 +157,7 @@ public class CountDownView extends FrameLayout {
 
     private TimeDiffModel getTimeDiff(Date startTime, Date endTime) {
         long diff = endTime.getTime() - startTime.getTime();
+        if (diff < 0) diff = 0;
         TimeDiffModel model = new TimeDiffModel();
         model.setSecond((int) (diff / 1000 % 60));
         model.setMinute((int) (diff / (60 * 1000) % 60));
@@ -157,18 +165,19 @@ public class CountDownView extends FrameLayout {
         return model;
     }
 
-    public void stopAutoRefreshCounter() {
-        if (refreshCounterHandler != null && runnableRefreshCounter != null) {
-            refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
-            this.runnableRefreshCounter.stop();
-        }
-    }
-
     private void startAutoRefreshCounter() {
         if (refreshCounterHandler != null &&
                 runnableRefreshCounter != null) {
             this.runnableRefreshCounter.start();
-            refreshCounterHandler.post(runnableRefreshCounter);
+            this.refreshCounterHandler.post(runnableRefreshCounter);
+        }
+    }
+
+    private void stopAutoRefreshCounter() {
+        if (refreshCounterHandler != null &&
+                runnableRefreshCounter != null) {
+            this.runnableRefreshCounter.stop();
+            this.refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
         }
     }
 
@@ -271,20 +280,16 @@ public class CountDownView extends FrameLayout {
         public void start(){
             stop = false;
         }
-
         @Override
         public void run() {
-            if (!isExpired(serverTime, expiredTime)) {
+            if (!isExpired(serverTime, expiredTime) && !stop) {
                 Date currentDate = new Date();
                 long currentMillisecond = currentDate.getTime() + serverTimeOffset;
                 serverTime.setTime(currentMillisecond);
 
                 TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
                 setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
-
-                if (!stop) {
-                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
-                }
+                refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
             } else {
                 handleExpiredTime(listener);
             }

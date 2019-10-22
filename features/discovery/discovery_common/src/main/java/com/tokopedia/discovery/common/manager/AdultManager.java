@@ -69,7 +69,7 @@ public class AdultManager {
         if (callback != null) {
             callback.onVerificationSuccess(message);
         } else {
-            Toaster.Companion.showNormalWithAction(activity.findViewById(android.R.id.content),
+            Toaster.INSTANCE.showNormalWithAction(activity.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_INDEFINITE,
                     "Ok", (v) -> {

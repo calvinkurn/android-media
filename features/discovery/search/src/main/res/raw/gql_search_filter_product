@@ -16,6 +16,7 @@ search_filter_product(query: $query, source: $source, extraParams: $params) {
             name
             key
             icon
+            description
             value
             input_type
             total_data

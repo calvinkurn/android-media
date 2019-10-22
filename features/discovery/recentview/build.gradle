@@ -15,46 +15,39 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'recentview'
-    groupId = 'com.tokopedia.recentview'
-    versionName = "${tkpdRecentviewVersion}"
-    artifactName ="recentview-release"
-}
-
 dependencies {
-
-    implementation project(rootProject.ext.libraries.url)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.libraries.track)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.playServicesDependencies.analytics
-
     implementation rootProject.ext.miscDependencies.multiDex
-
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     implementation rootProject.ext.debugToolsDependencies.stetho
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
-    
-    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.debugToolsDependencies.chuck
+}
+
+project.ext {
+    artifactId = 'recent-view'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="recentview-release"
 }
 
 apply from: '../../../publish_local.gradle'

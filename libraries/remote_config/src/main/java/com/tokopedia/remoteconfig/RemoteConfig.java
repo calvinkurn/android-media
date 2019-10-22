@@ -1,10 +1,20 @@
 package com.tokopedia.remoteconfig;
 
+import java.util.Set;
+
 /**
  * Created by okasurya on 11/6/17.
  */
 
 public interface RemoteConfig {
+    /**
+     * Returns a Set of all Firebase Remote Config parameter keys with the given prefix.
+     *
+     * @param prefix The key prefix to look for. If the prefix is an empty string, all keys are returned.
+     * @return Set of Remote Config parameter keys that start with the specified prefix.
+     */
+    Set<String> getKeysByPrefix(String prefix);
+
     /**
      * Gets the value corresponding to the specified key, as a boolean.
      * @param key The Remote Config parameter key to look up.
@@ -18,7 +28,7 @@ public interface RemoteConfig {
      * @param defaultValue the defaultValue if any error happened
      * @return value as boolean
      */
-    boolean getBoolean(String key, Boolean defaultValue);
+    boolean getBoolean(String key, boolean defaultValue);
 
     /**
      * Gets the value corresponding to the specified key, as a byte array.

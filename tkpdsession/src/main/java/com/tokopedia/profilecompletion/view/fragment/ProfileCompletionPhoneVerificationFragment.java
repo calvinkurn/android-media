@@ -28,7 +28,7 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
 
     public static final String TAG = "verif";
 
-    private ProfileCompletionContract.View parentView;
+    private ProfileCompletionContract.View  parentView;
     private ProfileCompletionContract.Presenter parentPresenter;
 
     protected TextView verifyButton;

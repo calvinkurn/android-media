@@ -43,8 +43,8 @@ data class PromoData(var typePromo: Int = 0,
 
     companion object CREATOR : Parcelable.Creator<PromoData> {
 
-        val TYPE_VOUCHER = 1
-        val TYPE_COUPON = 2
+        val TYPE_VOUCHER = 0
+        val TYPE_COUPON = 1
         val VALUE_COUPON = 1
 
         override fun createFromParcel(parcel: Parcel): PromoData {

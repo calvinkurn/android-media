@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">libraries/analytics</string>
     <string name="analytics_debugger_label_search">Search</string>
+    <string name="cashshield_token">11511ca54a90c629ee0a2785fe5a322b3eebc15b</string>
 </resources>

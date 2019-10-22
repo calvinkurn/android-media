@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_payment" translatable="false">payment</string>
+
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+    <string name="path_payment_checkout" translatable="false">/checkout</string>
+</resources>

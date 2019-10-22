@@ -30,7 +30,7 @@ public abstract class BaseAccountSubscriber<T> extends Subscriber<T> {
     protected void showErrorMessage(Throwable e) {
         if(e instanceof UnknownHostException
                 || e instanceof SocketTimeoutException) {
-            view.showErroNoConnection();
+            view.showErrorNoConnection();
         } else {
             view.showError(e);
         }

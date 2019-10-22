@@ -30,5 +30,10 @@ public interface GamificationEventTracking {
         String CLICK_CLOSE_BUTTON = "click close button";
         String CLICK_OK = "click ok";
         String CLICK_TRY_AGAIN = "click coba lagi";
+        String CLICK_LOYALTY_ICON = "click loyalty icon";
+        String CLICK_KUPON_ICON = "click kupon icon";
+        String CLICK_POINT_ICON = "click tokopoints icon";
+        String CLICK_DAILY_PRIZE = "click daily prize";
+        String VIEW_ERROR = "view error";
     }
 }

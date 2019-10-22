@@ -3,13 +3,13 @@ package com.tokopedia.digital.product.view.presenter;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
 
 /**
  * Created by ashwanityagi on 19/07/17.
@@ -68,7 +68,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
     @NonNull
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 

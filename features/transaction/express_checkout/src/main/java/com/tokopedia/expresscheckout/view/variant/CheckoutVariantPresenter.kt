@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.mapper.checkout.CheckoutDomainModelMapper
@@ -14,11 +15,10 @@ import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.expresscheckout.view.variant.subscriber.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.shipping_recommendation.domain.ShippingParam
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.transaction.common.sharedata.EditAddressParam
 import com.tokopedia.transactiondata.entity.request.*
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
@@ -76,8 +76,9 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
         view?.showLoading()
         getCourierRecommendationUseCase.execute(
-                query, -1, false, shippingParam, 0, 0, shopShipmentModels,
-                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId)
+                query, -1, false, false, "", 0, 0, shopShipmentModels,
+                GetRatesSubscriber(view, this, selectedServiceId, selectedSpId),
+                shippingParam
         )
     }
 
@@ -143,17 +144,17 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
 
     override fun updateAddress(fragmentViewModel: FragmentViewModel, latitude: String, longitude: String) {
         val addressModel = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel
-        val requestParamsMap = AuthUtil.generateParamsNetwork(
+        val requestParamsMap = AuthHelper.generateParamsNetwork(
                 userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam<String, String>())
-        requestParamsMap.put(EditAddressParam.ADDRESS_ID, addressModel?.addressId?.toString())
-        requestParamsMap.put(EditAddressParam.ADDRESS_NAME, addressModel?.addressName)
-        requestParamsMap.put(EditAddressParam.ADDRESS_STREET, addressModel?.addressStreet)
-        requestParamsMap.put(EditAddressParam.POSTAL_CODE, addressModel?.postalCode)
-        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString())
-        requestParamsMap.put(EditAddressParam.CITY_ID, addressModel?.cityId?.toString())
-        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString())
-        requestParamsMap.put(EditAddressParam.RECEIVER_NAME, addressModel?.receiverName)
-        requestParamsMap.put(EditAddressParam.RECEIVER_PHONE, addressModel?.phone)
+        requestParamsMap.put(EditAddressParam.ADDRESS_ID, addressModel?.addressId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.ADDRESS_NAME, addressModel?.addressName ?: "")
+        requestParamsMap.put(EditAddressParam.ADDRESS_STREET, addressModel?.addressStreet ?: "")
+        requestParamsMap.put(EditAddressParam.POSTAL_CODE, addressModel?.postalCode ?: "")
+        requestParamsMap.put(EditAddressParam.DISTRICT_ID, addressModel?.districtId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.CITY_ID, addressModel?.cityId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.PROVINCE_ID, addressModel?.provinceId?.toString() ?: "")
+        requestParamsMap.put(EditAddressParam.RECEIVER_NAME, addressModel?.receiverName ?: "")
+        requestParamsMap.put(EditAddressParam.RECEIVER_PHONE, addressModel?.phone ?: "")
         requestParamsMap.put(EditAddressParam.LATITUDE, latitude)
         requestParamsMap.put(EditAddressParam.LONGITUDE, longitude)
         val requestParams = RequestParams.create()

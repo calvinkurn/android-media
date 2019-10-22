@@ -41,10 +41,11 @@ constructor(
                 .map(RecommendationEntityMapper())
     }
 
-    fun getRecomParams(pageNumber: Int,
-                       xSource: String,
-                       pageName: String,
-                       productIds: List<String>): RequestParams {
+    fun getRecomParams(pageNumber: Int = 1,
+                       xSource: String = "",
+                       pageName: String = "",
+                       productIds: List<String> = arrayListOf(),
+                       ref: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
 
@@ -55,6 +56,7 @@ constructor(
         }
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
+        params.putString(REF, ref)
 
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
@@ -78,6 +80,7 @@ constructor(
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
         val PAGE_NAME = "pageName"
+        val REF = "ref"
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""

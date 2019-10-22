@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,7 +69,9 @@ public class BookingCodeView extends RelativeLayout {
                 ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
                 myClip = ClipData.newPlainText(TEXT, bookingCode);
                 myClipboard.setPrimaryClip(myClip);
-                Toaster.Companion.showNormalWithAction(view, TEXT_COPIED, Snackbar.LENGTH_LONG, "Ok", v1 -> {});
+                Toaster.INSTANCE.showNormalWithAction(view, TEXT_COPIED, Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                });
+
             }
         });
 

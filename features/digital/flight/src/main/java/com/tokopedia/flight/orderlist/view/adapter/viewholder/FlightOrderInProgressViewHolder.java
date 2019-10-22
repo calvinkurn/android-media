@@ -75,7 +75,7 @@ public class FlightOrderInProgressViewHolder extends FlightOrderBaseViewHolder<F
 
     @Override
     protected void onHelpOptionClicked() {
-        adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
+        adapterInteractionListener.onHelpOptionClicked(item.getContactUsUrl());
     }
 
     @Override

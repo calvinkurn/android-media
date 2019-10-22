@@ -40,17 +40,13 @@ data class Carousel(
     }
 
 
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<Carousel> = object : Parcelable.Creator<Carousel> {
-            override fun createFromParcel(source: Parcel): Carousel {
-                return Carousel(source)
-            }
+    companion object CREATOR : Parcelable.Creator<Carousel> {
+        override fun createFromParcel(parcel: Parcel): Carousel {
+            return Carousel(parcel)
+        }
 
-            override fun newArray(size: Int): Array<Carousel?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<Carousel?> {
+            return arrayOfNulls(size)
         }
     }
-
 }

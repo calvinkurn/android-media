@@ -3,13 +3,13 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 
 import java.util.List;
@@ -90,6 +90,19 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
+
+                                        // Auto apply Promo Stacking Logistic
+                                        if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
+                                                && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
+                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()
+                                                && !shippingRecommendationData.getLogisticPromo().getDisabled()) {
+                                            courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
+                                            courierItemData.setDiscountedRate(shippingRecommendationData.getLogisticPromo().getDiscountedRate());
+                                            courierItemData.setShippingRate(shippingRecommendationData.getLogisticPromo().getShippingRate());
+                                            courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
+                                            courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
+                                            courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
+                                        }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;

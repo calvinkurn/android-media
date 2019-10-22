@@ -7,9 +7,6 @@ import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
-import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.NextActionFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 
@@ -21,12 +18,6 @@ import dagger.Component;
 @ResolutionDetailScope
 @Component(modules = ResolutionDetailModule.class, dependencies = AppComponent.class)
 public interface ResolutionDetailComponent {
-
-    void inject(DetailResCenterFragment fragment);
-
-    void inject(DetailResChatFragment fragment);
-
-    void inject(NextActionFragment fragment);
 
     void inject(TrackShippingFragment fragment);
 

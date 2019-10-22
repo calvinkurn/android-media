@@ -29,8 +29,9 @@ public class CreateTemplateUseCase extends UseCase<EditTemplateViewModel> {
         return templateRepository.createTemplate(requestParams.getParameters());
     }
 
-    public static RequestParams generateParam(String value) {
+    public static RequestParams generateParam(String value, Boolean isSeller) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean("is_seller", isSeller);
         requestParams.putString("value", value);
         return requestParams;
     }

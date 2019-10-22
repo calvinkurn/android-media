@@ -28,26 +28,23 @@ buildscript {
     }
 }
 
+dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.networkDependencies.glide
+
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation "org.robolectric:robolectric:4.1"
+}
+
 project.ext {
     artifactId = 'design'
     groupId = 'com.tokopedia.design'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName ="tkpddesign-release"
-}
-
-dependencies {
-    implementation rootProject.ext.supportLibDependencies.preferenceV7
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-
-    implementation project(rootProject.ext.features.resourcesCommon)
-
-    androidTestImplementation rootProject.ext.testDependencies.mockitorCore
-    implementation rootProject.ext.networkDependencies.glide
-    testImplementation "org.robolectric:robolectric:4.1"
 }
 
 apply from: '../publish_local.gradle'

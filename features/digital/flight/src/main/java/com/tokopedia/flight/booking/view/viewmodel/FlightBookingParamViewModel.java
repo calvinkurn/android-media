@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class FlightBookingParamViewModel implements Parcelable{
     private String id;
     private String orderDueTimestamp;
     private FlightSearchPassDataViewModel searchParam;
-    private FlightBookingPhoneCodeViewModel phoneCodeViewModel;
+    private CountryPhoneCode phoneCode;
     private List<FlightBookingPassengerViewModel> passengerViewModels;
     private String contactName;
     private String contactEmail;
@@ -34,7 +35,7 @@ public class FlightBookingParamViewModel implements Parcelable{
         id = in.readString();
         orderDueTimestamp = in.readString();
         searchParam = in.readParcelable(FlightSearchPassDataViewModel.class.getClassLoader());
-        phoneCodeViewModel = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        phoneCode = in.readParcelable(CountryPhoneCode.class.getClassLoader());
         passengerViewModels = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
         contactName = in.readString();
         contactEmail = in.readString();
@@ -57,12 +58,12 @@ public class FlightBookingParamViewModel implements Parcelable{
         }
     };
 
-    public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
-        return phoneCodeViewModel;
+    public CountryPhoneCode getPhoneCode() {
+        return phoneCode;
     }
 
-    public void setPhoneCodeViewModel(FlightBookingPhoneCodeViewModel phoneCodeViewModel) {
-        this.phoneCodeViewModel = phoneCodeViewModel;
+    public void setPhoneCode(CountryPhoneCode phoneCode) {
+        this.phoneCode = phoneCode;
     }
 
     public List<FlightBookingPassengerViewModel> getPassengerViewModels() {
@@ -163,7 +164,7 @@ public class FlightBookingParamViewModel implements Parcelable{
         parcel.writeString(id);
         parcel.writeString(orderDueTimestamp);
         parcel.writeParcelable(searchParam, i);
-        parcel.writeParcelable(phoneCodeViewModel, i);
+        parcel.writeParcelable(phoneCode, i);
         parcel.writeTypedList(passengerViewModels);
         parcel.writeString(contactName);
         parcel.writeString(contactEmail);

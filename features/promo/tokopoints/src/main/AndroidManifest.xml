@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.tokopoints">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application>
         <activity
             android:name=".view.activity.TokoPointsHomeNewActivity"
@@ -23,10 +25,12 @@
         <activity
             android:name=".view.activity.MyCouponListingActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.CouponCatalogDetailsActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.CouponDetailActivity"

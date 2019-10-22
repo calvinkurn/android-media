@@ -69,6 +69,8 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -136,6 +138,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private View dividerTnC;
     private boolean forceRefresh;
     private DealsCategoryAdapter dealsAdapter;
+    private UserSession userSession;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -149,7 +152,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         View view = inflater.inflate(R.layout.fragment_deal_details, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
-
+        userSession = new UserSession(getActivity());
 
         mPresenter.getDealDetails();
         return view;
@@ -251,6 +254,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
         dealsAnalytics.sendScreenNameEvent(getScreenName());
         this.dealDetail = detailsViewModel;
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNsqEvent(userSession.getUserId(), detailsViewModel);
+            mPresenter.sendNsqTravelEvent(userSession.getUserId(), detailsViewModel);
+        }
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
         tvDealDetails.setText(detailsViewModel.getDisplayName());
         tvDealDetails.setVisibility(View.VISIBLE);
@@ -333,6 +340,17 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
 
+        Date currentTime = Calendar.getInstance().getTime();
+        if ((currentTime.getTime())/1000> detailsViewModel.getSaleEndDate())
+        {
+            buyDealNow.setText(getContext().getResources().getString(R.string.deals_disable_buy_now));
+            buyDealNow.setClickable(false);
+            buyDealNow.setBackgroundColor(getContext().getResources().getColor(R.color.search_divider_color));
+        } else {
+            buyDealNow.setClickable(true);
+            buyDealNow.setText(getContext().getResources().getString(R.string.buy_now));
+            buyDealNow.setBackground(getContext().getResources().getDrawable(R.drawable.button_buy_now_background));
+        }
         if (detailsViewModel.getBrand() != null)
             dealsAnalytics.sendEcommerceDealDetail(detailsViewModel.getId(), detailsViewModel.getSalesPrice(), detailsViewModel.getDisplayName(), detailsViewModel.getBrand().getTitle());
 

@@ -4,6 +4,7 @@ public interface GamificationConstants {
 
     interface GraphQlVariableKeys{
         String TOKEN_ID = "tokenUserID";
+        String TOKEN_ID_STR = "tokenUserIDstr";
         String CAMPAIGN_ID = "campaignID";
     }
 

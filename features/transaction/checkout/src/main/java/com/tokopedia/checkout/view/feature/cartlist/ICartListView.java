@@ -15,8 +15,12 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +34,10 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorInitialGetCartListData(String message);
 
-    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap,
-                                     boolean checkoutProductEligibleForCashOnDelivery, int condition);
+    void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                     List<CartItemData> cartItemDataList,
+                                     boolean checkoutProductEligibleForCashOnDelivery,
+                                     int condition);
 
     void renderToAddressChoice();
 
@@ -95,13 +101,11 @@ public interface ICartListView extends IBaseView {
 
     void renderWishlist(List<Wishlist> wishlist);
 
-    void renderRecommendation(List<RecommendationItem> recommendationItems);
+    void renderRecommendation(RecommendationWidget recommendationWidget);
 
     void showItemLoading();
 
     void hideItemLoading();
-
-    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
 
     void notifyBottomCartParent();
 
@@ -110,4 +114,12 @@ public interface ICartListView extends IBaseView {
     void setHasTriedToLoadRecentView();
 
     void setHasTriedToLoadRecommendation();
+
+    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
+
+    void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation);
+
+    ArrayList<InsuranceCartDigitalProduct> getInsuranceCartShopData();
+
+    void removeInsuranceProductItem(List<Long> productId);
 }

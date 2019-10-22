@@ -51,24 +51,27 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
         itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
 
         if (isSingleItemVideo(element)) {
-            val mediaItem = element.mediaItemList.get(0)
-            if (canPlayVideo(mediaItem) && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()) {
-                playVideo(mediaItem.videos.get(0).url)
+            itemView.layout_dummy.visibility = View.VISIBLE
+            val mediaItem = element.mediaItemList[0]
+            if (canPlayVideo(mediaItem) && ContentNetworkListener.isWifiEnabled(itemView.context) && mediaItem.videos.isNotEmpty()) {
+                playVideo(mediaItem.videos[0].url)
             } else {
                 stopVideo()
             }
+        } else {
+            itemView.layout_dummy.visibility = View.GONE
         }
 
         itemView.layout_dummy.setOnClickListener{
             if (isSingleItemVideo(element)) {
-                val mediaItem = element.mediaItemList.get(0)
-                playVideo(mediaItem.videos.get(0).url)
+                val mediaItem = element.mediaItemList.first()
+                if (mediaItem.videos.isNotEmpty()) playVideo(mediaItem.videos[0].url)
             }
         }
     }
 
     private fun isSingleItemVideo(element: MultimediaGridViewModel): Boolean {
-        return element.mediaItemList.size == 1 && element.mediaItemList.get(0).type.equals(TYPE_VIDEO)
+        return element.mediaItemList.size == 1 && element.mediaItemList[0].type == TYPE_VIDEO
     }
 
     private fun canPlayVideo(element: MediaItem): Boolean {
@@ -83,7 +86,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
-                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener{
+                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                                 itemView.frame_video.visibility = View.VISIBLE

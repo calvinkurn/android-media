@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -32,22 +35,31 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachmentAdapter
+import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductSuggestionAdapter
+import com.tokopedia.affiliate.feature.createpost.view.adapter.ShareBottomSheetAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.util.SpaceItemDecoration
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
+import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -65,18 +77,37 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var affiliatePref: AffiliatePreference
+
     protected var viewModel: CreatePostViewModel = CreatePostViewModel()
 
     protected val adapter: ProductAttachmentAdapter by lazy {
         ProductAttachmentAdapter(onDeleteProduct = this::onDeleteProduct)
     }
 
-    private val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
-        activity as? OnCreatePostCallBack
+    private val activityListener: CreatePostActivityListener? by lazy {
+        activity as? CreatePostActivityListener
     }
 
     private val captionsAdapter: DefaultCaptionsAdapter by lazy {
         DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
+    }
+
+    private val shareAdapter: ShareBottomSheetAdapter by lazy {
+        ShareBottomSheetAdapter(::onShareButtonClicked)
+    }
+
+    private val productSuggestionAdapter: ProductSuggestionAdapter by lazy {
+        ProductSuggestionAdapter(::onSuggestionItemClicked)
+    }
+
+    private lateinit var shareDialogView: View
+
+    private val shareDialog: CloseableBottomSheetDialog by lazy {
+        CloseableBottomSheetDialog.createInstanceRounded(context).apply {
+            setContentView(shareDialogView)
+        }
     }
 
     protected val productAttachmentLayoutManager by lazy {
@@ -84,40 +115,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     lateinit var productSmoothScroller: LinearSmoothScroller
-
-    private fun onDeleteProduct(position: Int){
-        if (adapter.itemCount < 1){
-            label_title_product_attachment.gone()
-            product_attachment.gone()
-        } else {
-            label_title_product_attachment.visible()
-            product_attachment.visible()
-        }
-
-        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
-
-        viewModel.relatedProducts.removeAt(position)
-
-        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
-            viewModel.urlImageList.removeAt(position)
-        } else {
-            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
-        }
-
-        val idPosition = if (isTypeAffiliate()) {
-            viewModel.adIdList.indexOf(relatedProductItem.id)
-        } else {
-            viewModel.productIdList.indexOf(relatedProductItem.id)
-        }
-        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
-            viewModel.adIdList.removeAt(idPosition)
-        }
-        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
-            viewModel.productIdList.removeAt(idPosition)
-        }
-        updateMediaPreview()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
-    }
 
     companion object {
         private const val MILLISECONDS_PER_INCH = 200f
@@ -131,6 +128,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val MAX_CHAR = 2000
         private const val CHAR_LENGTH_TO_SHOW = 1900
     }
+
+    abstract fun fetchContentForm()
+
+    abstract fun onRelatedAddProductClick()
+
+    abstract fun fetchProductSuggestion(onSuccess: (List<ProductSuggestionItem>) -> Unit,
+                                        onError: (Throwable) -> Unit)
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
@@ -205,7 +209,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onPause()
     }
 
-    private inline val isPostEnabled: Boolean
+    protected inline val isPostEnabled: Boolean
         get() = viewModel.postId.isNotBlank() ||
                 (viewModel.completeImageList.isNotEmpty()
                 && viewModel.relatedProducts.isNotEmpty()
@@ -239,7 +243,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     fetchContentForm()
                 }
 
-                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+                activityListener?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
@@ -255,7 +259,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     fetchContentForm()
                 }
 
-                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+                activityListener?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -280,6 +284,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun showLoading() {
         action_bottom.gone()
         layout_default_caption.gone()
+        hideProductSuggestion()
         view?.showLoading()
     }
 
@@ -302,7 +307,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
         if (viewModel.isEditState) action_bottom.gone() else action_bottom.visible()
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
@@ -310,11 +315,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.allowVideo = feedContentForm.media.allowVideo
         viewModel.maxProduct = feedContentForm.maxTag
         viewModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
+        if (viewModel.caption.isEmpty()) viewModel.caption = feedContentForm.caption
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             viewModel.urlImageList.addAll(feedContentForm.media.media.map { MediaModel(it.mediaUrl, it.type) })
-            media_attachment.bind(viewModel.urlImageList.map { MediaItem(it.path, it.type) })
+            media_attachment.bind(viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type) })
         }
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
@@ -334,9 +340,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateRelatedProduct()
         updateMedia()
         updateMediaPreview()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+        activityListener?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
+
+        fetchAndRenderProductSuggestion()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -357,9 +365,38 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    abstract fun fetchContentForm()
+    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
+        context?.let(authenticator::startAuthenticate)
+    }
 
-    abstract fun onRelatedAddProductClick()
+    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
+        shareAdapter.setItems(typeList)
+    }
+
+    override fun changeShareHeaderText(text: String) {
+        activityListener?.updateShareHeader(text)
+    }
+
+    open fun updateRelatedProduct() {
+        adapter.updateProduct(viewModel.relatedProducts)
+        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
+            product_attachment.gone()
+            label_title_product_attachment.gone()
+        } else {
+            product_attachment.visible()
+            label_title_product_attachment.visible()
+        }
+    }
+
+    fun openShareBottomSheetDialog() {
+        presenter.invalidateShareOptions()
+        if (!::shareDialogView.isInitialized) shareDialogView = createBottomSheetView()
+        shareDialogView.apply {
+            shareList.adapter = shareAdapter
+            shareBtn.isEnabled = isPostEnabled
+        }
+        shareDialog.show()
+    }
 
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -514,10 +551,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
             if (hasFocus){
                 layout_default_caption.visible()
+                hideProductSuggestion()
                 action_bottom.gone()
             } else {
                 layout_default_caption.gone()
-                if (!viewModel.isEditState)action_bottom.visible() else action_bottom.gone()
+                showProductSuggestion()
+                if (!viewModel.isEditState) action_bottom.visible() else action_bottom.gone()
             }
         }
         list_captions.adapter = captionsAdapter
@@ -639,20 +678,28 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
         view?.let {v ->
             if (action.isNullOrBlank()){
-                Toaster.showError(v, message, Snackbar.LENGTH_LONG)
+                Toaster.showError(v, message.toString(), Snackbar.LENGTH_LONG)
             } else {
-                Toaster.showErrorWithAction(v, message, Snackbar.LENGTH_LONG, action, View.OnClickListener {
+                Toaster.showErrorWithAction(v, message.toString(), Snackbar.LENGTH_LONG, action.toString(), View.OnClickListener {
                     actionClick?.invoke(it)
                 })
             }
         }
     }
 
-    fun saveDraftAndSubmit() {
+    fun saveDraftAndSubmit(skipFirstTimeChecking: Boolean = false) {
         if (isFormInvalid()) {
             return
         }
 
+        if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
+        else {
+            submitPost()
+            affiliatePref.setFirstTimePost(userSession.userId)
+        }
+    }
+
+    private fun submitPost() {
         activity?.let {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
             showLoading()
@@ -669,6 +716,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             } else {
                 goToFeed()
             }
+
             it.finish()
         }
     }
@@ -680,43 +728,177 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun updateHeader(authors: List<Author>) {
-        if (activity is CreatePostActivityListener ) {
-            if(viewModel.isEditState){
-                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
-                        getString(R.string.af_title_edit_post),
-                        "",
-                        ""
+        if (viewModel.isEditState) {
+            activityListener?.updateHeader(HeaderViewModel(
+                    getString(R.string.af_title_edit_post),
+                    "",
+                    ""
 
-                ))
-            } else if (authors.isNotEmpty()) {
-                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
-                        authors.first().name,
-                        authors.first().thumbnail,
-                        authors.first().badge
+            ))
+        } else if (authors.isNotEmpty()) {
+            activityListener?.updateHeader(HeaderViewModel(
+                    authors.first().name,
+                    authors.first().thumbnail,
+                    authors.first().badge
 
-                ))
-            }
+            ))
         }
     }
 
     private fun updateCaption() {
-        caption.hint = viewModel.defaultPlaceholder
-    }
-
-    open fun updateRelatedProduct() {
-        adapter.updateProduct(viewModel.relatedProducts)
-        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
-            product_attachment.gone()
-            label_title_product_attachment.gone()
-        } else {
-            product_attachment.visible()
-            label_title_product_attachment.visible()
+        caption.apply {
+            hint = viewModel.defaultPlaceholder
+            setText(viewModel.caption)
         }
     }
 
-    interface OnCreatePostCallBack{
-        fun invalidatePostMenu(isPostEnabled: Boolean)
+    private fun onDeleteProduct(position: Int){
+        if (adapter.itemCount < 1){
+            label_title_product_attachment.gone()
+            product_attachment.gone()
+        } else {
+            label_title_product_attachment.visible()
+            product_attachment.visible()
+        }
+
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
+
+        viewModel.relatedProducts.removeAt(position)
+
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
+        } else {
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        }
+
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
+        }
+        updateMediaPreview()
+        activityListener?.invalidatePostMenu(isPostEnabled)
+
+        fetchAndRenderProductSuggestion()
+    }
+
+    private fun fetchAndRenderProductSuggestion() {
+        if (shouldLoadProductSuggestion()) {
+            if (productSuggestionAdapter.isEmpty()) {
+                fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
+                showProductSuggestionLoading()
+            } else {
+                showProductSuggestion()
+            }
+        }
+    }
+
+    private fun onSuccessGetProductSuggestion(tags: List<ProductSuggestionItem>) {
+        productSuggestionAdapter.addAll(tags)
+        list_product_suggestion.adapter = productSuggestionAdapter
+        showProductSuggestion()
+        hideProductSuggestionLoading()
+    }
+
+    private fun onErrorGetProductSuggestion(t: Throwable) {
+        context?.let {
+            t.debugTrace()
+            val errorMessage = ErrorHandler.getErrorMessage(context, t)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            hideProductSuggestionLoading()
+        }
+    }
+
+    private fun showProductSuggestionLoading() {
+        loading_product_suggestion.visible()
+    }
+
+    private fun hideProductSuggestionLoading() {
+        loading_product_suggestion.gone()
+    }
+
+    private fun showProductSuggestion() {
+        if (shouldShowProductSuggestion()) {
+            layout_product_suggestion.visible()
+            showSuggestionCoachmark()
+        } else {
+            hideProductSuggestion()
+        }
+    }
+
+    private fun hideProductSuggestion() {
+        layout_product_suggestion.gone()
+    }
+
+    private fun shouldLoadProductSuggestion(): Boolean {
+        return viewModel.relatedProducts.isEmpty() && !viewModel.isEditState
+    }
+
+    private fun shouldShowProductSuggestion(): Boolean {
+        return !productSuggestionAdapter.isEmpty() && shouldLoadProductSuggestion()
+    }
+
+    private fun showSuggestionCoachmark() {
+        val tag = "${userSession.userId}_${viewModel.authorType}"
+
+        //Don't show if already shown
+        if (affiliatePref.isCoarchmarkSuggestionShown(tag)) {
+            return
+        }
+
+        val item: CoachMarkItem = if (isTypeAffiliate()) {
+            CoachMarkItem(layout_product_suggestion,
+                    getString(R.string.af_suggestion_aff_cm_title),
+                    getString(R.string.af_suggestion_aff_cm_desc))
+        } else {
+            CoachMarkItem(layout_product_suggestion,
+                    getString(R.string.af_suggestion_shop_cm_title),
+                    getString(R.string.af_suggestion_shop_cm_desc))
+        }
+        val list: ArrayList<CoachMarkItem> = arrayListOf(item)
+
+        val coachMark = CoachMark()
+        coachMark.show(activity, tag, list)
+        affiliatePref.setCoachmarkSuggestionShown(tag)
+    }
+
+    private fun onSuggestionItemClicked(item: ProductSuggestionItem) {
+        if (item.productId.isNotBlank()) {
+            viewModel.productIdList.add(item.productId)
+        }
+        if (item.adId.isNotBlank()) {
+            viewModel.adIdList.add(item.adId)
+        }
+        fetchContentForm()
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
+
+    private fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
+        presenter.onShareButtonClicked(type, isChecked)
+    }
+
+    private fun getShareTitleAndSubtitle(): Pair<String, String> {
+        return if (isTypeAffiliate()) context?.getString(R.string.af_share_title).orEmpty() to context?.getString(R.string.af_share_subtitle).orEmpty()
+        else context?.getString(R.string.af_merchant_share_title).orEmpty() to context?.getString(R.string.af_merchant_share_subtitle).orEmpty()
+    }
+
+    private fun createBottomSheetView(): View {
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
+        val (title, subtitle) = getShareTitleAndSubtitle()
+        return view.apply {
+            shareSheetTitle.text = title
+            shareSheetSubtitle.text = subtitle
+            shareBtn.setOnClickListener {
+                saveDraftAndSubmit(true)
+                shareDialog.dismiss()
+            }
+        }
+    }
 }

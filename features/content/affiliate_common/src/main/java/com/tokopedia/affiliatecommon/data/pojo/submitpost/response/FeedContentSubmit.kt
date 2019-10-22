@@ -14,5 +14,9 @@ data class FeedContentSubmit(
 
         @SerializedName("error")
         @Expose
-        var error: String = ""
+        var error: String = "",
+
+        @SerializedName("meta")
+        @Expose
+        var meta: Meta = Meta()
 )

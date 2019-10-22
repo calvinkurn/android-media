@@ -6,13 +6,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_3"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:id="@+id/channel_title"
         android:layout_width="0dp"
-        style="@style/TextView.Title"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:maxEms="12"

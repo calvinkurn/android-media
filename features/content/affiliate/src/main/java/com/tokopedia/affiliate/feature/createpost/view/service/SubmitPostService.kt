@@ -15,14 +15,18 @@ import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,6 +42,9 @@ class SubmitPostService : JobIntentService() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var twitterManager: TwitterManager
 
     private var notificationManager: SubmitPostNotificationManager? = null
 
@@ -153,6 +160,7 @@ class SubmitPostService : JobIntentService() {
                 }
                 notificationManager?.onSuccessPost()
                 sendBroadcast()
+                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
             }
 
             override fun onCompleted() {
@@ -171,5 +179,15 @@ class SubmitPostService : JobIntentService() {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
+    }
+
+    private fun postContentToOtherService(content: Content) {
+        if (twitterManager.shouldPostToTwitter) postToTwitter(content)
+    }
+
+    private fun postToTwitter(content: Content) {
+        GlobalScope.launchCatchError(Dispatchers.IO, block = {
+            twitterManager.postTweet(content.description)
+        }) { it.debugTrace() }
     }
 }

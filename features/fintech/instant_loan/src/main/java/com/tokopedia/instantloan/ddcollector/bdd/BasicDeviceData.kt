@@ -1,17 +1,12 @@
 package com.tokopedia.instantloan.ddcollector.bdd
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
 import android.os.Build
-
 import com.tokopedia.instantloan.ddcollector.BaseCollector
 import com.tokopedia.instantloan.ddcollector.util.AppInfo
 import com.tokopedia.instantloan.ddcollector.util.DeviceInfo
-
-import java.util.ArrayList
-import java.util.HashMap
 
 class BasicDeviceData(private val mContext: Context, private val mLocationManager: LocationManager) : BaseCollector() {
 
@@ -32,20 +27,43 @@ class BasicDeviceData(private val mContext: Context, private val mLocationManage
             try {
                 basicInfoMap[IMEI] = DeviceInfo.getImei(mContext)
             } catch (e: Exception) {
+                e.printStackTrace()
                 basicInfoMap[IMEI] = "N/A"
             }
 
             basicInfoMap[IMEI] = AppInfo.getDefaultAcceptLanguage(mContext)
 
             try {
-                basicInfoMap[LATITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
+
+                mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
+                    basicInfoMap[LATITUDE] = it.latitude.toString()
+                } ?: run {
+                    mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.let {
+                        basicInfoMap[LATITUDE] = it.latitude.toString()
+                    } ?: run {
+                        basicInfoMap[LATITUDE] = "0.0"
+                    }
+                }
+
             } catch (e: Exception) {
+                e.printStackTrace()
                 basicInfoMap[LATITUDE] = "0.0"
             }
 
             try {
-                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).longitude.toString()
+
+                mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
+                    basicInfoMap[LONGITUDE] = it.longitude.toString()
+                } ?: run {
+                    mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.let {
+                        basicInfoMap[LONGITUDE] = it.longitude.toString()
+                    } ?: run {
+                        basicInfoMap[LONGITUDE] = "0.0"
+                    }
+                }
+
             } catch (e: Exception) {
+                e.printStackTrace()
                 basicInfoMap[LONGITUDE] = "0.0"
             }
 

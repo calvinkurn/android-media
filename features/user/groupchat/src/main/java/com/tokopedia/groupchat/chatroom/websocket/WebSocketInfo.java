@@ -403,7 +403,7 @@ public class WebSocketInfo {
 
     private Visitable mapToVideo(JsonObject data) {
         if (TextUtils.isEmpty(data.toString())) {
-            return new VideoViewModel("");
+            return new VideoViewModel("", false);
         }
         Gson gson = new Gson();
         return gson.fromJson(data, VideoViewModel.class);

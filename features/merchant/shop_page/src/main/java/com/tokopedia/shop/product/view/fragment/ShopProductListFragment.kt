@@ -13,13 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -38,20 +32,18 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.ListTitleTypeDef
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
+import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -62,23 +54,18 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.product.view.model.ShopProductViewModel
+import com.tokopedia.shop.product.view.viewmodel.ShopProductListViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-
-import javax.inject.Inject
-
-import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.product.view.viewmodel.ShopProductListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_product_list_new.*
+import javax.inject.Inject
 
 class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
@@ -112,6 +99,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     private var remoteConfig: RemoteConfig? = null
 
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
+    private var onSuccessGetShopInfoListener: OnSuccessGetShopInfoListener? = null
+    private var onInitTrackingListener: OnInitTrackingListener? = null
     private var needReloadData: Boolean = false
     private val etalaseChipAdapter: EtalaseChipAdapter by lazy {
         EtalaseChipAdapter(null, null, this)
@@ -122,6 +111,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     interface OnShopProductListFragmentListener {
         fun updateUIByShopName(shopName: String)
         fun updateUIByEtalaseName(etalaseName: String?)
+    }
+
+    interface OnSuccessGetShopInfoListener{
+        fun updateShopInfo(shopInfo: ShopInfo)
+    }
+
+    interface OnInitTrackingListener{
+        fun updateShopPageTracking(shopPageTracking: ShopPageTrackingBuyer?)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -148,8 +145,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
-        return ShopProductAdapterTypeFactory(null,
-                this, null, this,
+        return ShopProductAdapterTypeFactory(null, this, null, this,
                 this, null,
                 true, 0, ShopTrackProductTypeDef.PRODUCT
         )
@@ -161,7 +157,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_list_search
+        emptyModel.urlRes = EMPTY_PRODUCT_SEARCH_IMAGE_URL
         if (TextUtils.isEmpty(keyword)) {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 emptyModel.title = getString(R.string.shop_product_empty_title_desc)
@@ -169,17 +165,9 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                 emptyModel.title = getString(R.string.shop_product_empty_title_etalase_desc)
             }
         } else {
-            if (TextUtils.isEmpty(selectedEtalaseId)) {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_no_etalase)
-            } else {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_etalase)
-            }
+            emptyModel.title = getString(R.string.shop_product_empty_product_title)
         }
-        if (TextUtils.isEmpty(selectedEtalaseId)) {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_no_etalase)
-        } else {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_etalase)
-        }
+        emptyModel.content = getString(R.string.shop_product_empty_product_content)
         return emptyModel
     }
 
@@ -208,7 +196,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         setHasOptionsMenu(true)
 
         super.onCreate(savedInstanceState)
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let {
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            onInitTrackingListener?.updateShopPageTracking(shopPageTracking)
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductListViewModel::class.java)
     }
 
@@ -303,14 +294,6 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     fun updateDataByChangingKeyword(keyword: String) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE) == true) {
-            if (keyword.isNotEmpty() && !this.keyword.equals(keyword, ignoreCase = true)) {
-                selectedEtalaseId = ""
-                etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId)
-                etalaseChipAdapter.notifyDataSetChanged()
-            }
-        }
-
         if (!this.keyword.equals(keyword, ignoreCase = true)) {
             this.keyword = keyword
             loadInitialData()
@@ -413,7 +396,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name
+                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name,it.freeOngkir.isActive
                 )
             }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
@@ -496,7 +479,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     selectedEtalaseName,
                     CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
-                    shopProductViewModel, productPosition, shopId, it.shopCore.name)
+                    shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
         //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)
@@ -542,7 +525,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     override fun onEmptyButtonClicked() {
-        RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
+        redirectToSearchResultPage()
+    }
+
+    private fun redirectToSearchResultPage() {
+        RouteManager.route(
+                context,
+                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
+        )
     }
 
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -551,6 +541,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
+        onSuccessGetShopInfoListener?.updateShopInfo(shopInfo)
         loadInitialData()
     }
 
@@ -715,7 +706,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                 addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge)
                 shopInfo?.let {
                     shopPageTracking?.clickMenuFromMoreMenu(viewModel.isMyShop(it.shopCore.shopID),
-                    selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
+                            selectedEtalaseName, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
                 }
                 needReloadData = true
             }
@@ -773,6 +764,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         onShopProductListFragmentListener = context as OnShopProductListFragmentListener
+        onSuccessGetShopInfoListener = context as OnSuccessGetShopInfoListener
+        onInitTrackingListener = context as OnInitTrackingListener
         shopModuleRouter = context.applicationContext as ShopModuleRouter
     }
 
@@ -789,9 +782,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     private fun updateHintRemoteConfig(selectedEtalaseName: String?) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE) != true) {
-            updateHint(selectedEtalaseName)
-        }
+        updateHint(selectedEtalaseName)
     }
 
     private fun updateHint(selectedEtalaseName: String?) {

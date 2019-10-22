@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
-import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.search.R;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.search.result.presentation.model.CatalogHeaderViewModel;
 import com.tokopedia.search.result.presentation.model.CatalogViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
@@ -191,20 +189,6 @@ public class CatalogListAdapter extends SearchSectionGeneralAdapter {
     @Override
     public boolean isEmptyItem(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;
-    }
-
-    @Override
-    public int getIconTypeRecyclerView() {
-        switch (getTypeFactory().getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return R.drawable.ic_list_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return R.drawable.ic_grid_default_green;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
-                return R.drawable.ic_grid_box_green;
-            default:
-                return R.drawable.ic_grid_default_green;
-        }
     }
 
     // Override parent's clearData

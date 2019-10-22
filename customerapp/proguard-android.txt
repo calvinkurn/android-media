@@ -40,7 +40,6 @@
 -libraryjars libs/signpost-commonshttp4-1.2.1.2.jar
 -libraryjars libs/signpost-core-1.2.1.2.jar
 -libraryjars libs/simple.facebook-2.1.jar
--libraryjars libs/twitter4j-core-3.0.5.jar
 -libraryjars libs/universal-image-loader-1.8.6.jar
 
 
@@ -189,7 +188,7 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
--keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.common.payment.model.PaymentPassData
 -keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
@@ -214,3 +213,5 @@ public protected *;
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
+
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn

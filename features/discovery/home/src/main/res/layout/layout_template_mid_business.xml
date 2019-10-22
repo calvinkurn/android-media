@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="170dp"
-        android:layout_height="104dp"
+        android:layout_height="108dp"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/bg_card_home_widget"
         android:orientation="vertical">

@@ -8,9 +8,9 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
@@ -19,8 +19,6 @@ import rx.Observable
 import rx.Observer
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
-import java.net.UnknownHostException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -89,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                         val map = mapOf(
                             "user_id" to it.userId.toString(),
                             "device_id" to DataSource.MOCK_DEVICE_ID,
-                            "hash" to AuthUtil.md5(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                            "hash" to AuthHelper.getMD5Hash(it.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
                             "os_type" to "1",
                             "device_time" to (Date().time / 1000).toString()
                         )
@@ -150,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                 mapOf(
                     "user_id" to userSession.userId.toString(),
                     "device_id" to DataSource.MOCK_DEVICE_ID,
-                    "hash" to AuthUtil.md5(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
+                    "hash" to AuthHelper.getMD5Hash(userSession.userId.toString() + "~" + DataSource.MOCK_DEVICE_ID),
                     "os_type" to "1",
                     "device_time" to (Date().time / 1000).toString()
                 )
@@ -193,6 +191,7 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
+
     }
 
 }

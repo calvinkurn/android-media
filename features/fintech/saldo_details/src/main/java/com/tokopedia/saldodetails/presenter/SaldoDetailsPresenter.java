@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
@@ -95,7 +94,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getUserFinancialStatus() {
         GetMerchantFinancialStatusSubscriber getMerchantFinancialStatusSubscribe =
                 new GetMerchantFinancialStatusSubscriber(this);
-
         getMerchantFinancialStatus.execute(getMerchantFinancialStatusSubscribe);
     }
 
@@ -103,7 +101,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getMerchantSaldoDetails() {
         GetMerchantSaldoDetailsSubscriber getMerchantSaldoDetailsSubscriber =
                 new GetMerchantSaldoDetailsSubscriber(this);
-
         getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
 
@@ -111,38 +108,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getMerchantCreditLineDetails() {
         GetMerchantCreditDetailsSubscriber getMerchantCreditDetailsSubscriber =
                 new GetMerchantCreditDetailsSubscriber(this);
-
         getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
-    }
-
-    @Override
-    public void getMCLLateCount() {
-
-        getMCLLateCountUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (!isViewAttached()) {
-                return;
-            }
-                getView().hideWithdrawTicker();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null) {
-                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
-                    if (gqlMclLateCountResponse != null) {
-                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
-                    } else
-                        getView().hideWithdrawTicker();
-                }
-            }
-        });
     }
 
     @Override
@@ -165,7 +131,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 } else if (e instanceof SocketTimeoutException) {
                     getView().setRetry();
                 } else {
-                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                    getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                 }
             }
 
@@ -210,6 +176,38 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             }
         });
 
+    }
+
+
+    @Override
+    public void getMCLLateCount() {
+
+        getMCLLateCountUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().hideWithdrawTicker();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    GqlMclLateCountResponse gqlMclLateCountResponse = graphqlResponse.getData(GqlMclLateCountResponse.class);
+                    if (gqlMclLateCountResponse != null) {
+                        getView().setLateCount(gqlMclLateCountResponse.getMclGetLatedetails().getLateCount());
+                    } else
+                        getView().hideWithdrawTicker();
+                }
+            }
+        });
     }
 
     @Override
@@ -257,20 +255,21 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             long minSaldoLimit = 10000;
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
-                getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
+                getView().showErrorMessage(getView().getString(com.tokopedia.saldodetails.R.string.saldo_min_withdrawal_error));
             } else {
                 withdrawActivityBundle.putBoolean(FIREBASE_FLAG_STATUS,showMclBlockTickerFirebaseFlag);
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);
                 withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount);
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
-                withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
-                withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
                 launchWithdrawActivity(intent);
             }
         } else {
             getView().showWithdrawalNoPassword();
         }
     }
+
 
     private void launchWithdrawActivity(Intent intent) {
         intent.putExtras(withdrawActivityBundle);
@@ -324,4 +323,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void setSeller(boolean seller) {
         isSeller = seller;
     }
+
 }
+
+

@@ -1,8 +1,8 @@
 package com.tokopedia.product.report.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
@@ -10,7 +10,6 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_REPORT_TYPE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_TEXT_MESSAGE
@@ -19,9 +18,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PATH_REPORT_
 import com.tokopedia.product.report.model.reportSubmit.ReportSubmit
 import com.tokopedia.product.report.model.reportType.ReportType
 import com.tokopedia.product.report.model.reportType.ReportTypeModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +40,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
                         val queryMap = mutableMapOf<String, String>(
                                 PARAM_PRODUCT_ID to productId
                         )
-                        AuthUtil.generateParamsNetwork(
+                        AuthHelper.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, queryMap)
                         val restRequest = RestRequest.Builder(
                                 urlMap[PATH_REPORT_TYPE] ?: "",
@@ -68,7 +64,7 @@ class ProductReportViewModel @Inject constructor(private val restRepository: Res
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
-                        val bodyMap = AuthUtil.generateParamsNetwork(
+                        val bodyMap = AuthHelper.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, mutableMapOf(
                                 PARAM_REPORT_TYPE to reportType,
                                 PARAM_PRODUCT_ID to productId,

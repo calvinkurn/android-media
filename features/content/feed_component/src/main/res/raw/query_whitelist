@@ -1,0 +1,22 @@
+query WhitelistQuery($type: String, $ID: String) {
+  feed_check_whitelist(type: $type, ID: $ID) {
+    __typename
+    iswhitelist
+    url
+    title
+    title_identifier
+    description
+    post_success
+    image_url
+    authors {
+      id
+      name
+      title
+      thumbnail
+      link
+      badge
+      type
+    }
+    error
+  }
+}
