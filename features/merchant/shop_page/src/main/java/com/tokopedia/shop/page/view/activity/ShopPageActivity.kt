@@ -234,6 +234,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
         }
+        intent?.data?.run {
+            if (shopId.isNullOrEmpty()) {
+                shopId = getQueryParameter(SHOP_ID)
+            }
+            if (shopDomain.isNullOrEmpty()) {
+                shopDomain = getQueryParameter(SHOP_DOMAIN)
+            }
+            if (shopAttribution.isNullOrEmpty()) {
+                shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
+            }
+        }
         super.onCreate(savedInstanceState)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
         shopViewModel.shopInfoResp.observe(this, Observer {
