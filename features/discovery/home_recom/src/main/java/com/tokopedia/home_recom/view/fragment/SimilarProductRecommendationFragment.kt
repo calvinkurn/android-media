@@ -151,7 +151,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, ref, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {

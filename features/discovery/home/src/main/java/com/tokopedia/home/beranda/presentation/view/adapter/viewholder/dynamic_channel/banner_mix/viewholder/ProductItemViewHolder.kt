@@ -33,7 +33,7 @@ class ProductItemViewHolder(view: View,
             initProductName(gridItem.name)
             initLabelDiscount(gridItem.discount)
             setOnClickListener {
-                HomePageTracking.eventClickProductChannelMix(context, productBannerMixDataModel.channel, adapterPosition)
+                HomePageTracking.eventClickProductChannelMix(context, productBannerMixDataModel.channel,  gridItem.freeOngkir.isActive ?: false, adapterPosition)
                 homeCategoryListener.onSectionItemClicked(gridItem.applink)
             }
         }
