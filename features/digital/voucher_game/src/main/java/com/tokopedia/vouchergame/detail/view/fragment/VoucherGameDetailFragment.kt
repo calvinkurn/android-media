@@ -134,8 +134,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL) {
-            if (!isEnquired) vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
+        // Scroll view to top
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL && !isEnquired) {
+            vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
         }
     }
 
