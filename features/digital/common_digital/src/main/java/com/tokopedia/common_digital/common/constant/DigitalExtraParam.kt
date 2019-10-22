@@ -13,4 +13,7 @@ object DigitalExtraParam {
 
     @JvmField
     val EXTRA_PARAM_VOUCHER_GAME = "EXTRA_PARAM_VOUCHER_GAME"
+
+    @JvmField
+    val EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA"
 }

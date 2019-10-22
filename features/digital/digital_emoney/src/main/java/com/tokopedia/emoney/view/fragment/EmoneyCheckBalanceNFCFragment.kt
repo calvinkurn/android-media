@@ -1,5 +1,6 @@
 package com.tokopedia.emoney.view.fragment
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.arch.lifecycle.ViewModelProvider
@@ -25,11 +26,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.emoney.EmoneyAnalytics
 import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.R
+import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.RechargeEmoneyInquiry
+import com.tokopedia.emoney.data.RechargeEmoneyInquiryError
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.view.activity.EmoneyCheckBalanceActivity
 import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
 import com.tokopedia.emoney.view.compoundview.NFCDisabledView
 import com.tokopedia.emoney.view.compoundview.TapETollCardView
@@ -100,7 +108,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         brizziInstance = Brizzi.getInstance()
-        brizziInstance.Init("R04XSUbnm1GXNmDiXx9ysWMpFWBr", "IlFDLgR31ACt7aqH")
+        brizziInstance.Init("7wvYMS9y77EgduGuRVe9ekChHebD", "IlFDLgR31ACt7aqH")
         brizziInstance.setUserName("Tokopedia")
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
@@ -108,9 +116,32 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
-            override fun onClick() {
+            override fun onClick(operatorId: String, issuerId: Int) {
                 emoneyAnalytics.onClickTopupEmoney()
+
                 //TODO implement navigation page to digital product
+                val passData = DigitalCategoryDetailPassData.Builder()
+                        .categoryId(ETOLL_CATEGORY_ID)
+                        .operatorId(operatorId)
+                        .clientNumber(eTollUpdateBalanceResultView.cardNumber)
+                        .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
+                        .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
+                        .build()
+
+                activity?.let {
+                    if (it.intent != null && it.intent.getStringExtra(EmoneyCheckBalanceActivity.DIGITAL_NFC_CALLING_TYPE) != null) {
+                        if (it.intent.getStringExtra(EmoneyCheckBalanceActivity.DIGITAL_NFC_CALLING_TYPE) === EmoneyCheckBalanceActivity.DIGITAL_NFC) {
+                            navigatePageToDigitalProduct(passData)
+                        } else {
+                            val intentReturn = Intent()
+                            intentReturn.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
+                            it.setResult(Activity.RESULT_OK, intentReturn)
+                        }
+                    } else {
+                        navigatePageToDigitalProduct(passData)
+                    }
+                    it.finish()
+                }
             }
         })
 
@@ -192,23 +223,25 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                     isoDep.close()
                     activity?.let {
                         if (::brizziInstance.isInitialized) {
+                            showLoading()
                             brizziInstance.getBalanceInquiry(it.intent, object : Callback {
                                 override fun OnFailure(brizziException: BrizziException?) {
                                     //TODO log data failed
-                                    Toast.makeText(activity, brizziException?.message, Toast.LENGTH_SHORT).show()
+                                    val message = brizziException?.message
+                                    showError(message?:"")
+
+                                    //TODO log to analytics when card is not supported
+//                                    emoneyAnalytics.onErrorReadingCard()
+//                                    showError(resources.getString(R.string.emoney_card_isnot_supported))
                                 }
 
                                 override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                                     //TODO log data success
+                                    showCardLastBalance(mapperBrizzi(brizziCardObject))
                                     Toast.makeText(activity, brizziCardObject.balance, Toast.LENGTH_SHORT).show()
                                 }
                             })
-                        } else {
-                            showError(resources.getString(R.string.emoney_card_isnot_supported))
                         }
-//                    emoneyAnalytics.onErrorReadingCard()
-//                    Toast.makeText(activity, "OTHER CODE", Toast.LENGTH_SHORT).show()
-//                    showError(resources.getString(R.string.emoney_card_isnot_supported))
                     }
                 }
             }
@@ -218,6 +251,24 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         }
 
     }
+
+    //TODO remove hardcode after brizzi token finish
+    private fun mapperBrizzi(brizziCardObject: BrizziCardObject): RechargeEmoneyInquiry {
+        return RechargeEmoneyInquiry(
+                attributesEmoneyInquiry = AttributesEmoneyInquiry(
+                        "Top Up",
+                        "6013500601505093",
+                        "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+                        26000,
+                        "",
+                        1,
+                        NFCUtils.formatCardUID("6013500601505093"),
+                        ISSUER_ID_BRIZZI,
+                        ETOLL_BRIZZI_OPERATOR_ID
+                ),
+                error = RechargeEmoneyInquiryError(title = "Tidak ada pending balance"))
+    }
+
 
     private fun onSuccessInquiryBalance(mapAttributes: HashMap<String, Any>,
                                         rechargeEmoneyInquiry: RechargeEmoneyInquiry) {
@@ -352,6 +403,15 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun navigatePageToDigitalProduct(passData: DigitalCategoryDetailPassData) {
+        val bundle = Bundle()
+        bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
+        val applink = UriUtil.buildUri(ApplinkConsInternalDigital.DIGITAL_PRODUCT, passData.categoryId, passData.operatorId)
+        val intent = RouteManager.getIntent(activity, applink)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -361,6 +421,8 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
             }
         }
     }
+
+
 
     internal fun detectNFC() {
         if (!nfcAdapter.isEnabled) {
@@ -403,7 +465,12 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         private const val COMMAND_CARD_INFO = "00B300003F"
         private const val COMMAND_LAST_BALANCE = "00B500000A"
         private const val COMMAND_SUCCESSFULLY_EXECUTED = "9000"
-        private const val ISSUER_ID_EMONEY = 1
+        const val ISSUER_ID_EMONEY = 1
+        const val ISSUER_ID_BRIZZI = 2
+
+        private val ETOLL_CATEGORY_ID = "34"
+        const val ETOLL_EMONEY_OPERATOR_ID = "578"
+        const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
 
         fun newInstance(): EmoneyCheckBalanceNFCFragment {
             return EmoneyCheckBalanceNFCFragment()

@@ -20,9 +20,9 @@ class EmoneyCheckBalanceActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        private const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
-        private const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
-        private const val DIGITAL_NFC = "calling_from_nfc"
+        const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
+        const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
+        const val DIGITAL_NFC = "calling_from_nfc"
     }
 
     override fun onNewIntent(intent: Intent?) {

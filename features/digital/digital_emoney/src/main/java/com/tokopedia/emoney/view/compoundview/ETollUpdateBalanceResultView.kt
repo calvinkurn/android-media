@@ -44,10 +44,6 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         buttonTopup = view.findViewById(R.id.button_topup)
         textLabelProgressTitle = view.findViewById(R.id.text_label_progress_title)
         textLabelProgressMessage = view.findViewById(R.id.text_label_progress_message)
-
-        if (::listener.isInitialized) {
-            buttonTopup.setOnClickListener { listener.onClick() }
-        }
     }
 
     fun showCardInfoFromApi(inquiryBalanceModel: RechargeEmoneyInquiry) {
@@ -58,6 +54,13 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.showCardInfo(it)
+
+            if (::listener.isInitialized) {
+                buttonTopup.setOnClickListener {
+                    listener.onClick(inquiryBalanceModel.attributesEmoneyInquiry.operatorId,
+                            inquiryBalanceModel.attributesEmoneyInquiry.issuer_id)
+                }
+            }
         }
     }
 
@@ -93,6 +96,6 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     }
 
     interface OnTopupETollClickListener {
-        fun onClick()
+        fun onClick(operatorId: String, issuerId: Int)
     }
 }

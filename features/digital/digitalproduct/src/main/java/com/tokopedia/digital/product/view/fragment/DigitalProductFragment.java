@@ -49,6 +49,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -76,7 +77,6 @@ import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ContactData;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -942,8 +942,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             case REQUEST_CODE_CHECK_SALDO_EMONEY:
                 if (checkETollBalanceView != null) {
                     if (resultCode == Activity.RESULT_OK && data != null &&
-                            data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA) != null) {
-                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA);
+                            data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
+                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
                         Bundle bundle = new Bundle();
                         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, passData.getCategoryId());
                         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, passData.getOperatorId());

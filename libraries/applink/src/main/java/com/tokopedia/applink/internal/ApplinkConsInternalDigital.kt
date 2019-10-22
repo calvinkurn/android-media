@@ -15,4 +15,6 @@ object ApplinkConsInternalDigital {
     const val TELCO_DIGITAL = "${INTERNAL_DIGITAL}/telco"
     const val VOUCHER_GAME = "${INTERNAL_DIGITAL}/vouchergame"
     const val SMARTCARD = "${INTERNAL_DIGITAL}/smartcard?callingType={type}"
+
+    const val DIGITAL_PRODUCT = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_DIGITAL}/form?category_id={category_id}&operator_id={operator_id}"
 }

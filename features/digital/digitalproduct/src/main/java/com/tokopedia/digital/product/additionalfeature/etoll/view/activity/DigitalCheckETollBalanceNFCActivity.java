@@ -30,6 +30,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.di.DigitalComponent;
@@ -45,7 +47,6 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryB
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.utils.NFCUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -112,25 +113,25 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
 //    @SuppressWarnings("unused")
 //    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
-//    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-//        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
-//        taskStackBuilder.addNextIntent(homeIntent);
-//
-//        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-//                .appLinks(uri.toString())
-//                .categoryId(ETOLL_CATEGORY_ID)
-//                .operatorId(ETOLL_EMONEY_OPERATOR_ID)
-//                .build();
-//        Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
-//        taskStackBuilder.addNextIntent(intentDigitalProduct);
-//
-//        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context, DIGITAL_NFC);
-//        taskStackBuilder.addNextIntent(intentEToll);
-//
-//        return taskStackBuilder;
-//    }
+    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(uri.toString())
+                .categoryId(ETOLL_CATEGORY_ID)
+                .operatorId(ETOLL_EMONEY_OPERATOR_ID)
+                .build();
+        Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
+        taskStackBuilder.addNextIntent(intentDigitalProduct);
+
+        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context, DIGITAL_NFC);
+        taskStackBuilder.addNextIntent(intentEToll);
+
+        return taskStackBuilder;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +193,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     navigatePageToDigitalProduct(passData);
                 } else {
                     Intent intentReturn = new Intent();
-                    intentReturn.putExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    intentReturn.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
                     setResult(Activity.RESULT_OK, intentReturn);
                 }
             } else {

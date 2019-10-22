@@ -5,14 +5,9 @@ import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.RechargeEmoneyInquiry
 import com.tokopedia.emoney.data.RechargeEmoneyInquiryError
-import com.tokopedia.emoney.data.RechargeEmoneyInquiryResponse
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceNFCFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -49,13 +44,15 @@ class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepos
                 "1",
                 "",
                 AttributesEmoneyInquiry(
-                    "Top Up",
+                        "Top Up",
                         "6032984075486468",
                         "https://ecs7.tokopedia.net/img/recharge/operator/e-money.png",
                         26000,
                         "",
                         1,
-                        NFCUtils.formatCardUID("6032984075486468")
+                        NFCUtils.formatCardUID("6032984075486468"),
+                        EmoneyCheckBalanceNFCFragment.ISSUER_ID_EMONEY,
+                        EmoneyCheckBalanceNFCFragment.ETOLL_EMONEY_OPERATOR_ID
                 ), RechargeEmoneyInquiryError(
                 1010,
                 "Tidak ada pending balance",
