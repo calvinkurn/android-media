@@ -22,7 +22,7 @@ class ViewHolderDataMapper @Inject constructor() {
     fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {
         return DisabledShopHolderData(
                 shopName = shopGroupWithErrorData.shopName,
-                shopLocation = if (shopGroupWithErrorData.isFulfillment) shopGroupWithErrorData.fulfillmentName else "",
+                shopLocation = shopGroupWithErrorData.cityName,
                 errorLabel = shopGroupWithErrorData.errorLabel
         )
     }

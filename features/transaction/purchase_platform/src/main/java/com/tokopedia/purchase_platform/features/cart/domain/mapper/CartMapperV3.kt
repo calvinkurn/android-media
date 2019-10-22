@@ -440,19 +440,24 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
                                           cartDataListResponse: CartDataListResponse): ShopGroupWithErrorData {
         return ShopGroupWithErrorData().let {
             it.isError = !iMapperUtil.isEmpty(shopGroupWithError.errors)
-            it.errorLabel = iMapperUtil.convertToString(shopGroupWithError.errors)
+            it.errorLabel = shopGroupWithError.errors.firstOrNull() ?: ""
             it.shopName = shopGroupWithError.shop.shopName
             it.shopId = shopGroupWithError.shop.shopId.toString()
             it.shopType =
-                    if (shopGroupWithError.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (shopGroupWithError.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
+                    when {
+                        shopGroupWithError.shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                        shopGroupWithError.shop.goldMerchant.isGoldBadge -> SHOP_TYPE_GOLD_MERCHANT
+                        else -> SHOP_TYPE_REGULER
+                    }
+            it.cityName = shopGroupWithError.shop.cityName
             it.isGoldMerchant = shopGroupWithError.shop.goldMerchant.isGoldBadge
             it.isOfficialStore = shopGroupWithError.shop.isOfficial == 1
             it.shopBadge =
-                    if (shopGroupWithError.shop.isOfficial == 1) shopGroupWithError.shop.officialStore.osLogoUrl
-                    else if (shopGroupWithError.shop.goldMerchant.isGoldBadge) shopGroupWithError.shop.goldMerchant.goldMerchantLogoUrl
-                    else ""
+                    when {
+                        shopGroupWithError.shop.isOfficial == 1 -> shopGroupWithError.shop.officialStore.osLogoUrl
+                        shopGroupWithError.shop.goldMerchant.isGoldBadge -> shopGroupWithError.shop.goldMerchant.goldMerchantLogoUrl
+                        else -> ""
+                    }
             it.isFulfillment = shopGroupWithError.isFulFillment
             it.fulfillmentName = shopGroupWithError.warehouse.cityName
             it.cartString = shopGroupWithError.cartString
@@ -467,6 +472,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
 
     private fun mapCartTickerErrorData(errorItemCount: Int): CartTickerErrorData {
         return CartTickerErrorData.Builder()
+                .errorCount(errorItemCount)
                 .errorInfo(String.format(context.getString(R.string.cart_error_message), errorItemCount))
                 .actionInfo(context.getString(R.string.cart_error_action))
                 .build()

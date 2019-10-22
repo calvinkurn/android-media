@@ -16,6 +16,7 @@ data class ShopGroupWithErrorData(
         var shopName: String = "",
         var shopId: String = "",
         var shopType: String = "",
+        var cityName: String = "",
         var isGoldMerchant: Boolean = false,
         var isOfficialStore: Boolean = false,
         var shopBadge: String = "",
@@ -33,6 +34,7 @@ data class ShopGroupWithErrorData(
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readString(),
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -56,6 +58,7 @@ data class ShopGroupWithErrorData(
         parcel.writeString(shopName)
         parcel.writeString(shopId)
         parcel.writeString(shopType)
+        parcel.writeString(cityName)
         parcel.writeByte(if (isGoldMerchant) 1 else 0)
         parcel.writeByte(if (isOfficialStore) 1 else 0)
         parcel.writeString(shopBadge)

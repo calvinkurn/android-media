@@ -786,7 +786,7 @@ public class CartListPresenter implements ICartListPresenter {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
         view.updateCashback(totalCashback);
-        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
+        boolean selectAllItem = view.getAllAvailableCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
                 allCartItemDataList.size() > 0 && insuranceChecked;
         boolean unselectAllItem = allCartItemDataList.size() == 0;
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem, unselectAllItem);

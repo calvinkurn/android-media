@@ -53,12 +53,11 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof CartTickerErrorViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
+        } else if (parent.getAdapter() != null && viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
         } else if (viewHolder instanceof CartRecentViewViewHolder ||
                 viewHolder instanceof CartWishlistViewHolder ||
-                viewHolder instanceof CartRecommendationViewHolder ||
-                viewHolder instanceof CartSectionHeaderViewHolder) {
+                viewHolder instanceof CartRecommendationViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof TickerAnnouncementViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
@@ -71,9 +70,17 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
         } else if (viewHolder instanceof CartShopViewHolder) {
             outRect.top = (int) context.getResources().getDimension(R.dimen.dp_6);
         } else if (viewHolder instanceof DisabledShopViewHolder) {
+            if (parent.getAdapter() != null && parent.getAdapter().getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledItemHeaderViewHolder.Companion.getLAYOUT()) {
+                outRect.top = (int) context.getResources().getDimension(R.dimen.dp_0);
+            } else {
+                outRect.top = (int) context.getResources().getDimension(R.dimen.dp_6);
+            }
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof DisabledItemHeaderViewHolder) {
+            outRect.top = (int) context.getResources().getDimension(R.dimen.dp_6);
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof CartSectionHeaderViewHolder) {
+            outRect.top = (int) context.getResources().getDimension(R.dimen.dp_6);
         } else {
             outRect.bottom = verticalSpaceHeight;
         }

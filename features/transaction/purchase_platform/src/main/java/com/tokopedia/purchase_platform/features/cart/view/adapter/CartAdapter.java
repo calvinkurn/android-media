@@ -348,8 +348,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(disabledShopHolderData);
     }
 
-    public void addNotAvailableProduct(DisabledCartItemHolderData o) { // Todo : change object to view model
-        cartDataList.add(o);
+    public void addNotAvailableProduct(DisabledCartItemHolderData disabledCartItemHolderData) {
+        cartDataList.add(disabledCartItemHolderData);
     }
 
     public List<CartShopHolderData> getAllShopGroupDataList() {
@@ -414,6 +414,28 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 } else if (data instanceof DisabledCartItemHolderData) {
                     cartItemDataList.add(((DisabledCartItemHolderData) data).getData());
+                } else if (data instanceof CartWishlistHolderData || data instanceof CartRecentViewHolderData || data instanceof CartRecommendationItemHolderData) {
+                    break;
+                }
+            }
+        }
+
+        return cartItemDataList;
+    }
+
+    public List<CartItemData> getAllAvailableCartItemData() {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupAvailableData().getCartItemDataList() != null) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
+                            cartItemDataList.add(cartItemHolderData.getCartItemData());
+                        }
+                    }
+                } else if (data instanceof CartWishlistHolderData || data instanceof CartRecentViewHolderData || data instanceof CartRecommendationItemHolderData) {
+                    break;
                 }
             }
         }
@@ -428,13 +450,16 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if (data instanceof DisabledCartItemHolderData) {
                     DisabledCartItemHolderData cartShopHolderData = (DisabledCartItemHolderData) data;
                     cartItemDataList.add(cartShopHolderData.getData());
+                } else if (data instanceof CartWishlistHolderData ||
+                        data instanceof CartRecentViewHolderData ||
+                        data instanceof CartRecommendationItemHolderData) {
+                    break;
                 }
             }
         }
 
         return cartItemDataList;
     }
-
 
     public List<String> getAllCartItemProductId() {
         List<String> productIdList = new ArrayList<>();
@@ -447,6 +472,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             productIdList.add(cartItemHolderData.getCartItemData().getOriginData().getProductId());
                         }
                     }
+                } else if (data instanceof DisabledCartItemHolderData) {
+                    productIdList.add(((DisabledCartItemHolderData) data).getProductId());
                 }
             }
         }
@@ -1063,7 +1090,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         toBeRemovedData.add(obj);
                     } else if (before instanceof DisabledCartItemHolderData) {
                         if (!(after instanceof DisabledCartItemHolderData)) {
-                            ((DisabledCartItemHolderData) before).setShowDivider(true);
+                            ((DisabledCartItemHolderData) before).setShowDivider(false);
                         }
                         toBeRemovedData.add(obj);
                     }
@@ -1082,13 +1109,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object cartShopHolderData : toBeRemovedData) {
             cartDataList.remove(cartShopHolderData);
         }
-
-//        for (Object object : cartDataList) {
-//            if (object instanceof CartItemTickerErrorHolderData) {
-//                cartItemTickerErrorHolderData = (CartItemTickerErrorHolderData) object;
-//                break;
-//            }
-//        }
 
         if (cartItemTickerErrorHolderData != null || disabledItemHeaderHolderData != null) {
             int errorItemCount = 0;
@@ -1133,26 +1153,28 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(0, tickerAnnouncementHolderData);
     }
 
+    @Deprecated
     public void addCartSelectAll(Boolean isAllSelected) {
-//        int positionToPlaced = 0;
-//        if (!cartDataList.isEmpty() && cartDataList.get(0) instanceof TickerAnnouncementHolderData) {
-//            positionToPlaced += 1;
-//        }
-//        if (cartDataList.size() >= positionToPlaced + 1) {
-//            Object currentAllSelected = cartDataList.get(positionToPlaced);
-//            if (currentAllSelected instanceof Boolean) {
-//                cartDataList.remove(positionToPlaced);
-//                cartDataList.add(positionToPlaced, isAllSelected);
-//                cartSelectAllViewHolderPosition = positionToPlaced;
-//                notifyItemChanged(positionToPlaced);
-//                return;
-//            }
-//        }
-//        cartDataList.add(positionToPlaced, isAllSelected);
-//        cartSelectAllViewHolderPosition = positionToPlaced;
-//        notifyItemInserted(positionToPlaced);
+        int positionToPlaced = 0;
+        if (!cartDataList.isEmpty() && cartDataList.get(0) instanceof TickerAnnouncementHolderData) {
+            positionToPlaced += 1;
+        }
+        if (cartDataList.size() >= positionToPlaced + 1) {
+            Object currentAllSelected = cartDataList.get(positionToPlaced);
+            if (currentAllSelected instanceof Boolean) {
+                cartDataList.remove(positionToPlaced);
+                cartDataList.add(positionToPlaced, isAllSelected);
+                cartSelectAllViewHolderPosition = positionToPlaced;
+                notifyItemChanged(positionToPlaced);
+                return;
+            }
+        }
+        cartDataList.add(positionToPlaced, isAllSelected);
+        cartSelectAllViewHolderPosition = positionToPlaced;
+        notifyItemInserted(positionToPlaced);
     }
 
+    @Deprecated
     public int getCartSelectAllViewHolderPosition() {
         return cartSelectAllViewHolderPosition;
     }

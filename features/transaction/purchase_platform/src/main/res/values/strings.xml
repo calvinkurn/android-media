@@ -163,7 +163,6 @@
     <string name="label_dialog_action_delete_and_add_to_wishlist">Pindahkan ke Wishlist</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist_macro_insurance">Hapus Terpilih &amp; Tambah Wishlist</string>
     <string name="label_dialog_title_delete_item">Hapus %1d barang dari keranjang?</string>
-    <string name="label_dialog_title_delete_disabled_item">%1d barang yang nggak bisa dibeli akan dihapus dari keranjangmu</string>
     <string name="label_dialog_title_delete_item_macro_insurance">Hapus Barang Terpilih?</string>
     <string name="label_dialog_action_delete">Hapus Barang</string>
     <string name="label_dialog_action_cancel">Kembali</string>
@@ -171,7 +170,8 @@
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
     <string name="label_message_showcase_shipment_courier_recommendation_blackbox">Pilih tipe pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
-    <string name="label_dialog_message_remove_cart_item">Eits, coba pindahkan ke Wishlist, siapa tahu nanti kamu butuh barang ini.</string>
+    <string name="label_dialog_message_remove_cart_item">Hapus %1d barang dari keranjangmu?</string>
+    <string name="label_dialog_message_remove_cart_disabled_item">%1d barang yang nggak bisa dibeli akan dihapus dari keranjangmu</string>
     <string name="label_dialog_message_remove_cart_multiple_item" formatted="false">Barang yang terpilih (%s) akan dihapus dari keranjang Anda</string>
     <string name="label_dialog_message_remove_cart_multiple_item_with_insurance">Karena pembeliannya harus disertai min. 1 barang lain, produk asuransi akan ikut terhapus dan nggak bisa ditambah ke Wishlist.</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
@@ -326,8 +326,6 @@
 
     <string name="label_toko">Toko: </string>
 
-    <string name="ticker_action_link" formatted="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
-    <string name="ticker_action_similar_product_link" formatted="false"><![CDATA[<a href="%1$s">Lihat produk serupa</a>]]></string>
     <string name="insurance_cart_label">Produk Asuransi</string>
     <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
     <string name="text_details_change">Ubah</string>

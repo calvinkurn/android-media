@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="Hapus" />
+        android:text="@string/label_menu_cart_remove" />
 
     <View
         android:layout_width="match_parent"
