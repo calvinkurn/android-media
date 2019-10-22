@@ -1255,8 +1255,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.allowManage),
-                    (topAdsGetProductManage.data.adId.isNotEmpty()),
+                            || shopInfo.allowManage), (hasTopAds()),
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
@@ -1289,6 +1288,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfo != null && p2ShopData.nearestWarehouse.warehouseInfo.id.isNotBlank())
             headerView.updateStockAndPriceWarehouse(p2ShopData.nearestWarehouse, productInfo!!.campaign)
     }
+
+    private fun hasTopAds() =
+            topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2General) {
         if (productInfoP2.vouchers.isNotEmpty()) {
@@ -1504,8 +1506,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
-                        || shopInfo?.allowManage == true),
-                (topAdsGetProductManage.data.adId.isNotEmpty()),
+                        || shopInfo?.allowManage == true), hasTopAds(),
                 data.preorder)
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
