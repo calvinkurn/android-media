@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
@@ -32,11 +33,12 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
@@ -47,6 +49,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DAT
 public class AccountSettingFragment extends BaseDaggerFragment implements AccountSetting.View {
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
+
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
@@ -198,9 +201,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();
-                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(), "user/pin");
-                    RouteManager.route(getActivity(),
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
+//                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(), "user/pin");
+                    onPinMenuClicked();
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -291,6 +293,43 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             if (!BuildConfig.DEBUG) Crashlytics.logException(e);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void onPinMenuClicked(){
+        if(userSession.isMsisdnVerified()) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+        }else {
+            showAddPhoneDialog();
+        }
+    }
+
+    private void goToAddPhone(){
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_PHONE);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, "212");
+        getActivity().startActivity(intent);
+    }
+
+    private void showAddPhoneDialog(){
+        if(getActivity() != null) {
+            DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
+            dialog.setTitle(getString(R.string.add_phone_title));
+            dialog.setDescription(getString(R.string.add_phone_message));
+            dialog.setPrimaryCTAText(getString(R.string.add_phone_title));
+            dialog.setSecondaryCTAText(getString(R.string.cancel));
+
+            dialog.setPrimaryCTAClickListener(() -> {
+                goToAddPhone();
+                dialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            dialog.setSecondaryCTAClickListener(() -> {
+                dialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            dialog.show();
         }
     }
 
