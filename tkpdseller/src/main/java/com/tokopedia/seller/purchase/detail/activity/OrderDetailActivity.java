@@ -218,6 +218,7 @@ public class OrderDetailActivity extends TActivity
         TextView tvBookingCodePlaceholder = findViewById(R.id.booking_code_placeholder);
         TextView seeDetailBtn = findViewById(R.id.see_detail_button);
         if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
+            layout.setVisibility(View.VISIBLE);
             tvBookingCodePlaceholder.setVisibility(View.GONE);
             tvBookingCode.setVisibility(View.VISIBLE);
             seeDetailBtn.setVisibility(View.VISIBLE);
@@ -232,9 +233,10 @@ public class OrderDetailActivity extends TActivity
                 startActivity(BookingCodeActivity.createInstance(this, codeData));
             });
         } else {
-            tvBookingCode.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+            /*tvBookingCode.setVisibility(View.GONE);
             seeDetailBtn.setVisibility(View.GONE);
-            tvBookingCodePlaceholder.setVisibility(View.VISIBLE);
+            tvBookingCodePlaceholder.setVisibility(View.VISIBLE);*/
         }
 
         RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
