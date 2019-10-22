@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
@@ -50,7 +51,6 @@ public class ShopCommonModule {
     public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
         return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
-
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
@@ -136,6 +136,11 @@ public class ShopCommonModule {
     public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
+    }
+
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context){
+        return (NetworkRouter)context;
     }
 
     @Provides
