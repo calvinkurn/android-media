@@ -2,4 +2,6 @@
     <string name="app_name">top_ads_detail_sheet</string>
     <string name="aktif">Aktif</string>
     <string name="tidak_aktif">Tidak Aktif</string>
+    <string name="promote_topads">Iklankan</string>
+    <string name="rincian_topads">Rincian Iklan</string>
 </resources>
