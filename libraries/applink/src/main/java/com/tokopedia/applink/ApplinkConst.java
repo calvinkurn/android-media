@@ -231,7 +231,6 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC = "tokopedia://kyc";
-    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";

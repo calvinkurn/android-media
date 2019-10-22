@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -27,6 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -36,7 +37,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -45,6 +45,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -58,8 +59,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
-
-//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -506,10 +505,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
-
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false);
-
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
         saldoDetailsPresenter.getMCLLateCount();
@@ -570,7 +567,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-    @SuppressLint("Range")
+        @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
@@ -619,7 +616,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         if (showMclBlockTickerFirebaseFlag) {
             String tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription);
-            int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+            int startIndex = tickerMsg.indexOf(getResources().getString(com.tokopedia.saldodetails.R.string.tickerClickableText));
             String late = Integer.toString(mclLateCount);
             tickerMsg = String.format(getResources().getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);
@@ -711,6 +708,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+
         if (response != null && response.isEligible()) {
             statusWithDrawLock = response.getStatus();
             switch (statusWithDrawLock) {

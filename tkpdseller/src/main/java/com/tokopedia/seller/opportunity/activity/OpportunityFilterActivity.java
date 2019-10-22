@@ -74,7 +74,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
                         OpportunityFilterPassModel.class);
 
-        listFilter = opportunityFilterPassModel.getListFilter();
+        if (opportunityFilterPassModel.getListFilter() != null) {
+            listFilter = opportunityFilterPassModel.getListFilter();
+        }
         listPass = new ArrayList<>();
 
         super.onCreate(savedInstanceState);

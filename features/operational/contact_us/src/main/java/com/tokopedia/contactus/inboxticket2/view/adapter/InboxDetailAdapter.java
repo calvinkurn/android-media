@@ -2,10 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -13,6 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -193,8 +194,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     tvAttachmentHint.setVisibility(View.GONE);
                 }
 
-                if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
+                if (commentList.get(position).getAttachment() != null
+                        && commentList.get(position).getAttachment().size() > 0)  {
                     rvAttachedImage.setVisibility(View.VISIBLE);
+                }
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
