@@ -20,7 +20,6 @@ import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
-import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -50,8 +49,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_onboard_pin, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +61,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
         btnNext.setOnClickListener {
             trackingPinUtil.trackClickCreateButton()
-            addChangePinViewModel.getStatusPin()
+            goToAddPin()
         }
 
         btnIgnore.setOnClickListener {
@@ -72,6 +70,8 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         }
 
         initObserver()
+
+        addChangePinViewModel.getStatusPin()
     }
 
     override fun onStart() {
@@ -92,6 +92,12 @@ class PinOnboardingFragment: BaseDaggerFragment(){
                 is Fail -> onErrorGetStatusPin(it.throwable)
             }
         })
+
+        addChangePinViewModel.loadingState.observe(this, Observer {
+            if(it == true){
+                showLoading()
+            }else dismissLoading()
+        })
     }
 
     private fun initVar() {
@@ -101,11 +107,14 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     }
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
-        if(statusPinData.isPhoneNumberExist && statusPinData.isPhoneNumberVerified){
-            goToAddPin()
-        }else{
-            showAddPhoneDialog()
+        if(statusPinData.isRegistered){
+            goToChangePin()
         }
+    }
+
+    private fun goToChangePin(){
+        RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
+        activity?.finish()
     }
 
     private fun onErrorGetStatusPin(throwable: Throwable){
@@ -113,20 +122,6 @@ class PinOnboardingFragment: BaseDaggerFragment(){
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
-    }
-
-    private fun showAddPhoneDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.title_dialog_add_phone))
-        dialog.setDescription(getString(R.string.subtitle_dialog_add_phone))
-        dialog.setOk(getString(R.string.title_dialog_add_phone))
-        dialog.setOkOnClickListner(View.OnClickListener {
-            goToAddPhone()
-            dialog.dismiss()
-        })
-        dialog.setSecondary(getString(R.string.cancel_dialog_add_phone))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
     }
 
     private fun goToAddPhone(){
