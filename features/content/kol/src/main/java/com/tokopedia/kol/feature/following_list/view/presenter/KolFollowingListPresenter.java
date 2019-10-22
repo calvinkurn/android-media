@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscriber;
 
@@ -35,6 +36,8 @@ import rx.Subscriber;
 
 public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View>
         implements KolFollowingList.Presenter {
+
+    public static final String NAME = "UserFollowingPresenter";
 
     private KolFollowingList.View mainView;
     private final GetKolFollowingListUseCase getKolFollowingListUseCase;

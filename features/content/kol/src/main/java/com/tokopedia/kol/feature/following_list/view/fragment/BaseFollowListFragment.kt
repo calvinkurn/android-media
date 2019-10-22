@@ -23,6 +23,7 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEm
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by jegul on 2019-10-22
@@ -42,8 +43,7 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
     private lateinit var emptyButton: Button
     private var openFollowerPage: Boolean? = false
 
-    @Inject
-    lateinit var presenter: KolFollowingList.Presenter
+    abstract var presenter: KolFollowingList.Presenter
 
     private val recyclerViewListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
