@@ -1,22 +1,13 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
-import android.graphics.Bitmap
 import android.support.annotation.DimenRes
 import android.support.annotation.IdRes
 import android.support.constraint.ConstraintSet
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v7.widget.AppCompatImageButton
 import android.support.v7.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
@@ -38,7 +29,7 @@ internal class ShopItemViewHolder(
         val LAYOUT = R.layout.search_result_shop_card
     }
 
-    private var context = itemView.context
+    private val context = itemView.context
 
     override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
         if(shopViewItem == null) return
@@ -65,25 +56,7 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopAvatar?.let {
-            val imageViewShopAvatarTarget = createCircleImageViewTarget(it)
-
-            Glide.with(context)
-                    .load(shopViewItem.image)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageViewShopAvatarTarget)
-        }
-    }
-
-    private fun createCircleImageViewTarget(imageView: ImageView): BitmapImageViewTarget {
-        return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
-                val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
-                circularBitmapDrawable.isCircular = true
-                imageView.setImageDrawable(circularBitmapDrawable)
-            }
+            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
         }
     }
 
@@ -125,23 +98,7 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            val imageViewShopReputationTarget = createImageViewShopReputationTarget(imageViewShopReputation)
-
-            Glide.with(context)
-                    .load(shopViewItem.reputationImageUri)
-                    .dontAnimate()
-                    .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(imageViewShopReputationTarget)
-        }
-    }
-
-    private fun createImageViewShopReputationTarget(imageViewShopReputation: ImageView): SimpleTarget<GlideDrawable> {
-        return object : SimpleTarget<GlideDrawable>() {
-            override fun onResourceReady(resource: GlideDrawable?, glideAnimation: GlideAnimation<in GlideDrawable>?) {
-                imageViewShopReputation.setImageDrawable(resource)
-            }
+            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
         }
     }
 
@@ -216,33 +173,15 @@ internal class ShopItemViewHolder(
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?
     ) {
-        val imageUrl = productPreviewItem.imageUrl
-        val priceFormat = productPreviewItem.priceFormat
-
         imageViewShopItemProductImage?.let {
-            Glide.with(itemView.context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .centerCrop()
-                    .dontAnimate()
-                    .into(createRoundedImageViewTarget(it))
+            ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, productPreviewItem.imageUrl)
         }
 
         imageViewShopItemProductImage?.setOnClickListener {
             shopListener.onProductItemClicked(productPreviewItem)
         }
 
-        textViewShopItemProductPrice?.text = MethodChecker.fromHtml(priceFormat)
-    }
-
-    private fun createRoundedImageViewTarget(imageView: ImageView): BitmapImageViewTarget {
-        return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
-                val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
-                roundedBitmapDrawable.cornerRadius = 6f
-                imageView.setImageDrawable(roundedBitmapDrawable)
-            }
-        }
+        textViewShopItemProductPrice?.text = MethodChecker.fromHtml(productPreviewItem.priceFormat)
     }
 
     private fun initShopVoucherLabel(shopViewItem: ShopViewModel.ShopItem) {

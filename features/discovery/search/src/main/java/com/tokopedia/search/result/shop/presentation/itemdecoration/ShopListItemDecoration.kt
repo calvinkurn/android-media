@@ -1,10 +1,13 @@
 package com.tokopedia.search.result.shop.presentation.itemdecoration
 
 import android.graphics.Rect
+import android.support.v7.widget.CardView
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.search.R
+import kotlin.math.cos
+import kotlin.math.roundToInt
 
 class ShopListItemDecoration(private val left: Int,
                              private val top: Int,
@@ -15,6 +18,9 @@ class ShopListItemDecoration(private val left: Int,
             R.layout.search_result_shop_card
     )
 
+    private var horizontalCardViewOffset: Int = 0
+    private var verticalCardViewOffset: Int = 0
+
     override fun getItemOffsets(outRect: Rect, view: View,
                                 parent: RecyclerView, state: RecyclerView.State) {
 
@@ -24,11 +30,38 @@ class ShopListItemDecoration(private val left: Int,
             val relativePosition = getShopItemRelativePosition(parent, view)
             val totalSpanCount = getTotalSpanCount(parent)
 
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view)
+            verticalCardViewOffset = getVerticalCardViewOffset(view)
+
             outRect.left = getLeftOffset()
             outRect.top = getTopOffset(parent, absolutePosition, relativePosition, totalSpanCount)
             outRect.right = getRightOffset()
             outRect.bottom = getBottomOffset()
         }
+    }
+
+    private fun getHorizontalCardViewOffset(view: View): Int {
+        if (view is CardView) {
+
+            val maxElevation = view.maxCardElevation
+            val radius = view.radius
+
+            return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        }
+
+        return 0
+    }
+
+    private fun getVerticalCardViewOffset(view: View): Int {
+        if (view is CardView) {
+
+            val maxElevation = view.maxCardElevation
+            val radius = view.radius
+
+            return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        }
+
+        return 0
     }
 
     private fun isShopItem(parent: RecyclerView, viewPosition: Int): Boolean {
@@ -69,10 +102,14 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getLeftOffset(): Int {
-        return left
+        return left - horizontalCardViewOffset
     }
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
+        return getTopOffsetWithCardViewOffset(parent, absolutePos, relativePos, totalSpanCount) - verticalCardViewOffset
+    }
+
+    private fun getTopOffsetWithCardViewOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
         return if (isTopShopItem(parent, absolutePos, relativePos, totalSpanCount)) top else top / 4
     }
 
@@ -81,10 +118,10 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getRightOffset(): Int {
-        return right
+        return right - horizontalCardViewOffset
     }
 
     private fun getBottomOffset(): Int {
-        return bottom / 4
+        return (bottom / 4) - verticalCardViewOffset
     }
 }
