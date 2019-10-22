@@ -9,7 +9,7 @@
     android:background="@drawable/bg_shadow_top">
 
     <LinearLayout android:id="@+id/btn_buy"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/orange_red"
         android:gravity="center"
