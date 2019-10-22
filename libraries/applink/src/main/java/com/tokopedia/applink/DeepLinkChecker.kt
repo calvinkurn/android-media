@@ -148,13 +148,11 @@ object DeepLinkChecker {
                 return true
             }
             CATEGORY -> {
-                //TODO expect to be RouteManager.route(activity, url).
                 val departmentId = getLinkSegment(url)[1]
                 RouteManager.route(activity, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
                 return true
             }
             BROWSE -> {
-                //TODO expect to be RouteManager.route(activity, url).
                 openBrowse(url, activity)
                 return true
             }
@@ -179,12 +177,10 @@ object DeepLinkChecker {
                 return false
             }
             PROFILE -> {
-                //TODO expect to be RouteManager.route(activity, url).
                 val userId = getLinkSegment(url)[1]
                 return RouteManager.route(activity, ApplinkConst.PROFILE, userId)
             }
             CONTENT -> {
-                //TODO expect to be RouteManager.route(activity, url).
                 val contentId = getLinkSegment(url)[1]
                 return RouteManager.route(activity, ApplinkConst.PROFILE, contentId)
             }
@@ -192,7 +188,6 @@ object DeepLinkChecker {
                 return RouteManager.route(activity, url)
             }
             ORDER_LIST -> {
-                //TODO expect to be RouteManager.route(activity, url).
                 RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
                 return true
             }
