@@ -1,8 +1,10 @@
 package com.tokopedia.vouchergame.detail.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -128,6 +130,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL) {
+            if (!isEnquired) vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
