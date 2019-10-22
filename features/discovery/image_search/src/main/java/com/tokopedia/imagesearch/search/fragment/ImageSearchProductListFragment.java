@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
@@ -68,7 +70,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.W
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
         ImageProductListFragmentView,
-        ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
+        ProductListener, WishListActionListener {
 
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
@@ -86,17 +88,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private Config topAdsConfig;
     private ImageProductListAdapter adapter;
-    protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter;
-    private GridLayoutManager gridLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private RedirectionListener redirectionListener;
 
     public int spanCount;
     private TrackingQueue trackingQueue;
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-
 
 
     public static ImageSearchProductListFragment newInstance(ProductViewModel productViewModel) {
@@ -204,32 +205,31 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private void setupAdapter() {
         imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, getQueryKey());
         adapter = new ImageProductListAdapter(imageProductListTypeFactory);
-        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
-        topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
-        recyclerView.setAdapter(topAdsRecyclerAdapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getContext().getResources().getColor(com.tokopedia.design.R.color.white)
-                ));
-        recyclerView.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-        topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
-        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int page, int totalCount) {
-                presenter.loadMoreData(page - 1);
-            }
-        });
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
 
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
-            setHeaderTopAds(false);
         } else {
             presenter.initData(initMappingProduct());
             presenter.loadMoreData(0);
-            setHeaderTopAds(true);
+            adapter.showLoading();
         }
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
+    }
+
+    private void setupListener() {
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
+    }
+
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                presenter.loadMoreData(page - 1);
+            }
+        };
     }
 
     private List<Visitable> initMappingProduct() {
@@ -238,44 +238,18 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return list;
     }
 
-    private void setupListener() {
-        topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
-        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
-            @Override
-            public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
-            }
-        });
-    }
-
-    protected GridLayoutManager getGridLayoutManager() {
-        return gridLayoutManager;
+    protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
+        return staggeredGridLayoutManager;
     }
 
     private void bindView(View rootView) {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.image_search_recyclerview);
-        gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
 
     protected ImageProductListPresenter getPresenter() {
         return presenter;
-    }
-
-    protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
-        return new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (topAdsRecyclerAdapter.isLoading(position) ||
-                        topAdsRecyclerAdapter.isTopAdsViewHolder(position) ||
-                        adapter.isEmptyItem(position)) {
-                    return spanCount;
-                } else {
-                    return 1;
-                }
-            }
-        };
     }
 
     @Override
@@ -359,21 +333,19 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void unSetTopAdsEndlessListener() {
-        topAdsRecyclerAdapter.unsetEndlessScrollListener();
-        topAdsRecyclerAdapter.hideLoading();
+    public void onLoadMoreEmpty() {
+        adapter.hideLoading();
     }
 
     @Override
-    public void setHeaderTopAds(boolean hasHeader) {
-        topAdsRecyclerAdapter.setHasHeader(hasHeader);
-    }
-
-    @Override
-    public void appendProductList(List<Visitable> list) {
+    public void appendProductList(List<Visitable> list, boolean hasNextPage) {
         sendImageTrackingData(list);
-        topAdsRecyclerAdapter.hideLoading();
+        adapter.hideLoading();
         adapter.addMoreData(list);
+
+        if (hasNextPage) {
+            adapter.showLoading();
+        }
     }
 
     private void sendImageTrackingData(List<Visitable> list) {
@@ -413,7 +385,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void setEmptyProduct() {
-        topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty(getContext());
     }
 
@@ -436,16 +407,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void hideRefreshLayout() {
-    }
-
-    @Override
-    public void onTopAdsLoaded(List<Item> list) {
-
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -482,11 +443,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_remove_wishlist));
     }
 
-    @Override
-    public void onProductItemClicked(int position, Product product) {
-        moveToProductDetailPage(position, product.getId());
-    }
-
     private void moveToProductDetailPage(int adapterPosition, String productId) {
         Intent intent = getProductIntent(productId);
 
@@ -502,17 +458,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         } else {
             return null;
         }
-    }
-
-
-    @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        RouteManager.route(getActivity(), ApplinkConst.SHOP, shop.getId());
-    }
-
-    @Override
-    public void onAddFavorite(int position, Data data) {
-
     }
 
     @Override

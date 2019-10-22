@@ -23,11 +23,9 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void initTopAdsParams();
 
-    void unSetTopAdsEndlessListener();
+    void onLoadMoreEmpty();
 
-    void setHeaderTopAds(boolean hasHeader);
-
-    void appendProductList(List<Visitable> list);
+    void appendProductList(List<Visitable> list, boolean hasNextPage);
 
     void disableWishlistButton(String productId);
 

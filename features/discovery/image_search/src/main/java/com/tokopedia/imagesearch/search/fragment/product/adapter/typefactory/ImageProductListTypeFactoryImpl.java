@@ -3,13 +3,12 @@ package com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.view.adapter.viewholder.TopAdsViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.viewholder.ImageSearchLoadingMoreViewHolder;
 
 /**
  * Created by sachinbansal on 4/13/18.
@@ -31,10 +30,17 @@ public class ImageProductListTypeFactoryImpl extends BaseAdapterTypeFactory impl
     }
 
     @Override
+    public int type(LoadingMoreModel loadingMoreModel) {
+        return ImageSearchLoadingMoreViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener, searchQuery);
+        } else if (type == ImageSearchLoadingMoreViewHolder.LAYOUT) {
+            viewHolder = new ImageSearchLoadingMoreViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

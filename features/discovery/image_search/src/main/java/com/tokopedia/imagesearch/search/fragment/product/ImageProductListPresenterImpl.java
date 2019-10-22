@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
 
 public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProductListFragmentView> implements ImageProductListPresenter {
 
-    private static final int ITEM_COUNT_PER_PAGE = 12;
+    public static final int ITEM_COUNT_PER_PAGE = 12;
     private static final long LOAD_MORE_DELAY_MS = 1000;
 
     @Inject
@@ -69,6 +69,8 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         int toIndex = fromIndex + ITEM_COUNT_PER_PAGE;
         toIndex = toIndex > dataList.size() ? dataList.size() : toIndex;
 
+        final boolean hasNextPage = toIndex < dataList.size();
+
         if (fromIndex < dataList.size()) {
             responseList.addAll(dataList.subList(fromIndex, toIndex));
         }
@@ -91,9 +93,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                     @Override
                     public void onNext(List<Visitable> visitables) {
                         if (!visitables.isEmpty()) {
-                            getView().appendProductList(visitables);
+                            getView().appendProductList(visitables, hasNextPage);
                         } else {
-                            getView().unSetTopAdsEndlessListener();
+                            getView().onLoadMoreEmpty();
                         }
                     }
                 });
