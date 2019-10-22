@@ -234,9 +234,6 @@ public class OrderDetailActivity extends TActivity
             });
         } else {
             layout.setVisibility(View.GONE);
-            /*tvBookingCode.setVisibility(View.GONE);
-            seeDetailBtn.setVisibility(View.GONE);
-            tvBookingCodePlaceholder.setVisibility(View.VISIBLE);*/
         }
 
         RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
@@ -763,12 +760,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(OrderDetailData data) {
         showFreeShippingConfirmationDialog(data.isFreeShipping());
-        /*if (data.isFreeShipping()) {
-            showFreeShippingConfirmationDialog();
-        } else {
-            AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
-            dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
-        }*/
     }
 
     private void showFreeShippingConfirmationDialog(Boolean isFreeShipping) {
