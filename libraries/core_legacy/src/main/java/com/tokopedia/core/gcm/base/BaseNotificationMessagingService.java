@@ -5,10 +5,15 @@ import android.os.Bundle;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.core.gcm.di.DaggerFcmComponent;
+import com.tokopedia.core.gcm.di.FcmModule;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -19,6 +24,18 @@ import timber.log.Timber;
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
 
     UserSessionInterface userSession;
+
+    @Inject
+    FirebaseMessagingManager fcmManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        DaggerFcmComponent.builder()
+                .fcmModule(new FcmModule(this))
+                .build()
+                .inject(this);
+    }
 
     public BaseNotificationMessagingService() {
         initUseSession();
