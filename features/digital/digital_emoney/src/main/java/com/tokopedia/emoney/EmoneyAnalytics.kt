@@ -49,12 +49,21 @@ class EmoneyAnalytics {
         ))
     }
 
-    fun onClickTopupEmoney() {
+    fun onClickTopupEmoney(operatorName:String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.CLICK_TOPUP_EMONEY,
-                Label.EMONEY
+                Event.CLICK_SALDO,
+                Category.DIGITAL_HOMEPAGE,
+                Action.CLICK_TOPUP + operatorName,
+                operatorName
+        ))
+    }
+
+    fun onClickTryAgainTapEmoney(operatorName:String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_SALDO,
+                Category.DIGITAL_HOMEPAGE,
+                Action.CLICK_TRY_AGAIN + operatorName,
+                operatorName
         ))
     }
 
@@ -88,12 +97,14 @@ class EmoneyAnalytics {
     interface Event {
         companion object {
             val CLICK_NFC = "clickNFC"
+            val CLICK_SALDO = "clickSaldo"
         }
     }
 
     interface Category {
         companion object {
             val DIGITAL_NFC = "digital - nfc"
+            val DIGITAL_HOMEPAGE = "digital - homepage"
         }
     }
 
@@ -104,7 +115,8 @@ class EmoneyAnalytics {
             val CLICK_CANCEL_PROMPT = "click batalkan prompt"
             val CHECK_STEP_1 = "check step - 1"
             val CHECK_STEP_2 = "check step - 2"
-            val CLICK_TOPUP_EMONEY = "click top up emoney"
+            val CLICK_TOPUP = "click top up "
+            val CLICK_TRY_AGAIN = "click coba lagi "
             val FAILED_UPDATE_BALANCE = "failed update saldo"
             val CARD_IS_NOT_SUPPORTED = "card not supported"
             val SUCCESS_CHECK_BALANCE = "success check saldo"

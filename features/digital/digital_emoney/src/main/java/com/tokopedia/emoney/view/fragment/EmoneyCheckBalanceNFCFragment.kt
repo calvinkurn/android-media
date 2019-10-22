@@ -117,7 +117,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.onClickTopupEmoney()
+                emoneyAnalytics.onClickTopupEmoney(getOperatorName(issuerId))
 
                 //TODO implement navigation page to digital product
                 val passData = DigitalCategoryDetailPassData.Builder()
@@ -126,6 +126,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                         .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                         .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
                         .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
+                        .additionalETollOperatorName(getOperatorName(issuerId))
                         .build()
 
                 activity?.let {
@@ -142,6 +143,12 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                     }
                     it.finish()
                 }
+            }
+        })
+
+        tapETollCardView.setListener(object: TapETollCardView.OnTapEtoll {
+            override fun tryAgainTopup(issuerId: Int) {
+                emoneyAnalytics.onClickTryAgainTapEmoney(getOperatorName(issuerId))
             }
         })
 
@@ -176,6 +183,13 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getOperatorName(issuerId: Int): String {
+        if (issuerId == ISSUER_ID_BRIZZI) {
+            return OPERATOR_NAME_BRIZZI
+        }
+        return OPERATOR_NAME_EMONEY
+    }
+
     private fun handleTagFromIntent(tag: Tag) {
         showLoading()
 
@@ -203,6 +217,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
 
                 //success scan card e-money
                 if (responseSelectEMoney == COMMAND_SUCCESSFULLY_EXECUTED) {
+                    tapETollCardView.setIssuerId(ISSUER_ID_EMONEY)
                     activity?.let {
                         val mapAttributes = HashMap<String, kotlin.Any>()
                         mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_CARD_ATTRIBUTE] = responseCardAttribute
@@ -232,6 +247,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
     }
 
     private fun getInquiryBrizziBalance() {
+        tapETollCardView.setIssuerId(ISSUER_ID_BRIZZI)
         activity?.let {
             if (::brizziInstance.isInitialized) {
                 showLoading()
@@ -490,6 +506,8 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         private val ETOLL_CATEGORY_ID = "34"
         const val ETOLL_EMONEY_OPERATOR_ID = "578"
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
+        const val OPERATOR_NAME_EMONEY = "emoney"
+        const val OPERATOR_NAME_BRIZZI = "brizzi"
 
         fun newInstance(): EmoneyCheckBalanceNFCFragment {
             return EmoneyCheckBalanceNFCFragment()

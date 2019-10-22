@@ -23,6 +23,17 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     private val lottieAnimationView: LottieAnimationView
     private val buttonTryAgain: AppCompatButton
     private val imageviewError: ImageView
+    private var issuerId: Int = 0
+
+    private lateinit var listener: OnTapEtoll
+
+    fun setListener(listener: OnTapEtoll) {
+        this.listener = listener
+    }
+
+    fun setIssuerId(issuerId: Int) {
+        this.issuerId = issuerId
+    }
 
     init {
         val view = View.inflate(context, R.layout.view_tap_emoney_card, this)
@@ -75,5 +86,11 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
         buttonTryAgain.visibility = View.VISIBLE
+
+        listener.tryAgainTopup(issuerId)
+    }
+
+    interface OnTapEtoll {
+        fun tryAgainTopup(issuerId: Int)
     }
 }

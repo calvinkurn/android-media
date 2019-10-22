@@ -60,13 +60,11 @@ import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
-import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
@@ -122,6 +120,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE =
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE";
+    private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME =
+            "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -186,6 +186,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private boolean isFromWidget;
     private String additionalETollLastBalance;
     private String additionalETollLastUpdatedDate;
+    private String additionalETollOperatorName;
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
@@ -361,6 +362,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         isCouponApplied = arguments.getBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED);
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
+        additionalETollOperatorName = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME);
     }
 
     protected void initView(View view) {
@@ -388,6 +390,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
+            rechargeAnalytics.onClickUpdateSaldoEmoney(additionalETollOperatorName);
             Intent intent = RouteManager.getIntent(getActivity(),
                     ApplinkConsInternalDigital.SMARTCARD, DIGITAL_NFC_FROM_PDP);
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);

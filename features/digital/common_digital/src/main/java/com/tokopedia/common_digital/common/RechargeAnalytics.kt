@@ -5,6 +5,7 @@ import com.tokopedia.common_digital.common.presentation.model.RechargePushEventR
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import rx.Subscriber
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
@@ -53,6 +54,15 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         }
     }
 
+    fun onClickUpdateSaldoEmoney(operatorName:String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_PDP,
+                DIGITAL_HOMEPAGE,
+                CLICK_UPDATE_SALDO + operatorName,
+                operatorName
+        ))
+    }
+
     companion object {
         const val ACTION_VISIT = "VISIT"
         const val ACTION_ATC = "ATC"
@@ -60,5 +70,10 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val PARAM_CATEGORY_NAME = "category"
         const val PARAM_CATEGORY_ID = "digital_category_id"
         const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
+
+        const val CLICK_PDP = "clickPDP"
+        const val DIGITAL_HOMEPAGE = "digital - homepage"
+        const val CLICK_UPDATE_SALDO = "click update saldo "
+
     }
 }
