@@ -115,7 +115,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
-    implementation rootProject.ext.analyticsDependencies.moengageFirebase
 
     testImplementation rootProject.ext.testDependencies.junit
 }

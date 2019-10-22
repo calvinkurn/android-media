@@ -94,9 +94,7 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro

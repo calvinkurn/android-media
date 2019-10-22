@@ -471,9 +471,7 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -588,6 +586,7 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+//    implementation "com.moengage:push-amp-plus:0.2.00"
 }
 
 

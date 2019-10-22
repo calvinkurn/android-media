@@ -361,9 +361,6 @@ dependencies {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
 
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
