@@ -178,9 +178,10 @@ ext {
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.7.00",
-            moengageSdk         : "com.moengage:moengagesdk:3.3.02",
-            moengagePushbase    : "com.moengage:pushbase:3.2.00",
-            moengageInapp   : "com.moengage:inapp:3.2.02",
+            moengageAmp: "com.moengage:push-amp-plus:0.2.00",
+//            moengageSdk         : "com.moengage:moengagesdk:3.3.02",
+//            moengagePushbase    : "com.moengage:pushbase:3.2.00",
+//            moengageInapp   : "com.moengage:inapp:3.2.02",
             branch     : "io.branch.sdk.android:library:4.1.1",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
             cashshield : "com.cashshield.android:cashshield:2.5.0@aar"
