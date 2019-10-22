@@ -45,30 +45,6 @@ class ShopListItemDecoration(private val left: Int,
         return viewType != -1 && allowedViewTypes.contains(viewType)
     }
 
-    private fun getHorizontalCardViewOffset(view: View): Int {
-        if (view is CardView) {
-
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
-
-            return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
-        }
-
-        return 0
-    }
-
-    private fun getVerticalCardViewOffset(view: View): Int {
-        if (view is CardView) {
-
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
-
-            return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
-        }
-
-        return 0
-    }
-
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         return parent.adapter?.let { getRecyclerViewViewTypeIfAdapterNotNull(viewPosition, it) } ?: -1
     }
@@ -99,6 +75,30 @@ class ShopListItemDecoration(private val left: Int,
         else {
             1
         }
+    }
+
+    private fun getHorizontalCardViewOffset(view: View): Int {
+        if (view is CardView) {
+
+            val maxElevation = view.maxCardElevation
+            val radius = view.radius
+
+            return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        }
+
+        return 0
+    }
+
+    private fun getVerticalCardViewOffset(view: View): Int {
+        if (view is CardView) {
+
+            val maxElevation = view.maxCardElevation
+            val radius = view.radius
+
+            return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        }
+
+        return 0
     }
 
     private fun getLeftOffset(): Int {
