@@ -1235,14 +1235,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val bundleData = Bundle()
         bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
         pdpInstallmentBottomSheet.arguments = bundleData
-
-        pdpInstallmentBottomSheet.setDismissListener {
-            shouldShowCartAnimation = true
-            updateCartNotification()
-        }
-        pdpInstallmentBottomSheet.show(
-                fragmentManager, "TAG"
-        )
+        pdpInstallmentBottomSheet.show(fragmentManager, "FT_TAG")
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {

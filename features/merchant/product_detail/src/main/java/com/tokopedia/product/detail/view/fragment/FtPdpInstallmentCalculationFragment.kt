@@ -9,23 +9,40 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
+import com.tokopedia.product.detail.view.adapter.FtPDPInstallmentCalculationAdapter
 
 class FtPdpInstallmentCalculationFragment : TkpdBaseV4Fragment() {
 
     private lateinit var ftRecyclerView: RecyclerView
     private var mContext: Context? = null
+    private lateinit var partnerDataItemList: ArrayList<FtCalculationPartnerData>
+
 
     companion object {
         const val KEY_INSTALLMENT_CALCULATION_DATA = "keyInstallmentData"
+
+        fun createInstance(dataList: ArrayList<FtCalculationPartnerData>): FtPdpInstallmentCalculationFragment {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList(KEY_INSTALLMENT_CALCULATION_DATA, dataList)
+            val lendingPartnerFragment = FtPdpInstallmentCalculationFragment()
+            lendingPartnerFragment.arguments = bundle
+            return lendingPartnerFragment
+        }
     }
 
     override fun getScreenName(): String {
         return ""
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        partnerDataItemList = arguments?.getParcelableArrayList<FtCalculationPartnerData>(KEY_INSTALLMENT_CALCULATION_DATA) ?: ArrayList()
+    }
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.pdp_installment_calculation_fragment, null)
+        return inflater.inflate(R.layout.pdp_installment_calculation_fragment, null, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,17 +51,10 @@ class FtPdpInstallmentCalculationFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView(view: View) {
-
         ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
         val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
         ftRecyclerView.layoutManager = linearLayoutManager
-        /*arguments?.let {
-            ftRecyclerView.adapter =
-                    FtPDPInstallmentCalculationAdapter(
-                            it.getParcelableArrayList<FtCalculationPartnerData>(KEY_INSTALLMENT_CALCULATION_DATA)
-                                    ?: ArrayList())
-
-        }*/
+        ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(partnerDataItemList)
     }
 
     override fun onAttachActivity(context: Context) {

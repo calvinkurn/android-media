@@ -2,14 +2,15 @@ package com.tokopedia.product.detail.view.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.view.ViewGroup
 import com.tokopedia.design.viewpager.WrapContentViewPager
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
+import com.tokopedia.referral.view.HeightWrappingViewPager
 import java.util.*
 
-class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
     private var searchSectionItemList: List<FtInstallmentListItem> = ArrayList()
     private var mCurrentPosition: Int = 0
@@ -36,22 +37,19 @@ class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm
         return searchSectionItemList[position].title
     }
 
-    override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
+    /*override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
         super.setPrimaryItem(container, position, any)
 
-        if (container !is WrapContentViewPager) {
+        if (container !is HeightWrappingViewPager) {
             throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
         }
-
-        if (position != mCurrentPosition) {
-            val fragment = any as Fragment
-            val pager = container as WrapContentViewPager?
-            if (fragment != null && fragment.view != null) {
-                mCurrentPosition = position
-                pager!!.onPageChanged(fragment.view!!)
-            }
+        val fragment = any as Fragment
+        val pager = container as HeightWrappingViewPager?
+        if (fragment.view != null) {
+            mCurrentPosition = position
+            pager!!.onPageChanged(fragment.view!!)
         }
-    }
+    }*/
 
 
 }

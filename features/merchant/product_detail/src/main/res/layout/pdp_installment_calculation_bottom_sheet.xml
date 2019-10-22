@@ -12,7 +12,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/ft_tabs"
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabBackground="@color/white"
@@ -28,8 +28,8 @@
             android:layout_height="2dp"
             android:background="@drawable/top_bar_shadow" />
 
-        <com.tokopedia.design.viewpager.WrapContentViewPager
-            android:id="@+id/ft_view_pager"
+        <com.tokopedia.referral.view.HeightWrappingViewPager
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />

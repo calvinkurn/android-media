@@ -2,24 +2,20 @@ package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.viewpager.WrapContentViewPager
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
-import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment.Companion.KEY_INSTALLMENT_CALCULATION_DATA
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
-import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
+import com.tokopedia.referral.view.HeightWrappingViewPager
 import java.util.*
 
 class FtPDPInstallmentBottomSheet : BottomSheets() {
@@ -28,17 +24,10 @@ class FtPDPInstallmentBottomSheet : BottomSheets() {
         const val KEY_PDP_FINANCING_DATA = "keyPDPFinancingData"
     }
 
-    lateinit var productDetailTracking: ProductDetailTracking
-    private lateinit var addToCartDoneViewModel: AddToCartDoneViewModel
-
     private var tabLayout: TabLayout? = null
-    private var heightWrappingViewPager: WrapContentViewPager? = null
+    private var heightWrappingViewPager: HeightWrappingViewPager? = null
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
-
-    private var lastAdapterPosition = -1
-    //    private lateinit var recyclerView: RecyclerView
-    private lateinit var containerLayout: FrameLayout
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
 
 
@@ -56,12 +45,12 @@ class FtPDPInstallmentBottomSheet : BottomSheets() {
 
     override fun initView(view: View?) {
         view?.let {
-            tabLayout = view.findViewById(R.id.ft_tabs)
-            heightWrappingViewPager = view.findViewById(R.id.ft_view_pager)
+            getArgumentsData()
+            tabLayout = view.findViewById(R.id.tabs)
+            heightWrappingViewPager = view.findViewById(R.id.view_pager)
         }
-
         loadData()
-        configBottomSheetHeight()
+//        configBottomSheetHeight()
     }
 
     override fun title(): String {
@@ -69,28 +58,18 @@ class FtPDPInstallmentBottomSheet : BottomSheets() {
     }
 
     private fun loadData() {
-
         populateTwoTabItem()
         val instantLoanPagerAdapter = InstallmentDataPagerAdapter(fragmentManager!!)
         instantLoanPagerAdapter.setData(ftInstallmentItemList)
         heightWrappingViewPager!!.adapter = instantLoanPagerAdapter
         tabLayout!!.setupWithViewPager(heightWrappingViewPager)
-        setActiveTab()
-    }
-
-    private fun setActiveTab() {
-        heightWrappingViewPager!!.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        heightWrappingViewPager!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        heightWrappingViewPager!!.currentItem = 0
-                    }
-                })
+        heightWrappingViewPager!!.currentItem = 0
+        tabLayout!!.getTabAt(0)?.select()
     }
 
     private fun configBottomSheetHeight() {
         dialog?.run {
-            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val parent = findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
             val displaymetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
@@ -113,21 +92,13 @@ class FtPDPInstallmentBottomSheet : BottomSheets() {
     }
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
-        val fragment = FtPdpInstallmentCalculationFragment()
-        val bundle = Bundle()
-        bundle.putParcelableArrayList(KEY_INSTALLMENT_CALCULATION_DATA,
+        return FtPdpInstallmentCalculationFragment.createInstance(
                 installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
-        fragment.arguments = bundle
-        return fragment
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
-        val fragment = FtPdpInstallmentCalculationFragment()
-        val bundle = Bundle()
-        bundle.putParcelableArrayList(KEY_INSTALLMENT_CALCULATION_DATA,
+        return FtPdpInstallmentCalculationFragment.createInstance(
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
-        fragment.arguments = bundle
-        return fragment
     }
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
@@ -137,10 +108,17 @@ class FtPDPInstallmentBottomSheet : BottomSheets() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        getArgumentsData()
-        return super.onCreateView(inflater, container, savedInstanceState)
-
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.setOnShowListener { dialog ->
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.skipCollapsed = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+        return bottomSheetDialog
     }
 
     private fun getArgumentsData() {
