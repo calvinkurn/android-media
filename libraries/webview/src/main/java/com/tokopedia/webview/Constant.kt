@@ -1,7 +1,7 @@
 package com.tokopedia.webview
 
 const val KEY_URL = "url"
-internal const val KEY_SHOW_TITLEBAR = "titlebar"
+internal const val KEY_TITLEBAR = "titlebar"
 internal const val KEY_ALLOW_OVERRIDE = "allow_override"
 internal const val KEY_NEED_LOGIN = "need_login"
 internal const val KEY_TITLE = "title"

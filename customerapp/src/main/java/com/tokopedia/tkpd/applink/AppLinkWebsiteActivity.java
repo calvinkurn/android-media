@@ -26,8 +26,9 @@ import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author anggaprasetiyo on 7/20/17.
+ * Refer to BaseSimpleWebViewActivity in the libraries.
  */
-
+@Deprecated
 public class AppLinkWebsiteActivity extends BasePresenterActivity {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
@@ -67,7 +68,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.WEBVIEW})
     public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, WEB_URL

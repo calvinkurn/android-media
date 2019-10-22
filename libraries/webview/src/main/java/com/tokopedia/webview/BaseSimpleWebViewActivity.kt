@@ -2,10 +2,12 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
+import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.TaskStackBuilder
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -46,14 +48,14 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun init(intent: Intent) {
         intent.extras?.run {
             url = getString(KEY_URL, "").decode()
-            showTitleBar = getBoolean(KEY_SHOW_TITLEBAR, true)
+            showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
             title = getString(KEY_TITLE, DEFAULT_TITLE)
         }
         intent.data?.run {
             url = (getQueryParameter(KEY_URL) ?: "").decode()
-            showTitleBar = getQueryParameter(KEY_SHOW_TITLEBAR)?.toBoolean() ?: true
+            showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
             allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
             needLogin = getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
             title = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
@@ -120,7 +122,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
-                putExtra(KEY_SHOW_TITLEBAR, showToolbar)
+                putExtra(KEY_TITLEBAR, showToolbar)
                 putExtra(KEY_ALLOW_OVERRIDE, allowOverride)
                 putExtra(KEY_NEED_LOGIN, needLogin)
                 putExtra(KEY_TITLE, title)
@@ -140,6 +142,41 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val destination = getStartIntent(context, webUrl)
             taskStackBuilder.addNextIntent(destination)
             return taskStackBuilder
+        }
+
+        @DeepLink(ApplinkConst.WEBVIEW)
+        @JvmStatic
+        fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
+            var webUrl = extras.getString(
+                KEY_URL, TokopediaUrl.Companion.getInstance().WEB
+            )
+            var showToolbar: Boolean
+            var needLogin: Boolean
+            var allowOverride: Boolean
+
+            try {
+                showToolbar = extras.getBoolean(KEY_TITLEBAR, true)
+            } catch (e: ParseException) {
+                showToolbar = true
+            }
+
+            try {
+                needLogin = extras.getBoolean(KEY_NEED_LOGIN, false)
+            } catch (e: ParseException) {
+                needLogin = false
+            }
+
+            try {
+                allowOverride = extras.getBoolean(KEY_ALLOW_OVERRIDE, true)
+            } catch (e: ParseException) {
+                allowOverride = true
+            }
+
+            if (TextUtils.isEmpty(webUrl)) {
+                webUrl = TokopediaUrl.Companion.getInstance().WEB
+            }
+
+            return getStartIntent(context, webUrl, showToolbar, needLogin, allowOverride)
         }
     }
 
