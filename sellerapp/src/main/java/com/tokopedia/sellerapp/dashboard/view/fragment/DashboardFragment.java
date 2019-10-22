@@ -101,6 +101,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private SwipeToRefresh swipeRefreshLayout;
     private View reputationLabelLayout;
     private View transactionlabelLayout;
+    private static final String SCREEN_NAME = "/user/jual";
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -314,6 +315,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         sellerDashboardPresenter.getTicker();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        powerMerchantTracking.sendScreenName(getScreenName());
+    }
+
     void onRefresh() {
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
@@ -325,7 +332,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override
