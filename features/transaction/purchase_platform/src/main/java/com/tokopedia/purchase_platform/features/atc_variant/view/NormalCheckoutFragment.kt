@@ -1122,9 +1122,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
                 if (viewModel.getSelectedOption() == selectedOptionViewModel.optionId) {
                     if (viewModel.isColorIdentifier) {
-                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName)
+                        normalCheckoutTracking.eventSelectColorVariant(selectedOptionViewModel.variantName, productId)
                     } else if (viewModel.isSizeIdentifier) {
-                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName)
+                        normalCheckoutTracking.eventSelectSizeVariant(selectedOptionViewModel.variantName, productId)
                     }
                 }
                 variantSize++

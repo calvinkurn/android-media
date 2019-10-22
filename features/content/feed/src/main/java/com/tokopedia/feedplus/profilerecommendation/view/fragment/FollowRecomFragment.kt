@@ -241,7 +241,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 
     override fun onFirstTimeCardShown(element: FollowRecomCardViewModel, adapterPosition: Int) {
         element.authorType?.let {
-            feedAnalyticTracker.eventViewContentRecommendation("", adapterPosition, it.typeString)
+            feedAnalyticTracker.eventViewContentRecommendation(element.authorId, adapterPosition, it.typeString)
         }
     }
 

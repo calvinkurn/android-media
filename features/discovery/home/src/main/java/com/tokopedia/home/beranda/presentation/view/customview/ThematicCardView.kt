@@ -13,13 +13,13 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by Lukas on 01/10/19
  */
-class ThematicCardView : FrameLayout {
+class ThematicCardView : BaseCustomView {
     companion object {
         const val LIGHT_GREY = "lightGrey"
         const val LIGHT_BLUE = "lightBlue"
@@ -68,21 +68,28 @@ class ThematicCardView : FrameLayout {
     private var imageViewRating4: ImageView? = null
     private var imageViewRating5: ImageView? = null
     private var textViewReviewCount: Typography? = null
+    private var imageFreeOngkirPromo: ImageView? = null
     private var labelCredibility: Label? = null
     private var blankSpaceConfig = BlankSpaceConfig()
 
-    constructor(context: Context): super(context){
+    constructor(context: Context): super(context) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet, defaultStyleAttr: Int): super(context, attributeSet, defaultStyleAttr){
+
+    constructor(
+            context: Context,
+            attrs: AttributeSet?,
+            defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private fun init(){
-        findViews(inflate(context, R.layout.thematic_card_view, this))
+        findViews(View.inflate(context, R.layout.thematic_card_view, this))
     }
 
 
@@ -111,58 +118,36 @@ class ThematicCardView : FrameLayout {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
     }
 
-//    fun setName(title: String) {
-//        channelName.displayTextOrHide(title)
-//    }
-//
-//    fun setImageSrc(imageUrl: String){
-//        ImageHandler.loadImageThumbs(context, channelImage1, imageUrl)
-//    }
-//
-//    fun setPrice(price: String){
-//        channelPrice1.displayTextOrHide(price)
-//    }
-//
-//    fun setDiscount(discount: String){
-//        channelDiscount1.displayTextOrHide(discount)
-//    }
-//
-//    fun setSlashedPrice(slashedPrice: String){
-//        channelBeforeDiscPrice1.displayTextOrHide(slashedPrice)
-//        channelBeforeDiscPrice1.paintFlags = channelBeforeDiscPrice1.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//    }
-//
-//    fun setCashback(cashback: String){
-//        channelCashback.displayTextOrHide(cashback)
-//    }
+    fun setBlankSpaceConfig(blankSpaceConfig: BlankSpaceConfig){
+        this.blankSpaceConfig = blankSpaceConfig
+    }
 
-
-
-    private fun initProductImage(productImageUrl: String) {
+    fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageThumbs(context, it, productImageUrl)
         }
     }
 
-    private fun initShopName(shopName: String) {
+    fun initShopName(shopName: String) {
         textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
     }
 
-    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
-        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
-            it.text = labelPromoModel.title
-            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+    fun initLabelPromo(title: String, labelType: String) {
+        labelPromo.shouldShowWithAction(title.isNotEmpty()) {
+            it.text = title
+            it.setLabelType(getLabelTypeFromString(labelType))
         }
     }
 
-    private fun initProductName(productName: String) {
+    fun initProductName(productName: String) {
         if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
         textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
     }
 
-    private fun initLabelDiscount(discountPercentage: String) {
+    fun initLabelDiscount(discountPercentage: String) {
         val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
 
         labelDiscount.configureVisibilityWithBlankSpaceConfig(
@@ -176,7 +161,7 @@ class ThematicCardView : FrameLayout {
                 && discountPercentage.trim() != "0"
     }
 
-    private fun initSlashedPrice(slashedPrice: String) {
+    fun initSlashedPrice(slashedPrice: String) {
         textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
                 slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
             it.text = slashedPrice
@@ -184,16 +169,8 @@ class ThematicCardView : FrameLayout {
         }
     }
 
-    private fun initProductPrice(formattedPrice: String) {
+    fun initProductPrice(formattedPrice: String) {
         textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
-    }
-
-    private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
-        removeAllShopBadges()
-
-        linearLayoutShopBadges.shouldShowWithAction(hasAnyBadgesShown(shopBadgeList)) {
-            loopBadgesListToLoadShopBadgeIcon(shopBadgeList)
-        }
     }
 
     private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
@@ -245,10 +222,19 @@ class ThematicCardView : FrameLayout {
         textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
     }
 
-    private fun initRating(ratingCount: Int) {
+    fun initRating(ratingCount: Int) {
         linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
                 ratingCount > 0, blankSpaceConfig.ratingCount) {
             setRating(ratingCount)
+        }
+    }
+
+    fun initFreeOngkir(isActive: Boolean = false, imageUrl: String = "") {
+        val shouldShowFreeOngkirImage = isActive && imageUrl.isNotEmpty()
+
+        imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
+                shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
+            ImageHandler.loadImageThumbs(context, it, imageUrl)
         }
     }
 
@@ -395,6 +381,10 @@ class ThematicCardView : FrameLayout {
         imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
         imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
         imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+    }
+
+    override fun setOnClickListener(clickListener: OnClickListener?) {
+        cardViewProductCard?.setOnClickListener(clickListener)
     }
 
     @DrawableRes

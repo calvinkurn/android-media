@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -41,6 +42,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
     public static final String PARAM_PROJECTID_TRADEIN = "TRADEIN_PROJECT";
     private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
+    private static final int PROJECT_ID = 4;
     private FinalPriceViewModel viewModel;
     private String orderValue = "";
     private String deviceId = "";
@@ -254,8 +256,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     private void goToKycActivity() {
-        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,null);
-        intent.putExtra(PARAM_PROJECTID_TRADEIN, 4);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.KYC_FORM, String.valueOf(PROJECT_ID));
         startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 
