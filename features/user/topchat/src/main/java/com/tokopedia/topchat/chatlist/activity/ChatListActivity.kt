@@ -413,11 +413,11 @@ class ChatListActivity : BaseTabActivity()
         chatNotifCounterViewModel.clear()
     }
 
-    object DeeplinkIntent {
-        @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
-        @JvmStatic
-        fun createIntent(context: Context, extras: Bundle) = createIntent(context)
-    }
+//    object DeeplinkIntent {
+//        @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
+//        @JvmStatic
+//        fun createIntent(context: Context, extras: Bundle) = createIntent(context)
+//    }
 
 
     companion object {

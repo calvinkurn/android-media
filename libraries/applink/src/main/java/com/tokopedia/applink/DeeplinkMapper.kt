@@ -104,6 +104,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
+            ApplinkConst.TOPCHAT_IDLESS -> return ApplinkConstInternalGlobal.TOPCHAT
             else -> ""
         }
     }

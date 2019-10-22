@@ -46,6 +46,7 @@
     <string name="path_geolocation" translatable="false">/geolocation</string>
     <string name="path_cod" translatable="false">/cod</string>
 
+    <string name="path_chat">/topchat</string>
     <string name="path_chat_search">/chat-search</string>
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>

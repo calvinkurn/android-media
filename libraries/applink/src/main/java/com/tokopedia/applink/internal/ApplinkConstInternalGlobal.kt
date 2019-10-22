@@ -227,4 +227,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
+
+    // Topchat
+    @JvmField
+    val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 }
