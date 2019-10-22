@@ -3,9 +3,9 @@ package com.tokopedia.promotionstarget.subscriber
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.promotionstarget.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
@@ -31,7 +31,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             "com.tokopedia.loginregister.login.view.activity.LoginActivity",
             "com.tokopedia.session.register.view.activity.SmartLockActivity"
     )
-    val allowedActivityNames = arrayListOf<String>("com.tokopedia.navigation.presentation.activity.MainParentActivity")
+    val allowedActivityNames = arrayListOf<String>("com.tokopedia.navigation.presentation.activity.MainParentActivity",
+            "com.tokopedia.product.detail.view.activity.ProductDetailActivity")
 
     companion object {
 //        val waitingForLogin = AtomicBoolean(false)
@@ -59,11 +60,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             if (!isAllowedActivity) {
 //            Do nothingsubscriber.waitingForLoginActivity
             } else {
-            val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
-            if (gratificationData != null) {
-                cancelAll()
-                showGratificationDialog(activity, gratificationData)
-            }
+                val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
+                if (gratificationData != null) {
+                    cancelAll()
+                    showGratificationDialog(activity, gratificationData)
+                }
             }
         }
     }
@@ -91,15 +92,15 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         //todo Rahul remove test data
         if (activity != null) {
             val intent = activity.intent
-//            val campaignSlug = intent?.extras?.getString(CouponGratificationParams.CAMPAIGN_SLUG)
+//            val popSlug = intent?.extras?.getString(CouponGratificationParams.POP_SLUG)
 //            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
 
-            val campaignSlug = "CampaignSlug"
+            val popSlug = "CampaignSlug"
             val page = "Hot"
 
-            showGratificationDialog = (!TextUtils.isEmpty(campaignSlug) && !TextUtils.isEmpty(page))
+            showGratificationDialog = (!TextUtils.isEmpty(popSlug) && !TextUtils.isEmpty(page))
             if (showGratificationDialog) {
-                gratificationData = GratificationData(campaignSlug!!, page!!)
+                gratificationData = GratificationData(popSlug!!, page!!)
             }
         }
         return gratificationData
@@ -114,7 +115,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val couponDetail = presenter.composeApi(gratificationData)
                     withContext(Dispatchers.Main) {
                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
-                            show(weakActivity, response, couponDetail, gratificationData)
+                        show(weakActivity, response, couponDetail, gratificationData)
                     }
                 }
                 mapOfJobs[activity] = childJob
@@ -151,4 +152,4 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 }
 
-data class GratificationData(val campaignSlug: String, val page: String)
+data class GratificationData(val popSlug: String, val page: String)

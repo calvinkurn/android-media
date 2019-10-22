@@ -12,7 +12,7 @@ class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase:
 
     suspend fun getGratificationAndShowDialog(gratificationData: GratificationData): GetPopGratificationResponse {
         val data = getPopGratificationUseCase.let {
-            it.getResponse(it.getQueryParams(gratificationData.campaignSlug, gratificationData.page))
+            it.getResponse(it.getQueryParams(gratificationData.popSlug, gratificationData.page))
         }
         return data
     }
