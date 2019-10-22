@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
@@ -37,8 +36,6 @@ public interface KolComponent {
     Gson gson();
 
     AbstractionRouter provideAbstractionRouter();
-
-    TkpdAuthInterceptor tkpdAuthInterceptor();
 
     HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 

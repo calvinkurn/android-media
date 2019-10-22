@@ -16,7 +16,6 @@ import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthIntercepto
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -333,22 +332,6 @@ public class OkHttpFactory {
             tkpdbBuilder.addInterceptor(chuckInterceptor);
         }
         return tkpdbBuilder.build();
-    }
-
-    public OkHttpClient buildDaggerClientBearerRidehailing(RideInterceptor rideInterceptor,
-                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                           ChuckInterceptor chuckInterceptor,
-                                                           DebugInterceptor debugInterceptor,
-                                                           HttpLoggingInterceptor loggingInterceptor) {
-        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
-                .addInterceptor(rideInterceptor)
-                .setOkHttpRetryPolicy(okHttpRetryPolicy);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
-            tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
-            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
-        }
-        return tkpdOkHttpBuilder.build();
     }
 
     public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
