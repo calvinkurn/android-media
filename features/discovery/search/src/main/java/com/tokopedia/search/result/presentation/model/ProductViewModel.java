@@ -21,6 +21,7 @@ public class ProductViewModel implements Parcelable {
     private String autocompleteApplink;
     private String responseCode;
     private String errorMessage;
+    private TickerViewModel tickerModel;
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
@@ -166,6 +167,14 @@ public class ProductViewModel implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
+    public TickerViewModel getTickerModel() {
+        return tickerModel;
+    }
+
+    public void setTickerModel(TickerViewModel tickerModel) {
+        this.tickerModel = tickerModel;
+    }
+
     public SuggestionViewModel getSuggestionModel() {
         return suggestionModel;
     }
@@ -216,6 +225,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
+        dest.writeParcelable(this.tickerModel, flags);
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
@@ -239,6 +249,7 @@ public class ProductViewModel implements Parcelable {
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
+        this.tickerModel = in.readParcelable(TickerViewModel.class.getClassLoader());
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();

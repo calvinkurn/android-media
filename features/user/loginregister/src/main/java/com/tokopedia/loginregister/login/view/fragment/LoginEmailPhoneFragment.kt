@@ -316,12 +316,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet.setTitle(getString(R.string.choose_social_media))
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener{
-            analytics.eventClickSocmedButton()
+            analytics.eventClickCloseSocmedButton()
             bottomSheet.dismiss()
         }
 
         socmed_btn.setOnClickListener {
-            analytics.eventClickCloseSocmedButton()
+            analytics.eventClickSocmedButton()
             bottomSheet.show(fragmentManager, getString(R.string.bottom_sheet_show))
         }
 
@@ -892,6 +892,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
         return {
+            logoutGoogleAccountIfExist()
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
         }
     }
@@ -947,6 +948,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 presenter.reloginAfterSQ(validateToken)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+                logoutGoogleAccountIfExist()
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
@@ -1006,7 +1008,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun isFromAccountPage(): Boolean {
-        return source == "account"
+        return source == SOURCE_ACCOUNT
     }
 
     private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
@@ -1157,7 +1159,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if(!it.isRegistered){
+            if(!it.isRegistered && isFromAccountPage()){
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
@@ -1171,6 +1173,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         outState.putBoolean(IS_AUTO_LOGIN, isAutoLogin)
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
     companion object {
@@ -1210,6 +1217,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         const val LOGIN_LOAD_TRACE = "gb_login_trace"
         const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
+
+        const val SOURCE_ACCOUNT = "account"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

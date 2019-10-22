@@ -9,9 +9,8 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
-import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
+import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
@@ -34,12 +33,10 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
-    override fun onSubcriptionCheckedListener(checked: Boolean) {
 
-        if (checked) {
-            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentAfter)
-        } else {
-            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentBefore)
+    override fun onSubcriptionCheckedListener(checked: Boolean) {
+        view.cartInfoData.crossSellingConfig?.run {
+            view.renderMyBillsDescriptionView(if (checked) bodyContentAfter else bodyContentBefore)
         }
     }
 
@@ -48,22 +45,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         renderBaseCart(view.cartInfoData)
         renderPostPaidPopUp(view.cartInfoData)
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
-        if (view.cartInfoData.crossSellingConfig != null) {
-            view.updateCheckoutButtonText(view.cartInfoData.crossSellingConfig!!.checkoutButtonText)
-            view.updateToolbarTitle(view.cartInfoData.crossSellingConfig!!.headerTitle)
-        }
+        view.cartInfoData.crossSellingConfig?.run {
+            view.updateCheckoutButtonText(checkoutButtonText)
+            view.updateToolbarTitle(headerTitle)
 
-        val description = if (view.cartInfoData.crossSellingConfig!!.isChecked) {
-            view.cartInfoData!!.crossSellingConfig!!.bodyContentAfter
-        } else {
-            view.cartInfoData!!.crossSellingConfig!!.bodyContentBefore
-        }
+            val description = if (isChecked) bodyContentAfter else bodyContentBefore
 
-        view.renderMyBillsView(
-                view.cartInfoData.crossSellingConfig!!.bodyTitle,
-                description,
-                view.cartInfoData.crossSellingConfig!!.isChecked
-        )
+            view.renderMyBillsView(bodyTitle, description, isChecked)
+        }
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {

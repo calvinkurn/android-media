@@ -53,6 +53,7 @@ include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
 include "features:discovery:wishlist_common"
 include "features:discovery:search"
+include "features:discovery:global_nav_widget"
 
 include "features:fintech:mitra_toppers"
 
@@ -62,8 +63,8 @@ include "features:fintech:instant_loan"
 //include "features:fintech:instant_loan_no_op"
 include "features:fintech:saldo_details"
 //include "features:fintech:saldo_details_no_op"
-include "features:fintech:tokocash"
-//include "features:fintech:tokocash_no_op"
+include "features:fintech:common_wallet"
+include "features:fintech:wallet"
 
 include "features:home:navigation"
 include "features:home:navigation-common"

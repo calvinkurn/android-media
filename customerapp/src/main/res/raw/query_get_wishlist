@@ -38,6 +38,10 @@ query wishlist($page: Int, $count: Int){
           title
           color
         }
+        free_ongkir{
+          is_active
+          image_url
+        }
       }
       pagination {
         next_url

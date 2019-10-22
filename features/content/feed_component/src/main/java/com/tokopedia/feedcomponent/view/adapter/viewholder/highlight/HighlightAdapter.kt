@@ -1,9 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
-import android.content.Context
-import android.os.Build
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

@@ -5,9 +5,8 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType;
+import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -46,6 +45,11 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
             case DigitalCartCrossSellingType.MYBILLS:
                 getView().inflateMyBillsSubscriptionPage(
                         cartDigitalInfoData,
+                        getView().getCartPassData(),
+                        getView().getDigitalSubscriptionParams());
+                break;
+            case DigitalCartCrossSellingType.SUBSCRIBED:
+                getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData,
                         getView().getCartPassData(),
                         getView().getDigitalSubscriptionParams());
                 break;

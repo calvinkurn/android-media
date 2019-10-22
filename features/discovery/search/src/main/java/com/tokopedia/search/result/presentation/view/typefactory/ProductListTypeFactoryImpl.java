@@ -11,44 +11,48 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
 
 public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
 
     private final ProductListener productListener;
+    private final TickerListener tickerListener;
     private final SuggestionListener suggestionListener;
     private final GuidedSearchListener guidedSearchListener;
     private final RelatedSearchListener relatedSearchListener;
     private final QuickFilterListener quickFilterListener;
-    private final GlobalNavWidgetListener globalNavWidgetListener;
+    private final GlobalNavListener globalNavListener;
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
     private final RecommendationListener recommendationListener;
     private final Config topAdsConfig;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
+                                      TickerListener tickerListener,
                                       SuggestionListener suggestionListener,
                                       GuidedSearchListener guidedSearchListener,
                                       RelatedSearchListener relatedSearchListener,
                                       QuickFilterListener quickFilterListener,
-                                      GlobalNavWidgetListener globalNavWidgetListener,
+                                      GlobalNavListener globalNavListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
                                       RecommendationListener recommendationListener,
                                       Config config) {
 
         this.productListener = productListener;
+        this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
         this.guidedSearchListener = guidedSearchListener;
         this.relatedSearchListener = relatedSearchListener;
         this.quickFilterListener = quickFilterListener;
-        this.globalNavWidgetListener = globalNavWidgetListener;
+        this.globalNavListener = globalNavListener;
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
         this.recommendationListener = recommendationListener;
@@ -119,7 +123,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
+            viewHolder = new HeaderViewHolder(view, tickerListener, suggestionListener, quickFilterListener,
                     guidedSearchListener, bannerAdsListener);
         } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
@@ -128,7 +132,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
         } else if (type == GlobalNavViewHolder.LAYOUT) {
-            viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
+            viewHolder = new GlobalNavViewHolder(view, globalNavListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
         } else if(type == RecommendationTitleViewHolder.LAYOUT){

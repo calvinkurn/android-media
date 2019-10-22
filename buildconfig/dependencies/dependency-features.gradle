@@ -62,6 +62,8 @@ ext {
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
+            globalNavWidget                 : ":features:discovery:global_nav_widget",
+            globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
 
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",
@@ -70,8 +72,8 @@ ext {
             mitraToppers                    : ":features:fintech:mitra_toppers",
             saldodetails                    : ":features:fintech:saldo_details",
 //            saldodetails                    : ":features:fintech:saldo_details_no_op",
-            tokoCash                        : ":features:fintech:tokocash",
-//            tokoCash                      : ":features:fintech:tokocash_no_op",
+            commonWallet                    : ":features:fintech:common_wallet",
+            wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
 
             accountHome                     : ":features:home:account-home",
