@@ -51,7 +51,7 @@ public class ShipmentDataConverter {
                     if (groupShop.getProducts() != null && groupShop.getProducts().size() > 0) {
                         boolean foundData = false;
                         for (Product product : groupShop.getProducts()) {
-                            if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                            if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
                                 foundData = true;
                                 break;
@@ -347,10 +347,10 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeShipping(product.isFreeShipping());
         cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
 
-        if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+        if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);
-            cartItemModel.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
-            cartItemModel.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+            cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
+            cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {

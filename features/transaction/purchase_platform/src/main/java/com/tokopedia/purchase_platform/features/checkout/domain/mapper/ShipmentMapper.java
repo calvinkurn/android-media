@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
@@ -16,7 +15,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.ServiceId;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
-import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfo;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfoData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
@@ -447,14 +446,14 @@ public class ShipmentMapper implements IShipmentMapper {
                                 }
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
-                                    TradeInInfo tradeInInfo = new TradeInInfo();
-                                    tradeInInfo.setValidTradeIn(product.getTradeInInfo().isValidTradeIn());
-                                    tradeInInfo.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
-                                    tradeInInfo.setNewDevicePriceFmt(product.getTradeInInfo().getNewDevicePriceFmt());
-                                    tradeInInfo.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
-                                    tradeInInfo.setOldDevicePriceFmt(product.getTradeInInfo().getOldDevicePriceFmt());
+                                    TradeInInfoData tradeInInfoData = new TradeInInfoData();
+                                    tradeInInfoData.setValidTradeIn(product.getTradeInInfo().isValidTradeIn());
+                                    tradeInInfoData.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+                                    tradeInInfoData.setNewDevicePriceFmt(product.getTradeInInfo().getNewDevicePriceFmt());
+                                    tradeInInfoData.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
+                                    tradeInInfoData.setOldDevicePriceFmt(product.getTradeInInfo().getOldDevicePriceFmt());
 
-                                    productResult.setTradeInInfo(tradeInInfo);
+                                    productResult.setTradeInInfoData(tradeInInfoData);
                                 }
 
                                 if (!mapperUtil.isEmpty(product.getPurchaseProtectionPlanData())) {

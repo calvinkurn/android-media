@@ -7,23 +7,25 @@ import android.os.Parcelable;
  * Created by Irfan Khoirul on 05/03/19.
  */
 
-public class TradeInInfo implements Parcelable {
+public class TradeInInfoData implements Parcelable {
 
     private boolean isValidTradeIn;
     private int newDevicePrice;
     private String newDevicePriceFmt;
     private int oldDevicePrice;
     private String oldDevicePriceFmt;
+    private boolean dropOffEnable;
 
-    public TradeInInfo() {
+    public TradeInInfoData() {
     }
 
-    protected TradeInInfo(Parcel in) {
+    protected TradeInInfoData(Parcel in) {
         isValidTradeIn = in.readByte() != 0;
         newDevicePrice = in.readInt();
         newDevicePriceFmt = in.readString();
         oldDevicePrice = in.readInt();
         oldDevicePriceFmt = in.readString();
+        dropOffEnable = in.readByte() != 0;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class TradeInInfo implements Parcelable {
         dest.writeString(newDevicePriceFmt);
         dest.writeInt(oldDevicePrice);
         dest.writeString(oldDevicePriceFmt);
+        dest.writeByte((byte) (dropOffEnable ? 1 : 0));
     }
 
     @Override
@@ -40,15 +43,15 @@ public class TradeInInfo implements Parcelable {
         return 0;
     }
 
-    public static final Creator<TradeInInfo> CREATOR = new Creator<TradeInInfo>() {
+    public static final Creator<TradeInInfoData> CREATOR = new Creator<TradeInInfoData>() {
         @Override
-        public TradeInInfo createFromParcel(Parcel in) {
-            return new TradeInInfo(in);
+        public TradeInInfoData createFromParcel(Parcel in) {
+            return new TradeInInfoData(in);
         }
 
         @Override
-        public TradeInInfo[] newArray(int size) {
-            return new TradeInInfo[size];
+        public TradeInInfoData[] newArray(int size) {
+            return new TradeInInfoData[size];
         }
     };
 
@@ -90,5 +93,13 @@ public class TradeInInfo implements Parcelable {
 
     public void setOldDevicePriceFmt(String oldDevicePriceFmt) {
         this.oldDevicePriceFmt = oldDevicePriceFmt;
+    }
+
+    public boolean isDropOffEnable() {
+        return dropOffEnable;
+    }
+
+    public void setDropOffEnable(boolean dropOffEnable) {
+        this.dropOffEnable = dropOffEnable;
     }
 }
