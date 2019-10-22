@@ -10,6 +10,7 @@ import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -38,20 +39,23 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
     @Override
     protected void renderCrossSellingCart(CartDigitalInfoData cartDigitalInfoData) {
         super.renderCrossSellingCart(cartDigitalInfoData);
+        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
         switch (cartDigitalInfoData.getCrossSellingType()) {
             case DigitalCartCrossSellingType.DEALS:
                 getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                 break;
             case DigitalCartCrossSellingType.MYBILLS:
+                subParams.setSubscribed(false);
                 getView().inflateMyBillsSubscriptionPage(
                         cartDigitalInfoData,
                         getView().getCartPassData(),
-                        getView().getDigitalSubscriptionParams());
+                        subParams);
                 break;
             case DigitalCartCrossSellingType.SUBSCRIBED:
+                subParams.setSubscribed(true);
                 getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData,
                         getView().getCartPassData(),
-                        getView().getDigitalSubscriptionParams());
+                        subParams);
                 break;
             default:
                 getView().showCartView();

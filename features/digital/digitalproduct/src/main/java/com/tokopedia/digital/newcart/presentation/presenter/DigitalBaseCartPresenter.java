@@ -301,7 +301,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     public void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null) {
+        if (!getView().getDigitalSubscriptionParams().isSubscribed() && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null) {
             getView().showPostPaidDialog(
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),

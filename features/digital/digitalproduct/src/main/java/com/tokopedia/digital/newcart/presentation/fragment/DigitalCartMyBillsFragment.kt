@@ -39,7 +39,6 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     lateinit var digitalCartMyBillsPresenter: DigitalCartMyBillsPresenter
 
     private var interactionListener: InteractionListener? = null
-    private var isSubscribed = false
 
     override fun setupView(view: View?) {
         progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
@@ -59,8 +58,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
-        isSubscribed = arguments?.getBoolean(ARG_IS_SUBSCRIBED) ?: false
+        cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO)
         super.onCreate(savedInstanceState)
     }
 
@@ -81,7 +79,6 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
             bundle.putParcelable(ARG_PASS_DATA, passData)
             subParams?.let { bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, it) }
-            bundle.putBoolean(ARG_IS_SUBSCRIBED, isSubscribed)
             fragment.arguments = bundle
             return fragment
         }
@@ -123,7 +120,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean) {
         // If user is already subsrcibed, hide checkbox for subscribing
-        if (isSubscribed) {
+        if (digitalSubscriptionParams.isSubscribed) {
             mybillSubscription.getSubscriptionCheckbox().visibility = View.GONE
         } else {
             mybillSubscription.setChecked(checked)
