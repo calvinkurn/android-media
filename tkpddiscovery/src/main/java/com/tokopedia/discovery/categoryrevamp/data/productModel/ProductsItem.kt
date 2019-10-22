@@ -97,7 +97,17 @@ data class ProductsItem(
         val preorder: Boolean? = null,
 
         @field:SerializedName("isTopAds")
-        var isTopAds: Boolean = false
+        var isTopAds: Boolean = false,
+
+        @field:SerializedName("productImpTrackingUrl")
+        var productImpTrackingUrl: String = "",
+
+        @field:SerializedName("productClickTrackingUrl")
+        var productClickTrackingUrl: String = "",
+
+        @field:SerializedName("productWishlistTrackingUrl")
+        var productWishlistTrackingUrl: String = ""
+
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
 
@@ -135,7 +145,10 @@ data class ProductsItem(
             parcel.readString(),
             parcel.readString(),
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readValue(Boolean::class.java.classLoader) as Boolean)
+            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString())
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(this.imageURL500)
@@ -169,8 +182,9 @@ data class ProductsItem(
         dest?.writeString(this.imageURL300)
         dest?.writeValue(this.preorder)
         dest?.writeValue(this.isTopAds)
-
-
+        dest?.writeValue(this.productImpTrackingUrl)
+        dest?.writeValue(this.productClickTrackingUrl)
+        dest?.writeValue(this.productWishlistTrackingUrl)
     }
 
     override fun describeContents(): Int {

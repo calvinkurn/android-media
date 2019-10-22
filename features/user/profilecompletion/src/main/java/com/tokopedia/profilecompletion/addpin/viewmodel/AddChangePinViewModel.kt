@@ -24,8 +24,9 @@ class AddChangePinViewModel @Inject constructor(
         private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
         private val getStatusPinUseCase: GraphqlUseCase<StatusPinPojo>,
         private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
+        private val skipOtpPinUseCase: GraphqlUseCase<SkipOtpPinPojo>,
         private val rawQueries: Map<String, String>,
-        val dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     private val mutableAddPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val addPinResponse: LiveData<Result<AddChangePinData>>
@@ -46,6 +47,10 @@ class AddChangePinViewModel @Inject constructor(
     private val mutableValidatePinResponse = MutableLiveData<Result<ValidatePinData>>()
     val validatePinResponse: LiveData<Result<ValidatePinData>>
         get() = mutableValidatePinResponse
+
+    private val mutableSkipOtpPinResponse = MutableLiveData<Result<SkipOtpPinData>>()
+    val skipOtpPinResponse: LiveData<Result<SkipOtpPinData>>
+        get() = mutableSkipOtpPinResponse
 
     fun addPin(token: String){
         rawQueries[ProfileCompletionQueryConstant.MUTATION_CREATE_PIN]?.let { query ->
@@ -205,5 +210,50 @@ class AddChangePinViewModel @Inject constructor(
                 else -> mutableValidatePinResponse.value = Fail(RuntimeException())
             }
         }
+    }
+  
+    fun checkSkipOtpPin(){
+        rawQueries[ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN]?.let { query ->
+            val params = mapOf(ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION)
+
+            skipOtpPinUseCase.setTypeClass(SkipOtpPinPojo::class.java)
+            skipOtpPinUseCase.setRequestParams(params)
+            skipOtpPinUseCase.setGraphqlQuery(query)
+            skipOtpPinUseCase.execute(
+                    onSuccessCheckSkipOtpPin(),
+                    onErrorCheckSkipOtpPin()
+            )
+        }
+    }
+
+    private fun onErrorCheckSkipOtpPin(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+            mutableSkipOtpPinResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessCheckSkipOtpPin(): (SkipOtpPinPojo) -> Unit {
+        return {
+            when {
+                it.data.errorMessage.isNotEmpty() ->
+                    mutableSkipOtpPinResponse.value = Fail(MessageErrorException(it.data.errorMessage))
+                else -> mutableSkipOtpPinResponse.value = Success(it.data)
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addPinUseCase.cancelJobs()
+        changePinUseCase.cancelJobs()
+        checkPinUseCase.cancelJobs()
+        getStatusPinUseCase.cancelJobs()
+        validatePinUseCase.cancelJobs()
+        skipOtpPinUseCase.cancelJobs()
+    }
+  
+    companion object {
+        const val OTP_TYPE_SKIP_VALIDATION = 124
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 
 import java.util.List;
@@ -60,6 +61,15 @@ public class OrderListContract {
         void displayLoadMore(boolean isLoadMore);
 
         void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
+
+        void finishOrderDetail();
+
+        void startSellerAndAddInvoice();
+
+        void requestCancelOrder(Status status);
+
+        void showSuccessMessageWithAction(String message);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

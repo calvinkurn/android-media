@@ -36,6 +36,7 @@ import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.presenter.ChooseVerificationPresenter;
@@ -190,7 +191,11 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);
         } else if (getActivity()!= null && getActivity() instanceof VerificationActivity) {
-            ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
+            if (methodItem.getModeName().equals(RequestOtpUseCase.MODE_MISCALL) && otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+                ((VerificationActivity) getActivity()).goToOnboardingMiscallPage(methodItem);
+            } else  {
+                ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
+            }
         }
     }
 

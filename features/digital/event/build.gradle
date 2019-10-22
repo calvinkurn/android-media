@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -22,59 +22,63 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.features.loyalty)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
-    implementation rootProject.ext.viewDependencies.expandableTextview
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
+    implementation rootProject.ext.viewDependencies.expandableTextview
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.viewDependencies.appIntro
-
-    implementation rootProject.ext.playServicesDependencies.maps
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.coach_mark
 }
 
 project.ext {
-    artifactId = 'events'
+    artifactId = 'event'
     groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="digitalevents-release"
+    artifactName ="event-release"
 }
 
 apply from: '../../../publish_local.gradle'

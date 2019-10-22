@@ -13,16 +13,36 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.miscDependencies.multiDex
 
     //TEST
     testImplementation rootProject.ext.testDependencies.junit
@@ -37,7 +57,7 @@ project.ext {
     artifactId = 'identification-common'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "useridentificationcommon-release"
+    artifactName = "user_identification_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

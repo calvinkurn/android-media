@@ -25,9 +25,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -38,6 +40,7 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightAnalytics;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -47,15 +50,13 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
-
-import org.jetbrains.annotations.NotNull;
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -447,7 +448,29 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
+        if (oneWayTripAppCompatButton.isSelected()) {
+            FlightCalendarOneWayWidget flightCalendarDialog = FlightCalendarOneWayWidget.Companion.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
+                    getCurrentDashboardViewModel().getDepartureAirport().getAirportCode(),
+                    getCurrentDashboardViewModel().getArrivalAirport().getAirportCode(),
+                    getCurrentDashboardViewModel().getFlightClass().getId());
+            flightCalendarDialog.setListener(dateSelected -> {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                        calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+            });
+            flightCalendarDialog.show(getActivity().getSupportFragmentManager(), TAG_DEPARTURE_CALENDAR);
+        } else {
+            //override value selectedDate for new calendar unify
+            minDate = selectedDate;
+            selectedDate = FlightDateUtil.stringToDate(getCurrentDashboardViewModel().getReturnDate());
+            setCalendarDatePicker(selectedDate, minDate, maxDate,
+                    getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date),
+                    TAG_DEPARTURE_CALENDAR);
+        }
     }
 
     @Override
@@ -457,28 +480,28 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
                                        String tagFragment) {
-        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
-                .setMinDate(minDate)
-                .setMaxDate(maxDate)
-                .setSelectedDate(selectedDate)
-                .setShowHoliday(true)
-                .setTitle(title)
-                .build();
-        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
-            @Override
-            public void onClickDate(@NotNull Date dateSelected) {
-                Calendar calendarSelected = Calendar.getInstance();
-                calendarSelected.setTime(dateSelected);
-                if (tagFragment.equals(TAG_DEPARTURE_CALENDAR)) {
-                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                } else {
-                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                }
-            }
+        String minDateStr = null;
+        String selectedDateStr = null;
+        if (minDate != null) minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
+        if (selectedDate != null) selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
+
+        SelectionRangeCalendarWidget flightCalendarDialog = SelectionRangeCalendarWidget.Companion.getInstance(
+                minDateStr, selectedDateStr,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR, SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED, getString(R.string.flight_min_date_label),
+                getString(R.string.flight_max_date_label), SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY, true);
+
+        flightCalendarDialog.setListener((dateIn, dateOut) -> {
+            Calendar calendarDepartureSelected = Calendar.getInstance();
+            calendarDepartureSelected.setTime(dateIn);
+            presenter.onDepartureDateChange(calendarDepartureSelected.get(Calendar.YEAR),
+                    calendarDepartureSelected.get(Calendar.MONTH), calendarDepartureSelected.get(Calendar.DATE), true);
+
+            Calendar calendarReturnSelected = Calendar.getInstance();
+            calendarReturnSelected.setTime(dateOut);
+            presenter.onReturnDateChange(calendarReturnSelected.get(Calendar.YEAR),
+                    calendarReturnSelected.get(Calendar.MONTH), calendarReturnSelected.get(Calendar.DATE), true);
         });
-        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), tagFragment);
+        flightCalendarDialog.show(getActivity().getSupportFragmentManager(), tagFragment);
     }
 
     @Override
@@ -591,13 +614,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
-            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
-                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        } else {
-            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
-                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
-        }
+        startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override
@@ -679,8 +697,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                         && ((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), url) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getBannerWebViewIntent(getActivity(), url));
+                    RouteManager.route(getContext(), url);
                 }
             }
         }

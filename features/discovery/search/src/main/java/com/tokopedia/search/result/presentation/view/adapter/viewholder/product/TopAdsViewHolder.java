@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.TopAdsSwitcher;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
@@ -28,7 +29,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener, TopAdsSwitcher {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_item_ads;
+    public static final int LAYOUT = R.layout.search_result_item_top_ads;
 
     private TopAdsWidgetView adsWidgetView;
     private Context context;
@@ -57,7 +58,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                         : 1;
             }
 
-            int spacing = context.getResources().getDimensionPixelSize(R.dimen.dp_16);
+            int spacing = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16);
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -90,7 +91,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             Activity activity = (Activity) context;
             Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
-            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
+            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position, ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         }
     }
 

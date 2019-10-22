@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -32,6 +34,13 @@ class CategoryNavUseCaseModule {
     @Named("subCategoryGqlUseCaseObject")
     @Provides
     fun provideRxGQLSubCategoryUseCase(): GraphqlUseCase {
+        return GraphqlUseCase()
+    }
+
+    @CategoryNavScope
+    @Named("subCategoryV3GqlUseCaseObject")
+    @Provides
+    fun provideGqlUseCaseForSubV3(): GraphqlUseCase {
         return GraphqlUseCase()
     }
 
@@ -106,4 +115,18 @@ class CategoryNavUseCaseModule {
             : RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
+
+    @CategoryNavScope
+    @Provides
+    fun getSubCategoryV3UseCase(context: Context, @Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
+    : GraphqlUseCase)
+            : SubCategoryV3UseCase {
+        return SubCategoryV3UseCase(context,graphqlUseCase)
+    }
+
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
 }

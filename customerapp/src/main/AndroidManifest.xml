@@ -43,11 +43,12 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:hasCode="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
-        tools:replace="name, label">
+        tools:replace="name,android:label,android:hasCode">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
@@ -285,10 +286,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
-        <activity
-            android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
             android:launchMode="singleTop"
             android:theme="@style/DialogTheme"/>
@@ -305,7 +302,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_qr_scanner" />
+                    android:pathPattern="@string/path_qr_scanner" />
             </intent-filter>
         </activity>
 
@@ -324,19 +321,6 @@
             android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
-        <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
-            android:label="@string/title_activity_people_deposit"
-            android:theme="@style/Theme.White"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoIntroActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
-            android:theme="@style/Theme.White.PopupTransparent" />
 
         <activity
             android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"

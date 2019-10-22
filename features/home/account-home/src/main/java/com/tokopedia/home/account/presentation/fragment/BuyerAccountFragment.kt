@@ -18,7 +18,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
+import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
@@ -30,6 +32,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
@@ -44,7 +47,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
-    private lateinit var trackingQueue: TrackingQueue
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var snackBar: Snackbar? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -54,9 +56,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context?.run {
-            trackingQueue = TrackingQueue(this)
-        }
         fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         initInjector()
     }
@@ -80,6 +79,26 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
+        sendBuyerAccountItemImpression()
+    }
+
+    private fun sendBuyerAccountItemImpression() {
+        onAccountItemImpression(AccountAnalytics.getAccountPromoImpression(
+                AccountConstants.Analytics.CREATIVE_TOKOPOINTS, AccountConstants.Analytics.POSITION_TOKOPOINT
+        ))
+        onAccountItemImpression(AccountAnalytics.getAccountPromoImpression(
+                AccountConstants.Analytics.CREATIVE_KUPON_SAYA, AccountConstants.Analytics.POSITION_KUPON_SAYA
+        ))
+        onAccountItemImpression(AccountAnalytics.getAccountPromoImpression(
+                AccountConstants.Analytics.CREATIVE_TOKO_MEMBER, AccountConstants.Analytics.POSITION_TOKOMEMBER
+        ))
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+        }
     }
 
     override fun onResume() {
@@ -92,7 +111,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun getScreenName(): String {
-        return TAG
+        return String.format("/%s/%s",
+                AccountConstants.Analytics.USER,
+                AccountConstants.Analytics.BELI)
     }
 
     override fun loadBuyerData(model: BuyerViewModel?) {
@@ -183,7 +204,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
-        sendProductImpressionTracking(trackingQueue, product, adapterPosition)
+        sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
         if (product.isTopAds) {
             ImpresionTask().execute(product.trackerImageUrl)
         }
@@ -225,11 +246,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 updateWishlist(wishlistStatusFromPdp, position)
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
     }
 
     private fun getData() {

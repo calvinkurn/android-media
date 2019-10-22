@@ -62,7 +62,11 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
         setItemView()
 
         itemView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
+        itemView.setOnClickListener {
+            if (!this@DigitalBrowseServiceViewHolder.item!!.isTitle) {
+                this@DigitalBrowseServiceViewHolder.categoryListener.onCategoryItemClicked(item, adapterPosition)
+            }
+        }
         tvProduct.text = element.name
     }
 

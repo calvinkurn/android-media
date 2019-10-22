@@ -68,6 +68,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         private val ACTION_TICKER_LOGIN = "click on ticker login"
         private val ACTION_LINK_TICKER_LOGIN = "click ticker link"
         private val ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker"
+        private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
+        private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
 
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
@@ -747,6 +749,24 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLOSE_TICKER_LOGIN,
+                ""
+        ))
+    }
+
+    fun eventClickSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_ON_BUTTON_SOCMED,
+                ""
+        ))
+    }
+
+    fun eventClickCloseSocmedButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
         ))
     }

@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -99,8 +100,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
-import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
@@ -145,6 +144,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
+    private static final String SOURCE_ACCOUNT = "account";
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -194,6 +194,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SharedPreferences sharedPrefs;
 
     private int[] positionSticky = new int[2];
+    private StickyLoginTickerPojo.TickerDetail tickerDetail;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -370,7 +371,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
-        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -395,11 +395,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 updateStickyState();
-
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
             }
         });
         stickyLoginView.setOnClickListener(new View.OnClickListener() {
@@ -436,12 +431,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (activityStateListener != null) {
             activityStateListener.onResume();
-        }
-
-        updateStickyState();
-        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-        if (floatingEggButtonFragment != null) {
-            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 
@@ -480,6 +469,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
+                /**
+                 * set notification gimmick
+                 */
+                homeMainToolbar.setNotificationNumber(0);
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -603,6 +596,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void onGoToLogin() {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT);
         Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
@@ -782,7 +776,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() instanceof RefreshNotificationListener) {
             ((RefreshNotificationListener) getActivity()).onRefreshNotification();
         }
-        updateStickyState();
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
     }
@@ -818,17 +811,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag) {
+    public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(items, headerViewModel);
-
-            if (needToShowGeolocationComponent()) {
-                adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
-            }
+            adapter.setItems( needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items, headerViewModel);
+            adapter.setItems(items);
         }
     }
 
@@ -855,6 +844,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
         return needToShowGeolocationComponent;
+    }
+
+    private List<Visitable> removeGeolocationComponent(List<Visitable> items){
+        List<Visitable> local = new ArrayList<>(items);
+        for (Visitable visitable : local){
+            if(visitable instanceof GeolocationPromptViewModel){
+                local.remove(visitable);
+                break;
+            }
+        }
+        return local;
     }
 
     @Override
@@ -964,10 +964,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
-        if (needToShowGeolocationComponent()) {
-            adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
-        }
-        adapter.updateHomeQueryItems(visitables);
+        adapter.updateHomeQueryItems(needToShowGeolocationComponent() ? visitables : removeGeolocationComponent(visitables));
     }
 
     @Override
@@ -1039,8 +1036,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
     }
 
     private void onActionLinkClicked(String actionLink) {
@@ -1193,23 +1190,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     /**
-     * Tokocash & Tokopoint
+     * Tokopoint
      */
-    @Override
-    public Observable<HomeHeaderWalletAction> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
-            return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
-        }
-        return null;
-    }
-
-    @Override
-    public Observable<PendingCashback> getTokocashPendingCashback() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
-            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
-        }
-        return null;
-    }
 
     @Override
     public Observable<TokopointHomeDrawerData> getTokopoint() {
@@ -1551,30 +1533,44 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setStickyContent(StickyLoginTickerPojo stickyContent) {
-        if (stickyContent.getTickers().size() > 0) {
-            stickyLoginView.setContent(stickyContent.getTickers().get(0));
-        } else {
-            stickyLoginView.setVisibility(View.GONE);
-        }
+    public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
+        this.tickerDetail = tickerDetail;
+        updateStickyState();
+        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+    }
+
+    @Override
+    public void hideStickyLogin() {
+        stickyLoginView.setVisibility(View.GONE);
     }
 
     private void updateStickyState() {
-        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if (!isCanShowing) {
-            stickyLoginView.setVisibility(View.GONE);
+        if (this.tickerDetail == null) {
+            hideStickyLogin();
             return;
         }
+
+        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
+        if (!isCanShowing) {
+            hideStickyLogin();
+            return;
+        }
+
+        if (isUserLoggedIn()) {
+            hideStickyLogin();
+            return;
+        }
+
+        stickyLoginView.setContent(this.tickerDetail);
+        stickyLoginView.show(StickyLoginConstant.Page.HOME);
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
         }
 
-        if (isUserLoggedIn()) {
-            stickyLoginView.setVisibility(View.GONE);
-        } else {
-            stickyLoginView.show(StickyLoginConstant.Page.HOME);
-            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            updateEggBottomMargin(floatingEggButtonFragment);
         }
     }
 

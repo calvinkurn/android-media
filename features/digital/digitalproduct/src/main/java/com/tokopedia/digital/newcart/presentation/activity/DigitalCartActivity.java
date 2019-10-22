@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
@@ -21,7 +22,6 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragm
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>,
@@ -63,7 +63,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     private static String generateATokenRechargeCheckout(Context context) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
+        String token = AuthHelper.getMD5Hash(timeMillis);
         UserSession userSession = new UserSession(context);
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
@@ -99,8 +99,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
-        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData));
+    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                               DigitalCheckoutPassData cartPassData,
+                                               boolean isSubscribed) {
+        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData, isSubscribed));
     }
 
     private void inflateFragment(Fragment fragment) {

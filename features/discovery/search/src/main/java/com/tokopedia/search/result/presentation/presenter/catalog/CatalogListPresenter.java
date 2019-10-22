@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation.presenter.catalog;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.CatalogViewModelMapper;
@@ -261,7 +261,7 @@ final class CatalogListPresenter
 
     private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
         return new HashMap<>(
-                AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                AuthHelper.generateParamsNetwork(userSession.getUserId(),
                         userSession.getDeviceId(),
                         requestParams.getParamsAllValueInString()));
     }

@@ -105,7 +105,7 @@ open class DynamicPostViewHolder(v: View,
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
-        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType)
+        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
     }
 
@@ -416,7 +416,7 @@ open class DynamicPostViewHolder(v: View,
                 else comment.fmt
     }
 
-    private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String) {
+    private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String, authorType: String) {
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
@@ -431,8 +431,9 @@ open class DynamicPostViewHolder(v: View,
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
                     else -> LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 }
+                itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition), PostTagTypeFactoryImpl(listener))
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition, authorType), PostTagTypeFactoryImpl(listener))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
                 itemView.rvPosttag.hide()
@@ -448,7 +449,7 @@ open class DynamicPostViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
         val needToRezise = postTagItemList.size > 1
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
@@ -469,7 +470,8 @@ open class DynamicPostViewHolder(v: View,
                             postTagItem.tags,
                             postTagItem,
                             postTagItem.rating,
-                            needToRezise
+                            needToRezise,
+                            authorType
                     )
                     item.feedType = feedType
                     item.postId = postId
@@ -516,7 +518,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
 
-        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
+        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String)
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 

@@ -149,10 +149,6 @@ public interface TkpdCoreRouter {
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
-    Observable<TokoCashData> getTokoCashBalance();
-
-    Intent getAddPasswordIntent(Context context);
-
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);

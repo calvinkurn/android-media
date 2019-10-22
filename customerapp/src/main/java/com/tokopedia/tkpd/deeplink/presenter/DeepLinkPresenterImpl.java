@@ -22,11 +22,13 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -182,7 +184,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PRODUCT:
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
                         openShopInfo(linkSegment, uriData);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -220,7 +222,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
-                    RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
+                    openHotel();
                     screenName = "";
                     break;
                 /*
@@ -332,6 +334,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
 
         context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openHotel() {
+        RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
     }
 
@@ -452,7 +459,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(activity, campaign);
-        UnifyTracking.eventCampaign(activity, campaignUri);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUri
+        ).getEvent());
     }
 
 
@@ -531,6 +544,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_INFO,
                                 shopId);
+                    } else if(isShopHome(linkSegment)){
+                        RouteManager.route(context,
+                                ApplinkConst.SHOP_HOME,
+                                shopId);
                     } else {
                         Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
                         context.startActivity(intent);
@@ -552,6 +569,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
+    }
+
+    private boolean isShopHome(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("home");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
@@ -720,7 +742,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         
         String applink = TextUtils.isEmpty(q) ?
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConst.DISCOVERY_SEARCH;
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
     }
@@ -729,85 +751,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.startActivity(ReferralActivity.getCallingIntent(context));
     }
 
-
-    private boolean isHotLink(List<String> linkSegment) {
-        return (linkSegment.size() == 2);
-    }
-
     private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
         return (linkSegment.size() == 1 && !isHotAlias(uriData));
     }
 
     private boolean isHotAlias(Uri uri) {
         return uri.getQueryParameter("alk") != null;
-    }
-
-    private boolean isSearch(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
-    }
-
-    private boolean isPulsa(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa");
-    }
-
-    private boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
-    }
-
-    private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 1
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("discovery")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("blog")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("kartu-kredit")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
-
-    }
-
-    private boolean isProduct(List<String> linkSegment) {
-        return (linkSegment.size() == 2
-                && !isBrowse(linkSegment)
-                && !isHot(linkSegment)
-                && !isCatalog(linkSegment)
-                && !isBlog(linkSegment)
-                && !linkSegment.get(0).equals("pulsa"));
-    }
-
-    private boolean isBlog(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
-    }
-
-    private boolean isCatalog(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("catalog");
-    }
-
-    private boolean isHot(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("hot");
-    }
-
-    private boolean isBrowse(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("search")
-        );
-    }
-
-    private boolean isCategory(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("p")
-        );
-    }
-
-    private boolean isHomepage(List<String> linkSegment) {
-        return linkSegment.size() == 0;
     }
 
     @Override

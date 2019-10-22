@@ -3,11 +3,7 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
-import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.model.*;
 
 public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(ProductItemViewModel productItem);
@@ -19,6 +15,10 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(RelatedSearchViewModel relatedSearchModel);
 
     int type(GlobalNavViewModel globalNavViewModel);
+
+    int type(RecommendationTitleViewModel titleViewModel);
+
+    int type(RecommendationItemViewModel recommendationItemViewModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

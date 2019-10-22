@@ -72,7 +72,7 @@
                 android:layout_marginEnd="@dimen/dp_4"
                 android:layout_marginRight="@dimen/dp_4"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/ic_location_solid"
+                app:srcCompat="@drawable/autocomplete_location_solid"
                 />
 
             <TextView

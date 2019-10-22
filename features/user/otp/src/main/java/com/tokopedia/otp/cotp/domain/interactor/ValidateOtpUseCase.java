@@ -57,11 +57,12 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
         return param;
     }
 
-    public static RequestParams getRegisterPhoneNumberParam(String phoneNumber, int otpType, String otp) {
+    public static RequestParams getRegisterPhoneNumberParam(String phoneNumber, int otpType, String otp, String mode) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_PHONE, phoneNumber);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_CODE, otp);
+        param.putString(PARAM_MODE, mode);
         return param;
     }
 }

@@ -32,6 +32,7 @@ import com.tokopedia.filter.common.data.Sort;
 import com.tokopedia.filter.common.manager.FilterSortManager;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -72,6 +73,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
+    private FilterTrackingData filterTrackingData;
 
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
@@ -280,7 +282,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
                 handleSortResult(selectedSort, selectedSortName);
             }
         });
@@ -305,8 +307,8 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if (getActivity() instanceof HotlistActivity) {
             HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
         } else {
-            FilterTracking.eventSearchResultFilter(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE,
-                    getScreenName(), getSelectedFilter());
+            FilterTracking.eventApplyFilter(getFilterTrackingData(),
+                    "category page - " + getCategoryId(), getSelectedFilter());
         }
         showBottomBarNavigation(false);
         reloadData();
@@ -390,7 +392,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if(getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<>());
         }
-        FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE,this, getScreenName(), getSelectedFilter());
+        FilterSortManager.openFilterPage(getFilterTrackingData(),this, getScreenName(), getSelectedFilter());
     }
 
     protected boolean isFilterDataAvailable() {
@@ -536,4 +538,17 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     public void setOfficialSelected(Boolean officialSelectedFlag) {
 
     }
+
+    private FilterTrackingData getFilterTrackingData() {
+        if (filterTrackingData == null) {
+            filterTrackingData = new FilterTrackingData(FilterEventTracking.Event.CLICK_CATEGORY,
+                    FilterEventTracking.Category.FILTER_CATEGORY,
+                    getCategoryId(),
+                    FilterEventTracking.Category.PREFIX_CATEGORY_PAGE
+            );
+        }
+        return filterTrackingData;
+    }
+
+    protected abstract String getCategoryId();
 }

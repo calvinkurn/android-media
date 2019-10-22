@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFra
 class TabBusinessViewPagerAdapter(
         fm: FragmentManager?,
         private val list: List<HomeWidget.TabItem>,
+        private val backgroundColor: String,
         private val positionWidget : Int
 ): FragmentStatePagerAdapter(fm){
 
@@ -17,6 +18,7 @@ class TabBusinessViewPagerAdapter(
     override fun getItem(position: Int): Fragment {
         return BusinessUnitItemFragment.newInstance(
                 list[position],
+                backgroundColor,
                 positionWidget,
                 list[position].name
         )
@@ -26,4 +28,9 @@ class TabBusinessViewPagerAdapter(
         return list.size
     }
 
+    override fun getPageTitle(position: Int): CharSequence? {
+        return if (list.isNotEmpty()) {
+            list[position].name
+        } else ""
+    }
 }

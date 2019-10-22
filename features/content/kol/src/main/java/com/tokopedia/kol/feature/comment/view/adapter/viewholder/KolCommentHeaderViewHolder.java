@@ -72,12 +72,19 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
             ImageHandler.loadImageCircle2(badge.getContext(), badge, element.getUserBadges());
         }
 
+        String caption;
+        if (badge.getVisibility() == View.VISIBLE) {
+            caption = SPACE + getCommentText(element);
+        } else {
+            caption = getCommentText(element);
+        }
+
         if (!TextUtils.isEmpty(element.getTagsLink())) {
             UrlUtil.setTextWithClickableTokopediaUrl(comment,
-                    SPACE + getCommentText(element),
+                    caption,
                     getUrlClickableSpan(element));
         } else {
-            UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
+            UrlUtil.setTextWithClickableTokopediaUrl(comment, caption);
         }
 
         if (element.isCanLoadMore())

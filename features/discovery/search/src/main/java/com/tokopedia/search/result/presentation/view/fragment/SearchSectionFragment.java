@@ -29,6 +29,7 @@ import com.tokopedia.filter.common.data.Sort;
 import com.tokopedia.filter.common.manager.FilterSortManager;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
@@ -41,6 +42,7 @@ import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGenera
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 
@@ -91,6 +93,7 @@ public abstract class SearchSectionFragment
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
     private boolean hasLoadData;
+    private FilterTrackingData filterTrackingData;
 
     protected SearchParameter searchParameter;
     protected FilterController filterController = new FilterController();
@@ -322,14 +325,14 @@ public abstract class SearchSectionFragment
             }
 
             @Override
-            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
-                handleSortResult(selectedSort, selectedSortName);
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
+                handleSortResult(selectedSort, selectedSortName, autoApplyFilter);
             }
         });
     }
 
     private void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
-        FilterTracking.eventSearchResultFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE,
+        FilterTracking.eventApplyFilter(getFilterTrackingData(),
                 getScreenName(), selectedFilters);
 
         refreshSearchParameter(queryParams);
@@ -338,10 +341,15 @@ public abstract class SearchSectionFragment
         reloadData();
     }
 
-    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName) {
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
         setSelectedSort(new HashMap<>(selectedSort));
         searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
         if(searchParameter != null) {
+            searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
+
+            searchParameter.getSearchParameterHashMap().putAll(UrlParamUtils.getParamMap(autoApplyFilter));
+
             searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
         }
         clearDataFilterSort();
@@ -401,8 +409,12 @@ public abstract class SearchSectionFragment
     public void refreshFilterController(HashMap<String, String> queryParams) {
         if(filterController == null || getFilters() == null) return;
 
+        HashMap<String, String> params = new HashMap<>(queryParams);
+        params.put(SearchApiConst.ORIGIN_FILTER,
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
+
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(queryParams, initializedFilterList);
+        filterController.initFilterController(params, initializedFilterList);
     }
 
     public void clearDataFilterSort() {
@@ -423,14 +435,14 @@ public abstract class SearchSectionFragment
         if (bottomSheetListener != null && isUsingBottomSheetFilter) {
             openBottomSheetFilter();
         } else {
-            FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, this, getScreenName(), searchParameter.getSearchParameterHashMap());
+            FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
     }
 
     protected void openBottomSheetFilter() {
         if(searchParameter == null || getFilters() == null) return;
 
-        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName());
+        FilterTracking.eventOpenFilterPage(getFilterTrackingData());
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -546,7 +558,7 @@ public abstract class SearchSectionFragment
     }
 
     public void onBottomSheetHide() {
-        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName(), getSelectedFilter());
+        FilterTracking.eventApplyFilter(getFilterTrackingData(), getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {
@@ -556,6 +568,7 @@ public abstract class SearchSectionFragment
 
         removeFilterFromFilterController(option);
         refreshSearchParameter(filterController.getParameter());
+        refreshFilterController(new HashMap<>(filterController.getParameter()));
         clearDataFilterSort();
         reloadData();
     }
@@ -593,6 +606,8 @@ public abstract class SearchSectionFragment
 
         this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(queryParams);
+        this.searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
     }
 
     protected List<Option> getOptionListFromFilterController() {
@@ -652,4 +667,17 @@ public abstract class SearchSectionFragment
             searchNavigationListener.removeSearchPageLoading();
         }
     }
+
+    private FilterTrackingData getFilterTrackingData() {
+        if (filterTrackingData == null) {
+            filterTrackingData = new FilterTrackingData(FilterEventTracking.Event.CLICK_SEARCH_RESULT,
+                    getFilterTrackingCategory(),
+                    "",
+                    FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
+                    );
+        }
+        return filterTrackingData;
+    }
+
+    protected abstract String getFilterTrackingCategory();
 }

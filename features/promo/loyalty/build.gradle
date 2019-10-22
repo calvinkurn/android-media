@@ -19,53 +19,48 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.track)
+
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.loyaltyCommon)
+    implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.transactiondata)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation project(rootProject.ext.features.loyaltyCommon)
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
-        exclude group: 'com.android.support'
-    }
-
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
-
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.viewDependencies.appIntro
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation project(rootProject.ext.libraries.core_legacy)
-    
-    implementation project(rootProject.ext.libraries.track)
 }
 
 project.ext {
     artifactId = 'loyalty'
     groupId = 'com.tokopedia.promo'
     versionName = "1.0.0"
-    artifactName = "promoloyalty-release"
+    artifactName = "loyalty-release"
 }
 
 apply from: '../../../publish_local.gradle'

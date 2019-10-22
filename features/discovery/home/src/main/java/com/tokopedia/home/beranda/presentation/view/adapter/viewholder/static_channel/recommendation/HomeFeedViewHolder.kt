@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifycomponents.Toaster
 
@@ -40,36 +41,54 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     }
 
     private fun setLayout(element: HomeFeedViewModel){
+        var labelCredibility = ProductCardModel.Label()
+        var labelPromo = ProductCardModel.Label()
+        var labelOffers = ProductCardModel.Label()
+
+        for (label: LabelGroup in element.labelGroups){
+            when(label.position){
+                LABEL_POSITION_CREDIBILITY -> {
+                    labelCredibility = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
+                }
+                LABEL_POSITION_PROMO -> {
+                    labelPromo = ProductCardModel.Label(label.title, label.type)
+                }
+                LABEL_POSITION_OFFERS -> {
+                    labelOffers = ProductCardModel.Label(label.title, label.type)
+                }
+            }
+        }
         productCardView.run{
-            removeAllShopBadges()
-            setImageProductVisible(true)
-            setProductNameVisible(true)
-            setPriceVisible(true)
-            setSlashedPriceVisible(element.discountPercentage > 0)
-            setLabelDiscountVisible(element.discountPercentage > 0)
-            setImageRatingVisible(element.rating > 0 && element.countReview > 0)
-            setReviewCountVisible(element.rating > 0 && element.countReview > 0)
-            setShopBadgesVisible(element.badges.isNotEmpty())
-            setShopLocationVisible(true)
-            setButtonWishlistVisible(true)
-            setButtonWishlistImage(element.isWishList)
-            setImageProductUrl(element.imageUrl)
-            setProductNameText(element.productName)
-            setPriceText(element.price)
-            setImageTopAdsVisible(element.isTopAds)
-            setSlashedPriceText(element.slashedPrice)
-            setLabelDiscountText(element.discountPercentage)
-            setRating(element.rating)
-            setReviewCount(element.countReview)
-            mapBadges(element.badges)
-            setShopLocationText(element.location)
-            setLabelGroup(element.labelGroups)
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.productName,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            isTopAds = element.isTopAds,
+                            discountPercentage = element.discountPercentage.toString(),
+                            reviewCount = element.countReview,
+                            ratingCount = element.rating,
+                            shopLocation = element.location,
+                            isWishlistVisible = true,
+                            isWishlisted = element.isWishList,
+                            shopBadgeList = element.badges.map {
+                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl?:"")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.isFreeOngkirActive,
+                                    imageUrl = element.freeOngkirImageUrl
+                            ),
+                            labelCredibility = labelCredibility,
+                            labelOffers = labelOffers,
+                            labelPromo = labelPromo
+                    )
+            )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
                     homeFeedView.onProductImpression(element, adapterPosition)
                 }
             })
-            realignLayout()
             setOnClickListener { homeFeedView.onProductClick(element, adapterPosition) }
             setButtonWishlistOnClickListener {
                 homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->
@@ -93,14 +112,6 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
         }
     }
 
-    private fun mapBadges(badges: List<Badge>){
-        for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(R.layout.home_layout_badge, null)
-            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge.imageUrl)
-            productCardView.addShopBadge(view)
-        }
-    }
-
     private fun showSuccessAddWishlist(view: View, message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
@@ -110,31 +121,5 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     private fun showSuccessRemoveWishlist(view: View, message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
     }
-
-    private fun ProductCardViewSmallGrid.setLabelGroup(labelGroup: List<LabelGroup>){
-        setLabelCredibilityVisible(false)
-        setLabelPromoVisible(false)
-        setLabelOffersVisible(false)
-        for (label: LabelGroup in labelGroup){
-            when(label.position){
-                LABEL_POSITION_CREDIBILITY -> {
-                    setLabelCredibilityText(label.title)
-                    setLabelCredibilityType(label.type)
-                    setLabelCredibilityVisible(true)
-                    setImageRatingVisible(false)
-                    setReviewCountVisible(false)
-                }
-                LABEL_POSITION_PROMO -> {
-                    setLabelPromoText(label.title)
-                    setLabelPromoType(label.type)
-                    setLabelPromoVisible(true)
-                }
-                LABEL_POSITION_OFFERS -> {
-                    setLabelOffersText(label.title)
-                    setLabelOffersType(label.type)
-                    setLabelOffersVisible(true)
-                }
-            }
-        }
-    }
 }
+

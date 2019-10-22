@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
+import com.tokopedia.navigation_common.model.MembershipSumUserCard;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.ProfileModel;
@@ -14,7 +15,7 @@ import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
+import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,9 @@ public class AccountModel {
     @SerializedName("tokopointsSumCoupon")
     @Expose
     private TokopointsSumCoupon tokopointsSumCoupon = new TokopointsSumCoupon();
+    @SerializedName("membershipSumUserCard")
+    @Expose
+    private MembershipSumUserCard membershipSumUserCard = new MembershipSumUserCard();
     @SerializedName("le_preapprove")
     @Expose
     private LePreapproveModel lePreapprove = new LePreapproveModel();
@@ -193,5 +197,13 @@ public class AccountModel {
 
     public void setDebitInstant(DebitInstantModel debitInstant) {
         this.debitInstant = debitInstant;
+    }
+
+    public MembershipSumUserCard getMembershipSumUserCard() {
+        return membershipSumUserCard;
+    }
+
+    public void setMembershipSumUserCard(MembershipSumUserCard membershipSumUserCard) {
+        this.membershipSumUserCard = membershipSumUserCard;
     }
 }
