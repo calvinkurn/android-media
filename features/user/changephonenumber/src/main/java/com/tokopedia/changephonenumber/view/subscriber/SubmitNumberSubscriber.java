@@ -34,6 +34,6 @@ public class SubmitNumberSubscriber extends Subscriber<Boolean> {
         if (isSuccess)
             view.onSubmitNumberSuccess();
         else
-            view.onSubmitNumberError(view.getContext().getString(R.string.default_request_error_unknown));
+            view.onSubmitNumberError(view.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 }

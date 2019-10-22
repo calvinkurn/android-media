@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
@@ -64,6 +65,7 @@ object DeeplinkDFMapper {
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
     private val DFM_USER_SETTING_BANK = "settingbank"
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_CUSTOMER_TOPADS_DASHBOARD = "customer_topads_dashboard"
@@ -92,6 +94,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER_CHANGE_PHONE_NUMBER, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
