@@ -5,8 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -29,8 +31,10 @@ public class FlightAuthInterceptor extends TkpdAuthInterceptor {
     private static final String KEY_ZIP_ENCODING = "gzip";
 
     @Inject
-    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
-        super(context, abstractionRouter);
+    public FlightAuthInterceptor(@ApplicationContext Context context,
+                                 NetworkRouter networkRouter,
+                                 UserSessionInterface userSessionInterface) {
+        super(context, networkRouter, userSessionInterface);
         this.maxRetryAttempt = 0;
     }
 
