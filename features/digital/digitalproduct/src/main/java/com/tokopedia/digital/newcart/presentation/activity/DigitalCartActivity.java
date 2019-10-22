@@ -45,7 +45,8 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
         passData.setProductId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));
         passData.setPromo(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
-        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT()));
+        String instantCheckoutParam = bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT());
+        passData.setInstantCheckout(instantCheckoutParam != null ? instantCheckoutParam : "0");
         passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CAMPAIGN()));
         passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_MEDIUM()));
         passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_SOURCE()));
@@ -66,10 +67,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         String showSubscribePopUpArg = bundle.getString(DigitalSubscriptionParams.ARG_SHOW_SUBSCRIBE_POP_UP);
         String autoSubscribeArg = bundle.getString(DigitalSubscriptionParams.ARG_AUTO_SUBSCRIBE);
         if (showSubscribePopUpArg != null) {
-            subParams.setShowSubscribePopUp(showSubscribePopUpArg);
+            subParams.setShowSubscribePopUp(Boolean.parseBoolean(showSubscribePopUpArg));
         }
         if (autoSubscribeArg != null) {
-            subParams.setAutoSubscribe(autoSubscribeArg);
+            subParams.setAutoSubscribe(Boolean.parseBoolean(autoSubscribeArg));
         }
         intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_SUBSCRIPTION_DATA, subParams);
         intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);

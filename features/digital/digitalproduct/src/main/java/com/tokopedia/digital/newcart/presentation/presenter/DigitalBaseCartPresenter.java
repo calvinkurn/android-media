@@ -28,8 +28,6 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity;
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
@@ -40,7 +38,6 @@ import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.track.TrackApp;
@@ -133,24 +130,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             field.setValue(zoneId);
             fieldList.add(field);
         }
-        // Handle subscription params
-        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
-        if (subParams != null) {
-            String showSubscribePopUpParam = subParams.getShowSubscribePopUp();
-            if (showSubscribePopUpParam != null && !showSubscribePopUpParam.isEmpty()) {
-                Field field = new Field();
-                field.setName("show_subscribe_pop_up");
-                field.setValue(showSubscribePopUpParam);
-                fieldList.add(field);
-            }
-            String autoSubscribe = subParams.getAutoSubscribe();
-            if (autoSubscribe != null && !autoSubscribe.isEmpty()) {
-                Field field = new Field();
-                field.setName("auto_subscribe");
-                field.setValue(showSubscribePopUpParam);
-                fieldList.add(field);
-            }
-        }
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
         attributes.setInstantCheckout(getView().isInstantCheckout());
@@ -166,6 +145,16 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setShowSubscribeFlag(true);
         attributes.setThankyouNative(true);
         attributes.setThankyouNativeNew(true);
+        // Handle subscription params
+        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
+        if (subParams != null) {
+            if (subParams.getShowSubscribePopUp() != null) {
+                attributes.setShowSubscribePopUp(subParams.getShowSubscribePopUp());
+            }
+            if (subParams.getAutoSubscribe() != null) {
+                attributes.setAutoSubscribe(subParams.getAutoSubscribe());
+            }
+        }
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;

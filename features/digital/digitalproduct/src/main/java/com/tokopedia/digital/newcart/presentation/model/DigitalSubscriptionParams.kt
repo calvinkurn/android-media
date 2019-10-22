@@ -4,18 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class DigitalSubscriptionParams(
-        var showSubscribePopUp: String? = null,
-        var autoSubscribe: String? = null
+        var showSubscribePopUp: Boolean? = null,
+        var autoSubscribe: Boolean? = null
 ) : Parcelable {
 
-    constructor(parcel: Parcel) : this() {
-        showSubscribePopUp = parcel.readString()
-        autoSubscribe = parcel.readString()
-    }
+    constructor(parcel: Parcel) : this(
+            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+            parcel.readValue(Boolean::class.java.classLoader) as? Boolean)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(showSubscribePopUp)
-        parcel.writeString(autoSubscribe)
+        parcel.writeValue(showSubscribePopUp)
+        parcel.writeValue(autoSubscribe)
     }
 
     override fun describeContents(): Int {

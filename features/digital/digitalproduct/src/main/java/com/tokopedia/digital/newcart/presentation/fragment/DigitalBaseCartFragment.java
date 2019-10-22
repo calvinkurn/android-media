@@ -83,7 +83,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private DigitalAnalytics digitalAnalytics;
     protected PromoData promoData = new PromoData();
 
-    private DigitalSubscriptionParams digitalSubscriptionParams;
+    private DigitalSubscriptionParams digitalSubscriptionParams = new DigitalSubscriptionParams();
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
