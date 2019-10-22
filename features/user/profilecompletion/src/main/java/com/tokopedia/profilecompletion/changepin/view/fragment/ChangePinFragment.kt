@@ -1,0 +1,279 @@
+package com.tokopedia.profilecompletion.changepin.view.fragment
+
+import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
+import com.tokopedia.profilecompletion.addpin.data.CheckPinData
+import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
+import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
+import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_change_pin.*
+import javax.inject.Inject
+
+/**
+ * A simple [Fragment] subclass.
+ */
+class ChangePinFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var trackingPinUtil: TrackingPinUtil
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
+
+    private var isConfirm = false
+    private var isValidated = false
+    private var isForgotPin = false
+
+    private var pin = ""
+    private var oldPin = ""
+
+    private val onForgotPinClick = View.OnClickListener {
+        forgotPinState()
+    }
+
+    companion object {
+        const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
+        const val OTP_TYPE_PHONE_VERIFICATION = 124
+
+        fun createInstance(bundle: Bundle): ChangePinFragment {
+            val fragment = ChangePinFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    override fun getScreenName(): String = TrackingPinConstant.Screen.SCREEN_POPUP_PIN_INPUT
+
+    override fun initInjector() {
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_change_pin, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
+        initObserver()
+    }
+
+    private fun initViews(){
+        toggleForgotText(true)
+        inputPin.addTextChangedListener(object: TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                handleInputPin(s.toString())
+            }
+        })
+    }
+
+    private fun handleInputPin(text: String){
+        if(text.length == 6){
+            if(isConfirm){
+                if(pin == text){
+                    if(isForgotPin) goToVerificationActivity()
+                    else addChangePinViewModel.changePin(pin, text, oldPin)
+                }else{
+                    inputPin.focus()
+                    displayErrorPin(getString(R.string.error_wrong_pin))
+                }
+            }else if(isValidated || isForgotPin){
+                pin = text
+                konfirmasiState()
+            }
+            else {
+                addChangePinViewModel.validatePin(text)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> {
+                        goToSuccessPage()
+                    }
+                }
+            }
+            Activity.RESULT_CANCELED -> { }
+        }
+    }
+
+    private fun goToVerificationActivity(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
+    }
+
+    private fun showLoading() {
+        mainView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun dismissLoading() {
+        mainView.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+    }
+
+    private fun konfirmasiState(){
+        resetInputPin()
+        isConfirm = true
+        title.text = getString(R.string.confirm_create_pin)
+        subtitle.text = getString(R.string.subtitle_confirm_create_pin)
+        toggleForgotText(false)
+    }
+
+    private fun forgotPinState(){
+        isForgotPin = true
+        inputNewPinState()
+        if(activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = "Atur Ulang PIN Tokopedia"
+    }
+
+    private fun inputNewPinState(){
+        resetInputPin()
+        title.text = getString(R.string.title_new_pin)
+        subtitle.text = getString(R.string.subtitle_input_new_pin)
+        toggleForgotText(false)
+    }
+
+    private fun resetInputPin(){
+        hideErrorPin()
+        inputPin.setText("")
+    }
+
+    private fun toggleForgotText(isForgot: Boolean){
+        if(isForgot){
+            forgot_pin.text = getString(R.string.forgot_pin_text)
+            forgot_pin.setTextColor(resources.getColor(R.color.Green_G500))
+            forgot_pin.setOnClickListener(onForgotPinClick)
+            forgot_pin.isEnabled = true
+        }else {
+            forgot_pin.text = getString(R.string.change_pin_avoid_info)
+            forgot_pin.setTextColor(resources.getColor(R.color.Neutral_N700_44))
+            forgot_pin.isEnabled = false
+        }
+    }
+
+    private fun onSuccessCheckPin(checkPinData: CheckPinData){
+        dismissLoading()
+        if(checkPinData.valid){
+            inputNewPinState()
+        }
+    }
+
+    private fun displayErrorPin(error: String){
+        errorPin.visibility = View.VISIBLE
+        errorPin.text = error
+    }
+
+    private fun hideErrorPin(){
+        if(errorPin.isVisible){
+            errorPin.visibility = View.GONE
+        }
+    }
+
+    private fun onError(throwable: Throwable){
+        dismissLoading()
+        view?.run{
+            val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+        }
+        inputPin.focus()
+    }
+
+    private fun onSuccessValidatePin(data: ValidatePinData){
+        isValidated = data.valid
+        oldPin = inputPin.text.toString()
+        if(data.valid){
+            inputNewPinState()
+        }else{
+            resetInputPin()
+            inputPin.focus()
+            displayErrorPin(data.errorMessage)
+        }
+    }
+
+    private fun onErrorValidatePin(error: Throwable){
+        resetInputPin()
+        oldPin = ""
+        isValidated = false
+        onError(error)
+    }
+
+    private fun goToSuccessPage(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if(isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun onSuccessChangePin(data: AddChangePinData){
+        if(data.success) goToSuccessPage()
+    }
+
+    private fun initObserver(){
+        addChangePinViewModel.changePinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessChangePin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
+        addChangePinViewModel.validatePinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessValidatePin(it.data)
+                is Fail -> onErrorValidatePin(it.throwable)
+            }
+        })
+
+        addChangePinViewModel.checkPinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessCheckPin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+    }
+
+}
