@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.NotificationManagerCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -14,6 +15,8 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.PushNotification
 
 
 /**
@@ -65,7 +68,19 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         }
     }
 
-   fun upadateToolbar(profileName: String?, profileImage: String?) {
+    override fun onResume() {
+        super.onResume()
+        PushNotification.setIsChatBotWindowOpen(true)
+        NotificationManagerCompat.from(this).cancel(Constant.NotificationId.CHAT_BOT)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        PushNotification.setIsChatBotWindowOpen(false)
+    }
+
+
+    fun upadateToolbar(profileName: String?, profileImage: String?) {
         ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)
         (findViewById<TextView>(R.id.title)).text = profileName
     }
@@ -77,6 +92,11 @@ class ChatbotActivity : BaseChatToolbarActivity() {
                 mFragment.onBackPressed()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+            inflateFragment()
     }
 
     interface OnBackPressed {

@@ -8,6 +8,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:label="@string/title_chat_bot"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateHidden"
             >
             <intent-filter android:autoVerify="true">
