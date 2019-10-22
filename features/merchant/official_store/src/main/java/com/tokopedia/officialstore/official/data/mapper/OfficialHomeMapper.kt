@@ -20,9 +20,9 @@ class OfficialHomeMapper {
         }
 
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
-            if (adapter?.getDataByPosition(0) is OfficialBannerViewModel) { // check if banner is exist
-                adapter.addElement(1, OfficialFeaturedShopViewModel(featuredShop.featuredShops))
-                adapter.notifyItemInserted(1)
+            if (featuredShop.featuredShops.size > 0) {
+                adapter?.addElement(1, OfficialFeaturedShopViewModel(featuredShop.featuredShops))
+                adapter?.notifyItemInserted(1)
             }
         }
 
