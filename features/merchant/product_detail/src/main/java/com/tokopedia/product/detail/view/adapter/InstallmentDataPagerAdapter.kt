@@ -4,10 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
-import android.view.ViewGroup
-import com.tokopedia.design.viewpager.WrapContentViewPager
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
-import com.tokopedia.referral.view.HeightWrappingViewPager
 import java.util.*
 
 class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
