@@ -26,28 +26,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/subtitle"
                 style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
                 android:layout_toRightOf="@+id/img_thumb"
+                app:use_gradient="true"
                 tools:text="iphone 6" />
 
-            <TextView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/title"
                 style="@style/TextView.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/img_thumb"
+                app:use_gradient="true"
                 tools:text="Rp 600 per klik" />
 
-            <com.tokopedia.design.image.RoundedCornerImageView
+            <com.tokopedia.topads.detail_sheet.ShimmeringRoundedImageView
                 android:id="@+id/img_thumb"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginRight="10dp"
+                app:use_gradient="true"
                 tools:src="@tools:sample/avatars" />
         </RelativeLayout>
 
@@ -78,10 +81,11 @@
                 android:layout_height="wrap_content"
                 android:text="Tampil" />
 
-            <TextView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/txt_tampil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:use_gradient="true"
                 tools:text="46,6rb" />
         </LinearLayout>
 
@@ -104,11 +108,12 @@
                 android:layout_above="@id/txt_klik"
                 android:text="Klik" />
 
-            <TextView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/txt_klik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                app:use_gradient="true"
                 tools:text="42,6rb" />
         </LinearLayout>
 
@@ -131,11 +136,12 @@
                 android:layout_above="@id/txt_terjual"
                 android:text="Terjual" />
 
-            <TextView
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/txt_terjual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                app:use_gradient="true"
                 tools:text="46,6rb" />
         </LinearLayout>
 

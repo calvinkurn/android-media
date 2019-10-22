@@ -19,4 +19,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
 }

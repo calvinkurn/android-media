@@ -118,10 +118,12 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_promote_topads.setText(context.getString(R.string.rincian_topads))
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
             } else{
                 btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
                 btn_promote_topads.setText(context.getString(R.string.promote_topads))
                 btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
             }
         }
     }
