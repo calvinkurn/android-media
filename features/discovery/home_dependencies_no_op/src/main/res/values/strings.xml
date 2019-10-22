@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_promo">Promo</string>
+    <string name="go_to_wishlist">Lihat Wishlist</string>
+    <string name="digital_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihan]]></string>
+</resources>
