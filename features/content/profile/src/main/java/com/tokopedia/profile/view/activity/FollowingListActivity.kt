@@ -82,7 +82,6 @@ class FollowingListActivity : BaseTabActivity(), KolFollowingListEmptyListener {
     }
 
     private fun getFavoritedShopTabItem(): FollowingListTabItem {
-//        val fragment = (application as ProfileModuleRouter).getFavoritedShopFragment(userId)
         val bundle = Bundle()
         bundle.putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
         return FollowingListTabItem(

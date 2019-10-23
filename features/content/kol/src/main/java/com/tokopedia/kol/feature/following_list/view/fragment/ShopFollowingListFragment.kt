@@ -7,6 +7,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.presenter.ShopFollowingListPresenter
 import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
@@ -29,6 +30,15 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
         fun createInstance(bundle: Bundle?): ShopFollowingListFragment {
             return ShopFollowingListFragment().apply {
                 arguments = bundle
+            }
+        }
+
+        @JvmStatic
+        fun createInstance(userId: String): ShopFollowingListFragment {
+            return ShopFollowingListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
+                }
             }
         }
     }
