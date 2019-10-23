@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -49,8 +48,12 @@ import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Co
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.*
+import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.purchase_platform.features.atc_variant.di.DaggerNormalCheckoutComponent
+import com.tokopedia.purchase_platform.features.atc_variant.model.Fail
+import com.tokopedia.purchase_platform.features.atc_variant.model.InsuranceRecommendationContainer
 import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariant
+import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariantContainer
 import com.tokopedia.purchase_platform.features.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
@@ -69,10 +72,6 @@ import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.features.atc_variant.model.Fail
-import com.tokopedia.purchase_platform.features.atc_variant.model.InsuranceRecommendationContainer
-import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariantContainer
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
@@ -240,6 +239,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             onProductChange(this, selectedVariantId)
         }
         prescription_ticker.showWithCondition(productInfoAndVariant.productInfo.basic.needPrescription)
+
+        if (viewModel.isUserSessionActive() && insuranceEnabled) {
+            generateInsuranceRequest()
+            viewModel.getInsuranceProductRecommendation(insuranceRecommendationRequest)
+        }
     }
 
     private fun goToHargaFinal() {
@@ -841,13 +845,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
 
-        if (isInsuranceSelected &&
-                !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
-                !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
+        if (isErrorInInsurance() ||
+                (isInsuranceSelected &&
+                        !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
+                        !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty())) {
 
-            if (isErrorInInsurance()) {
-                return
-            }
+            return
         }
 
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
@@ -1105,12 +1108,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-
-        if (viewModel.isUserSessionActive()) {
-            generateInsuranceRequest()
-        }
-
-        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceEnabled, insuranceRecommendationRequest)
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -1188,16 +1186,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
-        Handler().postDelayed({
-            selectedProductInfo?.let {
-                insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
-                fragmentViewModel.viewModels.add(insuranceViewModel)
-                adapter.addSingleDataViewModel(insuranceViewModel)
-                adapter.notifyDataSetChanged()
-                renderActionButton(it)
-                renderTotalPrice(it, viewModel.selectedwarehouse)
-            }
-        }, 600)
+        selectedProductInfo?.let {
+            insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
+            fragmentViewModel.viewModels.add(insuranceViewModel)
+            adapter.addSingleDataViewModel(insuranceViewModel)
+            adapter.notifyDataSetChanged()
+            renderActionButton(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
+        }
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
