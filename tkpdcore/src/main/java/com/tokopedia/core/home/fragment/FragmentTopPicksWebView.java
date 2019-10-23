@@ -111,7 +111,7 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        return RouteManagerKt.moveToNativePageFromHttpUrl(getActivity(),url);
+        return RouteManagerKt.moveToNativePageFromWebView(getActivity(),url);
     }
 
     @Override

@@ -21,10 +21,7 @@ object RouteManagerKt{
      * Example: http://www.tokopedia.com/pulsa to native page
      */
     @JvmStatic
-    fun moveToNativePageFromHttpUrl(activity: Activity, url: String): Boolean {
-        if (!url.startsWith(SCHEME_HTTP)){
-            return false;
-        }
+    fun moveToNativePageFromWebView(activity: Activity, url: String): Boolean {
         if (url.endsWith(".pl")) {
             return false
         }

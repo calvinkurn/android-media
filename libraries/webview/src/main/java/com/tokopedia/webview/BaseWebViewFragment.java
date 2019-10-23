@@ -403,7 +403,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 // ask user to update app
             }
         }
-        return RouteManagerKt.moveToNativePageFromHttpUrl(getActivity(), url);
+        return RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
     }
 
     private boolean goToLoginGoogle(@NonNull String url){
