@@ -373,6 +373,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
+        } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
+                && getActivity()!= null) {
+            if (getActivity().isTaskRoot()) {
+                getActivity().finish();
+            } else {
+                RouteManager.route(getContext(), ApplinkConst.HOME);
+            }
+            return true;
         }
         if (!allowOverride) {
             return false;
@@ -386,14 +394,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 return false;
             }
-        } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
-                && getActivity()!= null) {
-            if (getActivity().isTaskRoot()) {
-                getActivity().finish();
-            } else {
-                RouteManager.route(getContext(), ApplinkConst.HOME);
-            }
-            return true;
         }
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
