@@ -5,13 +5,15 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.presenter.ShopFollowingListPresenter
+import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
+import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
  * Created by jegul on 2019-10-22
  */
-class ShopFollowingListFragment : BaseFollowListFragment() {
+class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel, ShopFollowingResultViewModel>() {
 
     companion object {
 
@@ -24,8 +26,7 @@ class ShopFollowingListFragment : BaseFollowListFragment() {
     }
 
     @Inject
-    @field:[Named(ShopFollowingListPresenter.NAME)]
-    override lateinit var presenter: KolFollowingList.Presenter
+    override lateinit var presenter: KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>
 
     override fun initInjector() {
         DaggerKolFollowingListComponent.builder()
@@ -34,5 +35,11 @@ class ShopFollowingListFragment : BaseFollowListFragment() {
                 .inject(this)
     }
 
+    override fun updateParams(viewModel: ShopFollowingResultViewModel) {
 
+    }
+
+    override fun onViewUpdated(viewModel: ShopFollowingResultViewModel) {
+
+    }
 }

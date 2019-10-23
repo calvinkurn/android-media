@@ -16,6 +16,10 @@ import com.tokopedia.kol.feature.following_list.domain.query.GetShopFollowingQue
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
 import com.tokopedia.kol.feature.following_list.view.presenter.KolFollowingListPresenter;
 import com.tokopedia.kol.feature.following_list.view.presenter.ShopFollowingListPresenter;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel;
 
 import javax.inject.Named;
 
@@ -31,8 +35,7 @@ public class KolFollowingListModule {
 
     @KolFollowingListScope
     @Provides
-    @Named(KolFollowingListPresenter.NAME)
-    public KolFollowingList.Presenter provideKolFollowingListPresenter(
+    public KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> provideKolFollowingListPresenter(
             GetKolFollowingListUseCase getKolFollowingListUseCase,
             GetKolFollowingListLoadMoreUseCase getKolFollowingListLoadMoreUseCase,
             GetFollowerListUseCase getFollowerListUseCase
@@ -46,11 +49,12 @@ public class KolFollowingListModule {
 
     @KolFollowingListScope
     @Provides
-    @Named(ShopFollowingListPresenter.NAME)
-    public KolFollowingList.Presenter provideShopFollowingListPresenter(
+    public KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
+            @ApplicationContext Context context,
             GetShopFollowingListUseCase getShopFollowingListUseCase
     ) {
         return new ShopFollowingListPresenter(
+                context,
                 getShopFollowingListUseCase
         );
     }

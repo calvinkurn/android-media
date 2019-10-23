@@ -39,6 +39,9 @@
     <string name="title_image_editor">Image Editor</string>
     <string name="title_create_post">Create Post</string>
 
+    <string name="shop_following_etalase_count">%s Etalase</string>
+    <string name="shop_following_product_count">%s Produk</string>
+
     <!--Kol Post Detail-->
     <string name="title_kol_post_detail">Post Detail</string>
     <string name="add_your_comment">Masukan komen kamu</string>

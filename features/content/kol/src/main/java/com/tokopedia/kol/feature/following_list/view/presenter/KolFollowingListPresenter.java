@@ -34,10 +34,8 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View>
-        implements KolFollowingList.Presenter {
-
-    public static final String NAME = "UserFollowingPresenter";
+public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View<KolFollowingViewModel, KolFollowingResultViewModel>>
+        implements KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> {
 
     private KolFollowingList.View mainView;
     private final GetKolFollowingListUseCase getKolFollowingListUseCase;

@@ -13,37 +13,38 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.following_list.view.adapter.KolFollowingAdapter
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
+import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingResultViewModel
+import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by jegul on 2019-10-22
  */
-abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.View {
+abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResultViewModel<I>> : BaseDaggerFragment(), KolFollowingList.View<I, T> {
 
     private lateinit var rvItem: RecyclerView
     private lateinit var progressBar: ProgressBar
 
-    private var isCanLoadMore: Boolean = false
-    private var cursor: String? = null
-    private var emptyApplink: String? = null
+    protected var isCanLoadMore: Boolean = false
+    protected var cursor: String? = null
+    protected var emptyApplink: String? = null
     private var userId: Int = 0
 
-    private lateinit var adapter: KolFollowingAdapter
+    protected lateinit var adapter: KolFollowingAdapter
     private lateinit var emptyState: View
-    private lateinit var emptyButton: Button
+    protected lateinit var emptyButton: Button
     private var openFollowerPage: Boolean? = false
 
-    abstract var presenter: KolFollowingList.Presenter
+    abstract var presenter: KolFollowingList.Presenter<I, T>
+
+    abstract fun updateParams(viewModel: T)
+    abstract fun onViewUpdated(viewModel: T)
 
     private val recyclerViewListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -65,14 +66,6 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
         if (arguments != null) {
             userId = arguments!!.getInt(KolFollowingListActivity.ARGS_USER_ID)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(state: Bundle?) {
-        super.onViewStateRestored(state)
     }
 
     override fun getScreenName(): String? {
@@ -128,7 +121,7 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
         progressBar.visibility = View.GONE
     }
 
-    override fun onSuccessGetKolFollowingList(viewModel: KolFollowingResultViewModel) {
+    override fun onSuccessGetKolFollowingList(viewModel: T) {
         rvItem.visibility = View.VISIBLE
         updateView(viewModel)
         updateParams(viewModel)
@@ -141,34 +134,13 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
         }
     }
 
-    private fun updateView(model: KolFollowingResultViewModel) {
-        adapter.itemList = model.kolFollowingViewModelList
-        if (model.kolFollowingViewModelList == null || model.kolFollowingViewModelList.size == 0) {
-            emptyButton.text = model.buttonText
-            emptyApplink = model.buttonApplink
-
-            if (activity is KolFollowingListEmptyListener) {
-                (activity as KolFollowingListEmptyListener).onFollowingEmpty()
-            }
-        } else {
-            if (activity is KolFollowingListEmptyListener) {
-                (activity as KolFollowingListEmptyListener).onFollowingNotEmpty()
-            }
-        }
-    }
-
-    private fun updateParams(viewModel: KolFollowingResultViewModel) {
-        this.isCanLoadMore = viewModel.isCanLoadMore
-        this.cursor = viewModel.lastCursor
-    }
-
     override fun onErrorGetKolFollowingList(error: String) {
         NetworkErrorHelper.showEmptyState(activity, view, error) { initView() }
     }
 
-    override fun onSuccessLoadMoreKolFollowingList(itemList: KolFollowingResultViewModel) {
+    override fun onSuccessLoadMoreKolFollowingList(itemList: T) {
         adapter.removeBottomLoading()
-        adapter.itemList.addAll(itemList.kolFollowingViewModelList)
+        adapter.itemList.addAll(itemList.followingViewModelList)
         adapter.notifyDataSetChanged()
         updateParams(itemList)
     }
@@ -178,10 +150,8 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
         NetworkErrorHelper.showSnackbar(activity, error)
     }
 
-    override fun onListItemClicked(item: KolFollowingViewModel) {
-        if (RouteManager.isSupportApplink(context, item.profileApplink) && !item.profileApplink.contains("m.tokopedia.com")) {
-            RouteManager.route(context, item.profileApplink)
-        }
+    override fun onListItemClicked(item: I) {
+
     }
 
     override fun isOpenFollowerPage(): Boolean {
@@ -191,5 +161,10 @@ abstract class BaseFollowListFragment : BaseDaggerFragment(), KolFollowingList.V
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    private fun updateView(viewModel: T) {
+        adapter.itemList = viewModel.followingViewModelList
+        onViewUpdated(viewModel)
     }
 }
