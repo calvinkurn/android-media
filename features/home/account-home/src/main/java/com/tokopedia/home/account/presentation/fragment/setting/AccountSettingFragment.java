@@ -201,7 +201,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();
-//                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(), "user/pin");
                     onPinMenuClicked();
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
@@ -298,16 +297,14 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void onPinMenuClicked(){
         if(userSession.isMsisdnVerified()) {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+            goToPinOnboarding();
         }else {
             showAddPhoneDialog();
         }
     }
 
-    private void goToAddPhone(){
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_PHONE);
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, "212");
-        getActivity().startActivity(intent);
+    private void goToPinOnboarding(){
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
     }
 
     private void showAddPhoneDialog(){
@@ -319,7 +316,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             dialog.setSecondaryCTAText(getString(R.string.cancel));
 
             dialog.setPrimaryCTAClickListener(() -> {
-                goToAddPhone();
+                goToPinOnboarding();
                 dialog.dismiss();
                 return Unit.INSTANCE;
             });
