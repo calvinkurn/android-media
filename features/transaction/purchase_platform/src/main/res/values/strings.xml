@@ -388,5 +388,8 @@
     <string name="title_choose_other_template">Pilih Template Lain</string>
     <string name="label_button_apply_credit">Ajukan Kredit</string>
     <string name="otdg_gtm_label">Jaminan Pengiriman Tepat Waktu</string>
+    <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
+    <string name="label_tab_trade_in_address_deliver">Antar</string>
+    <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
 
 </resources>

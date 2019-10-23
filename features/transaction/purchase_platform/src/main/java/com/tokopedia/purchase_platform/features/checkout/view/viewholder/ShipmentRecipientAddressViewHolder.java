@@ -51,6 +51,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private TabsUnify tabUnifyTradeInAddress;
     private RelativeLayout layoutAddressNormal;
     private ConstraintLayout layoutAddressDropOff;
+    private LinearLayout llAddOrChangeAddressContainer;
+    private Typography tvShipmentAddress;
+    private View separator;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -72,19 +75,27 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tabUnifyTradeInAddress = itemView.findViewById(R.id.tab_unify_trade_in_address);
         layoutAddressNormal = itemView.findViewById(R.id.layout_address_normal);
         layoutAddressDropOff = itemView.findViewById(R.id.layout_address_drop_off);
+        llAddOrChangeAddressContainer = itemView.findViewById(R.id.ll_add_or_change_address_container);
+        tvShipmentAddress = itemView.findViewById(R.id.tv_shipment_address);
+        separator = itemView.findViewById(R.id.separator);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        renderBaseAddress(recipientAddress, cartIds);
+        // Todo : Remove this
+        recipientAddress.setTradeIn(true);
+        recipientAddress.setDisableMultipleAddress(true);
+        recipientAddress.setTradeInDropOffEnable(true);
 
+
+        renderBaseAddress(recipientAddress, cartIds);
         if (recipientAddress.isTradeIn()) {
             renderTradeInAddress(recipientAddress);
         } else {
-            renderNormalAddress();
+            renderNormalAddress(recipientAddress);
+            llTradeInInfo.setVisibility(View.GONE);
         }
-        renderTradeInAddressWithTabs(recipientAddress);
 
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
@@ -95,18 +106,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         } else {
             tvSendToMultipleAddress.setVisibility(View.VISIBLE);
         }
-
-        tvAddressStatus.setVisibility(View.GONE);
-        if (recipientAddress.getAddressStatus() == 2) {
-            tvAddressStatus.setVisibility(View.VISIBLE);
-        } else {
-            tvAddressStatus.setVisibility(View.GONE);
-        }
-        tvAddressName.setText(Utils.getHtmlFormat(recipientAddress.getAddressName()));
-        tvRecipientName.setText(Utils.getHtmlFormat(recipientAddress.getRecipientName()));
-        tvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(recipientAddress)));
-        tvRecipientPhone.setVisibility(View.GONE);
-
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
         tvSendToMultipleAddress.setOnClickListener(v -> shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds));
     }
@@ -125,30 +124,48 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         if (recipientAddress.isTradeInDropOffEnable()) {
             renderTradeInAddressWithTabs(recipientAddress);
         } else {
-            renderTradeInAddressWithoutTabs();
+            renderTradeInAddressWithoutTabs(recipientAddress);
         }
     }
 
-    private void renderTradeInAddressWithoutTabs() {
+    private void renderTradeInAddressWithoutTabs(RecipientAddressModel recipientAddressModel) {
+        renderNormalAddress(recipientAddressModel);
+        tvShipmentAddress.setText(R.string.label_showcase_address_title);
+        separator.setVisibility(View.VISIBLE);
         tabUnifyTradeInAddress.setVisibility(View.GONE);
+        layoutAddressDropOff.setVisibility(View.GONE);
+        layoutAddressNormal.setVisibility(View.VISIBLE);
     }
 
     private void renderTradeInAddressWithTabs(RecipientAddressModel recipientAddress) {
+        tvShipmentAddress.setText(R.string.lebal_trade_in_address_mode);
+        separator.setVisibility(View.GONE);
+        llAddOrChangeAddressContainer.setVisibility(View.GONE);
         tabUnifyTradeInAddress.setVisibility(View.VISIBLE);
         if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() == 0) {
-            tabUnifyTradeInAddress.addNewTab("Antar");
-            tabUnifyTradeInAddress.addNewTab("Titik Ambil");
+            tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_deliver));
+            tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_pickup));
         }
+
+        if (recipientAddress.getSelectedTabIndex() == 0) {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
+                renderTradeInDeliveryTab(recipientAddress);
+            }
+        } else {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
+                renderTradeInPickUpTab();
+            }
+        }
+
         tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                recipientAddress.setSelectedTabIndex(tab.getPosition());
-                if (tab.getPosition() == 0) {
-                    layoutAddressDropOff.setVisibility(View.GONE);
-                    layoutAddressNormal.setVisibility(View.VISIBLE);
-                } else if (tab.getPosition() == 1) {
-                    layoutAddressNormal.setVisibility(View.GONE);
-                    layoutAddressDropOff.setVisibility(View.VISIBLE);
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    recipientAddress.setSelectedTabIndex(tab.getPosition());
+                    shipmentAdapterActionListener.onNeedUpdateViewItem(getAdapterPosition());
                 }
             }
 
@@ -162,24 +179,39 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
             }
         });
-
-
-        if (recipientAddress.getSelectedTabIndex() == 0) {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
-            }
-        } else {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
-            }
-        }
     }
 
-    private void renderNormalAddress() {
-        llTradeInInfo.setVisibility(View.GONE);
+    private void renderTradeInPickUpTab() {
+        layoutAddressNormal.setVisibility(View.GONE);
+        layoutAddressDropOff.setVisibility(View.VISIBLE);
+        llAddOrChangeAddressContainer.setVisibility(View.GONE);
+    }
+
+    private void renderTradeInDeliveryTab(RecipientAddressModel recipientAddress) {
+        layoutAddressDropOff.setVisibility(View.GONE);
+        layoutAddressNormal.setVisibility(View.VISIBLE);
+        llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
+        renderBasicAddress(recipientAddress);
+    }
+
+    private void renderNormalAddress(RecipientAddressModel recipientAddress) {
         tabUnifyTradeInAddress.setVisibility(View.GONE);
         layoutAddressDropOff.setVisibility(View.GONE);
         layoutAddressNormal.setVisibility(View.VISIBLE);
+        renderBasicAddress(recipientAddress);
+    }
+
+    private void renderBasicAddress(RecipientAddressModel recipientAddress) {
+        tvAddressStatus.setVisibility(View.GONE);
+        if (recipientAddress.getAddressStatus() == 2) {
+            tvAddressStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvAddressStatus.setVisibility(View.GONE);
+        }
+        tvAddressName.setText(Utils.getHtmlFormat(recipientAddress.getAddressName()));
+        tvRecipientName.setText(Utils.getHtmlFormat(recipientAddress.getRecipientName()));
+        tvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(recipientAddress)));
+        tvRecipientPhone.setVisibility(View.GONE);
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {
