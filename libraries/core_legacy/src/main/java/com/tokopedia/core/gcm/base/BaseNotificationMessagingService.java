@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm.base;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -62,7 +63,8 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     @Override
     public void onNewToken(String newToken) {
-        super.onNewToken(newToken);
+        Log.d("DeleteFcmTokenService", "New Token Requested");
+        fcmManager.onNewToken(newToken);
         try {
             Timber.w("P2" + "Notification New Token - " + newToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "

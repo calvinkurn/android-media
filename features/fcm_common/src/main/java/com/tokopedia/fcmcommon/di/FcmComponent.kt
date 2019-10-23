@@ -6,7 +6,7 @@ import javax.inject.Singleton
 import dagger.Component
 
 @Singleton
-@Component(modules = [FcmModule::class])
+@Component(modules = [FcmModule::class, FcmQueryModule::class])
 interface FcmComponent {
     fun inject(messagingService: FirebaseMessagingService)
 }

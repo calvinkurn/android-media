@@ -25,4 +25,6 @@ dependencies {
 
     implementation rootProject.ext.firebase.messaging
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
 }
