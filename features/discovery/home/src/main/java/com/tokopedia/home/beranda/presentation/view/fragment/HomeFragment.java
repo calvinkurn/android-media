@@ -818,7 +818,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items);
+            adapter.setItems(needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
         }
     }
 
