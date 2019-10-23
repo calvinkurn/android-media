@@ -8,6 +8,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_HTTP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
+
 /**
  * will check if the url match with the native page, do the map, and launch the activity.
  * @return true if it is successfully find the matching native page and launch the activity
