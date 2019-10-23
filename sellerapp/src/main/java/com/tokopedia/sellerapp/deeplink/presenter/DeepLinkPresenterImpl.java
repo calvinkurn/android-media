@@ -96,28 +96,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void prepareOpenWebView(Uri uriData) {
-        String url = encodeUrl(uriData.toString());
-        openWebView(Uri.parse(url));
-    }
-
-    private void openWebView(Uri encodedUri) {
-        viewListener.inflateFragmentV4(BaseSessionWebViewFragment.newInstance(encodedUri.toString()), "WEB_VIEW");
-    }
-
-    private String encodeUrl(String url) {
-        String encodedUrl;
-        try {
-            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return encodedUrl;
-    }
-
-    private String getUrl(String data) {
-        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
-        return URLGenerator.generateURLSessionLoginV4(data, context);
+        viewListener.inflateFragmentV4(BaseSessionWebViewFragment.newInstance(uriData.toString()), "WEB_VIEW");
     }
 
     private int getDeepLinkType(Uri uriData) {

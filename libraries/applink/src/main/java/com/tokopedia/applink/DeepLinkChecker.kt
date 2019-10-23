@@ -15,7 +15,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 object DeepLinkChecker {
 
     private val APP_EXCLUDED_URL = "app_excluded_url"
-    private val APP_EXCLUDED_HOST = "app_excluded_host"
+    private val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
 
     @JvmField
     val WEB_HOST = "www.tokopedia.com"
@@ -62,21 +62,30 @@ object DeepLinkChecker {
 
     private fun isExcludedHostUrl(context: Context, uriData: Uri): Boolean {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        val excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST)
+        val excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST_V2)
         if (excludedHost.isNullOrEmpty()) {
-            return false;
+            return false
         }
-        val scheme = uriData.scheme ?: return false
-        val host = uriData.host ?: return false
+        var host = uriData.host ?: return false
         val path = uriData.path ?: return false
-        val uriWithoutParam = scheme + host + path
-        val excludedHostList = excludedHost.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+        host = host.replaceFirstWww()
+        val uriWithoutParam = "$host$path"
+        val excludedHostList = excludedHost.split(",".toRegex())
+            .filter { it.isNotEmpty() }
+            .map { it.replaceFirstWww() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
             }
         }
         return false
+    }
+
+    private fun String.replaceFirstWww(): String {
+        if (startsWith("www.")) {
+            return replaceFirst("www.", "")
+        }
+        return this
     }
 
     private fun isExcludedUrl(context: Context, uriData: Uri): Boolean {
@@ -226,6 +235,7 @@ object DeepLinkChecker {
 
     // function for enable Hansel
     private fun getHotListClassName() = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity"
+
     private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
@@ -251,7 +261,7 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun openBrowse(url: String, context: Context):Boolean {
+    fun openBrowse(url: String, context: Context): Boolean {
         val uriData = Uri.parse(url)
         val bundle = Bundle()
 

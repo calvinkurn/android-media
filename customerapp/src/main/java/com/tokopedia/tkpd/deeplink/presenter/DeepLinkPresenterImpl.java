@@ -465,21 +465,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void prepareOpenWebView(Uri uriData) {
-        if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(uriData,
-                    uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
-                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
-                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN)));
-        } else {
-            openWebView(uriData, false,
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
-                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
-                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
-            );
+        boolean isAllowOverride = false;
+        String allowOverride = uriData.getQueryParameter(OVERRIDE_URL);
+        if ("1".equalsIgnoreCase(allowOverride) || "true".equalsIgnoreCase(allowOverride)) {
+            isAllowOverride = true;
         }
+        openWebView(uriData, isAllowOverride,
+                uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
+                        "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
+                uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
+                        "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
+        );
     }
 
     private static boolean isPromo(List<String> linkSegment) {
@@ -497,11 +493,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             context.startActivity(intent);
             context.finish();
         }
-    }
-
-    private String getUrl(String data) {
-        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
-        return URLGenerator.generateURLSessionLoginV4(data, context);
     }
 
     private String encodeUrl(String url) {
