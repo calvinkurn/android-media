@@ -22,7 +22,7 @@ object ApplinkConstInternalMarketplace {
 
     // QrScannerActivity
     @JvmField
-    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner"
+    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
     // IntermediaryActivity
     @JvmField

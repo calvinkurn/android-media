@@ -108,9 +108,9 @@ public class SearchActivity extends BaseActivity
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     private String productTabTitle;
-    private String catalogTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
+    private String catalogTabTitle;
     private String autocompleteApplink;
 
     @Inject SearchTracking searchTracking;
@@ -289,10 +289,10 @@ public class SearchActivity extends BaseActivity
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
                 break;
             case TAB_SECOND_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                break;
-            case TAB_THIRD_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                break;
+            case TAB_FORTH_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
                 break;
         }
     }
@@ -384,9 +384,9 @@ public class SearchActivity extends BaseActivity
 
     private void initResources() {
         productTabTitle = getString(R.string.product_tab_title);
-        catalogTabTitle = getString(R.string.catalog_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
+        catalogTabTitle = getString(R.string.catalog_tab_title);
     }
 
     private void initViewModel() {
@@ -497,9 +497,9 @@ public class SearchActivity extends BaseActivity
     private boolean shouldSetActiveTabToDefault(String activeTab) {
         List<String> availableSearchTabs = new ArrayList<>();
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
+        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -537,9 +537,9 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentTitlesToList(List<String> searchSectionItemList) {
         searchSectionItemList.add(productTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
+        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -559,13 +559,13 @@ public class SearchActivity extends BaseActivity
                     productListFragmentExecuteBackToTop();
                     break;
                 case TAB_SECOND_POSITION:
-                    catalogListFragmentExecuteBackToTop();
-                    break;
-                case TAB_THIRD_POSITION:
                     shopListFragmentExecuteBackToTop();
                     break;
-                case TAB_FORTH_POSITION:
+                case TAB_THIRD_POSITION:
                     profileListFragmentExecuteBackToTop();
+                    break;
+                case TAB_FORTH_POSITION:
+                    catalogListFragmentExecuteBackToTop();
                     break;
             }
         }
@@ -574,12 +574,6 @@ public class SearchActivity extends BaseActivity
     private void productListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getProductListFragment() != null) {
             searchSectionPagerAdapter.getProductListFragment().backToTop();
-        }
-    }
-
-    private void catalogListFragmentExecuteBackToTop() {
-        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
-            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
         }
     }
 
@@ -592,6 +586,12 @@ public class SearchActivity extends BaseActivity
     private void profileListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getProfileListFragment() != null) {
             searchSectionPagerAdapter.getProfileListFragment().backToTop();
+        }
+    }
+
+    private void catalogListFragmentExecuteBackToTop() {
+        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
+            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
         }
     }
 
@@ -609,11 +609,11 @@ public class SearchActivity extends BaseActivity
         String activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB);
 
         switch (activeTab) {
-            case SearchConstant.ActiveTab.CATALOG:
-                return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.SHOP:
-                return TAB_THIRD_POSITION;
+                return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.PROFILE:
+                return TAB_THIRD_POSITION;
+            case SearchConstant.ActiveTab.CATALOG:
                 return TAB_FORTH_POSITION;
             default:
                 return TAB_FIRST_POSITION;

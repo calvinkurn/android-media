@@ -15,7 +15,7 @@ import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
+import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo;
 
 import java.util.ArrayList;
 import java.util.List;

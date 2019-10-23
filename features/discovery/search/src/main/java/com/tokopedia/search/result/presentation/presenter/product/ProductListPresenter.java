@@ -101,14 +101,22 @@ final class ProductListPresenter
 
         if(searchParameterMap == null) return;
 
-        RequestParams params = RequestParams.create();
-        params.putAll(searchParameterMap);
+        RequestParams params = createRequestDynamicFilterParams(searchParameterMap);
 
         if(additionalParamsMap != null) {
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
         getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
+    }
+
+    private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameter);
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+
+        return requestParams;
     }
 
     private void requestDynamicFilterCheckForNulls() {
@@ -736,6 +744,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
+        headerViewModel.setTickerViewModel(productViewModel.getTickerModel());
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();

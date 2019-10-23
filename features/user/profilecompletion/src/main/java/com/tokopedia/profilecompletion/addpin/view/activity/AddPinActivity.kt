@@ -32,10 +32,7 @@ class AddPinActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettin
 
     override fun onBackPressed() {
         if(fragment != null && fragment is AddPinFragment){
-            if(!(fragment as AddPinFragment).onBackPressedFromConfirm()){
-                (fragment as AddPinFragment).onBackPressed()
-                super.onBackPressed()
-            }
+            if(!(fragment as AddPinFragment).onBackPressedFromConfirm()) super.onBackPressed()
         }else{
             super.onBackPressed()
         }
