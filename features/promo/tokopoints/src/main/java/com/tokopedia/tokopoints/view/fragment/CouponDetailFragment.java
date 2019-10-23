@@ -145,7 +145,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override

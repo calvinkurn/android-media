@@ -17,10 +17,10 @@ fun getRegisteredNavigationTokopoints(context: Context,deeplink : String) =
 
 fun getDynamicDeeplinkForTokopoints(context: Context,deeplink : String) : String {
     if (deeplink.contains("kupon-saya/detail")){
-        return deeplink.replace("kupon-saya/detail","kupon-saya-detail")
+        return deeplink.replace("kupon-saya/detail","kupon-detail")
     }
     if (deeplink.contains("tukar-point/detail")){
-        return deeplink.replace("tukar-point/detail","tukar-point-detail")
+        return deeplink.replace("tukar-point/detail","tukar-detail")
     }
     return deeplink
 }

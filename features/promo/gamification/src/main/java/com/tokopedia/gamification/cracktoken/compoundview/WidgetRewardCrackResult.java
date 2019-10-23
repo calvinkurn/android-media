@@ -334,7 +334,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
             else
                 trackLoyaltyIconClick();
         } else if(id == R.id. rl_coupons) {
-            RouteManager.route(getContext(),ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING);
+            RouteManager.route(getContext(),ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             trackKuponIconClick();
         }
     }
