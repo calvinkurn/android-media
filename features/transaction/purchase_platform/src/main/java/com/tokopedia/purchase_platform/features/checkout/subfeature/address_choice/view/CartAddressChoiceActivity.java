@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
@@ -47,6 +49,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final String EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX";
     public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
+    public static final String PARAM_TOKEN = "PARAM TOKEN";
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
@@ -158,9 +161,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
-                    intent = AddAddressActivity
-                            .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
-                                    this, token);
+                    intent = RouteManager.getIntent(this,
+                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "13");
+                    intent.putExtra(PARAM_TOKEN, token);
                     startActivityForResult(intent,
                             LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 }
