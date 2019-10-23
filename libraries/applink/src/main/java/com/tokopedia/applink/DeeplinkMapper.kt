@@ -69,7 +69,7 @@ object DeeplinkMapper {
      * This function should be called after checking domain shop from server side
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
-    private fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital

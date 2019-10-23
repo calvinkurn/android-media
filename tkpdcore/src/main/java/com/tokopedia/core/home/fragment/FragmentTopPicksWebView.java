@@ -20,6 +20,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.TkpdWebView;
@@ -109,7 +111,7 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        return com.tokopedia.applink.DeepLinkChecker.moveToNativePageFromWebView(getActivity(),url);
+        return RouteManagerKt.moveToNativePageFromHttpUrl(getActivity(),url);
     }
 
     @Override

@@ -31,9 +31,8 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.DeepLinkChecker;
-import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -122,8 +121,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        boolean goToNative = shouldOverrideUrlToNative(url);
-        if (goToNative) {
+        boolean overrideUrlLoading = shouldOverrideUrlLoading(url);
+        if (overrideUrlLoading) {
             getActivity().finish();
             return null;
         } else {
@@ -336,13 +335,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
+            return BaseWebViewFragment.this.shouldOverrideUrlLoading(url);
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, request.getUrl().toString());
+            return BaseWebViewFragment.this.shouldOverrideUrlLoading(request.getUrl().toString());
         }
 
         @Override
@@ -358,8 +357,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    protected boolean shouldOverrideUrlLoading(@NonNull WebView webView,@NonNull String url) {
+    protected boolean shouldOverrideUrlLoading(@NonNull String url) {
         if (getActivity() == null) {
+            return false;
+        }
+        if (!allowOverride) {
             return false;
         }
         if (goToLoginGoogle(url)) return true;
@@ -401,16 +403,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 // ask user to update app
             }
         }
-        String registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
-        if (!TextUtils.isEmpty(registeredNavigation)) {
-            Intent intent = RouteManager.getIntentNoFallback(getActivity(), registeredNavigation);
-            if (intent!= null) {
-                startActivity(intent);
-                return true;
-            }
-            return true;
-        }
-        return shouldOverrideUrlToNative(url);
+        return RouteManagerKt.moveToNativePageFromHttpUrl(getActivity(), url);
     }
 
     private boolean goToLoginGoogle(@NonNull String url){
@@ -425,16 +418,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
         return false;
-    }
-
-    private boolean shouldOverrideUrlToNative(@NonNull String url) {
-        if (!allowOverride) {
-            return false;
-        }
-        if (getActivity() == null) {
-            return false;
-        }
-        return DeepLinkChecker.moveToNativePageFromWebView(getActivity(), url);
     }
 
     protected void onLoadFinished() {
