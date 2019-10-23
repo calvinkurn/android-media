@@ -11,6 +11,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.banner.Indicator;
@@ -108,10 +109,7 @@ public class ReactBannerManager2 extends SimpleViewManager<Banner> implements Ba
         if (applink.toLowerCase().contains("tokopedia://")) {
             RouteManager.route(context, applink);
         } else {
-            if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-                context.startActivity(((ReactNativeRouter) context.getApplicationContext())
-                        .getBrandsWebViewIntent(context, applink));
-            }
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, applink);
         }
     }
 }

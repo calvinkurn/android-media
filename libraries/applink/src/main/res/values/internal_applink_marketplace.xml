@@ -34,6 +34,7 @@
     <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
+    <string name="path_shop_page" translatable="false">/shop-page</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
