@@ -39,6 +39,12 @@ import static com.tokopedia.home.account.AccountConstants.VccStatus.REJECTED;
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String OVO = "OVO";
+    private static final String OVO_PAY_LATER = "OVO PayLater";
+    private static final String LABEL_ELIGIBLE = "Aktifkan";
+    private static final String LABEL_HOLD = "Sedang Diproses";
+    private static final String LABEL_BLOCKED = "Layanan Terblokir";
+    private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
+    private static final String LABEL_KYC_PENDING = "Selasekan Pengajuan Aplikasimu";
     private Context context;
 
     @Inject
@@ -164,7 +170,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (accountModel.getVccUserStatus() != null &&
                 accountModel.getVccUserStatus().getTitle() != null &&
-                accountModel.getVccUserStatus().getTitle().equalsIgnoreCase("OVO PayLater")) {
+                accountModel.getVccUserStatus().getTitle().equalsIgnoreCase(OVO_PAY_LATER)) {
             VccUserStatus vccUserStatus = accountModel.getVccUserStatus();
             TokopediaPayBSModel tokopediaPayBSModel = new TokopediaPayBSModel();
 
@@ -176,12 +182,12 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             switch (vccUserStatus.getStatus()) {
                 case ELIGIBLE:
                     tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setLabelCentre("Aktifkan");
+                    tokopediaPayViewModel.setLabelCentre(LABEL_ELIGIBLE);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
                 case HOLD:
                     tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setLabelCentre("Sedang Diproses");
+                    tokopediaPayViewModel.setLabelCentre(LABEL_HOLD);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
                 case ACTIVE:
@@ -195,17 +201,17 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     break;
                 case BLOCKED:
                     tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setLabelCentre("Layanan Terblokir");
+                    tokopediaPayViewModel.setLabelCentre(LABEL_BLOCKED);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
                 case DEACTIVATED:
                     tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setLabelCentre("Dinonaktifkan");
+                    tokopediaPayViewModel.setLabelCentre(LABEL_DEACTIVATED);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
                 case KYC_PENDING:
                     tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setLabelCentre("Selasekan Pengajuan Aplikasimu");
+                    tokopediaPayViewModel.setLabelCentre(LABEL_KYC_PENDING);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
 

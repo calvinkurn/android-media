@@ -45,7 +45,7 @@
                 style="@style/TextView.Micro.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Atur" />
+                android:text="@string/label_tokopedia_pay_action" />
         </LinearLayout>
 
 
@@ -63,10 +63,10 @@
 
             <ImageView
                 android:id="@+id/card_icon_left"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/dp_8"
                 android:padding="0dp"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_left"
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/dp_4"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_left"
                 app:layout_constraintTop_toBottomOf="@+id/text_amount_left"
@@ -117,10 +117,10 @@
 
             <ImageView
                 android:id="@+id/card_icon_centre"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/dp_8"
                 android:padding="0dp"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/dp_4"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
@@ -178,10 +178,10 @@
 
             <ImageView
                 android:id="@+id/card_icon_right"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/dp_8"
                 android:padding="0dp"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
@@ -206,7 +206,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/dp_4"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"

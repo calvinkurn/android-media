@@ -225,5 +225,6 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="label_tokopedia_pay_action">Atur</string>
 
 </resources>
