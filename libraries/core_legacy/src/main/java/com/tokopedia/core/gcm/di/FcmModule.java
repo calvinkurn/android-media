@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 
@@ -17,7 +18,7 @@ public class FcmModule {
 
     private Context context;
 
-    public FcmModule(Context context) {
+    public FcmModule(@ApplicationContext Context context) {
         this.context = context;
     }
 

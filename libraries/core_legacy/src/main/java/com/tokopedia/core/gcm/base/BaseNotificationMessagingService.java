@@ -32,7 +32,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onCreate() {
         super.onCreate();
         DaggerFcmComponent.builder()
-                .fcmModule(new FcmModule(this))
+                .fcmModule(new FcmModule(getApplicationContext()))
                 .build()
                 .inject(this);
     }
