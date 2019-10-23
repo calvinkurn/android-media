@@ -100,11 +100,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private lateinit var adapter: CheckoutVariantAdapter
 
     private var insuranceViewModel = InsuranceRecommendationViewModel()
-    var shopId: String? = null
+    var shopId: String = ""
     var categoryId: String? = null
     lateinit var productId: String
     lateinit var productTitle: String
-    var categoryName: String? = ""
+    var categoryName: String = ""
     var notes: String? = null
     var quantity: Int = 0
     var tempQuantity = quantity
@@ -511,13 +511,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         if (argument != null) {
 
             categoryId = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_ID)
-            categoryName = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME)
+            categoryName = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME) ?: ""
             productTitle = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE) ?: ""
             productPrice = argument.getFloat(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE) ?: 0f
             condition = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION)
 
 
-            shopId = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_ID)
+            shopId = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_ID) ?: ""
             productId = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID) ?: ""
             notes = argument.getString(ApplinkConst.Transaction.EXTRA_NOTES)
             quantity = argument.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
@@ -649,7 +649,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         val insurnaceShopCategory = InsuranceShopCategory()
 
         insurnaceShopCategory.categoryId = categoryId.toLongOrZero()
-        insurnaceShopCategory.categoryName = categoryName!!
+        insurnaceShopCategory.categoryName = categoryName
 
         insuranceShops = InsuranceShops()
         insuranceShops.productId = productId.toLong()
