@@ -21,4 +21,8 @@ buildscript {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation rootProject.ext.firebase.messaging
+
 }

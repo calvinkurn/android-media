@@ -5,9 +5,9 @@ import android.os.Bundle;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.core.gcm.di.DaggerFcmComponent;
-import com.tokopedia.core.gcm.di.FcmModule;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -44,12 +44,12 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     private void initUseSession() {
         try {
             userSession = new UserSession(this);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected Bundle convertMap(RemoteMessage message){
+    protected Bundle convertMap(RemoteMessage message) {
         Map<String, String> map = message.getData();
         Bundle bundle = new Bundle(map != null ? map.size() : 0);
         if (map != null) {
@@ -69,7 +69,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                     + " | " + Build.TAGS);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
