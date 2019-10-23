@@ -1,23 +1,21 @@
 package com.tokopedia.core.home;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.home.fragment.FragmentTopPicksWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
 
@@ -31,7 +29,7 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLink
     private static final String URL = "url";
     private static final String TOPPICK_SEGMENT = "toppicks";
     private static final String ARGS_TOPPICK_ID = "toppick_id";
-    private FragmentTopPicksWebView fragment;
+    private BaseSessionWebViewFragment fragment;
 
     public static Intent newInstance(Context context, String url) {
         Intent intent = new Intent(context, TopPicksWebView.class);
@@ -64,9 +62,9 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLink
         inflateView(R.layout.activity_webview_container);
 
         String url = getIntent().getExtras().getString("url");
-        fragment = FragmentTopPicksWebView.createInstance(url);
+        fragment = BaseSessionWebViewFragment.newInstance(url);
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.container, fragment);
             fragmentTransaction.commit();
@@ -76,15 +74,15 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLink
 
     @Override
     public void catchToWebView(String url) {
-        FragmentTopPicksWebView fragment = FragmentTopPicksWebView.createInstance(url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        BaseSessionWebViewFragment fragment = BaseSessionWebViewFragment.newInstance(url);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebview().canGoBack()) {
-                fragment.getWebview().goBack();
+            if (fragment.getWebView().canGoBack()) {
+                fragment.getWebView().goBack();
             } else {
                 super.onBackPressed();
             }
