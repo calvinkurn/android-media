@@ -333,7 +333,7 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewApplyFilter(queryParams)
             }
 
-            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String) { }
+            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String, autoApplyFilter: String) { }
         })
     }
 
