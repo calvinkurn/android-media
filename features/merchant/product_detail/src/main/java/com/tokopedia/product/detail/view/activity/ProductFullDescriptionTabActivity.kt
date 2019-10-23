@@ -10,6 +10,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -70,29 +71,23 @@ class ProductFullDescriptionTabActivity : BaseSimpleActivity(), HasComponent<Pro
             setupWithViewPager(viewPagerDesc)
         }
 
-        tabLayoutDesc.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {}
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.run {
-                    when(productViewPagerAdapter.getItem(position)){
-                        is ProductFullDescriptionFragment -> {
-                            productDetailTracking.eventClickDescriptionTabOnProductDescription(
-                                    descriptionData.basicId
-                            )
-                        }
-                        is ProductSpecificationFragment -> {
-                            productDetailTracking.eventClickSpecificationTabOnProductDescription(
-                                    descriptionData.basicId
-                            )
-                        }
-                        else -> {}
-                    }
+        tabLayoutDesc.onTabSelected {
+            val position = it.position
+            when (productViewPagerAdapter.getItem(position)) {
+                is ProductFullDescriptionFragment -> {
+                    productDetailTracking.eventClickDescriptionTabOnProductDescription(
+                            descriptionData.basicId
+                    )
+                }
+                is ProductSpecificationFragment -> {
+                    productDetailTracking.eventClickSpecificationTabOnProductDescription(
+                            descriptionData.basicId
+                    )
+                }
+                else -> {
                 }
             }
-        })
+        }
     }
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
