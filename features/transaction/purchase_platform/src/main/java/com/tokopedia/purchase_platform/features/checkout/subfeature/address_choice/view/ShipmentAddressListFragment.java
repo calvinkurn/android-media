@@ -491,10 +491,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
-                    startActivityForResult(
-                            AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
-                                    getActivity(), token
-                            ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                    Intent intent = RouteManager.getIntent(getContext(),
+                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "21");
+                    intent.putExtra(PARAM_TOKEN, token);
+                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 }
 
             } else {
@@ -510,11 +510,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
-                    startActivityForResult(
-                            AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
-                                    getActivity(), token
-                            ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
-                    );
+                    Intent intent = RouteManager.getIntent(getContext(),
+                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "11");
+                    intent.putExtra(PARAM_TOKEN, token);
+                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 }
             }
 
