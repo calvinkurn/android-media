@@ -270,7 +270,7 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
         searchProductLoadMoreUseCase.unsubscribe();
 
-        searchProductLoadMoreUseCase.execute(null, getLoadMoreDataSubscriber(searchParameter));
+        searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(searchParameter));
     }
 
     private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
