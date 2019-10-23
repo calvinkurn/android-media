@@ -32,6 +32,7 @@ class TopAdsDetailSheet {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var viewModel: TopAdsSheetViewModel
 
     private fun getComponent(context: Context): TopAdsSheetComponent = DaggerTopAdsSheetComponent.builder()
