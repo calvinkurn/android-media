@@ -50,7 +50,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*

@@ -25,7 +25,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel;
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
@@ -586,7 +586,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     private boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
     }
 
     private boolean isDisableSampaiView() {

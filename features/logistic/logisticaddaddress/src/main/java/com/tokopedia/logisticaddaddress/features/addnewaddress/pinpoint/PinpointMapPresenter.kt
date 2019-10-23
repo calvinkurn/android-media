@@ -17,7 +17,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
