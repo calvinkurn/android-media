@@ -9,3 +9,4 @@ internal const val DEFAULT_TITLE = "Tokopedia"
 internal const val KEY_CACHE_RELOAD_WEBVIEW = "reload_webview"
 
 internal const val JS_TOKOPEDIA = "js.tokopedia.com"
+const val SEAMLESS = "seamless"

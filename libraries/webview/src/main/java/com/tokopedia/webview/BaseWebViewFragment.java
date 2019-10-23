@@ -21,6 +21,7 @@ import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -44,6 +45,7 @@ import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 
@@ -62,6 +64,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
+    private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
@@ -226,8 +229,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+        if (requestCode == REQUEST_CODE_LOGIN || requestCode == LOGIN_GPLUS) {
+            String historyUrl = "";
+            WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
+            if (mWebBackForwardList.getCurrentIndex() > 0)
+                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
+            if (historyUrl.contains(SEAMLESS)){
+                webView.loadAuthUrl(historyUrl, null);
+            }
+            else {
+                webView.loadAuthUrl(historyUrl, userSession);
+            }
         }
     }
 
@@ -350,6 +362,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
+        if (goToLoginGoogle(url)) return true;
+
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
@@ -397,6 +411,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
         return shouldOverrideUrlToNative(url);
+    }
+
+    private boolean goToLoginGoogle(@NonNull String url){
+        String query = Uri.parse(url).getQueryParameter("login_type");
+        if (query != null && query.equals("plus")) {
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.LOGIN);
+            if (intent != null) {
+                intent.putExtra("auto_login", true);
+                intent.putExtra("method", 222);
+                startActivityForResult(intent, LOGIN_GPLUS);
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean shouldOverrideUrlToNative(@NonNull String url) {
