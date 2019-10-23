@@ -23,6 +23,7 @@ public class RequestPickupFragment extends Fragment {
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
     public static final String INSTANT_COURIER_INFO_URL = "https://www.tokopedia.com/bantuan/penjual/pengiriman-penjual/layanan-pengiriman-dengan-sistem-pick-up-pengiriman-penjual/";
+    public static final String INSTANT_COURIER_INFO_URL_NEW = "https://seller.tokopedia.com/edu/layanan-pick-up/";
     public static final String INFO_FRAGMENT_TAG = "info_fragment";
 
     private ConfirmRequestPickupListener listener;
@@ -76,7 +77,7 @@ public class RequestPickupFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentGeneralWebView webViewFragment = FragmentGeneralWebView
-                        .createInstance(INSTANT_COURIER_INFO_URL, false, true, false);
+                        .createInstance(INSTANT_COURIER_INFO_URL_NEW, false, true, false);
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                         .add(R.id.main_view, webViewFragment, INFO_FRAGMENT_TAG)

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,6 +26,7 @@
                 android:paddingTop="@dimen/dp_8"
                 android:scrollbars="vertical"
                 android:tag="feed_plus_list"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:listitem="@layout/kol_post_layout" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

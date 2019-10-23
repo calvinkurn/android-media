@@ -38,6 +38,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     lateinit var digitalCartMyBillsPresenter: DigitalCartMyBillsPresenter
 
     private var interactionListener: InteractionListener? = null
+    private var isSubscribed = false
 
     override fun setupView(view: View?) {
         progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
@@ -58,6 +59,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
+        isSubscribed = arguments?.getBoolean(ARG_IS_SUBSCRIBED) ?: false
         super.onCreate(savedInstanceState)
     }
 
@@ -68,11 +70,16 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     companion object {
-        fun newInstance(cartDigitalInfoData: CartDigitalInfoData, passData: DigitalCheckoutPassData): DigitalCartMyBillsFragment {
+        const val ARG_IS_SUBSCRIBED = "ARG_IS_SUBSCRIBED"
+
+        fun newInstance(cartDigitalInfoData: CartDigitalInfoData,
+                        passData: DigitalCheckoutPassData,
+                        isSubscribed: Boolean): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
             bundle.putParcelable(ARG_PASS_DATA, passData)
+            bundle.putBoolean(ARG_IS_SUBSCRIBED, isSubscribed)
             fragment.arguments = bundle
             return fragment
         }
@@ -113,7 +120,13 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     override fun isSubscriptionChecked(): Boolean = mybillSubscription.isChecked()
 
     override fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean) {
-        mybillSubscription.setChecked(checked)
+        // If user is already subsrcibed, hide checkbox for subscribing
+        if (isSubscribed) {
+            mybillSubscription.getSubscriptionCheckbox().visibility = View.GONE
+        } else {
+            mybillSubscription.setChecked(checked)
+        }
+
         if (description != null) {
             mybillSubscription.setDescription(description)
         }

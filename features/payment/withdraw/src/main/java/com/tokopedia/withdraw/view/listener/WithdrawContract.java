@@ -5,8 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.withdraw.domain.model.BankAccount;
-import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible;
-import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
 
 import java.util.List;
 
@@ -43,19 +41,11 @@ public class WithdrawContract {
         void itemSelected();
 
         String loadRawString(int resId);
-
-        void showConfirmationDialog(ValidatePopUpWithdrawal validatePopUpWithdrawal);
-
-        void showCheckProgramData(CheckEligible checkEligible);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
 
         void getWithdrawForm();
-
-        void getValidatePopUp(long bankId);
-
-        void getPremiumAccountData();
 
         void doWithdraw(String totalBalance, String totalWithdrawal, BankAccount selectedBank);
 

@@ -49,8 +49,6 @@ public interface DigitalModuleRouter {
 
     String getAdsId();
 
-    Observable<TokoCashData> getDigitalTokoCashBalance();
-
     void showForceLogoutDialog();
 
     Intent getWebviewActivityWithIntent(Context context, String url);

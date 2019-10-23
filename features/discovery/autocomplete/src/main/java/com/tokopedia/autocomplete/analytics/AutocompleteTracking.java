@@ -77,7 +77,7 @@ public class AutocompleteTracking {
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
 
     public static void eventClickPopularSearch(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_POPULAR_SEARCH,
@@ -86,7 +86,7 @@ public class AutocompleteTracking {
     }
 
     public static void eventClickRecentSearch(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_RECENT_SEARCH,
@@ -131,7 +131,7 @@ public class AutocompleteTracking {
                                            String id,
                                            int position,
                                            String applink) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 ACTION_CLICK_HOTLIST_SUGGESTION,
@@ -166,7 +166,7 @@ public class AutocompleteTracking {
     }
 
     public static void eventClickProfile(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_PROFILE_SUGGESTION,
@@ -175,7 +175,7 @@ public class AutocompleteTracking {
     }
 
     public static void eventClickTopProfile(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_TOP_PROFILE_SUGGESTION,
@@ -184,7 +184,7 @@ public class AutocompleteTracking {
     }
 
     public static void eventClickSubmit(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_SEARCH,

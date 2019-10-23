@@ -480,12 +480,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
                                        String tagFragment) {
+        String minDateStr = null;
+        String selectedDateStr = null;
+        if (minDate != null) minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
+        if (selectedDate != null) selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
+
         SelectionRangeCalendarWidget flightCalendarDialog = SelectionRangeCalendarWidget.Companion.getInstance(
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
-                1, 360,
-                getString(R.string.flight_min_date_label),
-                getString(R.string.flight_max_date_label));
+                minDateStr, selectedDateStr,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR, SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED, getString(R.string.flight_min_date_label),
+                getString(R.string.flight_max_date_label), SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY, true);
+
         flightCalendarDialog.setListener((dateIn, dateOut) -> {
             Calendar calendarDepartureSelected = Calendar.getInstance();
             calendarDepartureSelected.setTime(dateIn);

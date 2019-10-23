@@ -49,16 +49,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
-    val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(),this) }
+    val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(), this) }
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
     lateinit var progressDialog: ProgressDialog
 
-    abstract var serviceId : String
-    open var categoryId : Int = 0
-    open var isCouponActive : Boolean = true
-    open var promoCode : String = ""
+    abstract var serviceId: String
+    open var categoryId: Int = 0
+    open var isCouponActive: Boolean = true
+    open var promoCode: String = ""
     var pageTracking: Int = 1
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
@@ -145,7 +145,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
         if (isCouponActive) {
             getRecyclerView(view).visibility = View.VISIBLE
-        }else{
+        } else {
             getRecyclerView(view).visibility = View.GONE
         }
     }
@@ -164,12 +164,21 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     */
 
     override fun renderListExchangeCoupon(data: TokopointsCatalogHighlight) {
-        view?.text_title?.text=data.title
-        view?.text_sub_title?.text=data.subTitle
+        view?.text_title?.text = data.title
+        view?.text_sub_title?.text = data.subTitle
         promoCheckoutExchangeCouponAdapter.items?.clear()
         promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)//data.catalogList)
         promoCheckoutExchangeCouponAdapter.notifyDataSetChanged()
         populateExchnageCouponList()
+    }
+
+    override fun showProgressBar() {
+        view?.progressBarCatalog?.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        view?.progressBarCatalog?.visibility = View.GONE
+
     }
 
     override fun showGetListLastSeenError(e: Throwable) {
@@ -228,7 +237,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
 
-
     override fun getScreenName(): String {
         return ""
     }
@@ -263,13 +271,13 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun loadData(page: Int) {
-        if(isCouponActive) {
+        if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
     }
 
     companion object {
-        val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
+        val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val PAGE_TRACKING = "PAGE_TRACKING"
     }

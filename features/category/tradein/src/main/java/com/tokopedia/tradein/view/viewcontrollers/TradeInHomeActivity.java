@@ -198,7 +198,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
-                        showDialogFragment(0, getString(R.string.money_in), homeResult.getDisplayMessage(),
+                        showDialogFragment(getString(R.string.money_in), homeResult.getDisplayMessage(),
                                 getString(R.string.tradein_return), null);
                         errorDialogGTMLabel = homeResult.getDisplayMessage();
                     default:
@@ -348,7 +348,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     private void showPermissionDialog() {
         isShowingPermissionPopup = true;
-        showDialogFragment(0, getString(R.string.tradein_text_request_access),
+        showDialogFragment(getString(R.string.tradein_text_request_access),
                 getString(R.string.tradein_text_permission_description), "", "");
     }
 

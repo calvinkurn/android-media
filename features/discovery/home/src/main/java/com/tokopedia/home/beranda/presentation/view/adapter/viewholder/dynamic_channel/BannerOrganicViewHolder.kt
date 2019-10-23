@@ -6,27 +6,31 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.GridLayoutManager
+import android.support.v7.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
-import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
+import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -52,10 +56,17 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     val CTA_TYPE_GHOST = "ghost"
     val CTA_TYPE_TEXT = "text_only"
 
+    val BLUE = "blue"
+    val YELLOW = "yellow"
+    val RED = "red"
+    val GREEN = "green"
+
     var bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     var bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     var bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
+    var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
+    val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
 
     companion object {
         val TYPE_CAROUSEL = "carousel"
@@ -65,53 +76,14 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.dc_banner_rv)
-
-        val bannerItem = channel.banner
         clearItemRecyclerViewDecoration(recyclerView)
+        mappingBackgroundContainerUnify(channel)
+        mappingView(channel)
+        valuateRecyclerViewDecoration(channel)
+    }
 
-        recyclerView.adapter = BannerItemAdapter(
-                channel.layout,
-                channel.grids,
-                channel,
-                homeCategoryListener
-        )
-
-        mappingCtaButton(channel.banner.cta)
-
-        bannerUnifyButton.setOnClickListener {
-            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, channel)
-
-            if (bannerItem.cta.couponCode.isEmpty()) {
-                homeCategoryListener.onSectionItemClicked(channel.banner.applink)
-            } else {
-                copyCoupon(itemView, bannerItem.cta)
-            }
-        }
-
-        itemView.setOnClickListener {
-            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
-            homeCategoryListener.onSectionItemClicked(channel.banner.applink)
-        }
-
-        bannerTitle.text = bannerItem.title
-        bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
-
-        Glide.with(itemView.context)
-                .asBitmap()
+    private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
                 .load(bannerItem.imageUrl)
-                .centerCrop()
-                .dontAnimate()
-                .into(getRoundedImageViewTarget(bannerImage, 16f))
-        /**
-         * Set button
-         */
-        bannerUnifyButton.text = bannerItem.cta.text
-
-
         when(channel.layout) {
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
                 recyclerView.layoutManager = GridLayoutManager(
@@ -121,7 +93,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 /**
                  * Add margin for recyclerview on for non-carousel banner
                  */
-                val param = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+                val param = recyclerView.layoutParams as LinearLayout.LayoutParams
                 param.setMargins( itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16),
                         param.topMargin,
                         itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16),
@@ -140,7 +112,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 /**
                  * Make recyclerview to fill viewport width
                  */
-                val param = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+                val param = recyclerView.layoutParams as LinearLayout.LayoutParams
                 param.setMargins( 0,
                         param.topMargin,
                         0,
@@ -151,12 +123,81 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
+    private fun mappingView(channel: DynamicHomeChannel.Channels) {
+        val bannerItem = channel.banner
+        val visitables = mappingVisitablesFromChannel(channel)
+        val ctaData = channel.banner.cta
+
+        mappingCtaButton(ctaData)
+
+        bannerTitle.text = bannerItem.title
+        bannerDescription.text = bannerItem.description
+
+        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
+        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+
+        Glide.with(itemView.context)
+                .load(bannerItem.imageUrl)
+                .asBitmap()
+                .centerCrop()
+                .dontAnimate()
+                .into(getRoundedImageViewTarget(bannerImage, 24f))
+
+        recyclerView.adapter = BannerItemAdapter(
+                BannerMixTypeFactoryImpl(homeCategoryListener),
+                channel.layout,
+                channel.grids,
+                channel,
+                homeCategoryListener,
+                visitables
+        )
+
+        itemView.setOnClickListener {
+            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
+            homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+        }
+
+        bannerUnifyButton.setOnClickListener {
+            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, channel)
+            if (ctaData.couponCode.isEmpty()) {
+                homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+            } else {
+                copyCoupon(itemView, ctaData)
+            }
+        }
+    }
+
+    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<BannerMixTypeFactory>> {
+        val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
+            ProductBannerMixDataModel(it, channel)
+        }.toMutableList()
+
+        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
+            visitables.add(SeeMoreBannerMixDataModel(
+                    channel
+            ))
+        }
+        return visitables
+    }
+
+    private fun mappingBackgroundContainerUnify(channel: DynamicHomeChannel.Channels) {
+        backgroundBanner.setContainerColor(
+                when (channel.header.backColor) {
+                    RED -> ContainerUnify.RED
+                    BLUE -> ContainerUnify.BLUE
+                    YELLOW -> ContainerUnify.YELLOW
+                    GREEN -> ContainerUnify.GREEN
+                    else -> ContainerUnify.RED
+                }
+        )
+    }
+
     private fun copyCoupon(view: View, cta: DynamicHomeChannel.CtaData) {
         val clipboard = view.context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.primaryClip = clipData
 
-        Toaster.showNormal(view,
+        Toaster.showNormal(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG)
     }
@@ -181,6 +222,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             CTA_TYPE_TEXT -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
             else -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
         }
+
+        bannerUnifyButton.text = cta.text
     }
 
     private fun clearItemRecyclerViewDecoration(itemRecyclerView: RecyclerView) {
@@ -189,51 +232,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    class BannerItemAdapter(val bannerType: String,
-                            val grids: Array<DynamicHomeChannel.Grid>,
-                            val channel: DynamicHomeChannel.Channels,
-                            val homeCategoryListener: HomeCategoryListener): RecyclerView.Adapter<BannerItemViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, p1: Int): BannerItemViewHolder {
-            val resource = when(bannerType) {
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> R.layout.home_banner_item
-                else -> R.layout.home_banner_item_carousel
-            }
-            val v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false)
-            return BannerItemViewHolder(v)
-        }
-
-        override fun getItemCount(): Int {
-            return grids.size
-        }
-
-        override fun onBindViewHolder(viewholder: BannerItemViewHolder, position: Int) {
-            val productCardView = viewholder.productCard
-            productCardView.setLinesProductTitle(2)
-            val gridItem = grids[position]
-            productCardView.setProductModel(
-                    ProductCardModel(
-                            productImageUrl = gridItem.imageUrl,
-                            isWishlistVisible = false,
-                            productName = gridItem.name,
-                            slashedPrice = gridItem.slashedPrice,
-                            discountPercentage = gridItem.discount,
-                            formattedPrice = gridItem.price
-                    ),
-                    BlankSpaceConfig(
-                            price = true,
-                            productName = true,
-                            discountPercentage = true
-                    )
-            )
-            productCardView.setOnClickListener {
-                HomePageTracking.eventClickProductChannelMix(productCardView.context, channel, position)
-                homeCategoryListener.onSectionItemClicked(gridItem.applink)
-            }
-        }
-    }
-
-    class BannerItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val productCard: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.banner_item) }
+    class SeeMoreItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val seeMoreCard: CardView by lazy { view.findViewById<CardView>(R.id.card_see_more_banner_mix) }
     }
 
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {

@@ -99,8 +99,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
-        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData));
+    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                               DigitalCheckoutPassData cartPassData,
+                                               boolean isSubscribed) {
+        inflateFragment(DigitalCartMyBillsFragment.Companion.newInstance(cartDigitalInfoData, cartPassData, isSubscribed));
     }
 
     private void inflateFragment(Fragment fragment) {

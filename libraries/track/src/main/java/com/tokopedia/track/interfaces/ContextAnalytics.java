@@ -89,6 +89,8 @@ public abstract class ContextAnalytics implements Analytics {
 
     public void clearEnhanceEcommerce() {}
 
+    public void sendCampaign(Map<String,Object> param){}
+
     public void pushEvent(String eventName, Map<String, Object> values){}
 
     public void sendGTMGeneralEvent(String event, String category, String action, String label,

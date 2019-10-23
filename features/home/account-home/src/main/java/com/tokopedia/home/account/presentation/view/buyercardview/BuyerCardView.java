@@ -13,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 
 /**
  * @author okasurya on 7/17/18.
@@ -25,14 +29,17 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private ImageView imageProfileProgress;
     private ImageView imageProfileCompleted;
     private ImageView icByme;
+    private ImageView eggImage;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointAmount;
     private TextView textCouponAmount;
+    private TextView textTokoMemberAmount;
     private ProgressBar progressBar;
     private View byMeButton;
     private View tokopointHolder;
     private View couponHolder;
+    private View tokomemberHolder;
     private BuyerCardPresenter buyerCardPresenter;
 
     public BuyerCardView(@NonNull Context context) {
@@ -63,6 +70,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         byMeButton = view.findViewById(R.id.by_me_button);
         tokopointHolder = view.findViewById(R.id.holder_tokopoint);
         couponHolder = view.findViewById(R.id.holder_coupon);
+        tokomemberHolder = view.findViewById(R.id.holder_tokomember);
+        textTokoMemberAmount = view.findViewById(R.id.text_tokomember_amount);
+        eggImage = view.findViewById(R.id.image_tokopoint);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -150,11 +160,29 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         tokopointHolder.setOnClickListener(listener);
     }
 
+    public void setOnClickTokoMember(View.OnClickListener listener) {
+        tokomemberHolder.setOnClickListener(listener);
+    }
+
     public void setOnClickVoucher(View.OnClickListener listener) {
         couponHolder.setOnClickListener(listener);
     }
 
     public void setOnClickByMe(View.OnClickListener listener) {
         byMeButton.setOnClickListener(listener);
+    }
+
+    @Override
+    public void setTokoMemberAmount(String tokoMemberAmount) {
+        textTokoMemberAmount.setText(tokoMemberAmount);
+    }
+
+    @Override
+    public void setEggImage(String eggImageUrl) {
+        Glide.with(getContext())
+                .load(eggImageUrl)
+                .asBitmap()
+                .dontAnimate()
+                .into(eggImage);
     }
 }
