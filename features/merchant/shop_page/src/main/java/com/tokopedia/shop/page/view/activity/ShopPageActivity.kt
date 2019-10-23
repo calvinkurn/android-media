@@ -129,6 +129,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
+        const val TAB_POSITION_OS_HOME = -1
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
@@ -194,6 +195,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
         }
+
+        @DeepLink(ApplinkConst.SHOP_HOME)
+        @JvmStatic
+        fun getCallingIntentHomeSelected(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, ShopPageActivity::class.java)
+                    .setData(uri.build())
+                    .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
+                    .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_OS_HOME)
+        }
     }
 
 
@@ -235,7 +247,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         })
 
-        shopViewModel.shopFavourite.observe(this, Observer {
+        shopViewModel.shopFavouriteResp.observe(this, Observer {
             shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
 
@@ -301,7 +313,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopViewModel.whiteListResp.observe(this, Observer { response ->
             when (response) {
                 is Success -> onSuccessGetFeedWhitelist(response.data.first, response.data.second)
-                is Fail -> onErrorGetFeedWhitelist()
             }
         })
 
@@ -520,28 +531,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             updateUIByShopName(shopCore.name)
-            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
-            if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
-                productListFragment.displayProduct(this)
-            }
-
-            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(getShopInfoPosition())
-            if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
-                shopInfoFragment.reset()
-                shopInfoFragment.updateShopInfo(this)
-            }
-
-            val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-            if (feedShopFragment != null && feedShopFragment is FeedShopFragment) {
-                feedShopFragment.updateShopInfo(this)
-            }
-
+            setupTabs()
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity,
                     CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
-
-            shopViewModel.getFeedWhiteList(shopCore.shopID)
-
             if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
                 shopViewModel.getModerateShopInfo()
             }
@@ -586,6 +579,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         if (isOfficialStore && tabPosition == 0) {
             tabPosition = 1
+        }else if(isOfficialStore && tabPosition == TAB_POSITION_OS_HOME){
+            tabPosition = 0
         }
         setViewState(VIEW_CONTENT)
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
@@ -632,11 +627,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
-        setupTabs()
-    }
-
-    private fun onErrorGetFeedWhitelist() {
-        setupTabs()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -8,13 +8,27 @@ import com.tokopedia.instantloan.domain.interactor.GetLendingDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 @InstantLoanScope
 @Module
 class InstantLoanModule {
+
+    @InstantLoanScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+
+    @Provides
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
 
     @Provides
     fun provideGetLoanProfileStatusUseCase(instantLoanAuthInterceptor: InstantLoanAuthInterceptor, @ApplicationContext context: Context): GetLoanProfileStatusUseCase {

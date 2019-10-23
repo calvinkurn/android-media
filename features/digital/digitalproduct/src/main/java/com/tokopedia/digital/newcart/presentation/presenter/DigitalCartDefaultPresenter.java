@@ -3,10 +3,10 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType;
+import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -19,20 +19,20 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
     @Inject
     public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
+                                       RechargeAnalytics rechargeAnalytics,
                                        DigitalModuleRouter digitalModuleRouter,
                                        ICartDigitalInteractor cartDigitalInteractor,
                                        UserSession userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                       DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                       RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
+                                       DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
+                rechargeAnalytics,
                 digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase);
+                digitalInstantCheckoutUseCase);
     }
 
     @Override
@@ -43,7 +43,10 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                 break;
             case DigitalCartCrossSellingType.MYBILLS:
-                getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData, getView().getCartPassData());
+                getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData, getView().getCartPassData(), false);
+                break;
+            case DigitalCartCrossSellingType.SUBSCRIBED:
+                getView().inflateMyBillsSubscriptionPage(cartDigitalInfoData, getView().getCartPassData(), true);
                 break;
             default:
                 getView().showCartView();
