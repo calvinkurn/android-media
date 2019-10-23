@@ -586,7 +586,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     private boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 
     private boolean isDisableSampaiView() {
