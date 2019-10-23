@@ -60,7 +60,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public final static int ATTACH_FILE_REQUEST = 1;
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
-    private String mJsHciCallbackFuncName;
+    String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int LOGIN_GPLUS = 458;
@@ -228,7 +228,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (requestCode == REQUEST_CODE_LOGIN || requestCode == LOGIN_GPLUS) {
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            webView.loadAuthUrl(getUrl(), userSession);
+        } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
@@ -361,9 +363,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
-        if (!allowOverride) {
-            return false;
-        }
         if (goToLoginGoogle(url)) return true;
 
         if (url.contains(HCI_CAMERA_KTP)) {
@@ -374,7 +373,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
-        } else if (url.contains(PARAM_EXTERNAL)) {
+        }
+        if (!allowOverride) {
+            return false;
+        }
+        if (url.contains(PARAM_EXTERNAL)) {
             try {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
                 destination.setData(Uri.parse(url));
@@ -406,7 +409,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
     }
 
-    private boolean goToLoginGoogle(@NonNull String url){
+    boolean goToLoginGoogle(@NonNull String url){
         String query = Uri.parse(url).getQueryParameter("login_type");
         if (query != null && query.equals("plus")) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.LOGIN);
