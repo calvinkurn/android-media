@@ -38,6 +38,8 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETP
  */
 public class AddAddressActivity extends BaseSimpleActivity {
 
+    private final String PARAM_ADDRESS_MODEL = "PARAM_ADDRESS_MODEL";
+
     /**
      * Always pass a bundle because the activity always get intent extra
      */
@@ -45,7 +47,12 @@ public class AddAddressActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
+            Bundle oldBundle = getIntent().getExtras();
+            AddressModel model = oldBundle.getParcelable(PARAM_ADDRESS_MODEL);
+            if (model != null) {
+                bundle.putParcelable(EDIT_PARAM, model.convertToDestination());
+            }
+            bundle.putParcelable(KERO_TOKEN, oldBundle.getParcelable(KERO_TOKEN));
         }
 
         Uri uri = getIntent().getData();

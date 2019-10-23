@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
@@ -52,7 +54,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -68,6 +69,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
+    private final String PARAM_ADDRESS_MODEL = "PARAM_ADDRESS_MODEL";
+    private final String PARAM_TOKEN = "token";
     ShipmentAddressListAdapter mAdapter;
     @Inject
     AddressListContract.Presenter mPresenter;
@@ -410,14 +413,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             Intent intent;
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
-                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
-                        getActivity(), mapper.transform(model), token
-                );
+                intent = RouteManager.getIntent(getContext(), ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "22");
             } else {
-                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
-                        getActivity(), mapper.transform(model), token
-                );
+                intent = RouteManager.getIntent(getContext(), ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "12");
             }
+            intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(model));
+            intent.putExtra(PARAM_TOKEN, token);
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
         }
     }

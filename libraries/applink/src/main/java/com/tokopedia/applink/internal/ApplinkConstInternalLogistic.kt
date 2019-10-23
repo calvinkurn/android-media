@@ -26,7 +26,7 @@ object ApplinkConstInternalLogistic {
     val UPLOAD_AWB = "$INTERNAL_LOGISTIC/upload-awb"
 
     @JvmField
-    val ADD_ADDRESS_V1 = "$INTERNAL_LOGISTIC/addaddress/v1/{ref}"
+    val ADD_ADDRESS_V1 = "$INTERNAL_LOGISTIC/addaddress/v1/{ref}/"
 
     @JvmField
     val ADD_ADDRESS_V2 = "$INTERNAL_LOGISTIC/addaddress/v2/{ref}"
