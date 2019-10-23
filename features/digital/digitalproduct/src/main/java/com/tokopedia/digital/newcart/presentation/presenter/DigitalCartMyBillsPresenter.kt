@@ -1,5 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.presenter
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
