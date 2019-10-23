@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.commonWallet)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -62,6 +63,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {

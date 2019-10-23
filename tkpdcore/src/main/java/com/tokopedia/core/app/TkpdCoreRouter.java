@@ -129,8 +129,6 @@ public interface TkpdCoreRouter {
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
-    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
-
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
@@ -148,8 +146,6 @@ public interface TkpdCoreRouter {
     Intent getShopPageIntentByDomain(Context context, String domain);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Observable<TokoCashData> getTokoCashBalance();
 
     Intent getTopProfileIntent(Context context, String userId);
 

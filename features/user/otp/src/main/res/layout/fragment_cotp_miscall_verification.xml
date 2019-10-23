@@ -153,6 +153,7 @@
           android:lineSpacingExtra="@dimen/sp_6"
           android:padding="@dimen/dp_5"
           android:text="@string/cotp_miscall_verification_resend"
+          android:visibility="gone"
           android:textColor="@color/tkpd_main_green"
           android:textSize="@dimen/sp_12"
           android:textStyle="normal" />

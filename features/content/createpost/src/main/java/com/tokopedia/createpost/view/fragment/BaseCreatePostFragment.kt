@@ -99,7 +99,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private val productSuggestionAdapter: ProductSuggestionAdapter by lazy {
-        ProductSuggestionAdapter(::onSuggestionItemClicked)
+        ProductSuggestionAdapter(::onSuggestionItemClicked, ::onSuggestionItemFirstView)
     }
 
     private lateinit var shareDialogView: View
@@ -869,6 +869,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun onSuggestionItemClicked(item: ProductSuggestionItem) {
+        affiliateAnalytics.onSuggestionItemClicked(item.productId, isTypeAffiliate())
         if (item.productId.isNotBlank()) {
             viewModel.productIdList.add(item.productId)
         }
@@ -876,6 +877,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.adIdList.add(item.adId)
         }
         fetchContentForm()
+    }
+
+    private fun onSuggestionItemFirstView(item: ProductSuggestionItem) {
+        affiliateAnalytics.onSuggestionItemAppeared(item.productId, isTypeAffiliate())
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE

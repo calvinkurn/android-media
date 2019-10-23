@@ -122,9 +122,9 @@ object OvoP2pUtil {
         val layout = snackbar.view as Snackbar.SnackbarLayout
         snackbar.view.setBackgroundColor(Color.TRANSPARENT)
         val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val snackView = inflater.inflate(R.layout.error_snackbar_layout, null)
-        snackView.findViewById<View>(R.id.btn_ok).setOnClickListener(onClickListener)
-        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(R.id.error_msg) as TextView).text = errorMsg
+        val snackView = inflater.inflate(com.tokopedia.design.R.layout.error_snackbar_layout, null)
+        snackView.findViewById<View>(com.tokopedia.design.R.id.btn_ok).setOnClickListener(onClickListener)
+        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(com.tokopedia.design.R.id.error_msg) as TextView).text = errorMsg
         layout.addView(snackView, 0)
         return snackbar
     }
