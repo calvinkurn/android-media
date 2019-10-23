@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_recom.PARAM_PRODUCT_ID
+import com.tokopedia.home_recom.PARAM_QUERY_PARAM
 import com.tokopedia.home_recom.PARAM_X_SOURCE
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
@@ -164,7 +165,7 @@ class PrimaryProductViewModel @Inject constructor(
      * [getPrimaryProduct] is the void for get detail primary product data from network
      * @param productId product Id from deeplink
      */
-    fun getPrimaryProduct(productId: String) {
+    fun getPrimaryProduct(productId: String, queryParam: String) {
         launchCatchError(block = {
             productInfoDataModel.value = Response.loading()
             val gqlData = withContext(Dispatchers.IO) {
@@ -173,7 +174,8 @@ class PrimaryProductViewModel @Inject constructor(
 
                 val params = mapOf(
                         PARAM_PRODUCT_ID to productId.toInt(),
-                        PARAM_X_SOURCE to xSource
+                        PARAM_X_SOURCE to xSource,
+                        PARAM_QUERY_PARAM to queryParam
                 )
 
                 val gqlRecommendationRequest = GraphqlRequest(

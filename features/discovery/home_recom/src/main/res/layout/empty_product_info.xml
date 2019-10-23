@@ -4,15 +4,16 @@
     android:layout_height="@dimen/dp_112"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <ImageView
         android:id="@+id/empty_image"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="133dp"
+        android:layout_height="100dp"
+        android:src="@drawable/empty_product_info"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="@dimen/dp_100"
-        tools:layout_width="133dp"
-        tools:background="@color/red_30"/>
+        tools:background="@color/red_30" />
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
