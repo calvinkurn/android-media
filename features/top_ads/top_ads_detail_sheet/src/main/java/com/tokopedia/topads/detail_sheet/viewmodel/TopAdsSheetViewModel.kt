@@ -15,18 +15,18 @@ import javax.inject.Named
  * Author errysuprayogi on 22,October,2019
  */
 class TopAdsSheetViewModel @Inject constructor(val topAdsSheetRepository: TopAdsSheetRepository,
-                                               @Named("Main")
                                                val dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+
     val groupProduct = MutableLiveData<Result<GroupProduct>>()
 
     fun getGroupProduct(adId: String, shopId: String, startDate: String, endDate: String) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO){
-                topAdsSheetRepository.getGroupProduct(adId, shopId, startDate, endDate)
-            }
+//        launchCatchError(block = {
+//            val data = withContext(Dispatchers.IO){
+//                topAdsSheetRepository.getGroupProduct(adId, shopId, startDate, endDate)
+//            }
 //            groupProduct.postValue(data)
-        }){
-            it.printStackTrace()
-        }
+//        }){
+//            it.printStackTrace()
+//        }
     }
 }

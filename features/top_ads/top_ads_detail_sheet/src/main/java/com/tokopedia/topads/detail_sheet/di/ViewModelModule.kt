@@ -1,5 +1,6 @@
 package com.tokopedia.topads.detail_sheet.di
 
+import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
 import dagger.Binds
@@ -12,8 +13,10 @@ import dagger.multibindings.IntoMap
 @Module
 @TopAdsSheetScope
 abstract class ViewModelModule {
+
     @Binds
     @IntoMap
     @ViewModelKey(TopAdsSheetViewModel::class)
-    internal abstract fun provideTopAdsSheetViewModel(viewModel: TopAdsSheetViewModel)
+    internal abstract fun provideTopAdsSheetViewModel(viewModel: TopAdsSheetViewModel): ViewModel
+
 }

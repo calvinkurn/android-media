@@ -22,8 +22,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
