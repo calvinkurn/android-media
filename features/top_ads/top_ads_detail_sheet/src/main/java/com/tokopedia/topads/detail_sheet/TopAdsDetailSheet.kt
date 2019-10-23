@@ -5,13 +5,16 @@ import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
+import android.widget.ToggleButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.detail_sheet.data.Data
+import com.tokopedia.topads.detail_sheet.data.DataBulk
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
@@ -49,7 +52,21 @@ class TopAdsDetailSheet {
     }
 
     private fun onSuccessGetAds(data: Data) {
-        Log.d("INFO", data.productName)
+        dialog?.let {
+            ImageLoader.LoadImage(it.img_thumb, data.productImageUri)
+            it.title.setText(data.productName)
+            it.subtitle.setText(String.format("%s %s", data.adPriceBidFmt, data.labelPerClick))
+            it.txt_klik.setText(data.statTotalClick)
+            it.txt_tampil.setText(data.statTotalImpression)
+            it.txt_terjual.setText(data.statTotalConversion)
+            it.toggle_switch_ads.isChecked = data.adId != 0
+            it.toggle_switch_ads.setOnClickListener {
+                when((it as ToggleButton).isChecked){
+                    true -> viewModel.postPromo("toggle_on", data.adId, this::onSuccessPost, this::onErrorPost)
+                    false -> viewModel.postPromo("toggle_off", data.adId, this::onSuccessPost, this::onErrorPost)
+                }
+            }
+        }
     }
 
     private fun setupView(context: Context) {
@@ -68,12 +85,21 @@ class TopAdsDetailSheet {
             it.action_edit_ads.setOnClickListener{
                 editTopAdsClick?.invoke()
             }
-            it.toggle_switch_ads.setOnCheckedChangeListener { buttonView, isChecked ->
-                when(isChecked){
-                    true -> it.txt_active_status.setText(context.getString(R.string.aktif))
-                    false -> it.txt_active_status.setText(context.getString(R.string.tidak_aktif))
-                }
-            }
+
+        }
+    }
+
+    fun onSuccessPost(data: DataBulk) {
+        dialog?.let {
+            it.toggle_switch_ads.isChecked = true
+            it.txt_active_status.setText(data.ads.get(0)?.statusDesc)
+        }
+    }
+
+    fun onErrorPost(throwable: Throwable) {
+        dialog?.let {
+            it.toggle_switch_ads.isChecked = false
+            it.txt_active_status.setText(it.context.getString(R.string.tidak_aktif))
         }
     }
 
