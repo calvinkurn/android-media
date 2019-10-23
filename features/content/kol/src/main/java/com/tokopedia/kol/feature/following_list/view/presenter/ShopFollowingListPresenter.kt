@@ -8,12 +8,17 @@ import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.GetShop
 import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.UserShopFollowDetail
 import com.tokopedia.kol.feature.following_list.domain.interactor.GetShopFollowingListUseCase
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
+import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import rx.Subscriber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -22,7 +27,8 @@ import kotlin.coroutines.CoroutineContext
  */
 class ShopFollowingListPresenter @Inject constructor(
         @ApplicationContext private val context: Context,
-        private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase
+        private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase,
+        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 ) : BaseDaggerPresenter<KolFollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -66,8 +72,27 @@ class ShopFollowingListPresenter @Inject constructor(
 
     }
 
+    override fun unfollowShop(model: FollowingViewModel) {
+        toggleFavouriteShopUseCase.execute(
+                ToggleFavouriteShopUseCase.createRequestParam(model.id.toString(), Action.UNFOLLOW),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean) {
+                        view.onSuccessUnfollowShop(model)
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.onErrorUnfollowShop(ErrorHandler.getErrorMessage(context, e))
+                    }
+                }
+        )
+    }
+
     override fun detachView() {
         super.detachView()
+        toggleFavouriteShopUseCase.unsubscribe()
         job.cancel()
     }
 

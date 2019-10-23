@@ -20,6 +20,7 @@ import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResul
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import javax.inject.Named;
 
@@ -51,11 +52,13 @@ public class KolFollowingListModule {
     @Provides
     public KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
             @ApplicationContext Context context,
-            GetShopFollowingListUseCase getShopFollowingListUseCase
+            GetShopFollowingListUseCase getShopFollowingListUseCase,
+            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase
     ) {
         return new ShopFollowingListPresenter(
                 context,
-                getShopFollowingListUseCase
+                getShopFollowingListUseCase,
+                toggleFavouriteShopUseCase
         );
     }
 
@@ -63,6 +66,12 @@ public class KolFollowingListModule {
     @Provides
     MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase() {
         return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+    }
+
+    @KolFollowingListScope
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase( new GraphqlUseCase(), context.getResources());
     }
 
     @KolFollowingListScope

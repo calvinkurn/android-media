@@ -37,6 +37,12 @@ public interface KolFollowingList<R extends FollowingViewModel, T extends Follow
         void onListItemClicked(@NonNull R item);
 
         boolean isOpenFollowerPage();
+
+        void onUnfollowShopButtonClicked(@NonNull FollowingViewModel model);
+
+        void onSuccessUnfollowShop(@NonNull FollowingViewModel model);
+
+        void onErrorUnfollowShop(@NonNull String errorMessage);
     }
 
     interface Presenter<R, T> extends CustomerPresenter<View<R, T>> {
@@ -47,5 +53,7 @@ public interface KolFollowingList<R extends FollowingViewModel, T extends Follow
         void getFollowersList(int userId);
 
         void getFollowersLoadMore(int userId, String cursor);
+
+        void unfollowShop(@NonNull FollowingViewModel model);
     }
 }

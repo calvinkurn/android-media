@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.following_list.view.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -16,6 +18,7 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
 import com.tokopedia.kol.feature.following_list.view.subscriber
         .GetKolFollowingListLoadMoreSubscriber;
 import com.tokopedia.kol.feature.following_list.view.subscriber.GetKolFollowingListSubscriber;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -136,5 +139,10 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
                 }
             });
         }
+    }
+
+    @Override
+    public void unfollowShop(@NonNull FollowingViewModel model) {
+
     }
 }

@@ -154,6 +154,15 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
         return openFollowerPage!!
     }
 
+    override fun onUnfollowShopButtonClicked(model: FollowingViewModel) {
+    }
+
+    override fun onSuccessUnfollowShop(model: FollowingViewModel) {
+    }
+
+    override fun onErrorUnfollowShop(errorMessage: String) {
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

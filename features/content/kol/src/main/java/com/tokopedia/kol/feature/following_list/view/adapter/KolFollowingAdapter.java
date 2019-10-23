@@ -17,6 +17,7 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         viewHolder.tvName.setText(MethodChecker.fromHtml(viewModel.getName()));
         viewHolder.tvEtalase.setText(viewModel.getEtalase());
         viewHolder.tvProduct.setText(viewModel.getProduct());
+        viewHolder.btnUnfav.setOnClickListener((v) -> mainView.onUnfollowShopButtonClicked(viewModel));
     }
 
     public void addBottomLoading() {
@@ -171,6 +173,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         View layout;
         TextView tvName, tvEtalase, tvProduct;
         ProgressBar progressBar;
+        UnifyButton btnUnfav;
 
         public ShopFollowingViewHolder(View itemView) {
             super(itemView);
@@ -180,6 +183,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvProduct = itemView.findViewById(R.id.tv_product);
             layout = itemView.findViewById(R.id.layout);
             progressBar = itemView.findViewById(R.id.progress_bar);
+            btnUnfav = itemView.findViewById(R.id.btn_unfav);
         }
     }
 }
