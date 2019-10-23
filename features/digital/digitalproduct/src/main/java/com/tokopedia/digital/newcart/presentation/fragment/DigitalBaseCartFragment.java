@@ -105,7 +105,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         });
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
-        digitalSubscriptionParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
+        DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
+        if (subParams != null) {
+            digitalSubscriptionParams = subParams;
+        }
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
         if (savedInstanceState != null) {
@@ -513,7 +516,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public DigitalSubscriptionParams getDigitalSubscriptionParams() {
-        return digitalSubscriptionParams;
+        if (digitalSubscriptionParams != null) {
+            return digitalSubscriptionParams;
+        } else {
+            return new DigitalSubscriptionParams();
+        }
     }
 
     @Override

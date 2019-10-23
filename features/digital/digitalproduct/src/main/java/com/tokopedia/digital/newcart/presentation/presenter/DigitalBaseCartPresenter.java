@@ -147,13 +147,11 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setThankyouNativeNew(true);
         // Handle subscription params
         DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
-        if (subParams != null) {
-            if (subParams.getShowSubscribePopUp() != null) {
-                attributes.setShowSubscribePopUp(subParams.getShowSubscribePopUp());
-            }
-            if (subParams.getAutoSubscribe() != null) {
-                attributes.setAutoSubscribe(subParams.getAutoSubscribe());
-            }
+        if (subParams.getShowSubscribePopUp() != null) {
+            attributes.setShowSubscribePopUp(subParams.getShowSubscribePopUp());
+        }
+        if (subParams.getAutoSubscribe() != null) {
+            attributes.setAutoSubscribe(subParams.getAutoSubscribe());
         }
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
