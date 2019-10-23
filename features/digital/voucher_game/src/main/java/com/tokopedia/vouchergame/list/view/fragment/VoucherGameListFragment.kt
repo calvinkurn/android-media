@@ -131,7 +131,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         voucherGameAnalytics.eventPDPLanding()
@@ -264,7 +264,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         return VoucherGameListAdapterFactory(this)
     }
 
-    override fun getScreenName(): String = getString(R.string.app_label)
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(VoucherGameListComponent::class.java).inject(this)
@@ -361,10 +361,22 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameAnalytics.eventClickBackButton()
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = R.dimen.sp_16
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_16
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3

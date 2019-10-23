@@ -9,7 +9,8 @@ public interface DigitalCartDefaultContract {
                               DigitalCheckoutPassData cartPassData);
 
         void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
-                                            DigitalCheckoutPassData cartPassData);
+                                            DigitalCheckoutPassData cartPassData,
+                                            boolean isSubscribed);
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View> {
