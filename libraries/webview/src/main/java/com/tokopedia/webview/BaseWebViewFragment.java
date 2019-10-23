@@ -36,6 +36,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
@@ -108,7 +109,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
         }
-        url = args.getString(KEY_URL, TokopediaUrl.Companion.getInstance().getWEB());
+        url = UrlEncoderExtKt.decode(args.getString(KEY_URL, TokopediaUrl.Companion.getInstance().getWEB()));
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
