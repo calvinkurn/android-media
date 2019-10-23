@@ -49,6 +49,8 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isTradeIn;
     private boolean isTradeInDropOffEnable;
     private int selectedTabIndex;
+    private String dropOffAddressName;
+    private String dropOffAddressDetail;
 
     public RecipientAddressModel() {
     }
@@ -301,6 +303,22 @@ public class RecipientAddressModel implements Parcelable {
         this.partnerName = partnerName;
     }
 
+    public String getDropOffAddressName() {
+        return dropOffAddressName;
+    }
+
+    public void setDropOffAddressName(String dropOffAddressName) {
+        this.dropOffAddressName = dropOffAddressName;
+    }
+
+    public String getDropOffAddressDetail() {
+        return dropOffAddressDetail;
+    }
+
+    public void setDropOffAddressDetail(String dropOffAddressDetail) {
+        this.dropOffAddressDetail = dropOffAddressDetail;
+    }
+
     public boolean equalCorner(RecipientAddressModel that) {
         return getCityId().equals(that.getCityId()) &&
                 getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
@@ -412,6 +430,8 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTradeInDropOffEnable ? (byte) 1 : (byte) 0);
         dest.writeInt(this.selectedTabIndex);
+        dest.writeString(this.dropOffAddressName);
+        dest.writeString(this.dropOffAddressDetail);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -446,6 +466,8 @@ public class RecipientAddressModel implements Parcelable {
         this.isTradeIn = in.readByte() != 0;
         this.isTradeInDropOffEnable = in.readByte() != 0;
         this.selectedTabIndex = in.readInt();
+        this.dropOffAddressName = in.readString();
+        this.dropOffAddressDetail = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -10,14 +9,15 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -54,6 +54,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private LinearLayout llAddOrChangeAddressContainer;
     private Typography tvShipmentAddress;
     private View separator;
+    private Typography tvDropOffAddressTitle;
+    private Typography tvDropOffAddressDescription;
+    private Typography tvChangeDropOff;
+    private ImageView imgPinpoint;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -78,6 +82,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         llAddOrChangeAddressContainer = itemView.findViewById(R.id.ll_add_or_change_address_container);
         tvShipmentAddress = itemView.findViewById(R.id.tv_shipment_address);
         separator = itemView.findViewById(R.id.separator);
+        tvDropOffAddressTitle = itemView.findViewById(R.id.tv_drop_off_address_title);
+        tvDropOffAddressDescription = itemView.findViewById(R.id.tv_drop_off_address_description);
+        tvChangeDropOff = itemView.findViewById(R.id.tv_change_drop_off);
+        imgPinpoint = itemView.findViewById(R.id.img_pinpoint);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -87,6 +95,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         recipientAddress.setTradeIn(true);
         recipientAddress.setDisableMultipleAddress(true);
         recipientAddress.setTradeInDropOffEnable(true);
+        recipientAddress.setDropOffAddressName("A Indomaret Karet Semanggi");
+        recipientAddress.setDropOffAddressDetail("A Karet Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI Jakarta");
 
 
         renderBaseAddress(recipientAddress, cartIds);
@@ -119,7 +129,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     private void renderTradeInAddress(RecipientAddressModel recipientAddress) {
-        renderTradeInInfo(recipientAddress);
         llTradeInInfo.setVisibility(View.VISIBLE);
         if (recipientAddress.isTradeInDropOffEnable()) {
             renderTradeInAddressWithTabs(recipientAddress);
@@ -155,7 +164,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         } else {
             if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
                 tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
-                renderTradeInPickUpTab();
+                renderTradeInPickUpTab(recipientAddress);
             }
         }
 
@@ -179,15 +188,39 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
             }
         });
+
+        tvChangeDropOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shipmentAdapterActionListener.onChangeTradeInDopOffClicked();
+            }
+        });
     }
 
-    private void renderTradeInPickUpTab() {
+    private void renderTradeInPickUpTab(RecipientAddressModel recipientAddress) {
         layoutAddressNormal.setVisibility(View.GONE);
         layoutAddressDropOff.setVisibility(View.VISIBLE);
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(recipientAddress.getDropOffAddressName())) {
+            tvDropOffAddressTitle.setVisibility(View.GONE);
+            tvDropOffAddressDescription.setVisibility(View.GONE);
+            imgPinpoint.setVisibility(View.GONE);
+            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.bg_green_button));
+            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), R.color.white));
+        } else {
+            tvDropOffAddressTitle.setVisibility(View.VISIBLE);
+            tvDropOffAddressDescription.setVisibility(View.VISIBLE);
+            tvDropOffAddressTitle.setText(recipientAddress.getDropOffAddressName());
+            tvDropOffAddressDescription.setText(recipientAddress.getDropOffAddressDetail());
+            imgPinpoint.setVisibility(View.VISIBLE);
+            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.bg_green_round_address));
+            tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), R.color.address_green));
+        }
+        tvTradeInInfo.setText(tvTradeInInfo.getContext().getString(R.string.message_trade_in_checkout_pickup_info));
     }
 
     private void renderTradeInDeliveryTab(RecipientAddressModel recipientAddress) {
+        formatTradeInDeliveryInfo(recipientAddress);
         layoutAddressDropOff.setVisibility(View.GONE);
         layoutAddressNormal.setVisibility(View.VISIBLE);
         llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
@@ -222,8 +255,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 + recipientAddress.getRecipientPhoneNumber();
     }
 
-    private void renderTradeInInfo(RecipientAddressModel recipientAddressModel) {
-        tvTradeInInfo.setText(String.format(tvTradeInInfo.getContext().getString(R.string.checkout_shipment_label_tradein), recipientAddressModel.getRecipientPhoneNumber()));
+    private void formatTradeInDeliveryInfo(RecipientAddressModel recipientAddressModel) {
+        tvTradeInInfo.setText(String.format(tvTradeInInfo.getContext().getString(R.string.message_trade_in_checkout_delivery_info), recipientAddressModel.getRecipientPhoneNumber()));
         String clickableText = "Ganti nomor";
         int startSpan = tvTradeInInfo.getText().toString().indexOf(clickableText);
         int endSpan = tvTradeInInfo.getText().toString().indexOf(clickableText) + clickableText.length();

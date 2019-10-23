@@ -120,4 +120,6 @@ public interface ShipmentAdapterActionListener {
     void onProcessToPayment();
 
     void onProcessToPaymentCod();
+
+    void onChangeTradeInDopOffClicked();
 }
