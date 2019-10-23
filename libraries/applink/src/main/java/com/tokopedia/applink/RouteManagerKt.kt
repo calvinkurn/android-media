@@ -1,4 +1,3 @@
-@file:JvmName("RouteManager")
 package com.tokopedia.applink
 
 import android.app.Activity
