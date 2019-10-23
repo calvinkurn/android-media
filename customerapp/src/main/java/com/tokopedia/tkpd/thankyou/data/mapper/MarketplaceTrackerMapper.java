@@ -19,7 +19,6 @@ import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.FreeShipping;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
@@ -54,7 +53,6 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
     private PaymentData paymentData;
-    private boolean newBuyerFlag;
     private boolean monthlyNewBuyerFlag;
     private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     private static final String TYPE_GLOBAL_VOUCHER = "global";
@@ -72,7 +70,6 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
     public Boolean call(PaymentGraphql response) {
         if (isResponseValid(response)) {
             paymentData = response.getPayment();
-            newBuyerFlag = response.isNewBuyerFlag();
             String orderId = getOrderId(response);
             if(!TextUtils.isEmpty(orderId)) {
                 new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
@@ -336,10 +333,10 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             product.setProductID(String.valueOf(orderDetail.getProductId()));
             product.setProductName(getProductName(orderDetail));
             product.setPrice(String.valueOf(orderDetail.getProductPrice()));
-            product.setCategory(getProductCategory(orderDetail));
+            product.setCategory(orderDetail.getCategoryName());
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
-            product.setDimension83(getDimension83Value(orderData.getOrderInfo().getOrderDetail().get(0).getFreeShipping()));
+            product.setDimension83(getDimension83Value(orderData.isFreeShipping()));
 
             products.add(product);
         }
@@ -357,14 +354,14 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getProductName(orderDetail));
             product.setPrice(String.valueOf(orderDetail.getProductPrice()));
             bundle.putDouble(FirebaseAnalytics.Param.PRICE, orderDetail.getProductPrice());
-            product.setCategory(getProductCategory(orderDetail));
-            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getProductCategory(orderDetail));
+            product.setCategory(orderDetail.getCategoryName());
+            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, orderDetail.getCategoryName());
             product.setQty(String.valueOf(orderDetail.getQuantity()));
             bundle.putInt(FirebaseAnalytics.Param.QUANTITY, orderDetail.getQuantity());
             product.setDimension54(getDimension54Value(orderData.isFulfillment()));
             bundle.putString(Product.KEY_DIMENSION_54, getDimension54Value(orderData.isFulfillment()));
-            product.setDimension83(getDimension83Value(orderData.getOrderInfo().getOrderDetail().get(0).getFreeShipping()));
-            bundle.putString(Product.KEY_DIMENSION_83, getDimension83Value(orderData.getOrderInfo().getOrderDetail().get(0).getFreeShipping()));
+            product.setDimension83(getDimension83Value(orderData.isFreeShipping()));
+            bundle.putString(Product.KEY_DIMENSION_83, getDimension83Value(orderData.isFreeShipping()));
 
             products.add(new Pair<>(product, bundle));
         }
@@ -379,8 +376,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         return "";
     }
 
-    private String getDimension83Value(FreeShipping freeShipping) {
-        if (freeShipping != null && freeShipping.isEligibleFreeShipping()) {
+    private String getDimension83Value(boolean isFreeShipping) {
+        if (isFreeShipping) {
             return "bebas ongkir";
         } else {
             return "none/others";
@@ -389,17 +386,6 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
 
     private String getDimension54Value(boolean isFulfillment) {
         return isFulfillment ? "tokopedia" : "regular";
-    }
-
-    private String getProductCategory(OrderDetail orderDetail) {
-        if (orderDetail != null
-                && orderDetail.getProductCategory() != null) {
-            return orderDetail.getProductCategory().getCategoryNameLevel1()
-                    + "/" + orderDetail.getProductCategory().getCategoryNameLevel2()
-                    + "/" + orderDetail.getProductCategory().getCategoryNameLevel3();
-        }
-
-        return "";
     }
 
     private String getShopName(OrderData orderData) {
@@ -432,7 +418,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         branchIOPayment.setRevenue(String.valueOf((long)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
-        branchIOPayment.setNewBuyer(newBuyerFlag);
+        branchIOPayment.setNewBuyer(orderData.isNewBuyer());
         branchIOPayment.setMonthlyNewBuyer(monthlyNewBuyerFlag);
         for (OrderDetail orderDetail : orderData.getOrderInfo().getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
@@ -442,8 +428,8 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
                     String.valueOf((long)orderDetail.getProductPrice()))));
             product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
-            if (orderDetail.getProductCategory() != null) {
-                product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProductCategory().getCategoryName()));
+            if (orderDetail.getCategoryName() != null) {
+                product.put(LinkerConstants.CATEGORY, orderDetail.getCategoryName());
             } else {
                 product.put(LinkerConstants.CATEGORY, "");
             }

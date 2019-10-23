@@ -3,8 +3,6 @@ package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
  * Created by okasurya on 12/7/17.
  */
@@ -25,6 +23,12 @@ public class OrderData {
     @SerializedName("is_fulfillment")
     @Expose
     private boolean isFulfillment;
+    @SerializedName("is_new_buyer")
+    @Expose
+    private boolean isNewBuyer;
+    @SerializedName("is_free_shipping")
+    @Expose
+    private boolean isFreeShipping;
 
     public int getOrderId() {
         return orderId;
@@ -64,5 +68,21 @@ public class OrderData {
 
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
+    }
+
+    public boolean isNewBuyer() {
+        return isNewBuyer;
+    }
+
+    public void setNewBuyer(boolean newBuyer) {
+        isNewBuyer = newBuyer;
+    }
+
+    public boolean isFreeShipping() {
+        return isFreeShipping;
+    }
+
+    public void setFreeShipping(boolean freeShipping) {
+        isFreeShipping = freeShipping;
     }
 }

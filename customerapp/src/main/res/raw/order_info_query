@@ -5,54 +5,11 @@ query GETORDERINFO($paymentID: Int!) {
     order_id
     seller_id
     payment_id
-    # is_affiliate
-    # order_affiliate{
-    #   is_affiliate
-    # }
+    is_new_buyer
+    is_free_shipping
     is_fulfillment
-    # order_warehouse {
-    #   warehouse_id
-    #   fulfill_by
-    #   meta_data {
-    #     warehouse_id
-    #     partner_id
-    #     shop_id
-    #     warehouse_name
-    #     district_id
-    #     district_name
-    #     city_id
-    #     city_name
-    #     province_id
-    #     province_name
-    #     status
-    #     postal_code
-    #     is_default
-    #     latlon
-    #     latitude
-    #     longitude
-    #     email
-    #     address_detail
-    #     country_name
-    #     is_fulfillment
-    #   }
-    # }
     order_status
-    # invoice_number
-    # invoice_pdf
-    # invoice_url
-    # open_amt
-    # lp_amt
-    # cashback_amt
-    # info
-    # comment
     item_price
-    # buyer_info {
-    #   buyer_id
-    #   buyer_fullname
-    #   buyer_email
-    #   buyer_phone
-    #   last_login_at
-    # }
     promo_info {
       promo_id
       promo_code
@@ -67,50 +24,6 @@ query GETORDERINFO($paymentID: Int!) {
       shop_id
       last_login_at
     }
-    # preorder {
-    #   order_id
-    #   preorder_type
-    #   preorder_process_time
-    #   preorder_process_start
-    #   preorder_deadline
-    #   shop_id
-    #   customer_id
-    # }
-    # give_amount_info {
-    #   buyer {
-    #     id
-    #     give_amount_id
-    #     to
-    #     label
-    #     amount
-    #     type
-    #     note
-    #     order_id
-    #     status
-    #   }
-    #   seller {
-    #     id
-    #     give_amount_id
-    #     to
-    #     label
-    #     amount
-    #     type
-    #     note
-    #     order_id
-    #     status
-    #   }
-    #   others {
-    #     id
-    #     give_amount_id
-    #     to
-    #     label
-    #     amount
-    #     type
-    #     note
-    #     order_id
-    #     status
-    #   }
-    # }
     order_info {
       order_detail {
         order_detail_id
@@ -132,20 +45,11 @@ query GETORDERINFO($paymentID: Int!) {
         currency_rate
         min_order
         child_cat_id
+        category_name
         campaign_id
         product_picture
         snapshot_url
       }
-
-      # order_history {
-      #   action_by
-      #   hist_status_code
-      #   message
-      #   timestamp
-      #   comment
-      #   create_by
-      #   update_by
-      # }
       order_age_day
       shipping_age_day
       delivered_age_day
@@ -177,78 +81,7 @@ query GETORDERINFO($paymentID: Int!) {
         isCashless
         is_fake_delivery
       }
-      # destination {
-      #   receiver_name
-      #   receiver_phone
-      #   address_street
-      #   address_district
-      #   address_city
-      #   address_province
-      #   address_portal
-      #   customer_address_id
-      #   district_id
-      #   city_id
-      #   province_id
-      # }
-      # is_replacement
-      # replacement_multiplier
     }
-    # origin_info {
-    #   sender_name
-    #   origin_province
-    #   origin_province_name
-    #   origin_city
-    #   origin_city_name
-    #   origin_address
-    #   origin_district
-    #   origin_district_name
-    #   origin_postal_code
-    #   origin_geo
-    #   origin_loc {
-    #     lat
-    #     lon
-    #   }
-    #   receiver_name
-    #   destination_address
-    #   destination_province
-    #   destination_city
-    #   destination_district
-    #   destination_postal_code
-    #   destination_geo
-    #   destination_loc {
-    #     lat
-    #     lon
-    #   }
-    # }
-    # payment_info {
-    #   payment_id
-    #   payment_ref_num
-    #   payment_date
-    #   payment_method
-    #   payment_status
-    #   payment_status_id
-    #   create_time
-    #   pg_id
-    #   gateway_name
-    #   update_time
-    #   discount_amount
-    #   voucher_code
-    #   voucher_id
-    # }
-    # insurance_info {
-    #   insurance_type
-    # }
-    # hold_info {
-    #   status
-    #   notes
-    #   create_time
-    #   hold_until
-    # }
-    # cancel_request_info {
-    #   create_time
-    #   reason
-    #   status
-    # }
     create_time
     shipping_date
     update_time
@@ -256,25 +89,6 @@ query GETORDERINFO($paymentID: Int!) {
     delivered_date
     est_shipping_date
     est_delivered_date
-
-    # related_invoices
-    # buttons {
-    #   key
-    #   priority
-    #   color
-    #   type
-    #   uri
-    #   method
-    # }
-
-  }
-  # pagination {
-  #   page
-  #   per_page
-  #   page_count
-  #   total_count
-  #   first_page
-  #   last_page
-  # }
     }
+ }
 }

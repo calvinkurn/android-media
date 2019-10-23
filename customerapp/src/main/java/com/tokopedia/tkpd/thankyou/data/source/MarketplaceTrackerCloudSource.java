@@ -65,23 +65,6 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
         }).map(mapper);
     }
 
-//    private String getRequestPayload() {
-//        remoteConfig = new FirebaseRemoteConfigImpl(context);
-//        Boolean isUsingQueryWithFreeShipping = remoteConfig.getBoolean(ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR, false);
-//
-//        int queryTracker;
-//        if (isUsingQueryWithFreeShipping) {
-//            queryTracker = R.raw.payment_tracker_query_with_free_shipping;
-//        } else {
-//            queryTracker = R.raw.payment_tracker_query;
-//        }
-//
-//        return String.format(
-//                loadRawString(context.getResources(), queryTracker),
-//                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
-//        );
-//    }
-
     private String loadRawString(Resources resources, int resId) {
         InputStream rawResource = resources.openRawResource(resId);
         String content = streamToString(rawResource);

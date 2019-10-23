@@ -11,9 +11,6 @@ public class OrderDetail {
     @SerializedName("order_detail_id")
     @Expose
     private int orderDetailId;
-    @SerializedName("category")
-    @Expose
-    private ProductCategory productCategory;
     @SerializedName("product_name")
     @Expose
     private String productName;
@@ -29,10 +26,9 @@ public class OrderDetail {
     @SerializedName("subtotal_price")
     @Expose
     private float subtotalPrice;
-    @SerializedName("free_shipping")
+    @SerializedName("category_name")
     @Expose
-    private FreeShipping freeShipping;
-
+    private String categoryName;
 
     public int getOrderDetailId() {
         return orderDetailId;
@@ -40,14 +36,6 @@ public class OrderDetail {
 
     public void setOrderDetailId(int orderDetailId) {
         this.orderDetailId = orderDetailId;
-    }
-
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
     }
 
     public String getProductName() {
@@ -90,11 +78,11 @@ public class OrderDetail {
         this.subtotalPrice = subtotalPrice;
     }
 
-    public FreeShipping getFreeShipping() {
-        return freeShipping;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setFreeShipping(FreeShipping freeShipping) {
-        this.freeShipping = freeShipping;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
