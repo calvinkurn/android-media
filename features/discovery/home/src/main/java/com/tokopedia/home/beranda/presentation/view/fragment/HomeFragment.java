@@ -467,7 +467,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (presenter != null) {
                     presenter.getSearchHint();
                     presenter.getHomeData();
-                    presenter.getHeaderData(true);
                 }
                 /**
                  * set notification gimmick
@@ -769,7 +768,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (presenter != null) {
             presenter.getSearchHint();
             presenter.getHomeData();
-            presenter.getHeaderData(false);
             presenter.getStickyContent();
         }
 
@@ -814,6 +812,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
             adapter.setItems( needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
+            presenter.getHeaderData(false);
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
@@ -960,6 +959,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
+        presenter.getHeaderData(false);
 
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
