@@ -1,6 +1,8 @@
 package com.tokopedia.kol.feature.following_list.view.fragment
 
 import android.os.Bundle
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
@@ -42,5 +44,13 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
 
     override fun onViewUpdated(viewModel: ShopFollowingResultViewModel) {
 
+    }
+
+    override fun onListItemClicked(item: ShopFollowingViewModel) {
+        RouteManager.route(
+                context,
+                ApplinkConst.SHOP_HOME,
+                item.id.toString()
+        )
     }
 }

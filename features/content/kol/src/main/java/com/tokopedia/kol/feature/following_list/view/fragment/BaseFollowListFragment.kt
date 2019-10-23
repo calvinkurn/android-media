@@ -150,10 +150,6 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
         NetworkErrorHelper.showSnackbar(activity, error)
     }
 
-    override fun onListItemClicked(item: I) {
-
-    }
-
     override fun isOpenFollowerPage(): Boolean {
         return openFollowerPage!!
     }

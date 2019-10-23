@@ -76,20 +76,24 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             KolFollowingViewModel model = (KolFollowingViewModel) viewModel;
             initView(viewHolder, model);
             initData(viewHolder, model);
+            viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mainView.onListItemClicked(viewModel);
+                }
+            });
         } else if (viewModel instanceof ShopFollowingViewModel && followingViewHolder instanceof ShopFollowingViewHolder) {
             ShopFollowingViewHolder viewHolder = (ShopFollowingViewHolder) followingViewHolder;
             ShopFollowingViewModel model = (ShopFollowingViewModel) viewModel;
             initView(viewHolder, model);
             initData(viewHolder, model);
+            viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mainView.onListItemClicked(viewModel);
+                }
+            });
         }
-
-        followingViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainView.onListItemClicked(viewModel);
-            }
-        });
-
     }
 
     private void initView(KolFollowingViewHolder viewHolder,
@@ -164,6 +168,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class ShopFollowingViewHolder extends RecyclerView.ViewHolder {
         ImageView ivAvatar;
+        View layout;
         TextView tvName, tvEtalase, tvProduct;
         ProgressBar progressBar;
 
@@ -173,6 +178,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvName = itemView.findViewById(R.id.tv_name);
             tvEtalase = itemView.findViewById(R.id.tv_etalase);
             tvProduct = itemView.findViewById(R.id.tv_product);
+            layout = itemView.findViewById(R.id.layout);
             progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
