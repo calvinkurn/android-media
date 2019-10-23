@@ -43,13 +43,13 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
                                 userSession.userId, userSession.deviceId, queryMap)
                         val restRequest = RestRequest.Builder(
                                 urlMap[PATH_TOPADS_GROUP_PRODUCT] ?: "",
-                                object : TypeToken<DataResponse<Data>>() {}.type)
+                                object : TypeToken<DataResponse<List<Data>>>() {}.type)
                                 .setQueryParams(queryMap)
                                 .setCacheStrategy(RestCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    (result.getData() as DataResponse<Data>).data?.let(onSuccessGetAds)
+                    (result.getData() as DataResponse<List<Data>>).data.get(0)?.let {onSuccessGetAds(it)}
                 },
                 onError = {
                     onErrorGetAds(it)
