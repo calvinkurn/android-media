@@ -24,7 +24,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
