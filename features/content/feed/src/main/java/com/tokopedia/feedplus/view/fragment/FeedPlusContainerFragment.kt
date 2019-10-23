@@ -80,7 +80,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder()
-                .allowNextButton(false)
+                .allowPreviousButton(false)
                 .build()
     }
 
@@ -425,7 +425,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-     fun showCreatePostOnBoarding() {
+    fun showCreatePostOnBoarding() {
         fab_feed.addOneTimeGlobalLayoutListener {
             val x1: Int = fab_feed.x.toInt()
             val y1: Int = fab_feed.y.toInt()
@@ -442,9 +442,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun showFabCoachMark() {
+    private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
-            showCreatePostOnBoarding()
+            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
     }

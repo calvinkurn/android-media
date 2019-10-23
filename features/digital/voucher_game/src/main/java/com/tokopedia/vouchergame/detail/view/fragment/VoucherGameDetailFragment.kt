@@ -1,8 +1,10 @@
 package com.tokopedia.vouchergame.detail.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -83,7 +85,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         set(value) {
             field = value
             setInputFieldsError(!value)
-            toggleCheckoutButton()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +130,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Scroll view to top
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL && !isEnquired) {
+            vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -187,7 +196,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
-        toggleCheckoutButton()
     }
 
     override fun processEnquiry(data: TelcoEnquiryData) {
@@ -490,18 +498,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         enquireFields()
     }
 
-    private fun toggleCheckoutButton() {
-        checkout_view.setBuyButtonState(isEnquired)
-    }
-
     override fun onClickNextBuyButton() {
-        if (isEnquired) {
-            if (::voucherGameOperatorData.isInitialized) {
-                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.name, product = selectedProduct)
-            }
-            processCheckout()
+        if (::voucherGameOperatorData.isInitialized) {
+            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                    voucherGameOperatorData.name, product = selectedProduct)
         }
+        processCheckout()
     }
 
     private fun processCheckout() {
