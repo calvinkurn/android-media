@@ -1,14 +1,13 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.FreeReturnActivityListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.FreeReturnActivityPresenter;
@@ -80,8 +79,8 @@ public class FreeReturnActivity extends BasePresenterActivity<FreeReturnActivity
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
-            getFragmentManager().beginTransaction()
+        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment, TAG)
                     .commit();
         }

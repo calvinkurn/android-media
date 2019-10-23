@@ -1,15 +1,12 @@
 package com.tokopedia.sellerapp.deeplink.presenter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -19,7 +16,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -28,6 +24,7 @@ import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -104,8 +101,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openWebView(Uri encodedUri) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()));
-        viewListener.inflateFragment(fragment, "WEB_VIEW");
+        viewListener.inflateFragmentV4(BaseSessionWebViewFragment.newInstance(encodedUri.toString()), "WEB_VIEW");
     }
 
     private String encodeUrl(String url) {

@@ -87,27 +87,25 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         super.onResume()
         if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
-            (fragment as? BaseSessionWebViewFragment)?.webView?.reload()
+            val f:Fragment? = fragment
+            if (f is BaseSessionWebViewFragment) {
+                f.reloadPage()
+            }
         }
     }
 
     override fun onBackPressed() {
-        try {
-            val fragment = fragment as? BaseSessionWebViewFragment
-            if (fragment?.webView?.canGoBack() == true) {
-                fragment.webView.goBack()
+        val f = fragment
+        if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
+            f.webView.goBack()
+        } else {
+            if (isTaskRoot) {
+                RouteManager.route(this, ApplinkConst.HOME)
+                finish()
             } else {
-                if (isTaskRoot) {
-                    RouteManager.route(this, ApplinkConst.HOME)
-                    finish()
-                } else {
-                    super.onBackPressed()
-                }
+                super.onBackPressed()
             }
-        } catch (e: Exception) {
-            super.onBackPressed()
         }
-
     }
 
     companion object {

@@ -51,7 +51,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
     private static final int PICTURE_QUALITY = 60;
 
-    protected TkpdWebView webView;
+    public TkpdWebView webView;
     ProgressBar progressBar;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
@@ -412,6 +412,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    public TkpdWebView getWebView() {
+        return webView;
+    }
+
+    public void reloadPage(){
+        webView.reload();
     }
 
     @Override

@@ -42,13 +42,13 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
@@ -283,8 +283,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void catchToWebView(String url) {
         actionChangeToolbarWithBackToNative();
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view, BaseSessionWebViewFragment.newInstance(url))
                 .commit();
     }
 

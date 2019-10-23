@@ -7,10 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
@@ -34,8 +33,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void catchToWebView(String url) {
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view, BaseSessionWebViewFragment.newInstance(url))
                 .commit();
     }
 

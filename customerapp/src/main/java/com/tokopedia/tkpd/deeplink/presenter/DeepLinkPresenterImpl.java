@@ -1,12 +1,12 @@
 package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
@@ -19,6 +19,7 @@ import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -42,7 +43,6 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -65,10 +65,7 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
-import rx.Subscriber;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,6 +73,15 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import rx.Subscriber;
+
+import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
+import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
 
 
 /**
@@ -462,16 +468,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
             openWebView(uriData,
                     uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
-                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true"));
+                    uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
+                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
+                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
+                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN)));
         } else {
             openWebView(uriData, false,
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
-                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true")
+                    uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
+                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
+                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
+                            "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
             );
         }
     }
@@ -482,10 +488,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString
-                ()), allowingOverriding, showTitlebar, needLogin);
-        viewListener.inflateFragment(fragment, "WEB_VIEW");
-        viewListener.actionChangeToolbarWithBackToNative();
+        Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
+                encodedUri.toString());
+        if (intent!=null) {
+            intent.putExtra(KEY_ALLOW_OVERRIDE, allowingOverriding);
+            intent.putExtra(KEY_NEED_LOGIN, needLogin);
+            intent.putExtra(KEY_TITLEBAR, showTitlebar);
+            context.startActivity(intent);
+            context.finish();
+        }
     }
 
     private String getUrl(String data) {

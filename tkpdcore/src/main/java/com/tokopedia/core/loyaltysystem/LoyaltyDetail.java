@@ -1,15 +1,11 @@
 package com.tokopedia.core.loyaltysystem;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-
-import retrofit2.http.Url;
+import com.tokopedia.core2.R;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 public class LoyaltyDetail extends TActivity {
 
@@ -35,8 +31,7 @@ public class LoyaltyDetail extends TActivity {
     }
 
     private void showFragmentWebView() {
-        Fragment fragment = FragmentGeneralWebView.createInstance(url);
-        getFragmentManager().beginTransaction().add(FRAGMENT_VIEW, fragment).commit();
+        getSupportFragmentManager().beginTransaction().add(FRAGMENT_VIEW, BaseSessionWebViewFragment.newInstance(url)).commit();
     }
 
 

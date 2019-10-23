@@ -1,28 +1,20 @@
 package com.tokopedia.tkpd.applink;
 
-import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.text.TextUtils;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 /**
  * @author anggaprasetiyo on 7/20/17.
@@ -38,7 +30,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
     private static final String KEY_APP_LINK_QUERY_ALLOW_OVERRIDE = "allow_override";
 
-    private FragmentGeneralWebView fragmentGeneralWebView;
+    private BaseSessionWebViewFragment fragmentWebView;
 
     private String url;
     private boolean showToolbar;
@@ -93,12 +85,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
-        if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
-            fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url),
-                    allowOverride, showToolbar, needLogin);
-            getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
-                    fragmentGeneralWebView).commit();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (!(fragment instanceof BaseSessionWebViewFragment)) {
+            fragmentWebView = BaseSessionWebViewFragment.newInstance(url,needLogin,
+                    allowOverride);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    fragmentWebView).commit();
         }
     }
 
@@ -145,8 +137,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
     @Override
     public void onBackPressed() {
         try {
-            if (fragmentGeneralWebView.getWebview().canGoBack()) {
-                fragmentGeneralWebView.getWebview().goBack();
+            if (fragmentWebView.getWebView().canGoBack()) {
+                fragmentWebView.getWebView().goBack();
             } else {
                 if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
                     startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
@@ -174,8 +166,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity {
         super.onResume();
         if(PersistentCacheManager.instance.get("reload_webview", int.class, 0) == 1) {
             PersistentCacheManager.instance.put("reload_webview", 0);
-            if (fragmentGeneralWebView != null) {
-                fragmentGeneralWebView.reloadPage();
+            if (fragmentWebView != null) {
+                fragmentWebView.reloadPage();
             }
         }
     }

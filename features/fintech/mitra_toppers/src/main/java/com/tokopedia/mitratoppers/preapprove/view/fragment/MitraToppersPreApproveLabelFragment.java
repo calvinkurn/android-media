@@ -59,8 +59,8 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Override
     protected void initInjector() {
         MitraToppersComponent mitraToppersComponent = DaggerMitraToppersComponent.builder()
-                        .baseAppComponent(((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent())
-                        .mitraToppersModule(new MitraToppersModule()).build();
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .mitraToppersModule(new MitraToppersModule()).build();
         mitraToppersComponent.inject(this);
         mitraToppersPreApprovePresenter.attachView(this);
     }
@@ -69,7 +69,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view =  LayoutInflater.from(getContext()).inflate(R.layout.fragment_mitra_toppers_preapprove, container, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_mitra_toppers_preapprove, container, false);
         rootView = view.findViewById(R.id.vg_mitra_toppers_root);
         labelView = view.findViewById(R.id.label_view_mitra_toppers);
         rootView.setVisibility(View.GONE);
@@ -95,11 +95,11 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
         mitraToppersPreApprovePresenter.detachView();
     }
 
-    private void showLoading(){
+    private void showLoading() {
         // no loading shown currently
     }
 
-    private void hideLoading(){
+    private void hideLoading() {
         // no loading hidden currently
     }
 
@@ -122,8 +122,8 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
                     TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
                             CATEGORY_PREAPPROVED, ACTION_PREAPPROVED_CLICK, LABEL_CLICK + " - " + amountIntegerString,
                             userSession.getShopId(),
-                            isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
-                            userSession.getUserId(),null);
+                            isGoldMerchant ? GOLD_MERCHANT : isOfficialStore ? OFFICIAL_STORE : REGULAR,
+                            userSession.getUserId(), null);
                     Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
                             preApproveUrl);
                     startActivity(intent);
@@ -131,14 +131,14 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
             });
         }
         TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
-                        CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
-                        userSession.getShopId(),
-                        isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
-                        userSession.getUserId(),null);
+                CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
+                userSession.getShopId(),
+                isGoldMerchant ? GOLD_MERCHANT : isOfficialStore ? OFFICIAL_STORE : REGULAR,
+                userSession.getUserId(), null);
         rootView.setVisibility(View.VISIBLE);
     }
 
-    public void setUserInfo(boolean isOfficialStore, boolean isGoldMerchant){
+    public void setUserInfo(boolean isOfficialStore, boolean isGoldMerchant) {
         this.isGoldMerchant = isGoldMerchant;
         this.isOfficialStore = isOfficialStore;
     }

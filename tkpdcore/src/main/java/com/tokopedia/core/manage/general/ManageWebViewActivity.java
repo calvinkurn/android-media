@@ -5,11 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.core2.R;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 public class ManageWebViewActivity extends BasePresenterActivity {
 
@@ -69,8 +68,8 @@ public class ManageWebViewActivity extends BasePresenterActivity {
     }
 
     private void openWebView(String uri) {
-        FragmentGeneralWebView fragment = FragmentGeneralWebView.createInstance(uri);
-        getFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container,
+                BaseSessionWebViewFragment.newInstance(uri)).commit();
     }
 
     @Override
