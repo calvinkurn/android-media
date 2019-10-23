@@ -121,7 +121,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        boolean overrideUrlLoading = shouldOverrideUrl(url);
+        boolean overrideUrlLoading = shouldOverrideUrlLoading(webView, url);
         if (overrideUrlLoading) {
             getActivity().finish();
             return null;
@@ -335,13 +335,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return BaseWebViewFragment.this.shouldOverrideUrl(url);
+            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return BaseWebViewFragment.this.shouldOverrideUrl(request.getUrl().toString());
+            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, request.getUrl().toString());
         }
 
         @Override
@@ -357,7 +357,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    protected boolean shouldOverrideUrl(@NonNull String url) {
+    protected boolean shouldOverrideUrlLoading(WebView webview, @NonNull String url) {
         if (getActivity() == null) {
             return false;
         }
