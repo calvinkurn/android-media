@@ -21,8 +21,6 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     String getUserId();
 
-    void initTopAdsParams();
-
     void onLoadMoreEmpty();
 
     void appendProductList(List<Visitable> list, boolean hasNextPage);

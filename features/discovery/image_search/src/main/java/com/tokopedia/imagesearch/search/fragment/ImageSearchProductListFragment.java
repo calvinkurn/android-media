@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -23,33 +22,25 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
+import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.decoration.ProductItemDecoration;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.CategoryFilterListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -70,7 +61,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.W
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
         ImageProductListFragmentView,
-        ProductListener, WishListActionListener {
+        ProductListener, WishListActionListener, CategoryFilterListener {
 
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
@@ -181,7 +172,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         initSpan();
         bindView(view);
         initTopAdsConfig();
-        initTopAdsParams();
         setupAdapter();
         setupListener();
     }
@@ -203,7 +193,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void setupAdapter() {
-        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, getQueryKey());
+        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, this, getQueryKey());
         adapter = new ImageProductListAdapter(imageProductListTypeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
@@ -212,7 +202,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
         } else {
-            presenter.initData(initMappingProduct());
+            presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel());
             presenter.loadMoreData(0);
             adapter.showLoading();
         }
@@ -317,22 +307,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void initTopAdsParams() {
-        TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
-        adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-
-        if (canGetDepartmentIdFromSearchParameter()) {
-            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().get(SearchApiConst.SC));
-        }
-    }
-
-    private boolean canGetDepartmentIdFromSearchParameter() {
-        String departmentId = getSearchParameter().get(SearchApiConst.SC);
-        return !departmentId.isEmpty() && !departmentId.equals("0");
-    }
-
-    @Override
     public void onLoadMoreEmpty() {
         adapter.hideLoading();
     }
@@ -346,6 +320,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         if (hasNextPage) {
             adapter.showLoading();
         }
+    }
+
+    public void reloadData() {
+        adapter.clearAllElements();
+        adapter.showLoading();
+        staggeredGridLayoutLoadMoreTriggerListener.resetState();
+        presenter.loadMoreData(0);
     }
 
     private void sendImageTrackingData(List<Visitable> list) {
@@ -488,5 +469,21 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.trackEventClickImageSearchResultProduct(
                 item.getProductAsObjectDataLayerForImageSearchClick()
         );
+    }
+
+    @Override
+    public boolean isCategoryFilterSelected(String categoryId) {
+        return presenter.isCategoryFilterSelected(categoryId);
+    }
+
+    @Override
+    public void onCategoryFilterSelected(CategoryFilterModel.Item item) {
+        boolean isCategoryFilterSelectedReversed = !isCategoryFilterSelected(item.getCategoryId());
+        if (isCategoryFilterSelectedReversed) {
+            presenter.setFilterCategory(item.getCategoryId());
+        } else {
+            presenter.setFilterCategory("");
+        }
+        reloadData();
     }
 }
