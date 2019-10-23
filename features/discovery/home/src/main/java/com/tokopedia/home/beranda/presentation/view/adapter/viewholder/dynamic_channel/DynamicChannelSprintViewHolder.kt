@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View

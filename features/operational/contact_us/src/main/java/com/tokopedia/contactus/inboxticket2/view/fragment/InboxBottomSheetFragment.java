@@ -64,7 +64,7 @@ public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment
                 (getActivity(), com.tokopedia.inbox.R.drawable.ic_close_x_black), null, null , null);
         getDialog().setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
-            View bottomSheetInternal = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+            View bottomSheetInternal = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 

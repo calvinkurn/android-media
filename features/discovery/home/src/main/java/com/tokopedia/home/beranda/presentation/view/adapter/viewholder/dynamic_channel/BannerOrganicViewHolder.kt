@@ -9,7 +9,7 @@ import androidx.annotation.LayoutRes
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.GridLayoutManager
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
