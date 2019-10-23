@@ -85,7 +85,7 @@ object RouteManagerKt{
             }
             DeepLinkChecker.CONTENT -> {
                 val contentId = getLinkSegment(url)[1]
-                return RouteManager.route(activity, ApplinkConst.PROFILE, contentId)
+                return RouteManager.route(activity, ApplinkConst.CONTENT_DETAIL, contentId)
             }
             DeepLinkChecker.HOTEL -> {
                 return RouteManager.route(activity, url)

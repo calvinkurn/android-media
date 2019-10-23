@@ -34,12 +34,12 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
         extArray= converter.fromJson<Array<String>>(arguments!!.getString(ARGS_EXT),Array<String>::class.java)
     }
 
-    override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+    override fun shouldOverrideUrl(url: String): Boolean {
         if (isdownloadable(url)) {
             checkPermissionAndDownload(url)
             return true
         }
-        return super.shouldOverrideUrlLoading(webView, url)
+        return super.shouldOverrideUrl(url)
     }
 
     private fun checkPermissionAndDownload(url: String) {
