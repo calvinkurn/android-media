@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink

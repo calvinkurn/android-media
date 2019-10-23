@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget

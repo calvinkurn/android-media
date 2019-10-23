@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide

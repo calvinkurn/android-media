@@ -4,11 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import android.support.annotation.DimenRes
-import android.support.annotation.DrawableRes
-import android.support.annotation.IdRes
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.CardView
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater

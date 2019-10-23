@@ -61,7 +61,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
         webViewDialog.setOnShowListener { dialog ->
             val bottomSheetDialog = dialog as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             val behavior = BottomSheetBehavior.from(bottomSheet)
             this.behavior = behavior
 
