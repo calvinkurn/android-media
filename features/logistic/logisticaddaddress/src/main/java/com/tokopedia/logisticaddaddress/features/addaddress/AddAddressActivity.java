@@ -2,14 +2,19 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+
+import java.util.List;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
@@ -38,12 +43,23 @@ public class AddAddressActivity extends BaseSimpleActivity {
      */
     @Override
     protected Fragment getNewFragment() {
-        Fragment fragment = null;
+        Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            fragment = AddAddressFragment.newInstance(bundle);
+            bundle.putAll(getIntent().getExtras());
         }
-        return fragment;
+
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConstInternalLogistic.ADD_ADDRESS_V1, uri);
+            int refId = 0;
+            try {
+                refId = Integer.valueOf(params.get(0));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            bundle.putInt(EXTRA_INSTANCE_TYPE, refId);
+        }
+        return AddAddressFragment.newInstance(bundle);
     }
 
     public static Intent createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(@NonNull Activity activity,
