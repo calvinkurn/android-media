@@ -31,9 +31,9 @@ import rx.Observable;
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private Context context;
     private SessionHandler sessionHandler;
-    private MarketplaceTrackerMapper mapper;
     private RemoteConfig remoteConfig;
     private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
+    private static final String PAYMENT_ID = "paymentID";
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          SessionHandler sessionHandler,
@@ -45,13 +45,13 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
 
     @Override
     public Observable<Boolean> sendAnalytics() {
-        mapper = new MarketplaceTrackerMapper(sessionHandler,
+        MarketplaceTrackerMapper mapper = new MarketplaceTrackerMapper(sessionHandler,
                 (List<String>) requestParams.getObject(ThanksTrackerConst.Key.SHOP_TYPES),
                 requestParams);
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         ArrayList<GraphqlRequest> requests = new ArrayList<>();
         HashMap<String, Object> variables = new HashMap<>();
-        variables.put("paymentID", Integer.parseInt(requestParams.getString(ThanksTrackerConst.Key.ID, "0")));
+        variables.put(PAYMENT_ID, Integer.parseInt(requestParams.getString(ThanksTrackerConst.Key.ID, "0")));
         requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.payment_data_query), PaymentGraphql.class, variables));
         requests.add(new GraphqlRequest(loadRawString(context.getResources(), R.raw.order_info_query), OrderGraphql.class, variables));
         graphqlUseCase.addRequests(requests);
