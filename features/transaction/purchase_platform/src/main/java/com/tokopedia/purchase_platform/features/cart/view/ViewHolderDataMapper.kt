@@ -29,18 +29,20 @@ class ViewHolderDataMapper @Inject constructor() {
 
     fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
         return cartItemHolderData.cartItemData.let {
+            val originData = it.originData
             DisabledCartItemHolderData(
-                    it.originData.cartId,
-                    it.originData.productId,
-                    it.originData.productImage,
-                    it.originData.productName,
-                    it.originData.pricePlan,
+                    originData.cartId,
+                    originData.productId,
+                    originData.productImage,
+                    originData.productName,
+                    originData.pricePlan,
                     it.errorMessageTitle,
-                    it.originData.isWishlisted,
+                    originData.isWishlisted,
                     it.errorMessageDescription,
                     it.similarProductData,
                     showDivider,
-                    it)
+                    it
+            )
         }
     }
 }

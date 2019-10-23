@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
+        android:textColor="@color/Neutral_N700_96"
         tools:text="Produk Bermasalah   (3)" />
 
     <com.tokopedia.unifyprinciples.Typography

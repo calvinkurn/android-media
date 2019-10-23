@@ -1356,7 +1356,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             for (ShopGroupWithErrorData shopGroupWithErrorData : cartListData.getShopGroupWithErrorDataList()) {
                 List<CartItemHolderData> cartItemHolderDataList = shopGroupWithErrorData.getCartItemHolderDataList();
                 if (cartItemHolderDataList.size() > 0) {
-                    cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shopGroupWithErrorData)); // Todo : Map to viewModel
+                    cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shopGroupWithErrorData));
                     for (IndexedValue<CartItemHolderData> dataIndexedValue : CollectionsKt.withIndex(cartItemHolderDataList)) {
                         cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(dataIndexedValue.getValue(), dataIndexedValue.getIndex() != cartItemHolderDataList.size() - 1));
                     }

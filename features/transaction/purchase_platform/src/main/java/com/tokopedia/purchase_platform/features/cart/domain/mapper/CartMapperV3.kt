@@ -176,26 +176,21 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
                                           shopGroupData: Any,
                                           cartDataListResponse: CartDataListResponse,
                                           isDisabledAllProduct: Boolean): List<CartItemHolderData> {
-        val cartItemDataList = arrayListOf<CartItemData>()
-        cartDetails?.forEach {
-            val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
-            cartItemDataList.add(cartItemData)
-        }
-
         val cartItemHolderDataList = arrayListOf<CartItemHolderData>()
-        for (cartItemData in cartItemDataList) {
-            CartItemHolderData().let {
-                it.cartItemData = cartItemData
-                it.isEditableRemark = false
-                it.errorFormItemValidationMessage = ""
-                it.isEditableRemark = false
-                if (cartItemData.isError) {
-                    it.isSelected = false
-                } else {
-                    it.isSelected = cartItemData.originData.isCheckboxState
-                }
-                cartItemHolderDataList.add(it)
-            }
+        cartDetails?.forEach {
+            cartItemHolderDataList.add(
+                    CartItemHolderData().apply {
+                        cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
+                        isEditableRemark = false
+                        errorFormItemValidationMessage = ""
+                        isEditableRemark = false
+                        isSelected = if (cartItemData.isError) {
+                            false
+                        } else {
+                            cartItemData.originData.isCheckboxState
+                        }
+                    }
+            )
         }
 
         return cartItemHolderDataList
