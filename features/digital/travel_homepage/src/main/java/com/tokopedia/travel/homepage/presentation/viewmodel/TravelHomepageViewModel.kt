@@ -210,7 +210,7 @@ class TravelHomepageViewModel @Inject constructor(
                     break
                 }
             }
-            isAllError.value = !isSuccess
+            if (!isSuccess) isAllError.value = true
         }
     }
 
