@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModelFactory
@@ -30,7 +31,7 @@ class TopAdsDetailSheet {
     @Inject
     lateinit var factory: TopAdsSheetViewModelFactory
 
-    private fun getComponent(context: Context): TopAdsSheetComponent = DaggerAutoAdsComponent.builder()
+    private fun getComponent(context: Context): TopAdsSheetComponent = DaggerTopAdsSheetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     private fun initComponent(context: Context){
