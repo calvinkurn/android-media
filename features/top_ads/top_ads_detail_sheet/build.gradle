@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex

@@ -1,18 +1,20 @@
 package com.tokopedia.topads.detail_sheet
 
 import android.content.Context
+import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.topads.detail_sheet.data.Data
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
-import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.pdp_topads_detail_sheet.*
 import javax.inject.Inject
@@ -24,19 +26,29 @@ class TopAdsDetailSheet {
 
     private var dialog: BottomSheetDialog? = null
     var editTopAdsClick: (() -> Unit)? = null
-    private lateinit var viewModel: TopAdsSheetViewModel
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
-    lateinit var factory: TopAdsSheetViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: TopAdsSheetViewModel
 
     private fun getComponent(context: Context): TopAdsSheetComponent = DaggerTopAdsSheetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     private fun initComponent(context: Context){
         getComponent(context).inject(this)
-        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, factory).get(TopAdsSheetViewModel::class.java)
+        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
+        viewModel.getAdsProduct("42343963", "2019-10-16", "2019-10-22", this::onSuccessGetAds, this::onErrorGetAds)
+    }
+
+    private fun onErrorGetAds(throwable: Throwable) {
+        throwable.printStackTrace()
+    }
+
+    private fun onSuccessGetAds(data: Data) {
+        Log.d("INFO", data.productName)
     }
 
     private fun setupView(context: Context) {
