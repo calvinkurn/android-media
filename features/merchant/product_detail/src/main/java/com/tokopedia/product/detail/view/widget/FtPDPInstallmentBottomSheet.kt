@@ -102,10 +102,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        val frameParent = parentView.findViewById<FrameLayout>(com.tokopedia.design.R.id.bottomsheet_container)
-        val subView = View.inflate(context, getLayoutResourceId(), null)
-        initView(subView)
-        frameParent.addView(subView)
+        initView(parentView)
     }
 
     protected fun onCloseButtonClick() {
