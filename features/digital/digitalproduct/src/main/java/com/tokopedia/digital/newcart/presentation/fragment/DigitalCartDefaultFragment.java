@@ -36,7 +36,9 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     public interface InteractionListener {
         void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData passData);
 
-        void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
+        void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                            DigitalCheckoutPassData cartPassData,
+                                            boolean isSubscribed);
     }
 
     @Inject
@@ -120,9 +122,10 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
-                                               DigitalCheckoutPassData cartPassData) {
+                                               DigitalCheckoutPassData cartPassData,
+                                               boolean isSubcribed) {
         if (interactionListener != null)
-            interactionListener.inflateMyBillsSubscriptionPage(cartDigitalInfoData, cartPassData);
+            interactionListener.inflateMyBillsSubscriptionPage(cartDigitalInfoData, cartPassData, isSubcribed);
     }
 
     @Override
