@@ -144,6 +144,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
+    public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -816,7 +817,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items);
+            adapter.setItems(needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
         }
     }
 
@@ -842,6 +843,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 needToShowGeolocationComponent = false;
             }
         }
+        if(needToShowGeolocationComponent && HIDE_GEO) return false;
         return needToShowGeolocationComponent;
     }
 
@@ -1472,6 +1474,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseGeolocationView() {
+        HIDE_GEO = true;
         adapter.removeGeolocationViewModel();
     }
 
