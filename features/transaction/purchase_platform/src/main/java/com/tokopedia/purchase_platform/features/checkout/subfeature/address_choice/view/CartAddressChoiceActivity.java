@@ -16,7 +16,6 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -59,6 +58,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
     private int typeRequest;
     private Token token;
+    private String PARAM_ADDRESS_MODEL;
 
     public static Intent createInstance(Activity activity,
                                         ArrayList<MultipleAddressAdapterData> dataList,
@@ -172,11 +172,10 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
                 RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
                 AddressModelMapper mapper = new AddressModelMapper();
-                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
-                        this, mapper.transform(currentAddress), token
-                );
-                startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "12");
+                intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(currentAddress));
+                intent.putExtra(PARAM_TOKEN, token);
+                startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
                 break;
             default:
         }
