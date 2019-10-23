@@ -392,5 +392,6 @@
     <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
     <string name="label_tab_trade_in_address_deliver">Antar</string>
     <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
+    <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
 
 </resources>

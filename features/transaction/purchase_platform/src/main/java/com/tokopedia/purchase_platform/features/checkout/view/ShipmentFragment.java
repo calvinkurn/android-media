@@ -2921,6 +2921,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeTradeInDopOffClicked() {
+        // Todo : Intent to choose pinpoint
+        // Todo : and get 2 result : Address data & Shipping data
+    }
 
+    private void onResultFromSetTradeInPinpoint() {
+        // Todo : Map address data to RecipientAddressModel >> update adapter data
+//        shipmentAdapter.updateSelectedAddress();
+        // Todo : Map shipping data to CourierItemData >> update adapter data
+        shipmentAdapter.setSelectedCourierTradeInPickup(null);
+    }
+
+    @Override
+    public boolean isTradeInByPickup() {
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        if (recipientAddressModel == null) return false;
+        return recipientAddressModel.getSelectedTabIndex() == 1;
     }
 }

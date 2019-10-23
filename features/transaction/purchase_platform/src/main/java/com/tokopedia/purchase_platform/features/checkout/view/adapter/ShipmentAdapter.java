@@ -665,6 +665,35 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void setSelectedCourierTradeInPickup(CourierItemData courierItemData) {
+        // Should be only one invoice
+        int index = 0;
+        for (Object object : shipmentDataList) {
+            if (object instanceof ShipmentCartItemModel) {
+                index = shipmentDataList.indexOf(object);
+                ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object;
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                    ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+                    shipmentDetailData.setSelectedCourierTradeInPickup(courierItemData);
+                } else {
+                    ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+                    shipmentDetailData.setSelectedCourierTradeInPickup(courierItemData);
+                    shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
+                }
+
+                updateShipmentCostModel();
+                checkDataForCheckout();
+                break;
+            }
+        }
+
+        if (index > 0) {
+            notifyItemChanged(getShipmentCostPosition());
+            notifyItemChanged(index);
+            checkHasSelectAllCourier(false);
+        }
+    }
+
     public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
@@ -831,12 +860,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
-                        ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                        (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null ||
+                                ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null) &&
                         (!((ShipmentCartItemModel) shipmentData).isError())) {
                     Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                     Boolean isOrderPriority = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isOrderPriority();
-                    shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                            .getSelectedCourier().getShipperPrice();
+                    boolean isTradeInPickup = shipmentAdapterActionListener.isTradeInByPickup();
+                    if (isTradeInPickup) {
+                        shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourierTradeInPickup().getShipperPrice();
+                    } else {
+                        shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getShipperPrice();
+                    }
                     if (useInsurance != null && useInsurance) {
                         insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getInsurancePrice();

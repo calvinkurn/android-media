@@ -17,6 +17,7 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
+    private CourierItemData selectedCourierTradeInPickup;
     private Boolean useInsurance;
     private boolean usePartialOrder;
     private Boolean useDropshipper;
@@ -43,6 +44,7 @@ public class ShipmentDetailData implements Parcelable {
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
         selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
+        selectedCourierTradeInPickup = in.readParcelable(CourierItemData.class.getClassLoader());
         byte tmpUseInsurance = in.readByte();
         useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
         usePartialOrder = in.readByte() != 0;
@@ -243,6 +245,14 @@ public class ShipmentDetailData implements Parcelable {
         this.isOrderPriority = orderPriority;
     }
 
+    public CourierItemData getSelectedCourierTradeInPickup() {
+        return selectedCourierTradeInPickup;
+    }
+
+    public void setSelectedCourierTradeInPickup(CourierItemData selectedCourierTradeInPickup) {
+        this.selectedCourierTradeInPickup = selectedCourierTradeInPickup;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -256,6 +266,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipment, flags);
         dest.writeParcelable(selectedCourier, flags);
+        dest.writeParcelable(selectedCourierTradeInPickup, flags);
         dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
         dest.writeByte((byte) (usePartialOrder ? 1 : 0));
         dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));

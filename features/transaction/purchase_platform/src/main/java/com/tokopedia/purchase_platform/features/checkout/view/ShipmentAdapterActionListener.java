@@ -122,4 +122,6 @@ public interface ShipmentAdapterActionListener {
     void onProcessToPaymentCod();
 
     void onChangeTradeInDopOffClicked();
+
+    boolean isTradeInByPickup();
 }
