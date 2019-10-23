@@ -19,6 +19,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,6 +30,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -46,6 +48,8 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 import com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager;
+import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.webview.TkpdWebView;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +61,10 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.getLessDisplayData;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING;
 
 public class CouponDetailFragment extends BaseDaggerFragment implements CouponDetailContract.View, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
@@ -642,51 +650,79 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             return;
         }
 
-        CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
-        WrapContentHeightViewPager pager = getView().findViewById(R.id.view_pager_info);
+//        CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
+//        WrapContentHeightViewPager pager = getView().findViewById(R.id.view_pager_info);
+//
+//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                if (position == 0) {
+//                    AnalyticsTrackerUtil.sendEvent(getContext(),
+//                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+//                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+//                            AnalyticsTrackerUtil.ActionKeys.CLICK_KETENTUAN,
+//                            mCouponName);
+//                } else {
+//                    AnalyticsTrackerUtil.sendEvent(getContext(),
+//                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+//                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+//                            AnalyticsTrackerUtil.ActionKeys.CLICK_CARA_PAKAI,
+//                            mCouponName);
+//                }
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+//
+//        TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
+//        pager.setAdapter(adapter);
+//        pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+//        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
+//        llBottomBtn.setVisibility(View.VISIBLE);
+//
+//        //excluding extra padding from tabs
+//        TabUtil.wrapTabIndicatorToTitle(tabs,
+//                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+//                (int) getResources().getDimension(R.dimen.tp_margin_regular));
 
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        TkpdWebView tvHowToUse = getView().findViewById(R.id.how_to_use_content);
+        TkpdWebView tvTnc = getView().findViewById(R.id.tnc_content);
+        com.tokopedia.unifyprinciples.Typography tncSeeMore = getView().findViewById(R.id.tnc_see_more);
+        Typography howToUseSeeMore = getView().findViewById(R.id.how_to_use_see_more);
 
-            }
+        tvTnc.loadData(getLessDisplayData(tnc, tncSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
+        tvHowToUse.loadData(getLessDisplayData(info, howToUseSeeMore), COUPON_MIME_TYPE, UTF_ENCODING);
 
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    AnalyticsTrackerUtil.sendEvent(getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_KETENTUAN,
-                            mCouponName);
-                } else {
-                    AnalyticsTrackerUtil.sendEvent(getContext(),
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_CARA_PAKAI,
-                            mCouponName);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+        tncSeeMore.setOnClickListener(v -> {
+            loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog));
         });
-
-        TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
-        pager.setAdapter(adapter);
-        pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
-        llBottomBtn.setVisibility(View.VISIBLE);
-
-        //excluding extra padding from tabs
-        TabUtil.wrapTabIndicatorToTitle(tabs,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+        howToUseSeeMore.setOnClickListener(v -> {
+            loadWebViewInBottomsheet(info, getString(R.string.how_to_use_coupon_catalog));
+        });
     }
 
+    private void loadWebViewInBottomsheet(String data, String title) {
+        CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        View view = getLayoutInflater().inflate(R.layout.catalog_bottomsheet, null, true);
+        WebView webView = view.findViewById(R.id.catalog_webview);
+        ImageView closeBtn = view.findViewById(R.id.close_button);
+        Typography titleView = view.findViewById(R.id.title_closeable);
+
+        webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING);
+        closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
+        titleView.setText(title);
+        bottomSheet.setCustomContentView(view, title, false);
+        bottomSheet.show();
+    }
     private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
         if (mTimer != null || getView() == null) {
             mTimer.cancel();

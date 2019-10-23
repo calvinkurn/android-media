@@ -173,47 +173,171 @@
                 </android.support.constraint.ConstraintLayout>
             </android.support.design.widget.AppBarLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical">-->
 
-                <android.support.design.widget.AppBarLayout
+<!--                <android.support.design.widget.AppBarLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/white">-->
+
+<!--                    <com.tokopedia.design.component.Tabs-->
+<!--                        android:id="@+id/tab_layout_info"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:tabIndicatorColor="@color/tkpd_main_green"-->
+<!--                        app:tabMode="scrollable"-->
+<!--                        app:tabSelectedTextColor="@color/tkpd_main_green"-->
+<!--                        app:tabTextAppearance="@style/TokoPointsTabs"-->
+<!--                        app:tabTextColor="@color/black_38">-->
+
+<!--                        <android.support.design.widget.TabItem-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@string/tp_label_tnc" />-->
+
+<!--                        <android.support.design.widget.TabItem-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@string/tp_label_how_to_use" />-->
+
+<!--                    </com.tokopedia.design.component.Tabs>-->
+<!--                </android.support.design.widget.AppBarLayout>-->
+
+<!--                <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager-->
+<!--                    android:id="@+id/view_pager_info"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+<!--            </LinearLayout>-->
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/top_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_2"
+                    android:layout_margin="@dimen/dp_16"
+                    android:background="@color/bg_label_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tnc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:text="@string/tnc_coupon_catalog"
+                    android:textColor="@color/clr_f531353b"
+                    app:layout_constraintLeft_toLeftOf="@+id/top_separator"
+                    app:layout_constraintTop_toBottomOf="@+id/top_separator"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.webview.TkpdWebView
+                    android:id="@+id/tnc_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:scrollbars="none"
+                    app:layout_constraintLeft_toLeftOf="@+id/tnc"
+                    app:layout_constraintRight_toRightOf="@+id/tnc"
+                    app:layout_constraintTop_toBottomOf="@+id/tnc" />
 
-                    <com.tokopedia.design.component.Tabs
-                        android:id="@+id/tab_layout_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tabIndicatorColor="@color/tkpd_main_green"
-                        app:tabMode="scrollable"
-                        app:tabSelectedTextColor="@color/tkpd_main_green"
-                        app:tabTextAppearance="@style/TokoPointsTabs"
-                        app:tabTextColor="@color/black_38">
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tnc_see_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:text="@string/see_more_txt"
+                    android:textColor="@color/medium_green"
+                    app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tnc_content"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
 
-                        <android.support.design.widget.TabItem
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/tp_label_tnc" />
-
-                        <android.support.design.widget.TabItem
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/tp_label_how_to_use" />
-
-                    </com.tokopedia.design.component.Tabs>
-                </android.support.design.widget.AppBarLayout>
-
-                <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
-                    android:id="@+id/view_pager_info"
+                <View
+                    android:id="@+id/mid_separator"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-            </LinearLayout>
+                    android:layout_height="@dimen/dp_2"
+                    android:layout_margin="@dimen/dp_16"
+                    android:background="@color/bg_label_grey"
+                    app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
+                    app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
+                    app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/how_to_use"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:text="@string/how_to_use_coupon_catalog"
+                    android:textColor="@color/clr_f531353b"
+                    app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
+                    app:layout_constraintTop_toBottomOf="@+id/mid_separator"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.webview.TkpdWebView
+                    android:id="@+id/how_to_use_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:scrollbars="none"
+                    app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
+                    app:layout_constraintRight_toRightOf="@+id/how_to_use"
+                    app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/how_to_use_see_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:text="@string/see_more_txt"
+                    android:textColor="@color/medium_green"
+                    app:layout_constraintLeft_toLeftOf="@+id/how_to_use_content"
+                    app:layout_constraintTop_toBottomOf="@+id/how_to_use_content"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
+
+                <View
+                    android:id="@+id/bottom_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_2"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:background="@color/bg_label_grey"
+                    app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
+                    app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
+                    app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
+                    app:layout_goneMarginBottom="@dimen/dp_8" />
+
+               <android.support.v7.widget.RecyclerView
+                   android:id="@+id/recomendation_list"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="@dimen/dp_16"
+                   app:layout_constraintTop_toBottomOf="@id/bottom_separator"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
 
         </LinearLayout>
     </ScrollView>
