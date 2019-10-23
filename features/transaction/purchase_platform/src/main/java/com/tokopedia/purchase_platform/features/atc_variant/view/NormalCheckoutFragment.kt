@@ -127,7 +127,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     val currencyLabel = "IDR"
 
 
-    private var condition: String? = ""
+    private var condition: String = ""
     private val page = "pdp"
     private val clientVersion = Build.VERSION.SDK_INT.toString()
 
@@ -514,7 +514,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             categoryName = argument.getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME) ?: ""
             productTitle = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE) ?: ""
             productPrice = argument.getFloat(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE) ?: 0f
-            condition = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION)
+            condition = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION) ?: ""
 
 
             shopId = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_ID) ?: ""
