@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addpin.view.activity.PinCompleteActivity
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Screen.SCREEN_POPUP_PIN_SUCCESS
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -45,14 +46,22 @@ class PinCompleteFragment: BaseDaggerFragment() {
         initViews()
     }
 
-    fun initViews(){
+    private fun initViews(){
         when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
             SOURCE_CHANGE_PIN -> {
                 titleComplete.text = getString(R.string.pin_change_success_message)
+                setToolbarTitle(resources.getString(R.string.title_change_pin))
             }
             SOURCE_FORGOT_PIN -> {
                 titleComplete.text = getString(R.string.pin_change_success_message)
+                setToolbarTitle(resources.getString(R.string.title_setting_pin))
             }
+        }
+    }
+
+    private fun setToolbarTitle(title: String){
+        if(activity is PinCompleteActivity){
+            (activity as PinCompleteActivity).supportActionBar?.title = title
         }
     }
 
