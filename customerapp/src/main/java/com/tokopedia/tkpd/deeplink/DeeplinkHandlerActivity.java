@@ -446,7 +446,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @DeepLink({ApplinkConst.PROMO})
     public static Intent getPromoIntent(Context context, Bundle bundle) {
         String promoId = bundle.getString("promo_id", "");
-        String url = BerandaUrl.PROMO_URL + promoId + FLAG_APP;
+        String url = BerandaUrl.PROMO_URL;
         if (!TextUtils.isEmpty(promoId)) {
             url+= promoId;
         }
