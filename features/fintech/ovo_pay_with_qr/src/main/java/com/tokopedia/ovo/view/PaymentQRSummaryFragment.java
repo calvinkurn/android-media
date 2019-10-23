@@ -295,7 +295,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                 amountInLong = amountInLong / 10L;
             }
             inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong));
-            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+            if (wallet != null && TextUtils.isEmpty(wallet.getPointBalance())
+                    && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
                 long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
                 ovoPoints.setText(String.format(getString(com.tokopedia.ovo.R.string.oqr_ovo_cash_point_amnt),
                         wallet.getPointBalance()));

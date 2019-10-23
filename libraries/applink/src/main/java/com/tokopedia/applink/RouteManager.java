@@ -238,7 +238,7 @@ public class RouteManager {
         if (URLUtil.isNetworkUrl(applink)) {
             return true;
         }
-        return buildInternalExplicitIntent(context, applink) != null;
+        return getIntentNoFallback(context, applink) != null;
     }
 
     public static String routeWithAttribution(Context context, String applink,
