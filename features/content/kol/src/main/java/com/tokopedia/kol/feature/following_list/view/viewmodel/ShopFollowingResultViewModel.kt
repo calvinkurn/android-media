@@ -6,5 +6,6 @@ package com.tokopedia.kol.feature.following_list.view.viewmodel
 data class ShopFollowingResultViewModel(
         override val isCanLoadMore: Boolean,
         override val followingViewModelList: List<ShopFollowingViewModel>,
-        val totalCount: Int
+        val totalCount: Int,
+        val currentPage: Int
 ) : FollowingResultViewModel<ShopFollowingViewModel>

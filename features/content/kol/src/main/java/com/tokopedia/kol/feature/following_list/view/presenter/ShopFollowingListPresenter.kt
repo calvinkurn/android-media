@@ -3,7 +3,6 @@ package com.tokopedia.kol.feature.following_list.view.presenter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.UserShopFollowDetail
@@ -11,13 +10,11 @@ import com.tokopedia.kol.feature.following_list.domain.interactor.GetShopFollowi
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -34,17 +31,31 @@ class ShopFollowingListPresenter @Inject constructor(
     private val job = SupervisorJob()
 
     override fun getKolFollowingList(userId: Int) {
+        val page = 1
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
                 clearRequest()
-                addRequestWithParam(userId, 1)
+                addRequestWithParam(userId, page)
             }.executeOnBackground()
-            view.onSuccessGetKolFollowingList(userFollow.convertToViewModel())
+            view.run {
+                onSuccessGetKolFollowingList(userFollow.convertToViewModel(page))
+                hideLoading()
+            }
         }
     }
 
     override fun getKolLoadMore(userId: Int, cursor: String?) {
-
+        val page = try { cursor?.toInt()?.plus(1) } catch (e: Exception) { null } ?: return
+        launch {
+            val userFollow = getUserShopFollowingListUseCase.apply {
+                clearRequest()
+                addRequestWithParam(userId, page)
+            }.executeOnBackground()
+            view.run {
+                onSuccessLoadMoreKolFollowingList(userFollow.convertToViewModel(page))
+                hideLoading()
+            }
+        }
     }
 
     override fun getFollowersList(userId: Int) {
@@ -60,11 +71,12 @@ class ShopFollowingListPresenter @Inject constructor(
         job.cancel()
     }
 
-    private fun GetShopFollowingData.convertToViewModel(): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
+    private fun GetShopFollowingData.convertToViewModel(currentPage: Int): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
         ShopFollowingResultViewModel(
                 isCanLoadMore = result.haveNext,
                 totalCount = result.totalCount.toInt(),
-                followingViewModelList = result.userShopFollowDetail.map { it.convertToViewModel() }
+                followingViewModelList = result.userShopFollowDetail.map { it.convertToViewModel() },
+                currentPage = currentPage
         )
     }
 

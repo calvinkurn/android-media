@@ -36,7 +36,8 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
     }
 
     override fun updateParams(viewModel: ShopFollowingResultViewModel) {
-
+        this.isCanLoadMore = viewModel.isCanLoadMore
+        this.cursor = viewModel.currentPage.toString()
     }
 
     override fun onViewUpdated(viewModel: ShopFollowingResultViewModel) {
