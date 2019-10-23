@@ -327,15 +327,6 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventImpressionGuidedSearch(Context context, String currentKey, String page) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                "viewSearchResult",
-                "search result",
-                "impression - guided search",
-                String.format("%s - %s", currentKey, page)
-        ));
-    }
-
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
