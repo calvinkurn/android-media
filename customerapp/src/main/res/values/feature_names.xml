@@ -40,6 +40,9 @@
     <!-- Dynamic feature for Digital Subhomepage -->
     <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
 
+    <!-- Dynamic feature for Voucher Game -->
+    <string name="voucher_game_app_name">Cari Voucher</string>
+
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_image_search_module_name" >Pencarian Gambar</string>

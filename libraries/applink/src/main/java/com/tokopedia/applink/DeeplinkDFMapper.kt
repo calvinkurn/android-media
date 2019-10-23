@@ -8,6 +8,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
@@ -63,6 +64,7 @@ object DeeplinkDFMapper {
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
+    private val DFM_VOUCHER_GAME = "voucher_game"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
     private val DFM_USER_SETTING_BANK = "settingbank"
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
@@ -90,6 +92,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
+            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
