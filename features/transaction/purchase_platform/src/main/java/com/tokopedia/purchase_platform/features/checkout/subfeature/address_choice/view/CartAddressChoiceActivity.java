@@ -164,8 +164,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     intent = RouteManager.getIntent(this,
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "13");
                     intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent,
-                            LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 }
 
                 break;
