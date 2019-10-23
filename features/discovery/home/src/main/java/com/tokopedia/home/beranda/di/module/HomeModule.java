@@ -94,10 +94,11 @@ public class HomeModule {
     @Provides
     protected HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
                                                    HomeAceApi homeAceApi,
+                                                   HomeMapper homeMapper,
                                                    @ApplicationContext Context context,
                                                    CacheManager cacheManager,
                                                    Gson gson){
-        return new HomeDataSource(homeDataApi, homeAceApi, context, cacheManager, gson);
+        return new HomeDataSource(homeDataApi, homeAceApi, homeMapper, context, cacheManager, gson);
     }
 
     @Provides
