@@ -22,8 +22,9 @@ import javax.inject.Named
 import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_TOPADS_GROUP_PRODUCT
 import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_BULK_ACTION_PRODUCT_AD
 import com.tokopedia.topads.detail_sheet.data.Ad
-import com.tokopedia.topads.detail_sheet.data.BulkActionRequest
-import com.tokopedia.topads.detail_sheet.data.DataBulk
+import com.tokopedia.topads.detail_sheet.data.ActionRequest
+import com.tokopedia.topads.detail_sheet.data.Bulk
+import java.util.HashMap
 
 /**
  * Author errysuprayogi on 22,October,2019
@@ -64,17 +65,20 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
         )
     }
 
-    fun postPromo(action: String, adId: Int, onSuccess: ((DataBulk) -> Unit), onError: ((Throwable) -> Unit)) {
+    fun postPromo(action: String, adId: Int, onSuccess: ((Bulk) -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
-                        val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_BULK_ACTION_PRODUCT_AD, object : TypeToken<BulkActionRequest>() {}.type)
+                        val headers = HashMap<String, String>()
+                        headers.put("Content-Type", "application/json")
+                        val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_BULK_ACTION_PRODUCT_AD, object : TypeToken<ActionRequest>() {}.type)
                                 .setBody(Gson().toJson(generateActionRequest(action, userSession.shopId, adId.toString())))
+                                .setHeaders(headers)
                                 .setRequestType(RequestType.POST)
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    (result.getData() as BulkActionRequest).data?.let {
+                    (result.getData() as ActionRequest).data?.let {
                         onSuccess(it)
                     }
                 },
@@ -84,9 +88,9 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
         )
     }
 
-    private fun generateActionRequest(action: String, shopId: String, adId: String): BulkActionRequest {
-        return BulkActionRequest(
-                DataBulk(action,
+    private fun generateActionRequest(action: String, shopId: String, adId: String): ActionRequest {
+        return ActionRequest(
+                Bulk(action,
                         listOf(Ad(null,
                                 null,
                                 null,

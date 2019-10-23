@@ -1,10 +1,10 @@
 package com.tokopedia.topads.detail_sheet
 
 import android.content.Context
-import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
+import android.widget.Switch
 import android.widget.ToggleButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.detail_sheet.data.Data
-import com.tokopedia.topads.detail_sheet.data.DataBulk
+import com.tokopedia.topads.detail_sheet.data.Bulk
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
@@ -61,7 +61,7 @@ class TopAdsDetailSheet {
             it.txt_terjual.setText(data.statTotalConversion)
             it.toggle_switch_ads.isChecked = data.adId != 0
             it.toggle_switch_ads.setOnClickListener {
-                when((it as ToggleButton).isChecked){
+                when((it as Switch).isChecked){
                     true -> viewModel.postPromo("toggle_on", data.adId, this::onSuccessPost, this::onErrorPost)
                     false -> viewModel.postPromo("toggle_off", data.adId, this::onSuccessPost, this::onErrorPost)
                 }
@@ -89,7 +89,7 @@ class TopAdsDetailSheet {
         }
     }
 
-    fun onSuccessPost(data: DataBulk) {
+    fun onSuccessPost(data: Bulk) {
         dialog?.let {
             it.toggle_switch_ads.isChecked = true
             it.txt_active_status.setText(data.ads.get(0)?.statusDesc)

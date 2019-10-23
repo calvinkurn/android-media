@@ -3,7 +3,7 @@ package com.tokopedia.topads.detail_sheet.data
 
 import com.google.gson.annotations.SerializedName
 
-data class BulkActionRequest(
+data class ActionRequest(
     @SerializedName("data")
-    val `data`: DataBulk
+    val `data`: Bulk
 )
