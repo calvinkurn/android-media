@@ -45,6 +45,7 @@ class ConfirmRequestPickupFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        (activity as OrderDetailActivity).setActionBarTitle(getString(R.string.request_pickup_title))
         return inflater.inflate(R.layout.fragment_confirm_request_pickup, container, false)
     }
 
