@@ -129,8 +129,6 @@ public interface TkpdCoreRouter {
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
-    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
-
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);

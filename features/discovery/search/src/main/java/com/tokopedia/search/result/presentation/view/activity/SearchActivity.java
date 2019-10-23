@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -47,13 +49,19 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,11 +69,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
@@ -104,11 +113,17 @@ public class SearchActivity extends BaseActivity
     private String catalogTabTitle;
     private String autocompleteApplink;
 
-    @Inject
-    SearchTracking searchTracking;
+    @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
-    @Inject LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchShopViewModelFactory;
+    @Inject @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchViewModelFactory;
+
+    @Nullable
+    SearchViewModel searchViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -120,14 +135,19 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
 
+        getExtrasFromIntent(getIntent());
         initActivityOnCreate();
         proceed();
-        handleIntent(getIntent());
+        handleIntent();
     }
 
     @Override
     public void startPerformanceMonitoring() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+    }
+
+    private void getExtrasFromIntent(Intent intent) {
+        searchParameter = getSearchParameterFromIntentUri(intent);
     }
 
     private void initActivityOnCreate() {
@@ -138,7 +158,9 @@ public class SearchActivity extends BaseActivity
     private void initInjector() {
         SearchViewComponent searchComponent = DaggerSearchViewComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .searchShopViewModelFactoryModule(new SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
                 .build();
+
         searchComponent.inject(this);
     }
 
@@ -352,9 +374,10 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void handleIntent(Intent intent) {
+    private void handleIntent() {
         initResources();
-        getExtrasFromIntent(intent);
+        initViewModel();
+        observeViewModel();
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
@@ -366,8 +389,61 @@ public class SearchActivity extends BaseActivity
         catalogTabTitle = getString(R.string.catalog_tab_title);
     }
 
-    private void getExtrasFromIntent(Intent intent) {
-        searchParameter = getSearchParameterFromIntentUri(intent);
+    private void initViewModel() {
+        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
+
+        searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
+    }
+
+    private void observeViewModel() {
+        observeAutoCompleteEvent();
+        observeHideLoadingEvent();
+        observeChildViewVisibilityChangedEvent();
+    }
+
+    private void observeAutoCompleteEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    showSearchInputView();
+                }
+            }
+        });
+    }
+
+    private void observeHideLoadingEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getHideLoadingEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    removeSearchPageLoading();
+                }
+            }
+        });
+    }
+
+    private void observeChildViewVisibilityChangedEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
+            if (childViewVisibilityChangedEvent != null) {
+                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
+
+                if (childViewVisibilityChangedModel != null) {
+                    setupSearchNavigation(
+                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
+                            childViewVisibilityChangedModel.isSortEnabled()
+                    );
+                }
+            }
+        });
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
