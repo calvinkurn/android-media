@@ -85,8 +85,7 @@
         android:text="@string/il_dana_instant_interest_rate"
         app:layout_constraintBottom_toBottomOf="@+id/text_interest_rate"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
-        app:layout_constraintTop_toTopOf="@+id/text_interest_rate"
-        tools:text="Rp66.000 - Rp201.600" />
+        app:layout_constraintTop_toTopOf="@+id/text_interest_rate" />
 
     <View
         android:id="@+id/line_separator_vertical_two"
