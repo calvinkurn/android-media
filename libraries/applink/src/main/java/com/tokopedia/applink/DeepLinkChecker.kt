@@ -67,14 +67,34 @@ object DeepLinkChecker {
             return false
         }
         var host = uriData.host ?: return false
-        val path = uriData.path ?: return false
+        var path = uriData.path ?: return false
         host = host.replaceFirstWww()
+        path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
             .filter { it.isNotEmpty() }
-            .map { it.replaceFirstWww() }
+            .map { it.replaceFirstWww().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isExcludedUrl(context: Context, uriData: Uri): Boolean {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL)
+        if (excludedUrl.isNullOrEmpty()) {
+            return false
+        }
+        var path = uriData.path ?: return false
+        path = path.replaceLastSlash()
+        val excludedUrlList = excludedUrl.split(",".toRegex())
+            .filter { it.isNotEmpty() }
+            .map { it.replaceLastSlash() }
+        for (excludedString in excludedUrlList) {
+            if (path.endsWith(excludedString)) {
                 return true
             }
         }
@@ -88,20 +108,11 @@ object DeepLinkChecker {
         return this
     }
 
-    private fun isExcludedUrl(context: Context, uriData: Uri): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        val excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL)
-        if (excludedUrl.isNullOrEmpty()) {
-            return false;
+    private fun String.replaceLastSlash(): String {
+        if (endsWith("/")) {
+            return this.substring(0, this.length - 1)
         }
-        val path = uriData.path ?: return false
-        val excludedUrlList = excludedUrl.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-        for (excludedString in excludedUrlList) {
-            if (path.endsWith(excludedString)) {
-                return true
-            }
-        }
-        return false
+        return this
     }
 
     @JvmStatic
