@@ -11,11 +11,15 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
+import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_TOPADS_GROUP_PRODUCT
+import com.tokopedia.topads.detail_sheet.UrlConstant.BASE_REST_URL
 
 /**
  * Author errysuprayogi on 22,October,2019
@@ -23,6 +27,12 @@ import javax.inject.Named
 @TopAdsSheetScope
 @Module
 class TopAdsSheetModule {
+
+    @TopAdsSheetScope
+    @Provides
+    @IntoMap
+    @StringKey(PATH_TOPADS_GROUP_PRODUCT)
+    fun provideGroupProductAdsURL(): String = BASE_REST_URL + PATH_TOPADS_GROUP_PRODUCT
 
     @TopAdsSheetScope
     @Provides

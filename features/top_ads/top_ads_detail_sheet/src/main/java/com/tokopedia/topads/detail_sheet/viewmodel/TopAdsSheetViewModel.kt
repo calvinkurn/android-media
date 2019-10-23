@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.topads.detail_sheet.Constant.PATH_TOPADS_GROUP_PRODUCT
+import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_TOPADS_GROUP_PRODUCT
 
 /**
  * Author errysuprayogi on 22,October,2019
