@@ -25,11 +25,12 @@ import android.widget.ViewFlipper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.promotionstarget.ClaimCouponApi
+import com.tokopedia.promotionstarget.ClaimCouponApiResponseCallback
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.GratificationDataContract
+import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
-import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
-import com.tokopedia.promotionstarget.data.claim.PopGratificationClaim
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
@@ -43,6 +44,7 @@ import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -67,8 +69,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var tvSubTitleRight: AppCompatTextView
 
     lateinit var viewModel: TargetPromotionsDialogVM
-    private var data: GratificationDataContract? = null
     private lateinit var gratificationData: GratificationData
+    private lateinit var claimCouponApi: ClaimCouponApi
+
+    private var data: GratificationDataContract? = null
+
     private var originalBtnText: String? = null
     private var couponCodeAfterClaim: String? = null
     private var shouldCallAutoApply = true
@@ -86,6 +91,27 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var retryCount = 0
     private var skipBtnAction = false
     private var screenWidth = 0f
+
+    private val couponClaimResponseCallback = object : ClaimCouponApiResponseCallback {
+        override fun onNext(it: Result<ClaimPopGratificationResponse>) {
+            when (it) {
+                is Success -> {
+                    setUiForSuccessClaimGratification(it.data)
+                }
+                is Error -> {
+                    setErrorUiForPopGratification()
+                }
+            }
+            toggleProgressBar(false)
+            toggleBtnText(true)
+        }
+
+        override fun onError(th: Throwable) {
+            toggleProgressBar(false)
+            toggleBtnText(true)
+            setErrorUiForPopGratification()
+        }
+    }
 
     var uiType: TargetPromotionsCouponType = TargetPromotionsCouponType.SINGLE_COUPON
 
@@ -108,7 +134,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
              couponUiType: TargetPromotionsCouponType,
              data: GratificationDataContract,
              couponDetailResponse: GetCouponDetailResponse,
-             gratificationData: GratificationData): Dialog {
+             gratificationData: GratificationData,
+             claimCouponApi: ClaimCouponApi): Dialog {
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
@@ -120,6 +147,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
         }
         bottomSheetDialog = bottomSheet
+        this.claimCouponApi = claimCouponApi
         initViews(view, activityContext, data, couponDetailResponse, gratificationData)
         return bottomSheet
     }
@@ -267,19 +295,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun setListeners(data: GratificationDataContract, activityContext: Context) {
-        viewModel.couponClaimLiveData.observe(activityContext as AppCompatActivity, Observer { it ->
-            when (it) {
-                is Success -> {
-                    setUiForSuccessClaimGratification(it.data)
-                }
-                is Error -> {
-                    setErrorUiForPopGratification()
-                }
-            }
-            toggleProgressBar(false)
-            toggleBtnText(true)
-
-        })
 
         viewModel.autoApplyLiveData.observe(activityContext as AppCompatActivity, Observer { it ->
             when (it) {
@@ -292,7 +307,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         })
 
         btnAction.setOnClickListener {
-//            val r = ClaimPopGratificationResponse(PopGratificationClaim(title = "Title",
+            //            val r = ClaimPopGratificationResponse(PopGratificationClaim(title = "Title",
 //                    text = "Subtitle",
 //                    popGratificationActionButton = PopGratificationActionButton(text = "ActionButton"),
 //                    dummyCouponCode = "123",
@@ -399,7 +414,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
                 val popGratificationBenefits = data.popGratification?.popGratificationBenefits
                 if (popGratificationBenefits != null && popGratificationBenefits.isNotEmpty()) {
-                    viewModel.claimCoupon(gratificationData.popSlug, gratificationData.page)
+//                    viewModel.claimCoupon(gratificationData.popSlug, gratificationData.page)
+                    val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
+                    claimCouponApi.claimGratification(claimPayload, couponClaimResponseCallback)
                 }
             }
         } else {

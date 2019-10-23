@@ -2,9 +2,10 @@ package com.tokopedia.promotionstarget.usecase
 
 
 import com.tokopedia.promotionstarget.CouponGratificationParams
-import com.tokopedia.promotionstarget.gql.GqlUseCaseWrapper
+import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.di.CLAIM_POP_GRATIFICATION
+import com.tokopedia.promotionstarget.gql.GqlUseCaseWrapper
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -18,10 +19,10 @@ class ClaimPopGratificationUseCase @Inject constructor(@Named(CLAIM_POP_GRATIFIC
         return gqlWrapper.getResponse(ClaimPopGratificationResponse::class.java, queryString, map)
     }
 
-    fun getQueryParams(campaignSlug: String, page: String): HashMap<String, Any> {
+    fun getQueryParams(claimPayload: ClaimPayload): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
-        variables[PARAMS.CAMPAIGN_SLUG] = campaignSlug
-        variables[PARAMS.PAGE] = page
+        variables[PARAMS.CAMPAIGN_SLUG] = claimPayload.campaignSlug
+        variables[PARAMS.PAGE] = claimPayload.page
         return variables
     }
 

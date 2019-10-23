@@ -1051,7 +1051,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             default:
                 CategoryActivity.moveTo(
                         getContext(),
-                        url
+                        url,
+                        new Bundle()
                 );
                 break;
         }

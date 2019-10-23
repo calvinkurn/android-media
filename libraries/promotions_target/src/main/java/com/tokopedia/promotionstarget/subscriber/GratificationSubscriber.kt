@@ -3,15 +3,16 @@ package com.tokopedia.promotionstarget.subscriber
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import com.tokopedia.promotionstarget.ClaimCouponApi
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
 import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
 import com.tokopedia.promotionstarget.presenter.DialogManagerPresenter
 import com.tokopedia.promotionstarget.ui.TargetPromotionsDialog
+import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
@@ -19,12 +20,16 @@ import javax.inject.Inject
 
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
-    private val job = SupervisorJob()
     @Inject
     lateinit var presenter: DialogManagerPresenter
+    @Inject
+    lateinit var claimGratificationUseCase: ClaimPopGratificationUseCase
+
+    private val job = SupervisorJob()
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
+    private val claimApi = ClaimCouponApi(scope, claimGratificationUseCase)
     //    var waitingForLoginActivity: WeakReference<Activity>? = null
     val arrayActivityNames = arrayListOf<String>(
             "com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity",
@@ -115,7 +120,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val couponDetail = presenter.composeApi(gratificationData)
                     withContext(Dispatchers.Main) {
                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
-                        show(weakActivity, response, couponDetail, gratificationData)
+                            show(weakActivity, response, couponDetail, gratificationData, claimApi)
                     }
                 }
                 mapOfJobs[activity] = childJob
@@ -126,11 +131,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private fun show(weakActivity: WeakReference<Activity>,
                      data: GetPopGratificationResponse,
                      couponDetailResponse: GetCouponDetailResponse,
-                     gratificationData: GratificationData) {
+                     gratificationData: GratificationData,
+                     claimCouponApi: ClaimCouponApi) {
         val dialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
-            val bottomSheetDialog = dialog.show(activity, TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON, data, couponDetailResponse, gratificationData)
+            val bottomSheetDialog = dialog.show(activity,
+                    TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
+                    data,
+                    couponDetailResponse,
+                    gratificationData,
+                    claimCouponApi)
             mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
         }
     }

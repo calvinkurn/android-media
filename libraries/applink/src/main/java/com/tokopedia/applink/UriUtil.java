@@ -3,7 +3,9 @@ package com.tokopedia.applink;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +15,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UriUtil {
+
+    private final static String ENCODING = "UTF-8";
+    private final static String QUERY_PARAM_SEPRATOR = "&";
+
     /**
      * Build pattern uri to uri String
      *
@@ -76,7 +82,7 @@ public class UriUtil {
         return destructureUri(uriPatternString, uri, true);
     }
 
-    public static Map<String, Object> destructureUriToMap(@NonNull String uriPatternString, @NonNull Uri uri, boolean checkScheme){
+    public static Map<String, Object> destructureUriToMap(@NonNull String uriPatternString, @NonNull Uri uri, boolean checkScheme) {
         Map<String, Object> result = new HashMap<>();
         try {
             Uri uriPattern = Uri.parse(uriPatternString);
@@ -90,28 +96,26 @@ public class UriUtil {
 
             if (uriSegmentSize == 0) {
                 uriSegmentSize = uriPattern.getQueryParameterNames().size();
-                if(uriSegmentSize > 0){
-                        Iterator itr = uriPattern.getQueryParameterNames().iterator();
-                        while (itr.hasNext()){
-                            String paramName = itr.next().toString();
-                            Object paramValue = uri.getQueryParameter(paramName);
-                            if(paramValue != null) {
-                                result.put(paramName, paramValue);
-                            }
+                if (uriSegmentSize > 0) {
+                    Iterator itr = uriPattern.getQueryParameterNames().iterator();
+                    while (itr.hasNext()) {
+                        String paramName = itr.next().toString();
+                        Object paramValue = uri.getQueryParameter(paramName);
+                        if (paramValue != null) {
+                            result.put(paramName, paramValue);
                         }
-                }
-                else {
+                    }
+                } else {
                     return result;
                 }
-            }
-            else {
+            } else {
                 Iterator itr = uriPattern.getPathSegments().iterator();
                 int i = 0;
                 while (itr.hasNext()) {
                     String segmentName = itr.next().toString();
                     if (segmentName.startsWith("{") &&
                             segmentName.endsWith("}")) {
-                        result.put(segmentName ,
+                        result.put(segmentName,
                                 uri.getPathSegments().get(i));
                     }
                 }
@@ -139,6 +143,25 @@ public class UriUtil {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static Map<String, String> uriQueryParamsToMap(@NonNull String url) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            Uri uri = Uri.parse(url);
+            String query = uri.getQuery();
+            if (!TextUtils.isEmpty(query)) {
+                String[] pairs = query.split(QUERY_PARAM_SEPRATOR);
+                for (String pair : pairs) {
+                    int idx = pair.indexOf("=");
+                    map.put(URLDecoder.decode(pair.substring(0, idx), ENCODING), URLDecoder.decode(pair.substring(idx + 1), ENCODING));
+                }
+            }
+            return map;
+        } catch (Exception e) {
+
+        }
+        return map;
     }
 
 }

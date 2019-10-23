@@ -1,9 +1,11 @@
 package com.tokopedia.applink;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.webkit.URLUtil;
 import com.tokopedia.config.GlobalConfig;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -22,6 +25,7 @@ import java.util.Set;
 public class RouteManager {
 
     private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
+    public static final String QUERY_PARAM = "QUERY_PARAM";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -94,11 +98,18 @@ public class RouteManager {
         }
     }
 
+    //todo Rahul need changes
     /**
      * route to the activity corresponds to the given applink.
      * Will do nothing if applink is not supported.
      */
     public static void route(Context context, String applinkPattern, String... parameter) {
+        Bundle bundle = getBundleFromAppLinkQueryParams(applinkPattern);
+        bundle.putBundle(QUERY_PARAM, bundle);
+        route(context, new Bundle(), applinkPattern, parameter);
+    }
+
+    public static void route(Context context, Bundle queryParamBundle, String applinkPattern, String... parameter) {
         if (context == null) {
             return;
         }
@@ -115,7 +126,11 @@ public class RouteManager {
         if (dynamicFeatureDeeplink != null) {
             intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
-            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+            if (context instanceof Activity) {
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
+            } else {
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+            }
             return;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
@@ -123,7 +138,9 @@ public class RouteManager {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));
-                context.startActivity(intent);
+            }
+            if (queryParamBundle != null) {
+                intent.putExtras(queryParamBundle);
             }
             context.startActivity(intent);
             return;
@@ -131,6 +148,9 @@ public class RouteManager {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
         }
         if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
+            if (queryParamBundle != null) {
+                intent.putExtras(queryParamBundle);
+            }
             context.startActivity(intent);
         }
     }
@@ -154,7 +174,11 @@ public class RouteManager {
         if (dynamicFeatureDeeplink != null) {
             intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
-            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+            if (context instanceof Activity) {
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, getBundleFromAppLinkQueryParams(mappedDeeplink));
+            } else {
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+            }
             return;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
@@ -167,7 +191,42 @@ public class RouteManager {
             intent.setData(Uri.parse(mappedDeeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         } else {
+
+            putQueryParamsInIntent(intent, mappedDeeplink);
             context.startActivity(intent);
+        }
+    }
+
+    public static Bundle getBundleFromAppLinkQueryParams(String mappedDeeplink) {
+        if (TextUtils.isEmpty(mappedDeeplink)) return new Bundle();
+        Map<String, String> map = UriUtil.uriQueryParamsToMap(mappedDeeplink);
+        Bundle bundle = new Bundle();
+        for (String key : map.keySet()) {
+            String value = map.get(key);
+            bundle.putString(key, value);
+        }
+        return bundle;
+    }
+
+    public static Bundle getBundleFromAppLinkQueryParams(Uri uri) {
+        Bundle bundle = new Bundle();
+        if (uri != null && !TextUtils.isEmpty(uri.toString())) {
+            bundle = getBundleFromAppLinkQueryParams(uri.toString());
+        }
+        return bundle;
+    }
+
+    public static void putQueryParamsInIntent(Intent intent, String mappedDeeplink) {
+        Map<String, String> map = UriUtil.uriQueryParamsToMap(mappedDeeplink);
+        for (String key : map.keySet()) {
+            String value = map.get(key);
+            intent.putExtra(key, value);
+        }
+    }
+
+    public static void putQueryParamsInIntent(Intent intent, Uri uri) {
+        if (uri != null && !TextUtils.isEmpty(uri.toString())) {
+            putQueryParamsInIntent(intent, uri.toString());
         }
     }
 
@@ -188,6 +247,12 @@ public class RouteManager {
             intent.setData(Uri.parse(deeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         }
+        return intent;
+    }
+
+    public static Intent getIntent(Context context, String deeplinkPattern, Uri orignUri, String... parameter) {
+        Intent intent = getIntent(context, deeplinkPattern, parameter);
+        RouteManager.putQueryParamsInIntent(intent, orignUri);
         return intent;
     }
 
