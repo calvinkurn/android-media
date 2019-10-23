@@ -847,8 +847,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         if (isErrorInInsurance() ||
                 (isInsuranceSelected &&
-                        !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
-                        !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty())) {
+                        selectedInsuranceProduct.cartShopsList.isNullOrEmpty())) {
 
             return
         }
