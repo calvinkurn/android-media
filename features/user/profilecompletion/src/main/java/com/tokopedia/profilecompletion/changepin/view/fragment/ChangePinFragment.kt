@@ -52,6 +52,7 @@ class ChangePinFragment : BaseDaggerFragment() {
     private var isConfirm = false
     private var isValidated = false
     private var isForgotPin = false
+    private var inputNewPin = false
 
     private var pin = ""
     private var oldPin = ""
@@ -63,6 +64,7 @@ class ChangePinFragment : BaseDaggerFragment() {
     companion object {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val OTP_TYPE_PHONE_VERIFICATION = 124
+        const val PIN_LENGTH = 6
 
         fun createInstance(bundle: Bundle): ChangePinFragment {
             val fragment = ChangePinFragment()
@@ -101,47 +103,54 @@ class ChangePinFragment : BaseDaggerFragment() {
     }
 
     private fun handleInputPin(text: String){
-        if(text.length == 6){
-            if(isConfirm){
-                if(pin == text){
-                    if(isForgotPin) goToVerificationActivity()
-                    else addChangePinViewModel.changePin(pin, text, oldPin)
-                }else{
-                    inputPin.focus()
-                    displayErrorPin(getString(R.string.error_wrong_pin))
-                }
-            }else if(isValidated || isForgotPin){
-                pin = text
-                konfirmasiState()
-            }
-            else {
-                addChangePinViewModel.validatePin(text)
+        if(text.length == PIN_LENGTH){
+            when {
+                isConfirm -> handleConfirmState(text)
+                inputNewPin -> handleInputNewPinState(text)
+                isValidated || isForgotPin -> handleValidatedAndForgotState(text)
+                else -> addChangePinViewModel.validatePin(text)
             }
         }
+    }
+
+    private fun handleValidatedAndForgotState(input: String){
+        pin = input
+        konfirmasiState()
+    }
+
+    private fun handleConfirmState(input: String){
+        if(pin == input){
+            if(isForgotPin) goToVerificationActivity()
+            else addChangePinViewModel.changePin(pin, input, oldPin)
+        }else{
+            inputPin.focus()
+            displayErrorPin(getString(R.string.error_wrong_pin))
+        }
+    }
+
+    private fun handleInputNewPinState(input: String){
+        addChangePinViewModel.checkPin(input)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 when (requestCode) {
-                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> {
-                        goToSuccessPage()
-                    }
+                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> goToSuccessPage()
                 }
             }
-            Activity.RESULT_CANCELED -> { }
         }
     }
 
     private fun goToVerificationActivity(){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        val bundle = Bundle()
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-
+        val bundle = Bundle().apply {
+            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+            putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        }
         intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
@@ -167,10 +176,11 @@ class ChangePinFragment : BaseDaggerFragment() {
     private fun forgotPinState(){
         isForgotPin = true
         inputNewPinState()
-        if(activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = "Atur Ulang PIN Tokopedia"
+        if(activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = resources.getString(R.string.title_setting_pin)
     }
 
     private fun inputNewPinState(){
+        inputNewPin = true
         resetInputPin()
         title.text = getString(R.string.title_new_pin)
         subtitle.text = getString(R.string.subtitle_input_new_pin)
@@ -184,27 +194,40 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun toggleForgotText(isForgot: Boolean){
         if(isForgot){
-            forgot_pin.text = getString(R.string.forgot_pin_text)
-            forgot_pin.setTextColor(resources.getColor(R.color.Green_G500))
-            forgot_pin.setOnClickListener(onForgotPinClick)
-            forgot_pin.isEnabled = true
+            forgot_pin.apply {
+                text = getString(R.string.forgot_pin_text)
+                setTextColor(resources.getColor(R.color.Green_G500))
+                setOnClickListener(onForgotPinClick)
+                isEnabled = true
+            }
         }else {
-            forgot_pin.text = getString(R.string.change_pin_avoid_info)
-            forgot_pin.setTextColor(resources.getColor(R.color.Neutral_N700_44))
-            forgot_pin.isEnabled = false
+            forgot_pin.apply {
+                text = getString(R.string.change_pin_avoid_info)
+                setTextColor(resources.getColor(R.color.Neutral_N700_44))
+                isEnabled = false
+            }
         }
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData){
         dismissLoading()
         if(checkPinData.valid){
-            inputNewPinState()
+            if(inputNewPin) {
+                pin = inputPin.text.toString()
+                inputNewPin = false
+                konfirmasiState()
+            }
+            else inputNewPinState()
+        }else  {
+            displayErrorPin(checkPinData.errorMessage)
         }
     }
 
     private fun displayErrorPin(error: String){
-        errorPin.visibility = View.VISIBLE
-        errorPin.text = error
+        errorPin.apply {
+            visibility = View.VISIBLE
+            text = error
+        }
     }
 
     private fun hideErrorPin(){
@@ -242,9 +265,10 @@ class ChangePinFragment : BaseDaggerFragment() {
     }
 
     private fun goToSuccessPage(){
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if(isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
+            flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if(isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+        }
         startActivity(intent)
         activity?.finish()
     }
