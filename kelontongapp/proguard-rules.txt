@@ -106,5 +106,8 @@
 -keep class com.moengage.firebase.MoEngageFireBaseInstanceIdService
 -keep class com.moengage.firebase.PushHandlerImpl
 
+-keep class com.moengage.push.gcm.PushHandlerImpl
+-keep class com.moengage.baidu.PushHandlerImpl
+
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
