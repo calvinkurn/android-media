@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
@@ -71,7 +70,11 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
         initObserver()
 
-        addChangePinViewModel.getStatusPin()
+        if(!userSession.isMsisdnVerified){
+            goToAddPhone()
+        }else{
+            addChangePinViewModel.getStatusPin()
+        }
     }
 
     override fun onStart() {
@@ -92,12 +95,6 @@ class PinOnboardingFragment: BaseDaggerFragment(){
                 is Fail -> onErrorGetStatusPin(it.throwable)
             }
         })
-
-        addChangePinViewModel.loadingState.observe(this, Observer {
-            if(it == true){
-                showLoading()
-            }else dismissLoading()
-        })
     }
 
     private fun initVar() {
@@ -109,6 +106,8 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
         if(statusPinData.isRegistered){
             goToChangePin()
+        }else{
+            dismissLoading()
         }
     }
 
@@ -137,20 +136,19 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         activity?.finish()
     }
 
-    private fun onSuccessAddPhoneNumber(data: Intent?){
-        data?.extras?.run {
-            val phone = getString(AddPhoneFragment.EXTRA_PHONE, "")
-            if(!phone.isNullOrEmpty())
-                userSession.phoneNumber = phone
-        }
+    private fun onSuccessAddPhoneNumber(){
+        dismissLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_CODE_ADD_PHONE -> {
-                        onSuccessAddPhoneNumber(data)
+        when(requestCode){
+            REQUEST_CODE_ADD_PHONE -> {
+                when(resultCode) {
+                    Activity.RESULT_OK -> {
+                        onSuccessAddPhoneNumber()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        activity?.finish()
                     }
                 }
             }
