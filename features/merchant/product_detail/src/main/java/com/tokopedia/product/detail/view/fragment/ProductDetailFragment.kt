@@ -1691,7 +1691,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             return
         }
         // defaulting selecting variant
-        if (userInputVariant == productId && data.defaultChild > 0) {
+        if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {
             userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")

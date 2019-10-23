@@ -257,5 +257,10 @@
 
         </LinearLayout>
 
+        <com.tokopedia.translator.ui.TranslatorSettingView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
     </LinearLayout>
 </ScrollView>
