@@ -14,9 +14,7 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
                 searchUrl = searchShopData.searchUrl,
                 paging = createPagingViewModel(searchShopData.paging),
                 tabName = searchShopData.tabName,
-                shopItemList = createShopItemViewModelList(searchShopData.shopList),
-                topSellerData = createShopItemViewModelList(searchShopData.topSellerData),
-                topOfficialSellerData = createShopItemViewModelList(searchShopData.topOfficialSellerData)
+                shopItemList = createShopItemViewModelList(searchShopData.shopList)
         )
     }
 

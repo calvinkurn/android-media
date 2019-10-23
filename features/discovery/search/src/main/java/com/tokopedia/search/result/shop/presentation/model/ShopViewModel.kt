@@ -12,9 +12,7 @@ internal data class ShopViewModel(
         val searchUrl: String = "",
         val paging: Paging = Paging(),
         val tabName: String = "",
-        val shopItemList: List<ShopItem> = listOf(),
-        val topSellerData: List<ShopItem> = listOf(),
-        val topOfficialSellerData: List<ShopItem> = listOf()
+        val shopItemList: List<ShopItem> = listOf()
 ): Parcelable {
 
     val hasNextPage = paging.uriNext != ""
@@ -309,8 +307,6 @@ internal data class ShopViewModel(
             parcel.readString() ?: "",
             parcel.readParcelable(Paging::class.java.classLoader) ?: Paging(),
             parcel.readString() ?: "",
-            parcel.createTypedArrayList(ShopItem) ?: listOf(),
-            parcel.createTypedArrayList(ShopItem) ?: listOf(),
             parcel.createTypedArrayList(ShopItem) ?: listOf()
     )
 
@@ -320,8 +316,6 @@ internal data class ShopViewModel(
         parcel.writeParcelable(paging, flags)
         parcel.writeString(tabName)
         parcel.writeTypedList(shopItemList)
-        parcel.writeTypedList(topSellerData)
-        parcel.writeTypedList(topOfficialSellerData)
     }
 
     override fun describeContents(): Int {

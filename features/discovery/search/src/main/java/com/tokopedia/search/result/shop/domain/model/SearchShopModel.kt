@@ -36,15 +36,7 @@ internal data class SearchShopModel(
 
             @SerializedName("shops")
             @Expose
-            val shopList: List<ShopItem> = listOf(),
-
-            @SerializedName("top_seller_data")
-            @Expose
-            val topSellerData: List<ShopItem> = listOf(),
-
-            @SerializedName("top_official_seller_data")
-            @Expose
-            val topOfficialSellerData: List<ShopItem> = listOf()
+            val shopList: List<ShopItem> = listOf()
     ) {
 
         data class Paging(
