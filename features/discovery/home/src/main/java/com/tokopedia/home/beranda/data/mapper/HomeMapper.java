@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
@@ -43,7 +44,7 @@ import rx.functions.Func1;
  * Created by henrypriyono on 26/01/18.
  */
 
-public class HomeMapper implements Func1<HomeViewModel, List<HomeVisitable>> {
+public class HomeMapper implements Func1<HomeData, HomeViewModel> {
     private final Context context;
     private final HomeVisitableFactory homeVisitableFactory;
 
@@ -54,10 +55,9 @@ public class HomeMapper implements Func1<HomeViewModel, List<HomeVisitable>> {
     }
 
     @Override
-    public List<HomeVisitable> call(HomeViewModel homeViewModel) {
-        List<HomeVisitable> list = new ArrayList<>();
+    public HomeViewModel call(HomeData homeData) {
+        List list = new ArrayList<>();
 
-        HomeData homeData = homeViewModel.getHomeData();
 
         list.add(mappingBanner(homeData.getSlides(), homeData.isCache()));
 
@@ -222,7 +222,7 @@ public class HomeMapper implements Func1<HomeViewModel, List<HomeVisitable>> {
             }
         }
 
-        return list;
+        return new HomeViewModel(homeData.getHomeFlag(), list);
     }
 
     private HomeVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {

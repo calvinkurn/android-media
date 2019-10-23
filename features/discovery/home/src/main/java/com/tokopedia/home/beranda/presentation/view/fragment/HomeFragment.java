@@ -52,6 +52,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
@@ -570,8 +571,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void configureRecommendationButton(boolean isShow) {
-        floatingTextButton.setVisibility(isShow && showRecomendation ? View.VISIBLE : View.GONE);
+    public void configureHomeFlag(HomeFlag homeFlag) {
+        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
     private void onGoToSell() {

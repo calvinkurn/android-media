@@ -132,9 +132,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @NonNull
-    private Observable<List<HomeVisitable>> getDataFromNetwork() {
+    private Observable<HomeViewModel> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
-                .map(homeMapper)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -190,8 +189,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(homeMapper)
-                .subscribe(new Subscriber<List<HomeVisitable>>() {
+                .subscribe(new Subscriber<HomeViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -203,10 +201,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     }
 
                     @Override
-                    public void onNext(List<HomeVisitable> visitables) {
+                    public void onNext(HomeViewModel homeViewModel) {
                         if (isViewAttached()) {
-                            getView().updateListOnResume(new ArrayList<>(visitables));
-                            getView().addImpressionToTrackingQueue(visitables);
+                            getView().configureHomeFlag(homeViewModel.getHomeFlag());
+                            getView().updateListOnResume(new ArrayList<>(homeViewModel.getList()));
+                            getView().addImpressionToTrackingQueue(new ArrayList(homeViewModel.getList()));
                         }
                         lastRequestTimeHomeData = System.currentTimeMillis();
                     }
@@ -223,12 +222,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .unsubscribeOn(Schedulers.io())
                 .doOnNext(homeViewModel ->
                 {
-                    getView().configureRecommendationButton(homeViewModel.getHomeData().getHomeFlag().getHasRecomNavButton());
                     HomeDataSubscriber homeNetworkSubscriber = createHomeDataSubscriber();
                     homeNetworkSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
                     compositeSubscription.add(getDataFromNetwork().subscribe(homeNetworkSubscriber));
                 })
-                .map(homeMapper)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(throwable -> {
                     homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
@@ -421,7 +418,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getView().showNetworkError();
     }
 
-    public static class HomeDataSubscriber extends Subscriber<List<HomeVisitable>> {
+    public static class HomeDataSubscriber extends Subscriber<HomeViewModel> {
         public static int FLAG_FROM_NETWORK = 99;
         public static int FLAG_FROM_CACHE = 98;
         private int repositoryFlag;
@@ -463,12 +460,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
 
         @Override
-        public void onNext(List<HomeVisitable> visitables) {
-            if (visitables.size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+        public void onNext(HomeViewModel homeViewModel) {
+            if (homeViewModel.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                 if (homePresenter != null && homePresenter.isViewAttached()) {
-                    homePresenter.getView().setItems(new ArrayList<>(visitables), repositoryFlag);
-                    homePresenter.getView().addImpressionToTrackingQueue(visitables);
-                    if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().configureHomeFlag(homeViewModel.getHomeFlag());
+                    homePresenter.getView().setItems(new ArrayList<>(homeViewModel.getList()), repositoryFlag);
+                    homePresenter.getView().addImpressionToTrackingQueue(new ArrayList<>(homeViewModel.getList()));
+                    if (homePresenter.isDataValid(new ArrayList<>(homeViewModel.getList()))) {
                         homePresenter.getView().removeNetworkError();
                     } else {
                         homePresenter.showNetworkError();
