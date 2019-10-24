@@ -123,6 +123,7 @@ class ChangePinFragment : BaseDaggerFragment() {
             if(isForgotPin) goToVerificationActivity()
             else addChangePinViewModel.changePin(pin, input, oldPin)
         }else{
+            inputPin.setText("")
             inputPin.focus()
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
@@ -219,6 +220,7 @@ class ChangePinFragment : BaseDaggerFragment() {
             }
             else inputNewPinState()
         }else  {
+            inputPin.setText("")
             displayErrorPin(checkPinData.errorMessage)
         }
     }
