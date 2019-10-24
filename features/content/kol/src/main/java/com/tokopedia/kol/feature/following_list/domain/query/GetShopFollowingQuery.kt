@@ -31,6 +31,6 @@ object GetShopFollowingQuery {
             }
           }
         }
-    """
+    """.trimIndent()
     }
 }
