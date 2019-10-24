@@ -11,4 +11,6 @@ public interface ReactNativeRouter {
     UseCase<String> setCreditCardSingleAuthentication();
 
     boolean getEnableFingerprintPayment();
+
+    void sendLoginEmitter(String userId);
 }
