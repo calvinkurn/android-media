@@ -15,12 +15,14 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
 
     private var recyclerView: RecyclerView? = null
     private var link: TextView? = null
+    private var title: TextView? = null
 
     private var adapter: FeaturedShopAdapter? = null
 
     init {
         recyclerView = view?.findViewById(R.id.recycler_view_featured_shop)
         link = view?.findViewById(R.id.link_featured_shop)
+        title = view?.findViewById(R.id.title_featured_shop)
 
         view?.context?.let {
             adapter = FeaturedShopAdapter(it)
@@ -32,8 +34,12 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
 
     override fun bind(element: OfficialFeaturedShopViewModel?) {
         link?.setOnClickListener {
-            // TODO route to applink
+            // TODO route to ? webview or applink?
+            //RouteManager.route(it.context, element?.headerShop?.link)
         }
+
+        link?.text = element?.headerShop?.ctaText
+        title?.text = element?.headerShop?.title
 
         element?.featuredShop?.let {
             adapter?.shopList = it

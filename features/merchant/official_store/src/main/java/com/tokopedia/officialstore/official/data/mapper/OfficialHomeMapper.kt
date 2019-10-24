@@ -31,7 +31,7 @@ class OfficialHomeMapper {
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
             if (featuredShop.featuredShops.size > 0) {
                 val position = if (adapter?.itemCount?:0 > 2 ) 2 else 1
-                adapter?.addElement(position, OfficialFeaturedShopViewModel(featuredShop.featuredShops))
+                adapter?.addElement(position, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header))
                 adapter?.notifyItemInserted(position)
             }
         }
