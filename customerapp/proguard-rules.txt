@@ -386,3 +386,7 @@
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
+
+# -- Unit Test
+-dontwarn android.test.**
+-dontwarn junit.framework.**
