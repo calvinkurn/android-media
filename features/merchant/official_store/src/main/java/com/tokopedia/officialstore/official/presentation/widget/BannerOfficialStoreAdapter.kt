@@ -2,7 +2,8 @@ package com.tokopedia.officialstore.official.presentation.widget
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.officialstore.R
@@ -15,12 +16,12 @@ class BannerOfficialStoreAdapter(bannerImageUrls: List<String> , onPromoClickLis
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        ImageHandler.loadImage(
-                holder.itemView.context,
-                holder.bannerImage,
-                bannerImageUrls[position],
-                R.drawable.ic_loading_image
-        )
+        Glide.with(holder.itemView.context)
+                .load(bannerImageUrls[position])
+                .dontAnimate()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.bannerImage)
 
         holder.bannerImage.setOnClickListener(this.getBannerImageOnClickListener(position))
     }

@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 class OfficialHomeMapper {
 
     companion object {
+
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
             adapter?.addElement(0, OfficialBannerViewModel(banner.banners))
             adapter?.notifyItemInserted(0)
@@ -22,15 +23,15 @@ class OfficialHomeMapper {
                 /**
                  * This component are not contains in Figma & Zeplin, so I just commented this code in case it needed you can uncomment :)
                  */
-//                val position = if (adapter?.itemCount?:0 > 1 ) 1 else 0
-//                adapter?.addElement(position, OfficialBenefitViewModel(benefits.benefits))
-//                adapter?.notifyItemInserted(position)
+                val position = if (adapter?.itemCount?:0 >= 1 ) 1 else 0
+                adapter?.addElement(position, OfficialBenefitViewModel(benefits.benefits))
+                adapter?.notifyItemInserted(position)
             }
         }
 
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
             if (featuredShop.featuredShops.size > 0) {
-                val position = if (adapter?.itemCount?:0 > 2 ) 2 else 1
+                val position = if (adapter?.itemCount?:0 >= 2 ) 2 else 1
                 adapter?.addElement(position, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header))
                 adapter?.notifyItemInserted(position)
             }

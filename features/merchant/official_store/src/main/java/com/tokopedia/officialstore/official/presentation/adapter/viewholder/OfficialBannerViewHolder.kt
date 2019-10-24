@@ -3,8 +3,10 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
@@ -14,12 +16,14 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         BannerView.OnPromoLoadedListener {
 
     private var banner: BannerOfficialStore? = null
+    private var elementBanner: OfficialBannerViewModel? = null
 
     init {
         banner = view?.findViewById(R.id.banner_official)
     }
 
     override fun bind(element: OfficialBannerViewModel?) {
+        elementBanner = element
         banner?.setPromoList(element?.getBannerImgUrl())
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -30,7 +34,9 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun onPromoClick(p0: Int) {
-        // TODO add on banner click
+        elementBanner?.banner?.let {
+            RouteManager.route(itemView.context, it[p0].applink)
+        }
     }
 
     override fun onPromoAllClick() {
