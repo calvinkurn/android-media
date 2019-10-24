@@ -1,12 +1,10 @@
 package com.tokopedia.fcmcommon.di
 
-import com.google.firebase.messaging.FirebaseMessagingService
-import javax.inject.Singleton
-
+import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import dagger.Component
 
-@Singleton
+@FcmScope
 @Component(modules = [FcmModule::class, FcmQueryModule::class])
 interface FcmComponent {
-    fun inject(messagingService: FirebaseMessagingService)
+    fun firebaseMessagingManager(): FirebaseMessagingManager
 }

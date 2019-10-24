@@ -21,8 +21,14 @@ import kotlinx.coroutines.Dispatchers
 class FcmModule(@ApplicationContext private val context: Context) {
 
     @Provides
-    @Singleton
+    @ApplicationContext
+    fun provideApplicationContext(): Context = context.applicationContext
+
+    @Provides
+    @FcmScope
     fun provideFcmManager(
+            @ApplicationContext
+            context: Context,
             sharedPreferences: SharedPreferences,
             repository: GraphqlRepository,
             coroutineContextProviders: CoroutineContextProviders,
@@ -38,16 +44,17 @@ class FcmModule(@ApplicationContext private val context: Context) {
     }
 
     @Provides
-    @Singleton
+    @FcmScope
     fun provideSharedPreferences(): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     @Provides
+    @FcmScope
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    @Singleton
+    @FcmScope
     fun provideCoroutineContextProviders(): CoroutineContextProviders = CoroutineContextProviders(
             Dispatchers.Main,
             Dispatchers.IO

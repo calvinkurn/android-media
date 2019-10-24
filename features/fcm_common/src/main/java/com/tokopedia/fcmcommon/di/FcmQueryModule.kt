@@ -15,6 +15,7 @@ class FcmQueryModule {
 
     @Provides
     @IntoMap
+    @FcmScope
     @StringKey(FirebaseMessagingManager.QUERY_UPDATE_FCM_TOKEN)
     fun provideQueryUpdateFcmToken(@ApplicationContext context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_update_fcm_token)

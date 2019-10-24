@@ -6,8 +6,10 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -32,11 +34,16 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerFcmComponent.builder()
+        Log.d("DeleteFcmTokenService", "Service created");
+        FcmComponent fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(new FcmModule(getApplicationContext()))
+                .build();
+        DaggerFcmServiceComponent.builder()
+                .fcmComponent(fcmComponent)
                 .build()
                 .inject(this);
     }
+
 
     public BaseNotificationMessagingService() {
         initUseSession();
@@ -61,9 +68,10 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
         return bundle;
     }
 
+
     @Override
     public void onNewToken(String newToken) {
-        Log.d("DeleteFcmTokenService", "New Token Requested");
+        Log.d("DeleteFcmTokenService", "On New Token");
         fcmManager.onNewToken(newToken);
         try {
             Timber.w("P2" + "Notification New Token - " + newToken + " | "
