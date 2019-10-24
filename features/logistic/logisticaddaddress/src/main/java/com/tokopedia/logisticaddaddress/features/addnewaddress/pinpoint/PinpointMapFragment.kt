@@ -68,7 +68,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean = false
-    private var isMismatch: Boolean? = null
+    private var isMismatch: Boolean = false
     private var zipCodes: MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var addNewAddressComponent: AddNewAddressComponent? = null
@@ -124,11 +124,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             token = it.getParcelable(AddressConstants.KERO_TOKEN)
             isPolygon = it.getBoolean(AddressConstants.EXTRA_IS_POLYGON, false)
             isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false)
-            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
+            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH, false)
             saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            districtId = saveAddressDataModel?.districtId
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
+            districtId = saveAddressDataModel?.districtId
         }
     }
 
@@ -154,9 +154,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
-        isMismatch?.let {
-            if (!it) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
-        }
+        if (!isMismatch) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
     }
 
     private fun setViewListener() {
