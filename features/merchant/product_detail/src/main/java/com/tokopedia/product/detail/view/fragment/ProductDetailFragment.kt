@@ -596,7 +596,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         actionButtonView.rincianTopAdsClick = {
             context?.let {
-                topAdsDetailSheet.show()
+                topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
             }
         }
 

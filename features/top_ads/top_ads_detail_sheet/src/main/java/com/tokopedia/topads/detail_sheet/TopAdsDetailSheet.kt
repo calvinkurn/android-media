@@ -44,7 +44,6 @@ class TopAdsDetailSheet {
     private fun initComponent(context: Context){
         getComponent(context).inject(this)
         viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
-        viewModel.getAdsProduct("42343963", "2019-10-16", "2019-10-22", this::onSuccessGetAds, this::onErrorGetAds)
     }
 
     private fun onErrorGetAds(throwable: Throwable) {
@@ -104,7 +103,8 @@ class TopAdsDetailSheet {
         }
     }
 
-    fun show() {
+    fun show(adId: String) {
+        viewModel.getAdsProduct(adId, this::onSuccessGetAds, this::onErrorGetAds)
         dialog!!.show()
     }
 

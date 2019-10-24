@@ -24,7 +24,8 @@ import com.tokopedia.topads.detail_sheet.UrlConstant.PATH_BULK_ACTION_PRODUCT_AD
 import com.tokopedia.topads.detail_sheet.data.Ad
 import com.tokopedia.topads.detail_sheet.data.ActionRequest
 import com.tokopedia.topads.detail_sheet.data.Bulk
-import java.util.HashMap
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Author errysuprayogi on 22,October,2019
@@ -35,11 +36,20 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    fun getAdsProduct(adId: String, startDate: String, endDate: String,
-                      onSuccessGetAds: ((Data) -> Unit),
+    private val REQUEST_DATE_FORMAT = "yyyy-MM-dd"
+
+    private fun getDate(daysAgo: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -daysAgo)
+        return calendar.time
+    }
+
+    fun getAdsProduct(adId: String, onSuccessGetAds: ((Data) -> Unit),
                       onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
+                    val endDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(7))
+                    val startDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(0))
                     val result = withContext(Dispatchers.IO) {
                         val queryMap = mutableMapOf<String, String>(
                                 "ad_id" to adId,
