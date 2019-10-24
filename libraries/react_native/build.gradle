@@ -39,6 +39,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

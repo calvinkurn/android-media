@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 
 import android.net.Uri;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
@@ -45,12 +45,12 @@ public class UnifyReactNetworkWsV4AuthDataSource {
                 if (configuration.getParams().size() == 0) return commonService.get(configuration.getUrl());
                 else return commonService.get(
                         configuration.getUrl(),
-                        AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(),
+                        AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(),
                                 userSessionInterface.getDeviceId(),
                                 configuration.getParams()));
             case ReactConst.POST:
                 if (configuration.getParams().size() == 0) return commonService.post(configuration.getUrl());
-                return commonService.post(configuration.getUrl(), AuthUtil.generateParamsNetwork(
+                return commonService.post(configuration.getUrl(), AuthHelper.generateParamsNetwork(
                         userSessionInterface.getUserId(),
                         userSessionInterface.getDeviceId(),
                         configuration.getParams()));

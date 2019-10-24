@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdreactnative.react.data;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.UnknownMethodException;
@@ -40,7 +40,7 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
                 if (isAuth) {
                     if (isWSV4(url)) {
                         return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().get(url,
-                                AuthUtil.generateParamsNetwork(
+                                AuthHelper.generateParamsNetwork(
                                         userSession.getUserId(),
                                         userSession.getDeviceId(),
                                         params));
@@ -52,7 +52,7 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
                 if (isAuth) {
                     if (isWSV4(url)) {
                         return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().post(url,
-                                AuthUtil.generateParamsNetwork(
+                                AuthHelper.generateParamsNetwork(
                                         userSession.getUserId(),
                                         userSession.getDeviceId(),
                                         params));

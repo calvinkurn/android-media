@@ -9,7 +9,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.model.TkpdDigitalResponse;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;

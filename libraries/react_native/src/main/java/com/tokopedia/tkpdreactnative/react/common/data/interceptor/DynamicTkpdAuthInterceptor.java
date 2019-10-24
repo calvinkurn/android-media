@@ -3,9 +3,10 @@ package com.tokopedia.tkpdreactnative.react.common.data.interceptor;
 
 import android.content.Context;
 
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
     private static final String AUTHORIZATION = "Authorization";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String BEARER = "Bearer ";
-    private String AuthKey = AuthUtil.KEY.KEY_WSV4;
+    private String authKey = AuthKey.KEY_WSV4;
 
     public DynamicTkpdAuthInterceptor(Context context, NetworkRouter networkRouter, UserSessionInterface userSession) {
         super(context, networkRouter, userSession);
@@ -54,8 +55,8 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
     @Override
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
-        AuthKey = getAuthKey(originRequest.url().toString());
-        Map<String, String> Headers = getHeaders(originRequest, AuthKey);
+        authKey = getAuthKey(originRequest.url().toString());
+        Map<String, String> Headers = getHeaders(originRequest, authKey);
         for (Map.Entry<String, String> entry : Headers.entrySet()) {
             newRequest.addHeader(entry.getKey(), entry.getValue());
         }
@@ -64,7 +65,7 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
     }
 
     private Map<String, String> getHeaders(Request originRequest, String authKey) {
-        Map<String, String> Headers = AuthUtil.generateHeaders(originRequest.url().uri()
+        Map<String, String> Headers = AuthHelper.generateHeaders(originRequest.url().uri()
                 .getPath(), "", originRequest.method(), authKey, CONTENT_TYPE_JSON, userSession.getUserId(), userSession);
         if (originRequest.url().toString().contains("/o2o/")) {
             Headers.put(AUTHORIZATION, BEARER + userSession.getAccessToken());
@@ -74,9 +75,9 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
 
     private String getAuthKey(String url) {
         if (url.contains("mojito")) {
-            return AuthUtil.KEY.KEY_MOJITO;
+            return AuthKey.KEY_MOJITO;
         }
-        return AuthUtil.KEY.KEY_WSV4;
+        return AuthKey.KEY_WSV4;
     }
 
 
