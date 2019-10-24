@@ -21,10 +21,6 @@ public class LogisticConstant {
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
 
-    public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS = "1";
-    public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS = "3";
-    public static final String INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS = "2";
-
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT = "11";
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS = "13";
     public static final String INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT = "12";
