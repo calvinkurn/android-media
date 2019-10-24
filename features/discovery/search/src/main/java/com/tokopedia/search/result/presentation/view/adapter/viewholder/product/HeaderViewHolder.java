@@ -3,12 +3,6 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -387,8 +388,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             });
 
             Glide.with(itemView.getContext())
-                    .load(BACKGROUND[getAdapterPosition() % 5])
                     .asBitmap()
+                    .load(BACKGROUND[getAdapterPosition() % 5])
                     .centerCrop()
                     .dontAnimate()
                     .into(getRoundedImageViewTarget(imageView));

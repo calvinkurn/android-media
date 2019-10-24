@@ -70,8 +70,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
@@ -121,9 +122,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.feedplus.KEY_FEED
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail

@@ -5,19 +5,19 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
-import androidx.annotation.LayoutRes
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
@@ -25,7 +25,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
@@ -83,7 +83,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
-                .load(bannerItem.imageUrl)
         when(channel.layout) {
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
                 recyclerView.layoutManager = GridLayoutManager(
@@ -137,8 +136,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
 
         Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
                 .asBitmap()
+                .load(bannerItem.imageUrl)
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 24f))
