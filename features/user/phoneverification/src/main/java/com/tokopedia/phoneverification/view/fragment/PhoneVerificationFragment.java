@@ -194,15 +194,14 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     public void setRequestOtpButtonListener(){
         requestOtpButton.setOnClickListener(v -> {
             if (isValid()) {
-                Intent intent = VerificationActivity.getCallingIntent(
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         getActivity(),
-                        getPhoneNumber(),
                         RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                        true,
-                        RequestOtpUseCase.MODE_SMS
+                        getPhoneNumber(),
+                        ""
                 );
                 startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
-            }else {
+            } else {
                 showErrorPhoneNumber(getString(R.string
                         .error_field_required));
             }
