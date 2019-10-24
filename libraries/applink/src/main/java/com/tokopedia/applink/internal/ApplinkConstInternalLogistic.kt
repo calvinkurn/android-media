@@ -29,7 +29,7 @@ object ApplinkConstInternalLogistic {
      * @see logistic/logisticaddaddress/.../AddAddressActivity.java
      * @param {ref} = caller id
      * @param token [type: Token (logisticdata) ] token for District Recommendation api hit (mandatory)
-     * @param EXTRA_INSTANCE_TYPE [type: AddressModel (logisticdata) ] address model if you want
+     * @param PARAM_ADDRESS_MODEL [type: AddressModel (logisticdata) ] address model if you want
      *             edit mode (optional)
     */
     @JvmField
