@@ -51,7 +51,7 @@ class OfficialHomeMapper {
         }
 
         fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
-            adapter?.addElement(ProductRecommendationTitleViewModel("Test title"))
+            adapter?.addElement(ProductRecommendationTitleViewModel(title))
             adapter?.notifyItemInserted(adapter.lastIndex)
         }
 

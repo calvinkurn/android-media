@@ -38,8 +38,8 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
-    companion object {
 
+    companion object {
         const val DEFAULT_PAGE = 1
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
@@ -51,6 +51,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
+
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
 
@@ -66,7 +67,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private lateinit var trackingQueue: TrackingQueue
-
+    private var counterTitleShouldBeRendered = 1
     private var totalScroll = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,6 +99,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                counterTitleShouldBeRendered += 1
                 adapter?.showLoading()
                 viewModel.loadMore(category, page)
             }
@@ -187,7 +189,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                     adapter?.hideLoading()
                     endlesScrollListener?.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
+                    if (counterTitleShouldBeRendered == 1) {
+                        OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
+                    }
                     OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
                 is Fail -> {
@@ -328,14 +332,8 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if (viewModel.isLoggedIn()) {
-            // Implement tracking
             if (isAddWishlist) {
                 viewModel.addWishlist(item, callback)
-                if (item.isTopAds) {
-                    observeTopAdsWishlist()
-                } else {
-
-                }
             } else {
                 viewModel.removeWishlist(item, callback)
             }
