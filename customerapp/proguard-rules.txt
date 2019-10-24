@@ -391,3 +391,4 @@
 -dontwarn junit.framework.**
 -dontwarn android.test.**
 -dontwarn org.mockito.**
+-dontwarn org.junit.**
