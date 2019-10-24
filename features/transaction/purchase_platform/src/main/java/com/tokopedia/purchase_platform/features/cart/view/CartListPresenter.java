@@ -52,7 +52,6 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoC
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListSimplifiedUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
@@ -244,14 +243,7 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(
-                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
-        );
-        requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
-
-        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -576,10 +568,6 @@ public class CartListPresenter implements ICartListPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
-        requestParams.putObject(
-                UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
-                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
-        );
 
         compositeSubscription.add(
                 updateAndReloadCartUseCase.createObservable(requestParams)

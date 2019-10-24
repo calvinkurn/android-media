@@ -7,20 +7,18 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartL
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 
 /**
  * @author anggaprasetiyo on 25/04/18.
  */
+@Deprecated
 public class GetCartListUseCase extends UseCase<CartListData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
     public static final String PARAM_SELECTED_CART_ID = "selected_cart_id";
     private final ICartRepository cartRepository;
     private final CartMapperV3 cartMapper;
 
-    @Inject
     public GetCartListUseCase(ICartRepository cartRepository, CartMapperV3 cartMapper) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
