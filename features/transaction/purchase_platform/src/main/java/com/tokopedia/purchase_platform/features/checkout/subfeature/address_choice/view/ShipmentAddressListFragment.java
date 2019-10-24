@@ -22,8 +22,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.logisticaddaddress.AddressConstants;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
@@ -477,10 +475,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, false, false, null,
-                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                    intent.putExtra(PARAM_TOKEN, token);
+                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
                     Intent intent = RouteManager.getIntent(getContext(),
@@ -495,11 +492,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, false, false, null,
-                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
-
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                    intent.putExtra(PARAM_TOKEN, token);
+                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
                 } else {
                     Intent intent = RouteManager.getIntent(getContext(),
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "11");
