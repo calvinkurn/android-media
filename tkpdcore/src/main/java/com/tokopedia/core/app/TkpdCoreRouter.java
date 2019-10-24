@@ -129,8 +129,6 @@ public interface TkpdCoreRouter {
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
-    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
-
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
@@ -144,8 +142,6 @@ public interface TkpdCoreRouter {
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
     Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShopPageIntentByDomain(Context context, String domain);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 

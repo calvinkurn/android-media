@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -33,9 +34,14 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 when {
-                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> getRegisteredNavigationDigital(context, deeplink)
-                    deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) -> getRegisteredNavigationSearch(deeplink)
-                    deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                        getRegisteredNavigationDigital(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
+                        getRegisteredNavigationSearch(deeplink)
+                    deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) ->
+                        getRegisteredNavigationMarketplace(deeplink)
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
+                        ApplinkConst.SellerApp.SELLER_APP_HOME
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
@@ -63,7 +69,7 @@ object DeeplinkMapper {
      * This function should be called after checking domain shop from server side
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
-    private fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital

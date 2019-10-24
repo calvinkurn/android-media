@@ -10,9 +10,9 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
-import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment
+import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
-class SearchSectionPagerAdapter(
+internal class SearchSectionPagerAdapter(
         fragmentManager: FragmentManager,
         private val searchParameter: SearchParameter
 ) : FragmentStatePagerAdapter(fragmentManager) {
@@ -53,7 +53,7 @@ class SearchSectionPagerAdapter(
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance(searchParameter)
+        return ShopListFragment.newInstance()
     }
 
     private fun createProfileFragment(): ProfileListFragment {
