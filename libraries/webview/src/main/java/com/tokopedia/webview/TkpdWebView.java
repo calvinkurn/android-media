@@ -64,7 +64,7 @@ public class TkpdWebView extends WebView {
         //set custom tracking, helpful for GA
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW, true)) {
             WebSettings webSettings = getSettings();
-            String userAgent = String.format("%s - %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+            String userAgent = String.format("%s - Android %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
             webSettings.setUserAgentString(userAgent);
         }
     }
