@@ -14,6 +14,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -45,6 +46,12 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(new Intent(this, FallbackActivity.class));
             finish();
         }
+        syncFcmToken();
+    }
+
+    private void syncFcmToken() {
+        Intent intent = SyncFcmTokenService.Companion.getIntent(this);
+        startService(intent);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.tokopedia.fcmcommon
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -32,9 +33,8 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         get() = coroutineContextProvider.Main + SupervisorJob() + coroutineExceptionHandler
 
     override fun onNewToken(newToken: String?) {
-        if (newToken == null) return
+        if (newToken == null || !isNewToken(newToken)) return
         launch {
-            if (!isNewToken(newToken)) return@launch
             withContext(coroutineContextProvider.IO) {
                 updateTokenOnServer(newToken)
             }
@@ -46,16 +46,56 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return prefToken != null && token != prefToken
     }
 
+    override fun syncFcmToken(listener: FirebaseMessagingManager.SyncListener) {
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                listener.onError(task.exception)
+            }
+
+            val currentFcmToken = task.result?.token
+
+            if (currentFcmToken == null) {
+                val exception = IllegalStateException("Null FCM token")
+                listener.onError(exception)
+                return@addOnCompleteListener
+            }
+
+            if (sameTokenWithPrefToken(currentFcmToken)) {
+                listener.onSuccess()
+                return@addOnCompleteListener
+            }
+
+            launch {
+                try {
+                    withContext(coroutineContextProvider.IO) {
+                        updateTokenOnServer(currentFcmToken, listener)
+                    }
+                } catch (exception: Exception) {
+                    listener.onError(exception)
+                }
+            }
+        }
+    }
+
+    private fun sameTokenWithPrefToken(currentFcmToken: String): Boolean {
+        val prefToken = getTokenFromPref()
+        return prefToken == currentFcmToken
+    }
+
     override fun clear() {
         coroutineContext.cancelChildren()
     }
 
-    private suspend fun updateTokenOnServer(newToken: String) {
+    private suspend fun updateTokenOnServer(
+            newToken: String,
+            listener: FirebaseMessagingManager.SyncListener? = null
+    ) {
         val request = createUpdateTokenRequest(newToken)
         val response = repository.getReseponse(request)
         val data = response.getSuccessData<UpdateFcmTokenResponse>()
         if (data.updateTokenSuccess()) {
             saveNewTokenToPref(newToken)
+            listener?.onSuccess()
         }
     }
 
