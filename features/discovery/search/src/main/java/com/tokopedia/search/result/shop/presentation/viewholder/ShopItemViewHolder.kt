@@ -3,7 +3,7 @@ package com.tokopedia.search.result.shop.presentation.viewholder
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

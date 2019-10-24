@@ -1,7 +1,7 @@
 package com.tokopedia.search
 
-import android.arch.core.executor.ArchTaskExecutor
-import android.arch.core.executor.TaskExecutor
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import org.spekframework.spek2.dsl.Root
 
 class InstantTaskExecutorRuleSpek(root: Root) {
