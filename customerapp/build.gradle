@@ -185,7 +185,7 @@ android {
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
-                proguardFiles 'proguard-rules.pro'
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {
                 proguardFiles 'proguard-rules.txt'
             }
