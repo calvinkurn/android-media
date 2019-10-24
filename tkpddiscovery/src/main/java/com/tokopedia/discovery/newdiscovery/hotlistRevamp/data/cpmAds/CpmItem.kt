@@ -23,7 +23,10 @@ data class CpmItem(
         val applinks: String? = null,
 
         @field:SerializedName("click_url")
-        val click_url: String? = null
+        val click_url: String? = null,
+
+        @field:SerializedName("badge_url")
+        val badge_url: String? = null
 
 
 )

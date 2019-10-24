@@ -13,41 +13,56 @@ import com.tokopedia.unifyprinciples.Typography
 class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
                          val quickFilterListener: QuickFilterListener, val productCount: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object{
-        const val VIEW_PRODUCT_COUNT = 1
+    companion object {
         const val VIEW_QUICK_FILTER = 0
+        const val VIEW_PRODUCT_COUNT = 1
+        const val VIEW_SHIMMER = 2
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
+        return when (viewType) {
             VIEW_QUICK_FILTER -> {
                 val v = LayoutInflater.from(parent.context).inflate(QuickFilterViewHolder.LAYOUT, parent, false)
                 QuickFilterViewHolder(v)
             }
-            else -> {
+            VIEW_PRODUCT_COUNT -> {
                 val v = LayoutInflater.from(parent.context).inflate(ProductCountViewHolder.LAYOUT, parent, false)
                 ProductCountViewHolder(v)
+            }
+            else -> {
+                val v = LayoutInflater.from(parent.context).inflate(ShimmerViewHolder.Layout, parent, false)
+                return ShimmerViewHolder(v)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return quickFilterList.size + 1
+        return if (quickFilterList.size <= 0) {
+            4
+        } else {
+            quickFilterList.size + 1
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(getItemViewType(position)){
+        when (getItemViewType(position)) {
             VIEW_QUICK_FILTER -> setQuickFilterData(holder as QuickFilterViewHolder, position - 1)
-            else -> setProductCountData(holder as ProductCountViewHolder, position)
+            VIEW_PRODUCT_COUNT -> setProductCountData(holder as ProductCountViewHolder, position)
+            else -> {
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(position == 0){
-            VIEW_PRODUCT_COUNT
-        } else
-            VIEW_QUICK_FILTER
+        return if (quickFilterList.size <= 0) {
+            VIEW_SHIMMER
+        } else {
+            if (position == 0) {
+                VIEW_PRODUCT_COUNT
+            } else
+                VIEW_QUICK_FILTER
+        }
     }
-
     private fun setQuickFilterData(holder: QuickFilterViewHolder, position: Int) {
         val option: Option = quickFilterList[position].options[0]
         bindFilterNewIcon(holder, option)
@@ -87,7 +102,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
 
 
     class QuickFilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        companion object{
+        companion object {
             val LAYOUT = R.layout.item_nav_quick_filter
         }
         val quickFilterText = itemView.findViewById<Typography>(R.id.quick_filter_text)
@@ -96,10 +111,17 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
     }
 
     class ProductCountViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        companion object{
+        companion object {
             val LAYOUT = R.layout.item_nav_product_count
         }
         val productCountText = itemView.findViewById<Typography>(R.id.product_count_text)
+    }
+
+
+    class ShimmerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        companion object {
+            val Layout = R.layout.item_nav_hotlist_quick_filter_shimmer
+        }
     }
 
     fun clearData() {

@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,21 +13,28 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.fragment.HotlistNavFragment
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_hotlist_nav.*
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 import java.util.*
 
-class HotlistNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
 
-    private val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
-    private val EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY"
-    private val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
-    private val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
+class HotlistNavActivity : BaseActivity(),
+        CategoryNavigationListener,
+        BottomSheetListener,
+        SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener{
+
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var searchNavContainer: View? = null
@@ -52,6 +60,40 @@ class HotlistNavActivity : BaseActivity(), CategoryNavigationListener, BottomShe
         initBottomSheetListener()
         initButtons()
 
+    }
+
+
+    companion object {
+
+        private val EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL"
+        private val EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY"
+        private val EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS"
+        private val EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER"
+
+        @JvmStatic
+        fun createInstanceUsingAlias(context: Context,
+                                     alias: String,
+                                     trackerAttribution: String): Intent {
+            val intent = Intent(context, HotlistNavActivity::class.java)
+            val extras = Bundle()
+            extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias)
+            try {
+                extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, URLDecoder.decode(trackerAttribution, "UTF-8"))
+            } catch (e: UnsupportedEncodingException) {
+                e.printStackTrace()
+                extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution.replace("%20".toRegex(), " "))
+            }
+
+            intent.putExtras(extras)
+            return intent
+        }
+
+
+        @JvmStatic
+        fun isHotlistNavEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(RemoteConfigKey.APP_HOTLIST_NAV_ENABLE, true)
+        }
     }
 
     private fun initButtons() {
@@ -84,15 +126,24 @@ class HotlistNavActivity : BaseActivity(), CategoryNavigationListener, BottomShe
             when (img_display_button.tag) {
 
                 STATE_GRID -> {
+                    hotlistNavAnalytics.eventDisplayButtonClicked(alias,
+                            isUserLoggedIn(),
+                            "grid")
                     img_display_button.tag = STATE_LIST
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
+                    hotlistNavAnalytics.eventDisplayButtonClicked(alias,
+                            isUserLoggedIn(),
+                            "list")
                     img_display_button.tag = STATE_BIG
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
+                    hotlistNavAnalytics.eventDisplayButtonClicked(alias,
+                            isUserLoggedIn(),
+                            "big")
                     img_display_button.tag = STATE_GRID
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
                 }
@@ -102,6 +153,11 @@ class HotlistNavActivity : BaseActivity(), CategoryNavigationListener, BottomShe
         img_share_button.setOnClickListener {
             visibleFragmentListener?.onShareButtonClick()
         }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        val userSession = UserSession(this)
+        return userSession.isLoggedIn
     }
 
 
@@ -181,8 +237,25 @@ class HotlistNavActivity : BaseActivity(), CategoryNavigationListener, BottomShe
         }
     }
 
+
     private fun applyFilter(filterParameter: Map<String, String>) {
 
+        val presentFilterList = hotlistFragment.getSelectedFilter()
+        if (presentFilterList.size < filterParameter.size) {
+            for (i in filterParameter.entries) {
+                if (!presentFilterList.containsKey(i.key)) {
+                    hotlistNavAnalytics.eventFilterApplied(alias,
+                            isUserLoggedIn(),
+                            i.key,
+                            i.value)
+                }
+            }
+        }
+        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
         hotlistFragment.applyFilterToSearchParameter(filterParameter)
         hotlistFragment.setSelectedFilter(HashMap(filterParameter))
         hotlistFragment.clearDataFilterSort()

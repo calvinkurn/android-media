@@ -1,11 +1,13 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.adapters
 
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.data.cpmAds.CpmItem
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.interfaces.CpmTopAdsListener
@@ -18,7 +20,9 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
     companion object {
         const val VIEW_SHOP = 0
         const val VIEW_PRODUCT = 1
+        const val VIEW_SHIMMER = 2
     }
+    val viewMap = HashMap<Int, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -29,16 +33,24 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
                 ShopViewHolder(v)
             }
 
-            else -> {
+            VIEW_PRODUCT -> {
                 val v = LayoutInflater.from(parent.context).inflate(ProductViewHolder.LAYOUT, parent, false)
                 ProductViewHolder(v)
+            }
+            else -> {
+                val v = LayoutInflater.from(parent.context).inflate(ShimmerViewHolder.LAYOUT, parent, false)
+                ShimmerViewHolder(v)
             }
         }
 
     }
 
     override fun getItemCount(): Int {
-        return cpmItemList.size
+        return if (cpmItemList.size <= 0) {
+            3
+        } else {
+            cpmItemList.size
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -47,36 +59,54 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
             VIEW_SHOP -> {
                 setShopData(holder as ShopViewHolder, position)
             }
-            else -> {
+            VIEW_PRODUCT -> {
                 setProductData(holder as ProductViewHolder, position)
+            }
+            else -> {
             }
 
         }
     }
 
     private fun setShopData(holder: ShopViewHolder, position: Int) {
-        holder.shopName.text = cpmItemList[position].name
-        holder.description.text = cpmItemList[position].description
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageCircle2(holder.itemView.context,
+        val item = cpmItemList[position]
+        holder.shopName.text = item.name
+        holder.description.text = item.description
+        ImageHandler.loadImageCircle2(holder.itemView.context,
                 holder.shopImage,
-                cpmItemList[position].image)
+                item.image)
+        ImageHandler.loadImage(holder.itemView.context,
+                holder.shopBadge,
+                item.badge_url,
+                R.drawable.loading_page)
+        holder.shop_cpm_parent.setOnClickListener {
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
+        }
     }
 
     private fun setProductData(holder: ProductViewHolder, position: Int) {
-        holder.product_name.text = cpmItemList[position].name
-        holder.productDesc.text = cpmItemList[position].description
-        holder.productPrice.text = cpmItemList[position].price_format
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageCircle2(holder.itemView.context,
+        val item = cpmItemList[position]
+        holder.product_name.text = item.name
+        holder.productDesc.text = item.description
+        holder.productPrice.text = item.price_format
+        ImageHandler.loadImage(holder.itemView.context,
                 holder.productImage,
-                cpmItemList[position].image)
+                item.image, R.drawable.loading_page)
+        holder.product_cpm_parent.setOnClickListener {
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
+        }
     }
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (cpmItemList[position].is_product) {
-            VIEW_PRODUCT
-        } else
-            VIEW_SHOP
+        return if (cpmItemList.size <= 0) {
+            VIEW_SHIMMER
+        } else {
+            if (cpmItemList[position].is_product) {
+                VIEW_PRODUCT
+            } else
+                VIEW_SHOP
+        }
     }
 
 
@@ -89,6 +119,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         val shopName = itemView.findViewById<TextView>(R.id.shop_name)
         val description = itemView.findViewById<TextView>(R.id.description)
         val shopImage = itemView.findViewById<ImageView>(R.id.shop_image)
+        val shop_cpm_parent = itemView.findViewById<ConstraintLayout>(R.id.shop_cpm_parent)
     }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -100,5 +131,23 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         val product_name = itemView.findViewById<TextView>(R.id.product_name)
         val productDesc = itemView.findViewById<TextView>(R.id.product_desc)
         val productPrice = itemView.findViewById<TextView>(R.id.product_price)
+        val product_cpm_parent = itemView.findViewById<ConstraintLayout>(R.id.product_cpm_parent)
+    }
+
+    class ShimmerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        companion object {
+            val LAYOUT = R.layout.item_nav_cpm_shimmer
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position) && viewMap.size > 0) {
+            viewMap[position] = true
+            val item = cpmItemList[position]
+            cpmTopAdsListener.onCpmImpression(item)
+        }
     }
 }

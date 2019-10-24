@@ -19,9 +19,10 @@ import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponen
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.DescriptionView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarState;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarStateChangeListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarStateChangeListener;
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -52,16 +53,28 @@ public class HotlistActivity extends DiscoveryActivity
 
     @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
     public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
-        return HotlistActivity.createInstanceUsingAlias(context,
-                bundle.getString("alias", ""),
-                bundle.getString("tracker_attribution", "")
-        );
+
+        if (HotlistNavActivity.isHotlistNavEnabled(context)) {
+            return HotlistNavActivity.createInstanceUsingAlias(context,
+                    bundle.getString("alias", ""),
+                    bundle.getString("tracker_attribution", ""));
+        } else {
+            return HotlistActivity.createInstanceUsingAlias(context,
+                    bundle.getString("alias", ""),
+                    bundle.getString("tracker_attribution", "")
+            );
+        }
     }
 
     private static Intent createInstanceUsingAlias(Context context,
                                                    String alias,
                                                    String trackerAttribution) {
-        Intent intent = new Intent(context, HotlistActivity.class);
+        Intent intent;
+        if (HotlistNavActivity.isHotlistNavEnabled(context)) {
+            intent = new Intent(context, HotlistNavActivity.class);
+        } else {
+            intent = new Intent(context, HotlistActivity.class);
+        }
         Bundle extras = new Bundle();
         extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias);
         try {

@@ -68,23 +68,19 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
-
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
-    lateinit var hotlistnavViewModel: HotlistNavViewModel
-
-    lateinit var component: HotlistNavComponent
+    private lateinit var hotlistnavViewModel: HotlistNavViewModel
+    private lateinit var component: HotlistNavComponent
     private lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
     private lateinit var quickFilterAdapter: QuickFilterAdapter
     private lateinit var cpmAdsAdapter: CpmAdsAdapter
-
 
     var productNavListAdapter: ProductNavListAdapter? = null
     var productList: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
@@ -92,8 +88,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private lateinit var productTypeFactory: ProductTypeFactory
     var quickFilterList = ArrayList<Filter>()
 
-
-    private var hotListId: String = ""
+    private var hotlistDetail: HotlistDetail? = null
+    private var hotlistType: String = ""
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
@@ -166,25 +162,25 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                     }
 
                     if (it.data.isNotEmpty()) {
-                        // showNoDataScreen(false)
+                        showNoDataScreen(false)
                         productList.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true
                     } else {
                         if (productList.isEmpty()) {
-                            //   showNoDataScreen(true)
+                            showNoDataScreen(true)
                         }
                     }
                     hideRefreshLayout()
-                    reloadFilter(hotlistParamBuilder.generateDynamicFilterParams(hotListId))
+                    reloadFilter(hotlistParamBuilder.generateDynamicFilterParams(hotlistDetail?.filterAttribute?.sc.toString()))
                 }
 
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
                     if (productList.isEmpty()) {
-                        // showNoDataScreen(true)
+                        showNoDataScreen(true)
                     }
                     isPagingAllowed = true
                 }
@@ -252,8 +248,19 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
 
+    private fun showNoDataScreen(toShow: Boolean) {
+        if (toShow) {
+            layout_no_data.visibility = View.VISIBLE
+            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
+            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+        } else {
+            layout_no_data.visibility = View.GONE
+        }
+    }
+
+
     override fun onSwipeToRefresh() {
-        reloadData()
+        hotlistnavViewModel.getHotlistDetail(hotlistParamBuilder.getHotlistDetailParams(hotListAlias))
     }
 
     private fun reloadFilter(param: RequestParams) {
@@ -261,12 +268,29 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun updateData(data: HotListDetailResponse) {
+        showBannerShimmer(false)
         ImageLoader.LoadImage(hotlist_banner, data.hotlistDetail?.coverImage)
-        hotListId = data.hotlistDetail?.filterAttribute?.sc.toString()
+        hotlistDetail = data.hotlistDetail
+        val hotId = hotlistDetail?.filterAttribute?.sc.toString()
         fetchProducts(0)
-        reloadFilter(hotlistParamBuilder.generateDynamicFilterParams(hotListId))
-        hotlistnavViewModel.fetchQuickFilters(hotlistParamBuilder.generateQuickFilterParams(hotListId))
-        hotlistnavViewModel.fetchCpmData(hotlistParamBuilder.generateCpmTopAdsParams("kaos"))
+        reloadFilter(hotlistParamBuilder.generateDynamicFilterParams(hotId))
+        hotlistnavViewModel.fetchQuickFilters(hotlistParamBuilder.generateQuickFilterParams(hotId))
+        setHotlistType(hotlistDetail?.filterAttribute?.isCurated, hotlistDetail?.url)
+        if (hotlistDetail?.isTopads == true) {
+            hotlistnavViewModel.fetchCpmData(hotlistParamBuilder.generateCpmTopAdsParams(hotListAlias))
+        } else {
+            cpm_recyclerview.hide()
+        }
+    }
+
+    private fun setHotlistType(isCurated: Boolean?, url: String?) {
+        hotlistType = if (isCurated == true) {
+            HotlistParamBuilder.HotListType.CURATED.value
+        } else if (url != null && url.isNotEmpty()) {
+            HotlistParamBuilder.HotListType.URL.value
+        } else {
+            HotlistParamBuilder.HotListType.KEYWORD.value
+        }
     }
 
     private fun setUpAdapter() {
@@ -286,7 +310,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
 
         val param = hotlistParamBuilder.GenerateProductListParams(
-                hotListId,
+                hotlistDetail?.filterAttribute?.sc.toString(),
                 start,
                 getUniqueId(),
                 getSelectedSort(),
@@ -305,10 +329,22 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun init() {
+        showBannerShimmer(true)
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
         hotlistnavViewModel.getHotlistDetail(hotlistParamBuilder.getHotlistDetailParams(hotListAlias))
         attachScrollListener()
+        setQuickFilterAdapter("")
+    }
+
+    private fun showBannerShimmer(isVisible: Boolean) {
+        if (isVisible) {
+            hotlist_banner.hide()
+            banner_shimmer.show()
+        } else {
+            banner_shimmer.hide()
+            hotlist_banner.show()
+        }
     }
 
     private fun attachScrollListener() {
@@ -372,7 +408,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.addShimmer()
         resetPage()
         fetchProducts(getPage())
-        hotlistnavViewModel.fetchQuickFilters(hotlistParamBuilder.generateQuickFilterParams(hotListId))
+        hotlistnavViewModel.fetchQuickFilters(hotlistParamBuilder.generateQuickFilterParams(hotlistDetail?.filterAttribute?.sc.toString()))
 
     }
 
@@ -390,7 +426,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getDepartMentId(): String {
-        return hotListId
+        return hotlistDetail?.filterAttribute?.sc.toString()
     }
 
     override fun getFilterRequestCode(): Int {
@@ -402,7 +438,10 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
-        reloadData()
+        hotlistNavAnalytics.eventSortApplied(hotListAlias,
+                isUserLoggedIn(),
+                selectedSortName,
+                sortValue)
     }
 
     override fun getScreenName(): String {
@@ -417,8 +456,17 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     // product card listener
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
+        hotlistNavAnalytics.eventProductClicked(hotListAlias,
+                "tokopedia://product/" + item.id,
+                isUserLoggedIn(),
+                hotlistType,
+                adapterPosition,
+                item.isTopAds,
+                item.name,
+                item.id.toString(),
+                item.price, item.categoryBreadcrumb + " / " + item.id)
 
+        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
@@ -448,8 +496,20 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
                 removeWishlist(productItem.id.toString(), userSession.userId, position)
+                hotlistNavAnalytics.eventWishistClicked(hotListAlias,
+                        hotlistType,
+                        isUserLoggedIn(),
+                        productItem.isTopAds,
+                        productItem.id.toString(),
+                        false)
             } else {
                 addWishlist(productItem.id.toString(), userSession.userId, position)
+                hotlistNavAnalytics.eventWishistClicked(hotListAlias,
+                        hotlistType,
+                        isUserLoggedIn(),
+                        productItem.isTopAds,
+                        productItem.id.toString(),
+                        true)
             }
         } else {
             launchLoginActivity(productItem.id.toString())
@@ -457,6 +517,15 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
+        hotlistNavAnalytics.eventProductImpression(hotListAlias,
+                isUserLoggedIn(),
+                hotlistType,
+                adapterPosition,
+                item.isTopAds,
+                item.name,
+                item.id.toString(),
+                item.price,
+                item.categoryBreadcrumb + " / " + item.id)
     }
 
     // on item change view
@@ -487,6 +556,10 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             AuthHelper.getMD5Hash(gcmHandler.registrationId)
     }
 
+    private fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
+    }
+
 
     // QuickFilterListener
 
@@ -497,12 +570,22 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
+
+            hotlistNavAnalytics.eventQuickFilterClicked(hotListAlias,
+                    isUserLoggedIn(),
+                    option,
+                    true)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
+
+            hotlistNavAnalytics.eventQuickFilterClicked(hotListAlias,
+                    isUserLoggedIn(),
+                    option,
+                    false)
         }
     }
 
@@ -560,15 +643,42 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     // CPM click listner
 
-    override fun onCpmClicked(trackerUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCpmClicked(trackerUrl: String, item: CpmItem) {
+        if (item.is_product) {
+            hotlistNavAnalytics.eventCpmTopAdsProductClick(isUserLoggedIn(),
+                    hotlistDetail?.shareFilePath ?: "")
+        } else {
+            hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
+                    hotlistDetail?.shareFilePath ?: "")
+        }
+        RouteManager.route(activity, trackerUrl)
     }
+
+    override fun onCpmImpression(item: CpmItem) {
+    }
+
 
     // share button clicked
 
     override fun onShareButtonClicked() {
+        hotlistNavAnalytics.eventShareClicked(isUserLoggedIn(),
+                hotlistDetail?.shareFilePath ?: "",
+                "")
+
+
+        val remoteConfig = FirebaseRemoteConfigImpl(activity)
+        val hotlistShareMsg = remoteConfig.getString(HOTLIST_SHARE_MSG)
+        val shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
+                .setName(getString(R.string.message_share_catalog))
+                .setTextContent(hotlistShareMsg)
+                .setCustMsg(hotlistShareMsg)
+                .setUri("https://www.tokopedia.com/hot/" + hotlistDetail?.aliasKey)
+                .setId(hotlistDetail?.aliasKey)
+                .build()
+
+        shareData.type = LinkerData.HOTLIST_TYPE
+        DefaultShare(activity, shareData).show()
 
     }
-
-
 }
