@@ -15,20 +15,23 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_title"
-            style="@style/TextSmallMediumBlack54"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@+id/label_show_all"
+            android:layout_toLeftOf="@+id/label_show_all"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:text="@string/label_empty_cart_recent_view"
-            android:textSize="@dimen/sp_16" />
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_show_all"
             style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tv_label_last_seen"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"

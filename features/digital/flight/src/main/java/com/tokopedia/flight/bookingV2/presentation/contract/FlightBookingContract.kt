@@ -1,6 +1,8 @@
 package com.tokopedia.flight.bookingV2.presentation.contract
 
 import androidx.annotation.StringRes
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
@@ -38,6 +40,8 @@ interface FlightBookingContract {
 
         fun setContactPhoneNumber(phone: String)
 
+        fun setContactPhoneNumber(phone: String, phoneCode: Int)
+
         fun showContactPhoneNumberEmptyError(@StringRes resId: Int)
 
         fun showContactPhoneNumberInvalidError(@StringRes resId: Int)
@@ -51,8 +55,6 @@ interface FlightBookingContract {
         fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataViewModel, departureTrip: FlightDetailViewModel)
 
         fun renderPassengersList(passengerViewModels: List<FlightBookingPassengerViewModel>)
-
-        fun renderPhoneCodeView(countryPhoneCode: String)
 
         fun getDepartureTripId(): String
 
@@ -122,6 +124,10 @@ interface FlightBookingContract {
 
         fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
 
+        fun showContactDataProgressBar()
+
+        fun hideContactDataProgressBar()
+
     }
 
     interface Presenter : FlightBaseBookingContract.Presenter<View> {
@@ -131,8 +137,6 @@ interface FlightBookingContract {
         fun onGetProfileData()
 
         fun onButtonSubmitClicked()
-
-        fun onPhoneCodeResultReceived(phoneCodeViewModel: FlightBookingPhoneCodeViewModel)
 
         fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel)
 
@@ -161,6 +165,8 @@ interface FlightBookingContract {
         fun renderUi(flightBookingCartData: FlightBookingCartData?, isFromSavedInstance: Boolean)
 
         fun fetchTickerData()
+
+        fun onContactDataResultRecieved(contactData: TravelContactData)
 
     }
 

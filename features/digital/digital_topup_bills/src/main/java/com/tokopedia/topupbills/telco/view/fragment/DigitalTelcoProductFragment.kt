@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
@@ -33,7 +32,7 @@ import javax.inject.Inject
 class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
-    private lateinit var emptyStateProductView: LinearLayout
+    private lateinit var emptyStateProductView: RelativeLayout
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
     private lateinit var progressBar: ProgressBar
@@ -110,7 +109,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
-                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
+                if (::selectedOperatorName.isInitialized) {
+                    topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
+                }
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {

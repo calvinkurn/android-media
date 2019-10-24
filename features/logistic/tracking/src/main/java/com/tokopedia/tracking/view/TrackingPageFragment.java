@@ -1,13 +1,10 @@
 package com.tokopedia.tracking.view;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -30,26 +35,34 @@ import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsTrackingOrder;
+import com.tokopedia.unifycomponents.UnifyButton;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.tracking.view.TrackingPageActivity.ORDER_ID_KEY;
-import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackingPageFragment extends BaseDaggerFragment implements
-        ITrackingPageFragment, ITransactionAnalyticsTrackingOrder {
+public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
-    private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
+    private static final int PER_SECOND = 1000;
+    private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
+    private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
+    private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
+
+    private String mOrderId;
+    private String mTrackingUrl;
+    private String mCaller;
 
     private ProgressBar loadingScreen;
-    private ProgressDialog progressDialog;
-
     private TextView referenceNumber;
     private ImageView courierLogo;
     private TextView deliveryDate;
@@ -63,24 +76,38 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private LinearLayout emptyUpdateNotification;
     private TextView notificationText;
     private RecyclerView notificationHelpStep;
-    private ViewGroup liveTrackingButton;
+    private UnifyButton liveTrackingButton;
     private ViewGroup rootView;
     private LinearLayout descriptionLayout;
+    private UnifyButton retryButton;
+    private TextView retryStatus;
+    private CountDownTimer mCountDownTimer;
 
     @Inject
     ITrackingPagePresenter presenter;
     @Inject
     DateUtil dateUtil;
     @Inject
-    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking;
+    OrderAnalyticsOrderTracking mAnalytics;
 
-    public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
+    public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl, String caller) {
         TrackingPageFragment fragment = new TrackingPageFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ORDER_ID_KEY, orderId);
-        bundle.putString(URL_LIVE_TRACKING, liveTrackingUrl);
+        bundle.putString(ARGUMENTS_ORDER_ID, orderId);
+        bundle.putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl);
+        bundle.putString(ARGUMENTS_CALLER, caller);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mOrderId = getArguments().getString(ARGUMENTS_ORDER_ID);
+            mTrackingUrl = getArguments().getString(ARGUMENTS_TRACKING_URL);
+            mCaller = getArguments().getString(ARGUMENTS_CALLER);
+        }
     }
 
     @Nullable
@@ -93,10 +120,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadingScreen = view.findViewById(R.id.main_progress_bar);
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-        progressDialog.setCancelable(false);
 
         rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
@@ -113,16 +136,17 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
         notificationText = view.findViewById(R.id.notification_text);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
+        retryButton = view.findViewById(R.id.retry_pickup_button);
         descriptionLayout = view.findViewById(R.id.description_layout);
+        retryStatus = view.findViewById(R.id.tv_retry_status);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
                         .fromHtml(getString(R.string.further_information_text_html)),
                 TextView.BufferType.SPANNABLE);
         furtherInformationText.setOnClickListener(onFurtherInformationClicked());
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
-        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+        fetchData();
     }
-
 
     @Override
     public void populateView(TrackingViewModel model) {
@@ -142,43 +166,83 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
-        sendAnalyticsOnViewTrackingRendered();
-    }
-
-    public void sendAnalyticsOnViewTrackingRendered() {
-        orderAnalyticsOrderTracking.eventViewOrderTrackingImpressionButtonLiveTracking();
-    }
-
-    public void sendAnalyticsOnButtonLiveTrackingClicked() {
-        orderAnalyticsOrderTracking.eventClickOrderTrackingClickButtonLiveTracking();
-    }
-
-    @Override
-    public void showMainLoadingPage() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void closeMainLoadingPage() {
-        loadingScreen.setVisibility(View.GONE);
+        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking();
     }
 
     @Override
     public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) progressDialog.show();
+        loadingScreen.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+        loadingScreen.setVisibility(View.GONE);
     }
 
     @Override
-    public void showError(String message) {
-        NetworkErrorHelper.showEmptyState(getActivity(), rootView,
-                () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
+    public void showError(Throwable error) {
+        String message = ErrorHandler.getErrorMessage(getContext(), error);
+        // currently, message is not being used
+        NetworkErrorHelper.showEmptyState(getActivity(), rootView, this::fetchData);
     }
 
+    @Override
+    public void showSoftError(Throwable error) {
+        String message = ErrorHandler.getErrorMessage(getContext(), error);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setRetryButton(boolean active, long deadline) {
+        if (active) {
+            retryButton.setVisibility(View.VISIBLE);
+            retryButton.setText(getContext().getString(R.string.find_new_driver));
+            retryButton.setEnabled(true);
+            retryButton.setOnClickListener(view -> {
+                        retryButton.setEnabled(false);
+                        presenter.onRetryPickup(mOrderId);
+                        mAnalytics.eventClickButtonCariDriver(mOrderId);
+                    }
+            );
+            retryStatus.setVisibility(View.GONE);
+            mAnalytics.eventViewButtonCariDriver(mOrderId);
+        } else {
+            retryButton.setVisibility(View.GONE);
+            if (deadline > 0) {
+                // when retry button available but need to wait until deadline
+                retryStatus.setVisibility(View.VISIBLE);
+                long now = System.currentTimeMillis() / 1000L;
+                long remainingTime = deadline - now;
+                initTimer(remainingTime);
+            } else {
+                retryStatus.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void startSuccessCountdown() {
+        retryButton.setText(getContext().getString(R.string.finding_new_driver));
+        Observable.timer(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(e);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        fetchData();
+                    }
+                });
+    }
 
     private void initialHistoryView() {
         trackingHistory.setVisibility(View.GONE);
@@ -187,8 +251,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
-                model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
+        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+                || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
             trackingHistory.setVisibility(View.GONE);
         } else {
             trackingHistory.setVisibility(View.VISIBLE);
@@ -216,7 +280,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setLiveTrackingButton() {
-        if (TextUtils.isEmpty(getArguments().getString(URL_LIVE_TRACKING)))
+        if (TextUtils.isEmpty(mTrackingUrl))
             liveTrackingButton.setVisibility(View.GONE);
         else {
             liveTrackingButton.setVisibility(View.VISIBLE);
@@ -231,7 +295,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-
         TrackingPageComponent component = DaggerTrackingPageComponent
                 .builder()
                 .baseAppComponent(
@@ -243,22 +306,57 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         component.inject(this);
     }
 
+    private void initTimer(long remainingSeconds) {
+        if (remainingSeconds <= 0) return;
+        long timeInMillis = remainingSeconds * 1000;
+        String strFormat = (getContext() != null) ?
+                getContext().getString(R.string.retry_dateline_info) : "";
+        mAnalytics.eventViewLabelTungguRetry(
+                DateUtils.formatElapsedTime(timeInMillis / 1000), mOrderId);
+        mCountDownTimer = new CountDownTimer(timeInMillis, PER_SECOND) {
+            @Override
+            public void onTick(long millsUntilFinished) {
+                if (getContext() != null) {
+                    String info = String.format(strFormat,
+                            DateUtils.formatElapsedTime(millsUntilFinished / 1000));
+                    retryStatus.setText(MethodChecker.fromHtml(info));
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                fetchData();
+            }
+        };
+        mCountDownTimer.start();
+    }
+
     private View.OnClickListener onFurtherInformationClicked() {
         return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
 
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
-            sendAnalyticsOnButtonLiveTrackingClicked();
+            mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
             startActivity(
-                    SimpleWebViewActivity.createIntent(getActivity(),
-                            getArguments().getString(URL_LIVE_TRACKING)));
+                    SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
         };
+    }
+
+    private void fetchData() {
+        presenter.onGetTrackingData(mOrderId);
+        if (mTrackingUrl != null && !mTrackingUrl.isEmpty()
+                && mCaller != null && mCaller.equalsIgnoreCase("seller")) {
+            presenter.onGetRetryAvailability(mOrderId);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDetach();
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
     }
 }

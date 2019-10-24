@@ -5,15 +5,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +27,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
@@ -73,7 +73,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
-    private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
@@ -340,6 +339,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 case DeepLinkChecker.CONTENT:
                     DeepLinkChecker.openContent(getActivity(), url);
                     return false;
+                case DeepLinkChecker.HOTEL:
+                    DeepLinkChecker.openHotel(getActivity(), url);
+                    return true;
                 default:
                     return false;
             }
@@ -539,6 +541,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
 
+
+            String registeredNavigation = "";
+            if (getActivity() != null) {
+                registeredNavigation = DeeplinkMapper.getRegisteredNavigation(getActivity(), url);
+            }
+
             if (url.contains(HCI_CAMERA_KTP)) {
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                 startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
@@ -586,6 +594,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;
+            } else if (!TextUtils.isEmpty(registeredNavigation)
+                    && RouteManager.isSupportApplink(getActivity(), registeredNavigation)) {
+                Activity activity = getActivity();
+                if (activity != null) {
+                    RouteManager.route(getActivity(), registeredNavigation);
+                    return true;
+                }
             } else if (getActivity() != null &&
                     Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
                 if (getActivity().getApplication() instanceof TkpdCoreRouter &&
@@ -594,15 +609,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     ((TkpdCoreRouter) getActivity().getApplication())
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
-                }
-            } else {
-                Activity activity = getActivity();
-                if (activity != null) {
-                    String applink = DeeplinkMapper.getRegisteredNavigation(activity, url);
-                    if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(activity, applink)) {
-                        RouteManager.route(getActivity(), applink);
-                        return true;
-                    }
                 }
             }
             return overrideUrl(url);

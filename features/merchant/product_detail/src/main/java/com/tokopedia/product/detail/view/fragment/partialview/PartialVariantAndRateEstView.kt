@@ -41,7 +41,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                if (title_multiorigin.isVisible || txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
+                if (title_multiorigin.isVisible) {
                     variant_divider.visible()
                 } else {
                     variant_divider.gone()
@@ -67,36 +67,6 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(summarize: SummaryText, onRateEstimationClicked: (() -> Unit)? = null) {
-        if (summarize.destination.isBlank()) return
-
-        with(view) {
-            txt_rate_estimation_start.text = summarize.minPrice
-            txt_rate_estimation_start.visible()
-            icon_shop_location.visible()
-            txt_shop_location.text = context.getString(R.string.from_x, summarize.shopCity).boldPartial("dari".length)
-            txt_shop_location.visible()
-            icon_courier_est.visible()
-            txt_courier_dest.text = context.getString(R.string.to_x, summarize.destination).boldPartial("ke".length)
-            txt_courier_dest.visible()
-
-            if (label_variant.isVisible) {
-                variant_divider.visible()
-            } else {
-                variant_divider.gone()
-            }
-
-            if (icon_purchase_protection.isVisible) {
-                purchase_protection_divider.visible()
-            } else {
-                purchase_protection_divider.gone()
-            }
-
-            visible()
-            setOnClickListener { onRateEstimationClicked?.invoke() }
-        }
-    }
-
     private fun String.boldPartial(from: Int, to: Int = length): SpannableString {
         val spanText = SpannableString(this)
         spanText.setSpan(StyleSpan(Typeface.BOLD), from, to, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -106,7 +76,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
     fun renderPriorityOrder(shopCommitment: ShopCommitment) {
         with(view) {
             if (shopCommitment.isNowActive) {
-                if (label_variant.isVisible || txt_courier_dest.isVisible) {
+                if (label_variant.isVisible) {
                     priority_order_divider.visible()
                 } else {
                     priority_order_divider.gone()
@@ -128,13 +98,8 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     fun renderPurchaseProtectionData(productInfo: ProductPurchaseProtectionInfo) {
         with(view) {
-            if (productInfo.ppItemDetailPage?.isProtectionAvailable!!) {
-
-                if (txt_courier_dest.isVisible || txt_shop_location.isVisible) {
-                    purchase_protection_divider.visible()
-                } else {
-                    purchase_protection_divider.gone()
-                }
+            if (productInfo.ppItemDetailPage?.isProtectionAvailable == true) {
+                purchase_protection_divider.gone()
                 icon_purchase_protection.visible()
                 txt_purchase_protection_title.visible()
                 txt_purchase_protection_message.visible()

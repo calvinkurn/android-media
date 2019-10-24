@@ -21,7 +21,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.catalog_header_layout;
+    public static final int LAYOUT = R.layout.search_catalog_header_layout;
     public static final String DEFAULT_ITEM_VALUE = "1";
     private TopAdsBannerView adsBannerView;
     private Context context;
@@ -53,21 +53,17 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
                 .build();
         adsBannerView.setConfig(config);
         adsBannerView.loadTopAds();
-        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
-            @Override
-            public void onBannerAdsClicked(int position, String applink, CpmData data) {
-                bannerAdsListener.onBannerAdsClicked(applink);
-                if (applink.contains(SHOP)) {
-                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
-                } else {
-                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
-                }
+        adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
+            if (bannerAdsListener != null) {
+                bannerAdsListener.onBannerAdsClicked(position, applink, data);
             }
         });
         adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionHeadlineAdsItem(int position, CpmData data) {
-                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
+                if (bannerAdsListener != null) {
+                    bannerAdsListener.onBannerAdsImpressionListener(position, data);
+                }
             }
         });
     }

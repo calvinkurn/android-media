@@ -1,11 +1,9 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.crashlytics.android.Crashlytics
-import com.tokopedia.kotlin.util.ContainNullException
-import com.tokopedia.kotlin.util.isContainNull
-import com.tokopedia.recommendation_widget_common.BuildConfig
+import com.tokopedia.kotlin.util.throwIfNull
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import rx.functions.Func1
 
@@ -15,19 +13,17 @@ import rx.functions.Func1
 
 class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationData>,
         List<RecommendationWidget>> {
-    override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
-        isContainNull(recommendations) {
-            val exception = ContainNullException("Found $it in ${RecommendationEntityMapper::class.java.simpleName}")
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception)
-            }
-            throw exception
-        }
 
+    override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
+        throwIfNull(recommendations, RecommendationEntityMapper::class.java)
         return mappingToRecommendationModel(recommendations)
     }
 
     companion object {
+        private const val LABEL_POSITION_OFFERS = "offers"
+        private const val LABEL_POSITION_PROMO = "promo"
+        private const val LABEL_POSITION_CREDIBILITY = "credibility"
+
         fun mappingToRecommendationModel(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
 
@@ -46,7 +42,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                                 recommendation,
                                 recomendationData.title ?: "",
                                 recomendationData.pageName ?: "",
-                                index + 1)
+                                index + 1,
+                                recomendationData.layoutType ?: "")
                     } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
@@ -56,6 +53,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.tid ?: "",
                     recomendationData.widgetUrl ?: "",
                     recomendationData.layoutType?:"",
+                    recomendationData.seeMoreAppLink ?: "",
                     recomendationData.pagination.currentPage,
                     recomendationData.pagination.nextPage,
                     recomendationData.pagination.prevPage,
@@ -67,7 +65,32 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                 data: RecomendationEntity.Recommendation,
                 title: String,
                 pageName: String,
-                position: Int): RecommendationItem {
+                position: Int,
+                layoutType: String): RecommendationItem {
+
+            val labelCredibility = RecommendationLabel()
+            val labelPromo = RecommendationLabel()
+            val labelOffers = RecommendationLabel()
+
+            data.labelGroups?.let {
+                for (label: RecomendationEntity.Recommendation.LabelGroup in it){
+                    when(label.position){
+                        LABEL_POSITION_CREDIBILITY -> {
+                            labelCredibility.title = label.title?:""
+                            labelCredibility.title = label.type?:""
+                        }
+                        LABEL_POSITION_PROMO -> {
+                            labelPromo.title = label.title?:""
+                            labelPromo.title = label.type?:""
+                        }
+                        LABEL_POSITION_OFFERS -> {
+                            labelOffers.title = label.title?:""
+                            labelOffers.title = label.type?:""
+                        }
+                    }
+                }
+            }
+
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -86,9 +109,11 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.stock,
                     data.recommendationType ?: "",
                     data.isIsTopads,
+                    data.isWishlist,
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
                     position,
                     data.shop?.id ?: -1,
                     "",
@@ -99,10 +124,19 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     pageName,
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
-                    data.badges?.map { it.imageUrl } ?: emptyList()
+                    data.badges?.map { it.imageUrl } ?: emptyList(),
+                    layoutType,
+                    data.freeOngkirInformation?.isActive?:false,
+                    data.freeOngkirInformation?.imageUrl?:"",
+                    labelPromo,
+                    labelOffers,
+                    labelCredibility
             )
 
         }
 
+        private fun isLabelDiscountVisible(productItem: RecomendationEntity.Recommendation): Boolean {
+            return productItem.discountPercentage > 0
+        }
     }
 }

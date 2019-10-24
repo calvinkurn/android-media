@@ -1,9 +1,9 @@
 package com.tokopedia.feedplus.view.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -347,8 +347,8 @@ public class FeedAnalytics {
     }
 
     //#FEED016
-    public void trackClickCreatePostAs(String applink, String userId, String shopId) {
-        if (applink.equals(ApplinkConst.AFFILIATE_EXPLORE)) {
+    public void trackClickCreatePostAs(String type, String userId, String shopId) {
+        if (type.toLowerCase().contains(Author.Companion.getTYPE_AFFILIATE())) {
             TrackApp.getInstance().getGTM().sendGeneralEvent(
                     EVENT_CLICK_FEED,
                     CATEGORY_FEED,

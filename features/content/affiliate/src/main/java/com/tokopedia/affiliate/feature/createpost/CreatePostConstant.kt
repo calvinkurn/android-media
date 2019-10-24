@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost
 
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
+
 /**
  * @author by milhamj on 27/02/19.
  */
@@ -9,3 +11,6 @@ const val DRAFT_ID_PARAM = "{$DRAFT_ID}"
 const val USER_ID_PARAM = "{user_id}"
 const val TYPE_CONTENT_SHOP = "content-shop"
 const val TYPE_AFFILIATE = "affiliate"
+const val TOKEN = "token"
+
+internal typealias SuggestionClickListener = (ProductSuggestionItem) -> Unit

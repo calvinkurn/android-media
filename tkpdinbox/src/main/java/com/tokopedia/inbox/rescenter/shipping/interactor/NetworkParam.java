@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.shipping.interactor;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 
@@ -44,7 +44,7 @@ public class NetworkParam {
         return params;
     }
 
-    private static String getPhotos(List<AttachmentResCenterVersion2DB> attachmentList) {
+    private static String getPhotos(List<ResCenterAttachment> attachmentList) {
         if (attachmentList == null || attachmentList.isEmpty()) {
             return "";
         }
@@ -52,21 +52,21 @@ public class NetworkParam {
         String allPhoto = "";
         for (int i = 0; i < attachmentList.size(); i++) {
             if (i == attachmentList.size() - 1) {
-                allPhoto += attachmentList.get(i).imageUUID;
+                allPhoto += attachmentList.get(i).getImageUuid();
             } else {
-                allPhoto += attachmentList.get(i).imageUUID + "~";
+                allPhoto += attachmentList.get(i).getImageUuid() + "~";
             }
         }
 
         return allPhoto;
     }
 
-    private static String getPhotosObj(List<AttachmentResCenterVersion2DB> attachmentList) {
+    private static String getPhotosObj(List<ResCenterAttachment> attachmentList) {
 
         JSONObject reviewPhotos = new JSONObject();
         try {
-            for (AttachmentResCenterVersion2DB image : attachmentList) {
-                reviewPhotos.put(image.imageUUID, generateObject(image));
+            for (ResCenterAttachment image : attachmentList) {
+                reviewPhotos.put(image.getImageUuid(), generateObject(image));
             }
             return reviewPhotos.toString();
         } catch (JSONException e) {
@@ -74,9 +74,9 @@ public class NetworkParam {
         }
     }
 
-    private static JSONObject generateObject(AttachmentResCenterVersion2DB image) throws JSONException {
+    private static JSONObject generateObject(ResCenterAttachment image) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("image_id", image.imageUUID);
+        jsonObject.put("image_id", image.getImageUuid());
         jsonObject.put("file_x", "80");
         jsonObject.put("file_y", "80");
         jsonObject.put("is_temp", "1");
@@ -94,8 +94,8 @@ public class NetworkParam {
     private static String getFileUploaded(ShippingParamsPostModel passData) {
         try {
             JSONObject jsonObject = new JSONObject();
-            for (AttachmentResCenterVersion2DB attachment: passData.getAttachmentList()) {
-                jsonObject.put(attachment.imageUUID, attachment.picObj);
+            for (ResCenterAttachment attachment: passData.getAttachmentList()) {
+                jsonObject.put(attachment.getImageUuid(), attachment.getPicObj());
             }
             return jsonObject.toString();
         } catch (JSONException e) {

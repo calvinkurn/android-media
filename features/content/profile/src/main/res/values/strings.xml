@@ -12,10 +12,6 @@
     <string name="profile_rec_qutoa" formatted="false">Sisa jatah kurasi: %s</string>
     <string name="profile_add_rec">Tambah Post</string>
     <string name="profile_see_by_me_prouct">Lihat Produk By Me</string>
-    <string name="profile_share_profile">Bagikan Profil</string>
-    <string name="profile_share_this_profile">Bagikan Profile Ini</string>
-    <string name="profile_share_title">Bagikan Postmu untuk raih Komisi!</string>
-    <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
     <string name="profile_add_recommendation">Mulai Post Produk Kesukaanmu dan Raih
         Komisinya!</string>
     <string name="profile_showcase_title">Bagikan Profilmu, Yuk!</string>
@@ -80,7 +76,6 @@
     <string name="sticky_footer_follow">Dapetin update-nya!</string>
     <string name="sticky_footer_following">Kasih tahu temanmu yuk!</string>
 
-    <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
     <string name="no_post">Belum ada post</string>
     <string name="af_see_other_post">Lihat Post Lainnya</string>
     <string name="follow_x_fox_inspiration">Follow %1$s yuk untuk inspirasimu!</string>

@@ -1,12 +1,14 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.Intent;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -19,6 +21,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
@@ -44,6 +47,8 @@ public interface OrderListDetailContract {
         void setDetail(Detail detail);
 
         void setAdditionalInfo(AdditionalInfo additionalInfo);
+
+        void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url);
 
         void setPricing(Pricing pricing);
 
@@ -89,11 +94,15 @@ public interface OrderListDetailContract {
 
         void showSucessMessage(String message);
 
+        void showSuccessMessageWithAction(String message);
+
         void showErrorMessage(String message);
 
         void clearDynamicViews();
 
         void askPermission();
+
+        void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -103,7 +112,12 @@ public interface OrderListDetailContract {
 
         List<ActionButton> getActionList();
 
-        void onBuyAgain(Resources resources);
+        void onBuyAgainAllItems(String eventActionLabel);
+
+        void onBuyAgainItems(List<Items> items, String eventActionLabel);
+
+        void assignInvoiceDataTo(Intent intent);
+
     }
 
     interface ActionInterface {

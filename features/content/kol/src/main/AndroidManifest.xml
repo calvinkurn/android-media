@@ -68,6 +68,8 @@
         <activity android:name=".feature.video.view.activity.VideoDetailActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".feature.video.view.activity.MediaPreviewActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

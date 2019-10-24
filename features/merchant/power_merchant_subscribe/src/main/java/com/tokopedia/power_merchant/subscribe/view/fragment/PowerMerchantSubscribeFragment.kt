@@ -220,7 +220,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
             dialog.btn_submit_kyc.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+                val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+                startActivity(intent)
                 activity?.finish()
             }
             dialog.btn_close_kyc.setOnClickListener {

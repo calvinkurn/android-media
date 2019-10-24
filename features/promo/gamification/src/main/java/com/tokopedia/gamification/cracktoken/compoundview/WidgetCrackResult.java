@@ -45,6 +45,7 @@ import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpola
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +75,8 @@ public class WidgetCrackResult extends RelativeLayout {
     private TextView textCrackResultLabel;
 
     private LinearLayout listCrackResultText;
-    private Button buttonReturn;
-    private Button buttonCta;
+    private Typography buttonReturn;
+    private Typography buttonCta;
     private CrackResultEntity crackResult;
 
     private WidgetCrackResultListener listener;

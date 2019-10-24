@@ -24,12 +24,15 @@ public interface KYCConstant {
     int STATUS_VERIFIED = 1;
     int STATUS_EXPIRED = 2;
     int STATUS_NOT_VERIFIED = 3;
+    int STATUS_BLACKLISTED = 5;
 
     int IS_SUCCESS_GET_STATUS = 1;
 
     int IS_ALL_MUTATION_SUCCESS = 2;
 
     int IS_FILE_IMAGE_TOO_BIG = -5;
+
+    int IS_FILE_IMAGE_NOT_EXIST = -7;
 
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";

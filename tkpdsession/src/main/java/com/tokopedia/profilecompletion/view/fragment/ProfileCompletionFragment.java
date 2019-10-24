@@ -1,5 +1,10 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
+import android.app.Activity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -23,20 +28,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.profilecompletion.data.pojo.StatusPinData;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
-import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
+import com.tokopedia.profilecompletion.viewmodel.PinViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.usecase.coroutines.Fail;
+import com.tokopedia.usecase.coroutines.Result;
+import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -50,6 +62,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     private static final String DEFAULT_EMPTY_BDAY = "0001-01-01T00:00:00Z";
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final int REQUEST_CODE_PIN = 200;
     ProgressBar progressBar;
     ViewPager viewPager;
     TextView percentText;
@@ -62,6 +75,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     ProfileCompletionPresenter presenter;
     @Inject
     UserSession userSession;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private ViewModelProvider viewModelProvider;
+    private PinViewModel pinViewModel;
     private ProgressBarAnimation animation;
     private ProfileCompletionViewModel data;
     private String filled;
@@ -79,6 +96,9 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getParcelable(ARGS_DATA) != null)
             data = savedInstanceState.getParcelable(ARGS_DATA);
+
+        viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
+        pinViewModel = viewModelProvider.get(PinViewModel.class);
     }
 
     @Nullable
@@ -90,6 +110,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         initView(parentView);
         initialVar();
         presenter.attachView(this);
+        initObserver();
         return parentView;
     }
 
@@ -100,6 +121,33 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menuItem.setIcon(getDraw());
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void initObserver(){
+        pinViewModel.getGetStatusPinResponse().observe(this, statusPinDataResult -> {
+            if(statusPinDataResult instanceof Success){
+                onSuccessGetStatusPin(((Success<StatusPinData>) statusPinDataResult).getData());
+            }else if(statusPinDataResult instanceof Fail) {
+                onErrorGetStatusPin(((Fail) statusPinDataResult).getThrowable());
+            }
+        });
+    }
+
+    private void onSuccessGetStatusPin(StatusPinData statusPinData){
+        loading.setVisibility(View.GONE);
+        if(statusPinData.isRegistered()){
+            if(getActivity() != null)
+                getActivity().finish();
+        }else {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+            startActivityForResult(intent, REQUEST_CODE_PIN);
+        }
+    }
+
+    private void onErrorGetStatusPin(Throwable throwable){
+        loading.setVisibility(View.GONE);
+        main.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), throwable.getMessage(), retryAction);
     }
 
     private Drawable getDraw() {
@@ -204,7 +252,23 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         } else if (profileCompletionViewModel.getCompletion() == 100) {
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
         } else {
-            getActivity().finish();
+            loading.setVisibility(View.VISIBLE);
+            pinViewModel.getStatusPin();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_PIN){
+            if(getActivity() != null){
+                if(resultCode == Activity.RESULT_OK){
+                    updateProgressBar(this.data.getCompletion(), this.data.getCompletion() + 10);
+                    setViewEnabled();
+                    loadFragment(this.data, pair);
+                }
+                getActivity().finish();
+            }
         }
     }
 
@@ -228,7 +292,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         } else if (edit == EditUserProfileUseCase.EDIT_VERIF) {
             data.setPhoneVerified(true);
             presenter.setMsisdnVerifiedToCache(true);
-            updateProgressBar(data.getCompletion(), data.getCompletion() + 30);
+            updateProgressBar(data.getCompletion(), data.getCompletion() + 20);
         }
         setViewEnabled();
         loadFragment(data, pair);

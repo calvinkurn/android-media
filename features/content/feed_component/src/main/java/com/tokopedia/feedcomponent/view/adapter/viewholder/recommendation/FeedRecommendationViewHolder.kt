@@ -33,7 +33,7 @@ class FeedRecommendationViewHolder(v: View,
         cardAdapter = RecommendationCardAdapter(element.cards, adapterPosition, listener)
         itemView.recommendationRv.adapter = cardAdapter
         if (element.title.text.isNotEmpty()) {
-            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+            itemView.cardTitle.bind(element.title, element.template.cardrecom.title, adapterPosition)
             itemView.cardTitle.listener = cardTitleListener
         } else{
             itemView.cardTitle.visibility = View.GONE

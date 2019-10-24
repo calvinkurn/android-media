@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
-import com.tokopedia.iris.DATABASE_NAME
+import com.tokopedia.iris.util.DATABASE_NAME
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.table.Tracking
 

@@ -1,22 +1,25 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -24,7 +27,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -33,8 +35,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -55,6 +55,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxR
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Inject
     GlobalCacheManager cacheManager;
+
+    @Inject
+    UserSessionInterface userSession;
 
     String reputationId = "0";
     int role = 0;
@@ -171,6 +175,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         return parentView;
     }
 
+    @SuppressLint("WrongConstant")
     private void prepareView() {
         listProduct.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listProduct.setAdapter(adapter);
@@ -380,10 +385,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendSmiley(int score) {
         if (GlobalConfig.isSellerApp() && score == PUAS_SCORE) {
-            if(getActivity() != null &&
-                    getActivity().getApplicationContext() instanceof  ReputationRouter) {
+            if(getActivity() != null && getActivity().getApplicationContext() instanceof  ReputationRouter) {
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+
                 ((ReputationRouter)getActivity().getApplicationContext())
-                        .showAdvancedAppRatingDialog(getActivity(), null);
+                        .showAppFeedbackRatingDialog(manager, getContext(), null);
             }
         }
         refreshPage();
@@ -530,6 +536,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             startActivity(((ReputationRouter) getActivity().getApplicationContext())
                     .getTopProfileIntent(getActivity(), String.valueOf(userId)));
         }
+    }
+
+    @Override
+    public UserSessionInterface getUserSession() {
+        return userSession;
     }
 
     private String getReputationSmileyMessage(String name) {

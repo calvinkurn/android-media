@@ -1,5 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -8,8 +11,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.common.TopChatRouter
+import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 11/12/18
@@ -38,8 +42,17 @@ interface TopChatContract {
 
         fun onBackPressedEvent()
 
-        fun clearProductPreview()
+        fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 
+        fun focusOnReply()
+
+        fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
+
+        fun notifyAttachmentsSent()
+
+        fun getShopName(): String
+
+        fun sendAnalyticAttachmentSent(attachment: PreviewViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -62,6 +75,8 @@ interface TopChatContract {
                 onSuccessGetMessageId: (String) -> Unit
         )
 
+        fun startCompressImages(it: ImageUploadViewModel)
+
         fun startUploadImages(it: ImageUploadViewModel)
 
         fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
@@ -78,8 +93,8 @@ interface TopChatContract {
                                   startTime: String, opponentId: String)
 
         fun deleteChat(messageId: String,
-                                onError: (Throwable) -> Unit,
-                                onSuccessDeleteConversation: () -> Unit)
+                       onError: (Throwable) -> Unit,
+                       onSuccessDeleteConversation: () -> Unit)
 
         fun unblockChat(messageId : String,
                         opponentRole: String,
@@ -96,9 +111,18 @@ interface TopChatContract {
                                onError: (Throwable) -> Unit,
                                onSuccess: (Boolean) -> Unit)
 
-        fun sendMessage(messageId: String, sendMessage: String,
+        fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
                         startTime: String, opponentId: String,
-                        onSendingMessage : () -> Unit, productPreview: ProductPreview?)
+                        onSendingMessage : () -> Unit)
 
+        fun initProductPreview(savedInstanceState: Bundle?)
+
+        fun initAttachmentPreview()
+
+        fun clearAttachmentPreview()
+
+        fun initInvoicePreview(savedInstanceState: Bundle?)
+
+        fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
     }
 }

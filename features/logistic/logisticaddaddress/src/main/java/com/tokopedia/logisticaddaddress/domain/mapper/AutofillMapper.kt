@@ -12,15 +12,10 @@ import javax.inject.Inject
  */
 class AutofillMapper @Inject constructor() {
 
-    fun map(response: GraphqlResponse?) : AutofillResponseUiModel {
-        var dataUiModel = AutofillDataUiModel()
-        val responseAutofill: AutofillResponse? = response?.getData(AutofillResponse::class.java)
-        responseAutofill.let { response ->
-            response?.keroMapsAutofill?.let { keroMapsAutofill ->
-                dataUiModel = mapData(keroMapsAutofill.data)
-            }
-        }
-        return AutofillResponseUiModel(dataUiModel)
+    fun map(response: AutofillResponse) : AutofillResponseUiModel {
+        val datum = mapData(response.keroMapsAutofill.data)
+        val error = response.keroMapsAutofill.error
+        return AutofillResponseUiModel(datum, error)
     }
 
     private fun mapData(data: Data) : AutofillDataUiModel {

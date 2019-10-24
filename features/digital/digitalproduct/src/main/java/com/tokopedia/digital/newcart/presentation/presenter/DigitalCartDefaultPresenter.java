@@ -7,7 +7,6 @@ import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -17,8 +16,6 @@ import javax.inject.Inject;
 
 public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<DigitalCartDefaultContract.View> implements DigitalCartDefaultContract.Presenter {
 
-    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
-
     @Inject
     public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
@@ -27,7 +24,6 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        UserSession userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                       DigitalPostPaidLocalCache digitalPostPaidLocalCache,
                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
@@ -36,9 +32,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache);
-
-        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
+                rechargePushEventRecommendationUseCase);
     }
 
     @Override
@@ -55,11 +49,8 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 getView().showCartView();
                 getView().hideFullPageLoading();
                 renderBaseCart(cartDigitalInfoData);
+                renderPostPaidPopUp(cartDigitalInfoData);
                 break;
         }
-    }
-
-    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, actionType), null);
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
@@ -50,10 +51,12 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
         return new Intent(context, RegisterEmailActivity.class);
     }
 
-    public static Intent getCallingIntentWithEmail(@NonNull Context context, @NonNull String email) {
+    public static Intent getCallingIntentWithEmail(@NonNull Context context, @NonNull String email,
+                                                   @NonNull String source) {
         Intent intent = new Intent(context, RegisterEmailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_PARAM_EMAIL, email);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
         intent.putExtras(bundle);
         return intent;
     }

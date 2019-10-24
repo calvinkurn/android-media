@@ -377,16 +377,6 @@
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
 
-# -- logentries
--dontwarn org.apache.logging.**
--dontwarn org.apache.log4j.**
--dontwarn ch.qos.**
--dontwarn com.rapid7.**
--keep class ch.qos.** { *; }
--keep class com.rapid7.** { *; }
-
--keepnames class com.rapid7.jul.LogentriesHandler
--keepnames class com.tokopedia.logger.LogFormatter
 
 -dontwarn androidx.appcompat.widget.RebindReportingHolder
 

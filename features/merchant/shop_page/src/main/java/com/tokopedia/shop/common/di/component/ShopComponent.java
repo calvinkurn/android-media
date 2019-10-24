@@ -1,6 +1,5 @@
 package com.tokopedia.shop.common.di.component;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -16,6 +15,7 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -62,6 +62,8 @@ public interface ShopComponent {
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
 
     GQLGetShopInfoUseCase getGqlShopInfoUseCase();
+
+    GQLGetShopFavoriteStatusUseCase getGQLGetShopFavoriteStatusUseCase();
 
     GetShopReputationUseCase getShopReputationUseCase();
 

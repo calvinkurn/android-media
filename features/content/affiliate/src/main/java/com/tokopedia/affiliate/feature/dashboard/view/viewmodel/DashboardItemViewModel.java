@@ -18,11 +18,21 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private String itemClicked;
     private String itemSold;
     private String productCommission;
+    private String earnedComission;
     private boolean isActive;
+    private String sectionName;
+    private boolean shouldShowSection;
+    private Integer type;
+    private String createPostApplink;
+    private int reviewCount;
+    private int productRating;
+    private boolean shouldShowButtonCreatePost;
 
     public DashboardItemViewModel(String id, String imageUrl, String title, String value,
                                   String itemClicked, String itemSold,
-                                  String productCommission, boolean isActive) {
+                                  String productCommission, String earnedComission, boolean isActive, String sectionName, boolean shouldShowSection,
+                                  Integer type, String createPostApplink,
+                                  int reviewCount, int productRating, boolean shouldShowButtonCreatePost) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -30,7 +40,19 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.itemClicked = itemClicked;
         this.itemSold = itemSold;
         this.productCommission = productCommission;
+        this.earnedComission = earnedComission;
         this.isActive = isActive;
+        this.sectionName = sectionName;
+        this.shouldShowSection = shouldShowSection;
+        this.type = type;
+        this.createPostApplink = createPostApplink;
+        this.reviewCount = reviewCount;
+        this.productRating = productRating;
+        this.shouldShowButtonCreatePost = shouldShowButtonCreatePost;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getImageUrl() {
@@ -89,6 +111,70 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.productCommission = productCommission;
     }
 
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public boolean isShouldShowSection() {
+        return shouldShowSection;
+    }
+
+    public void setShouldShowSection(boolean shouldShowSection) {
+        this.shouldShowSection = shouldShowSection;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getCreatePostApplink() {
+        return createPostApplink;
+    }
+
+    public void setCreatePostApplink(String createPostApplink) {
+        this.createPostApplink = createPostApplink;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public int getProductRating() {
+        return productRating;
+    }
+
+    public void setProductRating(int productRating) {
+        this.productRating = productRating;
+    }
+
+    public String getEarnedComission() {
+        return earnedComission;
+    }
+
+    public void setEarnedComission(String earnedComission) {
+        this.earnedComission = earnedComission;
+    }
+
+    public boolean isShouldShowButtonCreatePost() {
+        return shouldShowButtonCreatePost;
+    }
+
+    public void setShouldShowButtonCreatePost(boolean shouldShowButtonCreatePost) {
+        this.shouldShowButtonCreatePost = shouldShowButtonCreatePost;
+    }
+
     @Override
     public int type(DashboardItemTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -108,7 +194,15 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         dest.writeString(this.itemClicked);
         dest.writeString(this.itemSold);
         dest.writeString(this.productCommission);
+        dest.writeString(this.earnedComission);
         dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
+        dest.writeString(this.sectionName);
+        dest.writeByte(this.shouldShowSection ? (byte) 1 : (byte) 0);
+        dest.writeValue(this.type);
+        dest.writeString(this.createPostApplink);
+        dest.writeInt(this.reviewCount);
+        dest.writeInt(this.productRating);
+        dest.writeByte(this.shouldShowButtonCreatePost ? (byte) 1 : (byte) 0);
     }
 
     protected DashboardItemViewModel(Parcel in) {
@@ -119,7 +213,15 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.itemClicked = in.readString();
         this.itemSold = in.readString();
         this.productCommission = in.readString();
+        this.earnedComission = in.readString();
         this.isActive = in.readByte() != 0;
+        this.sectionName = in.readString();
+        this.shouldShowSection = in.readByte() != 0;
+        this.type = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.createPostApplink = in.readString();
+        this.reviewCount = in.readInt();
+        this.productRating = in.readInt();
+        this.shouldShowButtonCreatePost = in.readByte() != 0;
     }
 
     public static final Creator<DashboardItemViewModel> CREATOR = new Creator<DashboardItemViewModel>() {

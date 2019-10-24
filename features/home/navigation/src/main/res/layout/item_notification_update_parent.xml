@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_8">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/type"
+        tools:src="@drawable/dot_grey" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:minHeight="@dimen/dp_20"
+        android:textColor="@color/Neutral_N400"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toRightOf="@id/icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="TextView" />
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/dot"
+        android:layout_width="@dimen/dp_3"
+        android:layout_height="@dimen/dp_3"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:src="@drawable/dot_grey"
+        android:tint="@color/Neutral_N200"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintStart_toEndOf="@id/type"
+        app:layout_constraintTop_toTopOf="@+id/type" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:includeFontPadding="false"
+        android:textColor="@color/Neutral_N200"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintLeft_toRightOf="@id/dot"
+        app:layout_constraintTop_toTopOf="@+id/type"
+        tools:text="10.00" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:background="@drawable/bg_rounded_corner"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:minHeight="@dimen/dp_20"
+        android:text="@string/seller_label"
+        android:textColor="@color/Green_G500"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintLeft_toRightOf="@id/time"
+        app:layout_constraintTop_toTopOf="@+id/type" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

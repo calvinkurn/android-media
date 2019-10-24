@@ -8,15 +8,16 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
@@ -53,6 +54,8 @@ class HomeMainToolbar : MainToolbar {
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
 
+        initImageSearch()
+
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -62,6 +65,14 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
+    }
+
+    private fun initImageSearch() {
+        val imageViewImageSearch = findViewById<ImageView>(R.id.imageview_image_search)
+
+        imageViewImageSearch.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT)
+        }
     }
 
     private fun initToolbarIcon() {
@@ -181,9 +192,9 @@ class HomeMainToolbar : MainToolbar {
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar(screenName)
             if(placeholder.isEmpty()){
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, keyword)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, keyword)
             }
         }
     }

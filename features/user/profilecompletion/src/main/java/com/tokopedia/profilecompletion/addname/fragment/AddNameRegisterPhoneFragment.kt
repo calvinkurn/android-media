@@ -27,7 +27,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
-import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -56,7 +56,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     lateinit var presenter: AddNamePresenter
 
     @Inject
-    lateinit var analytics: ProfileCompletionAnalytics
+    lateinit var analytics: AddNameRegisterPhoneAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -140,7 +140,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         })
 
         btnContinue.setOnClickListener { onContinueClick() }
-        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
+        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
                 onContinueClick()
                 return@OnEditorActionListener true
@@ -208,14 +208,14 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     private fun enableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, R.color.white))
-        button.background = MethodChecker.getDrawable(activity, R.drawable.bg_button_green_enabled)
+        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
+        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_green_enabled)
         button.isEnabled = true
     }
 
     private fun disableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, R.color.black_12))
-        button.background = MethodChecker.getDrawable(activity, R.drawable.bg_button_disabled)
+        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.abstraction.R.color.black_12))
+        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_disabled)
         button.isEnabled = false
     }
 
@@ -229,7 +229,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             s.removeSpan(span)
             span = URLSpanNoUnderline(span.url)
             s.setSpan(span, start, end, 0)
-            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(R.color.tkpd_main_green)), start, end, 0)
+            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)), start, end, 0)
         }
         textView.text = s
     }

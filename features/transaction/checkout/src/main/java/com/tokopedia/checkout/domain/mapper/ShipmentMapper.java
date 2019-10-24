@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
@@ -21,13 +22,15 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldTieringData;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
+import com.tokopedia.transactiondata.entity.response.cartlist.Ticker;
+import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
@@ -70,6 +73,11 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
+        if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
+            Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
+            dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+        }
+
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
             cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
@@ -104,7 +112,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     egoldTieringModel.setBasisAmount(data.getBasisAmount());
                     egoldTieringModel.setMaxAmount(data.getMaxAmount());
                     egoldTieringModel.setMinAmount(data.getMinAmount());
-                    egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
+                    egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
                     egoldTieringModelArrayList.add(egoldTieringModel);
                 }
                 egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
@@ -258,6 +266,11 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setHasPromoList(groupShop.isHasPromoList());
                         groupShopResult.setSaveStateFlag(groupShop.isSaveStateFlag());
 
+                        if (groupShop.getVehicleLeasing() != null) {
+                            groupShopResult.setIsLeasingProduct(groupShop.getVehicleLeasing().isLeasingProduct());
+                            groupShopResult.setBookingFee(groupShop.getVehicleLeasing().getBookingFee());
+                        }
+
                         groupShopResult.setFulfillment(groupShop.isFulfillment());
                         if (groupShop.getWarehouse() != null) {
                             groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
@@ -378,36 +391,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
                                 analyticsProductCheckoutData.setWarehouseId(String.valueOf(groupShop.getWarehouse().getWarehouseId()));
                                 analyticsProductCheckoutData.setProductWeight(String.valueOf(product.getProductWeight()));
-                                StringBuilder promoCodes = new StringBuilder();
-                                StringBuilder promoDetails = new StringBuilder();
-                                if (dataResult.getAutoApplyStackData() != null) {
-                                    if (!TextUtils.isEmpty(dataResult.getAutoApplyStackData().getCode())) {
-                                        promoCodes.append(dataResult.getAutoApplyStackData().getCode());
-                                        promoDetails.append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
-                                    }
-                                    if (dataResult.getAutoApplyStackData().getVoucherOrders() != null) {
-                                        for (VoucherOrdersItemData voucherOrdersItemData : dataResult.getAutoApplyStackData().getVoucherOrders()) {
-                                            if (voucherOrdersItemData.getUniqueId().equalsIgnoreCase(groupShop.getCartString())) {
-                                                if (!TextUtils.isEmpty(promoCodes)) {
-                                                    promoCodes.append("|");
-                                                }
-                                                promoCodes.append(voucherOrdersItemData.getCode());
-                                                if (!TextUtils.isEmpty(promoDetails)) {
-                                                    promoDetails.append("|");
-                                                }
-                                                promoDetails.append(voucherOrdersItemData.getMessageData().getState());
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
 
-                                if (!TextUtils.isEmpty(promoCodes)) {
-                                    analyticsProductCheckoutData.setPromoCode(promoCodes.toString());
-                                }
-                                if (!TextUtils.isEmpty(promoDetails)) {
-                                    analyticsProductCheckoutData.setPromoDetails(promoDetails.toString());
-                                }
                                 if (groupAddressResult.getUserAddress() != null) {
                                     analyticsProductCheckoutData.setBuyerAddressId(String.valueOf(groupAddressResult.getUserAddress().getAddressId()));
                                 }
@@ -425,6 +409,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
                                 }
                                 analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
+                                analyticsProductCheckoutData.setDiscountedPrice(product.getProductOriginalPrice() > 0);
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {
@@ -437,6 +422,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
+                                productResult.setProductOriginalPrice(product.getProductOriginalPrice());
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
                                 }
@@ -469,6 +455,12 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
+                                        !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                    productResult.setFreeShipping(true);
+                                    productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
+                                }
 
                                 if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
                                     TradeInInfo tradeInInfo = new TradeInInfo();
@@ -514,6 +506,18 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productShipmentListResult.add(productShipmentResult);
                                     }
                                     productResult.setProductShipment(productShipmentListResult);
+                                }
+
+                                AutoapplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
+                                if (autoapplyStack != null) {
+                                    if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
+                                        for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {
+                                            if (trackingDetail.getProductId() == productResult.getProductId()) {
+                                                analyticsProductCheckoutData.setPromoCode(trackingDetail.getPromoCodesTracking());
+                                                analyticsProductCheckoutData.setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                                            }
+                                        }
+                                    }
                                 }
 
                                 if (!mapperUtil.isEmpty(product.getProductShipmentMapping())) {

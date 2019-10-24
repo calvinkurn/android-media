@@ -43,6 +43,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER;
+
 /**
  * Created by stevenfredian on 12/22/17.
  */
@@ -63,10 +65,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     private String message;
     private Observable<Integer> counterObservable;
     private int allowDelete;
+    private Boolean isSeller;
 
     public static EditTemplateChatFragment createInstance(Bundle extras) {
         EditTemplateChatFragment fragment = new EditTemplateChatFragment();
         fragment.setArguments(extras);
+        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
     }
 
@@ -155,6 +159,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         editText = rootView.findViewById(R.id.edittext);
 
         presenter.attachView(this);
+        presenter.setMode(isSeller);
         return rootView;
     }
 

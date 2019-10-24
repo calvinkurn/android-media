@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.SerializedName;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 
 import java.util.List;
 

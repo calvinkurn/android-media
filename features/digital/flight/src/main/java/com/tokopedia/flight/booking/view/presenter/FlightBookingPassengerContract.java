@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 
 import java.util.Date;
 import java.util.List;
@@ -84,8 +84,6 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
-        void renderSelectedList(String passengerName);
-
         void renderPassportExpiredDate(String expiredDateStr);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
@@ -93,8 +91,6 @@ public interface FlightBookingPassengerContract {
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
-
-        int getTitleSpinnerPosition();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
@@ -149,7 +145,6 @@ public interface FlightBookingPassengerContract {
         void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
 
         String getMissTitle();
-
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -184,8 +179,10 @@ public interface FlightBookingPassengerContract {
 
         void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
 
-        void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
+        void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
 
-        void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry);
+        void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
+
+        void getTravelContactList(String query);
     }
 }

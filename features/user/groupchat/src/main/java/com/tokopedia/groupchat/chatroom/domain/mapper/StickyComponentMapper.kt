@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentData
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.network.data.model.response.DataResponse
 import retrofit2.Response
 import rx.functions.Func1
@@ -13,9 +14,9 @@ import javax.inject.Inject
  * @author by nisie on 22/02/19.
  */
 class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<StickyComponentPojo>>,
-        StickyComponentViewModel> {
+        StickyComponentsViewModel> {
 
-    override fun call(response: Response<DataResponse<StickyComponentPojo>>): StickyComponentViewModel {
+    override fun call(response: Response<DataResponse<StickyComponentPojo>>): StickyComponentsViewModel {
         val body = response.body()
         if (body != null) {
             if ((body.header == null ||
@@ -31,30 +32,24 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
         }
     }
 
-    public fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentViewModel {
-        return StickyComponentViewModel(
-                pojo.stickyComponent.componentId,
-                pojo.stickyComponent.componentType,
-                pojo.stickyComponent.imageUrl,
-                pojo.stickyComponent.primaryText,
-                pojo.stickyComponent.secondaryText,
-                pojo.stickyComponent.linkUrl,
-                pojo.stickyComponent.stickyTime,
-                pojo.stickyComponent.relatedButton
-        )
-    }
+    fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentsViewModel {
 
+        val list = arrayListOf<StickyComponentViewModel>()
+        for (i in 0 until pojo.stickyComponents.size) {
+            val stickyComp = pojo.stickyComponents[i]
+            val model = StickyComponentViewModel(
+                    stickyComp.componentId,
+                    stickyComp.componentType,
+                    stickyComp.imageUrl,
+                    stickyComp.primaryText,
+                    stickyComp.secondaryText,
+                    stickyComp.linkUrl,
+                    stickyComp.stickyTime,
+                    stickyComp.relatedButton,
+                    stickyComp.attributeData.toString())
+            list.add(model)
+        }
 
-    public fun mapToViewModel(pojo: StickyComponentData): StickyComponentViewModel {
-        return StickyComponentViewModel(
-                pojo.componentId,
-                pojo.componentType,
-                pojo.imageUrl,
-                pojo.primaryText,
-                pojo.secondaryText,
-                pojo.linkUrl,
-                pojo.stickyTime,
-                pojo.relatedButton
-        )
+        return StickyComponentsViewModel(list)
     }
 }

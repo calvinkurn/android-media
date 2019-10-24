@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_merchant" translatable="false">merchant</string>
+    <string name="path_redirect_create_shop" translatable="false">/redirect-create-shop</string>
+</resources>

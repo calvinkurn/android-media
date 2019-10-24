@@ -2,15 +2,12 @@ package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.config.GlobalConfig;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,8 +20,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
-
-    private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
 
     public FirebaseRemoteConfigImpl(Context context) {
@@ -32,10 +27,28 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
-        if(GlobalConfig.isAllowDebuggingTools() && context != null) {
+        if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
-            this.editor = sharedPrefs.edit();
         }
+    }
+
+    private boolean isCacheValueValid(String cacheValue, String defaultValue) {
+        return cacheValue != null &&
+                !cacheValue.isEmpty() &&
+                !cacheValue.equalsIgnoreCase(defaultValue);
+    }
+
+    private boolean isDebug() {
+        return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
+    }
+
+    @Override
+    public Set<String> getKeysByPrefix(String prefix) {
+        if (firebaseRemoteConfig != null) {
+            return firebaseRemoteConfig.getKeysByPrefix(prefix);
+        }
+
+        return null;
     }
 
     @Override
@@ -44,10 +57,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     }
 
     @Override
-    public boolean getBoolean(String key, Boolean defaultValue) {
+    public boolean getBoolean(String key, boolean defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
-            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
+
+            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
                 return cacheValue.equalsIgnoreCase("true");
             }
         }
@@ -55,6 +69,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getBoolean(key);
         }
+
         return defaultValue;
     }
 
@@ -68,6 +83,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getByteArray(key);
         }
+
         return defaultValue;
     }
 
@@ -81,6 +97,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getDouble(key);
         }
+
         return defaultValue;
     }
 
@@ -93,13 +110,16 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public long getLong(String key, long defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
-            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
+
+            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
                 return Long.parseLong(cacheValue);
             }
         }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getLong(key);
         }
+
         return defaultValue;
     }
 
@@ -112,22 +132,24 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
-            if (!cacheValue.isEmpty() && !cacheValue.equalsIgnoreCase(defaultValue)) {
+
+            if (isCacheValueValid(cacheValue, defaultValue)) {
                 return cacheValue;
             }
         }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getString(key);
         }
+
         return defaultValue;
     }
 
     @Override
     public void setString(String key, String value) {
-        if (!isDebug()) {
-            return;
+        if (isDebug()) {
+            sharedPrefs.edit().putString(key, value).apply();
         }
-        editor.putString(key, value).apply();
     }
 
     @Override
@@ -136,36 +158,22 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             if (firebaseRemoteConfig != null) {
                 firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
                 firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
-                        .addOnCompleteListener(new JobExecutor(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    firebaseRemoteConfig.activateFetched();
-                                }
-                                if (listener != null) {
-                                    listener.onComplete(FirebaseRemoteConfigImpl.this);
-                                }
+                        .addOnCompleteListener(new JobExecutor(), task -> {
+                            if (task.isSuccessful()) {
+                                firebaseRemoteConfig.activateFetched();
+                            }
+                            if (listener != null) {
+                                listener.onComplete(FirebaseRemoteConfigImpl.this);
                             }
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                if (listener != null) {
-                                    listener.onError(e);
-                                }
+                        .addOnFailureListener(exception -> {
+                            if (listener != null) {
+                                listener.onError(exception);
                             }
                         });
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-
-    private boolean isDebug() {
-        return GlobalConfig.isAllowDebuggingTools()
-                && sharedPrefs != null
-                && editor != null;
     }
 }

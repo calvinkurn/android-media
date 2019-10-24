@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 
 import java.text.ParseException;
@@ -28,16 +27,16 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
     private Context context;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_saldo_transaction;
+    public static final int LAYOUT = com.tokopedia.saldodetails.R.layout.item_saldo_transaction;
 
     public SaldoTransactionViewHolder(View itemView) {
         super(itemView);
         this.context = itemView.getContext();
-        dateTV = itemView.findViewById(R.id.date);
-        note = itemView.findViewById(R.id.note);
-        nominal = itemView.findViewById(R.id.nominal);
-        heading = itemView.findViewById(R.id.transaction_heading);
-        imageView = itemView.findViewById(R.id.transaction_image_view);
+        dateTV = itemView.findViewById(com.tokopedia.saldodetails.R.id.saldo_transaction_date);
+        note = itemView.findViewById(com.tokopedia.saldodetails.R.id.note);
+        nominal = itemView.findViewById(com.tokopedia.saldodetails.R.id.nominal);
+        heading = itemView.findViewById(com.tokopedia.saldodetails.R.id.transaction_heading);
+        imageView = itemView.findViewById(com.tokopedia.saldodetails.R.id.transaction_image_view);
     }
 
 
@@ -54,15 +53,15 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
         } catch (ParseException e) {
         }
 
-        dateTV.setText(String.format(context.getResources().getString(R.string.sp_date_time_view), strDate));
+        dateTV.setText(String.format(context.getResources().getString(com.tokopedia.saldodetails.R.string.sp_date_time_view), strDate));
         note.setText(element.getNote());
         heading.setText(element.getTransactionClass());
         ImageHandler.LoadImage(imageView, element.getImageURL());
         if (element.getAmount() > 0) {
             if (context != null) {
-                nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
+                nominal.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_light_green));
                 nominal.setText(String.format(
-                        context.getResources().getString(R.string.sp_positive_saldo_balance),
+                        context.getResources().getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getAmount(), false)));
             } else {
                 nominal.setText(String.valueOf(element.getAmount()));
@@ -70,9 +69,9 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
 
         } else {
             if (context != null) {
-                nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
+                nominal.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_prod_price));
                 nominal.setText(String.format(
-                        context.getResources().getString(R.string.sp_negative_saldo_balance),
+                        context.getResources().getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.getAmount()), false)));
             } else {
                 nominal.setText(String.valueOf(element.getAmount()));

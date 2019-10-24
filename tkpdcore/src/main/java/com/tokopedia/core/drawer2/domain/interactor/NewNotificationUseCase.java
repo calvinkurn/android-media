@@ -9,7 +9,6 @@ import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -19,30 +18,29 @@ import rx.functions.Func2;
 public class NewNotificationUseCase extends UseCase<NotificationModel> {
 
     NotificationUseCase notificationUseCase;
-    TopChatNotificationUseCase topChatNotificationUseCase;
+    GetChatNotificationUseCase getChatNotificationUseCase;
 
     public NewNotificationUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
                                   NotificationUseCase notificationUseCase,
-                                  TopChatNotificationUseCase topChatNotificationUseCase) {
+                                  GetChatNotificationUseCase getChatNotificationUseCase) {
         super(threadExecutor, postExecutionThread);
         this.notificationUseCase = notificationUseCase;
-        this.topChatNotificationUseCase = topChatNotificationUseCase;
+        this.getChatNotificationUseCase = getChatNotificationUseCase;
     }
 
     @Override
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
         Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
-        Observable<TopChatNotificationModel> notifTopChat = topChatNotificationUseCase.createObservable
-                (requestParams);
+        Observable<TopChatNotificationModel> notifTopChat = getChatNotificationUseCase.createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
 
         return Observable.zip(notif, notifTopChat, new Func2<NotificationModel, TopChatNotificationModel, NotificationModel>() {
             @Override
-            public NotificationModel call(NotificationModel notificationModel, TopChatNotificationModel topChatNotificationModel) {
+            public NotificationModel call(NotificationModel notificationModel, TopChatNotificationModel chatNotificationModel) {
                 NotificationData data = notificationModel.getNotificationData();
                 data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
-                        topChatNotificationModel.getNotifUnreads());
-                data.getInbox().setInboxMessage(topChatNotificationModel.getNotifUnreads());
+                        chatNotificationModel.getNotifUnreadsSeller());
+                data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreadsSeller());
                 notificationModel.setNotificationData(
                         data
                 );

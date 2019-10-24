@@ -3,6 +3,7 @@ package com.tokopedia.navigation.presentation.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactory
 
 class NotificationUpdateItemViewModel(
@@ -16,7 +17,12 @@ class NotificationUpdateItemViewModel(
         var sectionTitle: String = "",
         var body: String = "",
         var templateKey: String = "",
-        var appLink: String = ""
+        var appLink: String = "",
+        var hasShop: Boolean = false,
+        var typeLink: Int = 0,
+        var totalProduct: Int = 0,
+        var btnText: String = "",
+        var products: List<ProductData> = emptyList()
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
@@ -34,6 +40,9 @@ class NotificationUpdateItemViewModel(
         body = `in`.readString()
         templateKey = `in`.readString()
         appLink = `in`.readString()
+        hasShop = `in`.readInt() != 0
+        typeLink = `in`.readInt()
+        totalProduct = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -47,16 +56,35 @@ class NotificationUpdateItemViewModel(
         parcel.writeString(body)
         parcel.writeString(templateKey)
         parcel.writeString(appLink)
+        parcel.writeInt(if (hasShop) 1 else 0)
+        parcel.writeInt(typeLink)
+        parcel.writeInt(totalProduct)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
+    fun getAtcProduct(): ProductData? {
+        var product: ProductData? = null
+        if (products.isNotEmpty()) {
+            product = products[0]
+        }
+        return product
+    }
+
     companion object {
 
         var BUYER_TYPE = 1
         var SELLER_TYPE = 2
+
+        var TYPE_BANNER_1X1 = 0
+        var TYPE_INTERNAL_LINK = 1
+        var TYPE_RECOMMENDATION = 2
+        var TYPE_WISHLIST = 3
+        var TYPE_BANNER_2X1 = 4
+
+        const val SOURCE = "notifcenter"
 
         @JvmField
         val CREATOR: Parcelable.Creator<NotificationUpdateItemViewModel> = object : Parcelable.Creator<NotificationUpdateItemViewModel> {

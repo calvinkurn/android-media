@@ -2,16 +2,16 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.CalendarContract;
+
 import androidx.core.content.FileProvider;
-import android.util.DisplayMetrics;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.UiThreadUtil;
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -149,5 +149,22 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         }
 
         promise.resolve(result);
+    }
+
+    // Method to add event in user local calender
+    @ReactMethod
+    public void addCampaingReminder(String title, String description, String startTime, String endTime) {
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, Long.parseLong(startTime))
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, Long.parseLong(endTime))
+                .putExtra(CalendarContract.Events.TITLE, title)
+                .putExtra(CalendarContract.Events.DESCRIPTION, description);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PackageManager packageManager = context.getPackageManager();
+        if (intent.resolveActivity(packageManager) != null) {
+            context.startActivity(intent);
+        }
     }
 }

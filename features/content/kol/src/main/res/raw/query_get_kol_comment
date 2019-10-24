@@ -15,6 +15,7 @@ query GetKolComment($idPost: Int!, $limit: Int!, $cursor: String) {
       userUrl
       createTime
       showComment
+      userBadges
       content {
         imageurl
         tags {
@@ -36,6 +37,7 @@ query GetKolComment($idPost: Int!, $limit: Int!, $cursor: String) {
       isCommentOwner
       create_time
       comment
+      userBadge
     }
     lastCursor
     error

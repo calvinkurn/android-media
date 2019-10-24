@@ -5,10 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public interface KolPostDetailContract {
         void showLoading();
 
         void dismissLoading();
+
+        void showLoadingMore();
 
         void onSuccessGetKolPostDetail(List<Visitable> list, PostDetailViewModel postDetailViewModel);
 
@@ -50,6 +53,14 @@ public interface KolPostDetailContract {
         void onEmptyDetailFeed();
 
         void onEmptyDetailClicked();
+
+        void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem);
+
+        void onAddToCartFailed(String pdpAppLink);
+
+        void onSuccessGetRelatedPost(RelatedPostViewModel relatedPostViewModel);
+
+        void onSuccessGetWhitelist(Whitelist whitelist);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -70,5 +81,11 @@ public interface KolPostDetailContract {
         void trackAffiliate(String clickURL);
 
         void deletePost(int id, int rowNumber);
+
+        void addPostTagItemToCart(int positionInFeed, PostTagItem postTagItem);
+
+        void getRelatedPost(String activityId);
+
+        void getWhitelist();
     }
 }

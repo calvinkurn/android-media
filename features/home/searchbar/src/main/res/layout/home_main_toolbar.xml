@@ -51,7 +51,17 @@
                 android:textSize="@dimen/sp_16"
                 android:maxLines="1"
                 android:textColorHint="@android:color/darker_gray"
-                android:background="@null"/>
+                android:background="@null"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/imageview_image_search"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
 
         </LinearLayout>
 

@@ -32,4 +32,9 @@ class ProductCardViewList: ProductCardView {
 
         cardViewImageProduct = inflatedView.findViewById(R.id.cardViewImageProduct)
     }
+
+    override fun setLocationConstraintEnd() {
+        // Do nothing
+        // Top Ads icon constraints do not need to be realigned
+    }
 }

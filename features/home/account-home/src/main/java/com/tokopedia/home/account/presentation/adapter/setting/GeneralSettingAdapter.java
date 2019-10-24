@@ -1,19 +1,30 @@
 package com.tokopedia.home.account.presentation.adapter.setting;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
+import com.tokopedia.home.account.presentation.widget.TagRoundedSpan;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_GENERAL = 0;
@@ -109,7 +120,8 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         public void bind(SettingItemViewModel item){
-            labelView.setTitle(item.getTitle());
+            SpannableString title = generateSpannableTitle(item);
+            labelView.setTitle(title);
             labelView.setSubTitle(item.getSubtitle());
             labelView.setImageResource(item.getIconResource());
 
@@ -120,6 +132,74 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 labelView.getImageView().setVisibility(View.GONE);
             }
             labelView.showRightArrow(item.isHideArrow());
+        }
+
+        private SpannableString generateSpannableTitle(SettingItemViewModel item) {
+            String indicatorNew = " BARU";
+            String title = item.getTitle();
+            String notificationTitle = itemView
+                    .getContext()
+                    .getResources()
+                    .getString(R.string.title_notification_setting);
+
+            if (title.equals(notificationTitle) && !hasBeenOneMonth(title)) {
+                int startPosition = title.length() + 1;
+                int endPosition = startPosition + indicatorNew.length() - 1;
+                title += indicatorNew;
+
+                SpannableString spannable = new SpannableString(title);
+                TagRoundedSpan newTag = new TagRoundedSpan(
+                        itemView.getContext(),
+                        4,
+                        R.color.Red_R400,
+                        R.color.white
+                );
+
+                spannable.setSpan(
+                        new RelativeSizeSpan(0.57f),
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                spannable.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                spannable.setSpan(
+                        newTag,
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                return spannable;
+            } else {
+                return new SpannableString(title);
+            }
+        }
+
+        private boolean hasBeenOneMonth(String title) {
+            String key = title + ".NewTag";
+            String prefKey = this.getClass().getName() + ".pref";
+            int dayOffset = 30;
+            long now = new Date().getTime();
+
+            SharedPreferences preferences = itemView.getContext().getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+
+            if (!preferences.contains(key)) {
+                preferences.edit().putLong(key, now).apply();
+                return false;
+            }
+
+            long firstTimeSeenDate = preferences.getLong(key, -1);
+            long duration = Math.abs(firstTimeSeenDate - now);
+            long dayPassed = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);
+
+            return dayPassed >= dayOffset;
         }
     }
 

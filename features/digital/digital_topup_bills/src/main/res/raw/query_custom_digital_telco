@@ -1,5 +1,4 @@
 query getCustomQuery($componentID: Int!) {
-                status
                 rechargeComponentDataCollection(data: CUSTOM, componentID: $componentID) {
                     data_collections {
                         key

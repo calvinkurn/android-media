@@ -67,7 +67,19 @@
     <string name="title_counter_update_notification">" (%1$s)"</string>
     <string name="title_notification_update">Update</string>
     <string name="title_notification_activity">Transaksi</string>
+    <string name="title_setting">Setting</string>
     <string name="exceed_ninety_nine">99+</string>
 
     <string name="filter">Filter</string>
+    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
+    <string name="wishlist_check_cart">LIHAT</string>
+
+    <string name="in_full">Selengkapnya</string>
+
+    <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
+    <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
+    <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
+    <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
+    <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
+    <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
 </resources>

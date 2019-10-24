@@ -61,8 +61,6 @@ interface LoginEmailPhoneContract {
 
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
-        fun onGoToPhoneVerification(): Function0<Unit>
-
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
         fun onGoToSecurityQuestion(email: String): Function0<Unit>

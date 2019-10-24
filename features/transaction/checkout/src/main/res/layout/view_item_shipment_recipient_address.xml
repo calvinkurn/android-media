@@ -15,7 +15,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             app:typographyType="heading_3"
-            android:text="@string/checkout_module_title_shipping_dest_new" />
+            android:text="@string/label_showcase_address_title" />
 
         <View
             android:id="@+id/separator"

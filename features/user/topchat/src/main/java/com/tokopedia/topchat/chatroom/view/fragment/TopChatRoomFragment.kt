@@ -36,6 +36,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -45,6 +46,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -52,10 +56,13 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
-import com.tokopedia.topchat.chatroom.view.customview.*
+import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
@@ -64,9 +71,9 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.lang.IllegalStateException
 import java.net.URLEncoder
 import javax.inject.Inject
 
@@ -98,7 +105,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
-    private var productPreview: ProductPreview? = null
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -106,8 +112,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
+    val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
 
     var seenAttachedProduct = HashSet<Int>()
+
+    protected var remoteConfig: RemoteConfig? = null
 
     companion object {
 
@@ -137,6 +146,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -146,7 +156,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
-        initProductPreview(savedInstanceState)
+        presenter.initProductPreview(savedInstanceState)
+        presenter.initInvoicePreview(savedInstanceState)
+        presenter.initAttachmentPreview()
     }
 
     override fun loadInitialData() {
@@ -162,29 +174,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
-    }
-
-    private fun initProductPreview(savedInstanceState: Bundle?) {
-        val productId = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, arguments, savedInstanceState)
-        val productImageUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, arguments, savedInstanceState)
-        val productName = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, arguments, savedInstanceState)
-        val productPrice = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, arguments, savedInstanceState)
-        val productUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, arguments, savedInstanceState)
-        val productColorVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, arguments, savedInstanceState)
-        val productColorHexVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, arguments, savedInstanceState)
-        val productSizeVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, arguments, savedInstanceState)
-        productPreview = ProductPreview(productId, productImageUrl, productName, productPrice,
-                productColorVariant, productColorHexVariant, productSizeVariant, productUrl)
-
-        productPreview?.let {
-            if (it.noProductPreview()) {
-                onEmptyProductPreview()
-            } else {
-                (viewState as? TopChatViewState)?.focusOnReply()
-            }
-        }
-
-        initProductPreviewLayoutIfExist()
     }
 
     private fun onUnblockChatClicked(): () -> Unit {
@@ -219,7 +208,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate()
+            presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             activity?.run {
                 val data = Intent()
@@ -389,22 +378,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun initProductPreviewLayoutIfExist() {
-        if (hasProductPreview()) return
-        productPreview?.let {
-            (viewState as? TopChatViewState)?.showProductPreview(it)
-        }
-    }
-
-    private fun hasProductPreview(): Boolean {
-        if (productPreview == null) return false
-        return view == null || productPreview!!.noProductPreview()
-    }
-
-    override fun onEmptyProductPreview() {
-        productPreview = null
-    }
-
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
 
         activity?.let {
@@ -504,14 +477,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendMessage(
-                messageId, message, generateStartTime, "",
-                onSendingMessage(message, generateStartTime), productPreview
+        presenter.sendAttachmentsAndMessage(
+                messageId,
+                message,
+                generateStartTime,
+                "",
+                onSendingMessage(message, generateStartTime)
         )
-    }
-
-    override fun clearProductPreview() {
-        (viewState as? TopChatViewState)?.clearProductPreview()
     }
 
     override fun addTemplateString(message: String?) {
@@ -521,7 +493,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun goToSettingTemplate() {
-        val intent = TemplateChatActivity.createInstance(context)
+        var isSeller = getUserSession().shopId == shopId.toString()
+        val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
@@ -550,7 +523,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate()
+                presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
@@ -558,7 +531,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    presenter.startUploadImages(it)
+                    model ->
+                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                        if(it == null || it == false) {
+                            presenter.startUploadImages(model)
+                        } else {
+                            presenter.startCompressImages(model)
+                        }
+                    }
                 }
             }
 
@@ -567,6 +547,31 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
 
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
+
+            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+        }
+    }
+
+    private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_OK) return
+        if (data == null) return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
+        view?.let {
+            Toaster.showNormalWithAction(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    getString(R.string.chat_check_cart),
+                    onClickSeeButtonOnAtcSuccessToaster()
+            )
+        }
+    }
+
+    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
+        return View.OnClickListener {
+            val cartIntent = (activity!!.application as TopChatRouter).getCartIntent(activity)
+            analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            activity?.startActivity(cartIntent)
         }
     }
 
@@ -677,22 +682,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        activity?.let {
-            val router = (it.application as TopChatRouter)
-            (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
-            var shopId = this.shopId
-            if(shopId == 0) {
-                shopId = element.shopId
-            }
-            presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    shopId)
-        }
-    }
-
-    private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
-        return {
-            showSnackbarAddToCart(it)
-        }
+        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
+        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
     private fun showSnackbarAddToCart(it: AddToCartDataModel) {
@@ -870,5 +862,35 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickInvoiceThumbnail(url: String, id: String) {
         val encodedUrl = URLEncoder.encode(url, "UTF-8")
         onGoToWebView(encodedUrl, id)
+    }
+
+    override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
+        return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun focusOnReply() {
+        getViewState().focusOnReply()
+    }
+
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+        getViewState().showAttachmentPreview(attachmentPreview)
+    }
+
+    override fun onEmptyProductPreview() {
+        presenter.clearAttachmentPreview()
+    }
+
+    override fun notifyAttachmentsSent() {
+        getViewState().clearAttachmentPreview()
+    }
+
+    override fun getShopName(): String {
+        return opponentName
+    }
+
+    override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
+        if (attachment is InvoicePreviewViewModel) {
+            analytics.invoiceAttachmentSent(attachment)
+        }
     }
 }

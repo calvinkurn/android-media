@@ -28,7 +28,6 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
     public static ReactNativeOfficialStoreFragment createInstance() {
         return new ReactNativeOfficialStoreFragment();
     }
-
     @Override
     public String getModuleName() {
         return ReactConst.Screen.OFFICIAL_STORE_HOME;

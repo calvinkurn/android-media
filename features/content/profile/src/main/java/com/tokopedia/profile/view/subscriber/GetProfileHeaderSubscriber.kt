@@ -1,6 +1,5 @@
 package com.tokopedia.profile.view.subscriber
 
-import android.app.Activity
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
@@ -9,8 +8,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profile.R
-import com.tokopedia.profile.data.pojo.profileheader.Profile
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import rx.Subscriber

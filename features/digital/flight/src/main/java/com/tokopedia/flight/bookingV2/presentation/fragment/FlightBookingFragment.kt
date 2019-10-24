@@ -6,24 +6,26 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
-import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
-import com.tokopedia.flight.booking.view.fragment.FLightBookingPhoneCodeFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.booking.widget.FlightInsuranceView
@@ -44,10 +46,10 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_flight_booking.*
-import kotlinx.android.synthetic.main.partial_flight_booking_contact_form.*
 import rx.Observable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author by furqan on 04/03/19
@@ -140,12 +142,16 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
         when (requestCode) {
             REQUEST_CODE_PASSENGER -> if (resultCode == Activity.RESULT_OK) {
-                val passengerViewModel = data!!.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
-                flightBookingPresenter.onPassengerResultReceived(passengerViewModel)
+                data?.let {
+                    val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                    flightBookingPresenter.onPassengerResultReceived(passengerViewModel)
+                }
             }
-            REQUEST_CODEP_PHONE_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val phoneCodeViewModel = data!!.getParcelableExtra<FlightBookingPhoneCodeViewModel>(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE)
-                flightBookingPresenter.onPhoneCodeResultReceived(phoneCodeViewModel)
+            REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                    flightBookingPresenter.onContactDataResultRecieved(contactData)
+                }
             }
             REQUEST_CODE_NEW_PRICE_DIALOG -> if (resultCode != Activity.RESULT_OK) {
                 FlightFlowUtil.actionSetResultAndClose(activity!!,
@@ -201,11 +207,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getContactName(): String = et_contact_name.text.toString().trim()
-
-    override fun setContactName(fullname: String) {
-        et_contact_name.setText(fullname)
-    }
+    override fun getContactName(): String = widget_partial_traveller_info.getContactName()
 
     override fun showContactNameEmptyError(resId: Int) {
         showMessageErrorInSnackBar(resId)
@@ -215,7 +217,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         showMessageErrorInSnackBar(resId)
     }
 
-    override fun getContactEmail(): String = et_contact_email.text.toString().trim()
+    override fun getContactEmail(): String = widget_partial_traveller_info.getContactEmail()
 
     override fun showContactEmailEmptyError(resId: Int) {
         showMessageErrorInSnackBar(resId)
@@ -225,7 +227,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         showMessageErrorInSnackBar(resId)
     }
 
-    override fun getContactPhoneNumber(): String = et_phone_number.text.toString().trim()
+    override fun getContactPhoneNumber(): String = widget_partial_traveller_info.getContactPhoneNum()
 
     override fun showContactPhoneNumberEmptyError(resId: Int) {
         showMessageErrorInSnackBar(resId)
@@ -235,16 +237,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
         showMessageErrorInSnackBar(resId)
     }
 
-    override fun setContactEmail(email: String) {
-        et_contact_email.setText(email)
-    }
-
     override fun showContactEmailInvalidSymbolError(resId: Int) {
         showMessageErrorInSnackBar(resId)
-    }
-
-    override fun setContactPhoneNumber(phone: String) {
-        et_phone_number.setText(phone)
     }
 
     override fun setContactBirthdate(birthdate: String) {
@@ -261,6 +255,22 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun showPassengerInfoNotFullfilled(resId: Int) {
         showMessageErrorInSnackBar(resId)
+    }
+
+    override fun setContactName(fullname: String) {
+        widget_partial_traveller_info.setContactName(fullname)
+    }
+
+    override fun setContactEmail(email: String) {
+        widget_partial_traveller_info.setContactEmail(email)
+    }
+
+    override fun setContactPhoneNumber(phone: String) {
+        widget_partial_traveller_info.setContactPhoneNum(DEFAULT_PHONE_CODE, phone)
+    }
+
+    override fun setContactPhoneNumber(phone: String, phoneCode: Int) {
+        widget_partial_traveller_info.setContactPhoneNum(phoneCode, phone)
     }
 
     override fun navigateToOtpPage() {
@@ -311,7 +321,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
-                        activity,
+                        activity as Activity,
                         getDepartureTripId(),
                         getReturnTripId(),
                         viewModel,
@@ -387,10 +397,6 @@ class FlightBookingFragment : BaseDaggerFragment(),
         passengerAdapter.addElement(passengerViewModels)
     }
 
-    override fun renderPhoneCodeView(countryPhoneCode: String) {
-        et_phone_country_code.text = countryPhoneCode
-    }
-
     override fun getDepartureTripId(): String = departureId
 
     override fun getReturnTripId(): String = returnId
@@ -428,9 +434,10 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun showGetCartDataErrorStateLayout(t: Throwable) {
-        NetworkErrorHelper.showEmptyState(
-                activity, view, FlightErrorUtil.getMessageFromException(activity, t)
-        ) { flightBookingPresenter.onRetryGetCartData() }
+        view?.let {
+            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
+                    Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener { flightBookingPresenter.onRetryGetCartData() })
+        }
     }
 
     override fun renderFinishTimeCountDown(date: Date) {
@@ -495,6 +502,14 @@ class FlightBookingFragment : BaseDaggerFragment(),
         dialogFragment.show(fragmentManager!!.beginTransaction(), INTERRUPT_DIALOG_TAG)
     }
 
+    override fun showContactDataProgressBar() {
+        widget_partial_traveller_info.showLoadingBar()
+    }
+
+    override fun hideContactDataProgressBar() {
+        widget_partial_traveller_info.hideLoadingBar()
+    }
+
     override fun getDepartureFlightDetailViewModel(): FlightDetailViewModel =
             flightBookingCartData.departureTrip
 
@@ -519,9 +534,11 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun showUpdateDataErrorStateLayout(t: Throwable) {
-        NetworkErrorHelper.showEmptyState(
-                activity, view, FlightErrorUtil.getMessageFromException(activity, t)
-        ) { flightBookingPresenter.onFinishTransactionTimeReached() }
+        view?.let {
+            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
+                    Snackbar.LENGTH_LONG, "Coba Lagi",
+                    View.OnClickListener { flightBookingPresenter.onFinishTransactionTimeReached() })
+        }
     }
 
     override fun getCartId(): String = bookingCartId
@@ -539,14 +556,27 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
+        view?.let {
+            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
+        }
     }
 
     private fun initView() {
-        et_phone_country_code.setOnClickListener {
-            startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(activity),
-                    REQUEST_CODEP_PHONE_CODE)
-        }
+
+        widget_partial_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+            override fun onClickEdit() {
+                context?.let {
+                    startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
+                            TravelContactData(widget_partial_traveller_info.getContactName(),
+                                    widget_partial_traveller_info.getContactEmail(),
+                                    widget_partial_traveller_info.getContactPhoneNum(),
+                                    widget_partial_traveller_info.getContactPhoneCode()),
+                            TravelContactDataActivity.FLIGHT),
+                            REQUEST_CODE_CONTACT_FORM)
+                }
+            }
+
+        })
 
         button_submit.setOnClickListener {
             flightBookingPresenter.onButtonSubmitClicked()
@@ -594,8 +624,10 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA"
         private val KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE"
 
+        private val DEFAULT_PHONE_CODE = 62
+
         private val REQUEST_CODE_PASSENGER = 1
-        private val REQUEST_CODEP_PHONE_CODE = 2
+        private val REQUEST_CODE_CONTACT_FORM = 2
         private val REQUEST_CODE_NEW_PRICE_DIALOG = 3
         private val REQUEST_CODE_REVIEW = 4
         private val REQUEST_CODE_OTP = 5

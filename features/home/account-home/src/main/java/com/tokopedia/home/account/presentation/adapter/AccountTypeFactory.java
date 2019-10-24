@@ -4,8 +4,16 @@ import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringListViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
@@ -13,11 +21,13 @@ import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.PowerMerchantViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder;
+import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -25,6 +35,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
@@ -67,6 +78,14 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new SellerEmptyViewHolder(parent, listener);
         } else if (type == PowerMerchantViewHolder.Companion.getLAYOUT()) {
             return new PowerMerchantViewHolder(parent, listener);
+        } else if (type == AccountRecommendationTitleViewHolder.Companion.getLAYOUT()) {
+            return new AccountRecommendationTitleViewHolder(parent);
+        } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
+            return new RecommendationProductViewHolder(parent, listener);
+        } else if (type == LoadingShimmeringListViewHolder.LAYOUT) {
+            return new LoadingShimmeringListViewHolder(parent);
+        } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
+            return new AccountLoadingMoreViewHolder(parent);
         }
         return super.createViewHolder(parent, type);
     }
@@ -119,4 +138,21 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return PowerMerchantViewHolder.Companion.getLAYOUT();
     }
 
+    public int type(AccountRecommendationTitleViewModel viewModel) {
+        return AccountRecommendationTitleViewHolder.Companion.getLAYOUT();
+    }
+
+    public int type(RecommendationProductViewModel viewModel) {
+        return RecommendationProductViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingShimmeringListViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(LoadingMoreModel viewModel) {
+        return AccountLoadingMoreViewHolder.LAYOUT;
+    }
 }

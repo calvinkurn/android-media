@@ -8,6 +8,7 @@ open class RecommendationWidget(
         val tid: String,
         val widgetUrl: String,
         val layoutType: String,
+        val seeMoreAppLink: String,
         val currentPage: Int,
         val nextPage: Int,
         val prevPage: Int,

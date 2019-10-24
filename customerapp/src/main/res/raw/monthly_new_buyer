@@ -1,0 +1,7 @@
+{
+  is_buyer_first_monthly_trx(order_id: %s) {
+    order_id
+    payment_id
+    is_monthly_first_transaction
+  }
+}

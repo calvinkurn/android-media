@@ -211,6 +211,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                ContentExloreEventTracking.Event.EXPLORE,
+                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
+                ContentExloreEventTracking.Action.LOAD_MORE,
+                ""
+        ));
+
         if (!exploreViewModel.getExploreImageViewModelList().isEmpty()) {
             loadImageData(exploreViewModel.getExploreImageViewModelList());
         } else if (clearData) {
@@ -276,6 +283,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onCategoryClicked(int position, int categoryId, String categoryName) {
+        NetworkErrorHelper.removeEmptyState(getView());
         clearSearch();
         resetDataParam();
         imageAdapter.clearData();
@@ -471,12 +479,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
                             && canLoadMore
                             && !isLoading()) {
                         presenter.getExploreData(false);
-                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                                ContentExloreEventTracking.Event.EXPLORE,
-                                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                                ContentExloreEventTracking.Action.LOAD_MORE,
-                                ""
-                        ));
                     }
                 }
             };

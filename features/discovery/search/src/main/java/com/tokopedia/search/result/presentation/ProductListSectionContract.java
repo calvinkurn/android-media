@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -26,11 +26,7 @@ public interface ProductListSectionContract {
 
         void incrementStart();
 
-        boolean isEvenPage();
-
         void storeTotalData(int totalData);
-
-        int getStartFrom();
 
         void setHeaderTopAds(boolean hasHeader);
 
@@ -46,9 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct();
-
-        Map<String, Object> getSearchParameterMap();
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
         void backToTop();
 
@@ -69,6 +63,8 @@ public interface ProductListSectionContract {
         void initQuickFilter(List<Filter> quickFilterList);
 
         void setAdditionalParams(String additionalParams);
+
+        void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
@@ -97,6 +93,18 @@ public interface ProductListSectionContract {
         void showAdultRestriction();
 
         void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
+
+        void redirectSearchToAnotherPage(String applink);
+
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+
+        void setDefaultLayoutType(int defaultView);
+
+        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
+
+        void hideErrorMessage();
+
+        void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

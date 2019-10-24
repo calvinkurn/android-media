@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -128,7 +128,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        presenter.onBuyAgain(context.getResources());
+                        List<Items> itemsList = new ArrayList<>();
+                        itemsList.add(items);
+                        presenter.onBuyAgainItems(itemsList, " - product");
                     }
                 });
             }

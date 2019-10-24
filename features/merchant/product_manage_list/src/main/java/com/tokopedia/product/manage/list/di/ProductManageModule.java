@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
@@ -71,7 +70,6 @@ public class ProductManageModule {
                 setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
     }
 
-    @ProductManageScope
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,
@@ -96,12 +94,6 @@ public class ProductManageModule {
     @ProductManageScope
     public GraphqlUseCase provideGraphqlUseCase() {
         return new GraphqlUseCase();
-    }
-
-    @Provides
-    @ProductManageScope
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     @Provides

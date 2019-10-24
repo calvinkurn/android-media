@@ -139,6 +139,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         return inflater.inflate(R.layout.fragment_top_ads_list, container, false);
     }
 
+    public int getSwipeRefreshLayoutResourceId(){
+        return R.id.swipe_refresh_layout;
+    }
+
+    public int getRecyclerViewResourceId(){
+        return R.id.recycler_view;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {

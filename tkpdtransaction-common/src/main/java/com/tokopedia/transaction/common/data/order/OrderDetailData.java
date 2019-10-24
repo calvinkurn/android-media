@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.common.data.order;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -131,6 +132,8 @@ public class OrderDetailData implements Parcelable {
     private List<String> bookingCodeMessage = null;
 
     private boolean isFulfillment;
+
+    private final String ATTRIBUTE_ID = "id";
 
     public String getBookingCode() {
         return bookingCode;
@@ -760,4 +763,31 @@ public class OrderDetailData implements Parcelable {
             return new OrderDetailData[size];
         }
     };
+
+    public String getInvoiceId() {
+        String invoiceUrl = getInvoiceUrl();
+        Uri invoiceUri = Uri.parse(invoiceUrl);
+
+        return invoiceUri.getQueryParameter(ATTRIBUTE_ID);
+    }
+
+    public String getProductName() {
+        String productName = "";
+
+        if (!itemList.isEmpty()) {
+            productName = itemList.get(0).getItemName();
+        }
+
+        return productName;
+    }
+
+    public String getProductImageUrl() {
+        String productImageUrl = "";
+
+        if (!itemList.isEmpty()) {
+            productImageUrl = itemList.get(0).getImageUrl();
+        }
+
+        return productImageUrl;
+    }
 }

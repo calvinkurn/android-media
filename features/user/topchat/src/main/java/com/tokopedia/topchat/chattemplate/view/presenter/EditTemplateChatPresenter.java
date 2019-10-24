@@ -25,6 +25,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
     private final EditTemplateUseCase editTemplateUseCase;
     private final CreateTemplateUseCase createTemplateUseCase;
     private final DeleteTemplateUseCase deleteTemplateUseCase;
+    private Boolean isSeller;
 
     @Inject
     EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase,
@@ -55,7 +56,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         temp.addAll(list);
         if (index < 0) {
             temp.add(s);
-            createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s), new Subscriber<EditTemplateViewModel>() {
+            createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s, isSeller), new Subscriber<EditTemplateViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -78,7 +79,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
             });
         } else {
             temp.set(index, s);
-            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index + 1, s), new Subscriber<EditTemplateViewModel>() {
+            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index + 1, s, isSeller), new Subscriber<EditTemplateViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -104,7 +105,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
     @Override
     public void deleteTemplate(final int index) {
-        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index + 1), new Subscriber<EditTemplateViewModel>() {
+        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index + 1, isSeller), new Subscriber<EditTemplateViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -125,5 +126,9 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 }
             }
         });
+    }
+
+    public void setMode(Boolean isSeller) {
+        this.isSeller = isSeller;
     }
 }

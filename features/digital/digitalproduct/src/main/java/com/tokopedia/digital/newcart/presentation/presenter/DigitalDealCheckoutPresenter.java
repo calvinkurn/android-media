@@ -10,8 +10,8 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
@@ -44,7 +44,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
                                         DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                        DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
                 digitalModuleRouter,
@@ -52,7 +52,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache);
+                rechargePushEventRecommendationUseCase);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }
@@ -61,6 +61,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public void onDealsCheckout() {
         getView().setCheckoutParameter(buildCheckoutData(getView().getCartInfoData(), userSession.getAccessToken()));
         renderBaseCart(getView().getCartInfoData());
+        renderPostPaidPopUp(getView().getCartInfoData());
         getView().renderCategoryInfo(getView().getCartInfoData().getAttributes().getCategoryName());
         if (getView().getCartInfoData().getCrossSellingConfig() != null) {
             getView().updateToolbarTitle(getView().getCartInfoData().getCrossSellingConfig().getHeaderTitle());
@@ -72,7 +73,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
         }
 
-        if (getView().isAlreadyShowOnBoard()){
+        if (getView().isAlreadyShowOnBoard()) {
             autoCollapseCheckoutView();
         }
     }
@@ -117,7 +118,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().showCartDetailView();
             if (getView().getSelectedDeals().size() > 0) {
                 getView().showDealsContainerView();
-            }else {
+            } else {
                 getView().hideDealsContainerView();
             }
             getView().renderIconToCollapse();
@@ -126,7 +127,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onNewSelectedDeal(DealProductViewModel viewModel) {
-        if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()){
+        if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()) {
             getView().hideCartDetailView();
             getView().hideDealsContainerView();
             getView().renderIconToExpand();

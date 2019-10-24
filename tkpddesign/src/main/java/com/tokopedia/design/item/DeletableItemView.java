@@ -21,10 +21,10 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class DeletableItemView extends BaseCustomView {
 
-    private View rootView;
-    private TextView textView;
-    private View buttonView;
-    private ImageView imageView;
+    protected View rootView;
+    protected TextView textView;
+    protected View buttonView;
+    protected ImageView imageView;
 
     private OnDeleteListener onDeleteListener;
     private OnTextClickListener onTextClickListener;
@@ -57,9 +57,17 @@ public class DeletableItemView extends BaseCustomView {
         init(context);
     }
 
-    private void init(Context context) {
+    protected void initView(Context context){
         rootView = inflate(context, layoutRef, this);
-        textView = (TextView) rootView.findViewById(R.id.item_name);
+        textView = rootView.findViewById(R.id.item_name);
+        imageView = rootView.findViewById(R.id.item_image);
+        buttonView = rootView.findViewById(R.id.delete_button);
+    }
+
+    private void init(Context context) {
+
+        initView(context);
+
         textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,8 +76,7 @@ public class DeletableItemView extends BaseCustomView {
                 }
             }
         });
-        imageView = (ImageView) rootView.findViewById(R.id.item_image);
-        buttonView = rootView.findViewById(R.id.delete_button);
+
         buttonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

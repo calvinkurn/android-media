@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.TrackingDetail
 import com.tokopedia.promocheckout.common.view.uimodel.*
 import javax.inject.Inject
 
@@ -81,7 +82,34 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 benefit = mapBenefit(data.benefitSummaryInfo),
                 clashings = mapClashing(data.clashingInfoDetail),
                 gatewayId = data.gatewayId,
-                isCoupon = data.isCoupon
+                isCoupon = data.isCoupon,
+                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail),
+                tickerInfoUiModel = mapTickerInfo(data.tickerInfo)
+        )
+    }
+
+    private fun mapTickerInfo(tickerInfo: TickerInfo): TickerInfoUiModel {
+        return TickerInfoUiModel(
+                message = tickerInfo.message,
+                statusCode = tickerInfo.statusCode,
+                uniqueId = tickerInfo.uniqueId
+        )
+    }
+
+    private fun mapTrackingDetails(trackingDetails: List<TrackingDetail>): List<TrackingDetailUiModel> {
+        val trackingDetailUiModels = ArrayList<TrackingDetailUiModel>()
+        trackingDetails.forEach {
+            trackingDetailUiModels.add(mapTrackingDetail(it))
+        }
+
+        return trackingDetailUiModels
+    }
+
+    private fun mapTrackingDetail(trackingDetail: TrackingDetail): TrackingDetailUiModel {
+        return TrackingDetailUiModel(
+                productId = trackingDetail.productId,
+                promoCodesTracking = trackingDetail.promoCodesTracking,
+                promoDetailsTracking = trackingDetail.promoDetailsTracking
         )
     }
 
@@ -124,8 +152,26 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 description = summaries.description,
                 type = summaries.type,
                 amountStr = summaries.amountStr,
-                amount = summaries.amount
+                amount = summaries.amount,
+                details = mapSummaryBenefitDetails(summaries.details)
         )
+    }
+
+    private fun mapSummaryBenefitDetails(details: List<Detail>?): ArrayList<DetailUiModel> {
+        val listDetails = ArrayList<DetailUiModel>()
+        details?.apply {
+            this.forEach {
+                val detailUiModel = DetailUiModel(
+                        description = it.description,
+                        amount = it.amount,
+                        amountStr = it.amountStr,
+                        type = it.type
+                )
+                listDetails.add(detailUiModel)
+            }
+        }
+
+        return listDetails
     }
 
     private fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {

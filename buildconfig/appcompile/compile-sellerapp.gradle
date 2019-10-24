@@ -1,4 +1,6 @@
 // Sort alphabetically by name
+includeDynamicFeatureIfEnabled("sellerapp")
+
 include "features:category:tradein_common"
 include "features:category:tradein"
 
@@ -37,15 +39,8 @@ include "features:im:common_promo"
 include "features:im:referral"
 
 include "features:logistic:logisticaddaddress"
-include "features:logistic:logisticaddaddress"
-include "features:logistic:logisticinputreceiptshipment"
-//include "features:logistic:logisticinputreceiptshipment_no_op"
 include "features:logistic:logisticdata"
-include "features:logistic:logisticuploadawb"
-//include "features:logistic:logisticuploadawb_no_op"
-include "features:logistic:shipping_recommendation"
 include "features:logistic:tracking"
-//include "features:logistic:tracking_no_op"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
@@ -58,6 +53,7 @@ include "features:merchant:product_detail_common"
 include "features:merchant:product_manage_item"
 include "features:merchant:product_manage_list"
 include "features:merchant:product_share"
+include "features:merchant:report"
 include "features:merchant:reputation_common"
 include "features:merchant:reputation"
 include "features:merchant:shop_common"
@@ -72,6 +68,7 @@ include "features:merchant:shop_etalase_picker"
 include "features:operational:contact_us"
 //include "features:operational:contact_us_no_op"
 
+include "features:payment:common_payment"
 include "features:payment:payment"
 //include "features:payment:payment_no_op"
 include "features:payment:withdraw"
@@ -104,7 +101,6 @@ include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 
 include "features:user:attachproduct"
-include "features:user:bankdb"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"
@@ -133,9 +129,6 @@ include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:tradein_common"
 include "features:fintech:merchant_lending_widget"
-
-
-include "dynamic-features:merchant:shop_settings_sellerapp"
 
 include 'tkpdloyalty'
 include 'tkpdcore'

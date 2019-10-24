@@ -1,14 +1,13 @@
 package com.tokopedia.product.warehouse.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ETALASE_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ETALASE_NAME
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ID
@@ -16,9 +15,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PATH_MOVE_TO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PATH_MOVE_TO_WAREHOUSE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VALUE_NEW_ETALASE
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +38,7 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                         val bodyMap = mutableMapOf<String, String>(
                                 PARAM_PRODUCT_ID to productId
                         )
-                        AuthUtil.generateParamsNetwork(
+                        AuthHelper.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, bodyMap)
                         val restRequest = RestRequest.Builder(
                                 urlMap[PATH_MOVE_TO_WAREHOUSE] ?: "",
@@ -79,7 +75,7 @@ class ProductWarehouseViewModel @Inject constructor(private val restRepository: 
                                             PARAM_PRODUCT_ETALASE_ID to etalaseId
                                         },
                                         PARAM_PRODUCT_ETALASE_NAME to etalaseName)
-                        AuthUtil.generateParamsNetwork(
+                        AuthHelper.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, bodyMap)
                         val restRequest = RestRequest.Builder(
                                 urlMap[PATH_MOVE_TO_ETALASE] ?: "",

@@ -21,7 +21,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdateContract;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdatePresenter;
@@ -192,14 +192,14 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }
@@ -441,13 +441,13 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
             switch (requestCode) {
                 case REQUEST_CODE_PICK_NATIONALITY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onNationalityChanged(flightPassportNationalityViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_ISSUER_COUNTRY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
                     }
             }

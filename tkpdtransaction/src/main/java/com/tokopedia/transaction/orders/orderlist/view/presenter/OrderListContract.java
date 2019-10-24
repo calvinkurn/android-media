@@ -2,9 +2,12 @@ package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 
 import java.util.List;
@@ -16,8 +19,6 @@ import java.util.List;
 public class OrderListContract {
     public interface View extends CustomerView {
         void showProcessGetData();
-
-        void renderDataList(List<Order> orderDataList);
 
         void showFailedResetData(String message);
 
@@ -54,9 +55,28 @@ public class OrderListContract {
         void showSuccessMessage(String message);
 
         void showFailureMessage(String message);
+
+        void addData(List<Visitable> data, Boolean isRecommendation);
+
+        void displayLoadMore(boolean isLoadMore);
+
+        void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
+
+        void finishOrderDetail();
+
+        void startSellerAndAddInvoice();
+
+        void requestCancelOrder(Status status);
+
+        void showSuccessMessageWithAction(String message);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void getAllOrderData(Context context, String orderCategory, int typeRequest, int page, int orerId);
+
+        void processGetRecommendationData(int page, boolean isFirstTime);
+
+        void onRefresh();
     }
 }

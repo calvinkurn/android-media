@@ -6,16 +6,14 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -23,6 +21,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -32,13 +32,10 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.PasswordGenerator;
-import com.tokopedia.core.util.PasswordGenerator.PGListener;
-import com.tokopedia.core.util.SessionHandler;
 
+import com.tokopedia.applink.ApplinkConst;
+
+import timber.log.Timber;
 
 
 /**
@@ -50,28 +47,22 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
 
-    public static final int TIME_DELAY = 300;
-    public static final String IS_LOADING = "IS_LOADING";
-    public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
-    public static final int WEEK_IN_SECONDS = 604800;
     public static final int DAYS_IN_SECONDS = 86400;
-    public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
+    public static final int STATUS_FINISHED = 1;
+    public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
+
     private PasswordGenerator Pgenerator;
-    DownloadResultReceiver mReceiver;
     String id = null;
-    protected SessionHandler sessionHandler;
     protected View decorView;
+
+    protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-        sessionHandler = new SessionHandler(this);
         resetAllDatabaseFlag();
-        initPermissionReactNativeDev();
         decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -85,7 +76,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     private void fetchRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
     }
 
@@ -94,54 +85,40 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
-        //  moveToHome();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         getBranchDefferedDeeplink();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(this);
+        if(!status){
+            Timber.w("P2Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                    + " | "+Build.TAGS);
+        }
         moveToHome();
     }
 
     protected void moveToHome() {
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
         finishSplashScreen();
     }
-//        }, TIME_DELAY);
-
 
     private void InitNew() {
         if (Pgenerator.getAppId() == null) {
+            Pgenerator.generateAPPID(status -> {
 
-            //message.setText(R.string.title_first_time);
-            Pgenerator.generateAPPID(new PGListener() {
-
-                @Override
-                public void onSuccess(int status) {
-//                    finishSplashScreen();
-
-                }
             });
-        } else {
-//            finishSplashScreen();
         }
     }
 
     private GCMHandlerListener getGCMHandlerListener() {
-        return new GCMHandlerListener() {
-            @Override
-            public void onGCMSuccess(String regId) {
-                //bypassV2Login();
-            }
+        return regId -> {
         };
     }
 
@@ -159,13 +136,13 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         CommonUtils.dumper(resultData);
-        if (resultCode == DownloadService.STATUS_FINISHED) finishSplashScreen();
+        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
+            LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
             }
@@ -173,29 +150,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
         flagDB.putBoolean("reset_db_flag", true);
         flagDB.applyEditor();
-    }
-
-    private void initPermissionReactNativeDev() {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(this)) {
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            Uri.parse("package:" + getPackageName()));
-                    startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(this)) {
-                    // SYSTEM_ALERT_WINDOW permission not granted...
-                }
-            }
-        }
     }
 
     @Override
@@ -226,14 +180,23 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
                         String deeplink = linkerDefferedDeeplinkData.getDeeplink();
                         if (!TextUtils.isEmpty(deeplink)) {
-                            Uri uri;
-                            if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
-                                uri = Uri.parse(deeplink);
+                            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+                            // because we need tracking UTM for those notification applink
+                            String tokopediaDeeplink;
+                            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                                tokopediaDeeplink = deeplink;
                             } else {
-                                uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
                             }
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(uri);
+                            Intent intent = new Intent();
+                            if (URLUtil.isNetworkUrl(tokopediaDeeplink)) {
+                                intent.setClassName(SplashScreen.this.getPackageName(),
+                                        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+                            } else {
+                                intent.setClassName(SplashScreen.this.getPackageName(),
+                                        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+                            }
+                            intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();
                         }

@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -101,16 +101,15 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getSellerMenu());
         data.add(getInboxMenu());
         data.add(getProductMenu());
-
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
         if (!((SellerDrawerAdapter) adapter).isOfficialStore()) {
             data.add(powerMerchantDrawerItem);
         } else {
             data.remove(powerMerchantDrawerItem);
         }
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
-                R.drawable.ic_top_ads,
-                TkpdState.DrawerPosition.SELLER_TOP_ADS,
-                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
@@ -378,10 +377,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
-                    if (context.getApplication() instanceof ApplinkRouter) {
-                        ApplinkRouter applinkRouter = ((ApplinkRouter) context.getApplication());
-                        applinkRouter.goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_AUTOADS);
-                    }
+                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS);
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
                     RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT);

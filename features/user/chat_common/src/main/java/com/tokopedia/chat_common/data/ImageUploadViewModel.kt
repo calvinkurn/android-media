@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = null
-        private set
     var imageUrlThumbnail: String? = null
         private set
     var isRetry: Boolean = false

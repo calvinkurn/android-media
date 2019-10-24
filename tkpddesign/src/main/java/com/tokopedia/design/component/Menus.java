@@ -296,5 +296,12 @@ public class Menus extends BaseBottomSheetView {
             this.title = title;
             this.icon = icon;
         }
+
+        public ItemMenus(String title, boolean hasCheck) {
+            this.title = title;
+            if(hasCheck) {
+                this.iconEnd = R.drawable.ic_check;
+            }
+        }
     }
 }

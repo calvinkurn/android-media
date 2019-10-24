@@ -8,49 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class AttachmentImageModel {
-    @SerializedName("data")
+    @SerializedName("picture_obj")
     @Expose
-    private Data data;
+    private String pictureObj;
 
-    public AttachmentImageModel() {
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-
-    public class Data{
-        @SerializedName("pic_obj")
-        @Expose
-        private String picObj;
-        @SerializedName("pic_src")
-        @Expose
-        private String picSrc;
-        @SerializedName("server_id")
-        @Expose
-        private String serverId;
-        @SerializedName("success")
-        @Expose
-        private String success;
-
-        public Data() {
-        }
-
-        public String getPicObj() {
-            return picObj;
-        }
-
-        public String getPicSrc() {
-            return picSrc;
-        }
-
-        public String getServerId() {
-            return serverId;
-        }
-
-        public String getSuccess() {
-            return success;
-        }
+    public String getPictureObj() {
+        return pictureObj;
     }
 }

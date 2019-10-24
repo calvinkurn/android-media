@@ -1,0 +1,13 @@
+query {
+  travelCategoryList() {
+    category{
+      product
+      attributes{
+        title
+        webURL
+        appURL
+        imageURL
+      }
+    }
+  }
+}

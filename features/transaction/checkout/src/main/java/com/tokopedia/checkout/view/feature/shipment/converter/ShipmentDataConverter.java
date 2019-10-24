@@ -12,14 +12,14 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
-import com.tokopedia.checkout.view.feature.shipment.util.Utils;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +135,7 @@ public class ShipmentDataConverter {
                                         voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
                                         voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
                                         voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                        voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
                                         voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
                                         shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                     }
@@ -175,6 +176,7 @@ public class ShipmentDataConverter {
                                     voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
                                     voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
                                     voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                    voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
                                     voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
                                     shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                 } else {
@@ -240,6 +242,8 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
+        shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
+        shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -259,6 +263,7 @@ public class ShipmentDataConverter {
                 voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
                 voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
                 voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount()));
+                voucherLogisticItemUiModel.setCouponAmountRaw(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
                 voucherLogisticItemUiModel.setCashbackAmount(groupShop.getShop().getVoucherOrdersItemData().getCashbackWalletAmount());
                 voucherLogisticItemUiModel.setDiscountAmount(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
                 voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
@@ -316,6 +321,7 @@ public class ShipmentDataConverter {
         } else {
             cartItemModel.setPrice(product.getProductPrice());
         }
+        cartItemModel.setOriginalPrice(product.getProductOriginalPrice());
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
@@ -332,6 +338,8 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+        cartItemModel.setFreeShipping(product.isFreeShipping());
+        cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
 
         if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);

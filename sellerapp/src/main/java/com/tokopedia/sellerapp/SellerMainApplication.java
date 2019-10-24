@@ -172,7 +172,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     public void initDbFlow() {
-        super.initDbFlow();
         try {
             FlowManager.getConfig();
         } catch (IllegalStateException e) {
@@ -198,16 +197,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
     }
 
 }
