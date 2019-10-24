@@ -142,7 +142,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
                     goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_HARDWARE_ID, deviceId);
                     navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT);
                 } else {
-                    startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
+                    startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, result.getToken(),
                             false, false, false, null,
                             false), PINPOINT_ACTIVITY_REQUEST_CODE);
