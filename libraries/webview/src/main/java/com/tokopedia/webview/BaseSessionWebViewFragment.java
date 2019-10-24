@@ -1,7 +1,8 @@
 package com.tokopedia.webview;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
+
+import androidx.annotation.NonNull;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;

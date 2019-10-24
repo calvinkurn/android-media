@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -292,5 +290,4 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
         }
     }
-                    .load(BACKGROUND[getAdapterPosition() % 5])
 }

@@ -1,17 +1,17 @@
 package com.tokopedia.home.beranda.helper
 
+import android.util.DisplayMetrics
+import android.view.Gravity
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.Scroller
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.Px
-import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Scroller;
-import java.util.Locale;
-import android.view.animation.DecelerateInterpolator
 import androidx.core.text.TextUtilsCompat
 import androidx.core.view.ViewCompat
-import androidx.appcompat.widget.*
+import androidx.recyclerview.widget.*
+import java.util.*
 import kotlin.math.abs
 
 
