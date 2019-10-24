@@ -35,4 +35,7 @@ class ProductProfile {
     @SerializedName("shop_id")
     @Expose
     val shopId: Int = 0
+    @SerializedName("free_ongkir")
+    @Expose
+    val freeShipping: FreeShipping = FreeShipping()
 }

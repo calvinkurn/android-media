@@ -41,6 +41,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
+    @JvmField
+    val PARAM_IS_FROM_LOGIN = "is_from_login"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -88,9 +90,17 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
-    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info"
+    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info?projectId={projectId}"
+
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
+
+    // UserIdentificationFormActivity
+    // tokopedia-android-internal://global/user-identification-form
+    @JvmField
+    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form?projectId={projectId}"
+    @JvmField
+    val PARAM_PROJECT_ID = "projectId"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
@@ -122,6 +132,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // PinCompleteActivity
+    // tokopedia-android-internal://global/add-pin-complete
+    @JvmField
+    val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField
@@ -147,6 +162,19 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
+    // InstantLoanActivity
+    // tokopedia-android-internal://global/loan
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN = "$INTERNAL_GLOBAL/instant-loan"
+
+    // InstantLoanActivity with specific tab
+    // tokopedia-android-internal://global/loan/category/{tab_name}
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
@@ -190,4 +218,13 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // PushNotificationCheckerActivity
+    // tokopedia-android-internal://global/push-notification-troubleshooter
+    @JvmField
+    val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 }

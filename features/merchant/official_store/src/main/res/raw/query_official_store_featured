@@ -1,6 +1,11 @@
 query OfficialStoreFeaturedShop($categoryAliasID: Int) {
    OfficialStoreFeaturedShop(categoryAliasID: $categoryAliasID, device: 1, size: 4){
       totalShops
+      header{
+        ctaText
+        title
+        link
+      }
       shops{
         id
         name

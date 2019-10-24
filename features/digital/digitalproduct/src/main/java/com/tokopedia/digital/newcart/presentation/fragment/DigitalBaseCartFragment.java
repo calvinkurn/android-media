@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -322,9 +323,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                 }
             }
-        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
-                case TopPayActivity.PAYMENT_SUCCESS:
+                case PaymentConstant.PAYMENT_SUCCESS:
                     if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
                         FragmentManager manager = getActivity().getSupportFragmentManager();
 
@@ -342,13 +343,13 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;
-                case TopPayActivity.PAYMENT_FAILED:
+                case PaymentConstant.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
                     break;
-                case TopPayActivity.PAYMENT_CANCELLED:
+                case PaymentConstant.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
                     break;
@@ -388,7 +389,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.convertToPaymenPassData(checkoutDigitalData);
         navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
-                TopPayActivity.REQUEST_CODE);
+                PaymentConstant.REQUEST_CODE);
     }
 
 

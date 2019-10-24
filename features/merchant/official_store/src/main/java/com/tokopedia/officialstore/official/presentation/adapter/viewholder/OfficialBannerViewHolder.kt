@@ -3,17 +3,17 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.banner.Banner
 import com.tokopedia.banner.BannerView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
 class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
 
-    private var banner: Banner? = null
+    private var banner: BannerOfficialStore? = null
 
     init {
         banner = view?.findViewById(R.id.banner_official)

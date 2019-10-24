@@ -5,25 +5,24 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Shop(@SerializedName("id")
-                val shopId: String = "",
+                val shopId: String? = "",
                 @SerializedName("name")
-                val name: String = "",
+                val name: String? = "",
                 @SerializedName("url")
-                val url: String = "",
+                val url: String? = "",
                 @SerializedName("logoUrl")
-                val logoUrl: String = "",
+                val logoUrl: String? = "",
                 @SerializedName("imageUrl")
-                val imageUrl: String = "",
+                val imageUrl: String? = "",
                 @SerializedName("additionalInformation")
-                val additionalInformation: String = "") : Parcelable {
+                val additionalInformation: String? = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(shopId)

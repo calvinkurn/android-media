@@ -6,14 +6,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.officialstore.category.data.model.Category
-import kotlinx.android.synthetic.main.view_official_store_category.view.*
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 
 class OfficialHomeContainerAdapter(
         val context: Context?,
@@ -41,20 +36,6 @@ class OfficialHomeContainerAdapter(
 
     override fun getCount(): Int {
         return categoryList.size
-    }
-
-    fun getTabCustomView(position: Int): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category,null)
-        with(view){
-            ImageHandler.loadImage(
-                    context,
-                    image_view_category_icon,
-                    categoryList[position].icon,
-                    R.drawable.ic_loading_image
-            )
-            text_view_category_title.text = categoryList[position].title
-        }
-        return view
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

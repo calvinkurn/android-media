@@ -6,6 +6,12 @@ query productRecommendationWidget($pageName: String, $pageNumber: Int, $xDevice:
           title
           foreignTitle
           widgetUrl
+          pagination {
+            currentPage
+            nextPage
+            prevPage
+            hasNext
+          }
           recommendation {
             id
             name
@@ -30,6 +36,7 @@ query productRecommendationWidget($pageName: String, $pageNumber: Int, $xDevice:
               name
               shopImage
               appUrl
+              city
             }
             departmentId
             labels {

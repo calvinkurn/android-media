@@ -5,12 +5,15 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
+import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFITS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.officialstore.R
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,6 +31,13 @@ class OfficialStoreHomeModule {
     @Named(QUERY_OFFICIAL_STORE_BANNERS)
     fun provideQueryofficialStoreBanners(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_banner)
+    }
+
+    @OfficialStoreHomeScope
+    @Provides
+    @Named(QUERY_OFFICIAL_STORE_BENEFITS)
+    fun provideQueryofficialStoreBenefitShop(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_benefit)
     }
 
     @OfficialStoreHomeScope
@@ -51,12 +61,22 @@ class OfficialStoreHomeModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
     }
 
+//    @OfficialStoreHomeScope
+//    @Provides
+//    fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
+//                                         graphqlUseCase: GraphqlUseCase,
+//                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
+//        return GetRecommendationUseCase(rawQueries.toString() ?: "",
+//                graphqlUseCase,
+//                userSessionInterface)
+//    }
+
     @OfficialStoreHomeScope
     @Provides
     fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
                                          graphqlUseCase: GraphqlUseCase,
-                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(rawQueries.toString() ?: "",
+                                         userSessionInterface: UserSessionInterface): GetOfficialStoreRecommendationUseCase {
+        return GetOfficialStoreRecommendationUseCase(rawQueries.toString() ?: "",
                 graphqlUseCase,
                 userSessionInterface)
     }
@@ -65,4 +85,11 @@ class OfficialStoreHomeModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 }

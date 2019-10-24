@@ -1,6 +1,6 @@
 package com.tokopedia.digital.categorylist.domain.interactor;
 
-import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;
@@ -15,5 +15,5 @@ public interface IDigitalCategoryListInteractor {
 
     void getDigitalCategoryItemDataList(String deviceVersion, Subscriber<List<DigitalCategoryItemData>> subscriber);
 
-    void getTokoCashData(Subscriber<TokoCashData> subscriber);
+    void getTokoCashData(Subscriber<WalletBalanceModel> subscriber);
 }

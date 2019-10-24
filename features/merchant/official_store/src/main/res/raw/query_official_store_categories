@@ -4,6 +4,7 @@ query OfficialStoreCategories{
         id
         imageUrl
         name
+        prefixUrl
         url
         fullUrl
         categories

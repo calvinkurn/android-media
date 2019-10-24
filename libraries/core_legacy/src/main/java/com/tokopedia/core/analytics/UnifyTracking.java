@@ -28,7 +28,7 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 
 public class UnifyTracking extends TrackingUtils {
     public static final String EXTRA_LABEL = "label";
-    
+
  public static void eventPushNotifLowTopadsReceived(Context context) {
         sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
@@ -37,7 +37,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TOPADS_LOW_CREDIT
         ).getEvent());
     }
-    
+
     public static void eventPushNotifSuccessTopadsReceived(Context context) {
         sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
@@ -46,7 +46,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
         ).getEvent());
     }
-    
+
     public static void eventSellerHomeDashboardClick(Context context, String main, String item) {
         sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
@@ -56,7 +56,7 @@ public class UnifyTracking extends TrackingUtils {
                 .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .getEvent());
     }
-    
+
     public static void eventTopAdsProductEditGrupCost(Context context, String budgetOption) {
         eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_COST + budgetOption);
     }
@@ -298,15 +298,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
-
-    public static void eventCampaign(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CAMPAIGN,
-                AppEventTracking.Category.CAMPAIGN,
-                AppEventTracking.Action.DEEPLINK,
-                label
-        ).getEvent());
-    }
 
     public static void eventWishlistView(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(

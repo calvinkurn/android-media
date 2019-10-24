@@ -17,7 +17,7 @@
             android:id="@+id/statusbar"
             android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="25dp"/>
+            android:layout_height="@dimen/spacing_lvl5"/>
 
         <com.tokopedia.searchbar.MainToolbar
             android:id="@+id/maintoolbar"
@@ -25,14 +25,13 @@
             android:layout_height="?actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_anchor="@id/statusbar"
+            app:layout_anchor="@+id/statusbar"
             app:layout_scrollFlags="scroll|enterAlways"/>
 
-        <android.support.design.widget.TabLayout
+        <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
             android:id="@+id/tablayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?actionBarSize"
+            android:layout_height="@dimen/layout_lvl7"
             android:background="@color/white"
             app:tabMode="scrollable"
             app:tabIndicatorColor="@color/Purple_P600" />

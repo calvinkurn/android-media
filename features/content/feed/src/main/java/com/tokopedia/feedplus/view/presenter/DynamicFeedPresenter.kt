@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,15 +12,14 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
-import java.util.ArrayList
 import javax.inject.Inject
 
 /**
  * @author by yoasfs on 2019-08-06
  */
-class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInterface,
-                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                               val likeKolPostUseCase: LikeKolPostUseCase):
+class DynamicFeedPresenter @Inject constructor(private val userSession: UserSessionInterface,
+                                               private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+                                               private val likeKolPostUseCase: LikeKolPostUseCase):
         BaseDaggerPresenter<DynamicFeedContract.View>(),
         DynamicFeedContract.Presenter {
 
@@ -34,7 +33,10 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
                 .setSessionIncluded(true)
                 .build())
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -59,7 +61,10 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
 
     override fun getFeed() {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -138,6 +143,6 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     }
 
     private fun getUserId(): String {
-        return if (userSession.isLoggedIn()) userSession.getUserId() else NON_LOGIN_USER_ID
+        return if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
     }
 }

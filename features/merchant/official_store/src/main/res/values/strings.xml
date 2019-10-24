@@ -4,4 +4,6 @@
     <string name="os_query_search">Cari di Official Store</string>
     <string name="dc_action_text">Lihat Semua</string>
 
+    <string name="os_product_recommendation_title">Rekomendasi Untukmu</string>
+
 </resources>
