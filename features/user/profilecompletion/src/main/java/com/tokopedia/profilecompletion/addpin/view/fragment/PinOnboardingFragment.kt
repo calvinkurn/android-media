@@ -62,6 +62,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         ImageHandler.LoadImage(onboardImage, ONBOARD_PICT_URL)
 
         btnNext.setOnClickListener {
+            trackingPinUtil.trackClickCreateButton()
             addChangePinViewModel.getStatusPin()
         }
 

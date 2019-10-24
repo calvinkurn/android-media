@@ -8,7 +8,7 @@
 
         <activity
             android:name="com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity"
-            android:label="@string/app_label"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -27,7 +27,7 @@
 
         <activity
             android:name="com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity"
-            android:label="@string/app_label"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden"/>

@@ -173,7 +173,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
-        InstabugInitalize.init(this);
         TokopediaUrl.Companion.init(this);
     }
 

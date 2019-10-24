@@ -137,6 +137,7 @@ public interface ApplinkConst {
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
+    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -231,7 +232,12 @@ public interface ApplinkConst {
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
-    String KYC = "tokopedia://kyc";
+    String KYC_NO_PARAM = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
+    String KYC = "tokopedia://kyc?projectId={projectId}";
+
+    String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
+    String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -253,6 +259,7 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
     String OVO_WALLET = "tokopedia://ovo";
 

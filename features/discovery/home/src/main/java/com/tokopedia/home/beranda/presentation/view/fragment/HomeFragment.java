@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -51,6 +52,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
@@ -143,6 +145,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
+    private static final String SOURCE_ACCOUNT = "account";
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -259,15 +262,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         mShowTokopointNative = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
-    @Override
-    public void showRecomendationButton() {
-        if (showRecomendation) {
-            floatingTextButton.setVisibility(View.VISIBLE);
-        } else {
-            floatingTextButton.setVisibility(View.GONE);
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -369,12 +363,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
-        floatingTextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scrollToRecommendList();
-                HomePageTracking.eventClickJumpRecomendation(getActivity());
-            }
+        floatingTextButton.setOnClickListener(view -> {
+            scrollToRecommendList();
+            HomePageTracking.eventClickJumpRecomendation(getActivity());
         });
 
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
@@ -467,6 +458,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
+                /**
+                 * set notification gimmick
+                 */
+                homeMainToolbar.setNotificationNumber(0);
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -575,6 +570,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         onActionLinkClicked(actionLink);
     }
 
+    @Override
+    public void configureHomeFlag(HomeFlag homeFlag) {
+        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
+    }
+
     private void onGoToSell() {
         if (isUserLoggedIn()) {
             String shopId = getUserShopId();
@@ -590,6 +590,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void onGoToLogin() {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT);
         Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
