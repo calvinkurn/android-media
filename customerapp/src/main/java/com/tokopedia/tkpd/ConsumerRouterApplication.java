@@ -110,11 +110,7 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
+import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
@@ -203,6 +199,8 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.di.DaggerOmsComponent;
+import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -361,7 +359,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
-        DealsModuleRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
         ChangePasswordRouter,
@@ -402,7 +399,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private EventComponent eventComponent;
-    private DealsComponent dealsComponent;
+    private OmsComponent omsComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -482,7 +479,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .serviceApiModule(new ServiceApiModule())
                 .build();
 
-        dealsComponent = DaggerDealsComponent.builder()
+        omsComponent = DaggerOmsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .build();
     }
@@ -936,15 +933,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                       boolean enableRecommendation,
                                       boolean enableShare,
                                       boolean enableLike) {
-        return DealDetailsActivity.getCallingIntent(activity,
-                new DealDetailPassData.Builder()
-                        .slug(slug)
-                        .enableBuy(enableBuy)
-                        .enableRecommendation(enableRecommendation)
-                        .enableShare(enableShare)
-                        .enableLike(enableLike)
-                        .build()
-        );
+        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        return intent;
     }
 
     @Override
@@ -1190,12 +1180,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
-    public String getUserEmailProfil() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler.getEmail();
     }
 
     @Override
@@ -1568,7 +1552,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+        return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
     }
 
@@ -1583,37 +1567,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(promoData.getLink())
                 .build();
         new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
-    public void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType("")
-                .setName(name)
-                .setUri(uri)
-                .setDesktopUrl(desktopUrl)
-                .setImgUri(imageUrl)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
-                        Intent intent = Intent.createChooser(share, getString(R.string.share_link));
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        context.startActivity(intent);
-
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-
     }
 
     @Override
