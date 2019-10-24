@@ -1,11 +1,14 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
@@ -65,6 +68,8 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         this.categoryFilterModel = categoryFilterModel;
         originalDataList.clear();
         originalDataList.addAll(data);
+        presentedDataList.clear();
+        presentedDataList.addAll(data);
     }
 
     @Override
@@ -103,15 +108,18 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
         final boolean hasNextPage = toIndex < presentedDataList.size();
 
+        long delay = LOAD_MORE_DELAY_MS;
         if (fromIndex < presentedDataList.size()) {
             if (page == 0) {
+                delay = 0;
                 responseList.add(categoryFilterModel);
+                if (presentedDataList.size() == 0) responseList.add(createEmptyModel());
             }
             responseList.addAll(presentedDataList.subList(fromIndex, toIndex));
         }
 
         Observable.just(responseList)
-                .delay(LOAD_MORE_DELAY_MS, TimeUnit.MILLISECONDS)
+                .delay(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Visitable>>() {
@@ -134,6 +142,12 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                         }
                     }
                 });
+    }
+
+    public EmptyModel createEmptyModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setTitle(getView().getEmptyResultMessage());
+        return emptyModel;
     }
 
     @Override

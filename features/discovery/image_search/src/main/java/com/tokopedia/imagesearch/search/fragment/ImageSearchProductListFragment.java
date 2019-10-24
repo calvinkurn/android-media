@@ -199,13 +199,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
 
-        if (productViewModel.getProductList().isEmpty()) {
-            setEmptyProduct();
-        } else {
-            presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel());
-            presenter.loadMoreData(0);
-            adapter.showLoading();
-        }
+        presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel());
+        presenter.loadMoreData(0);
     }
 
     private void setupListener() {
@@ -324,7 +319,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     public void reloadData() {
         adapter.clearAllElements();
-        adapter.showLoading();
         staggeredGridLayoutLoadMoreTriggerListener.resetState();
         presenter.loadMoreData(0);
     }
@@ -362,11 +356,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public String getQueryKey() {
         return productViewModel.getQuery();
-    }
-
-    @Override
-    public void setEmptyProduct() {
-        adapter.showEmpty(getContext());
     }
 
     @Override
@@ -485,5 +474,10 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             presenter.setFilterCategory("");
         }
         reloadData();
+    }
+
+    @Override
+    public String getEmptyResultMessage() {
+        return getString(R.string.image_search_msg_empty_product_title);
     }
 }

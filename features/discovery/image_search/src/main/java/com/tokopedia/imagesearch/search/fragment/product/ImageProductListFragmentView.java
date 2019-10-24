@@ -31,8 +31,6 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     String getQueryKey();
 
-    void setEmptyProduct();
-
     SearchParameter getSearchParameter();
 
     void setSearchParameter(SearchParameter searchParameter);
@@ -42,4 +40,6 @@ public interface ImageProductListFragmentView extends CustomerView {
     void hideRefreshLayout();
 
     BaseAppComponent getBaseAppComponent();
+
+    String getEmptyResultMessage();
 }

@@ -21,13 +21,6 @@ public class ImageProductListAdapter extends BaseAdapter<ImageProductListTypeFac
         super(adapterTypeFactory);
     }
 
-    public void showEmpty(Context context) {
-        EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setTitle(context.getString(R.string.image_search_msg_empty_product_title));
-        visitables.add(emptyModel);
-        notifyDataSetChanged();
-    }
-
     public void updateWishlistStatus(String productId, boolean isWishlisted) {
 
         for (int i = 0; i < visitables.size(); i++) {
