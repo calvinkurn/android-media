@@ -155,6 +155,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
                         onSuccessGetProfilePhoto(data)
                     }
+                    REQUEST_CODE_CHANGE_NAME -> {
+                        onSuccessChangeName(data)
+                    }
                     REQUEST_CODE_ADD_BOD -> {
                         onSuccessAddBOD(data)
                     }
@@ -175,6 +178,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onSuccessChangeName(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.make(this, getString(R.string.change_name_change_success), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -292,8 +302,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
         name.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,
-                false,
-                false
+                showVerified = false,
+                showButton = true,
+                fieldClickListener = View.OnClickListener {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME)
+                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+                }
         )
 
         if (profileCompletionData.birthDay.isEmpty()) {
@@ -426,6 +440,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
+        name?.isEnabled = profileRoleData.isAllowedChangeName
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {
@@ -507,6 +522,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
 
+        const val REQUEST_CODE_CHANGE_NAME = 300
         const val REQUEST_CODE_ADD_BOD = 301
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
