@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter
 
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 
 interface OfficialHomeTypeFactory {
 

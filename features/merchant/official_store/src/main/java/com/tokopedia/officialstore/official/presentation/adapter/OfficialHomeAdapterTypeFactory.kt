@@ -4,8 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelThematicViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelLegoViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelSprintSaleViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class OfficialHomeAdapterTypeFactory(
@@ -24,7 +28,7 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        return DynamicChannelViewHolder.LAYOUT
+        return dynamicChannelViewModel.getLayoutType()
     }
 
     override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
@@ -40,7 +44,9 @@ class OfficialHomeAdapterTypeFactory(
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
-            DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
+            DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent)
+            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent)
+            DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent)
             ProductRecommendationTitleViewHolder.LAYOUT -> ProductRecommendationTitleViewHolder(parent)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
             else -> super.createViewHolder(parent, type)

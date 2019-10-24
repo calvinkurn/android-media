@@ -171,12 +171,15 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     }
 
     private fun observeDynamicChannel() {
-        viewModel.officialStoreDynamicChannelResult.observe(this, Observer {
-            if (it is Success) {
-                swipeRefreshLayout?.isRefreshing = false
-                OfficialHomeMapper.mappingDynamicChannel(it.data, adapter)
-            } else if (it is Fail) {
-                it.throwable.printStackTrace()
+        viewModel.officialStoreDynamicChannelResult.observe(this, Observer { result ->
+            when (result) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    OfficialHomeMapper.mappingDynamicChannel(result.data, adapter)
+                }
+                is Fail -> {
+                    if (BuildConfig.DEBUG) result.throwable.printStackTrace()
+                }
             }
         })
     }

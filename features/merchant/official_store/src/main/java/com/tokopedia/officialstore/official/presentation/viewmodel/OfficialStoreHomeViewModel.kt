@@ -87,9 +87,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult by lazy {
-        MutableLiveData<Result<DynamicChannel>>()
-    }
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
     private val _officialStoreProductRecommendation by lazy {
         MutableLiveData<Result<RecommendationWidget>>()
@@ -115,7 +113,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             //_officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             // TODO remove this, for testing purpose
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
-            _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel(slug).await())
+            getOfficialStoreDynamicChannel("os-fashion")
             /**
              * I just realize, that we have load product recomm when user scroll (if user doesn't scroll product recom doesnt have to load data)
               */
@@ -178,20 +176,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreDynamicChannel(channelType: String): Deferred<DynamicChannel> {
-        return async(Dispatchers.IO) {
-            var dynamicChannel = DynamicChannel()
-
-            try {
-                getOfficialStoreDynamicChannelUseCase.params = GetOfficialStoreDynamicChannelUseCase
-                        .setupParams(channelType)
-                dynamicChannel = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                _officialStoreDynamicChannelResult.value = Fail(t)
-            }
-
-            dynamicChannel
-        }
+    private fun getOfficialStoreDynamicChannel(channelType: String) {
+        getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+        getOfficialStoreDynamicChannelUseCase.execute(
+                { dynamicChannel -> _officialStoreDynamicChannelResult.value = Success(dynamicChannel) },
+                { throwable -> _officialStoreDynamicChannelResult.value = Fail(throwable) }
+        )
     }
 
     private fun getOfficialStoreProductRecommendation(categoryId: String, page: Int): Deferred<RecommendationWidget> {

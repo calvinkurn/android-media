@@ -1,13 +1,17 @@
 package com.tokopedia.officialstore.official.data.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
+import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import timber.log.Timber
 
 class OfficialHomeMapper {
 
@@ -38,16 +42,16 @@ class OfficialHomeMapper {
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
-            /**
-             * i just wondering what if the server not return featured shop
-             * so I commented this condition, because we have to show dynamic channel whether the featured shop shows or not
-              */
-//            if (adapter?.getDataByPosition(1) is OfficialFeaturedShopViewModel) {
-//
-//            }
-            val position = if (adapter?.itemCount?:0 > 3 ) 3 else adapter?.itemCount?:0
-            adapter?.addElement(position, DynamicChannelViewModel(dynamicChannel.channels))
-            adapter?.notifyItemInserted(position)
+            if (dynamicChannel.channels.isNotEmpty()) {
+                val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
+
+                dynamicChannel.channels.forEach { channel ->
+                    Timber.d(">>> " + channel.layout)
+                    views.add(DynamicChannelViewModel(channel))
+                }
+
+                adapter?.addElement(views)
+            }
         }
 
         fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
