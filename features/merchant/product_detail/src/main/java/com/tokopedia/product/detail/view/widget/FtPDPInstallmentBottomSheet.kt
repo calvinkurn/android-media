@@ -119,16 +119,8 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        return super.onCreateView(inflater, container, savedInstanceState)
-
         val inflatedView = inflater.inflate(getBaseLayoutResourceId(), container, false)
         configView(inflatedView)
-//        dialog.setContentView(inflatedView)
-
-//        val parent = inflatedView.getParent() as View
-//        parent.fitsSystemWindows = true
-//        bottomSheetBehavior = BottomSheetBehavior.from(parent)
-
         inflatedView.measure(0, 0)
         val height = inflatedView.measuredHeight
 

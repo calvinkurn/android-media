@@ -42,7 +42,7 @@ class FtPdpInstallmentCalculationFragment : TkpdBaseV4Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.pdp_installment_calculation_fragment, null, false)
+        return inflater.inflate(R.layout.pdp_installment_calculation_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,7 +52,7 @@ class FtPdpInstallmentCalculationFragment : TkpdBaseV4Fragment() {
 
     private fun initView(view: View) {
         ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
-        val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
+        val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true)
         ftRecyclerView.layoutManager = linearLayoutManager
         ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(partnerDataItemList)
     }
