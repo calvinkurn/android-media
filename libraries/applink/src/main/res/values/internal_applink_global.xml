@@ -37,6 +37,6 @@
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
 
     <string name="path_chat">/topchat</string>
-    <string name="path_chat_room" translatable="false">/topchat/.*\\/</string>
+    <string name="path_chat_room" translatable="false">/topchat/.*\</string>
 
 </resources>

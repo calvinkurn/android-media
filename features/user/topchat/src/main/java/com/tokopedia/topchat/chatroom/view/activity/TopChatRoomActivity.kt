@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
@@ -20,6 +21,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
         }
+
+        var projectId = intent.data.path
         return TopChatRoomFragment.createInstance(bundle)
     }
 
