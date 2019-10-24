@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
@@ -158,7 +160,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
                     intent = RouteManager.getIntent(this,
-                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "13");
+                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1,
+                            INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS);
                     intent.putExtra(KERO_TOKEN, token);
                     startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
                 }
@@ -167,7 +170,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
                 RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
                 AddressModelMapper mapper = new AddressModelMapper();
-                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "12");
+                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V1,
+                        INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT);
                 intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(currentAddress));
                 intent.putExtra(KERO_TOKEN, token);
                 startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_EDIT);
