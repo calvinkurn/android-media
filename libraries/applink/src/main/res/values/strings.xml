@@ -11,16 +11,6 @@
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
-    <!--Groupchat-->
-    <string name="groupchat_title">Play</string>
-    <string name="host_groupchat">groupchat</string>
-    <string name="path_groupchat">/groupchat</string>
-
-    <string name="path_groupchat_channel_id">/groupchat/.*\\/</string>
-
-    <string name="host_groupchat_webview">/groupchat</string>
-    <string name="path_groupchat_webview">/.*\\/.*\\/</string>
-
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
     <string name="digital_topup_title">Digital Topup</string>
