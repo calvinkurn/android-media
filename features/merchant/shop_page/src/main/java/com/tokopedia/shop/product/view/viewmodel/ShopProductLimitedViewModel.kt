@@ -207,7 +207,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         addWishListUseCase.createObservable(productId, userId, listener)
     }
 
-    fun clearEtalaseCache() {
+    fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
         getShopProductUseCase.clearCache()
         getShopFeaturedProductUseCase.clearCache()
