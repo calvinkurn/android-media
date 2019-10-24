@@ -12,8 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
@@ -44,10 +42,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -61,6 +56,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.MaintenancePage;
@@ -91,7 +87,6 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -110,7 +105,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -137,7 +131,6 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
@@ -155,8 +148,6 @@ import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.UserTier;
-import com.tokopedia.home.beranda.helper.StartSnapHelper;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -307,8 +298,6 @@ import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -2160,7 +2149,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getFavoritedShopFragment(String userId) {
-        return PeopleFavoritedShopFragment.createInstance(userId);
+        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override
