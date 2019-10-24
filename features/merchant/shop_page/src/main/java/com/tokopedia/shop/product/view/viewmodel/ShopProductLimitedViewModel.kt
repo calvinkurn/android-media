@@ -209,6 +209,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
 
     fun clearEtalaseCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        getShopProductUseCase.clearCache()
+        getShopFeaturedProductUseCase.clearCache()
     }
 
 

@@ -671,7 +671,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun refreshData() {
-        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
