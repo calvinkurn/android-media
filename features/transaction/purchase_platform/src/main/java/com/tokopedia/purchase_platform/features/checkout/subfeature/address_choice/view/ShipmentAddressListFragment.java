@@ -60,8 +60,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
-    private final String PARAM_ADDRESS_MODEL = "PARAM_ADDRESS_MODEL";
-    private final String PARAM_TOKEN = "token";
+    private static final String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
+    private static final String PARAM_TOKEN = "token";
     ShipmentAddressListAdapter mAdapter;
     @Inject
     AddressListContract.Presenter mPresenter;
