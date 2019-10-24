@@ -63,18 +63,18 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         //todo Rahul remove later
         if (activity != null) {
 
-            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
-            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
-            if (!isAllowedActivity) {
+//            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
+//            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
+//            if (!isAllowedActivity) {
 //            Do nothingsubscriber.waitingForLoginActivity
-            } else {
+//            } else {
                 val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
                 if (gratificationData != null) {
                     cancelAll()
                     showGratificationDialog(activity, gratificationData)
                 }
             }
-        }
+//        }
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
