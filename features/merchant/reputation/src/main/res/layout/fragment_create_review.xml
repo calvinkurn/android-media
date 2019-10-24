@@ -28,73 +28,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/img_animation_review"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            android:layout_marginTop="@dimen/dp_28"
-            android:src="@drawable/img_app_share"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_review" />
-
-        <LinearLayout
-            android:id="@+id/container_ratingbar"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_animation_review">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_star_1"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/lottie_anim_star_yellow"
-                tools:src="@drawable/ic_stars_disable_xxl" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_star_2"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/lottie_anim_star_yellow"
-                tools:src="@drawable/ic_stars_disable_xxl" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_star_3"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/lottie_anim_star_yellow"
-                tools:src="@drawable/ic_stars_disable_xxl" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_star_4"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/lottie_anim_star_yellow"
-                tools:src="@drawable/ic_stars_disable_xxl" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_star_5"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/lottie_anim_star_yellow"
-                tools:src="@drawable/ic_stars_disable_xxl" />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/txt_create"
             android:layout_width="0dp"
@@ -110,15 +43,26 @@
             app:layout_constraintStart_toEndOf="@+id/img_review"
             app:layout_constraintTop_toTopOf="@+id/img_review" />
 
-        <TextView
-            android:id="@+id/rating_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/img_animation_review"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginTop="@dimen/dp_28"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/lottie_anim_pedi_cry"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/container_ratingbar"
-            tools:text="Very Bad" />
+            app:layout_constraintTop_toBottomOf="@id/img_review"
+            tools:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
+
+        <com.tokopedia.tkpd.tkpdreputation.createreputation.ui.customview.AnimatedReviewPicker
+            android:id="@+id/animatedReview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_animation_review"/>
 
         <TextView
             android:id="@+id/txt_review_desc"
@@ -128,7 +72,7 @@
             android:text="Hai [name], tuliskan hal yang tidak sesuai harapan dari barang ini?"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rating_txt" />
+            app:layout_constraintTop_toBottomOf="@+id/animatedReview" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txt_input_review"

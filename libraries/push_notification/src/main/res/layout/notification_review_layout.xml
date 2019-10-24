@@ -10,13 +10,14 @@
         android:id="@+id/img_notif"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
+        android:scaleType="fitXY"
+
         android:layout_alignTop="@+id/rate_title"
         android:layout_alignBottom="@+id/rate_message"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_toStartOf="@+id/rate_title"
-        android:layout_toLeftOf="@+id/rate_title"
-        android:src="@drawable/ic_big_notif_customerapp" />
+        android:layout_toLeftOf="@+id/rate_title"/>
 
     <TextView
         android:id="@+id/rate_title"
@@ -24,9 +25,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/dp_5"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:text="Hi Karinaa!"
         android:visibility="visible" />
 

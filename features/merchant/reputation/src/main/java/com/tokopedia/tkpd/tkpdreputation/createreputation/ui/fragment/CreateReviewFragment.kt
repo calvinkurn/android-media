@@ -1,28 +1,29 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
+import android.animation.Animator
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.tkpd.tkpdreputation.R
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ReviewLottieModel
+import com.tokopedia.tkpd.tkpdreputation.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.customview.AnimatedReviewPicker
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
-
+import javax.inject.Inject
 
 class CreateReviewFragment : BaseDaggerFragment() {
 
@@ -32,79 +33,67 @@ class CreateReviewFragment : BaseDaggerFragment() {
         fun createInstance() = CreateReviewFragment()
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var animatedReviewPicker: AnimatedReviewPicker
+    private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this::addImageClick)
     }
-
-    private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
     private var selectedImage: ArrayList<String> = arrayListOf()
-    private var listOfLottie: MutableList<ReviewLottieModel> = mutableListOf()
     private var isImageAdded: Boolean = false
-    private var handle = Handler()
-    private var count = 0
-    private var lastReview = 0
-    private var reviewClickAt = 0
-
-    private val normalAnimation = object : Runnable {
-        override fun run() {
-            if (count <= TOTAL_REVIEW_STARS) {
-                val reviewData = listOfLottie[count]
-                if (isResversedAnim(reviewData)) {
-                    reviewData.isAnimated = false
-                    reviewData.reviewView.reverseAnimationSpeed()
-                    reviewData.reviewView.playAnimation()
-                } else if (isNormalAnim(reviewData)) {
-                    if (isAnimReversed(reviewData)) {
-                        reviewData.reviewView.reverseAnimationSpeed()
-                        reviewData.reviewView.playAnimation()
-                    } else {
-                        reviewData.reviewView.playAnimation()
-                    }
-                    reviewData.isAnimated = true
-                }
-                count++
-                handle.postDelayed(this, 50)
-            } else {
-                lastReview = reviewClickAt
-                count = 0
-                handle.removeCallbacks(this)
-            }
-        }
-
-        private fun isResversedAnim(reviewData: ReviewLottieModel): Boolean {
-            return count > reviewClickAt && reviewClickAt <= lastReview && reviewData.isAnimated
-        }
-
-        private fun isNormalAnim(reviewData: ReviewLottieModel): Boolean {
-            return count <= reviewClickAt && !reviewData.isAnimated
-        }
-
-        private fun isAnimReversed(reviewData: ReviewLottieModel): Boolean {
-            return reviewData.reviewView.speed < 0.0
-        }
-    }
+    private var shouldPlayAnimation: Boolean = true
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        context?.let {
+            val appComponent = (it.applicationContext as BaseMainApplication).baseAppComponent
+            DaggerCreateReviewComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create_review, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        animatedReviewPicker = view.findViewById(R.id.animatedReview)
         stepper_review.max = 3F
         stepper_review.progress = 1F
-        setupViewData()
-        listOfLottie.forEachIndexed { index, it ->
-            it.reviewView.setOnClickListener {
-                reviewClickAt = index
-                handle.post(normalAnimation)
+        animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
+            override fun onStarsClick(position: Int) {
+                shouldPlayAnimation = true
+                playAnimation()
             }
-        }
+        })
+        animatedReviewPicker.renderInitialReviewWithData(0)
+
+        img_animation_review.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                playAnimation()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+        })
 
         edit_text_review.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -127,12 +116,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
             adapter = imageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        initImageData()
+        imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
     }
 
-    private fun setupViewData() {
-        listOfLottie = mutableListOf(ReviewLottieModel(false, lottie_star_1), ReviewLottieModel(false, lottie_star_2), ReviewLottieModel(false, lottie_star_3),
-                ReviewLottieModel(false, lottie_star_4), ReviewLottieModel(false, lottie_star_5))
+    private fun playAnimation() {
+        if (!img_animation_review.isAnimating && shouldPlayAnimation) {
+            generateAnimationByIndex(animatedReviewPicker.getReviewClickAt())
+            shouldPlayAnimation = false
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -140,32 +131,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    initImageData()
-                    when (selectedImage.size) {
-                        5 -> {
-                            imageData = (selectedImage.take(4).map {
-                                ImageReviewViewModel(it, shouldDisplayOverlay = true)
-                            }).asReversed().toMutableList()
-                        }
-                        4 -> {
-                            imageData.addAll(selectedImage.take(3).map {
-                                ImageReviewViewModel(it, shouldDisplayOverlay = true)
-                            }.asReversed())
-                        }
-                        else -> {
-                            imageData.addAll(selectedImage.map {
-                                ImageReviewViewModel(it, shouldDisplayOverlay = false)
-                            }.asReversed())
-                        }
-                    }
-
-
+                    createReviewViewModel.initImageData()
+                    val imageListData = createReviewViewModel.getImageList(selectedImage)
                     if (selectedImage.isNotEmpty()) {
                         if (!isImageAdded) {
                             isImageAdded = true
                             stepper_review.progress = stepper_review.progress + 1F
                         }
-                        imageAdapter.setImageReviewData(imageData)
+                        imageAdapter.setImageReviewData(imageListData)
                     }
                 }
             }
@@ -173,10 +146,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun initImageData() {
-        imageData.clear()
-        imageData.add(DefaultImageReviewModel())
-        imageAdapter.setImageReviewData(imageData)
+    private fun generateAnimationByIndex(index: Int) {
+        when (index) {
+            0 -> img_animation_review.playAnimation()
+            1 -> img_animation_review.playAnimation()
+            2 -> img_animation_review.playAnimation()
+            3 -> img_animation_review.playAnimation()
+            4 -> img_animation_review.playAnimation()
+        }
     }
 
     private fun addImageClick() {

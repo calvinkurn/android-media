@@ -92,9 +92,7 @@ public class PushNotification {
 
     private static void notifyReview(Context context, ApplinkNotificationModel applinkNotificationModel,
                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifReview = new ReviewNotificationFactory(context)
-                .createNotification(applinkNotificationModel,notificationType,notificationType);
-        notificationManagerCompat.notify(notificationType,notifReview);
+        new ReviewNotificationFactory(context).createNotificationCustom(applinkNotificationModel,notificationType,notificationType);
     }
 
     private static void notifyGroupChat(Context context, ApplinkNotificationModel applinkNotificationModel,
