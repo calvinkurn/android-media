@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.officialstore.R
 import java.util.*
 
@@ -27,5 +28,9 @@ class BannerOfficialStore(@NonNull context: Context, @Nullable attrs: AttributeS
 
     override fun getIndicatorFocus(): Int {
         return R.drawable.indicator_official_banner_focus
+    }
+
+    override fun getBannerAdapter(): BannerViewPagerAdapter {
+        return BannerOfficialStoreAdapter(promoImageUrls, onPromoClickListener)
     }
 }

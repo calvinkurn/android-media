@@ -20,18 +20,21 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.di.DaggerOfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
 import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
+import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
@@ -48,7 +51,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
-    private var tabLayout: TabLayout? = null
+    private var tabLayout: OfficialCategoriesTab? = null
     private var viewPager: ViewPager? = null
 
     private var badgeNumberNotification: Int = 0
@@ -84,24 +87,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
     }
 
-    override fun onScrollDown() {
-        // visible icon tab layout
-        for (x in 0 until tabLayout?.tabCount.orZero()) {
-            val tab = tabLayout?.getTabAt(x)
-            tab?.customView?.let {
-               it.findViewById<View>(R.id.image_view_category_icon)?.visible()
-            }
-        }
-    }
-
-    override fun onScrollUp() {
-        // gone icon tab layout
-        for (x in 0 until tabLayout?.tabCount.orZero()) {
-            val tab = tabLayout?.getTabAt(x)
-            tab?.customView?.let {
-                it.findViewById<View>(R.id.image_view_category_icon)?.gone()
-            }
-        }
+    // config collapse & expand tablayout
+    override fun onContentScrolled(dy: Int, totalScrollY: Int) {
+        tabLayout?.adjustTabCollapseOnScrolled(dy, totalScrollY)
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -141,10 +129,16 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        officialStoreCategories.categories.forEachIndexed { index, _ ->
-            tabLayout?.getTabAt(index)?.customView = tabAdapter.getTabCustomView(index)
-        }
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         tabLayout?.getTabAt(0)?.select()
+    }
+
+    private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
+        val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
+        data.forEach {
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon))
+        }
+        return tabItemDataList
     }
 
     private fun init(view: View) {
@@ -154,34 +148,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
-        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Purple_P600
-                    ))
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Neutral_N700_96
-                    ))
-                }
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Purple_P600
-                    ))
-                }
-            }
-        })
     }
 
     //status bar background compability

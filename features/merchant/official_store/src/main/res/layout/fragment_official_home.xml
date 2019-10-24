@@ -28,7 +28,7 @@
             app:layout_anchor="@+id/statusbar"
             app:layout_scrollFlags="scroll|enterAlways"/>
 
-        <android.support.design.widget.TabLayout
+        <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
             android:id="@+id/tablayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl7"

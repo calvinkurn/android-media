@@ -67,6 +67,8 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private var lastParentPosition: Int? = null
     private lateinit var trackingQueue: TrackingQueue
 
+    private var totalScroll = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -225,12 +227,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
+                        totalScroll += dy
 
-                        if (dy > 5) {
-                            scrollListener.onScrollUp()
-                        } else {
-                            scrollListener.onScrollDown()
-                        }
+                        scrollListener.onContentScrolled(dy, totalScroll)
 
                         // TODO logic load more
                         // please see ProductDetailFragment > function addLoadMoreImpression
