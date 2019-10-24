@@ -6,15 +6,17 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 
 class DynamicChannelViewModel(
-        private val dynamicChannel: Channel
+        val dynamicChannelData: Channel
 ) : Visitable<OfficialHomeAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
         return adapterTypeFactory.type(this)
     }
 
-    fun getLayoutType() = when(dynamicChannel.layout) {
-        DynamicChannelLayoutType.LAYOUT_SPRINT_LEGO -> DynamicChannelLegoViewHolder.LAYOUT
-        else -> DynamicChannelThematicViewHolder.LAYOUT
+    fun getLayoutType() = when(dynamicChannelData.layout) {
+        DynamicChannelLayoutType.LAYOUT_SPRINT_LEGO -> DynamicChannelSprintSaleViewHolder.LAYOUT
+        DynamicChannelLayoutType.LAYOUT_6_IMAGE -> DynamicChannelLegoViewHolder.LAYOUT
+        DynamicChannelLayoutType.LAYOUT_BANNER_CAROUSEL -> DynamicChannelThematicViewHolder.LAYOUT
+        else -> DynamicChannelLegoViewHolder.LAYOUT
     }
 }

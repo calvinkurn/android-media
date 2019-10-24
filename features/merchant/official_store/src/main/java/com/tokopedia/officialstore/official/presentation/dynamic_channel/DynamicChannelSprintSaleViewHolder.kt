@@ -13,17 +13,17 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
-class DynamicChannelLegoViewHolder(
+class DynamicChannelSprintSaleViewHolder(
         private val view: View?
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelViewModel>(view), CountDownView.CountDownListener {
 
     private val columnNum = 3
-    private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_lego_main_container)
+    private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_sprintsale_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
     private val headerActionText = itemView.findViewById<Typography>(R.id.dc_header_action_text)
-    private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_lego_rv)
+    private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_sprintsale_rv)
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
@@ -32,11 +32,24 @@ class DynamicChannelLegoViewHolder(
         }
     }
 
+    override fun onCountDownFinished() {
+
+    }
+
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
-            headerCountDown.visibility = View.GONE
+
+            if (header.expiredTime.isNotEmpty()) {
+                val expiredTime = OfficialStoreDateHelper.getExpiredTime(header.expiredTime)
+                if (OfficialStoreDateHelper.isTimeExpired(header.serverTime, expiredTime)) {
+                    headerCountDown.setup(header.serverTime, expiredTime, this)
+                    headerCountDown.visibility = View.VISIBLE
+                }
+            } else {
+                headerCountDown.visibility = View.GONE
+            }
 
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
@@ -64,7 +77,7 @@ class DynamicChannelLegoViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = LegoListAdapter(view?.context, grids)
+                adapter = SprintSaleListAdapter(view?.context, grids)
             }
         } else {
             mainContainer.visibility = View.GONE
@@ -73,6 +86,6 @@ class DynamicChannelLegoViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.dynamic_channel_lego_main
+        val LAYOUT = R.layout.dynamic_channel_sprintsale_main
     }
 }

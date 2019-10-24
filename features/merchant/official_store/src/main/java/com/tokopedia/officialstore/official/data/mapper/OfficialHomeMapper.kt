@@ -12,6 +12,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Offic
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import timber.log.Timber
 
 class OfficialHomeMapper {
 
@@ -29,10 +30,12 @@ class OfficialHomeMapper {
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
-            if (adapter?.getDataByPosition(1) is OfficialFeaturedShopViewModel) {
+            if (adapter?.getDataByPosition(1) is OfficialFeaturedShopViewModel &&
+                dynamicChannel.channels.isNotEmpty()) {
                 val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
 
                 dynamicChannel.channels.forEach { channel ->
+                    Timber.d(">>> " + channel.layout)
                     views.add(DynamicChannelViewModel(channel))
                 }
 

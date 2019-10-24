@@ -67,7 +67,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 //            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners("test").await()) // for testing only
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-            getOfficialStoreDynamicChannel("")
+            getOfficialStoreDynamicChannel("os-fashion")
             _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "").await())
 
         }) {
@@ -92,7 +92,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             banner
         }
     }
-
 
     private fun getOfficialStoreFeaturedShop(categoryId: String): Deferred<OfficialStoreFeaturedShop>  {
        return async(Dispatchers.IO) {

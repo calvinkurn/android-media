@@ -11,18 +11,18 @@ import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 
-class LegoListAdapter(
+class SprintSaleListAdapter(
         private val ctx: Context?,
         private val listData: MutableList<Grid?>
-) : RecyclerView.Adapter<LegoListAdapter.LegoItemViewHolder>() {
+) : RecyclerView.Adapter<SprintSaleListAdapter.SprintSaleItemViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = LegoItemViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = SprintSaleItemViewHolder(
             LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.dynamic_channel_lego_list_item, parent, false)
+                    .inflate(R.layout.dynamic_channel_sprintsale_list_item, parent, false)
     )
 
-    override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SprintSaleItemViewHolder, position: Int) {
         val itemData = listData[position]
 
         itemData?.let { item ->
@@ -35,9 +35,9 @@ class LegoListAdapter(
 
     override fun getItemCount() = listData.size
 
-    class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class SprintSaleItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: SquareImageView by lazy {
-            view.findViewById<SquareImageView>(R.id.dc_lego_image_item)
+            view.findViewById<SquareImageView>(R.id.dc_sprintsale_item_image)
         }
     }
 }
