@@ -60,6 +60,7 @@ class TopAdsDetailSheet {
             it.txt_tampil.setText(data.statTotalImpression)
             it.txt_terjual.setText(data.statTotalConversion)
             it.toggle_switch_ads.isChecked = data.adId != 0
+            it.txt_active_status.setText(data.adStatusDesc)
             it.toggle_switch_ads.setOnClickListener {
                 when((it as Switch).isChecked){
                     true -> viewModel.postPromo("toggle_on", data.adId, this::onSuccessPost, this::onErrorPost)

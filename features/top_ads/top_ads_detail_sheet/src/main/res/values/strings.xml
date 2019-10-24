@@ -8,7 +8,7 @@
     <string name="klik">Klik</string>
     <string name="terjual">Terjual</string>
     <string name="status">Status</string>
-    <string name="ubah_iklan">Ubah Iklan</string>
+    <string name="detail_iklan">Detail Iklan</string>
     <string name="ke_dashboard_topads">Ke Dashboard TopAds</string>
     <string name="rincian_iklan">Rincian Iklan</string>
 </resources>
