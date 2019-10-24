@@ -25,6 +25,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     protected RecyclerView recyclerView;
     protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
+    private QuickFilterAnalytics quickFilterAnalytics;
 
     public QuickSingleFilterView(@NonNull Context context) {
         super(context);
@@ -43,6 +44,10 @@ public class QuickSingleFilterView extends BaseCustomView {
 
     public void setListener(ActionListener listener) {
         this.listener = listener;
+    }
+
+    public void setquickFilterListener(QuickFilterAnalytics listener) {
+        this.quickFilterAnalytics = listener;
     }
 
     protected void init() {
@@ -106,13 +111,34 @@ public class QuickSingleFilterView extends BaseCustomView {
                     if (indexOf != -1) {
                         items.get(indexOf).setSelected(true);
                         setSelectedFilter(items.get(indexOf).getType());
+                        setSelectedFilterName(getselectedFilterName(items.get(indexOf).getName()));
                     }
                 } else {
-                        setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
+                    setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
+                    String name = "";
+                    if (quickFilterItem.getName() != null) {
+                        name = getselectedFilterName(quickFilterItem.getName());
+                    }
+                    setSelectedFilterName(name);
+
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    private String getselectedFilterName(String filterName) {
+        if (filterName != null && filterName.contains("(")) {
+            int i = filterName.indexOf("(");
+            filterName = filterName.substring(0, i - 1);
+        }
+        return filterName;
+    }
+
+    private void setSelectedFilterName(String name) {
+        if (quickFilterAnalytics != null) {
+            quickFilterAnalytics.setSelectFilterName(name);
+        }
     }
 
     protected String getDefaultSelectedFilterType(QuickFilterItem quickFilterItem) {
@@ -180,5 +206,9 @@ public class QuickSingleFilterView extends BaseCustomView {
     public interface ActionListener {
 
         void selectFilter(String typeFilter);
+    }
+
+    public interface QuickFilterAnalytics{
+        void setSelectFilterName(String selectFilterName);
     }
 }

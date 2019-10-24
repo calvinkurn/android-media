@@ -4,12 +4,9 @@ import android.content.Context
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
-import com.tokopedia.user_identification_common.pojo.KycStatusDetailPojo
-import com.tokopedia.user_identification_common.pojo.KycStatusPojo
+import com.tokopedia.user_identification_common.domain.pojo.GetApprovalStatusPojo
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber
 import junit.framework.Assert
 import org.jetbrains.spek.api.Spek

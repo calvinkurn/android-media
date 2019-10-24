@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationPresenter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 import dagger.Module;
 import dagger.Provides;
