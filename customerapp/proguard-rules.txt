@@ -388,5 +388,6 @@
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
 # -- Unit Test
--dontwarn android.test.**
 -dontwarn junit.framework.**
+-dontwarn android.test.**
+-dontwarn org.mockito.**
