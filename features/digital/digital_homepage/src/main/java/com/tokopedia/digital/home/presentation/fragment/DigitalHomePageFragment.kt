@@ -15,6 +15,7 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
@@ -143,6 +144,23 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             clearAllData()
             it?.run { renderList(this) }
         })
+
+        viewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
+                    override fun onRetryClicked() {
+                        loadDataFromCloud()
+                    }
+                })
+            }
+        })
+    }
+
+    fun loadDataFromCloud() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showLoading()
+        viewModel.getInitialList(true)
     }
 
     override fun loadData(page: Int) {
