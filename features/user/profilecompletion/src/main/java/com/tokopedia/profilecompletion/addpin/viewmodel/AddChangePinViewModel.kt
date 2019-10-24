@@ -254,6 +254,6 @@ class AddChangePinViewModel @Inject constructor(
     }
   
     companion object {
-        const val OTP_TYPE_SKIP_VALIDATION = 125
+        const val OTP_TYPE_SKIP_VALIDATION = 124
     }
 }

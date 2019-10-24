@@ -71,6 +71,8 @@ public interface ShipmentAdapterActionListener {
 
     void onOntimeDeliveryClicked(String url);
 
+    void onImpressionOntimeDelivery(String message);
+
     void onNeedUpdateRequestData();
 
     void onDropshipCheckedForTrackingAnalytics();

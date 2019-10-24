@@ -29,18 +29,6 @@
             app:corners="20"
             app:use_gradient="true" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="@dimen/dp_3"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_3"
-            app:corners="20"
-            app:use_gradient="true" />
-
     </RelativeLayout>
 
     <View

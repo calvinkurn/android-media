@@ -22,7 +22,7 @@ object ApplinkConstInternalMarketplace {
 
     // QrScannerActivity
     @JvmField
-    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner"
+    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
     // IntermediaryActivity
     @JvmField
@@ -84,6 +84,9 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
     // GmSubscribeHomeActivity
     @JvmField

@@ -36,6 +36,7 @@ public interface Constant {
         int GROUPCHAT = 700;
         int REVIEW = 800;
         int CHALLENGES = 2018;
+        int CHAT_BOT = 800;
     }
 
     interface Settings {
@@ -120,6 +121,10 @@ public interface Constant {
 
         //SELLER INFO
          int GCM_SELLER_INFO = 1300;
+    }
+
+    interface Host{
+         String CHATBOT = "chatbot";
     }
 
 }

@@ -32,6 +32,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
+import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -56,6 +57,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private static final String LOG_GROUPCHAT = "log_groupchat";
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
+    private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
@@ -100,6 +102,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             userSession = new UserSession(this);
             setupView();
             initListener();
+            initTranslator();
         } else {
             finish();
         }
@@ -158,9 +161,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vDevOptionRN.setOnClickListener(v ->
                 RouteManager.route(this,
-                ApplinkConst.SETTING_DEVELOPER_OPTIONS
-                        .replace("{type}", RN_DEV_LOGGER)
-        ));
+                        ApplinkConst.SETTING_DEVELOPER_OPTIONS
+                                .replace("{type}", RN_DEV_LOGGER)
+                ));
 
 
         resetOnBoarding.setOnClickListener(v -> {
@@ -172,14 +175,14 @@ public class DeveloperOptionActivity extends BaseActivity {
         testOnBoarding.setOnClickListener(v -> startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"), 789));
 
         SharedPreferences rnSharedPref = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE);
-        if (rnSharedPref.contains(IS_RELEASE_MODE)){
+        if (rnSharedPref.contains(IS_RELEASE_MODE)) {
             boolean stateReleaseMode = rnSharedPref.getBoolean(IS_RELEASE_MODE, false);
             toggleReactDeveloperMode.setChecked(stateReleaseMode);
         }
 
         toggleReactDeveloperMode.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             SharedPreferences.Editor editor = rnSharedPref.edit();
-            if (isChecked){
+            if (isChecked) {
                 Toast.makeText(this, "React Native set to released mode", Toast.LENGTH_SHORT).show();
                 editor.putBoolean(IS_RELEASE_MODE, true).apply();
             } else {
@@ -189,14 +192,14 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
 
         SharedPreferences rnShakeReact = getSharedPreferences(SP_REACT_ENABLE_SHAKE);
-        if (rnShakeReact.contains(IS_ENABLE_SHAKE_REACT)){
+        if (rnShakeReact.contains(IS_ENABLE_SHAKE_REACT)) {
             boolean stateReleaseMode = rnShakeReact.getBoolean(IS_ENABLE_SHAKE_REACT, false);
             toggleReactEnableDeveloperOptions.setChecked(stateReleaseMode);
         }
 
         toggleReactEnableDeveloperOptions.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             SharedPreferences.Editor editor = rnShakeReact.edit();
-            if (isChecked){
+            if (isChecked) {
                 Toast.makeText(this, "RN Dev Options is disabled", Toast.LENGTH_SHORT).show();
                 editor.putBoolean(IS_ENABLE_SHAKE_REACT, true);
                 editor.apply();
@@ -246,12 +249,12 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         groupChatSf = getSharedPreferences(GROUPCHAT_PREF);
 
-        ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT,""));
+        ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT, ""));
         groupChatLogToggle.setChecked(groupChatSf.getBoolean(LOG_GROUPCHAT, false));
 
         Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
-        for(int i = 0; i < Env.values().length; i++) {
-            if(currentEnv == Env.values()[i]) {
+        for (int i = 0; i < Env.values().length; i++) {
+            if (currentEnv == Env.values()[i]) {
                 isUserEditEnvironment = false;
                 spinnerEnvironmentChooser.setSelection(i);
                 break;
@@ -272,7 +275,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         accessTokenView.setText("Access token : " + userSession.getAccessToken());
@@ -295,9 +299,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private void actionSaveIpGroupChat() {
         String ip = ipGroupChat.getText().toString();
         SharedPreferences.Editor editor = groupChatSf.edit();
-        if(TextUtils.isEmpty(ip)){
+        if (TextUtils.isEmpty(ip)) {
             editor.putString(IP_GROUPCHAT, null);
-        }else {
+        } else {
             editor.putString(IP_GROUPCHAT, ip);
         }
         editor.apply();
@@ -319,5 +323,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private SharedPreferences getSharedPreferences(String name) {
         return getSharedPreferences(name, Context.MODE_PRIVATE);
+    }
+
+    private void initTranslator() {
+        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 }
