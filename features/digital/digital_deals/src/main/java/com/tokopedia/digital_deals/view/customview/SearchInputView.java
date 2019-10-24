@@ -52,17 +52,17 @@ public class SearchInputView extends com.tokopedia.design.text.SearchInputView {
     }
 
     @Override
-    protected int getCloseButtonImage() {
+    public int getCloseImageButtonResourceId() {
         return com.tokopedia.digital_deals.R.id.image_button_close;
     }
 
     @Override
-    protected int getImageSearchText() {
+    public int getSearchImageViewResourceId() {
         return com.tokopedia.digital_deals.R.id.image_view_search;
     }
 
     @Override
-    protected int getEditTextSearch() {
+    public int getSearchTextViewResourceId() {
         return com.tokopedia.digital_deals.R.id.edit_text_search;
     }
 }

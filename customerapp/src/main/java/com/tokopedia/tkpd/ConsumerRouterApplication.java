@@ -927,6 +927,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getDealDetailIntent(Activity activity,
+                                      String slug,
+                                      boolean enableBuy,
+                                      boolean enableRecommendation,
+                                      boolean enableShare,
+                                      boolean enableLike) {
+        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        return intent;
+    }
+
+    @Override
     public String getBranchAutoApply(Activity activity) {
         return null;
     }
@@ -1169,12 +1180,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
-    public String getUserEmailProfil() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler.getEmail();
     }
 
     @Override
