@@ -143,7 +143,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override

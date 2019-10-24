@@ -201,9 +201,9 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         }
 
         TextView textTitle = getView().findViewById(R.id.tv_title_banner);
-        TextView textPoint = getView().findViewById(com.tokopedia.design.R.id.point);
-        TextView textEmail = getView().findViewById(com.tokopedia.session.R.id.email);
-        TextView textNotes = getView().findViewById(com.tokopedia.session.R.id.message);
+        TextView textPoint = getView().findViewById(R.id.point);
+        TextView textEmail = getView().findViewById(R.id.email);
+        TextView textNotes = getView().findViewById(R.id.message);
         ImageView imgBanner = getView().findViewById(R.id.iv_banner);
         ImageHandler.loadImage(this.getContext(), imgBanner, getArguments().getString(CommonConstant.EXTRA_COUPON_BANNER), com.tokopedia.design.R.color.grey_100);
 
@@ -249,7 +249,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
 
         if (success == 1) {
-            TextView tvTitle = viewSentSuccess.findViewById(com.tokopedia.design.R.id.tv_title);
+            TextView tvTitle = viewSentSuccess.findViewById(R.id.tv_title);
             TextView tvContent = viewSentSuccess.findViewById(R.id.content);
             TextView btnSuccess = viewSentSuccess.findViewById(R.id.btn_sentSuccess);
 
@@ -261,7 +261,7 @@ public class SendGiftFragment extends BottomSheetDialogFragment implements SendG
             tvContent.setText(message);
             adb.setView(viewSentSuccess);
         } else {
-            TextView tvTitle = viewSentFail.findViewById(com.tokopedia.design.R.id.tv_title);
+            TextView tvTitle = viewSentFail.findViewById(R.id.tv_title);
             TextView tvContent = viewSentFail.findViewById(R.id.content);
             TextView tvRoute = viewSentFail.findViewById(R.id.tv_route);
             TextView btnFailed = viewSentFail.findViewById(R.id.btn_sentFail);
