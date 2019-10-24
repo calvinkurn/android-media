@@ -82,10 +82,12 @@ public class ImageProductListAdapter extends BaseAdapter<ImageProductListTypeFac
     }
 
     private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
-        StaggeredGridLayoutManager.LayoutParams layoutParams =
-                (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
 
-        layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+        }
     }
 
     private boolean isStaggeredGridFullSpan(int viewType) {
