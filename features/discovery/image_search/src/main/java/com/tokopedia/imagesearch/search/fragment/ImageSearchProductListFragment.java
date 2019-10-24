@@ -212,7 +212,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                presenter.loadMoreData(page - 1);
+                presenter.loadMoreData(page);
             }
         };
     }
@@ -315,6 +315,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         if (hasNextPage) {
             adapter.showLoading();
         }
+        staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
     public void reloadData() {
