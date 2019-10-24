@@ -112,7 +112,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners(slug).await())
             _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
-//            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+            //_officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+            // TODO remove this, for testing purpose
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
             _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel(slug).await())
             /**
