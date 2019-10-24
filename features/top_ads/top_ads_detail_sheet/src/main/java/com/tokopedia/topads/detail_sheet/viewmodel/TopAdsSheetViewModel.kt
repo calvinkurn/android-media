@@ -69,12 +69,9 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
         launchCatchError(
                 block = {
                     val result = withContext(Dispatchers.IO) {
-                        val headers = HashMap<String, String>()
-                        headers.put("Content-Type", "application/json")
                         val restRequest = RestRequest.Builder(BASE_REST_URL + PATH_BULK_ACTION_PRODUCT_AD, object : TypeToken<ActionRequest>() {}.type)
                                 .setBody(Gson().toJson(generateActionRequest(action, userSession.shopId, adId.toString())))
-                                .setHeaders(headers)
-                                .setRequestType(RequestType.POST)
+                                .setRequestType(RequestType.PATCH)
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
