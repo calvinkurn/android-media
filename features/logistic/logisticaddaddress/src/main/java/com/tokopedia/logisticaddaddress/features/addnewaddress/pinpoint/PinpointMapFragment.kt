@@ -126,8 +126,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false)
             isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH, false)
             saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
+            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             districtId = saveAddressDataModel?.districtId
         }
     }
