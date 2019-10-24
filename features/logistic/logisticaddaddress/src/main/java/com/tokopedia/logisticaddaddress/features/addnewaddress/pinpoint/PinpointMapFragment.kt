@@ -72,7 +72,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var zipCodes: MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var addNewAddressComponent: AddNewAddressComponent? = null
-    private var isChangesRequested: Boolean? = null
+    private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
 
@@ -126,7 +126,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false)
             isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH, false)
             saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
+            isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             districtId = saveAddressDataModel?.districtId
         }
