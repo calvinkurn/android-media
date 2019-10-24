@@ -11,8 +11,7 @@ import kotlinx.android.synthetic.main.carousel_product_card_item_layout.view.*
 
 internal class CarouselProductCardViewHolder(
         itemView: View,
-        carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
-        private val blankSpaceConfig: BlankSpaceConfig
+        carouselProductCardListenerInfo: CarouselProductCardListenerInfo
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -28,7 +27,7 @@ internal class CarouselProductCardViewHolder(
 
     fun bind(productCardModel: ProductCardModel) {
 
-        itemView.carouselProductCardItem?.setProductModel(productCardModel, blankSpaceConfig)
+        itemView.carouselProductCardItem?.setProductModel(productCardModel)
 
         itemView.carouselProductCardItem?.setOnClickListener {
             onItemClickListener?.onItemClick(productCardModel)

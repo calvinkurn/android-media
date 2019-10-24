@@ -59,18 +59,18 @@ abstract class ProductCardView: BaseCustomView {
     /**
      * View components of a ProductCardView
      */
-    protected var cardViewProductCard: CardView? = null
+    var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
-    protected var imageProduct: SquareImageView? = null
+    var imageProduct: ImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
     protected var textViewShopName: Typography? = null
-    protected var textViewProductName: Typography? = null
-    protected var labelDiscount: Label? = null
-    protected var textViewSlashedPrice: Typography? = null
-    protected var textViewPrice: Typography? = null
-    protected var linearLayoutShopBadges: LinearLayout? = null
-    protected var textViewShopLocation: Typography? = null
+    var textViewProductName: Typography? = null
+    var labelDiscount: Label? = null
+    var textViewSlashedPrice: Typography? = null
+    var textViewPrice: Typography? = null
+    var linearLayoutShopBadges: LinearLayout? = null
+    var textViewShopLocation: Typography? = null
     protected var linearLayoutImageRating: LinearLayout? = null
     protected var imageViewRating1: ImageView? = null
     protected var imageViewRating2: ImageView? = null
