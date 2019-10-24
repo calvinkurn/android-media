@@ -8,4 +8,4 @@ data class GetCouponDetail(
         @SerializedName("minimumUsageLabel") val minimumUsageLabel: String?,
         @SerializedName("minimumUsage") val minimumUsage: String?,
         @SerializedName("icon") val icon: String?,
-        @SerializedName("imageUrl") val imageUrl: String?)
+        @SerializedName("image_url_mobile") val imageUrl: String?)

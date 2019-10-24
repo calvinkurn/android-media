@@ -230,7 +230,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
             //show single/multiple coupon
             val popGratificationBenefits = data.popGratification?.popGratificationBenefits
-            val multipleCoupon = popGratificationBenefits != null && popGratificationBenefits.size > 1 && popGratificationBenefits[0]?.referenceID != null && popGratificationBenefits[0]?.referenceID != 0
+            val multipleCoupon = popGratificationBenefits != null && popGratificationBenefits.isNotEmpty() && popGratificationBenefits[0]?.referenceID != null && popGratificationBenefits[0]?.referenceID != 0
             if (multipleCoupon) {
                 uiType = TargetPromotionsCouponType.MULTIPLE_COUPON
             }
