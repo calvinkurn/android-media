@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,7 +32,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private var tabLayout: TabLayout? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-    private var heightWrappingViewPager: HeightWrappingViewPager? = null
+    private var heightWrappingViewPager: ViewPager? = null
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
@@ -118,16 +119,8 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        return super.onCreateView(inflater, container, savedInstanceState)
-
         val inflatedView = inflater.inflate(getBaseLayoutResourceId(), container, false)
         configView(inflatedView)
-//        dialog.setContentView(inflatedView)
-
-//        val parent = inflatedView.getParent() as View
-//        parent.fitsSystemWindows = true
-//        bottomSheetBehavior = BottomSheetBehavior.from(parent)
-
         inflatedView.measure(0, 0)
         val height = inflatedView.measuredHeight
 

@@ -2,12 +2,12 @@ package com.tokopedia.product.detail.view.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
 import java.util.*
 
-class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     private var searchSectionItemList: List<FtInstallmentListItem> = ArrayList()
     private var mCurrentPosition: Int = 0
