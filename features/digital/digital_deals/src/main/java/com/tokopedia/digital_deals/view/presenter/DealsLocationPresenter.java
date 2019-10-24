@@ -104,7 +104,11 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
-                getView().setCurrentLocation(locationResponse);
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().setCurrentLocation(locationResponse);
+                } else {
+                    getView().setDefaultLocation();
+                }
             }
         });
     }

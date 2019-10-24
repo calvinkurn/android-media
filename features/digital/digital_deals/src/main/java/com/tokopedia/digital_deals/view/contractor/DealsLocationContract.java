@@ -29,6 +29,8 @@ public class DealsLocationContract {
         void showProgressBar(boolean showProgressBar);
 
         void setCurrentLocation(LocationResponse locationResponse);
+
+        void setDefaultLocation();
     }
 
     public interface Presenter extends CustomerPresenter<DealsLocationContract.View> {

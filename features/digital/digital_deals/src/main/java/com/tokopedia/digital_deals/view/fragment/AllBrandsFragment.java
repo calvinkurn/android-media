@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +38,7 @@ import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -121,6 +123,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             throw new ClassCastException(activity.toString() + "must implement Update Location Interface");
         }
 
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toaster.INSTANCE.showNormalWithAction(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+        });
     }
 
     public void getLocations(String selectedLocation) {

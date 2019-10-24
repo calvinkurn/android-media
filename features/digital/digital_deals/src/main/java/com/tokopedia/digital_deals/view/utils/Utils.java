@@ -441,19 +441,15 @@ public class Utils {
     }
 
     public void  saveLocation(Context context, double latitude, double longitude) {
-        SharedPreferences.Editor editor;
-        if (context != null && !TextUtils.isEmpty(Utils.KEY_LOCATION)) {
-            sharedPrefs = context.getSharedPreferences(Utils.KEY_LOCATION, Context.MODE_PRIVATE);
-            editor = sharedPrefs.edit();
-        } else {
-            return;
-        }
-        Log.d("Naveen", "Lat is "+ String.valueOf(latitude));
-        Log.d("Naveen", "Long is "+ String.valueOf(longitude));
-
+        Log.d("Naveen", "Lat is in utils"+ String.valueOf(latitude));
+        Log.d("Naveen", "Long is utils"+ String.valueOf(longitude));
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,TkpdCache.DEALS_LOCATION);
         localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(latitude));
         localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(longitude));
         localCacheHandler.applyEditor();
+    }
+
+    public String getLocationErrorMessage(Context context) {
+        return context.getResources().getString(R.string.location_error_message);
     }
 }

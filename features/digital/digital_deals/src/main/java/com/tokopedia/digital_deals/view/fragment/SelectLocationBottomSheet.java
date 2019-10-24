@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.RequestParams;
 
@@ -173,6 +175,14 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
             selectedLocationListener.onLocationItemUpdated(true);
             getFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    public void setDefaultLocation() {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+        });
+        selectedLocationListener.onLocationItemUpdated(true);
+        getFragmentManager().popBackStack();
     }
 
     @Override
@@ -362,6 +372,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
         openLocationSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isDeniedFirstTime = false;
+                locationSettingBottomSheet.dismiss();
                 final Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
                 intent.setData(uri);

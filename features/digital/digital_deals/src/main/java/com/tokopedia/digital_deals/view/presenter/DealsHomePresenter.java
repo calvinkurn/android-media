@@ -663,6 +663,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 if (locationResponse != null && locationResponse.getLocations() != null) {
                     getView().updateInitialLocation(locationResponse.getLocations());
                 } else {
+                    getView().showErrorMessage();
                     getView().setDefaultLocation();
                 }
             }

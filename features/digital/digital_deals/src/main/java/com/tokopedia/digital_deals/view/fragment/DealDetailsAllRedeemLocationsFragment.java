@@ -87,7 +87,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         searchInputView = view.findViewById(R.id.search_input_view);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals_outlets));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(),R.drawable.ic_search_deal));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(), R.drawable.ic_search_deal));
         searchInputView.setListener(this);
         if (getActivity() instanceof CheckoutActivity) {
             appBarLayout.setVisibility(View.GONE);
@@ -129,7 +129,8 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         if (!TextUtils.isEmpty(text) && fragmentCallbacks.getOutlets() != null) {
             outlets.clear();
             for (Outlet outlet : fragmentCallbacks.getOutlets()) {
-                if (!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
+                if ((!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) ||
+                        (!TextUtils.isEmpty(outlet.getDistrict()) && outlet.getDistrict().trim().toLowerCase().contains(text.trim().toLowerCase()))) {
                     outlets.add(outlet);
                 }
             }

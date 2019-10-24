@@ -414,7 +414,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 if (locationResponse != null && locationResponse.getLocations() != null) {
                     getView().setCurrentLocation(locationResponse.getLocations());
                 } else {
-
+                    getView().showErrorMessage();
+                    getCategoryDetails(true);
+                    getBrandsList(true);
                 }
             }
         });

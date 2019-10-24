@@ -287,6 +287,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
                 if (locationResponse != null && locationResponse.getLocations() != null) {
                     getView().setCurrentLocation(locationResponse.getLocations());
                 } else {
+                    getView().showErrorMessage();
                     getAllBrands();
                 }
             }

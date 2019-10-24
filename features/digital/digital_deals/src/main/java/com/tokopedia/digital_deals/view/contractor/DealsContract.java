@@ -75,6 +75,8 @@ public class DealsContract {
         void updateInitialLocation(List<Location> locations);
 
         void setDefaultLocation();
+
+        void showErrorMessage();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
