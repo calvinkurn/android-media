@@ -15,7 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.banner.Indicator;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.ArrayList;

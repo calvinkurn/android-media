@@ -93,7 +93,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -332,7 +331,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PdpRouter,
         IPaymentModuleRouter,
         TransactionRouter,
-        IReactNativeRouter,
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
@@ -1012,28 +1010,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendAddWishlistEmitter(String productId, String userId) {
-        reactUtils.sendAddWishlistEmitter(productId, userId);
-    }
-
-    @Override
-    public void sendRemoveWishlistEmitter(String productId, String userId) {
-        reactUtils.sendRemoveWishlistEmitter(productId, userId);
-    }
-
-    @Override
-    public void sendRemoveFavoriteEmitter(String shopId, String userId) {
-        reactUtils.sendRemoveFavoriteEmitter(shopId, userId);
-    }
-
-    @Override
     public void sendLoginEmitter(String userId) {
         reactUtils.sendLoginEmitter(userId);
-    }
-
-    @Override
-    public void sendAddFavoriteEmitter(String shopId, String userId) {
-        reactUtils.sendAddFavoriteEmitter(shopId, userId);
     }
 
     private ReactNativeComponent getReactNativeComponent() {
