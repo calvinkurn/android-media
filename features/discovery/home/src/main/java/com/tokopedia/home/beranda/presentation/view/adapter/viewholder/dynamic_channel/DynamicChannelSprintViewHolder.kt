@@ -22,6 +22,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -61,6 +62,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         if(channel.header.backImage.isNotBlank()) {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
+            backgroundThematic.show()
             seeAllButton.show()
             seeAllButtonText.hide()
             seeAllButton.setOnClickListener {
@@ -72,11 +74,11 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
             Glide.with(context)
                     .load(channel.header.backImage)
-                    .override(200, 200)
                     .into(backgroundThematic);
         }else {
             seeAllButton.hide()
             seeAllButtonText.show()
+            backgroundThematic.hide()
         }
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
@@ -89,14 +91,15 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
 
-        recyclerView.adapter = SprintAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView)
+        recyclerView.adapter = SprintAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView, channel.showPromoBadge)
     }
 
     class SprintAdapter(private val context: Context,
                              private val listener: HomeCategoryListener,
                              private val channels: DynamicHomeChannel.Channels,
                              private val sprintType: Int,
-                             private val countDownView: CountDownView) : RecyclerView.Adapter<SprintViewHolder>() {
+                             private val countDownView: CountDownView,
+                             private val isFreeOngkir: Boolean) : RecyclerView.Adapter<SprintViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SprintViewHolder {
@@ -107,22 +110,18 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: SprintViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                holder.thematicCardView.apply {
-                    setImageProductVisible(true)
-                    setPriceVisible(true)
-                    setSlashedPriceVisible(true)
-                    setLabelDiscountVisible(true)
-                    setLabelPromoVisible(grid.cashback.isNotEmpty())
-                    setImageProductUrl(grid.imageUrl)
-                    setProductNameText(grid.name)
-                    setPriceText(grid.price)
-                    setLabelDiscountText(grid.discount)
-                    setSlashedPriceText(grid.slashedPrice)
-                    setLabelPromoText(grid.cashback)
-                    setLabelPromoType(ThematicCardView.LIGHT_RED)
+                holder.thematicCardView.run {
+                    initProductImage(grid.imageUrl)
+                    initProductName(grid.name)
+                    initProductPrice(grid.price)
+                    initLabelDiscount(grid.discount)
+                    initSlashedPrice(grid.slashedPrice)
+                    initLabelPromo(grid.cashback, ThematicCardView.LIGHT_RED)
+                    setBlankSpaceConfig(BlankSpaceConfig(freeOngkir = isFreeOngkir))
+                    initFreeOngkir(grid.freeOngkir.isActive, grid.freeOngkir.imageUrl)
                     setOnClickListener {
                         HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown))
+                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown, grid.freeOngkir.isActive))
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
                 }

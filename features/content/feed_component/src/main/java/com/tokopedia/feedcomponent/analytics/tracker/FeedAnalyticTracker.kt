@@ -1,13 +1,15 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.HashMap
+import kotlin.collections.List
 
 /**
  * Created by jegul on 2019-08-28.
@@ -21,17 +23,21 @@ class FeedAnalyticTracker
     private companion object {
         private const val USER_ID = "user_id"
         const val ECOMMERCE = "ecommerce"
+        const val DATA = "data"
         const val PRODUCTS = "products"
+        const val ACTION_FIELD = "actionField"
 
         const val PROMOTIONS = "promotions"
-        public val CURRENCY_CODE = "currencyCode"
-        public val CURRENCY_CODE_IDR = "IDR"
+        const val LIST = "list"
+        const val CURRENCY_CODE = "currencyCode"
+        const val CURRENCY_CODE_IDR = "IDR"
     }
 
     private object Event {
         const val CLICK_FEED = "clickFeed"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
+        const val ADD_TO_CART = "addToCart"
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
@@ -39,7 +45,7 @@ class FeedAnalyticTracker
         const val PRODUCT_VIEW = "productView"
         const val ECOMMERCE = "ecommerce"
         const val ACTION_FIELD = "actionField"
-        const val LIST = "list"
+
         const val ADD = "add"
     }
 
@@ -53,6 +59,8 @@ class FeedAnalyticTracker
 
         const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
+
+        const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
@@ -81,13 +89,25 @@ class FeedAnalyticTracker
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
+
+        object Field {
+            object List {
+                const val POSTED_PRODUCT = "produk di post"
+                const val USER_PROFILE_PAGE_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
+                const val USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE_DETAIL} - $POSTED_PRODUCT"
+                const val FEED_POSTED_PRODUCT = "${Screen.FEED} - $POSTED_PRODUCT"
+            }
+        }
     }
 
     object Screen {
-        const val MEDIA_PREVIEW = "/feed/media-preview"
-        const val TRENDING = "/feed/trending-tab"
-        const val HASHTAG = "/feed/hashtag"
+        const val FEED = "/feed"
+        const val MEDIA_PREVIEW = "$FEED/media-preview"
+        const val TRENDING = "$FEED/trending-tab"
+        const val HASHTAG = "$FEED/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
+        const val USER_PROFILE_PAGE = "/user profile page"
+        const val USER_PROFILE_PAGE_DETAIL = "$USER_PROFILE_PAGE detail"
         const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
         const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
     }
@@ -98,6 +118,7 @@ class FeedAnalyticTracker
         const val CREATIVE = "creative"
         const val POSITION = "position"
     }
+
     private object Product {
         const val ID = "id"
         const val NAME = "name"
@@ -126,9 +147,6 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
     }
-
-
-    private val REGEX_NUMERIC = "[^\\d]"
 
     /**
      *
@@ -210,16 +228,16 @@ class FeedAnalyticTracker
      * Screenshot 19
      *
      */
-    fun eventViewContentRecommendation(activityId: String, position: Int, authorType: String) {
+    fun eventViewContentRecommendation(userId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
                 Event.PROMO_VIEW,
                 Category.CONTENT_INTEREST_PICK,
                 Action.IMPRESSION_CONTENT_RECOM,
-                activityId,
+                userId,
                 getPromoViewData(
                         getPromotionsData(
                                 listOf(getPromotionData(
-                                        activityId,
+                                        userId,
                                         ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
                                         userSessionInterface.name,
                                         position))
@@ -331,6 +349,7 @@ class FeedAnalyticTracker
                 Action.CLICK_AVATAR,
                 activityId)
     }
+
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -345,6 +364,7 @@ class FeedAnalyticTracker
                 Action.CLICK_SEE,
                 activityId)
     }
+
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -352,7 +372,7 @@ class FeedAnalyticTracker
      *
      * @param productId - productId
      */
-    fun eventMediaDetailClickBuy(role:String,
+    fun eventMediaDetailClickBuy(role: String,
                                  productId: String,
                                  productName: String,
                                  price: String,
@@ -370,17 +390,17 @@ class FeedAnalyticTracker
                 productId,
                 DataLayer.mapOf(
                         Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                        Event.ADD, getAddData(
-                            role,
-                            getProductsData(listOf(
-                                    getProductData(
-                                            productId,
-                                            productName,
-                                            formatPriceToInt(price),
-                                            quantity,
-                                            shopId,
-                                            shopName)))
-                        )
+                        Event.ADD, getMediaPreviewAddData(
+                        role,
+                        getProductsDataList(listOf(
+                                getProductData(
+                                        productId,
+                                        productName,
+                                        price.getDigits().toZeroIfNull(),
+                                        quantity,
+                                        shopId,
+                                        shopName)))
+                )
                 )
         )
     }
@@ -593,10 +613,10 @@ class FeedAnalyticTracker
      */
     fun eventHashtagPageClickNameAvatar(id: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
-            Category.CONTENT_HASHTAG,
-            Action.CLICK_AVATAR,
-            id
+                Event.CLICK_FEED,
+                Category.CONTENT_HASHTAG,
+                Action.CLICK_AVATAR,
+                id
         )
     }
 
@@ -634,6 +654,100 @@ class FeedAnalyticTracker
      */
     fun eventOpenHashtagScreen() {
         trackOpenScreenEvent(Screen.HASHTAG)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=53652256
+     *
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
+     */
+    fun eventProfileAddToCart(productId: String,
+                              productName: String,
+                              price: String,
+                              quantity: Int,
+                              shopId: Int,
+                              shopName: String) {
+
+        eventAddToCart(
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                Action.Field.List.USER_PROFILE_PAGE_POSTED_PRODUCT,
+                productId,
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     *
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
+     * @param author - type of the post author (usually user or shop)
+     */
+    fun eventFeedAddToCart(productId: String,
+                           productName: String,
+                           price: String,
+                           quantity: Int,
+                           shopId: Int,
+                           shopName: String,
+                           author: String) {
+
+        eventAddToCart(
+                Category.CONTENT_FEED_TIMELINE,
+                "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
+                productId,
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
+     *
+     * @param productId - id of the product
+     * @param productName - name of the product
+     * @param price - price of the product
+     * @param quantity - quantity of the product (usually 1)
+     * @param shopId - id of the shop owner
+     * @param shopName - name of the shop owner (usually "")
+     * @param author - type of the post author (usually user or shop)
+     */
+    fun eventContentDetailAddToCart(productId: String,
+                                    productName: String,
+                                    price: String,
+                                    quantity: Int,
+                                    shopId: Int,
+                                    shopName: String,
+                                    author: String) {
+
+        eventAddToCart(
+                Category.CONTENT_DETAIL,
+                "${Action.Field.List.USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT} - $author",
+                productId,
+                productName,
+                price,
+                quantity,
+                shopId,
+                shopName
+        )
     }
 
     /**
@@ -693,6 +807,44 @@ class FeedAnalyticTracker
     }
 
     /**
+     * Base track addToCart
+     */
+
+    private fun eventAddToCart(
+            eventCategory: String,
+            actionField: String,
+            productId: String,
+            productName: String,
+            price: String,
+            quantity: Int,
+            shopId: Int,
+            shopName: String
+    ) {
+        trackEnhancedEcommerceEvent(
+                Event.ADD_TO_CART,
+                eventCategory,
+                Action.CLICK_BUY,
+                productId,
+                eCommerceData = getCurrencyData() +
+                        getAddData(
+                                getActionFieldData(getListData(actionField)) +
+                                        getProductsData(
+                                                listOf(
+                                                        getProductData(
+                                                                productId,
+                                                                productName,
+                                                                price.getDigits().toZeroIfNull(),
+                                                                quantity,
+                                                                shopId,
+                                                                shopName
+                                                        )
+                                                )
+                                        )
+                        )
+        )
+    }
+
+    /**
      * Base tracker function
      */
     private fun trackGeneralEvent(
@@ -739,7 +891,7 @@ class FeedAnalyticTracker
             EVENT_CATEGORY, eventCategory,
             EVENT_ACTION, eventAction,
             EVENT_LABEL, eventLabel,
-            USER_ID,  userSessionInterface.userId
+            USER_ID, userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
@@ -758,25 +910,36 @@ class FeedAnalyticTracker
             creative: String,
             position: Int
     ): Map<String, Any> = DataLayer.mapOf(
-        Promotion.ID, id,
-        Promotion.NAME, name,
-        Promotion.CREATIVE, creative,
-        Promotion.POSITION, position
+            Promotion.ID, id,
+            Promotion.NAME, name,
+            Promotion.CREATIVE, creative,
+            Promotion.POSITION, position
     )
 
+    private fun getAddData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.ADD, data)
 
-    private fun getAddData(
+    private fun getActionFieldData(data: Any): Map<String, Any> = DataLayer.mapOf(ACTION_FIELD, data)
+
+    private fun getListData(data: Any): Map<String, Any> = DataLayer.mapOf(LIST, data)
+
+    private fun getCurrencyData(): Map<String, Any> = DataLayer.mapOf(Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR)
+
+    private fun getMediaPreviewAddData(
             role: String,
             productDataList: List<Any>
-    ): Map<String, Any> =  DataLayer.mapOf(
-            Event.ACTION_FIELD, getActionFieldData(role),
+    ): Map<String, Any> = DataLayer.mapOf(
+            Event.ACTION_FIELD, getMediaPreviewActionFieldData(role),
             PRODUCTS, productDataList
-            )
+    )
 
-    private fun getActionFieldData(role: String
-    ): Map<String, Any> = DataLayer.mapOf(Event.LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG,role))
+    private fun getMediaPreviewActionFieldData(role: String
+    ): Map<String, Any> = DataLayer.mapOf(LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG, role))
 
     private fun getProductsData(
+            productDataList: List<Any>
+    ): Map<String, Any> = DataLayer.mapOf(PRODUCTS, productDataList)
+
+    private fun getProductsDataList(
             productDataList: List<Any>
     ): List<Any> = DataLayer.listOf(productDataList)
 
@@ -795,15 +958,6 @@ class FeedAnalyticTracker
             Product.SHOP_ID, shopId,
             Product.SHOP_NAME, shopName
     )
-    private fun formatPriceToInt(price: String): Int {
-        var result = 0
-        try {
-            var rex = Regex(REGEX_NUMERIC)
-            result = rex.replace(price, "").toInt()
-        } catch (e: Exception) {
-        }
-        return result
-    }
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
         return DataLayer.mapOf(CURRENCY_CODE, CURRENCY_CODE_IDR,
@@ -886,6 +1040,4 @@ class FeedAnalyticTracker
             this.position = position
         }
     }
-
-
 }

@@ -16,6 +16,8 @@
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_user_identification_info">/user-identification-info</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
+
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_add_email">/add-email</string>
@@ -28,7 +30,10 @@
     <string name="path_add_bod">/add-bod</string>
     <string name="path_add_pin">/add-pin</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
+    <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
+    <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
 
 </resources>

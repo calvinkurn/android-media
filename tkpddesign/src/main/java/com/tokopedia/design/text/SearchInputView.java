@@ -107,9 +107,9 @@ public class SearchInputView extends BaseCustomView {
 
     protected void init() {
         view = inflate(getContext(), getLayout(), this);
-        searchImageView = (ImageView) view.findViewById(getImageSearchText());
-        searchTextView = (EditText) view.findViewById(getEditTextSearch());
-        closeImageButton = (ImageButton) view.findViewById(getCloseButtonImage());
+        searchImageView = (ImageView) view.findViewById(getSearchImageViewResourceId());
+        searchTextView = (EditText) view.findViewById(getSearchTextViewResourceId());
+        closeImageButton = (ImageButton) view.findViewById(getCloseImageButtonResourceId());
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
 
         if (searchDrawable != null) {
@@ -154,15 +154,15 @@ public class SearchInputView extends BaseCustomView {
         });
     }
 
-    protected int getImageSearchText() {
+    public int getSearchImageViewResourceId() {
         return R.id.image_view_search;
     }
 
-    protected int getEditTextSearch() {
+    public int getSearchTextViewResourceId() {
         return R.id.edit_text_search;
     }
 
-    protected int getCloseButtonImage() {
+    public int getCloseImageButtonResourceId() {
         return R.id.image_button_close;
     }
 

@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
@@ -78,14 +77,8 @@ public class ShopModule {
 
     @HomeScope
     @Provides
-    public ShopCommonWSApi provideShopCommonWsApi(@ShopWSQualifier Retrofit retrofit) {
-        return retrofit.create(ShopCommonWSApi.class);
-    }
-
-    @HomeScope
-    @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, ShopCommonWSApi shopCommonWS4Api, UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, UserSessionInterface userSession) {
+        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
     }
 
     @HomeScope
