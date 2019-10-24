@@ -14,30 +14,8 @@ class ProductRecommendationViewModel(
         val listener: RecommendationListener
 ) : Visitable<OfficialHomeAdapterTypeFactory> {
 
-    private val adapter: OfficialHomeAdapter by lazy {
-        OfficialHomeAdapter(fact)
-    }
-
-    private val fact: OfficialHomeAdapterTypeFactory by lazy {
-        OfficialHomeAdapterTypeFactory(listener)
-    }
-
     override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
         return adapterTypeFactory.type(this)
     }
 
-    fun getProductRecommendationList() {
-        Log.d("products: ", productItem.toString())
-    }
-
-//    fun updateWishlist(position: Int, isAddWishlist: Boolean) {
-//        if (adapter.getDataByPosition(position) is ProductRecommendationViewModel) {
-//            (adapter.getDataByPosition(position) as ProductRecommendationViewModel).productItem.isWishlist = isAddWishlist
-//            adapter.notifyItemChanged(position)
-//        }
-//    }
-
-    companion object {
-        val LAYOUT = R.layout.viewmodel_product_recommendation_item
-    }
 }

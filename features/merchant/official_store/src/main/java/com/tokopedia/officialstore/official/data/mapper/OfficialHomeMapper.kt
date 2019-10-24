@@ -4,10 +4,7 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.DynamicChannelViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
@@ -31,6 +28,11 @@ class OfficialHomeMapper {
                 adapter.addElement(2, DynamicChannelViewModel(dynamicChannel.channels))
                 adapter.notifyItemInserted(2)
             }
+        }
+
+        fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
+            adapter?.addElement(ProductRecommendationTitleViewModel("Test title"))
+            adapter?.notifyItemInserted(adapter.lastIndex)
         }
 
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {

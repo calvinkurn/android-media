@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.analytics.OfficialStoreProductRecommendationTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -31,6 +32,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -39,9 +41,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     companion object {
 
         const val DEFAULT_PAGE = 1
-        const val GRID_SPAN_COUNT = 1
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
+        var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
@@ -63,6 +65,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
+    private lateinit var trackingQueue: TrackingQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +79,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         recyclerView = view.findViewById(R.id.recycler_view)
 
+        context?.let {
+            trackingQueue = TrackingQueue(it)
+        }
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
         endlesScrollListener = getEndlessRecyclerViewScrollListener()
@@ -90,7 +96,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                // Load more product recom
+                adapter?.showLoading()
                 viewModel.loadMore(category, page)
             }
         }
@@ -158,9 +164,12 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+                    adapter?.hideLoading()
+                    endlesScrollListener?.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
+                    OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
                     OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
-                    hideLoadMoreLoading()
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG) {
@@ -217,19 +226,6 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
 
     }
 
-    private fun loadDataProduct() {
-        // Get Product Recommendation
-
-    }
-
-    private fun onErrorGetRecommendation(errorMessage: String?) {
-        // Show error
-    }
-
-    private fun hideLoadMoreLoading() {
-        endlesScrollListener?.updateStateAfterGetData()
-    }
-
     override fun getScreenName(): String {
         return ""
     }
@@ -267,14 +263,24 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
+        eventTrackerClickListener(item, position)
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
+    private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
+        OfficialStoreProductRecommendationTracking.eventClickProductRecommendation(
+                item,
+                position.toString(),
+                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.isLoggedIn(),
+                category?.title.toString()
+        )
+    }
+
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        // TO_DO: Implement tracking
         lastClickLayoutType = layoutType
         if (position.size > 1) {
             lastParentPosition = position[0]
@@ -294,8 +300,14 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        // TO_DO: Implement Product Impression
-        Log.d("Test: ", "onProductImpression")
+        OfficialStoreProductRecommendationTracking.eventImpressionProductRecommendation(
+                item,
+                viewModel.isLoggedIn(),
+                category?.title.toString(),
+                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                item.position.toString(),
+                trackingQueue
+        )
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
