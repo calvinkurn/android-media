@@ -38,7 +38,7 @@ class ViewHolderDataMapper @Inject constructor() {
                     originData.pricePlan,
                     it.errorMessageTitle,
                     originData.isWishlisted,
-                    it.errorMessageDescription,
+                    it.warningMessageTitle,
                     it.similarProductData,
                     showDivider,
                     it

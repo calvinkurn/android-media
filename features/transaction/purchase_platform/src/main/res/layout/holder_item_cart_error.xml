@@ -51,13 +51,13 @@
         android:alpha="0.5"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_product_card"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price"
@@ -65,30 +65,30 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:alpha="0.5"
-        android:text="Rp 200.000.000.000.000.000"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/price_label"
         app:layout_constraintEnd_toEndOf="@id/tv_product_name"
         app:layout_constraintStart_toStartOf="@id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@id/tv_product_name"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="Rp 200.000.000.000.000.000" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_message"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@id/iv_product_card"
-        app:layout_constraintStart_toStartOf="@id/iv_product_card"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
+        android:visibility="visible"
+        app:closeButtonVisibility="gone"
         app:descriptionText="Barang mengandung nikotin atau tembakau tidak dapat dibeli di aplikasi Android"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
+        app:layout_constraintStart_toStartOf="@id/iv_product_card"
+        app:layout_constraintTop_toBottomOf="@id/iv_product_card"
         app:tickerShapeType="full"
         app:tickerType="warning"
-        app:closeButtonVisibility="gone"
-        android:visibility="visible"
-        tools:layout_height="@dimen/dp_56"/>
+        tools:layout_height="@dimen/dp_56" />
 
     <ImageView
         android:id="@+id/img_wishlist"
@@ -142,13 +142,13 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:text="Lihat Produk Serupa"
         android:textColor="@color/unify_G500"
         app:layout_constraintBottom_toBottomOf="@id/v_divider_delete_similar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/v_divider_delete_similar"
         app:typographyType="heading_5"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Lihat Produk Serupa" />
 
     <Space
         android:id="@+id/space"
@@ -184,7 +184,7 @@
         android:id="@+id/group_similar_product_on_cart_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         app:constraint_referenced_ids="v_divider_delete_similar,tv_similar_product_on_cart_error" />
 
     <android.support.constraint.Group
