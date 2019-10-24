@@ -10,7 +10,7 @@ import com.tokopedia.fcmcommon.di.FcmModule
 import java.lang.Exception
 import javax.inject.Inject
 
-class SyncFcmTokenService: Service() {
+class SyncFcmTokenService: Service(), FirebaseMessagingManager.SyncListener {
 
     @Inject
     lateinit var fcmManager: FirebaseMessagingManager
@@ -24,16 +24,16 @@ class SyncFcmTokenService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        fcmManager.syncFcmToken(object : FirebaseMessagingManager.SyncListener {
-            override fun onSuccess() {
-                stopSelf()
-            }
-
-            override fun onError(exception: Exception?) {
-                stopSelf()
-            }
-        })
+        fcmManager.syncFcmToken(this)
         return START_NOT_STICKY
+    }
+
+    override fun onSuccess() {
+        stopSelf()
+    }
+
+    override fun onError(exception: Exception?) {
+        stopSelf()
     }
 
     override fun onDestroy() {
