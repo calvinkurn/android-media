@@ -49,12 +49,12 @@ class PinCompleteFragment: BaseDaggerFragment() {
     private fun initViews(){
         when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
             SOURCE_CHANGE_PIN -> {
-                titleComplete.text = getString(R.string.pin_change_success_message)
+                titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.title_change_pin))
             }
             SOURCE_FORGOT_PIN -> {
-                titleComplete.text = getString(R.string.pin_change_success_message)
-                setToolbarTitle(resources.getString(R.string.title_setting_pin))
+                titleComplete.text = getString(R.string.change_pin_success)
+                setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
             }
         }
     }

@@ -310,9 +310,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private void showAddPhoneDialog(){
         if(getActivity() != null) {
             DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
-            dialog.setTitle(getString(R.string.add_phone_title));
-            dialog.setDescription(getString(R.string.add_phone_message));
-            dialog.setPrimaryCTAText(getString(R.string.add_phone_title));
+            dialog.setTitle(getString(R.string.account_home_add_phone_title));
+            dialog.setDescription(getString(R.string.account_home_add_phone_message));
+            dialog.setPrimaryCTAText(getString(R.string.account_home_add_phone_title));
             dialog.setSecondaryCTAText(getString(R.string.cancel));
 
             dialog.setPrimaryCTAClickListener(() -> {

@@ -92,7 +92,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun initViews(){
         toggleForgotText(true)
-        inputPin.addTextChangedListener(object: TextWatcher {
+        changePinInput.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -123,8 +123,8 @@ class ChangePinFragment : BaseDaggerFragment() {
             if(isForgotPin) goToVerificationActivity()
             else addChangePinViewModel.changePin(pin, input, oldPin)
         }else{
-            inputPin.setText("")
-            inputPin.focus()
+            changePinInput.setText("")
+            changePinInput.focus()
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
     }
@@ -158,51 +158,51 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun showLoading() {
         mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        changePinProgressBar.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
         mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        changePinProgressBar.visibility = View.GONE
     }
 
     private fun konfirmasiState(){
         resetInputPin()
         isConfirm = true
-        title.text = getString(R.string.confirm_create_pin)
-        subtitle.text = getString(R.string.subtitle_confirm_create_pin)
+        changePinTitle.text = getString(R.string.confirm_create_pin)
+        changePinSubtitle.text = getString(R.string.subtitle_confirm_create_pin)
         toggleForgotText(false)
     }
 
     private fun forgotPinState(){
         isForgotPin = true
         inputNewPinState()
-        if(activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = resources.getString(R.string.title_setting_pin)
+        if(activity is ChangePinActivity) (activity as ChangePinActivity).supportActionBar?.title = resources.getString(R.string.change_pin_title_setting)
     }
 
     private fun inputNewPinState(){
         inputNewPin = true
         resetInputPin()
-        title.text = getString(R.string.title_new_pin)
-        subtitle.text = getString(R.string.subtitle_input_new_pin)
+        changePinTitle.text = getString(R.string.change_pin_title_new_pin)
+        changePinSubtitle.text = getString(R.string.change_pin_subtitle_new_pin)
         toggleForgotText(false)
     }
 
     private fun resetInputPin(){
         hideErrorPin()
-        inputPin.setText("")
+        changePinInput.setText("")
     }
 
     private fun toggleForgotText(isForgot: Boolean){
         if(isForgot){
-            forgot_pin.apply {
-                text = getString(R.string.forgot_pin_text)
+            changePinForgotBtn.apply {
+                text = getString(R.string.change_pin_forgot_btn)
                 setTextColor(resources.getColor(R.color.Green_G500))
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }
         }else {
-            forgot_pin.apply {
+            changePinForgotBtn.apply {
                 text = getString(R.string.change_pin_avoid_info)
                 setTextColor(resources.getColor(R.color.Neutral_N700_44))
                 isEnabled = false
@@ -214,13 +214,13 @@ class ChangePinFragment : BaseDaggerFragment() {
         dismissLoading()
         if(checkPinData.valid){
             if(inputNewPin) {
-                pin = inputPin.text.toString()
+                pin = changePinInput.text.toString()
                 inputNewPin = false
                 konfirmasiState()
             }
             else inputNewPinState()
         }else  {
-            inputPin.setText("")
+            changePinInput.setText("")
             displayErrorPin(checkPinData.errorMessage)
         }
     }
@@ -244,17 +244,17 @@ class ChangePinFragment : BaseDaggerFragment() {
             val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
-        inputPin.focus()
+        changePinInput.focus()
     }
 
     private fun onSuccessValidatePin(data: ValidatePinData){
         isValidated = data.valid
-        oldPin = inputPin.text.toString()
+        oldPin = changePinInput.text.toString()
         if(data.valid){
             inputNewPinState()
         }else{
             resetInputPin()
-            inputPin.focus()
+            changePinInput.focus()
             displayErrorPin(data.errorMessage)
         }
     }
