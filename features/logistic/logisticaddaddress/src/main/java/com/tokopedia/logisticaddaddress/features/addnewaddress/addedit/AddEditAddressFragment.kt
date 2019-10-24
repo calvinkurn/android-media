@@ -129,9 +129,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (arguments != null) {
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            val tempToken : com.tokopedia.logisticaddaddress.domain.model.Token? = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-
-            token = TokenMapper().convertTokenModel(tempToken)
+            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
             isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
             isLatitudeNotEmpty?.let {
                 if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
@@ -1021,8 +1019,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean,
                                      isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
-            val tempToken = TokenMapper().reverseTokenModel(token)
-            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, tempToken, isPolygon,
+            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
                     isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }

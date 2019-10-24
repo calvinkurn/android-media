@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
@@ -483,9 +482,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
@@ -502,9 +500,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 

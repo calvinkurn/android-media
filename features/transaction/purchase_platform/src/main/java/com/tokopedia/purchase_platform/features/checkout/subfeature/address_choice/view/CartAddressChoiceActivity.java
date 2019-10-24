@@ -15,7 +15,6 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_add
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
@@ -155,9 +154,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
