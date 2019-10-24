@@ -31,6 +31,12 @@ class HotlistParamBuilder {
     val FILTER = "filter"
     val KEY_TEMPLATE_ID = "template_id"
 
+    enum class HotListType(public val value: String) {
+        CURATED("Curated"),
+        URL("Url"),
+        KEYWORD("Keyword")
+    }
+
     fun getHotlistDetailParams(productKey: String): RequestParams {
         val requestParam = RequestParams.create()
         requestParam.putString(PARAM_PRODUCT_KEY, productKey)

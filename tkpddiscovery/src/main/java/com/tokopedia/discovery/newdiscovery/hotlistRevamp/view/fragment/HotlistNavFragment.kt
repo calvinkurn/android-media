@@ -11,7 +11,6 @@ import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
@@ -35,16 +35,24 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.data.cpmAds.CpmItem
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.data.hotListDetail.HotListDetailResponse
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.data.hotListDetail.HotlistDetail
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.di.DaggerHotlistNavComponent
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.di.HotlistNavComponent
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.util.HotlistParamBuilder
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.util.HotlistParamBuilder.Companion.hotlistParamBuilder
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.adapters.CpmAdsAdapter
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.interfaces.CpmTopAdsListener
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.viewmodel.HotlistNavViewModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,6 +62,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_hotlist_nav.*
+import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
 /**
@@ -97,7 +106,6 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
-
     var hotListAlias = ""
 
     companion object {
@@ -134,7 +142,6 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         init()
         observeField()
         setUpAdapter()
-
     }
 
     private fun observeField() {
@@ -231,13 +238,18 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    LoadCPM(it.data as ArrayList<CpmItem>)
-
+                    if ((it.data as ArrayList<CpmItem>).size > 0) {
+                        cpm_recyclerview.show()
+                        LoadCPM(it.data as ArrayList<CpmItem>)
+                        hotlistNavAnalytics.eventCpmTopAdsImpression(isUserLoggedIn(),
+                                hotlistDetail?.shareFilePath ?: "")
+                    } else {
+                        cpm_recyclerview.hide()
+                    }
                 }
 
                 is Fail -> {
-                    Log.d("dfgchjbkl", "rhfghjk")
-
+                    cpm_recyclerview.hide()
                 }
 
             }

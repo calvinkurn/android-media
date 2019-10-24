@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.newdiscovery.hotlistRevamp.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
@@ -37,7 +38,7 @@ class HotlistNavActivity : BaseActivity(),
 
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
-    private var searchNavContainer: View? = null
+    private var searchNavContainer: SearchNavigationView? = null
     private lateinit var hotListFragment: Fragment
     private lateinit var alias: String
     private lateinit var hotlistFragment: BaseCategorySectionFragment
@@ -48,6 +49,7 @@ class HotlistNavActivity : BaseActivity(),
     private val STATE_GRID = 1
     private val STATE_LIST = 2
     private val STATE_BIG = 3
+    private val ORDER_BY = "ob"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,24 +99,7 @@ class HotlistNavActivity : BaseActivity(),
     }
 
     private fun initButtons() {
-
-        icon_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-
-        }
-        button_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-        }
-
-        icon_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-        }
-
-        button_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-        }
-
-
+        searchNavContainer?.setSearchNavListener(this)
         img_display_button.tag = STATE_GRID
 
         img_display_button.setOnClickListener {
@@ -232,7 +217,7 @@ class HotlistNavActivity : BaseActivity(),
             hotlistFragment = Fragment as BaseCategorySectionFragment
             supportFragmentManager.beginTransaction().add(R.id.parent_view,
                     Fragment).commit()
-
+            hotlistFragment.setSortListener(this)
             initToolbar(alias)
         }
     }
@@ -302,5 +287,24 @@ class HotlistNavActivity : BaseActivity(),
                 finish()
             }
         }
+    }
+
+    override fun onSortButtonClicked() {
+        visibleFragmentListener?.onSortClick()
+        hotlistNavAnalytics.eventSortClicked(alias,
+                isUserLoggedIn(),
+                "")
+    }
+
+    override fun onFilterButtonClicked() {
+        visibleFragmentListener?.onFilterClick()
+
+        hotlistNavAnalytics.eventFilterClicked(alias,
+                isUserLoggedIn())
+    }
+
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
     }
 }

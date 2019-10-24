@@ -112,12 +112,7 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
     fun fetchCpmData(params: RequestParams) {
         cpmAdsUseCase.execute(params, object : Subscriber<List<CpmItem>>() {
             override fun onNext(t: List<CpmItem>?) {
-
-                t?.let {
-                    if (it.isNotEmpty()) {
-                        mCpmTopAdsData.value = Success(it as List<CpmItem>)
-                    }
-                }
+                mCpmTopAdsData.value = Success(t as List<CpmItem>)
             }
 
             override fun onCompleted() {
