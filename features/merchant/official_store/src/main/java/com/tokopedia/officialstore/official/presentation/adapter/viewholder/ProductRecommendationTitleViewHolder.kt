@@ -14,7 +14,9 @@ class ProductRecommendationTitleViewHolder(view: View): AbstractViewHolder<Produ
         textView = view?.findViewById(R.id.txt_title_product_recom)
     }
 
-    override fun bind(element: ProductRecommendationTitleViewModel?) { }
+    override fun bind(element: ProductRecommendationTitleViewModel?) {
+        textView?.text = element?.title
+    }
 
     companion object {
         val LAYOUT = R.layout.viewmodel_title_product_recom

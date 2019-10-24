@@ -39,13 +39,4 @@
         android:textColor="@color/Purple_P600"
         android:textSize="@dimen/fontSize_lvl2" />
 
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider"
-        android:layout_below="@+id/promo_link"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@color/Neutral_N75"
-        android:layout_height="@dimen/layout_lvl1" />
-
 </RelativeLayout>
