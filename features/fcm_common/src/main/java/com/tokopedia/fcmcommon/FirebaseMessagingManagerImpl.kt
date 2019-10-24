@@ -31,7 +31,8 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = coroutineContextProvider.Main + SupervisorJob() + coroutineExceptionHandler
 
-    override fun onNewToken(newToken: String) {
+    override fun onNewToken(newToken: String?) {
+        if (newToken == null) return
         launch {
             if (!isNewToken(newToken)) return@launch
             withContext(coroutineContextProvider.IO) {

@@ -1,7 +1,7 @@
 package com.tokopedia.fcmcommon
 
 interface FirebaseMessagingManager {
-    fun onNewToken(newToken: String)
+    fun onNewToken(newToken: String?)
     fun isNewToken(token: String): Boolean
     fun clear()
 
