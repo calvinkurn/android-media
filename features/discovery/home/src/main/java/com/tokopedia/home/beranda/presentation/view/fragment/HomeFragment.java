@@ -52,6 +52,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
@@ -261,15 +262,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         mShowTokopointNative = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
-    @Override
-    public void showRecomendationButton() {
-        if (showRecomendation) {
-            floatingTextButton.setVisibility(View.VISIBLE);
-        } else {
-            floatingTextButton.setVisibility(View.GONE);
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -371,12 +363,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
-        floatingTextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scrollToRecommendList();
-                HomePageTracking.eventClickJumpRecomendation(getActivity());
-            }
+        floatingTextButton.setOnClickListener(view -> {
+            scrollToRecommendList();
+            HomePageTracking.eventClickJumpRecomendation(getActivity());
         });
 
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
@@ -579,6 +568,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onSpotlightItemClicked(String actionLink) {
         onActionLinkClicked(actionLink);
+    }
+
+    @Override
+    public void configureHomeFlag(HomeFlag homeFlag) {
+        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
     private void onGoToSell() {
