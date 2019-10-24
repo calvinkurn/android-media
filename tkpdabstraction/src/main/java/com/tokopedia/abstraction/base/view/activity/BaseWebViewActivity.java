@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.R;
 /**
  * @author okasurya on 2/7/2018
  */
-
+@Deprecated
 public abstract class BaseWebViewActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_TITLE = "web_view_extra_title";

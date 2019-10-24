@@ -8,6 +8,9 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     tools:layout_width="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
     android:layout_width="@dimen/home_banner_mix_carousel_width"
     android:layout_height="match_parent"
     tools:layout_height="match_parent">

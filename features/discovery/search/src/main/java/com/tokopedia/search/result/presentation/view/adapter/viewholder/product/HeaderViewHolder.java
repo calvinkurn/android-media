@@ -1,14 +1,11 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,17 +16,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
-import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
-import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
@@ -57,14 +49,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private SuggestionListener suggestionListener;
     private QuickFilterListener quickFilterListener;
     private QuickFilterAdapter quickFilterAdapter;
-    private RecyclerView guidedSearchRecyclerView;
-    private GuidedSearchAdapter guidedSearchAdapter;
 
     public HeaderViewHolder(View itemView,
                             TickerListener tickerListener,
                             SuggestionListener suggestionListener,
                             QuickFilterListener quickFilterListener,
-                            GuidedSearchListener guidedSearchListener,
                             BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
@@ -75,14 +64,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
-        guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
-        guidedSearchAdapter = new GuidedSearchAdapter(guidedSearchListener);
-        guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
-        guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
-        ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
             if (bannerAdsListener != null) {
@@ -118,8 +99,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         bindSuggestionView(element);
 
         bindQuickFilterView(element);
-
-        bindGuidedSearchView(element);
     }
 
     private void bindAdsBannerView(final HeaderViewModel element) {
@@ -180,17 +159,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         }
 
         quickFilterAdapter.setOptionList(element.getQuickFilterList());
-    }
-
-    private void bindGuidedSearchView(final HeaderViewModel element) {
-        if (element.getGuidedSearch() != null
-                && element.getGuidedSearch().getItemList() != null
-                && !element.getGuidedSearch().getItemList().isEmpty()) {
-            guidedSearchRecyclerView.setVisibility(View.VISIBLE);
-            guidedSearchAdapter.setItemList(element.getGuidedSearch().getItemList());
-        } else {
-            guidedSearchRecyclerView.setVisibility(View.GONE);
-        }
     }
 
     private static class QuickFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -324,87 +292,5 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
         }
     }
-
-    private static class GuidedSearchAdapter extends RecyclerView.Adapter<GuidedSearchViewHolder> {
-
-        List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-        GuidedSearchListener guidedSearchListener;
-
-        GuidedSearchAdapter(GuidedSearchListener guidedSearchListener) {
-            this.guidedSearchListener = guidedSearchListener;
-        }
-
-        void setItemList(List<GuidedSearchViewModel.Item> itemList) {
-            this.itemList = itemList;
-            notifyDataSetChanged();
-        }
-
-        @NonNull
-        @Override
-        public GuidedSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_guided_search_item_with_background, parent, false);
-            return new GuidedSearchViewHolder(view, guidedSearchListener);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull GuidedSearchViewHolder holder, int position) {
-            holder.bind(itemList.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return itemList.size();
-        }
-    }
-
-    private static class GuidedSearchViewHolder extends RecyclerView.ViewHolder {
-
-        private static final int[] BACKGROUND = {
-                R.drawable.search_guided_back_1,
-                R.drawable.search_guided_back_2,
-                R.drawable.search_guided_back_3,
-                R.drawable.search_guided_back_4,
-                R.drawable.search_guided_back_5,
-        };
-
-        TextView textView;
-        ImageView imageView;
-        GuidedSearchListener guidedSearchListener;
-
-        GuidedSearchViewHolder(View itemView, GuidedSearchListener guidedSearchListener) {
-            super(itemView);
-            textView = itemView.findViewById(R.id.guided_search_text);
-            imageView = itemView.findViewById(R.id.guided_search_background);
-            this.guidedSearchListener = guidedSearchListener;
-        }
-
-        public void bind(final GuidedSearchViewModel.Item item) {
-            textView.setText(item.getKeyword());
-            textView.setOnClickListener(view -> {
-                if (guidedSearchListener != null) {
-                    SearchTracking.eventClickGuidedSearch(item.getPreviousKey(), item.getPosition(), item.getKeyword());
-                    guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
-                }
-            });
-
-            Glide.with(itemView.getContext())
-                    .asBitmap()
                     .load(BACKGROUND[getAdapterPosition() % 5])
-                    .centerCrop()
-                    .dontAnimate()
-                    .into(getRoundedImageViewTarget(imageView));
-        }
-
-        private BitmapImageViewTarget getRoundedImageViewTarget(ImageView imageView) {
-            return new BitmapImageViewTarget(imageView) {
-
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
-                    roundedBitmapDrawable.setCornerRadius(8f);
-                    imageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            };
-        }
-    }
 }
