@@ -12,5 +12,7 @@ interface OfficialHomeTypeFactory {
 
     fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
 
+    fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int
+
     fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int
 }

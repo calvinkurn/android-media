@@ -49,6 +49,11 @@ class OfficialHomeMapper {
             adapter?.notifyItemInserted(position)
         }
 
+        fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
+            adapter?.addElement(ProductRecommendationTitleViewModel("Test title"))
+            adapter?.notifyItemInserted(adapter.lastIndex)
+        }
+
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
             productRecommendation.recommendationItemList.forEach {
                 adapter?.addElement(ProductRecommendationViewModel(it, listener))

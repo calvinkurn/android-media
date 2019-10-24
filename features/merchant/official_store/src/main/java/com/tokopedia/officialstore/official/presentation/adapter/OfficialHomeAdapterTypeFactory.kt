@@ -27,8 +27,12 @@ class OfficialHomeAdapterTypeFactory(
         return DynamicChannelViewHolder.LAYOUT
     }
 
+    override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
+        return ProductRecommendationTitleViewHolder.LAYOUT
+    }
+
     override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
-        return ProductRecommendationViewModel.LAYOUT
+        return ProductRecommendationViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -37,7 +41,8 @@ class OfficialHomeAdapterTypeFactory(
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
-            ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
+            ProductRecommendationTitleViewHolder.LAYOUT -> ProductRecommendationTitleViewHolder(parent)
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }
