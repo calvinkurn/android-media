@@ -122,6 +122,7 @@ ext {
             contactUs                       : ":features:operational:contact_us",
 //            contactUs                       : ":features:operational:contact_us_no_op",
             csat_rating                       : ":features:operational:csat_rating",
+            discovery2                       : ":features:category:discovery2",
 
             commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",

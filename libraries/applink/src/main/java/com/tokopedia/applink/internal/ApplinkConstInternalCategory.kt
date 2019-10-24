@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalCategory {
@@ -16,4 +17,8 @@ object ApplinkConstInternalCategory {
     val TRADEIN = "$INTERNAL_CATEGORY/tradein"
     val MONEYIN = "money_in/"
     val DEVICE_VALIDATION = "device_validation"
+
+    fun getDiscoveryDeeplink(deeplink: String): String {
+        return deeplink.replace(ApplinkConst.DISCOVERY, ApplinkConstInternalGlobal.DISCOVERY)
+    }
 }

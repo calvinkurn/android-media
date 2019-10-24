@@ -192,6 +192,11 @@ object ApplinkConstInternalGlobal {
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
 
+    // tokopedia-android-internal://global/vishnu
+    @JvmField
+    val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
+
+
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
     @JvmField

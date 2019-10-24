@@ -21,6 +21,7 @@ include "features:content:interest_pick"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
+include "features:category:discovery2"
 
 include "features:digital:common_digital"
 include "features:digital:common_travel"

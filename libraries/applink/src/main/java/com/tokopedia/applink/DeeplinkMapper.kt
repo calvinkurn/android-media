@@ -5,6 +5,7 @@ import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
@@ -36,6 +37,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) -> getRegisteredNavigationSearch(deeplink)
                     deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY, true) -> getDiscoveryDeeplink(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){

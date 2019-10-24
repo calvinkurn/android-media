@@ -260,6 +260,7 @@ public interface ApplinkConst {
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
     String OVO_WALLET = "tokopedia://ovo";
+    String DISCOVERY = "tokopedia://discovery";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
