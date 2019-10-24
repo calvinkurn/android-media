@@ -8,18 +8,18 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.CornerListFragment;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -58,6 +58,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private int typeRequest;
     private Token token;
     private String PARAM_ADDRESS_MODEL;
+    private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
 
     public static Intent createInstance(Activity activity,
                                         ArrayList<MultipleAddressAdapterData> dataList,
@@ -153,7 +154,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 if (isAddNewAddressEnabled()) {
-                    AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
+                    mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, false, false, null,
@@ -289,8 +290,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void onBackPressed() {
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
-            ((ShipmentAddressListFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
+            mAnalytics.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
         } else if (getCurrentFragment() instanceof CornerListFragment) {
             updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         }
