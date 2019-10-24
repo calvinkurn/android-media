@@ -34,7 +34,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("DeleteFcmTokenService", "Service created");
         FcmComponent fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(new FcmModule(getApplicationContext()))
                 .build();
@@ -71,7 +70,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     @Override
     public void onNewToken(String newToken) {
-        Log.d("DeleteFcmTokenService", "On New Token");
         fcmManager.onNewToken(newToken);
         try {
             Timber.w("P2" + "Notification New Token - " + newToken + " | "
