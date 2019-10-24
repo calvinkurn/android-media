@@ -42,7 +42,11 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     override fun isNewToken(token: String): Boolean {
         val prefToken = getTokenFromPref()
-        return prefToken != null && prefToken.isNotEmpty() && token != prefToken
+        return prefToken != null && token != prefToken
+    }
+
+    override fun clear() {
+        coroutineContext.cancelChildren()
     }
 
     private suspend fun updateTokenOnServer(newToken: String) {

@@ -83,4 +83,10 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fcmManager.clear();
+    }
 }
