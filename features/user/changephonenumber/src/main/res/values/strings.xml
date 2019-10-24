@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">changephonenumber</string>
+    <string name="change_phone_number_app_name">changephonenumber</string>
 
     <string name="for_your_safety">Demi keamanan, pengguna diharuskan memperbarui nomor ponsel yang bisa dihubungi secara berkala.</string>
     <string name="old_phone_number">Nomor Ponsel Lama</string>

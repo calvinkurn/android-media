@@ -275,8 +275,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        productDetailTracking.eventClickAddToCart(addedProductDataModel?.productId ?: "",
-                addedProductDataModel?.isVariant ?: false)
+        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
         goToCart()
     }
 

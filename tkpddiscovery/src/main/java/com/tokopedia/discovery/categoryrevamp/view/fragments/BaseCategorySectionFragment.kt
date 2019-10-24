@@ -60,7 +60,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private var bottomSheetListener: BottomSheetListener? = null
+    private var sortAppliedListener: SortAppliedListener? = null
 
+    companion object {
+        const val DEFAULT_SORT = 23
+    }
 
     protected open fun onSwipeToRefresh() {
     }
@@ -343,7 +347,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?) {
+            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
                 setSelectedSort(HashMap(selectedSort))
                 selectedSort.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
@@ -351,6 +355,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
                         selectedSort["ob"]?.toInt() ?: 0)
             }
@@ -403,4 +408,12 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         return filterTrackingData!!
     }
 
+
+    fun setSortListener(sortAppliedListener:SortAppliedListener){
+        this.sortAppliedListener = sortAppliedListener
+    }
+
+    interface SortAppliedListener {
+        fun onSortApplied(showTick: Boolean)
+    }
 }
