@@ -7,6 +7,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
+import java.util.concurrent.Semaphore
 
 //todo Rahul use proper throwable
 //todo Make oldClaimPayload thread safe
@@ -15,11 +16,12 @@ class ClaimCouponApi(val scope: CoroutineScope,
 
     private val HTTP_CODE_OK = "200"
     var oldClaimPayload: ClaimPayload? = null
+    val semaphore = Semaphore(1)
     var oldApiJob: Deferred<ClaimPopGratificationResponse>? = null
 
     fun claimGratification(claimPayload: ClaimPayload, responseCallback: ClaimCouponApiResponseCallback) {
 
-        suspend fun sendResponse(response: ClaimPopGratificationResponse?){
+        suspend fun sendResponse(response: ClaimPopGratificationResponse?) {
             withContext(Dispatchers.Main) {
                 if (response != null) {
                     if (response.popGratificationClaim?.resultStatus?.code == HTTP_CODE_OK) {
@@ -45,7 +47,7 @@ class ClaimCouponApi(val scope: CoroutineScope,
                 * 3. Clean resources
                 * */
                 if (isCurrentPayloadSameAsOld(claimPayload)) {
-                    oldClaimPayload = null
+                    updateClaimPayload(null)
                     val response = oldApiJob?.await()
                     sendResponse(response)
                 } else {
@@ -55,7 +57,9 @@ class ClaimCouponApi(val scope: CoroutineScope,
                     * 2. Discard oldPayload
                     * 3. Make new api call
                     * */
-                    oldClaimPayload = claimPayload
+
+
+                    updateClaimPayload(claimPayload)
                     oldApiJob?.cancel()
 
                     oldApiJob = async { claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(claimPayload)) }
@@ -64,8 +68,12 @@ class ClaimCouponApi(val scope: CoroutineScope,
                 }
             }
         }
+    }
 
-
+    private fun updateClaimPayload(claimPayload: ClaimPayload?) {
+        semaphore.acquireUninterruptibly()
+        oldClaimPayload = claimPayload
+        semaphore.release()
     }
 
 

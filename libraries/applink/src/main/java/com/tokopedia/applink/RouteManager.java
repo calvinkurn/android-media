@@ -252,7 +252,11 @@ public class RouteManager {
 
     public static Intent getIntent(Context context, String deeplinkPattern, Uri orignUri, String... parameter) {
         Intent intent = getIntent(context, deeplinkPattern, parameter);
-        RouteManager.putQueryParamsInIntent(intent, orignUri);
+
+        Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(orignUri);
+        Bundle defaultBundle = new Bundle();
+        defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
+        intent.putExtras(defaultBundle);
         return intent;
     }
 

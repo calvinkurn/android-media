@@ -5,7 +5,9 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.promotionstarget.ClaimCouponApi
+import com.tokopedia.promotionstarget.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
@@ -29,8 +31,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
-    private val claimApi = ClaimCouponApi(scope, claimGratificationUseCase)
-    //    var waitingForLoginActivity: WeakReference<Activity>? = null
+    private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
+
+    //    var waitingForLoginActivity: WeakReference<Activity>? = nulll
     val arrayActivityNames = arrayListOf<String>(
             "com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity",
             "com.tokopedia.loginregister.login.view.activity.LoginActivity",
@@ -97,15 +100,30 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         //todo Rahul remove test data
         if (activity != null) {
             val intent = activity.intent
-//            val popSlug = intent?.extras?.getString(CouponGratificationParams.POP_SLUG)
-//            val page = intent?.extras?.getString(CouponGratificationParams.PAGE)
+            val bundle = intent?.extras?.getBundle(RouteManager.QUERY_PARAM)
 
-            val popSlug = "CampaignSlug"
-            val page = "Hot"
+            var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
+            var page = bundle?.getString(CouponGratificationParams.PAGE)
 
-            showGratificationDialog = (!TextUtils.isEmpty(popSlug) && !TextUtils.isEmpty(page))
+            if (page.isNullOrEmpty()) {
+                page = intent?.getStringExtra(CouponGratificationParams.PAGE)
+            }
+
+            if (popSlug.isNullOrEmpty()) {
+                popSlug = intent?.getStringExtra(CouponGratificationParams.POP_SLUG)
+            }
+
+            if (page.isNullOrEmpty()) {
+                page = ""
+            }
+
+
+//            val popSlug = "CampaignSlug"
+//            val page = "Hot"
+
+            showGratificationDialog = (!TextUtils.isEmpty(popSlug))
             if (showGratificationDialog) {
-                gratificationData = GratificationData(popSlug!!, page!!)
+                gratificationData = GratificationData(popSlug!!, page)
             }
         }
         return gratificationData
@@ -119,8 +137,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
                     val couponDetail = presenter.composeApi(gratificationData)
                     withContext(Dispatchers.Main) {
-                        if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!)
-                            show(weakActivity, response, couponDetail, gratificationData, claimApi)
+                        if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
+                            show(weakActivity, response, couponDetail, gratificationData)
+                        }
                     }
                 }
                 mapOfJobs[activity] = childJob
@@ -131,17 +150,27 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private fun show(weakActivity: WeakReference<Activity>,
                      data: GetPopGratificationResponse,
                      couponDetailResponse: GetCouponDetailResponse,
-                     gratificationData: GratificationData,
-                     claimCouponApi: ClaimCouponApi) {
+                     gratificationData: GratificationData) {
         val dialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
+            val autoHitActionButton = activity.intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+
+            val claimApi: ClaimCouponApi
+            if (autoHitActionButton && weakOldClaimCouponApi?.get() != null) {
+                claimApi = weakOldClaimCouponApi?.get()!!
+            } else {
+                claimApi = ClaimCouponApi(scope, claimGratificationUseCase)
+                weakOldClaimCouponApi?.clear()
+                weakOldClaimCouponApi = WeakReference(claimApi)
+            }
             val bottomSheetDialog = dialog.show(activity,
                     TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
                     data,
                     couponDetailResponse,
                     gratificationData,
-                    claimCouponApi)
+                    claimApi,
+                    autoHitActionButton)
             mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
         }
     }

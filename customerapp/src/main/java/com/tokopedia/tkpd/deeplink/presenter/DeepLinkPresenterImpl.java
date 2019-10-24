@@ -139,7 +139,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public void processDeepLinkAction(Activity activity, Uri uriData) {
 
         Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(uriData);
-        queryParamBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
+        Bundle defaultBundle = new Bundle();
+        defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
             processAFlistener();
@@ -152,52 +153,52 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.HOME:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
-                    openHomepage(queryParamBundle);
+                    openHomepage(defaultBundle);
                     break;
                 case DeepLinkChecker.CATEGORY:
-                    openCategory(uriData.toString(), queryParamBundle);
+                    openCategory(uriData.toString(), defaultBundle);
                     screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case DeepLinkChecker.BROWSE:
-                    openBrowseProduct(linkSegment, uriData, queryParamBundle);
+                    openBrowseProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case DeepLinkChecker.HOT:
                     screenName = AppScreen.SCREEN_BROWSE_HOT_LIST;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
-                    openHotProduct(linkSegment, uriData, queryParamBundle);
+                    openHotProduct(linkSegment, uriData, defaultBundle);
                     break;
                 case DeepLinkChecker.HOT_LIST:
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
-                    openHomepageHot(queryParamBundle);
+                    openHomepageHot(defaultBundle);
                     break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);
                     screenName = AppScreen.SCREEN_CATALOG;
                     break;
                 case DeepLinkChecker.DISCOVERY_PAGE:
-                    openDiscoveryPage(uriData.toString(), queryParamBundle);
+                    openDiscoveryPage(uriData.toString(), defaultBundle);
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.CONTACT_US:
                     URLParser urlParser = new URLParser(uriData.toString());
-                    RouteManager.route(context, queryParamBundle, ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
+                    RouteManager.route(context, defaultBundle, ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
                     screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
                 case DeepLinkChecker.PRODUCT:
                     if (linkSegment.size() >= 2
                             && (linkSegment.get(1).equals("info") || isEtalase(linkSegment))) {
-                        openShopInfo(linkSegment, uriData, queryParamBundle);
+                        openShopInfo(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
-                        openProduct(linkSegment, uriData, queryParamBundle);
+                        openProduct(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     }
                     break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
-                    openShopInfo(linkSegment, uriData, queryParamBundle);
+                    openShopInfo(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case DeepLinkChecker.ACCOUNTS:
@@ -209,11 +210,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case DeepLinkChecker.RECOMMENDATION:
-                    openHomeRecommendation(linkSegment, uriData, queryParamBundle);
+                    openHomeRecommendation(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
                 case DeepLinkChecker.SIMILAR_PRODUCT:
-                    openSimilarProduct(linkSegment, uriData, queryParamBundle);
+                    openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
                     break;
                 case DeepLinkChecker.OTHER:
@@ -225,7 +226,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
-                    openHotel(uriData, queryParamBundle);
+                    openHotel(uriData, defaultBundle);
                     screenName = "";
                     break;
                 /*
@@ -246,39 +247,39 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PELUANG:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
-                    openPeluangPage(uriData.getPathSegments(), uriData, queryParamBundle);
+                    openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
                     break;
                 case DeepLinkChecker.REFERRAL:
                     screenName = AppScreen.SCREEN_REFERRAL;
-                    openReferralScreen(queryParamBundle);
+                    openReferralScreen(defaultBundle);
                     break;
                 case DeepLinkChecker.GROUPCHAT:
-                    openGroupChat(linkSegment, queryParamBundle);
+                    openGroupChat(linkSegment, defaultBundle);
                     screenName = AppScreen.GROUP_CHAT;
                     break;
                 case DeepLinkChecker.PROMO:
-                    openPromo(linkSegment, queryParamBundle);
+                    openPromo(linkSegment, defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.SALE:
-                    openSale(linkSegment, queryParamBundle);
+                    openSale(linkSegment, defaultBundle);
                     screenName = "";
                     break;
 
                 case DeepLinkChecker.FLIGHT:
-                    openFlight(queryParamBundle);
+                    openFlight(defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.PROFILE:
-                    openProfile(linkSegment, queryParamBundle);
+                    openProfile(linkSegment, defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.CONTENT:
-                    openContent(linkSegment, queryParamBundle);
+                    openContent(linkSegment, defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.SMCREFERRAL:
-                    openSmcReferralPage(linkSegment, uriData, queryParamBundle);
+                    openSmcReferralPage(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_WEBVIEW;
                     break;
                 default:
@@ -687,14 +688,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openHomepage(Bundle queryParamBundle) {
+    private void openHomepage(Bundle defaultBundle) {
         Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (queryParamBundle != null) {
-            intent.putExtras(queryParamBundle);
-        }
+        intent.putExtras(defaultBundle);
         context.startActivity(intent);
         context.finish();
     }
@@ -740,7 +739,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openBrowseProduct(List<String> linkSegment, Uri uriData, Bundle queryParamBundle) {
+    private void openBrowseProduct(List<String> linkSegment, Uri uriData, Bundle defaultBundle) {
 
         String departmentId = uriData.getQueryParameter("sc");
         Bundle bundle = RouteManager.getBundleFromAppLinkQueryParams(uriData.toString());
@@ -753,7 +752,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtras(bundle);
-            intent.putExtras(queryParamBundle);
+            intent.putExtras(defaultBundle);
             context.startActivity(intent);
             context.finish();
         } else {

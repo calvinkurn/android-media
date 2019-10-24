@@ -2124,9 +2124,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
             Intent intent = activity.getIntent();
             intent.setData(Uri.parse(applink));
-            if (bundle != null) {
-                intent.putExtras(bundle);
-            }
+            intent.putExtras(bundle);
             deepLinkDelegate.dispatchFrom(activity, intent);
         }
     }
