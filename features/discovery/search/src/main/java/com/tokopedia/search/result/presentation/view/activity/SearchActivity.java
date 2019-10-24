@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
