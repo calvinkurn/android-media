@@ -9,6 +9,7 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelLegoViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelSprintSaleViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class OfficialHomeAdapterTypeFactory(
@@ -45,6 +46,7 @@ class OfficialHomeAdapterTypeFactory(
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent)
+            DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent)
             ProductRecommendationTitleViewHolder.LAYOUT -> ProductRecommendationTitleViewHolder(parent)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
             else -> super.createViewHolder(parent, type)

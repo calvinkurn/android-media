@@ -49,7 +49,7 @@ class OfficialHomeMapper {
                     views.add(DynamicChannelViewModel(channel))
                 }
 
-                adapter.addElement(views)
+                adapter?.addElement(views)
             }
         }
 
