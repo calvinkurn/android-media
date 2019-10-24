@@ -77,7 +77,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         autofillUseCase.clearCache()
     }
 
-    fun loadAddEdit(isMismatchSolved: Boolean?, isChangesRequested: Boolean?) {
+    fun loadAddEdit(isMismatchSolved: Boolean, isChangesRequested: Boolean?) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
 
@@ -85,13 +85,12 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
         } else {
             isChangesRequested?.let { isChanges ->
-                isMismatchSolved?.let { isSolved ->
-                    if (isChanges) {
-                        view.finishBackToAddEdit(false, isSolved)
-                    } else {
-                        view.goToAddEditActivity(false, isSolved, false)
-                    }
+                if (isChanges) {
+                    view.finishBackToAddEdit(false, isMismatchSolved)
+                } else {
+                    view.goToAddEditActivity(false, isMismatchSolved, false)
                 }
+
             }
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess()
