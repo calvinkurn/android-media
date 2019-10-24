@@ -231,4 +231,8 @@ object ApplinkConstInternalGlobal {
     // Topchat
     @JvmField
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+    // Topchat
+    @JvmField
+    val TOPCHAT_ROOM = "$INTERNAL_GLOBAL/topchat/{room}"
 }

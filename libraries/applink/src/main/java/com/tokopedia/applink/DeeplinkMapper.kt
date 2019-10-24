@@ -36,6 +36,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) -> getRegisteredNavigationSearch(deeplink)
                     deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
@@ -54,6 +55,18 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun getRegisteredNavigationTopChat(deeplink: String): String {
+        val query = Uri.parse(deeplink).query
+        val path = Uri.parse(deeplink).path
+        var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
+        if(query?.isNotEmpty() == true || path?.isNotEmpty() == true){
+            deepLinkInternal = "$deepLinkInternal$path?$query"
+            return deepLinkInternal
+        } else {
+            return deepLinkInternal
+        }
     }
 
     /**
@@ -90,7 +103,6 @@ object DeeplinkMapper {
             ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
             ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
             ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
-            ApplinkConst.TOPCHAT_IDLESS -> return ApplinkConstInternalGlobal.TOPCHAT
             else -> ""
         }
     }
