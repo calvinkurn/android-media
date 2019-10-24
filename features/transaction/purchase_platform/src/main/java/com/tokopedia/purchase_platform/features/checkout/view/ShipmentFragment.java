@@ -56,7 +56,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -1304,7 +1304,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION);
+            LocationPass locationPass = data.getExtras().getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
                 int index = shipmentAdapter.getLastChooseCourierItemPosition();
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);
@@ -2283,8 +2283,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void navigateToPinpointActivity(LocationPass locationPass) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(LogisticCommonConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
+        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }

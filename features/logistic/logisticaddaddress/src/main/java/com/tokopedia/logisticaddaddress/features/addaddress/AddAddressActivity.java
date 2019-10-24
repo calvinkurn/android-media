@@ -71,40 +71,6 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return AddAddressFragment.newInstance(bundle);
     }
 
-    public static Intent createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(@NonNull Activity activity,
-                                                                                                        @Nullable Token token) {
-        return createInstance(activity, null, token,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS);
-    }
-
-    public static Intent createInstanceAddAddressFromCheckoutSingleAddressForm(@NonNull Activity activity,
-                                                                               @Nullable Token token) {
-        return createInstance(activity, null, token,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceAddAddressFromCheckoutMultipleAddressForm(@NonNull Activity activity,
-                                                                                 @Nullable Token token) {
-        return createInstance(
-                activity, null, token,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceEditAddressFromCheckoutMultipleAddressForm(@NonNull Activity activity,
-                                                                                  @Nullable AddressModel addressModel,
-                                                                                  @Nullable Token token) {
-        return createInstance(
-                activity, addressModel, token,
-                INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceEditAddressFromCheckoutSingleAddressForm(@NonNull Activity activity,
-                                                                                @Nullable AddressModel addressModel,
-                                                                                @Nullable Token token) {
-        return createInstance(activity, addressModel, token,
-                INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT);
-    }
-
 
     public static Intent createInstanceEditAddressFromManageAddress(@NonNull Activity activity,
                                                                     @Nullable AddressModel addressModel,
@@ -112,13 +78,6 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return createInstance(
                 activity, addressModel, token,
                 INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS);
-    }
-
-    public static Intent createInstanceAddAddressFromManageAddress(@NonNull Activity activity,
-                                                                   @Nullable Token token) {
-        return createInstance(
-                activity, null, token,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS);
     }
 
     public static Intent createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(@NonNull Activity activity,
