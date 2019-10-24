@@ -33,7 +33,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
+import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -721,8 +721,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         activity?.run {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
             val bundle = Bundle()
-            bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            bundle.putBoolean(LogisticCommonConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
             intent.putExtras(bundle)
             startActivityForResult(intent, REQUEST_CODE_GEOLOCATION)
         }
@@ -1062,7 +1062,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_GEOLOCATION) {
-            val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticCommonConstant.EXTRA_EXISTING_LOCATION)
+            val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
             presenter.updateAddress(fragmentViewModel, locationPass?.latitude
                 ?: "", locationPass?.longitude ?: "")
         }

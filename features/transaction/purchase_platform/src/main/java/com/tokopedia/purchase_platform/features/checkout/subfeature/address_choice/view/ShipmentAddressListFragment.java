@@ -23,7 +23,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -410,7 +410,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
             intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(model));
             intent.putExtra(PARAM_TOKEN, token);
-            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_EDIT);
         }
     }
 
@@ -418,11 +418,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
-                case LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE:
+                case LogisticConstant.REQUEST_CODE_PARAM_EDIT:
+                case LogisticConstant.REQUEST_CODE_PARAM_CREATE:
                     RecipientAddressModel address = null;
-                    if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
-                        Destination intentModel = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
+                    if (data != null && data.hasExtra(LogisticConstant.EXTRA_ADDRESS)) {
+                        Destination intentModel = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS);
                         address = new RecipientAddressModel();
                         address.setId(intentModel.getAddressId());
                         address.setAddressName(intentModel.getAddressName());
@@ -440,8 +440,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     } else
                         mActivityListener.finishAndSendResult(address);
                     break;
-                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
-                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
+                case LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
+                case LogisticConstant.ADD_NEW_ADDRESS_CREATED:
                     RecipientAddressModel newAddress = new RecipientAddressModel();
                     if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
                         SaveAddressDataModel intentModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
@@ -477,13 +477,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
                     intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
+                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
 
                 } else {
                     Intent intent = RouteManager.getIntent(getContext(),
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "21");
                     intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
                 }
 
             } else {
@@ -494,12 +494,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
                     intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
+                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
                 } else {
                     Intent intent = RouteManager.getIntent(getContext(),
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "11");
                     intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
                 }
             }
 

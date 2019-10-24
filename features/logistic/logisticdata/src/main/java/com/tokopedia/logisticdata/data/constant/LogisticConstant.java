@@ -4,10 +4,10 @@ package com.tokopedia.logisticdata.data.constant;
  * Created by Irfan Khoirul on 21/11/18.
  */
 
-public class LogisticCommonConstant {
+public class LogisticConstant {
 
     // Private constructor to prevent instantiation
-    private LogisticCommonConstant() {
+    private LogisticConstant() {
 
     }
 

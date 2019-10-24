@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
@@ -155,12 +155,12 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                     intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
                     intent.putExtra(KERO_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
                     intent = RouteManager.getIntent(this,
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "13");
                     intent.putExtra(KERO_TOKEN, token);
-                    startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
                 }
 
                 break;
@@ -170,7 +170,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "12");
                 intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(currentAddress));
                 intent.putExtra(KERO_TOKEN, token);
-                startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_EDIT);
                 break;
             default:
         }
@@ -194,11 +194,11 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE ||
-                requestCode == LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
+        if (requestCode == LogisticConstant.REQUEST_CODE_PARAM_CREATE ||
+                requestCode == LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
             finish();
-        } else if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT) {
+        } else if (requestCode == LogisticConstant.REQUEST_CODE_PARAM_EDIT) {
             setResult(RESULT_CODE_ACTION_EDIT_ADDRESS);
             finish();
         }
