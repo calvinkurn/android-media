@@ -22,7 +22,6 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.layoutParams = lp
     }
 
-    private val couponView: CouponView = itemView.findViewById(R.id.couponView)
     private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
     private val imageIcon: AppCompatImageView = itemView.findViewById(R.id.icon)
     private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)

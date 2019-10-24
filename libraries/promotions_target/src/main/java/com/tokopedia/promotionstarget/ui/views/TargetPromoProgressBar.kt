@@ -11,6 +11,7 @@ import android.view.View
 import com.tokopedia.promotionstarget.R
 import kotlin.math.min
 
+//todo Rahul check whether to use this progress bar or not
 class TargetPromoProgressBar(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
     companion object {

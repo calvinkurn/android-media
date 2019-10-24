@@ -17,36 +17,13 @@ import javax.inject.Named
 
 class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
                                                    val dispatcher: CoroutineDispatcher,
-                                                   val claimPopGratificationUseCase: ClaimPopGratificationUseCase,
                                                    val autoApplyUseCase: AutoApplyUseCase
 ) : BaseViewModel(dispatcher) {
 
-//    val couponClaimLiveData: MutableLiveData<Result<ClaimPopGratificationResponse>> = MutableLiveData()
     val autoApplyLiveData: MutableLiveData<Result<AutoApplyResponse>> = MutableLiveData()
-    private val HTTP_CODE_OK = "200"
-
-    fun claimCoupon(campaignSlug: String, page: String) {
-
-//        launchCatchError(block = {
-//            val data = claimPopGratificationUseCase.let {
-//                it.getResponse(it.getQueryParams(campaignSlug, page))
-//            }
-//            if (data.popGratificationClaim?.resultStatus?.code == HTTP_CODE_OK) {
-//                couponClaimLiveData.value = Success(data)
-//            } else {
-//                couponClaimLiveData.value = Fail(Throwable("Unknown Exception"))
-//            }
-//
-//        }, onError = {
-//            //todo check for no internet
-//            couponClaimLiveData.value = Fail(it)
-//        })
-    }
-
 
     fun autoApply(code: String) {
         launchCatchError(block = {
-            delay(5000L)
             val response = autoApplyUseCase.getResponse(autoApplyUseCase.getQueryParams(code))
             autoApplyLiveData.value = Success(response)
         }, onError = {

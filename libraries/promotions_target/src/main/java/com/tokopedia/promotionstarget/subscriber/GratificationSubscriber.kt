@@ -33,19 +33,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val scope = CoroutineScope(job)
     private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
 
-    //    var waitingForLoginActivity: WeakReference<Activity>? = nulll
-    val arrayActivityNames = arrayListOf<String>(
-            "com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity",
-            "com.tokopedia.loginregister.login.view.activity.LoginActivity",
-            "com.tokopedia.session.register.view.activity.SmartLockActivity"
-    )
-    val allowedActivityNames = arrayListOf<String>("com.tokopedia.navigation.presentation.activity.MainParentActivity",
-            "com.tokopedia.product.detail.view.activity.ProductDetailActivity")
-
-    companion object {
-//        val waitingForLogin = AtomicBoolean(false)
-    }
-
 
     private val ceh = CoroutineExceptionHandler { _, exception ->
         println("Caught $exception")
@@ -60,31 +47,27 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        //todo Rahul remove later
         if (activity != null) {
-
-//            val isLoginActivity = arrayActivityNames.contains(activity.localClassName)
-//            val isAllowedActivity = allowedActivityNames.contains(activity.localClassName)
-//            if (!isAllowedActivity) {
-//            Do nothingsubscriber.waitingForLoginActivity
-//            } else {
             val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
             if (gratificationData != null) {
                 cancelAll()
                 showGratificationDialog(activity, gratificationData)
             }
         }
-//        }
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
         super.onActivityDestroyed(activity)
+        if (activity != null) {
+            clearMaps(activity)
+        }
+    }
+
+    fun clearMaps(activity: Activity) {
+
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-//        if (waitingForLoginActivity?.get() == activity) {
-//            waitingForLoginActivity?.clear()
-//            waitingForLogin.set(false)
-//        }
+        mapOfDialogs.remove(activity)
     }
 
     override fun onActivityResumed(activity: Activity?) {
@@ -100,7 +83,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?): GratificationData? {
         var showGratificationDialog = false
         var gratificationData: GratificationData? = null
-        //todo Rahul remove test data
         if (activity != null) {
             val intent = activity.intent
             val bundle = intent?.extras?.getBundle(RouteManager.QUERY_PARAM)
@@ -119,10 +101,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             if (page.isNullOrEmpty()) {
                 page = ""
             }
-
-
-//            val popSlug = "CampaignSlug"
-//            val page = "Hot"
 
             showGratificationDialog = (!TextUtils.isEmpty(popSlug))
             if (showGratificationDialog) {
@@ -189,9 +167,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             dialogPair.second.dismiss()
         }
         mapOfDialogs.clear()
-
-//        waitingForLogin.set(false)
-//        waitingForLoginActivity = null
     }
 }
 

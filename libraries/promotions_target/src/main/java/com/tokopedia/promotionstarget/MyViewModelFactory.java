@@ -10,6 +10,7 @@ import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM;
 
 import kotlinx.coroutines.Dispatchers;
 
+//todo Rahul check exsistence of this class
 public class MyViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private Application mApplication;
     private Object[] mParams;
@@ -22,7 +23,7 @@ public class MyViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass == TargetPromotionsDialogVM.class) {
-            return (T) new TargetPromotionsDialogVM(Dispatchers.getMain(), new ClaimPopGratificationUseCase(""), new AutoApplyUseCase(""));
+            return (T) new TargetPromotionsDialogVM(Dispatchers.getMain(), new AutoApplyUseCase(""));
         } else {
             return super.create(modelClass);
         }

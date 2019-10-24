@@ -154,6 +154,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 viewModel.autoApply(couponCodeAfterClaim!!)
             }
             IS_DISMISSED = true
+            if (activityContext is Activity) {
+                subscriber.clearMaps(activityContext)
+            }
         }
         bottomSheetDialog = bottomSheet
         this.claimCouponApi = claimCouponApi

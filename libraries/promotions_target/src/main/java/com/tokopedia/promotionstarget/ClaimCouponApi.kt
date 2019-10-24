@@ -10,7 +10,6 @@ import kotlinx.coroutines.*
 import java.util.concurrent.Semaphore
 
 //todo Rahul use proper throwable
-//todo Make oldClaimPayload thread safe
 class ClaimCouponApi(val scope: CoroutineScope,
                      val claimPopGratificationUseCase: ClaimPopGratificationUseCase) {
 
@@ -36,9 +35,8 @@ class ClaimCouponApi(val scope: CoroutineScope,
         }
 
         val ceh = CoroutineExceptionHandler { _, exception ->
-            println("Caught $exception")
             GlobalScope.launch(Dispatchers.Main) {
-                responseCallback.onError(Throwable("UnknownError"))
+                responseCallback.onError(Throwable(exception))
             }
 
         }
