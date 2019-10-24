@@ -11,6 +11,10 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.topads.detail_sheet.UrlConstant.BASE_REST_URL
+import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_AD_ID
+import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_END_DATE
+import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_SHOP_ID
+import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_START_DATE
 import com.tokopedia.topads.detail_sheet.data.Data
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,10 +56,10 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
                     val startDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(0))
                     val result = withContext(Dispatchers.IO) {
                         val queryMap = mutableMapOf<String, String>(
-                                "ad_id" to adId,
-                                "shop_id" to userSession.shopId,
-                                "start_date" to startDate,
-                                "end_date" to endDate
+                                PARAM_AD_ID to adId,
+                                PARAM_SHOP_ID to userSession.shopId,
+                                PARAM_START_DATE to startDate,
+                                PARAM_END_DATE to endDate
                         )
                         AuthUtil.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, queryMap)
@@ -63,7 +67,6 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
                                 urlMap[PATH_TOPADS_GROUP_PRODUCT] ?: "",
                                 object : TypeToken<DataResponse<List<Data>>>() {}.type)
                                 .setQueryParams(queryMap)
-                                .setCacheStrategy(RestCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
                                 .build()
                         restRepository.getResponse(restRequest)
                     }

@@ -107,8 +107,6 @@ import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Compani
 import com.tokopedia.product.detail.view.widget.PictureScrollingView
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
-import com.tokopedia.product.detail.view.widget.*
-import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -600,7 +598,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
 
-        topAdsDetailSheet.editTopAdsClick = {
+        topAdsDetailSheet.detailTopAdsClick = {
             shopInfo?.let { shopInfo ->
                 val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
                         .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
@@ -608,7 +606,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                                 if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
 
-                context?.let { RouteManager.route(it, applink) }
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, applink), REQUEST_CODE_EDIT_PRODUCT)
+                }
             }
         }
 

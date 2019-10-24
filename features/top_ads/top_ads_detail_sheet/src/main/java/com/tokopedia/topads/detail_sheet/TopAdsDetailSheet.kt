@@ -1,17 +1,18 @@
 package com.tokopedia.topads.detail_sheet
 
+import android.app.Activity
 import android.content.Context
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
 import android.widget.Switch
-import android.widget.ToggleButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.detail_sheet.data.Data
 import com.tokopedia.topads.detail_sheet.data.Bulk
@@ -28,7 +29,7 @@ import javax.inject.Inject
 class TopAdsDetailSheet {
 
     private var dialog: BottomSheetDialog? = null
-    var editTopAdsClick: (() -> Unit)? = null
+    var detailTopAdsClick: (() -> Unit)? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -47,7 +48,9 @@ class TopAdsDetailSheet {
     }
 
     private fun onErrorGetAds(throwable: Throwable) {
-        throwable.printStackTrace()
+        dialog?.let {
+            NetworkErrorHelper.showSnackbar(it.context as Activity, throwable.localizedMessage)
+        }
     }
 
     private fun onSuccessGetAds(data: Data) {
@@ -83,7 +86,7 @@ class TopAdsDetailSheet {
                 RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
             }
             it.action_edit_ads.setOnClickListener{
-                editTopAdsClick?.invoke()
+                detailTopAdsClick?.invoke()
             }
 
         }
@@ -91,7 +94,7 @@ class TopAdsDetailSheet {
 
     fun onSuccessPost(data: Bulk) {
         dialog?.let {
-            it.toggle_switch_ads.isChecked = true
+            it.toggle_switch_ads.isChecked = data.action.equals("toggle_on")
             it.txt_active_status.setText(data.ads.get(0)?.statusDesc)
         }
     }
@@ -100,6 +103,7 @@ class TopAdsDetailSheet {
         dialog?.let {
             it.toggle_switch_ads.isChecked = false
             it.txt_active_status.setText(it.context.getString(R.string.tidak_aktif))
+            NetworkErrorHelper.showSnackbar(it.context as Activity, throwable.localizedMessage)
         }
     }
 
