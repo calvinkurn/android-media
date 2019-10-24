@@ -90,9 +90,17 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
-    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info"
+    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info?projectId={projectId}"
+
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
+
+    // UserIdentificationFormActivity
+    // tokopedia-android-internal://global/user-identification-form
+    @JvmField
+    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form?projectId={projectId}"
+    @JvmField
+    val PARAM_PROJECT_ID = "projectId"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
@@ -210,4 +218,13 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // PushNotificationCheckerActivity
+    // tokopedia-android-internal://global/push-notification-troubleshooter
+    @JvmField
+    val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 }

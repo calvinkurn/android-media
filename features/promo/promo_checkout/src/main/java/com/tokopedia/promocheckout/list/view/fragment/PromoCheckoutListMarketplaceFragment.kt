@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.data.IS_COUPON_ACTIVE
+import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData

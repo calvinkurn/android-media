@@ -68,6 +68,7 @@ class ThematicCardView : BaseCustomView {
     private var imageViewRating4: ImageView? = null
     private var imageViewRating5: ImageView? = null
     private var textViewReviewCount: Typography? = null
+    private var imageFreeOngkirPromo: ImageView? = null
     private var labelCredibility: Label? = null
     private var blankSpaceConfig = BlankSpaceConfig()
 
@@ -117,31 +118,36 @@ class ThematicCardView : BaseCustomView {
         imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
     }
 
-    private fun initProductImage(productImageUrl: String) {
+    fun setBlankSpaceConfig(blankSpaceConfig: BlankSpaceConfig){
+        this.blankSpaceConfig = blankSpaceConfig
+    }
+
+    fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageThumbs(context, it, productImageUrl)
         }
     }
 
-    private fun initShopName(shopName: String) {
+    fun initShopName(shopName: String) {
         textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
     }
 
-    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
-        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
-            it.text = labelPromoModel.title
-            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+    fun initLabelPromo(title: String, labelType: String) {
+        labelPromo.shouldShowWithAction(title.isNotEmpty()) {
+            it.text = title
+            it.setLabelType(getLabelTypeFromString(labelType))
         }
     }
 
-    private fun initProductName(productName: String) {
+    fun initProductName(productName: String) {
         if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
         textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
     }
 
-    private fun initLabelDiscount(discountPercentage: String) {
+    fun initLabelDiscount(discountPercentage: String) {
         val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
 
         labelDiscount.configureVisibilityWithBlankSpaceConfig(
@@ -155,7 +161,7 @@ class ThematicCardView : BaseCustomView {
                 && discountPercentage.trim() != "0"
     }
 
-    private fun initSlashedPrice(slashedPrice: String) {
+    fun initSlashedPrice(slashedPrice: String) {
         textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
                 slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
             it.text = slashedPrice
@@ -163,16 +169,8 @@ class ThematicCardView : BaseCustomView {
         }
     }
 
-    private fun initProductPrice(formattedPrice: String) {
+    fun initProductPrice(formattedPrice: String) {
         textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
-    }
-
-    private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
-        removeAllShopBadges()
-
-        linearLayoutShopBadges.shouldShowWithAction(hasAnyBadgesShown(shopBadgeList)) {
-            loopBadgesListToLoadShopBadgeIcon(shopBadgeList)
-        }
     }
 
     private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
@@ -224,10 +222,19 @@ class ThematicCardView : BaseCustomView {
         textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
     }
 
-    private fun initRating(ratingCount: Int) {
+    fun initRating(ratingCount: Int) {
         linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
                 ratingCount > 0, blankSpaceConfig.ratingCount) {
             setRating(ratingCount)
+        }
+    }
+
+    fun initFreeOngkir(isActive: Boolean = false, imageUrl: String = "") {
+        val shouldShowFreeOngkirImage = isActive && imageUrl.isNotEmpty()
+
+        imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
+                shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
+            ImageHandler.loadImageThumbs(context, it, imageUrl)
         }
     }
 

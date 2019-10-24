@@ -123,8 +123,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -935,11 +933,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
-    }
-
-    @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }
@@ -1080,11 +1073,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        return 0;
     }
 
     @Override
@@ -1252,24 +1240,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
     }
 
-    @Override
-    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, String deviceid) {
-        return null;
-    }
-
     public String getDeviceId(Context context) {
         return "";
-    }
-    
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity,
-                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
-        return null;
     }
 
     @Override

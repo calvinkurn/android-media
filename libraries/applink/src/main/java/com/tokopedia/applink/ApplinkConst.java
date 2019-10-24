@@ -146,7 +146,6 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
-
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
     String SELLER_INFO = "tokopedia://sellerinfo";
@@ -232,7 +231,11 @@ public interface ApplinkConst {
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
-    String KYC = "tokopedia://kyc";
+    String KYC_NO_PARAM = "tokopedia://kyc";
+    String KYC = "tokopedia://kyc?projectId={projectId}";
+
+    String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
+    String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -254,10 +257,9 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
-
-    String PUSHNOTIFCHECKER = "tokopedia://push-notif-checker";
-
+    String OVO_WALLET = "tokopedia://ovo";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -324,6 +326,8 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
+        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
+        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";
@@ -362,6 +366,7 @@ public interface ApplinkConst {
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
+        String EXTRA_IS_LEASING = "is_leasing";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
