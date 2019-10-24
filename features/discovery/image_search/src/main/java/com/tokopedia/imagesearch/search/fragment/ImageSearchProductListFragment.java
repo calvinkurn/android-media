@@ -212,9 +212,17 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                presenter.loadMoreData(page - 1);
+                if (isAllowLoadMore()) {
+                    presenter.loadMoreData(page - 1);
+                } else {
+                    adapter.hideLoading();
+                }
             }
         };
+    }
+
+    private boolean isAllowLoadMore() {
+        return adapter.isLoading();
     }
 
     private List<Visitable> initMappingProduct() {
