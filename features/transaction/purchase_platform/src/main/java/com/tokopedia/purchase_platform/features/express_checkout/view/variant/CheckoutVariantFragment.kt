@@ -27,7 +27,6 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.fingerprint.view.FingerPrintDialog
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -723,7 +722,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
             val bundle = Bundle()
             bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            bundle.putBoolean(GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            bundle.putBoolean(LogisticCommonConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
             intent.putExtras(bundle)
             startActivityForResult(intent, REQUEST_CODE_GEOLOCATION)
         }

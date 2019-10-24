@@ -106,7 +106,6 @@ dependencies {
     //-------------------------------------------------------------------//
     //--------- Feature Section (This section should be empty!!) --------//
     //-------------------------------------------------------------------//
-    implementation project(rootProject.ext.features.logisticaddaddress)
     // productCard & topAdsSdk is used for recommendation section on cart
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.topAdsSdk)
