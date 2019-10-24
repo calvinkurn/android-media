@@ -43,8 +43,6 @@ public interface AccountHomeRouter {
 
     void setPromoPushPreference(Boolean newValue);
 
-    Observable<WalletModel> getTokoCashAccountBalance();
-
     boolean isEnableInterestPick();
   
     void setNewsletterEmailPref(Boolean newValue);

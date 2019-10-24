@@ -27,7 +27,6 @@ import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -156,12 +155,6 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ShopCommonWSApi provideShopCommonWsApi(@Named("WS") Retrofit retrofit) {
-        return retrofit.create(ShopCommonWSApi.class);
-    }
-
-    @FeedPlusScope
-    @Provides
     ShopCommonApi provideShopCommonApi(@Named("TOME") Retrofit retrofit) {
         return retrofit.create(ShopCommonApi.class);
     }
@@ -170,9 +163,8 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
-                                                               ShopCommonWSApi shopCommonWS4Api,
                                                                UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
+        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
     }
 
     @FeedPlusScope

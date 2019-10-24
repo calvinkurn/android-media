@@ -511,11 +511,20 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickCourierCourierSelectionClickUbahKurir() {
-        sendEventCategoryAction(
+    public void eventClickCourierCourierSelectionClickUbahKurir(String label) {
+        sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_UBAH_KURIR
+                EventAction.CLICK_UBAH_KURIR,
+                label
+        );
+    }
+
+    public void eventViewImpressionOntimeDeliveryGuarantee(String message) {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                "impression" + message
         );
     }
 

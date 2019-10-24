@@ -1,9 +1,7 @@
 package com.tokopedia.core.network.di.module;
 
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
@@ -29,6 +27,7 @@ import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
+import com.tokopedia.url.TokopediaUrl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -97,14 +96,6 @@ public class NetModule {
     public Retrofit provideHadesRetrofit(@NoAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getHADES()).client(okHttpClient).build();
-    }
-
-    @AccountsQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,
-                                            Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS()).client(okHttpClient).build();
     }
 
     @YoutubeQualifier

@@ -49,7 +49,7 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, cartID: String?, pageTracking: Int?): PromoCheckoutListFlightFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListFlightFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putString(EXTRA_CART_ID, cartID ?: "")
             bundle.putInt(PAGE_TRACKING, pageTracking ?: 1)
