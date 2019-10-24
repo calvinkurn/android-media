@@ -1,17 +1,15 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
-import com.tokopedia.topads.sdk.view.SpacesItemDecoration
+import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 
 class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
@@ -27,10 +25,9 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
         view?.context?.let {
             adapter = FeaturedShopAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
-            recyclerView?.addItemDecoration(SpacesItemDecoration(2))
+            recyclerView?.addItemDecoration(GridSpacingItemDecoration(2, 8, false))
             recyclerView?.adapter = adapter
         }
-
     }
 
     override fun bind(element: OfficialFeaturedShopViewModel?) {

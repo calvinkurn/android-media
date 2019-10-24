@@ -11,6 +11,8 @@ data class Category(
         val title: String = "",
         @SerializedName("imageUrl")
         val icon: String = "",
+        @SerializedName("prefixUrl")
+        val prefixUrl: String = "",
         @SerializedName("url")
         val slug: String = "",
         @SerializedName("fullUrl")
@@ -24,6 +26,7 @@ data class Category(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             arrayListOf<Int>().apply {
                 parcel.readList(this, Int::class.java.classLoader)
             })
@@ -32,6 +35,7 @@ data class Category(
         parcel.writeString(categoryId)
         parcel.writeString(title)
         parcel.writeString(icon)
+        parcel.writeString(prefixUrl)
         parcel.writeString(slug)
         parcel.writeString(fullUrl)
         parcel.writeList(categories)

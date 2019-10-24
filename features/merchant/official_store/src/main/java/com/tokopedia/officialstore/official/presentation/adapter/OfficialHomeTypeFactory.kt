@@ -6,6 +6,8 @@ interface OfficialHomeTypeFactory {
 
     fun type(officialBannerViewModel: OfficialBannerViewModel): Int
 
+    fun type(officialBenefitViewModel: OfficialBenefitViewModel): Int
+
     fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int
 
     fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int

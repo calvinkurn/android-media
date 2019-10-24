@@ -4,14 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.DynamicChannelViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialBannerViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialFeaturedShopViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.DynamicChannelViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class OfficialHomeAdapterTypeFactory(
@@ -20,6 +14,9 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
         return OfficialBannerViewHolder.LAYOUT
+    }
+    override fun type(officialBenefitViewModel: OfficialBenefitViewModel): Int {
+        return OfficialBenefitViewHolder.LAYOUT
     }
 
     override fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int {
@@ -37,6 +34,7 @@ class OfficialHomeAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
+            OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelViewHolder.LAYOUT -> DynamicChannelViewHolder(parent)
             ProductRecommendationViewModel.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)

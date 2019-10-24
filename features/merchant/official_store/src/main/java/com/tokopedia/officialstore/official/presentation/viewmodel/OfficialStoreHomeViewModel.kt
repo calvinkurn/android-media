@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
+import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
@@ -31,6 +33,7 @@ import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreBannersUseCase: GetOfficialStoreBannerUseCase,
+        private val getOfficialStoreBenefitUseCase: GetOfficialStoreBenefitUseCase,
         private val getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase,
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
         private val getRecommendationUseCase: GetOfficialStoreRecommendationUseCase,
@@ -46,6 +49,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>> by lazy {
         _officialStoreBannersResult
+    }
+
+    val officialStoreBenefitsResult: LiveData<Result<OfficialStoreBenefits>> by lazy {
+        _officialStoreBenefitResult
     }
 
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>> by lazy {
@@ -72,6 +79,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreBanners>>()
     }
 
+    private val _officialStoreBenefitResult by lazy {
+        MutableLiveData<Result<OfficialStoreBenefits>>()
+    }
+
     private val _officialStoreFeaturedShopResult by lazy {
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
@@ -92,13 +103,22 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<WishlistModel>>()
     }
 
-    fun loadFirstData(category: Category?, page: Int) {
+    fun loadFirstData(category: Category?) {
         launchCatchError(block = {
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(category?.slug?: "").await())
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-            _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel("os-handphone").await())
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
+            /**
+             * Ian told me to getting data by prefixUrl+slug
+             */
+            val slug = "${category?.prefixUrl}${category?.slug}"
 
+            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(slug).await())
+            _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
+//            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
+            _officialStoreDynamicChannelResult.value = Success(getOfficialStoreDynamicChannel(slug).await())
+            /**
+             * I just realize, that we have load product recomm when user scroll (if user doesn't scroll product recom doesnt have to load data)
+              */
+            // _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString(), 1).await())
         }) {
             // TODO just ignore or handle?
         }
@@ -112,6 +132,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * can we just use async? or can we use another kotlin scope? - i have to research more deep.
+     */
     private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
         return async(Dispatchers.IO) {
             var banner = OfficialStoreBanners()
@@ -123,6 +146,18 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 _officialStoreFeaturedShopResult.value = Fail(t)
             }
             banner
+        }
+    }
+
+    private fun getOfficialStoreBenefit(): Deferred<OfficialStoreBenefits> {
+        return async(Dispatchers.IO) {
+            var benefits = OfficialStoreBenefits()
+            try {
+                benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+            }catch (t: Throwable) {
+                _officialStoreBenefitResult.value = Fail(t)
+            }
+            benefits
         }
     }
 

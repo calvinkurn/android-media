@@ -99,6 +99,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
+        observeBenefit()
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
@@ -109,7 +110,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
     private fun refreshData() {
         adapter?.clearAllElements()
         endlesScrollListener?.resetState()
-        viewModel.loadFirstData(category, DEFAULT_PAGE)
+        viewModel.loadFirstData(category)
     }
 
     private fun observeBannerData() {
@@ -123,6 +124,22 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                     if (BuildConfig.DEBUG)
                         it.throwable.printStackTrace()
                 }
+            }
+        })
+    }
+
+    private fun observeBenefit() {
+        viewModel.officialStoreBenefitsResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    OfficialHomeMapper.mappingBenefit(it.data, adapter)
+                }
+                is Fail -> {
+                    if (BuildConfig.DEBUG)
+                        it.throwable.printStackTrace()
+                }
+
             }
         })
     }
@@ -200,7 +217,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
-                        if (dy > 0) {
+                        if (dy > 5) {
                             scrollListener.onScrollUp()
                         } else {
                             scrollListener.onScrollDown()
