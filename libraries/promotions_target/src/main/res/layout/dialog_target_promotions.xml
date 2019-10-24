@@ -21,9 +21,9 @@
             android:id="@+id/viewFlipper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_marginBottom="@dimen/dp_16"
             app:layout_constraintBottom_toTopOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -50,11 +50,15 @@
         </ViewFlipper>
 
         <android.support.v7.widget.AppCompatImageView
-            android:translationX="100dp"
             android:id="@+id/imageViewRight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
+            android:translationX="100dp"
             app:layout_constraintBottom_toTopOf="@+id/tvTitleRight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

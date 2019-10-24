@@ -48,6 +48,7 @@ import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -95,6 +96,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var retryCount = 0
     private var skipBtnAction = false
     private var screenWidth = 0f
+    private var IS_DISMISSED = false
+
 
     companion object {
         const val PARAM_WAITING_FOR_LOGIN = "PARAM_WAITING_FOR_LOGIN"
@@ -106,7 +109,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 is Success -> {
                     setUiForSuccessClaimGratification(it.data)
                 }
-                is Error -> {
+                is Error,
+                is Fail -> {
                     setErrorUiForPopGratification()
                 }
             }
@@ -126,16 +130,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     enum class TargetPromotionsCouponType {
         SINGLE_COUPON,
         MULTIPLE_COUPON,
-        COUPON_ACTION_TAKEN,
         COUPON_ERROR
     }
 
     fun getLayout(couponUiType: TargetPromotionsCouponType): Int {
         uiType = couponUiType
-        return when (couponUiType) {
-            TargetPromotionsCouponType.SINGLE_COUPON -> R.layout.dialog_target_promotions
-            else -> R.layout.dialog_target_promotions
-        }
+        return R.layout.dialog_target_promotions
     }
 
     fun show(activityContext: Context,
@@ -150,10 +150,10 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
         bottomSheet.setOnDismissListener {
-            //            GratificationSubscriber.waitingForLogin.set(false)
             if (!TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply) {
                 viewModel.autoApply(couponCodeAfterClaim!!)
             }
+            IS_DISMISSED = true
         }
         bottomSheetDialog = bottomSheet
         this.claimCouponApi = claimCouponApi
@@ -206,30 +206,29 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         this.data = data
         this.gratificationData = gratificationData
         initInjections(activityContext)
-        setUiData(data, couponDetailResponse)
-        setListeners(data, activityContext)
+        setUiData(couponDetailResponse)
+        setListeners(activityContext)
     }
 
     private fun initialAnimation() {
-
         rightViewList.forEach {
             it.translationX = screenWidth
             it.alpha = 0f
         }
     }
 
-
-    private fun setUiData(data: GratificationDataContract, couponDetailResponse: GetCouponDetailResponse) {
+    private fun setUiData(couponDetailResponse: GetCouponDetailResponse) {
 
         if (data is GetPopGratificationResponse) {
-            tvTitle.text = data.popGratification?.title
-            tvSubTitle.text = data.popGratification?.text
-            originalBtnText = data.popGratification?.popGratificationActionButton?.text
+            val couponDetail = data as GetPopGratificationResponse
+            tvTitle.text = couponDetail.popGratification?.title
+            tvSubTitle.text = couponDetail.popGratification?.text
+            originalBtnText = couponDetail.popGratification?.popGratificationActionButton?.text
             btnAction.text = originalBtnText
 
 
             //show single/multiple coupon
-            val popGratificationBenefits = data.popGratification?.popGratificationBenefits
+            val popGratificationBenefits = couponDetail.popGratification?.popGratificationBenefits
             val multipleCoupon = popGratificationBenefits != null && popGratificationBenefits.isNotEmpty() && popGratificationBenefits[0]?.referenceID != null && popGratificationBenefits[0]?.referenceID != 0
             if (multipleCoupon) {
                 uiType = TargetPromotionsCouponType.MULTIPLE_COUPON
@@ -247,8 +246,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
             } else {
 
-                val imageUrl = data.popGratification?.imageUrl
-                val imageUrlMobile = data.popGratification?.imageUrlMobile
+                val imageUrl = couponDetail.popGratification?.imageUrl
+                val imageUrlMobile = couponDetail.popGratification?.imageUrlMobile
                 val showError = !TextUtils.isEmpty(imageUrl) || !TextUtils.isEmpty(imageUrlMobile)
                 if (showError) {
                     val urlToDisplay = if (TextUtils.isEmpty(imageUrl)) imageUrlMobile else imageUrl
@@ -259,19 +258,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 }
                 viewFlipper.displayedChild = CONTAINER_IMAGE
             }
-
         }
-
     }
 
     fun onActivityResumeIfWaitingForLogin() {
-//        if (GratificationSubscriber.waitingForLogin.get()) {
-//            GratificationSubscriber.waitingForLogin.set(false)
-//            btnAction.performClick()
-//        } else {
-//            //Do nothing
-//        }
-//        subscriber.waitingForLoginActivity?.clear()
+        if (!originallyLoggedIn && !IS_DISMISSED) {
+            skipBtnAction = false
+            btnAction.performClick()
+        }
     }
 
     private fun setErrorUiForPopGratification() {
@@ -293,24 +287,19 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun setUiForSuccessClaimGratification(data: ClaimPopGratificationResponse) {
-//        viewFlipper.displayedChild = CONTAINER_IMAGE
-
-//        tvTitle.text = data.popGratificationClaim?.title
-//        tvSubTitle.text = data.popGratificationClaim?.text
         tvTitleRight.text = data.popGratificationClaim?.title
         tvSubTitleRight.text = data.popGratificationClaim?.text
 
-
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
-//        imageView.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
-        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrlMobile)
+        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrl)
 
         performAnimationToGotoClaimUI()
         couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode
+        this.data = data
     }
 
-    private fun setListeners(data: GratificationDataContract, activityContext: Context) {
+    private fun setListeners(activityContext: Context) {
 
         viewModel.autoApplyLiveData.observe(activityContext as AppCompatActivity, Observer { it ->
             when (it) {
@@ -323,16 +312,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         })
 
         btnAction.setOnClickListener {
-            //            val r = ClaimPopGratificationResponse(PopGratificationClaim(title = "Title",
-//                    text = "Subtitle",
-//                    popGratificationActionButton = PopGratificationActionButton(text = "ActionButton"),
-//                    dummyCouponCode = "123",
-//                    imageUrlMobile = "https://dummyimage.com/280x210/000/fff"))
-//            setUiForSuccessClaimGratification(r)
-
-//            val loginIntent = RouteManager.getIntent(activityContext.applicationContext, ApplinkConst.LOGIN)
-//            activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
-
             if (!skipBtnAction) {
 
                 val retryAvailable = retryCount < MAX_RETRY_COUNT
@@ -341,9 +320,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     toggleProgressBar(true)
                     toggleBtnText(false)
                     if (data is GetPopGratificationResponse) {
-                        performActionToClaimCoupon(data, activityContext)
+                        performActionToClaimCoupon(data as GetPopGratificationResponse, activityContext)
                     } else if (data is ClaimPopGratificationResponse) {
-                        performActionAfterCouponIsClaimed(activityContext, data)
+                        performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse)
                     } else {
                         shouldCallAutoApply = false
                         bottomSheetDialog.dismiss()
@@ -399,12 +378,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         tvTitleRight.animate().setStartDelay(startDelay + 100L).setDuration(translateAnimationDuration).translationX(0f)
         tvSubTitleRight.animate().setStartDelay(startDelay + 150L).setDuration(translateAnimationDuration).translationX(0f)
 
-
-//        val vg = viewFlipper.parent.parent.parent as ViewGroup
-//        val touchOutside: View = vg.findViewById(R.id.touch_outside)
-//        touchOutside.setOnClickListener {
-//            viewModel.autoApply(couponCodeAfterClaim)
-//        }
     }
 
     private fun performActionAfterCouponIsClaimed(activityContext: Activity, data: ClaimPopGratificationResponse) {
@@ -433,21 +406,16 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
                 val popGratificationBenefits = data.popGratification?.popGratificationBenefits
                 if (popGratificationBenefits != null && popGratificationBenefits.isNotEmpty()) {
-//                    viewModel.claimCoupon(gratificationData.popSlug, gratificationData.page)
                     val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
                     claimCouponApi.claimGratification(claimPayload, couponClaimResponseCallback)
                 }
             }
         } else {
-//            subscriber.waitingForLoginActivity = WeakReference(activityContext)
-//            GratificationSubscriber.waitingForLogin.set(true)
             dropKeysFromBundle(ApplinkConst.LOGIN, activityContext.intent)
             val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
             activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
-//            RouteManager.route(activityContext, ApplinkConst.LOGIN)
-            activityContext.intent?.extras?.putBoolean(PARAM_WAITING_FOR_LOGIN, true)
+            activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
             shouldCallAutoApply = false
-            bottomSheetDialog.dismiss()
         }
     }
 

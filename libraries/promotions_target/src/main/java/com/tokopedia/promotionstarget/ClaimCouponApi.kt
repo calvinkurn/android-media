@@ -37,7 +37,10 @@ class ClaimCouponApi(val scope: CoroutineScope,
 
         val ceh = CoroutineExceptionHandler { _, exception ->
             println("Caught $exception")
-            responseCallback.onError(Throwable("UnknownError"))
+            GlobalScope.launch(Dispatchers.Main) {
+                responseCallback.onError(Throwable("UnknownError"))
+            }
+
         }
         scope.launch(Dispatchers.IO + ceh) {
             supervisorScope {

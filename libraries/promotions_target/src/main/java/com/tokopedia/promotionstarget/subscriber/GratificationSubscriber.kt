@@ -68,12 +68,12 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 //            if (!isAllowedActivity) {
 //            Do nothingsubscriber.waitingForLoginActivity
 //            } else {
-                val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
-                if (gratificationData != null) {
-                    cancelAll()
-                    showGratificationDialog(activity, gratificationData)
-                }
+            val gratificationData = shouldOpenTargetedPromotionsDialog(activity)
+            if (gratificationData != null) {
+                cancelAll()
+                showGratificationDialog(activity, gratificationData)
             }
+        }
 //        }
     }
 
@@ -89,9 +89,12 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     override fun onActivityResumed(activity: Activity?) {
         super.onActivityResumed(activity)
-//        if (waitingForLogin.get()) {
-//            mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
-//        }
+        if (activity != null) {
+            val waitingForLogin = activity.intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+            if (waitingForLogin) {
+                mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
+            }
+        }
     }
 
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?): GratificationData? {

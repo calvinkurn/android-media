@@ -1,5 +1,5 @@
 query ClaimPopGratification($campaignSlug:String!, $page:String!){
-  popGratificationClaim(CampaignSlug: $campaignSlug, Page: $page) {
+  popGratificationClaim(PopGratificationClaimInput:{CampaignSlug: $campaignSlug, Page: $page}) {
     resultStatus {
       code
       message

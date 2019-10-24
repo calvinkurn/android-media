@@ -26,7 +26,7 @@ class PromoTargetModule {
     @Provides
     @PromoTargetScope
     @Named(CLAIM_POP_GRATIFICATION)
-    fun provideClaimPopGratification(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_pop_gratification)
+    fun provideClaimPopGratification(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.query_claim_pop_gratification)
 
     @Provides
     @PromoTargetScope
