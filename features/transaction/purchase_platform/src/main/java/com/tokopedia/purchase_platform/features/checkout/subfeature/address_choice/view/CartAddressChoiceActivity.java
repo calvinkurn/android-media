@@ -47,7 +47,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final String EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX";
     public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
-    public static final String PARAM_TOKEN = "PARAM TOKEN";
+    public static final String KERO_TOKEN = "token";
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
@@ -155,14 +155,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 if (isAddNewAddressEnabled()) {
                     mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
-                    startActivityForResult(PinpointMapActivity.newInstance(this,
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, false, false, null,
-                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+                    intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                    intent.putExtra(KERO_TOKEN, token);
+                    startActivityForResult(intent, LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
                     intent = RouteManager.getIntent(this,
                             ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "13");
-                    intent.putExtra(PARAM_TOKEN, token);
+                    intent.putExtra(KERO_TOKEN, token);
                     startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
                 }
 
@@ -172,7 +171,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 AddressModelMapper mapper = new AddressModelMapper();
                 intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V1, "12");
                 intent.putExtra(PARAM_ADDRESS_MODEL, mapper.transform(currentAddress));
-                intent.putExtra(PARAM_TOKEN, token);
+                intent.putExtra(KERO_TOKEN, token);
                 startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
                 break;
             default:

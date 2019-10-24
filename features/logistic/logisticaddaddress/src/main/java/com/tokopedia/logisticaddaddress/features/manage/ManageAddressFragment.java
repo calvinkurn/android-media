@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
@@ -41,6 +43,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_NAME_USER_NEW;
@@ -205,10 +208,9 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         if (data == null) {
             if (isAddNewAddressEnabled()) {
                 AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
-                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                        false, false, false, null,
-                        false), REQUEST_CODE_PARAM_CREATE);
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                intent.putExtra(KERO_TOKEN, token);
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE);
 
             } else {
                 startActivityForResult(

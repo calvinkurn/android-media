@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
@@ -48,10 +49,11 @@ public class AddAddressActivity extends BaseSimpleActivity {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             Bundle oldBundle = getIntent().getExtras();
-            AddressModel model = oldBundle.getParcelable(PARAM_ADDRESS_MODEL);
+            AddressModel model = oldBundle.getParcelable(EDIT_PARAM);
             if (model != null) {
                 bundle.putParcelable(EDIT_PARAM, model.convertToDestination());
             }
+            bundle.putInt(EXTRA_INSTANCE_TYPE, oldBundle.getInt(EXTRA_INSTANCE_TYPE));
             bundle.putParcelable(KERO_TOKEN, oldBundle.getParcelable(KERO_TOKEN));
         }
 
@@ -134,8 +136,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
     ) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
-        if (data != null)
-            bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
+        bundle.putParcelable(EDIT_PARAM, data);
         bundle.putParcelable(KERO_TOKEN, token);
         bundle.putInt(EXTRA_INSTANCE_TYPE, typeInstance);
         intent.putExtras(bundle);
