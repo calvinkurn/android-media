@@ -49,4 +49,9 @@ internal class CarouselProductCardAdapter(
         super.onAttachedToRecyclerView(recyclerView)
         this.recyclerView = recyclerView
     }
+
+    fun updateWishlist(position: Int, wishlist: Boolean) {
+        productCardModelList[position].isWishlisted = wishlist
+        notifyItemChanged(position)
+    }
 }

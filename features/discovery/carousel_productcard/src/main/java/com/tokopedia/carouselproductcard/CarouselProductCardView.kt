@@ -16,6 +16,9 @@ import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
 class CarouselProductCardView: BaseCustomView {
 
+    private var carouselLayoutManager: RecyclerView.LayoutManager? = null
+    private var carouselAdapter: CarouselProductCardAdapter? = null
+
     constructor(context: Context): super(context) {
         init()
     }
@@ -41,10 +44,14 @@ class CarouselProductCardView: BaseCustomView {
      * @param parentView is used to measure view according to its parent.
      * @param productCardModelList collection of product model to define max height.
      * @param isScrollable differentiate between carousel and non carousel recyclerview.
+     * @param activity mandatory if isScrollable is false, to measure device width.
+     * @param parentView mandatory if isScrollable is false, to measure device width.
+     * @param deviceWidth alternative if you provide your own view total width.
      */
     fun initCarouselProductCardView(
-            activity: Activity?,
-            parentView: View,
+            activity: Activity? = null,
+            deviceWidth: Int = 0,
+            parentView: View? = null,
             productCardModelList: List<ProductCardModel>,
             isScrollable: Boolean = true,
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
@@ -61,20 +68,35 @@ class CarouselProductCardView: BaseCustomView {
             it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
 
-        activity?.run {
-            measureParentView(activity, parentView)
+        parentView?.run {
+            if (deviceWidth > 0) {
+                measureParentView(deviceWidth, this)
+            } else if (activity != null) {
+                val display = activity.windowManager.defaultDisplay
+                val size = Point()
+                display.getSize(size)
+                measureParentView(size.x, this)
+            }
         }
-        carouselProductCardRecyclerView?.layoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-        carouselProductCardRecyclerView?.adapter = CarouselProductCardAdapter(
+
+        carouselAdapter = CarouselProductCardAdapter(
                 productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
+        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
+
+        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
+        carouselProductCardRecyclerView?.adapter = carouselAdapter
     }
 
-    private fun measureParentView(activity: Activity, parentView: View) {
-        val display = activity.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
+    /**
+     * Use this function to update wishlist
+     */
+    fun updateWishlist(position: Int, isWishlist: Boolean) {
+        carouselAdapter?.updateWishlist(position, isWishlist)
+    }
+
+    private fun measureParentView(maxWidth: Int, parentView: View) {
         parentView.measure(
-                MeasureSpec.makeMeasureSpec(size.x, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.UNSPECIFIED
         )
     }
