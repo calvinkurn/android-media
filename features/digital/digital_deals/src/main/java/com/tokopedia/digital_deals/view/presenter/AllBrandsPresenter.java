@@ -9,15 +9,12 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetAllCategoriesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
-import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
@@ -75,8 +72,8 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
-        } else if (id == R.id.tv_see_all) {
+        if (id == com.tokopedia.digital_deals.R.id.search_input_view) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_see_all) {
         } else {
             getView().getActivity().onBackPressed();
         }

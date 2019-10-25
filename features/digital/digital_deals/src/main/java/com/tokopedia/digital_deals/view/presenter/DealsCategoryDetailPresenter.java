@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
@@ -34,7 +33,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -42,7 +40,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
 
 ;
@@ -95,7 +92,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     @Override
     public boolean onOptionMenuClick(int id) {
-//        if (id == R.id.action_menu_search) {
+//        if (id == com.tokopedia.digital_deals.R.id.action_menu_search) {
 //            setTopDeals();
 //            getView().checkLocationStatus();
 //        } else {

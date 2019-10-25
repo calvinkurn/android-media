@@ -29,7 +29,6 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -143,7 +142,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_category_brands, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_category_brands, container, false);
         setUpVariables(view);
         return view;
     }
@@ -156,10 +155,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     private void setUpVariables(View view) {
-        recyclerview = view.findViewById(R.id.rv_brand_items);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        noContent = view.findViewById(R.id.no_content);
-        baseMainContent = view.findViewById(R.id.base_main_content);
+        recyclerview = view.findViewById(com.tokopedia.digital_deals.R.id.rv_brand_items);
+        progressBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
+        noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
         layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
@@ -173,7 +172,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_menu_search);
+        MenuItem item = menu.findItem(com.tokopedia.digital_deals.R.id.action_menu_search);
         if (item != null)
             item.setVisible(false);
     }

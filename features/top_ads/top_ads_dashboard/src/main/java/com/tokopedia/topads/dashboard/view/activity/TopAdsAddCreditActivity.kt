@@ -30,7 +30,7 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onBackPressed() {
         if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
-            val homeIntent = RouteManager.getIntent(this, ApplinkConst.SellerApp.SELLER_APP_HOME)
+            val homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME)
             startActivity(homeIntent)
             finish()
         } else {

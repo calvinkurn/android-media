@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,14 +32,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
-import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.digital_deals.view.model.ValuesItem;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.locationmanager.DeviceLocation;
@@ -322,7 +324,7 @@ public class Utils {
         if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(mapIntent);
         } else {
-            Toast.makeText(context, context.getResources().getString(R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getResources().getString(com.tokopedia.digital_deals.R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -334,19 +336,19 @@ public class Utils {
         textView.setVisibility(View.INVISIBLE);
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
-        TextView tvmsg = snackView.findViewById(R.id.tv_msg);
+        View snackView = inflater.inflate(com.tokopedia.digital_deals.R.layout.custom_location_change_snackbar, null);
+        TextView tvmsg = snackView.findViewById(com.tokopedia.digital_deals.R.id.tv_msg);
         if (locationToast) {
-            String str = context.getResources().getString(R.string.location_changed_to);
+            String str = context.getResources().getString(com.tokopedia.digital_deals.R.string.location_changed_to);
             str += text.toUpperCase();
-            tvmsg.setText(getLocationText(str, context.getResources().getColor(R.color.black_40)));
+            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.digital_deals.R.color.black_40)));
         } else {
-            snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_50));
-            snackView.findViewById(R.id.divider).setBackgroundColor(context.getResources().getColor(R.color.red_error));
+            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.digital_deals.R.color.red_50));
+            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.digital_deals.R.color.red_error));
             tvmsg.setText(text);
         }
 
-        TextView okbtn = snackView.findViewById(R.id.snack_ok);
+        TextView okbtn = snackView.findViewById(com.tokopedia.digital_deals.R.id.snack_ok);
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -368,7 +370,7 @@ public class Utils {
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
-        ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl, desktopUrl);
+        shareDeal(context, uri, name, imageUrl, desktopUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -420,6 +422,35 @@ public class Utils {
         sharedPreferencesEditor.apply();
     }
 
+    private void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType("")
+                .setName(name)
+                .setUri(uri)
+                .setDesktopUrl(desktopUrl)
+                .setImgUri(imageUrl)
+                .build();
+
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        Intent intent = Intent.createChooser(share, context.getResources().getString(com.tokopedia.digital_deals.R.string.share_link));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context.startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
+
+    }
     public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper, CurrentLocationCallBack currentLocationCallBack) {
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,

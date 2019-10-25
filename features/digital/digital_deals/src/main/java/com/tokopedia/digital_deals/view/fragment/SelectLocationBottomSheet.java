@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsPopularLocationAdapter;
@@ -94,35 +93,34 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View locationView = inflater.inflate(R.layout.fragment_change_location, container, false);
-        nestedScrollView = locationView.findViewById(R.id.nested_scroll_view);
-        rvSearchResults = locationView.findViewById(R.id.rv_city_results);
-        rvLocationResults = locationView.findViewById(R.id.rv_location_results);
-        detectLocation = locationView.findViewById(R.id.detect_current_location);
-        detectLocationLayout = locationView.findViewById(R.id.cl_detect_current_location);
-        crossIcon = locationView.findViewById(R.id.cross_icon_bottomsheet);
-        titletext = locationView.findViewById(R.id.location_bottomsheet_title);
-        searchInputView = locationView.findViewById(R.id.search_input_view);
-        popularCityTitle = locationView.findViewById(R.id.popular_city_heading);
-        noLocationLayout = locationView.findViewById(R.id.no_location);
-        popularLocationTitle = locationView.findViewById(R.id.popular_location_heading);
+        View locationView = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_change_location, container, false);
+        nestedScrollView = locationView.findViewById(com.tokopedia.digital_deals.R.id.nested_scroll_view);
+        rvSearchResults = locationView.findViewById(com.tokopedia.digital_deals.R.id.rv_city_results);
+        rvLocationResults = locationView.findViewById(com.tokopedia.digital_deals.R.id.rv_location_results);
+        crossIcon = locationView.findViewById(com.tokopedia.digital_deals.R.id.cross_icon_bottomsheet);
+        titletext = locationView.findViewById(com.tokopedia.digital_deals.R.id.location_bottomsheet_title);
+        searchInputView = locationView.findViewById(com.tokopedia.digital_deals.R.id.search_input_view);
+        popularCityTitle = locationView.findViewById(com.tokopedia.digital_deals.R.id.popular_city_heading);
+        noLocationLayout = locationView.findViewById(com.tokopedia.digital_deals.R.id.no_location);
+        popularLocationTitle = locationView.findViewById(com.tokopedia.digital_deals.R.id.popular_location_heading);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), this, mAdapterCallbacks, getArguments().getParcelable(Utils.LOCATION_OBJECT), true);
         this.selectedLocation = selectedLocation;
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
         searchInputView.setResetListener(this);
+        searchInputView.setSearchHint(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_search_hint));
+        mainContent = locationView.findViewById(com.tokopedia.digital_deals.R.id.mainContent);
+        shimmerLayout = locationView.findViewById(com.tokopedia.digital_deals.R.id.shimmer_layout);
+        detectLocation = locationView.findViewById(com.tokopedia.digital_deals.R.id.detect_current_location);
+        detectLocationLayout = locationView.findViewById(com.tokopedia.digital_deals.R.id.cl_detect_current_location);
         detectLocationLayout.setOnClickListener(this);
-        searchInputView.setSearchHint(getContext().getResources().getString(R.string.location_search_hint));
-        mainContent = locationView.findViewById(R.id.mainContent);
-        shimmerLayout = locationView.findViewById(R.id.shimmer_layout);
 
+        titletext.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.select_location_bottomsheet_title));
+        crossIcon.setVisibility(View.VISIBLE);
         permissionCheckerHelper = new PermissionCheckerHelper();
         locationSettingBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         location = getArguments().getParcelable(Utils.LOCATION_OBJECT);
-
-        titletext.setText(getContext().getResources().getString(R.string.select_location_bottomsheet_title));
-        crossIcon.setVisibility(View.VISIBLE);
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -324,7 +322,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.cl_detect_current_location) {
+        if (id == com.tokopedia.digital_deals.R.id.cl_detect_current_location) {
             if (!isDeniedFirstTime) {
                 permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
@@ -405,20 +403,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     }
 
     public void saveLocation(Context context, double latitude, double longitude) {
-//        SharedPreferences.Editor editor;
-//        if (context != null && !TextUtils.isEmpty(Utils.KEY_LOCATION)) {
-//            sharedPrefs = context.getSharedPreferences(Utils.KEY_LOCATION, Context.MODE_PRIVATE);
-//            editor = sharedPrefs.edit();
-//        } else {
-//            return;
-//        }
-        Log.d("Naveen", "Lat is "+ String.valueOf(latitude));
-        Log.d("Naveen", "Long is "+ String.valueOf(longitude));
-
         mPresenter.getNearestLocation(String.format("%s,%s", String.valueOf(latitude), String.valueOf(longitude)));
-//        editor.putString(Utils.KEY_LOCATION_LAT, String.valueOf(latitude));
-//        editor.putString(Utils.KEY_LOCATION_LONG, String.valueOf(longitude));
-//        editor.apply();
     }
 
     public interface SelectedLocationListener {

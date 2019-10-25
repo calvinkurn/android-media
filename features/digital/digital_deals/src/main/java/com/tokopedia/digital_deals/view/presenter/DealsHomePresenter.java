@@ -15,10 +15,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
@@ -43,7 +42,6 @@ import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
-import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
@@ -207,7 +205,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view || id == R.id.action_menu_search) {
+        if (id == com.tokopedia.digital_deals.R.id.search_input_view || id == com.tokopedia.digital_deals.R.id.action_menu_search) {
             dealsAnalytics.sendSearchClickedEvent(getView().getSearchInputText());
             if (userSession.isLoggedIn()) {
                 sendNSQEvent(userSession.getUserId(), "search");
@@ -216,29 +214,28 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_location_name || id == com.tokopedia.digital_deals.R.id.toolbar_title) {
             getView().startLocationFragment();
-        } else if (id == R.id.action_menu_favourite) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_menu_favourite) {
 
-        } else if (id == R.id.action_promo) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_promo) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
-        } else if (id == R.id.action_booked_history) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_booked_history) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
             if (userSession.isLoggedIn()) {
                 getView().startOrderListActivity();
             } else {
-                Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
+                Intent intent = RouteManager.getIntent(getView().getActivity(), ApplinkConst.LOGIN);
                 getView().navigateToActivityRequest(intent, getView().getRequestCode());
             }
-        } else if (id == R.id.action_faq) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
-        } else if (id == R.id.tv_see_all_brands) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_see_all_brands) {
             dealsAnalytics.sendAllBrandsClickEvent(DealsAnalytics.SEE_ALL_BRANDS_HOME);
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
@@ -491,8 +488,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryUrl("");
-        categoriesModel.setTitle(getView().getActivity().getResources().getString(R.string.all_brands));
-        categoriesModel.setName(getView().getActivity().getResources().getString(R.string.all_brands));
+        categoriesModel.setTitle(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.all_brands));
+        categoriesModel.setName(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.all_brands));
         categoriesModel.setPosition(0);
         categoriesModels.add(0, categoriesModel);
         return categoryList;

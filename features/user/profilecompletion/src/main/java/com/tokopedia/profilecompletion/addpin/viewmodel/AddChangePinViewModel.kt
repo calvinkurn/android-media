@@ -52,6 +52,8 @@ class AddChangePinViewModel @Inject constructor(
     val skipOtpPinResponse: LiveData<Result<SkipOtpPinData>>
         get() = mutableSkipOtpPinResponse
 
+    val loadingState = MutableLiveData<Boolean>()
+
     fun addPin(token: String){
         rawQueries[ProfileCompletionQueryConstant.MUTATION_CREATE_PIN]?.let { query ->
             val params = mapOf(ProfileCompletionQueryConstant.PARAM_TOKEN to token)
@@ -152,6 +154,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun getStatusPin(){
+        loadingState.postValue(true)
         rawQueries[ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN]?.let { query ->
             getStatusPinUseCase.setTypeClass(StatusPinPojo::class.java)
             getStatusPinUseCase.setGraphqlQuery(query)
@@ -163,6 +166,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     private fun onErrorGetStatusPin(): (Throwable) -> Unit {
+        loadingState.postValue(false)
         return {
             it.printStackTrace()
             mutableGetStatusPinResponse.value = Fail(it)
@@ -170,6 +174,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     private fun onSuccessGetStatusPin(): (StatusPinPojo) -> Unit {
+        loadingState.postValue(false)
         return {
             when {
                 it.data.errorMessage.isEmpty() -> mutableGetStatusPinResponse.value = Success(it.data)
@@ -254,6 +259,6 @@ class AddChangePinViewModel @Inject constructor(
     }
   
     companion object {
-        const val OTP_TYPE_SKIP_VALIDATION = 125
+        const val OTP_TYPE_SKIP_VALIDATION = 124
     }
 }

@@ -1,8 +1,6 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
@@ -12,7 +10,6 @@ import com.tokopedia.usecase.UseCase;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 2/8/18.
