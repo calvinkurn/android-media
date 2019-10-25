@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,8 +20,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Outlet;
@@ -43,8 +41,6 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
-import com.tokopedia.digital_deals.view.model.ValuesItem;
-import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -467,13 +463,12 @@ public class Utils {
             @Override
             public Unit invoke(DeviceLocation deviceLocation) {
                 currentLocationCallBack.setCurrentLocation(deviceLocation);
-//                saveLocation(activity, deviceLocation.getLatitude(), deviceLocation.getLongitude());
                 return null;
             }
         };
     }
 
     public String getLocationErrorMessage(Context context) {
-        return context.getResources().getString(R.string.location_error_message);
+        return context.getResources().getString(com.tokopedia.digital_deals.R.string.location_error_message);
     }
 }

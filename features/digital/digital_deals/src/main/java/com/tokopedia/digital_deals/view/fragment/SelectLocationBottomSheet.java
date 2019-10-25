@@ -15,7 +15,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,6 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.RequestParams;
-
 
 import java.util.List;
 
@@ -177,7 +175,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
 
     @Override
     public void setDefaultLocation() {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
         });
         selectedLocationListener.setDefaultLocationOnHomePage();
         getFragmentManager().popBackStack();
@@ -238,7 +236,6 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     @Override
     protected void initInjector() {
         getComponent(DealsComponent.class).inject(this);
-//        mPresenter.attachView(this);
     }
 
     @Override
@@ -327,23 +324,20 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
                 permissionCheckerHelper.checkPermission(SelectLocationBottomSheet.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(String permissionText) {
-                        Log.d("Naveen", "permission denied");
                         isDeniedFirstTime = true;
                         selectedLocationListener.onLocationItemUpdated(true);
                     }
 
                     @Override
                     public void onNeverAskAgain(String permissionText) {
-                        Log.d("Naveen", "Never ask again"+ permissionText);
                     }
 
                     @Override
                     public void onPermissionGranted() {
-                        Log.d("Naveen", "permission allowed");
                         detectAndSendLocation();
                         isDeniedFirstTime = false;
                     }
-                }, getContext().getResources().getString(R.string.deals_use_current_location));
+                }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
             } else {
                 openLocationSettingBottomSheet();
             }
@@ -357,9 +351,9 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     }
 
     private void openLocationSettingBottomSheet() {
-        View categoryView = getLayoutInflater().inflate(R.layout.deals_current_location_bottomsheet, null);
-        ImageView crossIcon = categoryView.findViewById(R.id.location_cross_icon_bottomsheet);
-        UnifyButton openLocationSettings = categoryView.findViewById(R.id.goto_location_settings);
+        View categoryView = getLayoutInflater().inflate(com.tokopedia.digital_deals.R.layout.deals_current_location_bottomsheet, null);
+        ImageView crossIcon = categoryView.findViewById(com.tokopedia.digital_deals.R.id.location_cross_icon_bottomsheet);
+        UnifyButton openLocationSettings = categoryView.findViewById(com.tokopedia.digital_deals.R.id.goto_location_settings);
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

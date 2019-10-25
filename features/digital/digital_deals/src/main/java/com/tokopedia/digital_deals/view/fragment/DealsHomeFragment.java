@@ -3,7 +3,6 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -29,7 +28,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +47,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkContentPosition;
@@ -73,13 +72,11 @@ import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -194,21 +191,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         permissionCheckerHelper.checkPermission(DealsHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
             public void onPermissionDenied(String permissionText) {
-                Log.d("Naveen", "permission denied");
                 setDefaultLocation();
             }
 
             @Override
             public void onNeverAskAgain(String permissionText) {
-                Log.d("Naveen", "Never ask again"+ permissionText);
             }
 
             @Override
             public void onPermissionGranted() {
-                Log.d("Naveen", "permission allowed");
                 Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
             }
-        }, getContext().getResources().getString(R.string.deals_use_current_location));
+        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     private void startShowCase() {
@@ -297,7 +291,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 } else {
                     DealsHomeFragment.this.showSearchButton();
                 }
-                Log.d("Offest Changed", "Offset : " + verticalOffset);
             }
         });
 
@@ -786,7 +779,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void showErrorMessage() {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
         });
         setDefaultLocation();
     }
@@ -837,8 +830,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     public void setCurrentCoordinates() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), TkpdCache.DEALS_LOCATION);
-
-        Log.d("Naveen", "get location");
         String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
         String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
         if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
