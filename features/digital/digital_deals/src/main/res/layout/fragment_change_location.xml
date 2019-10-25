@@ -92,7 +92,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     app:layout_constraintLeft_toRightOf="@+id/img_current_location"
-                    android:text="Gunakan lokasi saya saat ini"/>
+                    android:text="@string/detect_current_location"/>
 
             </android.support.constraint.ConstraintLayout>
 
