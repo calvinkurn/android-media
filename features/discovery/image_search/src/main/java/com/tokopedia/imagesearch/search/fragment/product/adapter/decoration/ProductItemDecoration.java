@@ -1,10 +1,12 @@
 package com.tokopedia.imagesearch.search.fragment.product.adapter.decoration;
 
 import android.graphics.Rect;
+import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.productcard.v2.ProductCardView;
