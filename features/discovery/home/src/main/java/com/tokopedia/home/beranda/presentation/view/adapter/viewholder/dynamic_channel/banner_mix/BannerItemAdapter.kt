@@ -30,12 +30,12 @@ class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        if (getItemViewType(viewType) == SeeMoreBannerMixViewHolder.LAYOUT_SEE_MORE) {
+        if (viewType == SeeMoreBannerMixViewHolder.LAYOUT_SEE_MORE) {
             val cardSeeMoreBanner = view.findViewById<CardView>(R.id.card_see_more_banner_mix)
             val layoutParams = cardSeeMoreBanner.layoutParams
             layoutParams.height = maxHeight
             cardSeeMoreBanner.layoutParams = layoutParams
-        } else if(getItemViewType(viewType) == ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL ||
+        } else if(viewType == ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL ||
                 getItemViewType(viewType) == ProductItemViewHolder.LAYOUT_ITEM) {
             val cardProduct = view.findViewById<ThematicCardView>(R.id.banner_item)
             val layoutParams = cardProduct.layoutParams
