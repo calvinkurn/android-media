@@ -96,6 +96,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         if (data.updateTokenSuccess()) {
             saveNewTokenToPref(newToken)
             listener?.onSuccess()
+        } else {
+            val errorMessage = data.getErrorMessage()
+            val error = IllegalStateException(errorMessage)
+            listener?.onError(error)
         }
     }
 

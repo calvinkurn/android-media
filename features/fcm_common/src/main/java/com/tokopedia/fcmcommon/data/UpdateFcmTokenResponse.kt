@@ -11,4 +11,8 @@ data class UpdateFcmTokenResponse(
     fun updateTokenSuccess(): Boolean {
         return notifierUpdateGcm.isSuccess == 1
     }
+
+    fun getErrorMessage(): String {
+        return notifierUpdateGcm.errorMessage
+    }
 }
