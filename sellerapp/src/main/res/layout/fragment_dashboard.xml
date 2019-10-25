@@ -39,6 +39,7 @@
             </com.tokopedia.design.loading.LoadingStateView>
 
             <fragment
+                android:id="@+id/widget_topads_statistic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:name="com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment"/>
