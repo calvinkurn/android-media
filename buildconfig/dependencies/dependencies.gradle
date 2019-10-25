@@ -78,12 +78,12 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '0.0.5'
+    unifyPrinciplesVersion = '0.0.7'
     unifyComponentsVersion = '0.0.11'
     unifyCoachMarkVersion = '1.0.5'
-    unifyCalendarVersion = '0.0.4'
+    unifyCalendarVersion = '0.0.6'
     unifyBannerVersion = '0.0.6'
-
+    unifyDialogVersion = '0.0.2'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -184,9 +184,9 @@ ext {
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            branch     : "io.branch.sdk.android:library:3.0.4+",
+            branch     : "io.branch.sdk.android:library:4.1.1",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.4.1@aar"
+            cashshield : "com.cashshield.android:cashshield:2.5.1@aar"
     ]
 
     deeplinkDispatchDependencies = [
@@ -234,7 +234,7 @@ ext {
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.3",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.4",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
     ]
 
@@ -266,8 +266,8 @@ ext {
             kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             kotlinMockito2     : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
             spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
-            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.6",
-            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.6",
+            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.8",
+            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting    : "android.arch.core:core-testing:$lifeCycleVersion"
@@ -304,6 +304,7 @@ ext {
        components   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
-       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar"
+       banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar"
     ]
 }

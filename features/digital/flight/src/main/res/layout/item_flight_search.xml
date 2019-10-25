@@ -79,21 +79,6 @@
                 android:layout_toRightOf="@id/tv_airline"
                 android:orientation="horizontal" />
 
-            <TextView
-                android:id="@+id/airline_refundable_info"
-                style="@style/TextView.Micro.BlackSecondary"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/bg_rect_stroke_flight_grey"
-                android:paddingLeft="@dimen/dp_10"
-                android:paddingTop="@dimen/dp_3"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_3"
-                android:textSize="10sp"
-                android:visibility="gone"
-                tools:text="Refundable"
-                tools:visibility="visible" />
         </RelativeLayout>
 
         <View

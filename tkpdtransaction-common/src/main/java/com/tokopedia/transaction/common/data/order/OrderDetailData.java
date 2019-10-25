@@ -135,6 +135,10 @@ public class OrderDetailData implements Parcelable {
 
     private final String ATTRIBUTE_ID = "id";
 
+    private boolean isFreeShipping;
+
+    private String originAddress;
+
     public String getBookingCode() {
         return bookingCode;
     }
@@ -620,6 +624,14 @@ public class OrderDetailData implements Parcelable {
         isFulfillment = fulfillment;
     }
 
+    public boolean isFreeShipping() { return isFreeShipping; }
+
+    public void setFreeShipping(boolean freeShipping) { isFreeShipping = freeShipping; }
+
+    public String getOriginAddress() { return originAddress; }
+
+    public void setOriginAddress(String originAddress) { this.originAddress = originAddress; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -687,6 +699,8 @@ public class OrderDetailData implements Parcelable {
         dest.writeString(this.totalProtectionFee);
         dest.writeStringList(this.bookingCodeMessage);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFreeShipping ? (byte) 1 : (byte) 0);
+        dest.writeString(this.originAddress);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -750,6 +764,8 @@ public class OrderDetailData implements Parcelable {
         this.totalProtectionFee = in.readString();
         this.bookingCodeMessage = in.createStringArrayList();
         this.isFulfillment = in.readByte() != 0;
+        this.isFreeShipping = in.readByte() != 0;
+        this.originAddress = in.readString();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

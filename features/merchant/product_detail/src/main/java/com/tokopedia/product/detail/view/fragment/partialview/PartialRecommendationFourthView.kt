@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
 class PartialRecommendationFourthView private constructor(private val view: View,
@@ -29,5 +31,7 @@ class PartialRecommendationFourthView private constructor(private val view: View
     override fun getRecyclerView(): CarouselProductCardView = view.product_recom_4
 
     override fun getLayoutProgress(): View = view.loading_recom_4
+
+    override fun getSeeMore(): Typography = view.findViewById(R.id.see_more_recom_4)
 
 }

@@ -1,0 +1,125 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    //-------------------------------------------------------------------//
+    //------------------------- Library Section -------------------------//
+    //-------------------------------------------------------------------//
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.performance
+
+    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.tagManager
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.track)
+    //-------------------------------------------------------------------//
+
+
+    //-------------------------------------------------------------------//
+    //---------------------- Common Module Section ----------------------//
+    //-------------------------------------------------------------------//
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.commonPayment)
+    implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    implementation project(rootProject.ext.features.logisticdata)
+    //-------------------------------------------------------------------//
+
+
+    //-------------------------------------------------------------------//
+    //----------------------- Sub Feature Section -----------------------//
+    //-------------------------------------------------------------------//
+    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.logisticcart)
+    //-------------------------------------------------------------------//
+
+
+    //-------------------------------------------------------------------//
+    //--------- Feature Section (This section should be empty!!) --------//
+    //-------------------------------------------------------------------//
+    // productCard & topAdsSdk is used for recommendation section on cart
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.basemvvm)
+    //-------------------------------------------------------------------//
+
+}
+
+project.ext {
+    artifactId = "purchase_platform"
+    groupId = "com.tokopedia.purchase_platform"
+    versionName = "1.0.0"
+    artifactName = "purchaseplatform-release"
+}
+
+apply from: "$rootProject.projectDir/publish_local.gradle"

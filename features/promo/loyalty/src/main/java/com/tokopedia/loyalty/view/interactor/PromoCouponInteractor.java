@@ -1,13 +1,8 @@
 package com.tokopedia.loyalty.view.interactor;
 
-import android.support.annotation.NonNull;
-
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
-import java.util.Map;
-import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
-import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import java.util.Map;
 
@@ -15,7 +10,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 

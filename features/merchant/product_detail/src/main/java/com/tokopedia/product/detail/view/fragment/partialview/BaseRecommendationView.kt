@@ -10,7 +10,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_1
@@ -21,6 +24,7 @@ import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
@@ -42,6 +46,13 @@ abstract class BaseRecommendationView(context: Context,
                 gone()
             } else {
                 getLayoutTitle().text = product.title
+                if(product.seeMoreAppLink.isNotEmpty()) {
+                    getSeeMore().show()
+                    getSeeMore().setOnClickListener {
+                        productDetailTracking.eventClickSeeMoreRecomWidget(product.pageName)
+                        RouteManager.route(context, product.seeMoreAppLink)
+                    }
+                }
                 initAdapter(product)
                 visible()
             }
@@ -145,6 +156,7 @@ abstract class BaseRecommendationView(context: Context,
 
     abstract fun getListener(): RecommendationProductAdapter.UserActiveListener
     abstract fun getLayoutTitle(): TextView
+    abstract fun getSeeMore(): Typography
     abstract fun getView(): View
     abstract fun getRecyclerView(): CarouselProductCardView
     abstract fun getLayoutProgress(): View
