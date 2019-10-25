@@ -21,6 +21,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.common.util.ChatTimeConverter
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -221,7 +222,9 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTimeStamp(lastReplyTimeStr: String) {
-        time.text = convertToRelativeDate(lastReplyTimeStr)
+        lastReplyTimeStr.toLongOrNull()?.let { unixTime ->
+            time.text = ChatTimeConverter.formatTimeStamp(unixTime)
+        }
     }
 
     private fun bindLabel(tag: String) {
@@ -239,29 +242,6 @@ class ChatItemListViewHolder(
             else -> label.hide()
         }
 
-    }
-
-    private fun convertToRelativeDate(timeStamp: String): String {
-        val smsTime = Calendar.getInstance()
-        smsTime.timeInMillis = timeStamp.toLongOrZero()
-
-        val now = Calendar.getInstance()
-
-        val timeFormatString = "hh:mm"
-        val dateTimeFormatString = "dd MMM"
-        val dateTimeYearFormatString = "dd MMM yy"
-        val HOURS = (60 * 60 * 60).toLong()
-        return if ((now.get(Calendar.DATE) == smsTime.get(Calendar.DATE))
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            DateFormat.format(timeFormatString, smsTime).toString()
-        } else if ((now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1)
-                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
-            "Kemarin"
-        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
-            DateFormat.format(dateTimeFormatString, smsTime).toString()
-        } else {
-            DateFormat.format(dateTimeYearFormatString, smsTime).toString()
-        }
     }
 
     companion object {
