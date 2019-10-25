@@ -12,8 +12,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -21,13 +19,14 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
-import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_pin.*
 import javax.inject.Inject
@@ -158,6 +157,7 @@ class AddPinFragment: BaseDaggerFragment(){
             trackingPinUtil.trackSuccessInputConfirmationPin()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
             startActivity(intent)
             activity?.finish()
         }

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
@@ -685,12 +686,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     && uri.getPathSegments().size() == 2
                     && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
                 String slug = uri.getPathSegments().get(1);
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoDetailIntent(getActivity(), slug) != null) {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.PROMO_DETAIL, slug);
+                if (intent!= null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getPromoDetailIntent(getActivity(), slug));
+                    startActivity(intent);
                 }
             } else {
                 if (getActivity().getApplication() instanceof FlightModuleRouter
@@ -715,8 +714,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void bannerAllClickAction() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
             if (isPromoNativeActive()) {
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoListIntent(getActivity()));
+                RouteManager.route(getActivity(), ApplinkConst.PROMO_LIST);
             } else {
                 startActivity(((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));

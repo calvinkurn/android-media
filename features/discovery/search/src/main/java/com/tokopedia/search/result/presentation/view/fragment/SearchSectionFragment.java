@@ -53,8 +53,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -200,7 +200,7 @@ public abstract class SearchSectionFragment
         if (getUserVisibleHint()
                 && getActivity() != null
                 && getActivity().getApplicationContext() != null) {
-            searchTracking.screenTrackSearchSectionFragment(getScreenName());
+            SearchTracking.screenTrackSearchSectionFragment(getScreenName());
         }
     }
 

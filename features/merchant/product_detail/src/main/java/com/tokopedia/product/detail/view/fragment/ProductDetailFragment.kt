@@ -777,7 +777,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         if (!::productDescrView.isInitialized) {
-            productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity, productDetailTracking)
             addLoadMoreImpression()
         }
 
@@ -1664,7 +1664,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             return
         }
         // defaulting selecting variant
-        if (userInputVariant == productId && data.defaultChild > 0) {
+        if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {
             userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
@@ -2087,6 +2087,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun shareProduct() {
         if (productInfo == null && activity == null) return
+        productId?.let {
+            productDetailTracking.eventClickPdpShare(it)
+        }
         val productData = ProductData(
                 productInfo!!.basic.price.getCurrencyFormatted(),
                 "${productInfo!!.cashback.percentage}%",
@@ -2098,7 +2101,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 productInfo!!.basic.id.toString(),
                 productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
-
         checkAndExecuteReferralAction(productData)
     }
 
