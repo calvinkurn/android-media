@@ -150,12 +150,4 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
-
-
-    // PlayActivity
-    @JvmField
-    val GROUPCHAT_LIST = "$INTERNAL_MARKETPLACE/groupchat"
-
-    @JvmField
-    val GROUPCHAT_DETAIL = "$INTERNAL_MARKETPLACE/groupchat/{channel_id}/"
 }
