@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -419,34 +420,26 @@ public class Utils {
         sharedPreferencesEditor.apply();
     }
 
-    public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper) {
+    public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper, CurrentLocationCallBack currentLocationCallBack) {
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,
                 LocationServices.getFusedLocationProviderClient(activity
                         .getApplicationContext()),
                 activity.getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(activity), activity,
+        locationDetectorHelper.getLocation(onGetLocation(activity, currentLocationCallBack), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                 "");
     }
 
-    private Function1<DeviceLocation, Unit> onGetLocation(Activity activity) {
+    private Function1<DeviceLocation, Unit> onGetLocation(Activity activity, CurrentLocationCallBack currentLocationCallBack) {
         return new Function1<DeviceLocation, Unit>() {
             @Override
             public Unit invoke(DeviceLocation deviceLocation) {
-                Utils.this.saveLocation(activity, deviceLocation.getLatitude(), deviceLocation.getLongitude());
+                currentLocationCallBack.setCurrentLocation(deviceLocation);
+//                saveLocation(activity, deviceLocation.getLatitude(), deviceLocation.getLongitude());
                 return null;
             }
         };
-    }
-
-    public void  saveLocation(Context context, double latitude, double longitude) {
-        Log.d("Naveen", "Lat is in utils"+ String.valueOf(latitude));
-        Log.d("Naveen", "Long is utils"+ String.valueOf(longitude));
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,TkpdCache.DEALS_LOCATION);
-        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(latitude));
-        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(longitude));
-        localCacheHandler.applyEditor();
     }
 
     public String getLocationErrorMessage(Context context) {

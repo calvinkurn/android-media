@@ -6,18 +6,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 
-public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener {
+public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
 
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
@@ -81,5 +86,21 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
         categoryDetailHomeFragment.refreshPage(isLocationUpdated);
+    }
+
+    @Override
+    public void setDefaultLocationOnHomePage() {
+        categoryDetailHomeFragment.setDefaultLocation();
+    }
+
+    @Override
+    public void setCurrentLocation(DeviceLocation deviceLocation) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(this, TkpdCache.DEALS_LOCATION);
+        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
+        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
+        localCacheHandler.applyEditor();
+        categoryDetailHomeFragment.setCurrentCoordinates();
+        Log.d("Naveen", "Lat is in utils"+ deviceLocation.getLatitude());
+        Log.d("Naveen", "Long is utils"+ deviceLocation.getLongitude());
     }
 }

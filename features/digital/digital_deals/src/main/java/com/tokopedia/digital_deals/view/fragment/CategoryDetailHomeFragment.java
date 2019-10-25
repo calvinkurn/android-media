@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -59,13 +60,17 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +120,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private UserSession userSession;
     private boolean isLocationUpdated;
     private PermissionCheckerHelper permissionCheckerHelper;
-
+    private CurrentLocationCallBack currentLocationCallBack;
     private Menu mMenu;
 
     @Override
@@ -175,13 +180,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             @Override
             public void onPermissionGranted() {
                 Log.d("Naveen", "permission allowed");
-                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper);
-
-                LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
-
-                String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
-                String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
-                mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
             }
         }, getContext().getResources().getString(R.string.deals_use_current_location));
     }
@@ -469,6 +468,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CategoryDetailActivity) {
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
@@ -634,5 +641,27 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        mPresenter.getBrandsList(true);
+        mPresenter.getCategoryDetails(true);
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
+            mPresenter.getCategoryDetails(true);
+            mPresenter.getBrandsList(true);
+        }
     }
 }

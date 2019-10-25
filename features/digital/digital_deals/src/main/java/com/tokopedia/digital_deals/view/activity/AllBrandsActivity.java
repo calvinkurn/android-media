@@ -29,7 +29,9 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital_deals.DealsModuleRouter;
@@ -47,8 +49,10 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllCategoryPresenter;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -56,7 +60,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHomeContract.View, HasComponent<DealsComponent>, SearchInputView.Listener, SearchInputView.FocusChangeListener, View.OnClickListener, AllBrandsFragment.UpdateLocation, PopupMenu.OnMenuItemClickListener, SelectLocationBottomSheet.SelectedLocationListener {
+public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHomeContract.View, HasComponent<DealsComponent>, SearchInputView.Listener, SearchInputView.FocusChangeListener, View.OnClickListener, AllBrandsFragment.UpdateLocation, PopupMenu.OnMenuItemClickListener, SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
 
     public static final String EXTRA_CATEGOTRY_LIST = "category_item_list";
     private static final String ALL_BRANDS = "AllBrandsActivity";
@@ -385,7 +389,24 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     }
 
     @Override
+    public void setDefaultLocationOnHomePage() {
+        AllBrandsFragment allBrandsFragment = getCurrentSelectedFragment();
+        if (allBrandsFragment != null && isLocationUpdated) {
+            allBrandsFragment.setDefaultLocation();
+        }
+    }
+
+    @Override
     public void onFocusChanged(boolean hasFocus) {
 
+    }
+
+    @Override
+    public void setCurrentLocation(DeviceLocation deviceLocation) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(this, TkpdCache.DEALS_LOCATION);
+        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
+        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
+        localCacheHandler.applyEditor();
+        allBrandsFragment.setCurrentCoordinates();
     }
 }

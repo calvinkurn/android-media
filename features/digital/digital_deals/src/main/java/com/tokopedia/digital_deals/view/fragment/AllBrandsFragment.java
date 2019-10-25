@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -61,6 +63,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private String searchText;
     private String selectedLocation;
     private UpdateLocation updateLocation;
+    private CurrentLocationCallBack currentLocationCallBack;
     private Location currentLocation;
     private PermissionCheckerHelper permissionCheckerHelper;
 
@@ -102,13 +105,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             @Override
             public void onPermissionGranted() {
                 Log.d("Naveen", "permission allowed");
-                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper);
-
-                LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
-
-                String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
-                String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
-                mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
             }
         }, getContext().getResources().getString(R.string.deals_use_current_location));
     }
@@ -122,7 +119,14 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         catch (Exception e) {
             throw new ClassCastException(activity.toString() + "must implement Update Location Interface");
         }
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AllBrandsActivity) {
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
     }
 
     @Override
@@ -369,6 +373,26 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void onFocusChanged(boolean hasFocus) {
 
+    }
+
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        mPresenter.getAllBrands();
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
+            mPresenter.getAllBrands();
+        }
     }
 
     public interface UpdateLocation {

@@ -181,7 +181,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
     public void setDefaultLocation() {
         Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
         });
-        selectedLocationListener.onLocationItemUpdated(true);
+        selectedLocationListener.setDefaultLocationOnHomePage();
         getFragmentManager().popBackStack();
     }
 
@@ -423,5 +423,6 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
 
     public interface SelectedLocationListener {
         void onLocationItemUpdated(boolean isLocationUpdated);
+        void setDefaultLocationOnHomePage();
     }
 }

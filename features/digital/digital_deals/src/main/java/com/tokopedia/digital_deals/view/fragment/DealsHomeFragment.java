@@ -73,8 +73,10 @@ import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
@@ -121,6 +123,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private TextView topDealsHeading;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
+    CurrentLocationCallBack currentLocationCallBack;
 
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
@@ -181,8 +184,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), tvLocationName.getText()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
-            });
+//            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+//            });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
@@ -207,19 +210,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             @Override
             public void onPermissionGranted() {
                 Log.d("Naveen", "permission allowed");
-                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper);
-
-                LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
-
-                Log.d("Naveen", "get location");
-                String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
-                String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
-                if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
-                    mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
-                } else {
-                    mPresenter.getDealsList(true);
-                    mPresenter.getBrandsHome();
-                }
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
             }
         }, getContext().getResources().getString(R.string.deals_use_current_location));
     }
@@ -248,8 +239,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DealsHomeActivity)
+        if (context instanceof DealsHomeActivity) {
             openTrendingDeals = (OpenTrendingDeals) context;
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
     }
 
     private void setUpVariables(View view) {
@@ -782,8 +775,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void setDefaultLocation() {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
         if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
             mPresenter.getLocations();
         } else if (location != null){
@@ -797,6 +792,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void showErrorMessage() {
         Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
         });
+        setDefaultLocation();
     }
 
     @Override
@@ -824,8 +820,34 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), tvLocationName.getText()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    public void setDefaultLocationName() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        if (location != null) {
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), TkpdCache.DEALS_LOCATION);
+
+        Log.d("Naveen", "get location");
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
         }

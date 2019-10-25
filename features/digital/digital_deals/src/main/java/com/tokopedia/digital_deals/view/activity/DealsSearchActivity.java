@@ -519,6 +519,16 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
+    public void setDefaultLocationOnHomePage() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(this, location);
+        tvCityName.setText(location.getName());
+        mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+    }
+
+    @Override
     public void onFocusChanged(boolean hasFocus) {
     }
 }
