@@ -9,7 +9,7 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import java.util.List;
 

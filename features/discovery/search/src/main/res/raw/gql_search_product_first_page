@@ -19,6 +19,10 @@ query SearchProduct(
         redirection {
             redirect_applink
         }
+        ticker {
+            text
+            query
+        }
         suggestion {
             currentKeyword
             suggestion
@@ -100,14 +104,6 @@ query SearchProduct(
                 clover
                 is_official
             }
-        }
-    }
-
-    ace_guide(q: $query) {
-        data {
-            applink
-            keyword
-            url
         }
     }
 

@@ -267,7 +267,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 "url", dataDetail.getUrl(),
                 "categoryId", DEFAULT_VALUE_NONE_OTHER,
                 "dimension45", addToCartResult.getData().getCartId(),
-                "dimension38", DEFAULT_VALUE_NONE_OTHER
+                "dimension38", DEFAULT_VALUE_NONE_OTHER,
+                "dimension83", dataDetail.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
         );
         wishlistAnalytics.trackEventAddToCardProductWishlist(object);
     }
@@ -617,7 +618,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     "category", DEFAULT_VALUE_NONE_OTHER,
                     "variant", DEFAULT_VALUE_NONE_OTHER,
                     "list", "/wishlist",
-                    "position", Integer.toString(position++)
+                    "position", Integer.toString(position++),
+                    "dimension83", wishlist.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
             ));
         }
         return objects;

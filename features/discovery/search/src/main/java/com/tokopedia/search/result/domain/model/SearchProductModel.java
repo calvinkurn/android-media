@@ -20,10 +20,6 @@ public class SearchProductModel {
     @Expose
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
 
-    @SerializedName("ace_guide")
-    @Expose
-    private GuidedSearchModel guidedSearchModel = new GuidedSearchModel();
-
     @SerializedName("quick_filter")
     @Expose
     private DataValue quickFilterModel = new DataValue();
@@ -54,10 +50,6 @@ public class SearchProductModel {
 
     public DynamicFilterModel getDynamicFilterModel() {
         return dynamicFilterModel;
-    }
-
-    public GuidedSearchModel getGuidedSearchModel() {
-        return guidedSearchModel;
     }
 
     public DataValue getQuickFilterModel() {
@@ -120,6 +112,9 @@ public class SearchProductModel {
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
+        @SerializedName("ticker")
+        @Expose
+        private Ticker ticker = new Ticker();
         @SerializedName("related")
         @Expose
         private Related related = new Related();
@@ -177,6 +172,10 @@ public class SearchProductModel {
 
         public Redirection getRedirection() {
             return this.redirection;
+        }
+
+        public Ticker getTicker() {
+            return ticker;
         }
 
         public Suggestion getSuggestion() {
@@ -336,6 +335,24 @@ public class SearchProductModel {
 
         public int getDepartmentId() {
             return departmentId;
+        }
+    }
+
+    public static class Ticker {
+
+        @SerializedName("text")
+        @Expose
+        private String text;
+        @SerializedName("query")
+        @Expose
+        private String query;
+
+        public String getText() {
+            return text;
+        }
+
+        public String getQuery() {
+            return query;
         }
     }
 

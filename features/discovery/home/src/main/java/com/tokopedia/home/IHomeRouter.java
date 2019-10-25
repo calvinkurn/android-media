@@ -10,7 +10,5 @@ import rx.Observable;
  */
 
 public interface IHomeRouter {
-    Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
-
     Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 }

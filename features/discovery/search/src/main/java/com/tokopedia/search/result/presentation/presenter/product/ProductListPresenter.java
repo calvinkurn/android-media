@@ -2,23 +2,24 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
+import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
-import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
-import com.tokopedia.search.result.presentation.model.*;
+import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -101,14 +102,22 @@ final class ProductListPresenter
 
         if(searchParameterMap == null) return;
 
-        RequestParams params = RequestParams.create();
-        params.putAll(searchParameterMap);
+        RequestParams params = createRequestDynamicFilterParams(searchParameterMap);
 
         if(additionalParamsMap != null) {
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
         getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
+    }
+
+    private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameter);
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+
+        return requestParams;
     }
 
     private void requestDynamicFilterCheckForNulls() {
@@ -669,7 +678,7 @@ final class ProductListPresenter
                 getView().sendTrackingForNoResult(productViewModel.getResponseCode(), alternativeKeyword);
             }
         } catch (NumberFormatException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -721,7 +730,7 @@ final class ProductListPresenter
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null){
                             List<RecommendationItemViewModel> recommendationItemViewModel = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
-                            List<Visitable> items = new ArrayList();
+                            List<Visitable> items = new ArrayList<>();
                             RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                             items.add(new RecommendationTitleViewModel(recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(), recommendationWidget.getSeeMoreAppLink(), recommendationWidget.getPageName()));
                             items.addAll(recommendationItemViewModel);
@@ -736,13 +745,10 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
+        headerViewModel.setTickerViewModel(productViewModel.getTickerModel());
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
-        }
-        if (productViewModel.getGuidedSearchViewModel() != null) {
-            headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
-            getView().sendImpressionGuidedSearch();
         }
         if (productViewModel.getQuickFilterModel() != null
                 && productViewModel.getQuickFilterModel().getFilter() != null) {
