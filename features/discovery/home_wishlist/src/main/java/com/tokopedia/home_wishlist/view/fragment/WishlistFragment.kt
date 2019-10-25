@@ -5,19 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
+import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
@@ -27,6 +35,7 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SAVE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -61,8 +70,11 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
 
     private lateinit var trackingQueue: TrackingQueue
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy{ viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl() }
     private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory) }
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
+    private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -105,6 +117,12 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+        loadData()
+    }
+
     override fun getScreenName(): String = getString(R.string.home_recom_screen_name)
 
     override fun initInjector() {
@@ -142,12 +160,25 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
 
     }
 
+    private fun initView(){
+        swipeToRefresh?.setOnRefreshListener{ viewModel.reload() }
+        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.adapter = adapter
+    }
+
     /**
      * Void [loadData]
      * It handling trigger load primaryProduct and recommendationList from viewModel
      */
     private fun loadData(){
-
+        viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    adapter.submitList(response.data?.map { WishlistItemDataModel(it) })
+                }
+            }
+        })
+        viewModel.load(0)
     }
 
     /**
@@ -182,5 +213,4 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
     private fun updateWishlist(id: Int, isWishlist: Boolean, position: Int){
 
     }
-
 }

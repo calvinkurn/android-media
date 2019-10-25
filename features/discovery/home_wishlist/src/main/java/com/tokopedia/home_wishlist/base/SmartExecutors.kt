@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.base
 
 import android.os.Handler
 import android.os.Looper
+import com.tokopedia.home_wishlist.di.WishlistScope
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -14,7 +15,6 @@ import javax.inject.Singleton
  * Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait behind
  * webservice requests).
  */
-@Singleton
 open class SmartExecutors(
         private val diskIO: Executor,
         private val networkIO: Executor,

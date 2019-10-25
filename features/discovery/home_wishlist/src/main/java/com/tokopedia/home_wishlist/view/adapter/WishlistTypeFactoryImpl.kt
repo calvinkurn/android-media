@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.view.viewholder.WishlistItemViewHolder
 
 /**
  * A Class of Implementation Type Factory Pattern.
@@ -13,11 +14,11 @@ import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
  */
 class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
     override fun type(wishlistItemDataModel: WishlistItemDataModel): Int {
-        return 1
+        return WishlistItemDataModel.LAYOUT
     }
 
     override fun type(recommendationCarouselDataModel: RecommendationCarouselDataModel): Int {
-        return 2
+        return WishlistItemDataModel.LAYOUT
     }
 
     /**
@@ -28,6 +29,7 @@ class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
+            WishlistItemDataModel.LAYOUT -> WishlistItemViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

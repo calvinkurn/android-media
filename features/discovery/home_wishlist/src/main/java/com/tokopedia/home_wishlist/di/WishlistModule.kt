@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -23,6 +24,8 @@ import javax.inject.Named
  */
 @Module(includes = [TopAdsWishlistModule::class])
 class WishlistModule {
+    @Provides
+    fun provideExecutors() = SmartExecutors()
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
@@ -63,6 +66,12 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
+    @Named("wishlistQuery")
+    fun provideWishlistQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources,
+                    R.raw.query_get_wishlist)
+
+    @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,

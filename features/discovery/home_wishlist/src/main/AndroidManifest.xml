@@ -1,3 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.home_wishlist">
+    <application>
+
+        <activity
+            android:name=".WishlistActivity"
+            android:label="@string/wishlist"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/wishlist_global"
+                    android:pathPattern=".*"/>
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>
