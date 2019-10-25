@@ -467,11 +467,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-        et_search.setOnClickListener {
-            productDetailTracking.eventClickSearchBar()
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-        }
-        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
+//        et_search.setOnClickListener {
+//            productDetailTracking.eventClickSearchBar()
+//            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+//        }
+//        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -1537,7 +1537,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
+//        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
