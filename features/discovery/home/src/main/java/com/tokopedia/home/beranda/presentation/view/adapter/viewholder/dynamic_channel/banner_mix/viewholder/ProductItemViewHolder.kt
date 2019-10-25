@@ -25,7 +25,6 @@ class ProductItemViewHolder(view: View,
         productCardView?.run {
             setLinesProductTitle(2)
             val gridItem = productBannerMixDataModel.grid
-            setBlankSpaceConfig(BlankSpaceConfig(slashedPrice = true, price = true, discountPercentage = true, freeOngkir = productBannerMixDataModel.channel.showPromoBadge))
             initFreeOngkir(gridItem.freeOngkir.isActive, gridItem.freeOngkir.imageUrl)
             initSlashedPrice(gridItem.slashedPrice)
             initProductPrice(gridItem.price)
