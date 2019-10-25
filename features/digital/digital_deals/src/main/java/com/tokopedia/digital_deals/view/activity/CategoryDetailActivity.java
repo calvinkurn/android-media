@@ -6,16 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.digital_deals.R;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
@@ -24,6 +20,7 @@ import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.locationmanager.DeviceLocation;
+
 import java.util.Map;
 
 public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
@@ -105,7 +102,5 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
         localCacheHandler.applyEditor();
         categoryDetailHomeFragment.setCurrentCoordinates();
-        Log.d("Naveen", "Lat is in utils"+ deviceLocation.getLatitude());
-        Log.d("Naveen", "Long is utils"+ deviceLocation.getLongitude());
     }
 }
