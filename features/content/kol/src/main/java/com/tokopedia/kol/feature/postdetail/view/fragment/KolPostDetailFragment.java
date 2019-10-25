@@ -32,6 +32,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemShop;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
@@ -66,7 +67,6 @@ import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
@@ -859,7 +859,19 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem, @NotNull String authorType) {
+        try {
+            PostTagItemShop shop = postTagItem.getShop().get(0);
+            feedAnalytics.eventContentDetailAddToCart(
+                    postTagItem.getId(),
+                    postTagItem.getText(),
+                    postTagItem.getPrice(),
+                    1,
+                    Integer.parseInt(shop.getShopId()),
+                    "",
+                    authorType
+            );
+        } catch (Exception ignored) {}
         presenter.addPostTagItemToCart(positionInFeed, postTagItem);
     }
 
@@ -907,11 +919,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem) {
         RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
-        postTagAnalytics.trackClickPostTagBuyKol(
-                postTagItem,
-                positionInFeed,
-                dynamicPostViewModel.getHeader().getFollowCta().getAuthorType()
-        );
     }
 
     @Override

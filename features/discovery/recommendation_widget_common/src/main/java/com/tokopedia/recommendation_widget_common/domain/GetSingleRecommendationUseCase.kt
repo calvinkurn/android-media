@@ -3,7 +3,6 @@ package com.tokopedia.recommendation_widget_common.domain
 import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.SingleProductRecommendationMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -36,7 +35,7 @@ constructor(
 
     fun getRecomParams(pageNumber: Int,
                        productIds: List<String>,
-                       ref: String = ""): RequestParams {
+                       queryParam: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
 
@@ -47,7 +46,7 @@ constructor(
         }
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
-        params.putString(REF, ref)
+        params.putString(QUERY_PARAM, queryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }
@@ -66,7 +65,7 @@ constructor(
         val USER_ID = "userID"
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
-        val REF = "ref"
+        val QUERY_PARAM = "queryParam"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val PRODUCT_IDS = "productIDs"
     }

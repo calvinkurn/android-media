@@ -27,7 +27,7 @@ import com.tokopedia.tracking.usecase.executor.MainSchedulerProvider;
 import com.tokopedia.tracking.usecase.executor.SchedulerProvider;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
+import com.tokopedia.tracking.view.OrderAnalyticsOrderTracking;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;

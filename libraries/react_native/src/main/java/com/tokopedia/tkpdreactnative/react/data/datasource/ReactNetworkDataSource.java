@@ -1,7 +1,8 @@
 package com.tokopedia.tkpdreactnative.react.data.datasource;
 
-import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
+
+import java.util.Map;
 
 import rx.Observable;
 
@@ -17,7 +18,7 @@ public class ReactNetworkDataSource {
         this.commonService = commonService;
     }
 
-    public Observable<String> get(String url, TKPDMapParam<String, String> params) {
+    public Observable<String> get(String url, Map<String, String> params) {
         if (params.size() == 0) return commonService.get(url);
         return commonService.get(url, params);
     }
@@ -26,7 +27,7 @@ public class ReactNetworkDataSource {
         return commonService.getParam(url, params);
     }
 
-    public Observable<String> post(String url, TKPDMapParam<String, String> params) {
+    public Observable<String> post(String url, Map<String, String> params) {
         if (params.size() == 0) return commonService.post(url);
         return commonService.post(url, params);
     }

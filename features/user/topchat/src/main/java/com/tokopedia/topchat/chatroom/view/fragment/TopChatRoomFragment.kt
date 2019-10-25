@@ -36,12 +36,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -74,7 +74,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -210,17 +209,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-            }
-
             fpm.stopTrace()
         }
     }
@@ -257,7 +245,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun goToProfile(opponentId: String) {
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
-
     override fun showErrorWebSocket(b: Boolean) {
         getViewState().showErrorWebSocket(b)
     }
@@ -737,17 +724,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessDeleteConversation(): () -> Unit {
         return {
             hideLoading()
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-                setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
-                finish()
+            activity?.let {
+                val intent = Intent()
+                val bundle = Bundle()
+                bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+                bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+                intent.putExtras(bundle)
+                it.setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, intent)
+                it.finish()
             }
         }
     }
@@ -827,7 +811,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val intent = Intent()
             val bundle = Bundle()
             bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, isMoveItemInboxToTop)
-            bundle.putParcelable(PARCEL, getViewState().getLastItem())
+            bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
+            bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+            bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
@@ -860,12 +846,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickInvoiceThumbnail(url: String, id: String) {
-        val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        onGoToWebView(encodedUrl, id)
+        onGoToWebView(url, id)
     }
 
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+        return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
     override fun focusOnReply() {

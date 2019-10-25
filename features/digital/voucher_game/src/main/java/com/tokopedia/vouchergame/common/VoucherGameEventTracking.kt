@@ -38,7 +38,7 @@ interface VoucherGameEventTracking {
             val CLICK_SEARCH_RESULT = "click search result"
             val PRODUCT_CART_RESULT_IMPRESSSION = "impression product card result"
             val CLICK_PRODUCT_CART_RESULT = "click product card result"
-            val CLEAR_SEARCH_BOX = "click 'x' ticker on search box"
+            val CLEAR_SEARCH_BOX = "click `x` ticker on search box"
             val OPERATOR_CARD_IMPRESSION = "impression on operator card"
             val CLICK_OPERATOR_CARD = "click on operator card"
             val INPUT_NUMBER = "user input number"

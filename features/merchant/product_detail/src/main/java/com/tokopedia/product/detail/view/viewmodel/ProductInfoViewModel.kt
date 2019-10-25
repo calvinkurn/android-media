@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.Intent
+import android.support.v4.util.ArrayMap
 import android.text.TextUtils
 import android.util.SparseArray
 import com.google.gson.JsonObject
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -30,6 +33,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
@@ -43,13 +47,14 @@ import com.tokopedia.product.detail.data.model.spesification.ProductSpecificatio
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
+import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -73,6 +78,10 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.Subscription
+import java.lang.RuntimeException
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -83,7 +92,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                               private val getRecommendationUseCase: GetRecommendationUseCase,
                                                private val stickyLoginUseCase: StickyLoginUseCase,
+                                               private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -174,9 +185,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
-                                                  forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
-        return async(Dispatchers.IO) {
+    private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+                                                  warehouseId: String,
+                                                  forceRefresh: Boolean = false)
+            : Deferred<ProductInfoP2ShopData> {
+        return async {
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
@@ -223,11 +236,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2GeneralAsync(
+    private fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
             forceRefresh: Boolean): Deferred<ProductInfoP2General> {
-        return async(Dispatchers.IO) {
+        return async {
             val productInfoP2 = ProductInfoP2General()
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -399,9 +412,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
+    private fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
             : Deferred<ProductInfoP2Login> {
-        return async(Dispatchers.IO) {
+        return async {
+
             val p2Login = ProductInfoP2Login()
 
             val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -573,42 +587,35 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
         submitTicketSubscription?.unsubscribe()
+        stickyLoginUseCase.cancelJobs()
     }
 
     fun loadMore() {
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
-        launch {
-
+        loadTopAdsProduct.value = Loading
+        launch(Dispatchers.IO) {
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
-                loadTopAdsProduct.value = Loading
-                doLoadTopAdsProductAsync(product.data.productInfo)
-
+                try {
+                    val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                            pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                            pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                            productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                    )).toBlocking()
+                    Loaded(Success(data.first()?: emptyList()))
+                } catch (e: Throwable) {
+                    Loaded(Fail(e))
+                }
             } else null
 
-            topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
+            withContext(Dispatchers.Main) {
+                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data !=null) {
+                    Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
+                } else {
+                    Loaded(Fail(RuntimeException()))
+                }
             }
             lazyNeedForceUpdate = false
-        }
-    }
-
-    private fun doLoadTopAdsProductAsync(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val topadsParams = generateTopAdsParams(productInfo)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
-        else CacheType.CACHE_FIRST).build()
-
-        try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
-        } catch (t: Throwable) {
-            t.debugTrace()
-            Loaded(Fail(t))
         }
     }
 
@@ -655,9 +662,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
-                    onSuccess.invoke(it.response.tickers[0])
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            return@execute
+                        }
+                    }
+                    onError?.invoke(Throwable(""))
                 } else {
-                    onError?.invoke(Throwable("Data not found"))
+                    onError?.invoke(Throwable(""))
                 }
             },
             onError = {
@@ -709,4 +722,64 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val INCLUDE_UI_PARAM = "includeUI"
         }
     }
+
+    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(count: Int) {
+                        onSuccessRequest(count)
+                    }
+                })
+    }
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: ProductInfo?,
+            userInputVariant: String?
+    ) {
+        if (intent == null) return
+        val variants = mapSelectedProductVariants(userInputVariant)
+        val productImageUrl = productInfo?.getProductImageUrl()
+        val productName = productInfo?.getProductName()
+        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
+        val productUrl = productInfo?.getProductUrl()
+        val productFsIsActive = productInfo?.getFsProductIsActive()
+        val productFsImageUrl = productInfo?.getFsProductImageUrl()
+        val productColorVariant = variants?.get("colour")?.get("value")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("value")
+        with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
+        }
+    }
+
+    private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        return p2General.value?.variantResp
+    }
+
 }

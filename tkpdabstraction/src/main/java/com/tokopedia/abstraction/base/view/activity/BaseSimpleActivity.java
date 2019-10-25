@@ -44,6 +44,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         return R.id.parent_view;
     }
 
+    @Nullable
     protected Fragment getFragment() {
         return getSupportFragmentManager().findFragmentByTag(getTagFragment());
     }

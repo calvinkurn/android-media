@@ -57,7 +57,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
                         }
                         return 0;
                     }
-                });
+                }, true);
         flightDetailAdapter = new FlightDetailAdapter(detailRouteTypeFactory, new ArrayList<Visitable>());
         recyclerViewFlightJourney.setAdapter(flightDetailAdapter);
 

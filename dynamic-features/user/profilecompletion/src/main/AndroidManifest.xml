@@ -1,5 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
+<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.profilecompletion.customerapp">
 
     <dist:module
