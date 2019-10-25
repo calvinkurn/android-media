@@ -6,17 +6,17 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:label="@string/groupchat_title">
+        android:label="@string/title_groupchat">
 
         <activity
             android:name=".channel.view.activity.ChannelActivity"
-            android:label="@string/groupchat_title"
+            android:label="@string/title_groupchat"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".chatroom.view.activity.GroupChatActivity"
-            android:label="@string/groupchat_title"
+            android:label="@string/title_groupchat"
             android:resizeableActivity="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -25,7 +25,7 @@
 
         <activity
             android:name=".room.view.activity.PlayActivity"
-            android:label="@string/groupchat_title"
+            android:label="@string/title_groupchat"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:screenOrientation="portrait"
@@ -40,7 +40,7 @@
 
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_groupchat"
                     android:pathPattern="@string/path_groupchat_channel_id"/>
             </intent-filter>
         </activity>
@@ -48,7 +48,7 @@
 
         <activity
             android:name=".room.view.activity.PlayWebviewActivity"
-            android:label="@string/groupchat_title"
+            android:label="@string/title_groupchat"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
