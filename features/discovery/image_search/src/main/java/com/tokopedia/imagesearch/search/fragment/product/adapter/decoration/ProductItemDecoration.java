@@ -3,7 +3,7 @@ package com.tokopedia.imagesearch.search.fragment.product.adapter.decoration;
 import android.graphics.Rect;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.imagesearch.R;
