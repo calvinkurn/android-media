@@ -23,6 +23,7 @@ object TrackingPinConstant{
     }
 
     object Action{
+        val ACTION_CLICK_ON_BUTTON_CREATE_PIN_TOKOPEDIA = "click on button create pin tokopedia"
         val ACTION_CLICK_ON_BUTTON_NANTI_SAJA_PIN_TOKOPEDIA = "click on button nanti saja pin tokopedia"
         val ACTION_CLICK_ON_BUTTON_BACK_PIN_TOKOPEDIA = "click on button back pin tokopedia"
         val ACTION_INPUT_CREATE_PIN_TOKOPEDIA = "input create pin tokopedia"

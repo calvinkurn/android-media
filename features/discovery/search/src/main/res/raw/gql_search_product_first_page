@@ -19,6 +19,10 @@ query SearchProduct(
         redirection {
             redirect_applink
         }
+        ticker {
+            text
+            query
+        }
         suggestion {
             currentKeyword
             suggestion
@@ -100,14 +104,6 @@ query SearchProduct(
                 clover
                 is_official
             }
-        }
-    }
-
-    ace_guide(q: $query) {
-        data {
-            applink
-            keyword
-            url
         }
     }
 
@@ -303,17 +299,24 @@ query SearchProduct(
 
     global_search_navigation(keyword:$query, device:"android", size:5) {
         data {
+            source
             title
             keyword
             nav_template
+            background
             see_all_applink
             see_all_url
             list {
+                category_name
                 name
                 info
                 image_url
                 applink
                 url
+                subtitle
+                strikethrough
+                background_url
+                logo_url
             }
         }
     }

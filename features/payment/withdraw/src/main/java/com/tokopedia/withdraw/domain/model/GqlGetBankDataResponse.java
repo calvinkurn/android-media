@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlGetBankDataResponse {
 
-    @SerializedName("GetBankListWD")
+    @SerializedName("bankAccount")
     @Expose
     private GqlBankListResponse bankAccount;
 

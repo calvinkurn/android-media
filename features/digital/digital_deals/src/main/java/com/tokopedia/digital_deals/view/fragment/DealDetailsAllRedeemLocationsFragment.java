@@ -14,23 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealDetailsAllLocationsAdapter;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
-import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +52,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_redeem_locations, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_redeem_locations, container, false);
         setHasOptionsMenu(true);
         setViewIds(view);
 
@@ -81,22 +76,22 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
     }
 
     private void setViewIds(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
-        noContentLayout = view.findViewById(R.id.no_content);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
-        searchInputView = view.findViewById(R.id.search_input_view);
-        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals_outlets));
-        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(),R.drawable.ic_search_deal));
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
+        noContentLayout = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
+        searchInputView = view.findViewById(com.tokopedia.digital_deals.R.id.search_input_view);
+        searchInputView.setSearchHint(getResources().getString(com.tokopedia.digital_deals.R.string.search_input_hint_deals_outlets));
+        searchInputView.setSearchTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_16));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(),com.tokopedia.digital_deals.R.drawable.ic_search_deal));
         searchInputView.setListener(this);
         if (getActivity() instanceof CheckoutActivity) {
             appBarLayout.setVisibility(View.GONE);
         } else {
             ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
-            toolbar.setTitle(getActivity().getResources().getString(R.string.redeem_locations));
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_close_deals));
+            toolbar.setTitle(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.redeem_locations));
         }
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(com.tokopedia.design.R.id.recyclerView);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -129,7 +124,8 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         if (!TextUtils.isEmpty(text) && fragmentCallbacks.getOutlets() != null) {
             outlets.clear();
             for (Outlet outlet : fragmentCallbacks.getOutlets()) {
-                if (!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
+                if ((!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) ||
+                        (!TextUtils.isEmpty(outlet.getDistrict()) && outlet.getDistrict().trim().toLowerCase().contains(text.trim().toLowerCase()))) {
                     outlets.add(outlet);
                 }
             }

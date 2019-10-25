@@ -47,8 +47,6 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPr
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -294,14 +292,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    fun displayProduct(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-        this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
-        this.isGoldMerchant = shopInfo.goldOS.isGold == 1
-        this.shopId = shopInfo.shopCore.shopID
-        loadInitialData()
-    }
-
     fun setShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
@@ -311,7 +301,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     fun clearCache() {
         merchantVoucherListPresenter.clearCache()
-        viewModel.clearEtalaseCache()
+        viewModel.clearCache()
     }
 
     // load data promo/featured/etalase

@@ -30,6 +30,20 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
     //TEST
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.kotlinMockito

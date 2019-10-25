@@ -56,6 +56,12 @@
     </item>
 
     <!-- Background -->
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#1F31353B" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
     <item>
         <shape>
             <solid android:color="@android:color/white" />
