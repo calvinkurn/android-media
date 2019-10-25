@@ -53,6 +53,7 @@ import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressListContract.View, SearchInputView.Listener,
