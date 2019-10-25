@@ -6,6 +6,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.annotation.LayoutRes
+import android.support.v4.content.ContextCompat
 import android.support.design.widget.Snackbar
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.CardView
@@ -131,7 +132,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-        val textColor = if(bannerItem.textColor == null) getColorResource(R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        val textColor = if(bannerItem.textColor == null) ContextCompat.getColor(channelTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
