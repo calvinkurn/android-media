@@ -882,14 +882,14 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventClickSearchBar() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
-                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
-                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
-                ""
-        )
-    }
+//    fun eventClickSearchBar() {
+//        TrackApp.getInstance().gtm.sendGeneralEvent(
+//                ProductTrackingConstant.PDP.EVENT_CLICK_TOP_NAV,
+//                ProductTrackingConstant.Category.TOP_NAV_SEARCH_PDP,
+//                ProductTrackingConstant.Action.CLICK_SEARCH_BOX,
+//                ""
+//        )
+//    }
 
     companion object {
         private const val KEY_EVENT = "event"
