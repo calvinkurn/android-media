@@ -41,7 +41,7 @@ public class EventBookTicketContract {
 
         void validateSelection();
 
-        void payTicketsClick(String title);
+        void payTicketsClick(String title, String selectedPackageDate, String locationName);
 
         String getSCREEN_NAME();
 

@@ -49,6 +49,10 @@ public class AllBrandsContract {
         void hideEmptyView();
 
         void startLocationFragment(List<Location> locations);
+
+        void setCurrentLocation(List<Location> locations);
+
+        void showErrorMessage();
     }
 
     public interface Presenter extends CustomerPresenter<AllBrandsContract.View> {

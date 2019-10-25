@@ -1,27 +1,21 @@
 package com.tokopedia.core.home;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
-import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.home.fragment.FragmentTopPicksWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
 
@@ -29,14 +23,13 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
  * Created by Alifa on 1/10/2017.
  */
 
-public class TopPicksWebView extends TkpdCoreWebViewActivity implements
-        FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
+public class TopPicksWebView extends TkpdCoreWebViewActivity implements DeepLinkWebViewHandleListener {
 
     private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
     private static final String TOPPICK_SEGMENT = "toppicks";
     private static final String ARGS_TOPPICK_ID = "toppick_id";
-    private FragmentTopPicksWebView fragment;
+    private BaseSessionWebViewFragment fragment;
 
     public static Intent newInstance(Context context, String url) {
         Intent intent = new Intent(context, TopPicksWebView.class);
@@ -69,9 +62,9 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
         inflateView(R.layout.activity_webview_container);
 
         String url = getIntent().getExtras().getString("url");
-        fragment = FragmentTopPicksWebView.createInstance(url);
+        fragment = BaseSessionWebViewFragment.newInstance(url);
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.container, fragment);
             fragmentTransaction.commit();
@@ -79,35 +72,17 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
 
     }
 
-
-    public void openShop(String url) {
-        Fragment fragment = FragmentShopPreview.createInstances(Uri.parse(url).getPathSegments().get(0), url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-    }
-
     @Override
     public void catchToWebView(String url) {
-        FragmentTopPicksWebView fragment = FragmentTopPicksWebView.createInstance(url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        BaseSessionWebViewFragment fragment = BaseSessionWebViewFragment.newInstance(url);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebview().canGoBack()) {
-                fragment.getWebview().goBack();
+            if (fragment.getWebView().canGoBack()) {
+                fragment.getWebView().goBack();
             } else {
                 super.onBackPressed();
             }

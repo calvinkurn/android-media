@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Neutral_N0">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sv_empty_state"
@@ -40,7 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/white"
+        android:background="@color/Neutral_N0"
         app:cardCornerRadius="@dimen/dp_28"
         app:cardUseCompatPadding="true">
 

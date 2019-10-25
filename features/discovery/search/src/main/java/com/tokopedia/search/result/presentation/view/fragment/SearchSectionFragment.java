@@ -42,6 +42,7 @@ import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGenera
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 
@@ -52,8 +53,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -199,7 +200,7 @@ public abstract class SearchSectionFragment
         if (getUserVisibleHint()
                 && getActivity() != null
                 && getActivity().getApplicationContext() != null) {
-            searchTracking.screenTrackSearchSectionFragment(getScreenName());
+            SearchTracking.screenTrackSearchSectionFragment(getScreenName());
         }
     }
 
@@ -324,8 +325,8 @@ public abstract class SearchSectionFragment
             }
 
             @Override
-            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
-                handleSortResult(selectedSort, selectedSortName);
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
+                handleSortResult(selectedSort, selectedSortName, autoApplyFilter);
             }
         });
     }
@@ -340,10 +341,15 @@ public abstract class SearchSectionFragment
         reloadData();
     }
 
-    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName) {
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
         setSelectedSort(new HashMap<>(selectedSort));
         searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
         if(searchParameter != null) {
+            searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
+
+            searchParameter.getSearchParameterHashMap().putAll(UrlParamUtils.getParamMap(autoApplyFilter));
+
             searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
         }
         clearDataFilterSort();
@@ -403,8 +409,12 @@ public abstract class SearchSectionFragment
     public void refreshFilterController(HashMap<String, String> queryParams) {
         if(filterController == null || getFilters() == null) return;
 
+        HashMap<String, String> params = new HashMap<>(queryParams);
+        params.put(SearchApiConst.ORIGIN_FILTER,
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
+
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(queryParams, initializedFilterList);
+        filterController.initFilterController(params, initializedFilterList);
     }
 
     public void clearDataFilterSort() {
@@ -558,6 +568,7 @@ public abstract class SearchSectionFragment
 
         removeFilterFromFilterController(option);
         refreshSearchParameter(filterController.getParameter());
+        refreshFilterController(new HashMap<>(filterController.getParameter()));
         clearDataFilterSort();
         reloadData();
     }
@@ -595,6 +606,8 @@ public abstract class SearchSectionFragment
 
         this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(queryParams);
+        this.searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
     }
 
     protected List<Option> getOptionListFromFilterController() {

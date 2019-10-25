@@ -37,6 +37,14 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return R.layout.vg_activity
     }
 
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun shouldShowOptionMenu(): Boolean { return true }
 
     companion object {

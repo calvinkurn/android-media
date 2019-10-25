@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/transparent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_16">
 
@@ -14,14 +14,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8" />
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:cardCornerRadius="@dimen/dp_8">
+        android:layout_marginBottom="@dimen/dp_8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -338,6 +337,6 @@
             </LinearLayout>
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
 </LinearLayout>

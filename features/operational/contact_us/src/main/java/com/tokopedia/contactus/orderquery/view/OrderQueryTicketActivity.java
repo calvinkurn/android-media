@@ -11,6 +11,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.orderquery.view.broadcastreceiver.FinishActivityReceiver;
 import com.tokopedia.contactus.orderquery.view.fragment.OrderQueryTicketFragment;
 
@@ -38,7 +39,7 @@ public class OrderQueryTicketActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY);
+        intentFilter.addAction(ContactUsConstant.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 

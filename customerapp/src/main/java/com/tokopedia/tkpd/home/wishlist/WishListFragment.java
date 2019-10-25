@@ -56,7 +56,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +77,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS";
     public static final String FRAGMENT_TAG = "WishListFragment";
-    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     private WishlistAnalytics wishlistAnalytics;
 
@@ -109,7 +107,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
         wishlistAnalytics = new WishlistAnalytics();
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
@@ -270,7 +267,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 "url", dataDetail.getUrl(),
                 "categoryId", DEFAULT_VALUE_NONE_OTHER,
                 "dimension45", addToCartResult.getData().getCartId(),
-                "dimension38", DEFAULT_VALUE_NONE_OTHER
+                "dimension38", DEFAULT_VALUE_NONE_OTHER,
+                "dimension83", dataDetail.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
         );
         wishlistAnalytics.trackEventAddToCardProductWishlist(object);
     }
@@ -620,7 +618,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     "category", DEFAULT_VALUE_NONE_OTHER,
                     "variant", DEFAULT_VALUE_NONE_OTHER,
                     "list", "/wishlist",
-                    "position", Integer.toString(position++)
+                    "position", Integer.toString(position++),
+                    "dimension83", wishlist.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
             ));
         }
         return objects;

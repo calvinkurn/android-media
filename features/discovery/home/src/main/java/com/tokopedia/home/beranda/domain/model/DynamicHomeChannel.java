@@ -73,6 +73,10 @@ public class DynamicHomeChannel {
         private String type;
 
         @Expose
+        @SerializedName("showPromoBadge")
+        private Boolean showPromoBadge;
+
+        @Expose
         @SerializedName("header")
         private Header header;
         @Expose
@@ -153,6 +157,14 @@ public class DynamicHomeChannel {
             this.banner = banner;
         }
 
+        public Boolean getShowPromoBadge() {
+            return showPromoBadge;
+        }
+
+        public void setShowPromoBadge(Boolean showPromoBadge) {
+            this.showPromoBadge = showPromoBadge;
+        }
+
         private List<Object> convertProductEnhanceProductMixDataLayer(Grid[] grids, String headerName, String type) {
             List<Object> list = new ArrayList<>();
 
@@ -170,7 +182,8 @@ public class DynamicHomeChannel {
                                     "category", "none / other",
                                     "variant", "none / other",
                                     "list", "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
-                                    "position", String.valueOf(i + 1)
+                                    "position", String.valueOf(i + 1),
+                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other"
                             )
                     );
                 }
@@ -226,7 +239,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position, String countDown) {
+        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position, String countDown, Boolean isFreeOngkir) {
             return DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
@@ -246,7 +259,8 @@ public class DynamicHomeChannel {
                                                     )),
                                                     "list", "/ - p1 - sprint sale",
                                                     "position", String.valueOf(position + 1),
-                                                    "dimension38", getHomeAttribution(position + 1, getGrids()[position].getId())
+                                                    "dimension38", getHomeAttribution(position + 1, getGrids()[position].getId()),
+                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
                                             )
                                     )
                             )
@@ -445,7 +459,8 @@ public class DynamicHomeChannel {
                                             grid.getPrice()
                                     )),
                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
-                                    "position", String.valueOf(i + 1)
+                                    "position", String.valueOf(i + 1),
+                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other"
                             )
                     );
                 }
@@ -845,6 +860,10 @@ public class DynamicHomeChannel {
         @SerializedName("productClickUrl")
         private String productClickUrl;
 
+        @Expose
+        @SerializedName("freeOngkir")
+        private FreeOngkir freeOngkir;
+
         public String getProductClickUrl() {
             return productClickUrl;
         }
@@ -956,6 +975,14 @@ public class DynamicHomeChannel {
         public void setAttribution(String attribution) {
             this.attribution = attribution;
         }
+
+        public FreeOngkir getFreeOngkir() {
+            return freeOngkir;
+        }
+
+        public void setFreeOngkir(FreeOngkir freeOngkir) {
+            this.freeOngkir = freeOngkir;
+        }
     }
 
     public class Header {
@@ -990,6 +1017,10 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("backImage")
         private String backImage;
+
+        @Expose
+        @SerializedName("textColor")
+        private String textColor;
 
         public String getId() {
             return id;
@@ -1053,6 +1084,14 @@ public class DynamicHomeChannel {
 
         public void setBackImage(String backImage) {
             this.backImage = backImage;
+        }
+
+        public String getTextColor() {
+            return textColor;
+        }
+
+        public void setTextColor(String textColor) {
+            this.textColor = textColor;
         }
     }
 

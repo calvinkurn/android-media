@@ -3,12 +3,12 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
@@ -22,13 +22,14 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
-import com.tokopedia.topchat.chatlist.data.ChatListUrl
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -69,6 +70,8 @@ class ChatItemListViewModel @Inject constructor(
     private val _broadCastButtonUrl = MutableLiveData<String>()
     val broadCastButtonUrl: LiveData<String>
         get() = _broadCastButtonUrl
+
+    private val recentMessage: HashMap<String, String> = hashMapOf()
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -164,6 +167,12 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
+    private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
+        val broadCastUrl = metaData.url
+        broadCastButtonVisibility(true)
+        setBroadcastButtonUrl(broadCastUrl)
+    }
+
     private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable) {
         broadCastButtonVisibility(false)
     }
@@ -172,18 +181,19 @@ class ChatItemListViewModel @Inject constructor(
         _broadCastButtonVisibility.value = visibility
     }
 
-    private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
-        broadCastButtonVisibility(true)
+    private fun setBroadcastButtonUrl(broadCastUrl: String) {
+        _broadCastButtonUrl.value = broadCastUrl
+    }
 
-        var broadCastLink = ChatListUrl.BROADCAST_MICROSITE
-        if (metaData.isWhiteListed()) {
-            broadCastLink = if (GlobalConfig.isAllowDebuggingTools()) {
-                ChatListUrl.STAGING_BROADCAST_WHITELIST
-            } else {
-                ChatListUrl.BROADCAST_WHITELIST
-            }
-        }
+    fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
+        return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
+    }
 
-        _broadCastButtonUrl.value = broadCastLink
+    fun updateLastReply(newChat: IncomingChatWebSocketModel) {
+        recentMessage[newChat.msgId] = newChat.time
+    }
+
+    fun hasBeenUpdated(newChat: IncomingChatWebSocketModel): Boolean {
+        return recentMessage[newChat.msgId] == newChat.time
     }
 }

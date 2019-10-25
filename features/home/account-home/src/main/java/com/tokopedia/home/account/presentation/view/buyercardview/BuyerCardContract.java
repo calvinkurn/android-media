@@ -26,6 +26,10 @@ interface BuyerCardContract {
         void setProfileStatusIncomplete(int progress);
 
         void showBymeIcon();
+
+        void setTokoMemberAmount(String tokoMemberAmount);
+
+        void setEggImage(String eggImageUrl);
     }
 
     interface Presenter {

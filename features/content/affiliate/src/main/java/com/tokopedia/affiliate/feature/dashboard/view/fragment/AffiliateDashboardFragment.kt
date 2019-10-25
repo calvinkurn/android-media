@@ -29,7 +29,6 @@ import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboa
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.calendar.CalendarPickerView
@@ -44,6 +43,7 @@ import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,20 +96,18 @@ class AffiliateDashboardFragment :
         }
     }
 
-    private val coachMarkIncome: CoachMark by lazy {
-        with(CoachMarkBuilder()) {
-            allowNextButton(false)
-        }.build()
+    private val coachMarkAffIncome: CoachMark by lazy {
+        CoachMarkBuilder()
+                .allowPreviousButton(false)
+                .build()
+    }
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
     }
 
     private val coachMarkIncomeItem: CoachMarkItem by lazy {
         CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
-    }
-
-    private val coachMarkFirstTimeUser: CoachMark by lazy {
-        CoachMarkBuilder()
-                .allowNextButton(false)
-                .build()
     }
 
     private val coachMarkCuratedTrafficItem: CoachMarkItem by lazy {
@@ -145,7 +143,7 @@ class AffiliateDashboardFragment :
     private lateinit var llEndDate: LinearLayout
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
-    private lateinit var llCheckBalance: LinearLayout
+    private lateinit var btnCheckBalance: UnifyButton
     private lateinit var tvSeeAll: TextView
     private lateinit var clViewedClicked: ConstraintLayout
     private lateinit var clPostedProduct: ConstraintLayout
@@ -335,14 +333,13 @@ class AffiliateDashboardFragment :
 
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
-        val maxDate = getMaxDate()
-        val calendarPickerView = pickerView?.init(getMinDate(), maxDate, holidayList)
+        val calendarPickerView = pickerView?.init(getMinDate(), getMaxDate(), holidayList)
                 ?.inMode(CalendarPickerView.SelectionMode.RANGE)
         pickerView?.setOnDateSelectedListener(getOnSelectedDateListener())
 
         startDate?.let { startDate ->
             endDate?.let { endDate ->
-                if (startDate != null && endDate != null) calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
+                calendarPickerView?.withSelectedDates(listOf(startDate, endDate))
             }
         }
     }
@@ -355,8 +352,7 @@ class AffiliateDashboardFragment :
 
     private fun getMaxDate(): Date {
         val maxTime = Calendar.getInstance(Locale.getDefault())
-        maxTime.set(Calendar.DAY_OF_MONTH, maxTime.getActualMaximum(Calendar.DAY_OF_MONTH))
-        maxTime.add(Calendar.MONTH, 1)
+        maxTime.add(Calendar.DAY_OF_MONTH, 1)
         maxTime.set(Calendar.HOUR_OF_DAY, 0)
         maxTime.set(Calendar.MINUTE, 0)
         maxTime.set(Calendar.SECOND, 0)
@@ -421,13 +417,13 @@ class AffiliateDashboardFragment :
         esShareNow.gone()
 
         if (affiliatePrefs.isFirstTimeOpenDashboard(userSession.userId)) {
-            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
+            coachMark.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
             affiliatePrefs.setFirstTimeOpenDashboard(userSession.userId)
         }
     }
 
     private fun showTooltip() {
-        coachMarkIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
+        coachMarkAffIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
     }
 
     private fun showChangesAppliedToaster() {
@@ -458,7 +454,7 @@ class AffiliateDashboardFragment :
             llEndDate = findViewById(R.id.ll_end_date)
             tvStartDate = findViewById(R.id.tv_start_date)
             tvEndDate = findViewById(R.id.tv_end_date)
-            llCheckBalance = findViewById(R.id.ll_check_balance)
+            btnCheckBalance = findViewById(R.id.btn_check_balance)
             tvSeeAll = findViewById(R.id.tv_see_all)
             clViewedClicked = findViewById(R.id.cl_viewed_clicked)
             clPostedProduct = findViewById(R.id.cl_posted_product)
@@ -484,7 +480,7 @@ class AffiliateDashboardFragment :
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
 
-        llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
+        btnCheckBalance.setOnClickListener { onCheckBalanceClicked() }
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
 
         srlRefresh.setOnRefreshListener { onRefresh() }

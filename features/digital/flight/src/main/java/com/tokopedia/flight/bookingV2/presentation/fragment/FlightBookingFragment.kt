@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -434,10 +435,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun showGetCartDataErrorStateLayout(t: Throwable) {
-        view?.let {
-            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
-                    Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener { flightBookingPresenter.onRetryGetCartData() })
-        }
+        NetworkErrorHelper.showEmptyState(
+                activity, view, FlightErrorUtil.getMessageFromException(activity, t)
+        ) { flightBookingPresenter.onRetryGetCartData() }
     }
 
     override fun renderFinishTimeCountDown(date: Date) {
@@ -535,9 +535,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun showUpdateDataErrorStateLayout(t: Throwable) {
         view?.let {
-            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
-                    Snackbar.LENGTH_LONG, "Coba Lagi",
-                    View.OnClickListener { flightBookingPresenter.onFinishTransactionTimeReached() })
+            NetworkErrorHelper.showEmptyState(
+                    activity, view, FlightErrorUtil.getMessageFromException(activity, t)
+            ) { flightBookingPresenter.onFinishTransactionTimeReached() }
         }
     }
 

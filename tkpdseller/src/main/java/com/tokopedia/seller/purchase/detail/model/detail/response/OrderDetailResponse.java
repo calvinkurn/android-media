@@ -38,6 +38,12 @@ public class OrderDetailResponse {
     @SerializedName("buttons")
     @Expose
     private Buttons buttons;
+    @SerializedName("is_free_shipping")
+    @Expose
+    private Boolean isFreeShipping;
+    @SerializedName("origin_info")
+    @Expose
+    private OriginInfo originInfo;
 
     public int getOrderId() {
         return orderId;
@@ -118,4 +124,12 @@ public class OrderDetailResponse {
     public void setButtons(Buttons buttons) {
         this.buttons = buttons;
     }
+
+    public Boolean getFreeShipping() { return isFreeShipping; }
+
+    public void setFreeShipping(Boolean freeShipping) { isFreeShipping = freeShipping; }
+
+    public OriginInfo getOriginInfo() { return originInfo; }
+
+    public void setOriginInfo(OriginInfo originInfo) { this.originInfo = originInfo; }
 }

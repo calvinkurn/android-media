@@ -17,7 +17,6 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 
 import java.util.Arrays;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetButtonsFragment extends InboxBottomSheetFragment implements View.OnClickListener {
 
@@ -65,7 +64,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
         if (id == R.id.tv_custom_reason) {
             if (selectedButton != null)
                 selectedButton.setSelected(false);
-            btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+            btnSend.setBackgroundResource(R.drawable.contactus_rounded_rectangle_grey_solid);
             btnSend.setClickable(false);
             if (v != selectedButton) {
                 v.setSelected(true);
@@ -108,7 +107,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
                     btnSend.setClickable(true);
                     btnSend.setBackgroundResource(R.drawable.rounded_rectangle_greenbutton_solid);
                 } else {
-                    btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+                    btnSend.setBackgroundResource(R.drawable.contactus_rounded_rectangle_grey_solid);
                     btnSend.setClickable(false);
                 }
             }
@@ -159,7 +158,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
         } else {
             selectedButton = null;
             this.ratingId = 0;
-            btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+            btnSend.setBackgroundResource(R.drawable.contactus_rounded_rectangle_grey_solid);
             btnSend.setClickable(false);
         }
     }
