@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.onboarding.view.widget
 
 import android.content.Context
-import android.support.v7.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatEditText
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet

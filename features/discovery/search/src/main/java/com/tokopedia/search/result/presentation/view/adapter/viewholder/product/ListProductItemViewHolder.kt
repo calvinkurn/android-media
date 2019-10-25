@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R

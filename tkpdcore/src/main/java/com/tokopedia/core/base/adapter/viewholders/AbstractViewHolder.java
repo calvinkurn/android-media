@@ -1,6 +1,6 @@
 package com.tokopedia.core.base.adapter.viewholders;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 

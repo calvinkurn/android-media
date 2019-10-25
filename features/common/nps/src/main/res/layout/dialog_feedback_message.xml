@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -54,7 +54,7 @@
         android:paddingBottom="11dp"
         android:background="@drawable/rounded_button">
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/send_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

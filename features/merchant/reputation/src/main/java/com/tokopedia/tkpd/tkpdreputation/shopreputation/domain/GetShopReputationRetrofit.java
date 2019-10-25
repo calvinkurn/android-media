@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.shopreputation.domain;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

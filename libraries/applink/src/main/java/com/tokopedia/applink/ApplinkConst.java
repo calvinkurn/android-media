@@ -290,6 +290,7 @@ public interface ApplinkConst {
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
+        String WEBVIEW = "sellerapp://webview";
     }
 
     interface Query {

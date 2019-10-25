@@ -1,7 +1,7 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
 import android.content.Context;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;

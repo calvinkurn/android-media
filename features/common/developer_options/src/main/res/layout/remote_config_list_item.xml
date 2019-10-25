@@ -10,7 +10,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="6dp"
@@ -21,7 +21,7 @@
         android:background="@drawable/remote_config_key_bg"
         android:text="@string/remote_config_key_label" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/config_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:maxLines="2"
         android:background="@drawable/remote_config_value_bg" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -43,7 +43,7 @@
         android:background="@drawable/remote_config_key_bg"
         android:text="@string/remote_config_value_label" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/config_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -37,7 +37,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -386,7 +386,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
 
     private void showMustVerify() {
-        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+        new androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
@@ -411,7 +411,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void showSaldoWarningDialog() {
-        new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+        new androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_title))
                 .setMessage(getActivity().getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_desc))
                 .setPositiveButton(

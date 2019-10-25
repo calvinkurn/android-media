@@ -3,8 +3,8 @@ package com.tokopedia.topads.auto.view.widget
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
 import android.widget.FrameLayout
 
@@ -29,7 +29,7 @@ class ManualAdsConfirmationSheet {
     private fun setupView(context: Context) {
         dialog!!.setOnShowListener { dialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
-            val frameLayout = dialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (frameLayout != null) {
                 val behavior = BottomSheetBehavior.from(frameLayout)
                 behavior.isHideable = false

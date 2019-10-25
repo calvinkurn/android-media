@@ -247,6 +247,9 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    @JvmField
+    val LOGOUT = "$INTERNAL_GLOBAL/logout"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
