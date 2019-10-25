@@ -132,7 +132,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-        val textColor = if(bannerItem.textColor == null) ContextCompat.getColor(channelTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        val textColor = if(bannerItem.textColor == null) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
