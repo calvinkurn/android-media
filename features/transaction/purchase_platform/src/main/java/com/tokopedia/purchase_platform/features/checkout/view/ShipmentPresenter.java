@@ -764,9 +764,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ? AuthHelper.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
                 : AuthHelper.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
     }
 
     @Override
@@ -1201,10 +1201,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
-                                                    boolean hasInsurance,
-                                                    CheckPromoParam checkPromoParam,
-                                                    int isDonation,
-                                                    String leasingId) {
+                                                   boolean hasInsurance,
+                                                   CheckPromoParam checkPromoParam,
+                                                   int isDonation,
+                                                   String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
@@ -1340,47 +1340,55 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         // todo: refactor to converter class
-        List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
-        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
-                    .productId(cartItemModel.getProductId());
-            if (cartItemModel.isPreOrder()) {
-                ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
-                        new ShipmentStateProductPreorder.Builder()
-                                .durationDay(cartItemModel.getPreOrderDurationDay());
-                builder.productPreorder(shipmentStateProductPreorder.build());
-            }
-            shipmentStateProductDataList.add(builder.build());
+        CourierItemData courierData = null;
+        if (getView().isTradeInByPickup()) {
+            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup();
+        } else {
+            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
         }
 
-        ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
-                .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
-                .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
-                .build();
+        if (courierData != null) {
+            List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
+                        .productId(cartItemModel.getProductId());
+                if (cartItemModel.isPreOrder()) {
+                    ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
+                            new ShipmentStateProductPreorder.Builder()
+                                    .durationDay(cartItemModel.getPreOrderDurationDay());
+                    builder.productPreorder(shipmentStateProductPreorder.build());
+                }
+                shipmentStateProductDataList.add(builder.build());
+            }
 
-        CourierItemData courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
-        RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
+            ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
+                    .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
+                    .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
+                    .build();
 
-        ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
-                .shippingId(courierData.getShipperId())
-                .spId(courierData.getShipperProductId())
-                .ratesFeature(ratesFeature)
-                .build();
+            RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
-        ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
-                .shopId(shipmentCartItemModel.getShopId())
-                .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
-                .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
-                .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
-                .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
-                .warehouseId(shipmentCartItemModel.getFulfillmentId())
-                .dropshipData(dropshipDataBuilder)
-                .shippingInfoData(shippingInfoDataBuilder)
-                .productDataList(shipmentStateProductDataList);
-        shipmentStateShopProductDataList.add(builder.build());
+            ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
+                    .shippingId(courierData.getShipperId())
+                    .spId(courierData.getShipperProductId())
+                    .ratesFeature(ratesFeature)
+                    .build();
+
+            ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
+                    .shopId(shipmentCartItemModel.getShopId())
+                    .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
+                    .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
+                    .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
+                    .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                    .warehouseId(shipmentCartItemModel.getFulfillmentId())
+                    .dropshipData(dropshipDataBuilder)
+                    .shippingInfoData(shippingInfoDataBuilder)
+                    .productDataList(shipmentStateProductDataList);
+            shipmentStateShopProductDataList.add(builder.build());
+        }
     }
 
     @Override

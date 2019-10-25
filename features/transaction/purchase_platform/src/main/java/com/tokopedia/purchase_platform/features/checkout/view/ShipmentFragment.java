@@ -59,6 +59,8 @@ import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -1228,7 +1230,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
         }
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
-        shipmentAdapter.updateSelectedAddress(selectedAddress);
+        shipmentAdapter.updateSelectedAddress(selectedAddress, false);
         onDataDisableToCheckout(null);
         shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId(), getCheckoutLeasingId());
     }
@@ -2923,13 +2925,65 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onChangeTradeInDopOffClicked() {
         // Todo : Intent to choose pinpoint
         // Todo : and get 2 result : Address data & Shipping data
+        onResultFromSetTradeInPinpoint();
     }
 
     private void onResultFromSetTradeInPinpoint() {
         // Todo : Map address data to RecipientAddressModel >> update adapter data
-//        shipmentAdapter.updateSelectedAddress();
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        recipientAddressModel.setDropOffAddressName("Indomaret Serang 1011");
+        recipientAddressModel.setDropOffAddressDetail("jl. Raya Banten KM 117, Serang, Banten");
+        shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
+
         // Todo : Map shipping data to CourierItemData >> update adapter data
-        shipmentAdapter.setSelectedCourierTradeInPickup(null);
+        CourierItemData courierItemData = new CourierItemData();
+        courierItemData.setShipperId(11);
+        courierItemData.setServiceId(1003);
+        courierItemData.setShipperProductId(33);
+        courierItemData.setName("SiCepat");
+        courierItemData.setEstimatedTimeDelivery("Next Day (1 Hari)");
+        courierItemData.setMinEtd(86400);
+        courierItemData.setMaxEtd(86400);
+        courierItemData.setShipperPrice(13000);
+        courierItemData.setShipperFormattedPrice("Rp13.000");
+        courierItemData.setInsurancePrice(0);
+        courierItemData.setInsuranceType(3);
+        courierItemData.setInsuranceUsedType(2);
+        courierItemData.setInsuranceUsedInfo("Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya");
+        courierItemData.setInsuranceUsedDefault(2);
+        courierItemData.setUsePinPoint(false);
+//        if (shippingCourierViewModel.getServiceData().getOrderPriority() != null) {
+//            courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
+//            courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
+//            courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
+//            courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
+//            courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
+//            courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
+//            courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
+//            courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
+//            courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
+//        }
+        courierItemData.setAllowDropshiper(true);
+        courierItemData.setAdditionalPrice(0);
+        courierItemData.setPromoCode("");
+        courierItemData.setChecksum("URBRPGtbz80x6kKDpBMT5NfZfzg%3D");
+        courierItemData.setUt("1571973648");
+        courierItemData.setBlackboxInfo("");
+        courierItemData.setSelected(true);
+//        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
+//                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
+//            OntimeDeliveryGuarantee otd_prev = shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
+//            OntimeDelivery otd = new OntimeDelivery(
+//                    otd_prev.getAvailable(),
+//                    otd_prev.getTextLabel(),
+//                    otd_prev.getTextDetail(),
+//                    otd_prev.getUrlDetail(),
+//                    otd_prev.getValue()
+//            );
+//            courierItemData.setOntimeDelivery(otd);
+//        }
+
+        shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
     }
 
     @Override
@@ -2937,5 +2991,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel == null) return false;
         return recipientAddressModel.getSelectedTabIndex() == 1;
+    }
+
+    @Override
+    public void onTradeInAddressTabChanged(int shipmentItemTradeInPosition) {
+        onNeedUpdateViewItem(shipmentItemTradeInPosition);
+        shipmentAdapter.updateShipmentCostModel();
+        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
 }

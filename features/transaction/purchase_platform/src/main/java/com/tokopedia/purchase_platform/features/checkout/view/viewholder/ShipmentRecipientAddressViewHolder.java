@@ -92,9 +92,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
         // Todo : Remove this
-//        recipientAddress.setTradeIn(true);
-//        recipientAddress.setDisableMultipleAddress(true);
-//        recipientAddress.setTradeInDropOffEnable(true);
+        recipientAddress.setTradeIn(true);
+        recipientAddress.setDisableMultipleAddress(true);
+        recipientAddress.setTradeInDropOffEnable(true);
 //        recipientAddress.setDropOffAddressName("A Indomaret Karet Semanggi");
 //        recipientAddress.setDropOffAddressDetail("A Karet Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI Jakarta");
 
@@ -173,7 +173,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     recipientAddress.setSelectedTabIndex(tab.getPosition());
-                    shipmentAdapterActionListener.onNeedUpdateViewItem(getAdapterPosition());
+                    shipmentAdapterActionListener.onNeedUpdateViewItem(position);
+                    int shipmentItemTradeInPosition = position + 1;
+                    shipmentAdapterActionListener.onTradeInAddressTabChanged(shipmentItemTradeInPosition);
                 }
             }
 

@@ -743,7 +743,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvDurationPrice.setVisibility(View.GONE);
         tvDurationStrikedPrice.setVisibility(View.GONE);
 
-        boolean isTradeInPickup = true;
+        boolean isTradeInPickup = mActionListener.isTradeInByPickup();
         if (isTradeInPickup) {
             llShippingOptionsContainer.setVisibility(View.GONE);
             llShipmentRecommendationContainer.setVisibility(View.GONE);
@@ -752,7 +752,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     && shipmentDetailData.getSelectedCourierTradeInPickup() != null;
             if (isCourierTradeInPickupSelected) {
                 tvTradeInShippingPriceDetail.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice(), false));
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup().getShipperPrice(), false));
             } else {
                 tvTradeInShippingPriceDetail.setText(R.string.label_trade_in_shipping_price);
             }
@@ -984,27 +984,36 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null ||
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null) &&
                 !shipmentCartItemModel.isError()) {
-            shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
-                    .getShipperPrice();
-            Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
-            if (useInsurance != null && useInsurance) {
-                insurancePrice = shipmentCartItemModel.getSelectedShipmentDetailData()
-                        .getSelectedCourier().getInsurancePrice();
+            CourierItemData courierItemData = null;
+            if (mActionListener.isTradeInByPickup() && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null) {
+                courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup();
+            } else if (!mActionListener.isTradeInByPickup() && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             }
-            Boolean isOrderPriority = shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority();
-            if (isOrderPriority != null && isOrderPriority) {
-                priorityPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getPriorityPrice();
-            }
-            additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
-                    .getSelectedCourier().getAdditionalPrice();
-            subTotalPrice += (totalItemPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
-            if (voucherLogisticItemUiModel != null) {
-                int discountedRate = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate();
-                subTotalPrice += discountedRate;
+
+            if (courierItemData != null) {
+                shippingPrice = courierItemData.getShipperPrice();
+                Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
+                if (useInsurance != null && useInsurance) {
+                    insurancePrice = courierItemData.getInsurancePrice();
+                }
+                Boolean isOrderPriority = shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority();
+                if (isOrderPriority != null && isOrderPriority) {
+                    priorityPrice = courierItemData.getPriorityPrice();
+                }
+                additionalPrice = courierItemData.getAdditionalPrice();
+                subTotalPrice += (totalItemPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
+                if (voucherLogisticItemUiModel != null) {
+                    int discountedRate = courierItemData.getDiscountedRate();
+                    subTotalPrice += discountedRate;
+                } else {
+                    subTotalPrice += shippingPrice;
+                }
             } else {
-                subTotalPrice += shippingPrice;
+                subTotalPrice = totalItemPrice;
             }
         } else {
             subTotalPrice = totalItemPrice;

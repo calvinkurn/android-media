@@ -171,6 +171,8 @@ public interface ShipmentContract {
         void resetPromoBenefit();
 
         void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
+
+        boolean isTradeInByPickup();
     }
 
     interface AnalyticsActionListener {
