@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.SeeMoreBannerMixViewHolder
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import kotlinx.android.synthetic.main.thematic_card_view.view.*
 
 class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
                         val layoutType: String,
@@ -30,6 +31,7 @@ class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+
         if (viewType == SeeMoreBannerMixViewHolder.LAYOUT_SEE_MORE) {
             val cardSeeMoreBanner = view.findViewById<CardView>(R.id.card_see_more_banner_mix)
             val layoutParams = cardSeeMoreBanner.layoutParams
@@ -37,7 +39,8 @@ class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
             cardSeeMoreBanner.layoutParams = layoutParams
         } else if(viewType == ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL ||
                 getItemViewType(viewType) == ProductItemViewHolder.LAYOUT_ITEM) {
-            val cardProduct = view.findViewById<ThematicCardView>(R.id.banner_item)
+            val cardThematic = view.findViewById<ThematicCardView>(R.id.banner_item)
+            val cardProduct = cardThematic.cardViewProductCard
             val layoutParams = cardProduct.layoutParams
             layoutParams.height = maxHeight
             cardProduct.layoutParams = layoutParams
