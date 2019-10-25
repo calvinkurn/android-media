@@ -3,15 +3,14 @@ package com.tokopedia.home.beranda.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
+import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
-import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.constant.ConstantKey;
 
 import java.io.BufferedReader;
@@ -35,30 +34,25 @@ public class HomeDataSource {
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
-    private CacheManager cacheManager;
-    private Gson gson;
+    private PersistentCacheManager persistentCacheManager;
 
     public HomeDataSource(HomeDataApi homeDataApi,
                           HomeAceApi homeAceApi,
                           HomeMapper homeMapper,
-                          Context context,
-                          CacheManager cacheManager,
-                          Gson gson) {
+                          Context context) {
         this.homeDataApi = homeDataApi;
         this.homeAceApi = homeAceApi;
         this.homeMapper = homeMapper;
         this.context = context;
-        this.cacheManager = cacheManager;
-        this.gson = gson;
+        this.persistentCacheManager = PersistentCacheManager.instance;
     }
 
     public Observable<List<HomeVisitable>> getCache() {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
             public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
-                String cache = cacheManager.get(ConstantKey.TkpdCache.HOME_DATA_CACHE);
-                if (cache != null) {
-                    HomeData homeData = gson.fromJson(cache, HomeData.class);
+                HomeData homeData = persistentCacheManager.get(ConstantKey.TkpdCache.HOME_DATA_CACHE, HomeData.class);
+                if (homeData != null) {
                     homeData.setCache(true);
                     GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
                     graphqlResponse.setData(homeData);
@@ -86,9 +80,9 @@ public class HomeDataSource {
             public Response<GraphqlResponse<HomeData>> call(Response<GraphqlResponse<HomeData>> response) {
                 if (response.isSuccessful()) {
                     HomeData homeData = response.body().getData();
-                    cacheManager.save(
+                    persistentCacheManager.put(
                             ConstantKey.TkpdCache.HOME_DATA_CACHE,
-                            gson.toJson(homeData),
+                            homeData,
                             ONE_YEAR
                     );
                 }
