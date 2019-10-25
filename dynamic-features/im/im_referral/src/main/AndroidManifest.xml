@@ -1,14 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.digital.topup">
+    package="com.tokopedia.referral.im.customerapp">
 
     <dist:module
         dist:instant="false"
         dist:onDemand="true"
-        dist:title="@string/title_digital_topup">
+        dist:title="@string/title_module_referral">
         <dist:fusing dist:include="true" />
     </dist:module>
 
     <application android:hasCode="false" />
 </manifest>
-
