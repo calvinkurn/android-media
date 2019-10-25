@@ -102,7 +102,7 @@ open class PlayViewStateImpl(
     private var dynamicButtonAdapter: DynamicButtonsAdapter
     private var adapter: GroupChatAdapter
 
-    private var toolbar: Toolbar = view.findViewById(com.tokopedia.abstraction.R.id.toolbar)
+    private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
