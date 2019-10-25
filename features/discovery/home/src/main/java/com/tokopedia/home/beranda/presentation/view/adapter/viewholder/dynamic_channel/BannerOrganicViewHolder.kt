@@ -131,9 +131,9 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+        val textColor = if(bannerItem.textColor == null) getColorResource(R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        bannerTitle.setTextColor(textColor)
+        bannerDescription.setTextColor(textColor)
 
         Glide.with(itemView.context)
                 .load(bannerItem.imageUrl)
