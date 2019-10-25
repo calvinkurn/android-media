@@ -77,6 +77,10 @@ data class SomDetailOrder (
             @Expose
             val listLabelInfo: List<LabelInfo> = listOf(),
 
+            @SerializedName("flag_order_meta")
+            @Expose
+            val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
+
             @SerializedName("payment_method")
             @Expose
             val paymentMethod: List<PaymentMethod> = listOf(),
@@ -239,6 +243,11 @@ data class SomDetailOrder (
                     @SerializedName("flag_background")
                     @Expose
                     val flagBg: String = "")
+
+            data class FlagOrderMeta(
+                    @SerializedName("is_free_shipping_campaign")
+                    @Expose
+                    val flagFreeShipping: Boolean = false)
 
             data class PaymentMethod(
                     @SerializedName("gateway_id")

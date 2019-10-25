@@ -105,6 +105,9 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       is_order_sampai
       is_order_trade_in
     }
+    flag_order_meta{
+        is_free_shipping_campaign
+    }
     label_info{
       flag_name
       flag_color

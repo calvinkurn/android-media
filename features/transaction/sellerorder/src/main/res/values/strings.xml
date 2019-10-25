@@ -56,4 +56,14 @@
     <string name="tolak_pesanan">Tolak Pesanan</string>
     <string name="accept_order">accept_order</string>
     <string name="kembali">Kembali</string>
+    <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
+
+    <string name="chat">Chat</string>
+    <string name="harus_sesuai">Harus Sesuai</string>
+    <string name="icon_harus_sesuai">Icon Harus Sesuai</string>
+    <string name="label_mengerti">Mengerti</string>
+    <string name="title_bottomsheet_immutable_courier">Kurir tidak dapat diubah</string>
+    <string name="desc_bottomsheet_immutable_courier">Kurir dan layanan pengiriman harus sesuai dengan pesanan.</string>
+    <string name="title_bottomsheet_wajib_tulis_kode_booking">Wajib tulis kode booking</string>
+    <string name="desc_bottomsheet_wajib_tulis_kode_booking">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah selesai.</string>
 </resources>

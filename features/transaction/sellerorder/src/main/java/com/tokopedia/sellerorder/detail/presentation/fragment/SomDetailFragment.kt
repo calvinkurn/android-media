@@ -7,21 +7,26 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
+import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_ONLY_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_OFFICE_CLOSED
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_UNMATCHED_COST
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_EMPTY_STOCK
@@ -34,7 +39,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OFFICE_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_EMPTY_STOCK
@@ -43,12 +50,14 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetTextOnlyAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
@@ -60,7 +69,7 @@ import kotlin.collections.HashMap
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.ActionListener {
+class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -68,8 +77,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
+    private var listRejectData: ArrayList<SomRejectData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
-    private lateinit var somBottomSheetTextOnlyAdapter:  SomBottomSheetTextOnlyAdapter
+    private lateinit var somBottomSheetRejectOrderAdapter:  SomBottomSheetRejectOrderAdapter
     private lateinit var dialogUnify: DialogUnify
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
@@ -107,14 +117,31 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
         observingAcceptOrder()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.chat_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.som_action_chat -> {
+                onChatClicked()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun onChatClicked() {
+        RouteManager.route(activity, ApplinkConst.TOPCHAT_IDLESS)
+    }
+
     private fun prepareLayout() {
         somDetailAdapter = SomDetailAdapter()
+        somDetailAdapter.setActionListener(this)
         rv_detail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
         }
-
-        somBottomSheetTextOnlyAdapter = SomBottomSheetTextOnlyAdapter(this)
     }
 
     private fun loadDetail() {
@@ -204,7 +231,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
-                notesValue)
+                notesValue,
+                detailResponse.flagOrderMeta.flagFreeShipping)
 
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
@@ -256,17 +284,20 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
             }
 
             btn_secondary?.setOnClickListener {
+                somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false, hasReasonEditText = false)
                 showTextOnlyBottomSheet()
                 bottomSheetUnify.clearHeader(true)
                 bottomSheetUnify.clearClose(true)
                 val mapKey = HashMap<String, String>()
-                val listKey = ArrayList<HashMap<String, String>>()
                 detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                     mapKey[btn.key] = btn.displayName
-                    listKey.add(mapKey)
+
                 }
-                somBottomSheetTextOnlyAdapter.listKey = listKey
-                somBottomSheetTextOnlyAdapter.notifyDataSetChanged()
+                /*val rejectData = SomRejectData(mapKey, BOTTOMSHEET_TEXT_ONLY_TYPE)
+                listRejectData = arrayListOf()
+                listRejectData.add(rejectData)*/
+                somBottomSheetRejectOrderAdapter.mapKey = mapKey
+                somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
             }
 
         } else {
@@ -280,7 +311,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
         viewBottomSheet.rv_bottomsheet_secondary?.apply {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetTextOnlyAdapter
+            adapter = somBottomSheetRejectOrderAdapter
         }
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
@@ -291,41 +322,76 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetTextOnlyAdapter.Ac
         bottomSheetUnify.dismiss()
         println("++ KEY = $key")
         if (key.equals(KEY_REJECT_ORDER, true)) {
+            somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false, hasReasonEditText = false)
             showTextOnlyBottomSheet()
             bottomSheetUnify.clearHeader(false)
             bottomSheetUnify.clearClose(false)
             bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
-            somBottomSheetTextOnlyAdapter.listKey = createOptionsRejectOrder()
-            somBottomSheetTextOnlyAdapter.notifyDataSetChanged()
+
+            var map = HashMap<String, String>()
+            createOptionsRejectOrder(map)
+
+            val rejectData = SomRejectData(createOptionsRejectOrder(), BOTTOMSHEET_TEXT_ONLY_TYPE)
+            listRejectData = arrayListOf()
+            listRejectData.add(rejectData)
+
+            somBottomSheetRejectOrderAdapter.mapKey = createOptionsRejectOrder()
+            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
 
         } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
+
+        } else if (key.equals(KEY_REASON_COURIER_PROBLEM, true)) {
+            showTextOnlyBottomSheet()
+            bottomSheetUnify.clearHeader(false)
+            bottomSheetUnify.clearClose(false)
+            bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
+            listRejectData = arrayListOf()
+            val mapRadio = HashMap<String, String>()
+            mapRadio[KEY_REASON_OTHER] = VALUE_REASON_OTHER
+            listRejectData.add(SomRejectData(createOptionsCourierProblems(), BOTTOMSHEET_TEXT_RADIO_TYPE))
+            listRejectData.add(SomRejectData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
+            somBottomSheetRejectOrderAdapter.listRejectData = listRejectData
+            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
         }
     }
 
-    private fun createOptionsRejectOrder(): ArrayList<HashMap<String, String>> {
-        val listKey = ArrayList<HashMap<String, String>>()
+    private fun createOptionsRejectOrder(map: HashMap<String, String>): HashMap<String, String> {
+        map[KEY_REASON_EMPTY_STOCK] = VALUE_REASON_EMPTY_STOCK
+        map[KEY_REASON_SHOP_CLOSED] = VALUE_REASON_SHOP_CLOSED
+        map[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
+        map[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
+        map[KEY_REASON_OTHER] = VALUE_REASON_OTHER
+        return map
+    }
 
-        val map1 = HashMap<String, String>()
-        map1[KEY_REASON_EMPTY_STOCK] = VALUE_REASON_EMPTY_STOCK
-        listKey.add(map1)
+    private fun createOptionsCourierProblems(): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map[KEY_COURIER_PROBLEM_OFFICE_CLOSED] = VALUE_COURIER_PROBLEM_OFFICE_CLOSED
+        map[KEY_COURIER_PROBLEM_UNMATCHED_COST] = VALUE_REASON_SHOP_CLOSED
+        map[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
+        map[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
+        map[KEY_REASON_OTHER] = VALUE_REASON_OTHER
+        return map
+    }
 
-        val map2 = HashMap<String, String>()
-        map2[KEY_REASON_SHOP_CLOSED] = VALUE_REASON_SHOP_CLOSED
-        listKey.add(map2)
+    override fun onShowBottomSheetInfo(title: String, resIdDesc: Int) {
+        val bottomSheetUnify = BottomSheetUnify()
+        val childView = View.inflate(context, R.layout.bottomsheet_som_info, null)
 
-        val map3 = HashMap<String, String>()
-        map3[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
-        listKey.add(map3)
+        val bottomSheetDesc: Typography = childView.findViewById(R.id.bottomsheet_desc)
+        bottomSheetDesc.setText(resIdDesc)
 
-        val map4 = HashMap<String, String>()
-        map4[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
-        listKey.add(map4)
+        val childBtn: UnifyButton = childView.findViewById(R.id.btn_mengerti)
+        childBtn.setOnClickListener { bottomSheetUnify.dismiss() }
 
-        val map5 = HashMap<String, String>()
-        map5[KEY_REASON_OTHER] = VALUE_REASON_OTHER
-        listKey.add(map5)
-
-        return listKey
+        bottomSheetUnify.apply {
+            clearClose(false)
+            clearHeader(false)
+            setTitle(title)
+            setOnDismissListener { this.dismiss() }
+            setChild(childView)
+        }
+        bottomSheetUnify.show(fragmentManager, "")
     }
 }

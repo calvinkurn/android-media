@@ -14,12 +14,18 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetai
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
+import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 
 /**
  * Created by fwidjaja on 2019-10-03.
  */
 class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>>() {
     var listDataDetail = mutableListOf<SomDetailData>()
+    private lateinit var actionListener: ActionListener
+
+    interface ActionListener {
+        fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
+    }
 
     companion object {
         private const val LAYOUT_HEADER = 0
@@ -41,7 +47,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             }
             LAYOUT_SHIPPING -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_shipping_item, parent, false)
-                SomDetailShippingViewHolder(view)
+                SomDetailShippingViewHolder(view, actionListener)
             }
             LAYOUT_PAYMENTS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_payments_item, parent, false)
@@ -85,5 +91,9 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
+    }
+
+    fun setActionListener(fragment: SomDetailFragment) {
+        this.actionListener = fragment
     }
 }

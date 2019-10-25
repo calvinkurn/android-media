@@ -6,7 +6,7 @@ package com.tokopedia.sellerorder.common.util
 object SomConsts {
     const val PARAM_INPUT = "input"
     const val PARAM_SELLER = "seller"
-    const val PARAM_CLIENT = "android"
+    const val PARAM_CLIENT = "desktop"
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
@@ -55,5 +55,20 @@ object SomConsts {
     const val VALUE_REASON_BUYER_NO_RESPONSE = "Pembeli Tidak Respons"
     const val VALUE_REASON_OTHER = "Lainnya"
 
+    const val KEY_COURIER_PROBLEM_OFFICE_CLOSED = "office_closed"
+    const val KEY_COURIER_PROBLEM_UNMATCHED_COST = "unmatched_cost"
+    const val KEY_COURIER_PROBLEM_CHOOSEN_COURIER = "choosen_courier"
+    const val KEY_COURIER_PROBLEM_OTHERS = "other_problem"
+
+    const val VALUE_COURIER_PROBLEM_OFFICE_CLOSED = "Kantor Kurir Tutup"
+    const val VALUE_COURIER_PROBLEM_UNMATCHED_COST = "Biaya Pengiriman Tidak Sesuai"
+    const val VALUE_COURIER_PROBLEM_CHOOSEN_COURIER = "Tidak dapat mengirim dengan kurir yang dipilih"
+    const val VALUE_COURIER_PROBLEM_OTHERS = "Lainnya"
+
     const val TITLE_PILIH_PENOLAKAN = "Pilih alasan penolakan"
+    const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
+
+    const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
+    const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"
+    const val BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE = "text_radio_reason"
 }
