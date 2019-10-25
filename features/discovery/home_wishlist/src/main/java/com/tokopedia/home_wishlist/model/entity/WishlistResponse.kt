@@ -25,7 +25,7 @@ class Badge (
     }
 }
 
-class Data (
+class WishlistResponse (
     @SerializedName("wishlist")
     @Expose
     val wishlist: Wishlist
@@ -184,10 +184,4 @@ class Wishlist (
     @SerializedName("items")
     @Expose
     val items: List<WishlistItem> = listOf()
-)
-
-class WishlistResponse (
-    @SerializedName("data")
-    @Expose
-    val data: Data
 )

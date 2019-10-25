@@ -1,5 +1,5 @@
-query wishlist($page: Int, $count: Int){
-  wishlist(page: $page, count: $count){
+query wishlist($query: String!, $page: Int, $count: Int){
+  wishlist(page: $page, count: $count, query: $query){
       has_next_page
       total_data
       items {

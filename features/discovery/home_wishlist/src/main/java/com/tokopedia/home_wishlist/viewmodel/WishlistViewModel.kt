@@ -23,11 +23,9 @@ import javax.inject.Named
  * @param primaryProductQuery the raw query for get primary product
  */
 open class WishlistViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
         private val wishlistRepository: WishlistRepository,
         @Named("Main") val dispatcher: CoroutineDispatcher
-
 ) : BaseViewModel(dispatcher) {
 
     private val _searchData = MutableLiveData<Pair<String, Int>>().apply { value = Pair("", 0) }

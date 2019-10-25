@@ -15,4 +15,6 @@
     <string name="home_recom_screen_name">/rekomendasi</string>
     <string name="recom_see_more_title">Lihat Semua</string>
     <string name="wishlist">Wishlist</string>
+    <string name="wishlist_search_product">Cari Produk</string>
+    <string name="wishlist_empty_description">Simpan dan bandingan barang favoritmu cukup di satu tempat.</string>
 </resources>

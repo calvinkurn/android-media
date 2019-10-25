@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.tokopedia.unifycomponents.EmptyState
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyEmptyStateCTAFullWidth="true"
+        app:unifyEmptyStateDescription="@string/wishlist_empty_description"
+        app:unifyEmptyStateImageDrawable="@drawable/empty_wishlist"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStatePrimaryCTAText="@string/wishlist_search_product"
+        app:unifyEmptyStateTitle="@string/wishlist"
+        app:unifyEmptyStateType="page"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+</FrameLayout>

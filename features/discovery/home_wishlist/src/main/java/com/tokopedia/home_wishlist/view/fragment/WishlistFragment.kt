@@ -22,8 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
@@ -173,6 +172,18 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
     private fun loadData(){
         viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
             when(response.status){
+                Status.LOADING -> {
+                    adapter.submitList(listOf(LoadingDataModel()))
+                }
+                Status.LOAD_MORE -> {
+                    adapter.submitList(listOf(LoadMoreDataModel()))
+                }
+                Status.ERROR -> {
+                    adapter.submitList(listOf(EmptyWishlistDataModel()))
+                }
+                Status.EMPTY -> {
+                    adapter.submitList(listOf(EmptyWishlistDataModel()))
+                }
                 Status.SUCCESS -> {
                     adapter.submitList(response.data?.map { WishlistItemDataModel(it) })
                 }
