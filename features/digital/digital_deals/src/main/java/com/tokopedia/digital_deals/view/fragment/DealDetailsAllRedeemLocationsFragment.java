@@ -125,7 +125,8 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         if (!TextUtils.isEmpty(text) && fragmentCallbacks.getOutlets() != null) {
             outlets.clear();
             for (Outlet outlet : fragmentCallbacks.getOutlets()) {
-                if (!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) {
+                if ((!TextUtils.isEmpty(outlet.getName()) && outlet.getName().trim().toLowerCase().contains(text.trim().toLowerCase())) ||
+                        (!TextUtils.isEmpty(outlet.getDistrict()) && outlet.getDistrict().trim().toLowerCase().contains(text.trim().toLowerCase()))) {
                     outlets.add(outlet);
                 }
             }

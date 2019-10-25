@@ -25,8 +25,6 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Brand> brandItems;
     private List<Brand> itemsForGA = new ArrayList<>();
     private Context context;
-    private int MAX_BRANDS = 8;
-
     public static final int ITEM_BRAND_HOME = 1;
     public static final int ITEM_BRAND_SHORT = 2;
     public static final int ITEM_BRAND_NORMAL = 3;

@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
@@ -39,6 +41,9 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -52,6 +57,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
 public class Utils {
@@ -82,6 +90,10 @@ public class Utils {
     private SparseIntArray unLikedEventMap;
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "24";
+    public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+    public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+    public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+    private SharedPreferences sharedPrefs;
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -434,5 +446,29 @@ public class Utils {
                     }
                 }));
 
+    }
+    public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper, CurrentLocationCallBack currentLocationCallBack) {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(activity
+                        .getApplicationContext()),
+                activity.getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(activity, currentLocationCallBack), activity,
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation(Activity activity, CurrentLocationCallBack currentLocationCallBack) {
+        return new Function1<DeviceLocation, Unit>() {
+            @Override
+            public Unit invoke(DeviceLocation deviceLocation) {
+                currentLocationCallBack.setCurrentLocation(deviceLocation);
+                return null;
+            }
+        };
+    }
+
+    public String getLocationErrorMessage(Context context) {
+        return context.getResources().getString(com.tokopedia.digital_deals.R.string.location_error_message);
     }
 }
