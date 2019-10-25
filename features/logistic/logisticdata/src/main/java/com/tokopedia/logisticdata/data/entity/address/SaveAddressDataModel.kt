@@ -1,6 +1,6 @@
 @file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address
+package com.tokopedia.logisticdata.data.entity.address
 
 import android.os.Parcel
 import android.os.Parcelable
