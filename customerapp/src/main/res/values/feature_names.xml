@@ -102,4 +102,7 @@
     <string name="wallet_title">Ovo</string>
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+
+    <!-- Digital-Deals-->
+    <string name="digital_deals">digital_deals</string>
 </resources>

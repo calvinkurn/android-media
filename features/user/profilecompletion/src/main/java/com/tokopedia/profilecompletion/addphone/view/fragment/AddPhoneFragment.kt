@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -19,20 +18,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_phone.*
 import javax.inject.Inject
 
 
 class AddPhoneFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -120,7 +122,6 @@ class AddPhoneFragment : BaseDaggerFragment() {
             tvMessage.visibility = View.GONE
             buttonSubmit.isEnabled = false
             buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
-
         }
     }
 
@@ -196,6 +197,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
+        storeLocalSession(result.phoneNumber)
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -205,6 +207,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    private fun storeLocalSession(phone: String){
+        userSession.setIsMSISDNVerified(true)
+        userSession.phoneNumber = phone
     }
 
     private fun showLoading() {

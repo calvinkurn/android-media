@@ -283,12 +283,12 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public boolean isEdit() {
-        return getArguments().getBoolean(IS_EDIT, false);
+        return address != null;
     }
 
     @Override
     public boolean isDistrictRecommendation() {
-        return getArguments().getBoolean(IS_DISTRICT_RECOMMENDATION, false);
+        return true;
     }
 
     @Override

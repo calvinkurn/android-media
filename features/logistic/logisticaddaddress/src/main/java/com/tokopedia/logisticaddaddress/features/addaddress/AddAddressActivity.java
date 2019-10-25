@@ -2,14 +2,20 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+
+import java.util.List;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
@@ -33,51 +39,36 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETP
  */
 public class AddAddressActivity extends BaseSimpleActivity {
 
+    private final String PARAM_ADDRESS_MODEL = "PARAM_ADDRESS_MODEL";
+
     /**
      * Always pass a bundle because the activity always get intent extra
      */
     @Override
     protected Fragment getNewFragment() {
-        Fragment fragment = null;
+        Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            fragment = AddAddressFragment.newInstance(bundle);
+            Bundle oldBundle = getIntent().getExtras();
+            AddressModel model = oldBundle.getParcelable(EDIT_PARAM);
+            if (model != null) {
+                bundle.putParcelable(EDIT_PARAM, model.convertToDestination());
+            }
+            bundle.putInt(EXTRA_INSTANCE_TYPE, oldBundle.getInt(EXTRA_INSTANCE_TYPE));
+            bundle.putParcelable(KERO_TOKEN, oldBundle.getParcelable(KERO_TOKEN));
         }
-        return fragment;
-    }
 
-    public static Intent createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(@NonNull Activity activity,
-                                                                                                        @Nullable Token token) {
-        return createInstance(activity, null, token, false,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS);
-    }
-
-    public static Intent createInstanceAddAddressFromCheckoutSingleAddressForm(@NonNull Activity activity,
-                                                                               @Nullable Token token) {
-        return createInstance(activity, null, token,
-                false, INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceAddAddressFromCheckoutMultipleAddressForm(@NonNull Activity activity,
-                                                                                 @Nullable Token token) {
-        return createInstance(
-                activity, null, token, false,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceEditAddressFromCheckoutMultipleAddressForm(@NonNull Activity activity,
-                                                                                  @Nullable AddressModel addressModel,
-                                                                                  @Nullable Token token) {
-        return createInstance(
-                activity, addressModel, token, true,
-                INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT);
-    }
-
-    public static Intent createInstanceEditAddressFromCheckoutSingleAddressForm(@NonNull Activity activity,
-                                                                                @Nullable AddressModel addressModel,
-                                                                                @Nullable Token token) {
-        return createInstance(activity, addressModel, token, true,
-                INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT);
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConstInternalLogistic.ADD_ADDRESS_V1, uri);
+            int refId = 0;
+            try {
+                refId = Integer.valueOf(params.get(0));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            bundle.putInt(EXTRA_INSTANCE_TYPE, refId);
+        }
+        return AddAddressFragment.newInstance(bundle);
     }
 
 
@@ -85,21 +76,14 @@ public class AddAddressActivity extends BaseSimpleActivity {
                                                                     @Nullable AddressModel addressModel,
                                                                     @Nullable Token token) {
         return createInstance(
-                activity, addressModel, token, true,
+                activity, addressModel, token,
                 INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS);
-    }
-
-    public static Intent createInstanceAddAddressFromManageAddress(@NonNull Activity activity,
-                                                                   @Nullable Token token) {
-        return createInstance(
-                activity, null, token, false,
-                INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS);
     }
 
     public static Intent createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(@NonNull Activity activity,
                                                                                             @Nullable Token token) {
         return createInstance(
-                activity, null, token, false,
+                activity, null, token,
                 INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS);
     }
 
@@ -107,16 +91,11 @@ public class AddAddressActivity extends BaseSimpleActivity {
             @NonNull Activity activity,
             @Nullable AddressModel data,
             @Nullable Token token,
-            boolean isEdit,
             int typeInstance
     ) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
-        bundle.putString(EXTRA_PLATFORM_PAGE, PLATFORM_MARKETPLACE_CART);
-        if (data != null)
-            bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
-        bundle.putBoolean(IS_EDIT, isEdit);
+        bundle.putParcelable(EDIT_PARAM, data);
         bundle.putParcelable(KERO_TOKEN, token);
         bundle.putInt(EXTRA_INSTANCE_TYPE, typeInstance);
         intent.putExtras(bundle);
