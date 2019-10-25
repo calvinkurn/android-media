@@ -96,7 +96,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                             reviewCount = it.productItem.countReview,
                             ratingCount = it.productItem.rating,
                             shopLocation = it.productItem.location,
-                            isWishlistVisible = false,
+                            isWishlistVisible = true,
                             isWishlisted = it.productItem.isWishlist,
                             shopBadgeList = it.productItem.badgesUrl.map {
                                 ProductCardModel.ShopBadge(imageUrl = it?:"")
