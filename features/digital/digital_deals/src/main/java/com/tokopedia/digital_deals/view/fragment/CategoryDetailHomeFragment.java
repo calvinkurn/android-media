@@ -1,14 +1,17 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +35,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -52,8 +57,11 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -105,7 +113,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private AppBarLayout appBarLayout;
     private UserSession userSession;
     private boolean isLocationUpdated;
-
+    private PermissionCheckerHelper permissionCheckerHelper;
+    private CurrentLocationCallBack currentLocationCallBack;
     private Menu mMenu;
 
     @Override
@@ -131,6 +140,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
             this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
         }
+        permissionCheckerHelper = new PermissionCheckerHelper();
         userSession = new UserSession(getActivity());
     }
 
@@ -140,13 +150,36 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         setHasOptionsMenu(true);
         setViewIds(view);
 
-
-        mPresenter.getCategoryDetails(true);
-        mPresenter.getBrandsList(true);
+        checkForCurrentLocation();
         if (userSession.isLoggedIn()) {
             mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
         }
         return view;
+    }
+
+    private void checkForCurrentLocation() {
+        permissionCheckerHelper.checkPermission(CategoryDetailHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                mPresenter.getCategoryDetails(true);
+                mPresenter.getBrandsList(true);
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
+            }
+        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        });
     }
 
 
@@ -426,6 +459,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CategoryDetailActivity) {
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
@@ -545,6 +586,13 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
+    public void setCurrentLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        mPresenter.getCategoryDetails(true);
+        mPresenter.getBrandsList(true);
+    }
+
+    @Override
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == com.tokopedia.digital_deals.R.id.action_promo) {
@@ -575,6 +623,34 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             popularLocation.setText(String.format(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
             mPresenter.getBrandsList(true);
             mPresenter.getCategoryDetails(true);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        mPresenter.getBrandsList(true);
+        mPresenter.getCategoryDetails(true);
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
+            mPresenter.getCategoryDetails(true);
+            mPresenter.getBrandsList(true);
         }
     }
 }
