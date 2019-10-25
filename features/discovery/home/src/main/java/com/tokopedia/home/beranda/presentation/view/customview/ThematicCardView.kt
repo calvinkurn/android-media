@@ -8,6 +8,7 @@ import android.support.annotation.DimenRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.IdRes
 import android.support.constraint.ConstraintLayout
+import android.support.constraint.ConstraintSet
 import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -15,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -448,4 +450,56 @@ class ThematicCardView : BaseCustomView {
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
+
+    private fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        if (shouldShow) {
+            this.visibility = View.VISIBLE
+            action(this)
+        } else {
+            this.visibility = View.GONE
+        }
+    }
+
+    private fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+        this?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
+        }
+    }
+
+    private fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
+        return this.context.resources.getDimensionPixelSize(id)
+    }
+
+    private fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        visibility = if (isVisible) {
+            action(this)
+            View.VISIBLE
+        } else {
+            getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue)
+        }
+    }
+
+    private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
+        return if (blankSpaceConfigValue) {
+            View.INVISIBLE
+        }
+        else {
+            View.GONE
+        }
+    }
+
+    private fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
+        this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), blankSpaceConfigValue) {
+            it.text = MethodChecker.fromHtml(textValue)
+        }
+    }
+
 }
