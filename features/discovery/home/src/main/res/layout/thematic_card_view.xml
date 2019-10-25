@@ -279,7 +279,7 @@
 
         <ImageView
                 android:id="@+id/imageFreeOngkirPromo"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
