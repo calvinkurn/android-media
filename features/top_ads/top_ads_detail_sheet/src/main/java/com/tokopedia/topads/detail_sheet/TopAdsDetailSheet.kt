@@ -42,7 +42,7 @@ class TopAdsDetailSheet {
     private fun getComponent(context: Context): TopAdsSheetComponent = DaggerTopAdsSheetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
-    private fun initComponent(context: Context){
+    private fun initComponent(context: Context) {
         getComponent(context).inject(this)
         viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
     }
@@ -64,7 +64,7 @@ class TopAdsDetailSheet {
             it.toggle_switch_ads.isChecked = data.adStatusToogle == 1
             it.txt_active_status.setText(data.adStatusDesc)
             it.toggle_switch_ads.setOnClickListener {
-                when((it as Switch).isChecked){
+                when ((it as Switch).isChecked) {
                     true -> viewModel.postPromo("toggle_on", data.adId, this::onSuccessPost, this::onErrorPost)
                     false -> viewModel.postPromo("toggle_off", data.adId, this::onSuccessPost, this::onErrorPost)
                 }
@@ -73,22 +73,21 @@ class TopAdsDetailSheet {
     }
 
     private fun setupView(context: Context) {
-        dialog!!.setOnShowListener { dialogInterface ->
-            val dialog = dialogInterface as BottomSheetDialog
-            val frameLayout = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
-            if (frameLayout != null) {
-                val behavior = BottomSheetBehavior.from(frameLayout)
-                behavior.isHideable = false
-            }
-        }
         dialog?.let {
+            it.setOnShowListener { dialogInterface ->
+                val dialog = dialogInterface as BottomSheetDialog
+                val frameLayout = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                if (frameLayout != null) {
+                    val behavior = BottomSheetBehavior.from(frameLayout)
+                    behavior.isHideable = false
+                }
+            }
             it.action_to_topads_dashboard.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
             }
-            it.action_edit_ads.setOnClickListener{
+            it.action_edit_ads.setOnClickListener {
                 detailTopAdsClick?.invoke()
             }
-
         }
     }
 
@@ -121,9 +120,11 @@ class TopAdsDetailSheet {
         fun newInstance(context: Context): TopAdsDetailSheet {
             val fragment = TopAdsDetailSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.TopAdsDetailBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.pdp_topads_detail_sheet)
-            fragment.setupView(context)
-            fragment.initComponent(context)
+            fragment.dialog?.let {
+                it.setContentView(R.layout.pdp_topads_detail_sheet)
+                fragment.setupView(context)
+                fragment.initComponent(context)
+            }
             return fragment
         }
     }

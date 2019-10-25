@@ -36,7 +36,9 @@ class ShimmeringRoundedImageView : LoaderImageView {
 
     override fun onDraw(canvas: Canvas) {
         rect = RectF(0f, 0f, this.width.toFloat(), this.height.toFloat())
-        path!!.addRoundRect(rect, radius, radius, Path.Direction.CW)
+        path?.let {
+            it.addRoundRect(rect, radius, radius, Path.Direction.CW)
+        }
         canvas.clipPath(path!!)
         super.onDraw(canvas)
     }

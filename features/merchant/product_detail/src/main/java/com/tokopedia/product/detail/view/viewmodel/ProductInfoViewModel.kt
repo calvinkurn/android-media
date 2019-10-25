@@ -17,6 +17,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -124,10 +125,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val cacheStrategy = GraphqlCacheStrategy
                     .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val data = withContext(Dispatchers.IO) {
-                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
+                val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toIntOrZero(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName,
-                        PARAM_SHOP_ID to userSessionInterface.shopId?.toInt())
+                        PARAM_SHOP_ID to userSessionInterface.shopId?.toIntOrZero())
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
                         ProductInfo.Response::class.java, paramsInfo)
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
@@ -139,7 +140,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP1.productInfo = it.data!!
                 productInfoP1.topAdsGetProductManage = it.topAdsGetProductManage!!
                 productInfoP1Resp.value = Success(productInfoP1)
-                needRequestCod = it!!.data!!.shouldShowCod
+                it.data?.let {
+                    needRequestCod = it.shouldShowCod
+                }
             }
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(
