@@ -30,27 +30,27 @@ internal class CarouselProductCardViewHolder(
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 
         itemView.carouselProductCardItem?.setOnClickListener {
-            onItemClickListener?.onItemClick(productCardModel)
+            onItemClickListener?.onItemClick(productCardModel, adapterPosition)
         }
 
         itemView.carouselProductCardItem?.setOnLongClickListener {
-            onItemLongClickListener?.onItemLongClick(productCardModel)
+            onItemLongClickListener?.onItemLongClick(productCardModel, adapterPosition)
             true
         }
 
         // TODO:: Verify this ViewHintListener
         itemView.carouselProductCardItem?.setImageProductViewHintListener(ImpressHolder(), object : ViewHintListener {
             override fun onViewHint() {
-                onItemImpressedListener?.onItemImpressed(productCardModel)
+                onItemImpressedListener?.onItemImpressed(productCardModel, adapterPosition)
             }
         })
 
         itemView.carouselProductCardItem?.setAddToCartOnClickListener {
-            onItemAddToCartListener?.onItemAddToCart(productCardModel)
+            onItemAddToCartListener?.onItemAddToCart(productCardModel, adapterPosition)
         }
 
         itemView.carouselProductCardItem?.setButtonWishlistOnClickListener {
-            onWishlistClickListener?.onWishlistItemClick(productCardModel)
+            onWishlistClickListener?.onWishlistItemClick(productCardModel, adapterPosition)
         }
     }
 }

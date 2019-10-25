@@ -5,22 +5,22 @@ import com.tokopedia.productcard.v2.ProductCardModel
 interface CarouselProductCardListener {
 
     interface OnItemClickListener {
-        fun onItemClick(productCardModel: ProductCardModel)
+        fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 
     interface OnItemLongClickListener {
-        fun onItemLongClick(productCardModel: ProductCardModel)
+        fun onItemLongClick(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 
     interface OnItemImpressedListener {
-        fun onItemImpressed(productCardModel: ProductCardModel)
+        fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 
     interface OnItemAddToCartListener {
-        fun onItemAddToCart(productCardModel: ProductCardModel)
+        fun onItemAddToCart(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 
     interface OnWishlistItemClickListener {
-        fun onWishlistItemClick(productCardModel: ProductCardModel)
+        fun onWishlistItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 }

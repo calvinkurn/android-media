@@ -43,7 +43,7 @@ class CarouselProductCardView: BaseCustomView {
      * @param isScrollable differentiate between carousel and non carousel recyclerview.
      */
     fun initCarouselProductCardView(
-            activity: Activity,
+            activity: Activity?,
             parentView: View,
             productCardModelList: List<ProductCardModel>,
             isScrollable: Boolean = true,
@@ -61,7 +61,9 @@ class CarouselProductCardView: BaseCustomView {
             it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
 
-        measureParentView(activity, parentView)
+        activity?.run {
+            measureParentView(activity, parentView)
+        }
         carouselProductCardRecyclerView?.layoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
         carouselProductCardRecyclerView?.adapter = CarouselProductCardAdapter(
                 productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
