@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.createreputation.model
+package com.tokopedia.reputation.common.data.source.cloud.model
 
 import com.airbnb.lottie.LottieAnimationView
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.customview
+package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.tkpd.tkpdreputation.R
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ReviewLottieModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.reputation.common.R
+import com.tokopedia.reputation.common.data.source.cloud.model.ReviewLottieModel
 
 
 /**
@@ -22,12 +21,13 @@ class AnimatedReviewPicker @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var count = 0
-    private var lastReview = 0
+    private var countMinus = 4
+    private var lastReviewClickAt = 0
     private var reviewClickAt = 0
     private var listOfStarsView: MutableList<ReviewLottieModel> = mutableListOf()
     private var handle = Handler()
     private var listener: AnimatedReviewPickerListener? = null
-    var txtReviewStatus: TextView
+    private var txtReviewStatus: TextView
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.animated_review_layout, this)
@@ -46,22 +46,25 @@ class AnimatedReviewPicker @JvmOverloads constructor(
         listOfStarsView.forEachIndexed { index, it ->
             it.reviewView.setOnClickListener {
                 reviewClickAt = index
-                handle.post(normalAnimation)
+                if (reviewClickAt < lastReviewClickAt) {
+                    handle.post(reverseAnimation)
+                } else {
+                    handle.post(normalAnimation)
+                }
                 generateReviewText(index + 1)
-                listener?.onStarsClick(index + 1)
+                if (lastReviewClickAt != reviewClickAt) {
+                    listener?.onStarsClick(index + 1)
+
+                }
             }
         }
     }
 
     private val normalAnimation = object : Runnable {
         override fun run() {
-            if (count <= CreateReviewFragment.TOTAL_REVIEW_STARS) {
+            if (count <= 4) {
                 val reviewData = listOfStarsView[count]
-                if (shouldReserveAnim(reviewData)) { // When review clicked is under last review click then reverse animation
-                    reviewData.isAnimated = false
-                    reviewData.reviewView.reverseAnimationSpeed()
-                    reviewData.reviewView.playAnimation()
-                } else if (isNormalAnim(reviewData)) { // Animating in normal way
+                if (isNormalAnim(reviewData)) { // Animating in normal way
                     if (isReservedAnim(reviewData)) { // Check if last view is animated then reverse it to make it to normal animation again *If you dont reverse back, the status is still reversed
                         reviewData.reviewView.reverseAnimationSpeed()
                         reviewData.reviewView.playAnimation()
@@ -73,23 +76,42 @@ class AnimatedReviewPicker @JvmOverloads constructor(
                 count++
                 handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
             } else {
-                lastReview = reviewClickAt
+                lastReviewClickAt = reviewClickAt
                 count = 0
                 handle.removeCallbacks(this)
             }
         }
+    }
 
-        private fun shouldReserveAnim(reviewData: ReviewLottieModel): Boolean {
-            return count > reviewClickAt && reviewClickAt <= lastReview && reviewData.isAnimated
+    private val reverseAnimation = object : Runnable {
+        override fun run() {
+            if (countMinus >= 0) {
+                val reviewData = listOfStarsView[countMinus]
+                if (shouldReserveAnim(reviewData)) { // When review clicked is under last review click then reverse animation
+                    reviewData.isAnimated = false
+                    reviewData.reviewView.reverseAnimationSpeed()
+                    reviewData.reviewView.playAnimation()
+                }
+                countMinus--
+                handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
+            } else {
+                lastReviewClickAt = reviewClickAt
+                countMinus = 4
+                handle.removeCallbacks(this)
+            }
         }
+    }
 
-        private fun isNormalAnim(reviewData: ReviewLottieModel): Boolean {
-            return count <= reviewClickAt && !reviewData.isAnimated
-        }
+    private fun shouldReserveAnim(reviewData: ReviewLottieModel): Boolean {
+        return countMinus > reviewClickAt && reviewClickAt <= lastReviewClickAt && reviewData.isAnimated
+    }
 
-        private fun isReservedAnim(reviewData: ReviewLottieModel): Boolean {
-            return reviewData.reviewView.speed < 0.0
-        }
+    private fun isNormalAnim(reviewData: ReviewLottieModel): Boolean {
+        return count <= reviewClickAt && !reviewData.isAnimated
+    }
+
+    private fun isReservedAnim(reviewData: ReviewLottieModel): Boolean {
+        return reviewData.reviewView.speed < 0.0
     }
 
     fun setListener(listener: AnimatedReviewPickerListener) {

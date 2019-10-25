@@ -17,10 +17,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.reputation.common.view.AnimatedReviewPicker
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.customview.AnimatedReviewPicker
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
 import javax.inject.Inject
@@ -29,7 +29,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
-        const val TOTAL_REVIEW_STARS = 4
         fun createInstance() = CreateReviewFragment()
     }
 

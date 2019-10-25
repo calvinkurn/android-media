@@ -21,6 +21,7 @@ class CreateReviewActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val bundle = intent.extras
         supportActionBar?.let {
             it.elevation = 0f
         }

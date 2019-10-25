@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@id/img_review"
             tools:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
 
-        <com.tokopedia.tkpd.tkpdreputation.createreputation.ui.customview.AnimatedReviewPicker
+        <com.tokopedia.reputation.common.view.AnimatedReviewPicker
             android:id="@+id/animatedReview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
