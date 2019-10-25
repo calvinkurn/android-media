@@ -1,12 +1,12 @@
 package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
@@ -18,8 +18,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -43,13 +43,11 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
-import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -66,10 +64,7 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
-import rx.Subscriber;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -77,6 +72,15 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import rx.Subscriber;
+
+import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
+import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
 
 
 /**
@@ -248,8 +252,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openGroupChat(linkSegment);
                     screenName = AppScreen.GROUP_CHAT;
                     break;
-                case DeepLinkChecker.PROMO:
-                    openPromo(linkSegment);
+                case DeepLinkChecker.PROMO_DETAIL:
+                    DeepLinkChecker.openPromoDetail(uriData.toString(), context);
+                    context.finish();
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.PROMO_LIST:
+                    DeepLinkChecker.openPromoList(uriData.toString(), context);
+                    context.finish();
                     screenName = "";
                     break;
                 case DeepLinkChecker.SALE:
@@ -318,20 +328,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openPromo(List<String> linkSegment) {
-        LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-
-        Intent intent;
-        if (linkSegment.size() <= 1) {
-            intent = router.getPromoListIntent(context);
-        } else {
-            intent = router.getPromoDetailIntent(context, linkSegment.get(1));
-        }
-
-        context.startActivity(intent);
-        context.finish();
-    }
-
     private void openHotel() {
         RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
         context.finish();
@@ -340,8 +336,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openSale(List<String> linkSegment) {
         Intent intent;
         if (linkSegment.size() <= 1) {
-            LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-            intent = router.getPromoListIntent(context);
+            intent = RouteManager.getIntent(context, ApplinkConst.PROMO_LIST);
         } else {
             String SLUG_PARAM = "{slug}";
             String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
@@ -465,21 +460,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
 
     private void prepareOpenWebView(Uri uriData) {
-        if (uriData.getQueryParameter(OVERRIDE_URL) != null) {
-            openWebView(uriData,
-                    uriData.getQueryParameter(OVERRIDE_URL).equalsIgnoreCase("1"),
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
-                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true"));
-        } else {
-            openWebView(uriData, false,
-                    uriData.getQueryParameter(PARAM_TITLEBAR) == null || uriData.getQueryParameter
-                            (PARAM_TITLEBAR).equalsIgnoreCase("true"),
-                    uriData.getQueryParameter(PARAM_NEED_LOGIN) != null && uriData.getQueryParameter
-                            (PARAM_NEED_LOGIN).equalsIgnoreCase("true")
-            );
+        boolean isAllowOverride = false;
+        String allowOverride = uriData.getQueryParameter(OVERRIDE_URL);
+        if ("1".equalsIgnoreCase(allowOverride) || "true".equalsIgnoreCase(allowOverride)) {
+            isAllowOverride = true;
         }
+        openWebView(uriData, isAllowOverride,
+                uriData.getQueryParameter(PARAM_TITLEBAR) == null ||
+                        "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_TITLEBAR)),
+                uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
+                        "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
+        );
     }
 
     private static boolean isPromo(List<String> linkSegment) {
@@ -488,15 +479,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Uri.encode(encodedUri.toString
-                ()), allowingOverriding, showTitlebar, needLogin);
-        viewListener.inflateFragment(fragment, "WEB_VIEW");
-        viewListener.actionChangeToolbarWithBackToNative();
-    }
-
-    private String getUrl(String data) {
-        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
-        return URLGenerator.generateURLSessionLoginV4(data, context);
+        Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
+                encodedUri.toString());
+        if (intent!=null) {
+            intent.putExtra(KEY_ALLOW_OVERRIDE, allowingOverriding);
+            intent.putExtra(KEY_NEED_LOGIN, needLogin);
+            intent.putExtra(KEY_TITLEBAR, showTitlebar);
+            context.startActivity(intent);
+            context.finish();
+        }
     }
 
     private String encodeUrl(String url) {

@@ -186,7 +186,7 @@ ext {
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:4.1.1",
             rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.5.0@aar"
+            cashshield : "com.cashshield.android:cashshield:2.5.1@aar"
     ]
 
     deeplinkDispatchDependencies = [
@@ -266,8 +266,8 @@ ext {
             kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             kotlinMockito2     : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
             spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
-            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.6",
-            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.6",
+            spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.8",
+            spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting    : "android.arch.core:core-testing:$lifeCycleVersion"

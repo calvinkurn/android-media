@@ -163,4 +163,7 @@
 
     <string name="title_im_referral">referral</string>
     <string name="title_fintech_wallet">fintech_wallet</string>
+    <string name="title_activity_all_brands">Brands</string>
+    <string name="title_digital_deals">Deals</string>
+    <string name="title_activity_deals">Deals</string>
 </resources>

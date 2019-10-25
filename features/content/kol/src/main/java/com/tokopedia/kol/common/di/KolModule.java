@@ -65,6 +65,12 @@ public class KolModule {
 
     @KolScope
     @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @KolScope
+    @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                     httpLoggingInterceptor,
                                             KolAuthInterceptor kolAuthInterceptor,

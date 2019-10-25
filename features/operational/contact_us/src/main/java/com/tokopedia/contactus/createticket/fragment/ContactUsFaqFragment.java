@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.createticket.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,8 +10,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
@@ -27,10 +30,10 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
-import com.tokopedia.webview.TkpdWebViewClient;
 
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
+
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.applink.RouteManager;
 
@@ -85,7 +88,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
-        webView.loadAuthUrlWithFlags(url, session.getUserId(), session.getAccessToken());
+        webView.loadAuthUrlWithFlags(url, session);
     }
 
     @Override
@@ -243,7 +246,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         }
     }
 
-    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage){
+    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
         uploadMessageBeforeLolipop = uploadMessage;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -251,7 +254,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-    private class MyWebClient extends TkpdWebViewClient {
+    private class MyWebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -262,13 +265,24 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             }
         }
 
-
+        @SuppressWarnings("deprecation")
         @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            final Uri uri = Uri.parse(url);
+            return onOverrideUrl(uri);
+        }
+
+        @TargetApi(Build.VERSION_CODES.N)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            return onOverrideUrl(request.getUrl());
+        }
+
         protected boolean onOverrideUrl(Uri url) {
             try {
                 if (url.getLastPathSegment().equals("contact-us.pl")) {
                     webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
-                            .BASE_CONTACT_US, context), session.getUserId(), session.getAccessToken());
+                            .BASE_CONTACT_US, context), session);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
