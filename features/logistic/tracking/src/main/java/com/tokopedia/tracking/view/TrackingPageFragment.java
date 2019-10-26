@@ -278,42 +278,47 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         }
     }
 
-    private void setTickerInfoCourier(TrackingViewModel model) {
-        if (model.getAdditionalInfoList().isEmpty()) {
-            tickerInfoCourier.setVisibility(View.GONE);
-        } else {
-            if (model.getAdditionalInfoList().size() > 1) {
-                List<TickerData> tickerDataList = new ArrayList<>();
-                for (int i=0; i<model.getAdditionalInfoList().size(); i++) {
-                    AdditionalInfoUiModel additionalInfoUiModel = model.getAdditionalInfoList().get(i);
-                    String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
-                    TickerData tickerData = new TickerData(additionalInfoUiModel.getTitle(), formattedDesc, Ticker.TYPE_ANNOUNCEMENT, true);
-                    tickerDataList.add(tickerData);
-                }
-                TickerPagerAdapter tickerPagerAdapter = new TickerPagerAdapter(getContext(), tickerDataList);
-                tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
-                    RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
-                });
-
+    private void setTickerInfoCourier(TrackingViewModel trackingViewModel) {
+        if (trackingViewModel.getAdditionalInfoList() != null) {
+            List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingViewModel.getAdditionalInfoList();
+            if (additionalInfoUiModelList.isEmpty()) {
+                tickerInfoCourier.setVisibility(View.GONE);
             } else {
-                AdditionalInfoUiModel additionalInfoUiModel = model.getAdditionalInfoList().get(0);
-                String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
-                tickerInfoCourier.setHtmlDescription(formattedDesc);
-                tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
-                tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
-                tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
-                tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
-                    @Override
-                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                if (additionalInfoUiModelList.size() > 1) {
+                    List<TickerData> tickerDataList = new ArrayList<>();
+                    for (int i=0; i<additionalInfoUiModelList.size(); i++) {
+                        AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(i);
+                        String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                        TickerData tickerData = new TickerData(additionalInfoUiModel.getTitle(), formattedDesc, Ticker.TYPE_ANNOUNCEMENT, true);
+                        tickerDataList.add(tickerData);
+                    }
+                    TickerPagerAdapter tickerPagerAdapter = new TickerPagerAdapter(getContext(), tickerDataList);
+                    tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
                         RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
-                    }
+                    });
 
-                    @Override
-                    public void onDismiss() {
+                } else {
+                    AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(0);
+                    String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                    tickerInfoCourier.setHtmlDescription(formattedDesc);
+                    tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
+                    tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
+                    tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
+                    tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onDismiss() {
+
+                        }
+                    });
+                }
             }
+        } else {
+            tickerInfoCourier.setVisibility(View.GONE);
         }
     }
 

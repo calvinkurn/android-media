@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -138,9 +139,9 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+        val textColor = if(bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        bannerTitle.setTextColor(textColor)
+        bannerDescription.setTextColor(textColor)
 
         Glide.with(itemView.context)
                 .asBitmap()

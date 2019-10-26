@@ -63,8 +63,8 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewMod
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.URLEncoder;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -240,7 +240,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        String query = searchParameter.getSearchQuery();
+        String query = URLEncoder.encode(searchParameter.getSearchQuery());
 
         if (!TextUtils.isEmpty(autocompleteApplink)) {
             startActivityWithApplink(autocompleteApplink);

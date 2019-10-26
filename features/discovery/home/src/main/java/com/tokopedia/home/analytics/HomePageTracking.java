@@ -1085,11 +1085,12 @@ public class HomePageTracking {
 
     public static void eventClickProductChannelMix(Context context,
                                                    DynamicHomeChannel.Channels bannerChannel,
+                                                   boolean isFreeOngkir,
                                                    int gridPosition) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition)
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir)
             );
         }
     }
