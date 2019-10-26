@@ -128,7 +128,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private String getselectedFilterName(String filterName) {
-        if (filterName.contains("(")) {
+        if (filterName != null && filterName.contains("(")) {
             int i = filterName.indexOf("(");
             filterName = filterName.substring(0, i - 1);
         }

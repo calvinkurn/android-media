@@ -358,7 +358,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         if (!longerTextDialog.isAdded)
-            longerTextDialog.show(activity?.supportFragmentManager, "Longer Text Bottom Sheet")
+            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
     }
 
     companion object {

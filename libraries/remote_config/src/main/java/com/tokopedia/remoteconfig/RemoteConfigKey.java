@@ -139,6 +139,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
+    public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
+
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 
     //feed section
@@ -170,5 +172,7 @@ public class RemoteConfigKey {
 
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
+
+    public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
 }
