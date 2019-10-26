@@ -2,9 +2,9 @@ package com.tokopedia.topads.dashboard.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ChipsEntity<E extends GenericClass> implements Parcelable {
 

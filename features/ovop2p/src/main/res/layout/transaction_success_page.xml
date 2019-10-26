@@ -11,7 +11,7 @@
         android:fillViewport="true"
         android:scrollbars="none">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/dp_16"
@@ -232,7 +232,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/see_dtl"
                 app:layout_constraintVertical_bias="0" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <include

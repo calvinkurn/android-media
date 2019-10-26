@@ -954,6 +954,50 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickPdpShare(productId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.TOP_NAV_SHARE_PDP,
+                ProductTrackingConstant.Action.CLICK_SHARE_PDP,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventClickProductDescriptionReadMore(productId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_READ_MORE,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventClickDescriptionTabOnProductDescription(productId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventClickSpecificationTabOnProductDescription(productId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"

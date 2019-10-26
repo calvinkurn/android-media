@@ -4,10 +4,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.signature.StringSignature;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -34,15 +35,13 @@ import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import javax.inject.Inject;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by nabillasabbaha on 4/3/18.
@@ -131,11 +130,12 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
 
         getMoreTokenBtn.setText(tokenData.getHome().getEmptyState().getButtonText());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getEmptyState().getBackgroundImgUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
+        String backgroundUrl = tokenData.getHome().getEmptyState().getBackgroundImgUrl();
+        String imageUrl = tokenData.getHome().getEmptyState().getImageUrl();
+        ObjectKey signature = new ObjectKey(String.valueOf(tokenData.getHome().getEmptyState().getVersion()));
 
-        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getEmptyState().getImageUrl(),
-                new StringSignature(String.valueOf(tokenData.getHome().getEmptyState().getVersion())));
+        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature);
+        ImageHandler.loadImageWithSignature(tokenEmptyImage, imageUrl, signature);
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

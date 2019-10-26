@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 
@@ -53,8 +53,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -200,7 +200,7 @@ public abstract class SearchSectionFragment
         if (getUserVisibleHint()
                 && getActivity() != null
                 && getActivity().getApplicationContext() != null) {
-            searchTracking.screenTrackSearchSectionFragment(getScreenName());
+            SearchTracking.screenTrackSearchSectionFragment(getScreenName());
         }
     }
 

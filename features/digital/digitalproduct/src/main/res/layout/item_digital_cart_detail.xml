@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/dp_4"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_label"
         style="@style/TextView.Small"
         android:layout_width="0dp"
@@ -15,7 +15,7 @@
         android:layout_weight="1"
         tools:text="Data Pengguna" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_value"
         style="@style/TextView.Small.Bold"
         android:layout_width="0dp"

@@ -2,10 +2,10 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;

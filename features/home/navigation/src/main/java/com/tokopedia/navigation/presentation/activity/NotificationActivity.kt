@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem

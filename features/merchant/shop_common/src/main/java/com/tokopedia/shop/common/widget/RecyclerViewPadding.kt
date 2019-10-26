@@ -1,7 +1,7 @@
 package com.tokopedia.shop.common.widget
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 class RecyclerViewPadding(private val padding: Int) : RecyclerView.ItemDecoration() {

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;

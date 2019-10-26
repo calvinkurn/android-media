@@ -3,8 +3,8 @@ package com.tokopedia.changephonenumber.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -195,18 +195,18 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void enableNextButton() {
         nextButton.setClickable(true);
         nextButton.setEnabled(true);
-        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable
                 .green_button_rounded));
-        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
     }
 
     @Override
     public void disableNextButton() {
         nextButton.setClickable(false);
         nextButton.setEnabled(false);
-        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable
                 .grey_button_rounded));
-        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.black_12));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.abstraction.R.color.black_12));
     }
 
     @Override

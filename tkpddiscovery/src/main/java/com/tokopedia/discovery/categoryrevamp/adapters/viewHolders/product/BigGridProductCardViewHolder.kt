@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener

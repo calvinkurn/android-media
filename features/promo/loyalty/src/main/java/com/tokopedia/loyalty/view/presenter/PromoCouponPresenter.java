@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

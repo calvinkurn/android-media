@@ -2,8 +2,8 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView

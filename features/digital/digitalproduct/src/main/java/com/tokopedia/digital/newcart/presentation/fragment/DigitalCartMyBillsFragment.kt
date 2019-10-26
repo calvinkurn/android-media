@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +20,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBillsView
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartMyBillsPresenter
 import javax.inject.Inject
 
@@ -57,7 +58,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO);
+        cartDigitalInfoData = arguments!!.getParcelable(ARG_CART_INFO)
         super.onCreate(savedInstanceState)
     }
 
@@ -68,11 +69,16 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     }
 
     companion object {
-        fun newInstance(cartDigitalInfoData: CartDigitalInfoData, passData: DigitalCheckoutPassData): DigitalCartMyBillsFragment {
+        const val ARG_IS_SUBSCRIBED = "ARG_IS_SUBSCRIBED"
+
+        fun newInstance(cartDigitalInfoData: CartDigitalInfoData,
+                        passData: DigitalCheckoutPassData,
+                        subParams: DigitalSubscriptionParams?): DigitalCartMyBillsFragment {
             val fragment = DigitalCartMyBillsFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_CART_INFO, cartDigitalInfoData)
             bundle.putParcelable(ARG_PASS_DATA, passData)
+            subParams?.let { bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, it) }
             fragment.arguments = bundle
             return fragment
         }
@@ -113,7 +119,13 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     override fun isSubscriptionChecked(): Boolean = mybillSubscription.isChecked()
 
     override fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean) {
-        mybillSubscription.setChecked(checked)
+        // If user is already subsrcibed, hide checkbox for subscribing
+        if (digitalSubscriptionParams.isSubscribed) {
+            mybillSubscription.getSubscriptionCheckbox().visibility = View.GONE
+        } else {
+            mybillSubscription.setChecked(checked)
+        }
+
         if (description != null) {
             mybillSubscription.setDescription(description)
         }

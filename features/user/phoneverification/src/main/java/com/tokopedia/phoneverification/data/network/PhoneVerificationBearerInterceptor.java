@@ -1,6 +1,6 @@
 package com.tokopedia.phoneverification.data.network;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

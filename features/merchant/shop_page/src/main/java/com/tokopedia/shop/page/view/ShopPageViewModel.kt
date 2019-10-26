@@ -1,11 +1,15 @@
 package com.tokopedia.shop.page.view
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
@@ -14,6 +18,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.page.data.model.ShopInfoShopBadgeFeedWhitelist
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.page.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.page.domain.interactor.RequestModerateShopUseCase
@@ -28,7 +33,8 @@ import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 
-class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRepository,
+                                            private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
@@ -48,72 +54,95 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
     val whiteListResp = MutableLiveData<Result<Pair<Boolean, String>>>()
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
-    val shopFavourite = MutableLiveData<ShopInfo.FavoriteData>()
+    val shopFavouriteResp = MutableLiveData<ShopInfo.FavoriteData>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                    .createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-            getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(Dispatchers.IO) { getShopInfoUseCase.executeOnBackground() }
-            shopInfoResp.value = Success(shopInfo)
-            withContext(Dispatchers.IO) { getShopReputation(shopInfo.shopCore.shopID, isRefresh) }?.let { badge ->
-                shopBadgeResp.value = (shopInfo.goldOS.isOfficial != 1) to badge
+            coroutineScope {
+                launch(Dispatchers.IO) {
+                    val shopInfoShopBadgeFeedWhitelist = getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
+                    shopInfoShopBadgeFeedWhitelist.feedWhitelist?.let {
+                        if (TextUtils.isEmpty(it.error)) {
+                            whiteListResp.postValue(Success(it.isWhitelist to it.url))
+                        } else {
+                            whiteListResp.postValue(Fail(RuntimeException()))
+                        }
+                    }
+                    shopInfoShopBadgeFeedWhitelist.shopInfo?.let {
+                        shopInfoResp.postValue(Success(it))
+                    }
+                    shopInfoShopBadgeFeedWhitelist.shopBadge?.let {
+                        shopBadgeResp.postValue((shopInfoShopBadgeFeedWhitelist.shopInfo?.goldOS?.isOfficial != 1) to it)
+                    }
+                }
+                launch(Dispatchers.IO) {
+                    val shopFavourite = getShopFavoriteStatus(shopId, shopDomain)
+                    shopFavouriteResp.postValue(shopFavourite)
+                }
             }
-            shopFavourite.value = getFavoriteAsync(shopId, shopDomain).await()
-
         }) {
             shopInfoResp.value = Fail(it)
         }
     }
 
-    private fun getFavoriteAsync(shopId: String? = null, shopDomain: String? = null): Deferred<ShopInfo.FavoriteData> {
-        return async(Dispatchers.IO) {
-            val id = shopId?.toIntOrNull() ?: 0
-            var favoritInfo = ShopInfo.FavoriteData()
+    private suspend fun getShopInfoShopReputationDataFeedWhitelist(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfoShopBadgeFeedWhitelist {
+        val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
 
-            try {
-                gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-                favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
-            } catch (t: Throwable) {
+        getShopInfoUseCase.params = GQLGetShopInfoUseCase
+                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain)
+        val shopInfoRequest = getShopInfoUseCase.request
+
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
+        val shopReputationRequest = getShopReputationUseCase.request
+
+        val feedWhitelistRequest = getWhitelistUseCase.getRequest(GetWhitelistUseCase.createRequestParams(
+                GetWhitelistUseCase.WHITELIST_SHOP,
+                shopId.toString()
+        ))
+        val requests = mutableListOf(shopInfoRequest, shopReputationRequest, feedWhitelistRequest)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+        val gqlResponse = gqlRepository.getReseponse(requests, cacheStrategy)
+        val shopInfoError = gqlResponse.getError(ShopInfo.Response::class.java)
+        val shopInfo = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java).result.data.firstOrNull()
+        if (shopInfoError == null || shopInfoError.isEmpty()) {
+            shopInfo?.let {
+                shopInfoShopBadgeFeedWhitelist.shopInfo = it
             }
-
-            favoritInfo
+        } else {
+            throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
+        val shopBadgeError = gqlResponse.getError(ShopBadge.Response::class.java)
+        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java).result.firstOrNull()
+        if (shopBadgeError == null || shopBadgeError.isEmpty()) {
+            shopBadge?.let {
+                shopInfoShopBadgeFeedWhitelist.shopBadge = it
+            }
+        } else {
+            throw MessageErrorException(shopBadgeError.mapNotNull { it.message }.joinToString(separator = ", "))
+        }
+        val feedWhitelistError = gqlResponse.getError(WhitelistQuery::class.java)
+        val feedWhitelist = gqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist
+        if (feedWhitelistError == null || feedWhitelistError.isEmpty()) {
+            feedWhitelist?.let{
+                shopInfoShopBadgeFeedWhitelist.feedWhitelist = it
+            }
+        } else {
+            throw MessageErrorException(feedWhitelistError.mapNotNull { it.message }.joinToString(separator = ", "))
+        }
+        return shopInfoShopBadgeFeedWhitelist
     }
 
-    fun getFeedWhiteList(shopId: String) {
-        getWhitelistUseCase.execute(
-                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP, shopId),
-                object : Subscriber<GraphqlResponse>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        whiteListResp.value = Fail(RuntimeException())
-                    }
-
-                    override fun onNext(graphqlResponse: GraphqlResponse?) {
-                        graphqlResponse?.let {
-                            val error = it.getError(WhitelistQuery::class.java)
-                            if (error == null || error.isEmpty()) {
-                                val whitelist = it.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist
-                                        ?: return
-                                if (TextUtils.isEmpty(whitelist.error)) {
-                                    whiteListResp.value = Success(whitelist.isWhitelist to whitelist.url)
-                                } else {
-                                    whiteListResp.value = Fail(RuntimeException())
-                                }
-                            } else {
-                                whiteListResp.value = Fail(RuntimeException())
-                            }
-                        }
-                    }
-                }
-        )
+    private suspend fun getShopFavoriteStatus(shopId: String? = null, shopDomain: String? = null): ShopInfo.FavoriteData {
+        val id = shopId?.toIntOrNull() ?: 0
+        var favoritInfo = ShopInfo.FavoriteData()
+        try {
+            gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+            favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
+        } catch (t: Throwable) {
+        }
+        return favoritInfo
     }
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
@@ -134,16 +163,6 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
                         onSuccess(success)
                     }
                 })
-    }
-
-    private suspend fun getShopReputation(shopId: String, isRefresh: Boolean): ShopBadge? {
-        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
-        getShopReputationUseCase.isFromCacheFirst = !isRefresh
-        return try {
-            getShopReputationUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-            null
-        }
     }
 
     fun getModerateShopInfo() {

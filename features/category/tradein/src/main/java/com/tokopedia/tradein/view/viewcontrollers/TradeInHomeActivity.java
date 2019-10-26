@@ -3,6 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,9 +12,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -240,8 +241,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         String campaignId = Constants.CAMPAIGN_ID_PROD;
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
             campaignId = Constants.CAMPAIGN_ID_STAGING;
-        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
+//        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
+//                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
         requestPermission();
     }
 

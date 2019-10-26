@@ -2,7 +2,7 @@ package com.tokopedia.shop.search.widget
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
 import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
 
