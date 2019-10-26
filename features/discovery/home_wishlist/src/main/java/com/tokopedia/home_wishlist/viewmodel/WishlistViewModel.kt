@@ -13,14 +13,9 @@ import javax.inject.Named
 /**
  * A Class ViewModel For Recommendation Page.
  *
- * @param graphqlRepository gql repository for getResponse from network with GQL request
+ * @param wishlistRepository gql repository for getResponse from network with GQL request
  * @param userSessionInterface the handler of user session
- * @param getRecommendationUseCase use case for Recommendation Widget
- * @param addWishListUseCase use case for add wishlist
- * @param removeWishListUseCase use case for remove wishlist
- * @param topAdsWishlishedUseCase use case for add wishlist topads product item
  * @param dispatcher the dispatcher for coroutine
- * @param primaryProductQuery the raw query for get primary product
  */
 open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
@@ -36,10 +31,6 @@ open class WishlistViewModel @Inject constructor(
     val wishlistData = Transformations.switchMap(_searchData){pair ->
         wishlistRepository.load(pair.first, pair.second)
     }
-
-
-    val xSource = "recom_landing_page"
-    val pageName = "recom_1,recom_2,recom_3"
 
     fun load(page: Int){
 
