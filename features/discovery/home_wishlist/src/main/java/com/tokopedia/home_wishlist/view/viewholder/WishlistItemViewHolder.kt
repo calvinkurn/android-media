@@ -7,16 +7,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.view.custom.WishlistCardView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.productcard.v2.ProductCardViewList
+import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Toaster
 
 class WishlistItemViewHolder(
         private val view: View
 ) : AbstractViewHolder<WishlistItemDataModel>(view){
 
-    private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.wishlist_item) }
+    private val productCardView: WishlistCardView by lazy { view.findViewById<WishlistCardView>(R.id.wishlist_item) }
 
     override fun bind(element: WishlistItemDataModel) {
         productCardView.run {
@@ -25,7 +27,6 @@ class WishlistItemViewHolder(
                             productName = element.productItem.name,
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
-                            shopName = element.productItem.shop.name,
                             shopLocation = element.productItem.shop.location,
                             isWishlistVisible = true,
                             isWishlisted = true,
@@ -39,15 +40,10 @@ class WishlistItemViewHolder(
                     )
             )
 
-//            setImageProductViewHintListener(element.productItem, object: ViewHintListener {
-//                override fun onViewHint() {
-//                    if(element.productItem.isTopAds){
-//                        ImpresionTask().execute(element.productItem.trackerImageUrl)
-//                    }
-//                    element.listener.onProductImpression(element.productItem)
-//                }
-//            })
-//
+            productCardView.setAddToCardButtonVisible(true)
+            productCardView.setDeleteButtonVisible(true)
+
+
 //            setOnClickListener {
 //                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
 //                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)

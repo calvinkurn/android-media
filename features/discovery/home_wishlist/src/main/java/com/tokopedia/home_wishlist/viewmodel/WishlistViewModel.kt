@@ -46,7 +46,7 @@ open class WishlistViewModel @Inject constructor(
     }
 
     fun reload(){
-        _searchData.value = Pair("reload", 0)
+        _searchData.value = Pair("", 0)
     }
 
     /**

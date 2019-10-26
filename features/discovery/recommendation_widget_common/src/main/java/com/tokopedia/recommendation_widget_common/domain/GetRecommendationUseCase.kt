@@ -80,6 +80,7 @@ constructor(
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
         val PAGE_NAME = "pageName"
+        val QUERY_PARAM = "queryParam"
         val REF = "ref"
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"

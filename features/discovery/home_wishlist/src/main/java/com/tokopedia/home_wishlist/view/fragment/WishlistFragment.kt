@@ -173,19 +173,19 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
             when(response.status){
                 Status.LOADING -> {
-                    adapter.submitList(listOf(LoadingDataModel()))
+                    renderList(listOf(LoadingDataModel()))
                 }
                 Status.LOAD_MORE -> {
-                    adapter.submitList(listOf(LoadMoreDataModel()))
+                    renderList(listOf(LoadMoreDataModel()))
                 }
                 Status.ERROR -> {
-                    adapter.submitList(listOf(EmptyWishlistDataModel()))
+                    renderList(listOf(EmptyWishlistDataModel()))
                 }
                 Status.EMPTY -> {
-                    adapter.submitList(listOf(EmptyWishlistDataModel()))
+                    renderList(listOf(EmptyWishlistDataModel()))
                 }
                 Status.SUCCESS -> {
-                    adapter.submitList(response.data?.map { WishlistItemDataModel(it) })
+                    renderList(response.data)
                 }
             }
         })
@@ -199,6 +199,11 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
      */
     private fun eventTrackerClickListener(item: RecommendationItem){
 
+    }
+
+    private fun renderList(list: List<Visitable<*>>?){
+        swipeToRefresh?.isRefreshing = false
+        adapter.submitList(list as MutableList<WishlistDataModel>)
     }
 
     /**

@@ -5,5 +5,4 @@
         android:id="@+id/product_item"
         android:layout_width="@dimen/dp_180"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_2"
         app:fixedHeight="true" />

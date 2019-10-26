@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:unifyEmptyStateCTAFullWidth="true"
         app:unifyEmptyStateDescription="@string/wishlist_empty_description"
-        app:unifyEmptyStateImageDrawable="@drawable/empty_wishlist"
+        app:unifyEmptyStateImageDrawable="@drawable/ic_empty_product"
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStatePrimaryCTAText="@string/wishlist_search_product"
         app:unifyEmptyStateTitle="@string/wishlist"

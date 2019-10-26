@@ -12,7 +12,7 @@ class WishlistItemDataModel(
     override fun getUniqueIdentity(): Any = productItem
 
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this::javaClass){
+        if(dataModel.javaClass == this.javaClass){
             return this.getUniqueIdentity() == (dataModel as WishlistDataModel).getUniqueIdentity()
         }
         return false
