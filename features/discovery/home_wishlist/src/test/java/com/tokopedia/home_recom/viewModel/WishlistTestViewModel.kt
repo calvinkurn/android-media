@@ -3,30 +3,24 @@ package com.tokopedia.home_recom.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.any
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
-import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import rx.Observable
-import rx.Subscriber
 
 /**
  * Created by Lukas on 2019-07-04
@@ -45,17 +39,13 @@ class WishlistTestViewModel {
     lateinit var userSessionInterface: UserSessionInterface
 
     @MockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+    lateinit var wishlistRepository: WishlistRepository
 
     @MockK
-    lateinit var mockLiveDataListRecommendationWidget: MutableLiveData<List<RecommendationWidget>>
+    lateinit var mockLiveDataWishlist: MutableLiveData<List<Visitable<*>>>
 
-    @MockK
-    lateinit var mockLiveDataProductInfo: MutableLiveData<ProductInfoDataModel>
+    private lateinit var viewModel: WishlistViewModel
 
-    private lateinit var viewModel: RecommendationPageViewModel
-
-    private val productsId = "316960043"
     private val dispatcher = Dispatchers.Unconfined
     private val gson = Gson()
     private val successJson = "primary_product_success_response.json"
@@ -63,71 +53,30 @@ class WishlistTestViewModel {
     @Before
     fun setup(){
         MockKAnnotations.init(this)
-        viewModel = RecommendationPageViewModel(graphqlRepository, userSessionInterface, getRecommendationUseCase, mockk(), mockk(), mockk(), dispatcher, "")
+        viewModel = WishlistViewModel(userSessionInterface, wishlistRepository, dispatcher)
     }
 
     @Test
-    fun loadSuccessGetPrimaryProduct(){
+    fun loadSuccessGetWishlist(){
         val spy = spyk(viewModel)
-        //given
-        every { mockLiveDataProductInfo.value } returns mockk()
-        every { spy.productInfoDataModel } returns mockLiveDataProductInfo
-        every { spy.getPrimaryProduct(productsId) } answers {}
-
-        //when
-        spy.getPrimaryProduct(productsId)
-
-        //then
-        verify { spy.getPrimaryProduct(productsId) }
-        assertNotNull(spy.productInfoDataModel.value)
     }
 
     @Test
-    fun loadErrorGetPrimaryProduct(){
+    fun loadErrorGetWishlist(){
         val spy = spyk(viewModel)
-        //given
-        every { mockLiveDataProductInfo.value } returns null
-        every { spy.productInfoDataModel } returns mockLiveDataProductInfo
-        every { spy.getPrimaryProduct(productsId) } answers {}
 
-        //when
-        spy.getPrimaryProduct(productsId)
-
-        //then
-        verify { spy.getPrimaryProduct(productsId) }
-        assertNull(spy.productInfoDataModel.value)
     }
 
     @Test
-    fun loadSuccessGetRecommendationWidget(){
+    fun loadEmptyGetWishlist(){
         val spy = spyk(viewModel)
         val mockList = mockk<List<String>>()
 
-        //given
-        every { mockLiveDataListRecommendationWidget.value } returns listOf()
-        every { spy.recommendationListModel } returns mockLiveDataListRecommendationWidget
-        every { spy.getRecommendationList(mockList, any(), null) } answers {}
-        spy.getRecommendationList(mockList, any(),null)
-
-        //then
-        verify { spy.getRecommendationList(mockList, any(),null) }
-        assertNotNull(spy.recommendationListModel.value)
     }
 
     @Test
-    fun loadErrorGetRecommendationWidget(){
-        val spy = spyk(viewModel)
-        val mockList = mockk<List<String>>()
+    fun searchProduct(){
 
-        //given
-        every { mockLiveDataListRecommendationWidget.value } returns null
-        every { spy.recommendationListModel } returns mockLiveDataListRecommendationWidget
-        every { spy.getRecommendationList(mockList, any(),null) } answers {}
-        spy.getRecommendationList(mockList, any(),null)
-
-        //then
-        verify { spy.getRecommendationList(mockList, any(),null) }
-        assertNull(spy.recommendationListModel.value)
     }
 
     @Test
@@ -144,44 +93,4 @@ class WishlistTestViewModel {
         Assert.assertTrue(spy.isLoggedIn())
     }
 
-    @Test
-    fun testSuccessSuspendFunction() = runBlocking{
-        val spy = spyk(viewModel)
-        val json = this.javaClass.classLoader?.getResourceAsStream(successJson)?.readBytes()?.toString(Charsets.UTF_8)
-        val response = gson.fromJson(json, PrimaryProductEntity::class.java)
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(PrimaryProductEntity::class.java to response),
-                mapOf(PrimaryProductEntity::class.java to listOf()), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns  gqlResponseSuccess
-        spy.getPrimaryProduct(productsId)
-        coVerify{ spy.getPrimaryProduct(productsId) }
-    }
-
-    @Test
-    fun testSuccessGetRecommendationList(){
-        every{ getRecommendationUseCase.createObservable(any()) } returns Observable.just(mockk())
-        every{ getRecommendationUseCase.getRecomParams(any(),any(), any()) } returns mockk()
-        every { getRecommendationUseCase.execute(any(), any()) }.answers {
-            val subscriber = secondArg<Subscriber<List<RecommendationWidget>>>()
-            subscriber.onNext(listOf())
-        }
-        val productIds = listOf("111")
-        viewModel.getRecommendationList(productIds, any(), any())
-        assertNotNull(viewModel.recommendationListModel.value)
-    }
-
-    @Test
-    fun testErrorGetRecommendationList(){
-        val errorMessage = "ERROR"
-        every{ getRecommendationUseCase.createObservable(any()) } returns Observable.just(mockk())
-        every{ getRecommendationUseCase.getRecomParams(any(),any(),any()) } returns mockk()
-        every { getRecommendationUseCase.execute(any(), any()) }.answers {
-            val subscriber = secondArg<Subscriber<List<RecommendationWidget>>>()
-            subscriber.onError(Throwable(errorMessage))
-        }
-        val productIds = listOf("111")
-        viewModel.getRecommendationList(productIds, ""){
-            Assert.assertEquals(it, errorMessage)
-        }
-    }
 }
