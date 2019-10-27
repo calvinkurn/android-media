@@ -1,16 +1,21 @@
 package com.tokopedia.profilecompletion.changename.view
 
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.changename.data.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -58,28 +63,35 @@ class ChangeNameFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     showLoading()
-                    context?.let { ctx ->
-                        viewModel.mutateChangeName(ctx, changeNameTextName?.text.toString())
-                    }
+                    viewModel.changePublicName(changeNameTextName?.text.toString())
                 }
             }
         }
     }
 
     private fun initObserver() {
-        viewModel.mutateChangeNameResponse.observe(
+        viewModel.changeNameResponse.observe(
                 this,
                 Observer {
                     when (it) {
-                        is Success -> onSuccessChangeName(it.data.fullName)
+                        is Success -> onSuccessChangeName(it.data)
                         is Fail -> onErrorChangeName(it.throwable)
                     }
                 }
         )
     }
 
-    private fun onSuccessChangeName(name: String) {
+    private fun onSuccessChangeName(result: ChangeNameResult) {
         hideLoading()
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
+            bundle.putString(EXTRA_PUBLIC_NAME, result.fullName)
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
 
@@ -93,24 +105,21 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        changeNameViewMain?.visibility = View.GONE
-        changeNameProgressBar?.visibility = View.VISIBLE
+        changeNameViewMain?.hide()
+        changeNameProgressBar?.show()
     }
 
     private fun hideLoading() {
-        changeNameViewMain?.visibility = View.VISIBLE
-        changeNameProgressBar?.visibility = View.GONE
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.mutateChangeNameResponse.removeObservers(this)
-        viewModel.clear()
+        changeNameViewMain?.show()
+        changeNameProgressBar?.hide()
     }
 
     companion object {
         private const val MINIMUM_LENGTH = 3
         private const val MAXIMUM_LENGTH = 128
+
+        const val EXTRA_PROFILE_SCORE = "profile_score"
+        const val EXTRA_PUBLIC_NAME = "public_name"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChangeNameFragment()
