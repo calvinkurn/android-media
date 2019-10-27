@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 
-class Badge (
+data class Badge (
     @SerializedName("title")
     @Expose
     val title: String,
@@ -25,13 +25,13 @@ class Badge (
     }
 }
 
-class WishlistResponse (
+data class WishlistResponse (
     @SerializedName("wishlist")
     @Expose
     val wishlist: Wishlist
 )
 
-class FreeOngkir (
+data class FreeOngkir (
     @SerializedName("is_active")
     @Expose
     val isActive: Boolean = false,
@@ -44,7 +44,7 @@ class FreeOngkir (
     }
 }
 
-class WishlistItem(
+data class WishlistItem(
     @SerializedName("id")
     @Expose
     val id: String = "",
@@ -123,7 +123,7 @@ class WishlistItem(
     }
 }
 
-class Label(
+data class Label(
     @SerializedName("title")
     @Expose
     val title: String,
@@ -132,7 +132,7 @@ class Label(
     val color: String
 )
 
-class Shop (
+data class Shop (
     @SerializedName("id")
     @Expose
     val id: String = "",
@@ -162,7 +162,7 @@ class Shop (
     }
 }
 
-class WholesalePrice (
+data class WholesalePrice (
     @SerializedName("minimum")
     @Expose
     val minimum: Integer,
@@ -174,7 +174,7 @@ class WholesalePrice (
     val price: Integer
 )
 
-class Wishlist (
+data class Wishlist (
     @SerializedName("has_next_page")
     @Expose
     val hasNextPage: Boolean,

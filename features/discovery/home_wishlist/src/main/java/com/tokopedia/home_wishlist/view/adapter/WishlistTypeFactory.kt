@@ -13,6 +13,7 @@ import com.tokopedia.home_wishlist.model.datamodel.*
  */
 interface WishlistTypeFactory {
     fun type(wishlistItemDataModel: WishlistItemDataModel): Int
+    fun type(errorWishlistDataModel: ErrorWishlistDataModel): Int
     fun type(recommendationTitleDataModel: RecommendationTitleDataModel): Int
     fun type(recommendationCarouselDataModel: RecommendationCarouselDataModel): Int
     fun type(recommendationCarouselItemDataModel: RecommendationCarouselItemDataModel): Int

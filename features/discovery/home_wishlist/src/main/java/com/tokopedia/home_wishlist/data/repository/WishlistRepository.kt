@@ -2,21 +2,20 @@ package com.tokopedia.home_wishlist.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_wishlist.model.datamodel.LoadMoreDataModel
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
 import com.tokopedia.home_wishlist.util.Response
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.withContext
@@ -33,12 +32,12 @@ class WishlistRepository @Inject constructor(
         private const val PARAM_PAGE = "page"
         private const val PARAM_QUERY = "query"
         private const val DEFAULT_COUNT = 8
-        private const val DEFAULT_START_PAGE = 0
+        const val DEFAULT_START_PAGE = 1
         private const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan koneksi, silahkan coba lagi."
     }
 
-    fun load(filter: String, page: Int): LiveData<Response<List<Visitable<*>>>> = MediatorLiveData<Response<List<Visitable<*>>>>().apply{
-        value = if(page == DEFAULT_START_PAGE) Response.loading() else Response.loadingMore()
+    fun get(filter: String, page: Int): LiveData<List<Visitable<*>>> = MediatorLiveData<List<Visitable<*>>>().apply{
+        value = if(page == DEFAULT_START_PAGE) listOf(LoadingDataModel()) else listOf(LoadMoreDataModel())
         GlobalScope.launchCatchError(block=  {
             val data = withContext(Dispatchers.IO){
                 val cacheStrategy =
@@ -60,7 +59,7 @@ class WishlistRepository @Inject constructor(
             }
             data.getSuccessData<WishlistResponse>().wishlist.items.let {
                 val newList = ArrayList(mappingToVisitable(it))
-                postValue(Response.success(mappingLoadingRecommendation(newList)))
+                postValue(mappingLoadingRecommendation(newList))
                 val count = it.size / 4
                 for(i in count downTo 1){
                     val widget = recommendationDataSource.load(
@@ -73,11 +72,10 @@ class WishlistRepository @Inject constructor(
                         newList.add(i * 4, RecommendationCarouselDataModel(title = widget.first().title, list = widget.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it) }, seeMoreAppLink = widget.first().seeMoreAppLink))
                     }
                 }
-                postValue(Response.success(newList))
-
+                postValue(newList)
             }
         }){
-            postValue(Response.error(it.message ?: DEFAULT_ERROR_MESSAGE))
+            postValue(listOf(ErrorWishlistDataModel(it.message ?: DEFAULT_ERROR_MESSAGE)))
         }
     }
 

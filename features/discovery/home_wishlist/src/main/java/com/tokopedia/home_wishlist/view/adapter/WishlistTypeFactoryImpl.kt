@@ -44,6 +44,10 @@ class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
         return LoadMoreViewHolder.LAYOUT
     }
 
+    override fun type(errorWishlistDataModel: ErrorWishlistDataModel): Int {
+        return ErrorWishlistViewHolder.LAYOUT
+    }
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder
@@ -56,6 +60,7 @@ class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
+            ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view)
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
             RecommendationCarouselItemViewHolder.LAYOUT -> RecommendationCarouselItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)

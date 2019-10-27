@@ -51,7 +51,7 @@ public class MyApplication extends BaseMainApplication
         NetworkRouter,
         ApplinkRouter, CharacterPerMinuteInterface {
 
-    // Used to load the 'native-lib' library on application startup.
+    // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }

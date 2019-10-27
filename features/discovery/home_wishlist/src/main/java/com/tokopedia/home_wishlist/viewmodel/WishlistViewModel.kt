@@ -1,10 +1,11 @@
 package com.tokopedia.home_wishlist.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.view.ext.map
+import com.tokopedia.home_wishlist.view.ext.switchMap
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -21,23 +22,31 @@ open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val wishlistRepository: WishlistRepository,
         @Named("Main") val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher){
 
-    private val _searchData = MutableLiveData<Pair<String, Int>>().apply { value = Pair("", 0) }
+    private val _searchData = MutableLiveData<Pair<String, Int>>()
+    private val _loadMoreData = MutableLiveData<Pair<String, Int>>()
 
-    /**
-     * public variable
-     */
-    val wishlistData = Transformations.switchMap(_searchData){pair ->
-        wishlistRepository.load(pair.first, pair.second)
+    val initialResult = _searchData.switchMap {
+        wishlistRepository.get(it.first, it.second)
     }
 
-    fun load(page: Int){
+    val moreResultData = _loadMoreData.switchMap {
+        wishlistRepository.get(it.first, it.second).switchMap {
+            MutableLiveData<List<Visitable<*>>>().apply { value = initialResult.value?.plus(it) }
+        }
+    }
 
+    fun loadInitialPage(){
+        _searchData.value = Pair(_searchData.value?.first ?: "", WishlistRepository.DEFAULT_START_PAGE)
+    }
+
+    fun loadNextPage(page: Int){
+        _loadMoreData.value = Pair(_loadMoreData.value?.first ?: "", page)
     }
 
     fun reload(){
-        _searchData.value = Pair("", 0)
+        _searchData.value = Pair("", WishlistRepository.DEFAULT_START_PAGE)
     }
 
     /**

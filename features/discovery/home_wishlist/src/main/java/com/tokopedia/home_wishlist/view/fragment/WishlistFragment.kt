@@ -10,21 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
-import com.tokopedia.home_wishlist.model.datamodel.*
-import com.tokopedia.home_wishlist.model.entity.WishlistItem
-import com.tokopedia.home_wishlist.util.Status
+import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
@@ -69,11 +64,12 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
 
     private lateinit var trackingQueue: TrackingQueue
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy{ viewModelProvider.get(WishlistViewModel::class.java) }
+    internal val viewModel by lazy{ viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl() }
     private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -163,33 +159,26 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         swipeToRefresh?.setOnRefreshListener{ viewModel.reload() }
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView?.adapter = adapter
+        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadNextPage(page)
+            }
+        }
+        recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
     }
 
     /**
      * Void [loadData]
-     * It handling trigger load primaryProduct and recommendationList from viewModel
+     * It handling trigger loadWishlist primaryProduct and recommendationList from viewModel
      */
     private fun loadData(){
-        viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
-            when(response.status){
-                Status.LOADING -> {
-                    renderList(listOf(LoadingDataModel()))
-                }
-                Status.LOAD_MORE -> {
-                    renderList(listOf(LoadMoreDataModel()))
-                }
-                Status.ERROR -> {
-                    renderList(listOf(EmptyWishlistDataModel()))
-                }
-                Status.EMPTY -> {
-                    renderList(listOf(EmptyWishlistDataModel()))
-                }
-                Status.SUCCESS -> {
-                    renderList(response.data)
-                }
-            }
+        viewModel.initialResult.observe(viewLifecycleOwner, Observer { response ->
+            renderList(response)
         })
-        viewModel.load(0)
+        viewModel.moreResultData.observe(viewLifecycleOwner, Observer {nextPageResponse ->
+            renderList(nextPageResponse)
+        })
+        viewModel.loadInitialPage()
     }
 
     /**
