@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
@@ -18,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel;
@@ -118,6 +118,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                         } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
                                 || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL)) {
                             channel.setPosition(position);
+                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_REVIEW)){
+                            channel.setPosition(position);
                         }
                     }
 
@@ -217,12 +219,20 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             ));
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
+                        case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
+                            list.add(mappingToReviewViewModel(channel));
+                            break;
                     }
                 }
             }
         }
 
         return new HomeViewModel(homeData.getHomeFlag(), list);
+    }
+
+    private ReviewViewModel mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {
+        ReviewViewModel reviewViewModel = new ReviewViewModel();
+        return reviewViewModel;
     }
 
     private HomeVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {

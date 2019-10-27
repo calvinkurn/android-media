@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -61,6 +62,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
+import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
@@ -70,14 +72,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -130,7 +131,8 @@ import rx.Observable;
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
-        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener {
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
+        HomeReviewListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "gl_beranda";
@@ -551,6 +553,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         homeRecyclerView.getItemAnimator().setChangeDuration(0);
         HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
                 getChildFragmentManager(),
+                this,
                 this,
                 this,
                 this,
@@ -1568,6 +1571,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    @Override
+    public void onReviewClick(int position, int clickReviewAt) {
+        new Handler().postDelayed(() -> {
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.CREATE_REVIEW);
+        }, 500);
+    }
+
+    @Override
+    public void onCloseClick(int position) {
+
+    }
+
+    @Override
+    public void getReviewData() {
+
+    }
+
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) floatingEggButtonFragment.getView().getLayoutParams();
         if (stickyLoginView.isShowing()) {
@@ -1584,4 +1604,5 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             params.setMargins(0, 0, 0, 0);
         }
     }
+
 }

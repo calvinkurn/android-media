@@ -4,20 +4,21 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.ReviewLottieModel
+import kotlinx.android.synthetic.main.animated_review_layout.view.*
 
 
 /**
  * @property setListener call this first and populate with your onClick function
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
- * @property
  */
 class AnimatedReviewPicker @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var count = 0
@@ -28,8 +29,16 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private var handle = Handler()
     private var listener: AnimatedReviewPickerListener? = null
     private var txtReviewStatus: TextView
+    private var shouldShowDesc: Boolean = true
 
     init {
+        val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
+        try {
+            shouldShowDesc = styleable.getBoolean(R.styleable.AnimatedReviewPicker_show_desc, false)
+        } finally {
+            styleable.recycle()
+        }
+
         val view = LayoutInflater.from(context).inflate(R.layout.animated_review_layout, this)
         val lottieStars1: LottieAnimationView = view.findViewById(R.id.lottie_star_1)
         val lottieStars2: LottieAnimationView = view.findViewById(R.id.lottie_star_2)
@@ -39,6 +48,11 @@ class AnimatedReviewPicker @JvmOverloads constructor(
         txtReviewStatus = view.findViewById(R.id.txt_review_status)
         listOfStarsView = mutableListOf(ReviewLottieModel(reviewView = lottieStars1), ReviewLottieModel(reviewView = lottieStars2), ReviewLottieModel(reviewView = lottieStars3), ReviewLottieModel(reviewView = lottieStars4)
                 , ReviewLottieModel(reviewView = lottieStars5))
+        if (shouldShowDesc) {
+            txt_review_status.visibility = View.VISIBLE
+        } else {
+            txt_review_status.visibility = View.GONE
+        }
         initReviewPicker()
     }
 

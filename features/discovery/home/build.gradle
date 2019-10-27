@@ -103,6 +103,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.features.reputationCommon)
+
 }
 
 project.ext {

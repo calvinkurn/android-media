@@ -5,13 +5,17 @@ import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.lottie.LottieAnimationView
 import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -43,6 +47,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var selectedImage: ArrayList<String> = arrayListOf()
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
+    private var alreadyIncreaseProgressBar = true
+    var currentBackground: Drawable? = null
+
+    lateinit var imgAnimationView: LottieAnimationView
 
     override fun getScreenName(): String = ""
 
@@ -68,17 +76,18 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
-        stepper_review.max = 3F
-        stepper_review.progress = 1F
+        imgAnimationView = view.findViewById(R.id.img_animation_review)
+        stepper_review.progress = 1
         animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
             override fun onStarsClick(position: Int) {
                 shouldPlayAnimation = true
                 playAnimation()
+                generateReviewBackground(position)
             }
         })
         animatedReviewPicker.renderInitialReviewWithData(0)
-
-        img_animation_review.addAnimatorListener(object : Animator.AnimatorListener {
+        generateReviewBackground(1)
+        imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
 
             }
@@ -95,17 +104,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
         })
 
         edit_text_review.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
+            override fun afterTextChanged(s: Editable) {
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0) {
-                    stepper_review.progress = stepper_review.progress - 1F
-                } else {
-                    stepper_review.progress = stepper_review.progress + 1F
+                if (count > 0 && alreadyIncreaseProgressBar) {
+                    stepper_review.progress = stepper_review.progress + 1
+                    alreadyIncreaseProgressBar = false
+                } else if (count == 0) {
+                    alreadyIncreaseProgressBar = true
+                    stepper_review.progress = stepper_review.progress - 1
                 }
             }
 
@@ -118,8 +130,18 @@ class CreateReviewFragment : BaseDaggerFragment() {
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
     }
 
+    private fun generateReviewBackground(position: Int) {
+        when (position) {
+            1 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.grey_rating_bg))
+            2 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.grey_rating_bg))
+            3 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.green_rating_bg))
+            4 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.yellow_rating_bg))
+            5 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.yellow_rating_bg))
+        }
+    }
+
     private fun playAnimation() {
-        if (!img_animation_review.isAnimating && shouldPlayAnimation) {
+        if (!imgAnimationView.isAnimating && shouldPlayAnimation && ::imgAnimationView.isInitialized) {
             generateAnimationByIndex(animatedReviewPicker.getReviewClickAt())
             shouldPlayAnimation = false
         }
@@ -135,7 +157,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     if (selectedImage.isNotEmpty()) {
                         if (!isImageAdded) {
                             isImageAdded = true
-                            stepper_review.progress = stepper_review.progress + 1F
+                            stepper_review.progress = stepper_review.progress + 1
                         }
                         imageAdapter.setImageReviewData(imageListData)
                     }
@@ -145,13 +167,41 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun transitionDrawable(drawable: Drawable) {
+        if (currentBackground == null) {
+            currentBackground = drawable
+            review_bg.setImageDrawable(drawable)
+        } else {
+            val transitionDrawable = TransitionDrawable(arrayOf(currentBackground, drawable))
+            transitionDrawable.isCrossFadeEnabled = true
+            review_bg.setImageDrawable(transitionDrawable)
+            transitionDrawable.startTransition(250)
+            currentBackground = drawable
+        }
+    }
+
     private fun generateAnimationByIndex(index: Int) {
         when (index) {
-            0 -> img_animation_review.playAnimation()
-            1 -> img_animation_review.playAnimation()
-            2 -> img_animation_review.playAnimation()
-            3 -> img_animation_review.playAnimation()
-            4 -> img_animation_review.playAnimation()
+            0 -> {
+                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
+                imgAnimationView.playAnimation()
+            }
+            1 -> {
+                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
+                imgAnimationView.playAnimation()
+            }
+            2 -> {
+                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
+                imgAnimationView.playAnimation()
+            }
+            3 -> {
+                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
+                imgAnimationView.playAnimation()
+            }
+            4 -> {
+                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
+                imgAnimationView.playAnimation()
+            }
         }
     }
 
