@@ -24,6 +24,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -148,6 +150,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
     private static final String SOURCE_ACCOUNT = "account";
+    private int previewListenerCount = 0;
+    private int reviewAdapterPosition = -1;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -763,6 +767,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onRefresh() {
         resetFeedState();
         removeNetworkError();
+
         if (presenter != null) {
             presenter.getSearchHint();
             presenter.getHomeData();
@@ -815,6 +820,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             adapter.showLoading();
         } else {
             adapter.setItems(items);
+        }
+
+        if (adapter.hasReview() != -1 && previewListenerCount == 0) {
+            previewListenerCount++;
+            presenter.getSuggestedReview();
         }
     }
 
@@ -1584,7 +1594,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void getReviewData() {
+    public void getReviewData(int adapterPosition) {
+//        reviewAdapterPosition = adapterPosition;
+//        if (previewListenerCount == 0) {
+//            presenter.getSuggestedReview();
+//        }
+//        previewListenerCount++;
+    }
+
+    @Override
+    public void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview) {
+        previewListenerCount = 0;
+        Log.e("datanya","sucess " + suggestedProductReview);
+        adapter.updateReviewItem(suggestedProductReview,reviewAdapterPosition);
+    }
+
+    @Override
+    public void onErrorGetReviewData() {
 
     }
 

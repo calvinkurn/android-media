@@ -220,7 +220,9 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
-                            list.add(mappingToReviewViewModel(channel));
+                            if (!homeData.isCache()) {
+                                list.add(mappingToReviewViewModel(channel));
+                            }
                             break;
                     }
                 }

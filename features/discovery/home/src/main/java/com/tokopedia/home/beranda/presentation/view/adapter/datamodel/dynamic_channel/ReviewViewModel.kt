@@ -1,11 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
 data class ReviewViewModel(
-        var url: String = "",
-        var applink: String = ""
+        var suggestedProductReview: SuggestedProductReview = SuggestedProductReview()
 ) : HomeVisitable<HomeTypeFactory> {
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {

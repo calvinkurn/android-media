@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -97,6 +99,22 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public void setItems(List<Visitable> visitables) {
         this.visitables = visitables;
         notifyDataSetChanged();
+    }
+
+    public int hasReview() {
+        for (int i = 0; i < visitables.size(); i++) {
+            if (visitables.get(i) instanceof ReviewViewModel) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void updateReviewItem(SuggestedProductReview suggestedProductReview, int position) {
+        if (visitables.get(hasReview()) instanceof ReviewViewModel) {
+            ((ReviewViewModel) visitables.get(hasReview())).setSuggestedProductReview(suggestedProductReview);
+            notifyItemChanged(hasReview());
+        }
     }
 
     public void updateHomeQueryItems(List<Visitable> newVisitable) {
