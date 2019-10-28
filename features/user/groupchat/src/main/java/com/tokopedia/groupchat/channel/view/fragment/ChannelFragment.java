@@ -98,9 +98,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public RecyclerView getRecyclerView(View view) {
-        RecyclerView recyclerView = super.getRecyclerView(view);
-        recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
-        return recyclerView;
+        //recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
+        return super.getRecyclerView(view);
     }
 
     @Override
