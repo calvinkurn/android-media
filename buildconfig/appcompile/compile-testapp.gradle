@@ -95,6 +95,7 @@ include "features:discovery:discovery_common"
 include "features:user:stickylogin"
 include "features:transaction:atc_common"
 include "features:home:navigation-common"
+include "libraries:sharedata"
 
 
 include 'testapp'
