@@ -234,4 +234,7 @@
     <string name="account_home_label_clear_cache_ok">Lakukan</string>
     <string name="account_home_label_clear_cache_cancel">Batal</string>
 
+    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+
 </resources>

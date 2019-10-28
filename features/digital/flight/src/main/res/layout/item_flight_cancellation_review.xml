@@ -31,7 +31,7 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             app:srcCompat="@drawable/ic_flight_round" />
@@ -80,7 +80,7 @@
         android:layout_height="0.5dp"
         android:background="@drawable/line_divider" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.Micro.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -40,13 +40,4 @@ public class ShopCommonDataSource {
             }
         });
     }
-
-    public Observable<Boolean> toggleFavouriteShop(String shopId) {
-        return shopInfoCloudDataSource.toggleFavouriteShop(shopId).flatMap(new Func1<Response<DataResponse<ShopFavourite>>, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Response<DataResponse<ShopFavourite>> dataResponseResponse) {
-                return Observable.just(dataResponseResponse.body().getData().getIsSuccess().equalsIgnoreCase(ShopCommonParamApiConstant.VALUE_TRUE_FAVOURITE));
-            }
-        });
-    }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.twitter_share.view.activity
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.twitter_share.R
 import com.tokopedia.twitter_share.TwitterAuthenticator

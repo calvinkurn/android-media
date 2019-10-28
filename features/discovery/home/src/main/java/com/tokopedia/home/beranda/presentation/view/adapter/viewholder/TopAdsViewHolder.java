@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;

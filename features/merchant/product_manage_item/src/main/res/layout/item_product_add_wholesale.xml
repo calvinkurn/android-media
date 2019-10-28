@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:layout_marginTop="@dimen/dp_16">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_range_whole_sale"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -23,9 +23,9 @@
             android:inputType="numberDecimal"
             android:maxLength="@integer/max_length_quantity_wholesale"
             app:prefix="&#8805;    "/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_whole_sale_price"
         android:layout_width="0dp"
         android:layout_weight="1"
@@ -44,7 +44,7 @@
             android:inputType="numberDecimal"
             android:maxLength="@integer/max_length_price_wholesale"
             app:prefix="@string/title_rupiah"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/image_whole_sale"

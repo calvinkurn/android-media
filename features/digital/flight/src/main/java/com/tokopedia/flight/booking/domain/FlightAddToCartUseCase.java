@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.domain;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;

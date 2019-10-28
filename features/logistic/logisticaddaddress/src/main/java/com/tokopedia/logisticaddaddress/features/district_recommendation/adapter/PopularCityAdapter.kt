@@ -1,13 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.chips_item.view.*
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 
 
 /**

@@ -81,6 +81,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"

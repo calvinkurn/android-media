@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.data.repository;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;

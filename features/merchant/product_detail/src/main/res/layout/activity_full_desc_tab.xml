@@ -8,17 +8,17 @@
 
     <include layout="@layout/partial_base_toolbar" />
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutDesc"
         style="@style/TabBar.White"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:tabMode="scrollable"/>
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/viewPagerDesc"

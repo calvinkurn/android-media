@@ -1,6 +1,6 @@
 package com.tokopedia.explore.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.explore.data.CoroutineThread
 import com.tokopedia.explore.domain.entity.GetExploreData

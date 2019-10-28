@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.FragmentManager;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -22,7 +22,7 @@ import com.tokopedia.design.R;
  * Created by meta on 15/03/18.
  * <p>
  * Note: to avoid error "Fatal Exception: java.lang.IllegalArgumentException: The view is not a child of CoordinatorLayout"
- * please use `android.support.design.widget.CoordinatorLayout` as parent layout on your xml
+ * please use `androidx.coordinatorlayout.widget.CoordinatorLayout` as parent layout on your xml
  */
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
@@ -213,7 +213,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
         if (state() == BottomSheetsState.FLEXIBLE) {
             bottomSheetDialog.setOnShowListener(dialog -> {
-                FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
