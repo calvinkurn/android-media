@@ -7,12 +7,16 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.EditText
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
@@ -20,6 +24,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mMapView: MapView
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
+    lateinit var mPermissionChecker: PermissionCheckerHelper
     var mMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +45,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        mPermissionChecker = PermissionCheckerHelper()
 
         val mapFragment: SupportMapFragment =
                 supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
@@ -49,9 +55,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
 
-        val sydney = LatLng(-34.0, 151.0)
-        mMap?.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap?.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val locationHelper = LocationDetectorHelper(mPermissionChecker, LocationServices.getFusedLocationProviderClient(this), this)
+        locationHelper.getLocation({ location ->
+            val newLoc = LatLng(location.latitude, location.longitude)
+            moveCamera(newLoc)
+        }, this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -62,5 +70,21 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        mPermissionChecker.onRequestPermissionsResult(this,
+                requestCode, permissions,
+                grantResults)
+    }
+
+    private fun moveCamera(latLng: LatLng) {
+        val cameraPosition = CameraPosition.Builder()
+                .target(latLng)
+                .zoom(16f)
+                .build()
+        mMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 }
