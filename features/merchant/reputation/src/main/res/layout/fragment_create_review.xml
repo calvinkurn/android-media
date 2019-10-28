@@ -55,7 +55,6 @@
             app:layout_constraintTop_toBottomOf="@id/img_review"
             tools:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
 
-
         <ImageView
             android:id="@+id/review_bg"
             android:layout_width="0dp"
@@ -152,15 +151,6 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/gradient_progress_bar"
             android:max="3"/>
-
-<!--        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar-->
-<!--            android:id="@+id/stepper_review"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="@dimen/dp_2"-->
-<!--            app:rcBackgroundColor="@color/black_12"-->
-<!--            app:rcMax="100"-->
-<!--            android:background="@drawable/gradient_progress_bar"-->
-<!--            app:rcRadius="0dp" />-->
 
         <com.tokopedia.design.component.ButtonCompat
             style="@style/Button.Submit.Green.Full"

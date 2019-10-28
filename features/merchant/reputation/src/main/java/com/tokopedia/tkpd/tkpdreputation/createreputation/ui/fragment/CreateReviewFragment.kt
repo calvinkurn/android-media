@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
 import android.animation.Animator
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -16,15 +17,20 @@ import android.view.ViewGroup
 import com.airbnb.lottie.LottieAnimationView
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tkpd.library.utils.legacy.MethodChecker
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.reputation.common.view.AnimatedReviewPicker
 import com.tokopedia.tkpd.tkpdreputation.R
-import com.tokopedia.tkpd.tkpdreputation.createreputation.di.DaggerCreateReviewComponent
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
+import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
 import javax.inject.Inject
@@ -56,9 +62,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         context?.let {
-            val appComponent = (it.applicationContext as BaseMainApplication).baseAppComponent
-            DaggerCreateReviewComponent.builder()
-                    .baseAppComponent(appComponent)
+            DaggerReputationComponent
+                    .builder()
+                    .reputationModule(ReputationModule())
+                    .appComponent(getComponent(AppComponent::class.java))
                     .build()
                     .inject(this)
         }
@@ -73,6 +80,16 @@ class CreateReviewFragment : BaseDaggerFragment() {
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        createReviewViewModel.getReputationDataForm.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetReviewForm(it.data)
+                is Fail -> onErrorGetReviewForm(it.throwable)
+            }
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
@@ -85,6 +102,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 generateReviewBackground(position)
             }
         })
+        createReviewViewModel.getProductReputation()
         animatedReviewPicker.renderInitialReviewWithData(0)
         generateReviewBackground(1)
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
@@ -128,6 +146,15 @@ class CreateReviewFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
+    }
+
+    private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
+        ImageHandler.loadImage(context, img_review, data.productrevGetForm.productData.productImageURL, R.drawable.ic_loading_image)
+        txt_create.text = data.productrevGetForm.productData.productName
+
+    }
+
+    private fun onErrorGetReviewForm(t: Throwable) {
     }
 
     private fun generateReviewBackground(position: Int) {

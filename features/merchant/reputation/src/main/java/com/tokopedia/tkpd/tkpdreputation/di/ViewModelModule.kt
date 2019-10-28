@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.createreputation.di
+package com.tokopedia.tkpd.tkpdreputation.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@CreateReviewScope
+@ReputationScope
 abstract class ViewModelModule {
 
     @Binds
@@ -18,7 +18,7 @@ abstract class ViewModelModule {
     @ViewModelKey(CreateReviewViewModel::class)
     internal abstract fun productInstallmentViewModel(viewModel: CreateReviewViewModel): ViewModel
 
-    @CreateReviewScope
+    @ReputationScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
