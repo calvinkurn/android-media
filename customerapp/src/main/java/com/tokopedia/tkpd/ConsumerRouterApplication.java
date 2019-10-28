@@ -1847,11 +1847,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getHelpUsIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
-    }
-
-    @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }
