@@ -1,10 +1,11 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.orderlist.R;

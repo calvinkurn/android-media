@@ -1,18 +1,22 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.util.FlightDateUtil;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatTextView;
+
+import com.tokopedia.common.travel.utils.TravelDateUtil;
+import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderWaitingForPaymentViewModel;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -124,7 +128,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 if (element.getPayment().getNeedToPayAmount() > 0) {
                     tvPaymentCostLabel.setVisibility(View.VISIBLE);
                     tvPaymentCost.setVisibility(View.VISIBLE);
-                    tvPaymentCost.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(element.getPayment().getNeedToPayAmount()));
+                    tvPaymentCost.setText(convertToIdrPrice(element.getPayment().getNeedToPayAmount()));
                 } else {
                     tvPaymentCostLabel.setVisibility(View.GONE);
                     tvPaymentCost.setVisibility(View.GONE);
@@ -176,5 +180,20 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
         } else {
             adapterInteractionListener.onDetailOrderClicked(item.getId());
         }
+    }
+
+    private String convertToIdrPrice(int price) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance(new Locale("in", "ID"));
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+        String result = kursIndonesia.format(price);
+
+        return result.replace(",", "");
     }
 }
