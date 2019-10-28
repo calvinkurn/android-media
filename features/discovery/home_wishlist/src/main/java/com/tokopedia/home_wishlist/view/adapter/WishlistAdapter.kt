@@ -23,11 +23,11 @@ class WishlistAdapter(
         adapterTypeFactory = adapterTypeFactory,
         diffCallback = object : DiffUtil.ItemCallback<WishlistDataModel>(){
             override fun areContentsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
-                return oldItem::class == newItem::class
+                return oldItem.equalsDataModel(newItem)
             }
 
             override fun areItemsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
-                return oldItem.equalsDataModel(newItem)
+                return oldItem::class == newItem::class
             }
         }
 ) {

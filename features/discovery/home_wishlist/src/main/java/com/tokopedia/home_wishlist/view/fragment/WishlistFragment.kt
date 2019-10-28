@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +17,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
+import com.tokopedia.home_wishlist.view.custom.CustomSearchView
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -68,6 +71,7 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
     private val adapterFactory by lazy { WishlistTypeFactoryImpl() }
     private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
+    private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.search_view) }
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
@@ -91,6 +95,7 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         super.onCreate(savedInstanceState)
         activity?.let {
             trackingQueue = TrackingQueue(it)
+            (it as AppCompatActivity).supportActionBar?.elevation = 0f
         }
     }
 
@@ -156,12 +161,27 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
     }
 
     private fun initView(){
-        swipeToRefresh?.setOnRefreshListener{ viewModel.reload() }
+        swipeToRefresh?.setOnRefreshListener{
+            endlessRecyclerViewScrollListener?.resetState()
+            viewModel.refresh()
+        }
+        searchView?.setDelayTextChanged(250)
+        searchView?.setListener(object : SearchInputView.Listener{
+            override fun onSearchSubmitted(text: String?) {
+                searchView?.hideKeyboard()
+            }
+
+            override fun onSearchTextChanged(text: String?) {
+                viewModel.search(text ?: "")
+            }
+        })
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView?.adapter = adapter
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+            override fun getCurrentPage(): Int = 1
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextPage(page)
+                viewModel.loadNextPage(page + 1)
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
@@ -172,11 +192,8 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
      * It handling trigger loadWishlist primaryProduct and recommendationList from viewModel
      */
     private fun loadData(){
-        viewModel.initialResult.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
             renderList(response)
-        })
-        viewModel.moreResultData.observe(viewLifecycleOwner, Observer {nextPageResponse ->
-            renderList(nextPageResponse)
         })
         viewModel.loadInitialPage()
     }
@@ -192,7 +209,9 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
 
     private fun renderList(list: List<Visitable<*>>?){
         swipeToRefresh?.isRefreshing = false
+        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list as MutableList<WishlistDataModel>)
+        recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
     /**
