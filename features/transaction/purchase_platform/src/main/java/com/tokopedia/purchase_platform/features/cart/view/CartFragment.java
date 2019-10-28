@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
+import com.readystatesoftware.chuck.Chuck;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -134,7 +135,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
 public class CartFragment extends BaseCheckoutFragment implements ActionListener,
         CartItemAdapter.ActionListener, ICartListView, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
-        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
+        ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
@@ -482,6 +483,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         ToolbarRemoveWithBackView toolbar = new ToolbarRemoveWithBackView(getActivity());
         toolbar.navigateUp(getActivity());
         toolbar.setOnClickRemove(this);
+        toolbar.setOnClickGoToCkuck(this);
         toolbar.setTitle(getString(R.string.cart));
         return toolbar;
     }
@@ -546,6 +548,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection));
         }
+    }
+
+    @Override
+    public void onGoToChuck() {
+        startActivity(Chuck.getLaunchIntent(getActivity()));
     }
 
     @Override
