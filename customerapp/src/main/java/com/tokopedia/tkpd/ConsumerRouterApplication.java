@@ -1510,11 +1510,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getContactUsIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
-    }
-
-    @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.SHOP_TYPE)
