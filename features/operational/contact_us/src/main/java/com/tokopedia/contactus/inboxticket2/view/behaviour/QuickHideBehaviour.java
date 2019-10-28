@@ -45,7 +45,7 @@ public class QuickHideBehaviour extends CoordinatorLayout.Behavior<View> {
         super(context, attrs);
 
         TypedArray a = context.getTheme()
-                .obtainStyledAttributes(new int[]{R.attr.actionBarSize});
+                .obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
 //Use half the standard action bar height
         mScrollThreshold = a.getDimensionPixelSize(0, 0) / 2;
         a.recycle();

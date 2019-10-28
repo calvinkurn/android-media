@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
@@ -44,6 +45,9 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
             return fragment
         }
     }
+
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
 
     private var selectedIdList: List<Int> = arrayListOf()
 
@@ -91,6 +95,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedAnalyticTracker.eventOpenInterestPickDetail()
         initView()
         loadData()
     }
@@ -112,7 +117,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         }
     }
 
-    override fun getScreenName(): String =  ""
+    override fun getScreenName(): String =  FeedAnalyticTracker.Screen.INTEREST_PICK_DETAIL
 
     override fun initInjector() {
         activity?.application?.let {
@@ -125,6 +130,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
         checkButtonSaveInterest()
+        feedAnalyticTracker.eventClickFeedInterestPick(item.name)
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
@@ -141,6 +147,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         interestList.adapter = adapter
         interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
         saveInterest.setOnClickListener {
+            feedAnalyticTracker.eventClickFeedCheckInspiration(adapter.getSelectedItemIdList().size.toString())
             view?.showLoadingTransparent()
             feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
         }

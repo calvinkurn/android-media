@@ -5,10 +5,13 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
@@ -17,49 +20,54 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
-import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
+import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
 
 public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
 
     private final ProductListener productListener;
+    private final TickerListener tickerListener;
     private final SuggestionListener suggestionListener;
-    private final GuidedSearchListener guidedSearchListener;
     private final RelatedSearchListener relatedSearchListener;
     private final QuickFilterListener quickFilterListener;
-    private final GlobalNavWidgetListener globalNavWidgetListener;
+    private final GlobalNavListener globalNavListener;
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
+    private final RecommendationListener recommendationListener;
     private final Config topAdsConfig;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
+                                      TickerListener tickerListener,
                                       SuggestionListener suggestionListener,
-                                      GuidedSearchListener guidedSearchListener,
                                       RelatedSearchListener relatedSearchListener,
                                       QuickFilterListener quickFilterListener,
-                                      GlobalNavWidgetListener globalNavWidgetListener,
+                                      GlobalNavListener globalNavListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
+                                      RecommendationListener recommendationListener,
                                       Config config) {
 
         this.productListener = productListener;
+        this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
-        this.guidedSearchListener = guidedSearchListener;
         this.relatedSearchListener = relatedSearchListener;
         this.quickFilterListener = quickFilterListener;
-        this.globalNavWidgetListener = globalNavWidgetListener;
+        this.globalNavListener = globalNavListener;
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
+        this.recommendationListener = recommendationListener;
         this.topAdsConfig = config;
     }
 
@@ -107,6 +115,16 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
+    public int type(RecommendationTitleViewModel titleViewModel) {
+        return RecommendationTitleViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(RecommendationItemViewModel recommendationItemViewModel) {
+        return RecommendationItemViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -117,8 +135,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
-                    guidedSearchListener, bannerAdsListener);
+            viewHolder = new HeaderViewHolder(view, tickerListener, suggestionListener, quickFilterListener, bannerAdsListener);
         } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
         } else if (type == TopAdsViewHolder.LAYOUT) {
@@ -126,9 +143,13 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
         } else if (type == GlobalNavViewHolder.LAYOUT) {
-            viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
+            viewHolder = new GlobalNavViewHolder(view, globalNavListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
+        } else if(type == RecommendationTitleViewHolder.LAYOUT){
+            viewHolder = new RecommendationTitleViewHolder(view);
+        } else if(type == RecommendationItemViewHolder.LAYOUT){
+            viewHolder = new RecommendationItemViewHolder(view, recommendationListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

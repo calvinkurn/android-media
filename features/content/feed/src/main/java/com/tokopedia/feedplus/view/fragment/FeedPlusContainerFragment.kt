@@ -4,8 +4,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
+import com.google.android.material.appbar.AppBarLayout
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
@@ -51,6 +55,8 @@ import javax.inject.Inject
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener {
 
     companion object {
+        const val TOOLBAR_GRADIENT = 1
+        const val TOOLBAR_WHITE = 2
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -74,15 +80,21 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder()
-                .allowNextButton(false)
+                .allowPreviousButton(false)
                 .build()
     }
 
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var isFabExpanded = false
+    private var toolbarType = TOOLBAR_GRADIENT
+    private var startToTransitionOffset = 0
+    private var searchBarTransitionRange = 0
+
+
 
     private lateinit var coachMarkItem:  CoachMarkItem
+    private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -102,13 +114,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
+        val view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let {
+            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+        }
         initView()
-        activity?.let { status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it) }
         requestFeedTab()
     }
 
@@ -174,12 +190,21 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initView() {
         //status bar background compability
-        activity?.let { status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it) }
+        setFeedBackgroundCrossfader()
+        activity?.let {
+            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
+        }
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
+        status_bar_bg2.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+            else -> View.GONE
+        }
+
         hideAllFab(true)
         if (!userSession.isLoggedIn) {
             fab_feed.show()
@@ -187,6 +212,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
         setAdapter()
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
+        feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+                if (verticalOffset + toolbar.height < 0) {
+                    showNormalTextWhiteToolbar()
+                } else {
+                    showWhiteTextTransparentToolbar()
+                }
+            }
+        })
+
     }
 
     private fun requestFeedTab() {
@@ -245,6 +280,50 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     }
                 }
 
+    }
+
+    private fun setFeedBackgroundCrossfader() {
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.dp_50)
+        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.dp_100)
+        activity?.let {
+            val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
+            val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)
+            feedBackgroundCrossfader = TransitionDrawable(arrayOf<Drawable>(feedBackgroundGradient, feedBackgroundWhite))
+        }
+        feed_background_image.setImageDrawable(feedBackgroundCrossfader)
+        feedBackgroundCrossfader.startTransition(0)
+    }
+
+
+    private fun showNormalTextWhiteToolbar() {
+        if (toolbarType != TOOLBAR_GRADIENT) {
+            feedBackgroundCrossfader.reverseTransition(200)
+            toolbarType = TOOLBAR_GRADIENT
+            status_bar_bg2.visibility = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
+                else -> View.GONE
+            }
+            activity?.let {
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
+            }
+        }
+    }
+
+    private fun showWhiteTextTransparentToolbar() {
+        if (toolbarType != TOOLBAR_WHITE) {
+            feedBackgroundCrossfader.reverseTransition(200)
+            toolbarType = TOOLBAR_WHITE
+            status_bar_bg2.visibility = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                else -> View.GONE
+            }
+            activity?.let {
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
+            }
+        }
     }
 
     private fun setAdapter() {
@@ -346,7 +425,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-     fun showCreatePostOnBoarding() {
+    fun showCreatePostOnBoarding() {
         fab_feed.addOneTimeGlobalLayoutListener {
             val x1: Int = fab_feed.x.toInt()
             val y1: Int = fab_feed.y.toInt()
@@ -363,9 +442,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun showFabCoachMark() {
+    private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
-            showCreatePostOnBoarding()
+            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
     }

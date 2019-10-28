@@ -12,12 +12,15 @@
     <include
         layout="@layout/home_master_dynamic_channel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="parent"/>
     <androidx.cardview.widget.CardView
         app:cardCornerRadius="@dimen/dp_10"
         app:cardElevation="@dimen/dp_1"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
+        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
@@ -30,7 +33,7 @@
                 android:id="@+id/banner_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="?attr/selectableItemBackground"
                 android:adjustViewBounds="true"
                 android:clickable="true"/>
     </androidx.cardview.widget.CardView>

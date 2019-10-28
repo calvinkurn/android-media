@@ -49,9 +49,7 @@ class ChatItemListViewHolder(
 
         data?.let { contact ->
             itemView.setOnClickListener {
-                attributes.readStatus = STATE_CHAT_READ
-                bindReadState(attributes.readStatus, attributes.unreads)
-                listener.chatItemClicked(element)
+                onChatItemClicked(element)
             }
 
             itemView.setOnLongClickListener {
@@ -68,6 +66,18 @@ class ChatItemListViewHolder(
             bindLabel(contact.tag)
         }
 
+    }
+
+    private fun onChatItemClicked(chat: ItemChatListPojo) {
+        val attributes = chat.attributes
+
+        if (chat.isUnread() && attributes != null) {
+            chat.markAsRead()
+            listener.decreaseNotificationCounter()
+            bindReadState(attributes.readStatus, attributes.unreads)
+        }
+
+        listener.chatItemClicked(chat, adapterPosition)
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
@@ -237,7 +247,7 @@ class ChatItemListViewHolder(
 
         val now = Calendar.getInstance()
 
-        val timeFormatString = "hh:mm"
+        val timeFormatString = "HH:mm"
         val dateTimeFormatString = "dd MMM"
         val dateTimeYearFormatString = "dd MMM yy"
         val HOURS = (60 * 60 * 60).toLong()

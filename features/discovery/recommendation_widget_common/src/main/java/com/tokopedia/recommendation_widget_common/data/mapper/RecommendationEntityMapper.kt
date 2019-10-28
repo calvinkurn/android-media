@@ -130,7 +130,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.freeOngkirInformation?.imageUrl?:"",
                     labelPromo,
                     labelOffers,
-                    labelCredibility
+                    labelCredibility,
+                    data.shop?.isGold ?: false
             )
 
         }

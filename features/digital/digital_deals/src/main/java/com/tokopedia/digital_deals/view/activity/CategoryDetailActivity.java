@@ -8,16 +8,22 @@ import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.digital_deals.R;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 
-public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener {
+import java.util.Map;
+
+public class CategoryDetailActivity extends DealsBaseActivity implements SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
 
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
@@ -27,14 +33,11 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     private boolean isLocationUpdated;
     private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
-    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_CATEGORY})
-    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String deepLink = extras.getString(DeepLink.URI);
+    public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         Intent destination = new Intent();
 
         Location location = Utils.getSingletonInstance().getLocation(context);
-        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-        String searchName = extras.getString("search_name");
+            String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
         categoriesModel.setTitle(extras.getString("name"));
@@ -53,9 +56,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         extras.putString(CATEGORY_NAME, categoriesModel.getTitle());
         extras.putParcelable(CATEGORIES_DATA, categoriesModel);
         destination = new Intent(context, CategoryDetailActivity.class)
-                .setData(uri.build())
                 .putExtras(extras);
-
         return destination;
     }
 
@@ -64,22 +65,42 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         toolbar.setVisibility(View.GONE);
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
-            categoryName = getString(R.string.text_deals);
+            categoryName = getString(com.tokopedia.digital_deals.R.string.text_deals);
         categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
         return categoryDetailHomeFragment;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
-            overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
+            Bundle extras = getIntent().getExtras();
+            for (String key :params.keySet()) {
+                extras.putString(key, (String) params.get(key));
+            }
+            getInstanceIntentAppLinkBackToHome(this, extras);
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
         categoryDetailHomeFragment.refreshPage(isLocationUpdated);
+    }
+
+    @Override
+    public void setDefaultLocationOnHomePage() {
+        categoryDetailHomeFragment.setDefaultLocation();
+    }
+
+    @Override
+    public void setCurrentLocation(DeviceLocation deviceLocation) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(this, TkpdCache.DEALS_LOCATION);
+        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
+        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
+        localCacheHandler.applyEditor();
+        categoryDetailHomeFragment.setCurrentCoordinates();
     }
 }

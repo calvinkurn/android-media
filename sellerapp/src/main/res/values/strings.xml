@@ -77,5 +77,7 @@
     <string name="pm_popup_regular_title">Power Merchant kini bebas biaya bulanan!</string>
     <string name="pm_popup_regular_desc">Tingkatkan penjualanmu dengan Power Merchant, hanya bayar biaya layanan 1% dari setiap produk terjual.</string>
     <string name="pm_popup_regular_btn">Upgrade Tokomu</string>
+
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
+    <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
 </resources>

@@ -90,7 +90,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             Activity activity = (Activity) context;
             Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
-            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
+            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position, "");
         }
     }
 

@@ -13,12 +13,12 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.SelectPassengerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerPresenterImpl;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerView;
-import com.tokopedia.common.travel.widget.SelectPassengerView;
 
 import javax.inject.Inject;
 
@@ -131,6 +131,11 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void showInfantGreaterThanAdultErrorMessage(@StringRes int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
+    }
+
+    @Override
+    public void showInfantMoreThanFourErrorMessage(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 

@@ -29,12 +29,13 @@
             android:id="@+id/tab_home_account"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
-            app:tabMode="scrollable"
+            app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextColor="@color/font_black_disabled_38"
-            app:tabTextAppearance="@style/Tabs.Secondary"
+            app:tabTextAppearance="@style/AccountTabLayoutTextStyle"
             app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabPaddingBottom="@dimen/dp_12"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
     </com.google.android.material.appbar.AppBarLayout>

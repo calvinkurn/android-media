@@ -14,6 +14,7 @@ class GetSortListHomePageUseCase {
 
         val transaction = DigitalHomePageTransactionModel()
         transaction.isLoadFromCloud = loadFromCloud
+        transaction.isLoaded = true
 
         val category = DigitalHomePageCategoryModel()
         category.isLoadFromCloud = loadFromCloud

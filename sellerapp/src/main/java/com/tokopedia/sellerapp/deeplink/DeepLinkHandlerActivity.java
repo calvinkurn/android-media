@@ -18,11 +18,11 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleL
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -51,8 +51,6 @@ import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
-import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
@@ -99,7 +97,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        SettingBankApplinkModule.class,
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
@@ -138,7 +135,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-                new SettingBankApplinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),

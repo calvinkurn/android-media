@@ -13,6 +13,9 @@ public class TrackingResponse {
     @SerializedName("track_order")
     @Expose
     private TrackOrder trackOrder;
+    @SerializedName("page")
+    @Expose
+    private Page page;
 
     public TrackOrder getTrackOrder() {
         return trackOrder;
@@ -20,5 +23,13 @@ public class TrackingResponse {
 
     public void setTrackOrder(TrackOrder trackOrder) {
         this.trackOrder = trackOrder;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }

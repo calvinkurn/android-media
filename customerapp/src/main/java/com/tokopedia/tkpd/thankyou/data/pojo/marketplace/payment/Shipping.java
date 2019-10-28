@@ -11,9 +11,12 @@ public class Shipping {
     @SerializedName("shipping_id")
     @Expose
     private int shippingId;
-    @SerializedName("shipping_name")
+    @SerializedName("logistic_name")
     @Expose
     private String shippingName;
+    @SerializedName("shipping_price")
+    @Expose
+    private float shippingPrice;
 
     public int getShippingId() {
         return shippingId;
@@ -29,5 +32,13 @@ public class Shipping {
 
     public void setShippingName(String shippingName) {
         this.shippingName = shippingName;
+    }
+
+    public float getShippingPrice() {
+        return shippingPrice;
+    }
+
+    public void setShippingPrice(float shippingPrice) {
+        this.shippingPrice = shippingPrice;
     }
 }

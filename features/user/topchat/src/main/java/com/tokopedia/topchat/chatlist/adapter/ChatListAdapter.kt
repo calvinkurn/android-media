@@ -51,9 +51,10 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
     }
 
     fun deleteItem(position: Int) {
+        if (position == -1) return
+
         data.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, data.size)
     }
 
 }

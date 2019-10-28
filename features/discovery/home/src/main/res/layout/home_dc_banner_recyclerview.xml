@@ -12,13 +12,17 @@
     <include
         layout="@layout/home_master_dynamic_channel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.ContainerUnify
         android:id="@+id/backgroundBanner"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/background_banner_organic"
         app:layout_constraintTop_toBottomOf="@+id/channel_title_container">
 
@@ -26,7 +30,6 @@
             android:id="@+id/dc_banner_card"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
-            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
@@ -39,6 +42,8 @@
                 android:id="@+id/banner_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
                 app:layout_constraintBottom_toBottomOf="@+id/dc_banner_card"
                 app:layout_constraintEnd_toEndOf="@+id/dc_banner_card"
                 app:layout_constraintStart_toStartOf="@+id/dc_banner_card"
@@ -85,18 +90,21 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_20"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
                 app:unifyButtonSize="small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Cek Sekarang" />
+                tools:text="Cek Sekarang"
+                android:focusable="true" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dc_banner_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintTop_toBottomOf="@+id/dc_banner_card" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.ContainerUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

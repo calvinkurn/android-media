@@ -41,6 +41,129 @@
                         app:layout_constraintTop_toTopOf="@+id/ll_dashboard"
                         app:layout_constraintBottom_toBottomOf="@+id/ll_dashboard"/>
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_income_dashboard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_af_income_dashboard"
+                        android:paddingBottom="@dimen/dp_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <com.tokopedia.unifycomponents.CardUnify
+                            android:id="@+id/cu_income_overview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_14"
+                            android:layout_marginEnd="@dimen/dp_14"
+                            android:layout_marginTop="@dimen/dp_24"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/dp_12"
+                                android:layout_marginEnd="@dimen/dp_12"
+                                android:layout_marginTop="@dimen/dp_14"
+                                android:layout_marginBottom="@dimen/dp_14">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/iv_total_saldo_title"
+                                    android:layout_width="@dimen/dp_24"
+                                    android:layout_height="@dimen/dp_24"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/ic_saldo_tokopedia" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_total_saldo_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/dp_5"
+                                    android:layout_marginLeft="@dimen/dp_5"
+                                    android:text="@string/total_active_balance"
+                                    android:textColor="@color/Neutral_N700_68"
+                                    app:layout_constraintBottom_toBottomOf="@id/iv_total_saldo_title"
+                                    app:layout_constraintStart_toEndOf="@id/iv_total_saldo_title"
+                                    app:layout_constraintTop_toTopOf="@id/iv_total_saldo_title"
+                                    app:typographyType="body_3" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_total_saldo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black_70"
+                                    app:layout_constraintBottom_toBottomOf="@id/iv_total_saldo_title"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/iv_total_saldo_title"
+                                    app:typographyType="body_1"
+                                    app:typographyWeight="bold"
+                                    tools:text="Rp110.000" />
+
+                                <View
+                                    android:id="@+id/view_separator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dp_1"
+                                    android:layout_marginTop="@dimen/dp_14"
+                                    android:background="@color/black_12"
+                                    app:layout_constraintTop_toBottomOf="@id/iv_total_saldo_title" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_affiliate_income_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/dp_16"
+                                    android:layout_marginBottom="@dimen/dp_6"
+                                    android:text="@string/affiliate_income"
+                                    android:textColor="@color/Neutral_N700_68"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view_separator"
+                                    app:typographyType="body_3" />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/iv_af_income_info"
+                                    android:layout_width="@dimen/dp_12"
+                                    android:layout_height="@dimen/dp_12"
+                                    android:layout_marginStart="@dimen/dp_4"
+                                    android:layout_marginLeft="@dimen/dp_4"
+                                    app:layout_constraintBottom_toBottomOf="@id/tv_affiliate_income_title"
+                                    app:layout_constraintStart_toEndOf="@id/tv_affiliate_income_title"
+                                    app:layout_constraintTop_toTopOf="@id/tv_affiliate_income_title"
+                                    app:srcCompat="@drawable/ic_info_help" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_affiliate_income"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/Neutral_N700_68"
+                                    app:layout_constraintBottom_toBottomOf="@id/tv_affiliate_income_title"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="@id/tv_affiliate_income_title"
+                                    app:typographyType="body_3"
+                                    tools:text="Rp10.000" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </com.tokopedia.unifycomponents.CardUnify>
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/btn_check_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_48"
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:text="@string/check_balance_detail"
+                            app:layout_constraintStart_toStartOf="@id/cu_income_overview"
+                            app:layout_constraintEnd_toEndOf="@id/cu_income_overview"
+                            app:layout_constraintTop_toBottomOf="@id/cu_income_overview"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <LinearLayout
                         android:id="@+id/ll_dashboard"
                         android:layout_width="match_parent"
@@ -48,150 +171,16 @@
                         android:orientation="vertical"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cl_income_dashboard"
                         app:layout_constraintBottom_toBottomOf="parent">
 
-                        <LinearLayout
-                            android:id="@+id/ll_income_overview"
+                        <com.tokopedia.unifycomponents.CardUnify
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_af_income_dashboard"
-                            android:orientation="vertical"
-                            android:paddingBottom="@dimen/dp_24">
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_marginStart="@dimen/dp_16"
-                                android:layout_marginEnd="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_24"
-                                app:cardCornerRadius="@dimen/dp_8"
-                                app:cardElevation="@dimen/dp_5">
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dp_12"
-                                    android:layout_marginEnd="@dimen/dp_12"
-                                    android:layout_marginTop="@dimen/dp_14"
-                                    android:layout_marginBottom="@dimen/dp_14">
-
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/iv_total_saldo_title"
-                                        android:layout_width="@dimen/dp_24"
-                                        android:layout_height="@dimen/dp_24"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:srcCompat="@drawable/ic_saldo_tokopedia" />
-
-                                    <com.tokopedia.unifyprinciples.Typography
-                                        android:id="@+id/tv_total_saldo_title"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="@dimen/dp_5"
-                                        android:layout_marginLeft="@dimen/dp_5"
-                                        android:text="@string/total_active_balance"
-                                        android:textColor="@color/Neutral_N700_68"
-                                        app:layout_constraintBottom_toBottomOf="@id/iv_total_saldo_title"
-                                        app:layout_constraintStart_toEndOf="@id/iv_total_saldo_title"
-                                        app:layout_constraintTop_toTopOf="@id/iv_total_saldo_title"
-                                        app:typographyType="body_3" />
-
-                                    <com.tokopedia.unifyprinciples.Typography
-                                        android:id="@+id/tv_total_saldo"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textColor="@color/black_70"
-                                        app:layout_constraintBottom_toBottomOf="@id/iv_total_saldo_title"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="@id/iv_total_saldo_title"
-                                        app:typographyType="body_1"
-                                        app:typographyWeight="bold"
-                                        tools:text="Rp110.000" />
-
-                                    <View
-                                        android:id="@+id/view_separator"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="@dimen/dp_1"
-                                        android:layout_marginTop="@dimen/dp_14"
-                                        android:background="@color/black_12"
-                                        app:layout_constraintTop_toBottomOf="@id/iv_total_saldo_title" />
-
-                                    <com.tokopedia.unifyprinciples.Typography
-                                        android:id="@+id/tv_affiliate_income_title"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/dp_16"
-                                        android:layout_marginBottom="@dimen/dp_6"
-                                        android:text="@string/affiliate_income"
-                                        android:textColor="@color/Neutral_N700_68"
-                                        app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toBottomOf="@+id/view_separator"
-                                        app:typographyType="body_3" />
-
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/iv_af_income_info"
-                                        android:layout_width="@dimen/dp_12"
-                                        android:layout_height="@dimen/dp_12"
-                                        android:layout_marginStart="@dimen/dp_4"
-                                        android:layout_marginLeft="@dimen/dp_4"
-                                        app:layout_constraintBottom_toBottomOf="@id/tv_affiliate_income_title"
-                                        app:layout_constraintStart_toEndOf="@id/tv_affiliate_income_title"
-                                        app:layout_constraintTop_toTopOf="@id/tv_affiliate_income_title"
-                                        app:srcCompat="@drawable/ic_info_help" />
-
-                                    <com.tokopedia.unifyprinciples.Typography
-                                        android:id="@+id/tv_affiliate_income"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textColor="@color/Neutral_N700_68"
-                                        app:layout_constraintBottom_toBottomOf="@id/tv_affiliate_income_title"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="@id/tv_affiliate_income_title"
-                                        app:typographyType="body_3"
-                                        tools:text="Rp10.000" />
-
-                                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                            </androidx.cardview.widget.CardView>
-
-                            <LinearLayout
-                                android:id="@+id/ll_check_balance"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/dp_48"
-                                android:layout_marginStart="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_16"
-                                android:layout_marginEnd="@dimen/dp_16"
-                                android:background="@drawable/bg_btn_green"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:gravity="center"
-                                android:orientation="horizontal">
-
-                                <com.tokopedia.unifyprinciples.Typography
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="@string/check_balance_detail"
-                                    android:textColor="@color/WhiteText"
-                                    app:typographyType="heading_5"
-                                    tools:text="Cek Detail Saldo" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_16"
-                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_14"
+                            android:layout_marginEnd="@dimen/dp_14"
                             android:layout_marginTop="@dimen/dp_12"
-                            android:orientation="vertical"
-                            app:cardCornerRadius="@dimen/dp_8"
-                            app:cardElevation="@dimen/dp_5">
+                            android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -314,7 +303,7 @@
 
                             </LinearLayout>
 
-                        </androidx.cardview.widget.CardView>
+                        </com.tokopedia.unifycomponents.CardUnify>
 
                         <LinearLayout
                             android:id="@+id/ll_curated_product_history"
@@ -334,15 +323,14 @@
                                 android:textColor="@color/black_70"
                                 app:typographyType="heading_3" />
 
-                            <androidx.cardview.widget.CardView
+                            <com.tokopedia.unifycomponents.CardUnify
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dp_16"
+                                android:layout_marginStart="@dimen/dp_14"
                                 android:layout_marginTop="@dimen/dp_16"
-                                android:layout_marginEnd="@dimen/dp_16"
-                                android:layout_marginBottom="@dimen/dp_24"
-                                app:cardCornerRadius="@dimen/dp_8"
-                                app:cardElevation="@dimen/dp_5">
+                                android:layout_marginEnd="@dimen/dp_14"
+                                android:layout_marginBottom="@dimen/dp_10"
+                                android:background="@null">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -451,7 +439,7 @@
 
                                 </LinearLayout>
 
-                            </androidx.cardview.widget.CardView>
+                            </com.tokopedia.unifycomponents.CardUnify>
 
                         </LinearLayout>
 
@@ -459,6 +447,8 @@
                             android:id="@+id/es_share_now"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginTop="@dimen/dp_14"
                             app:unifyEmptyStateCTAFullWidth="true"
                             app:unifyEmptyStateDescription="@string/af_curated_empty_subtitle"
                             app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_share_post"
@@ -466,8 +456,7 @@
                             app:unifyEmptyStatePrimaryCTAText="@string/af_share_now"
                             app:unifyEmptyStateTitle="@string/af_curated_empty_title"
                             app:unifyEmptyStateType="page"
-                            android:visibility="gone"
-                            tools:visibility="visible"/>
+                            tools:visibility="visible" />
 
                     </LinearLayout>
 
@@ -477,16 +466,16 @@
                     android:id="@+id/tl_curated_products"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:tabMode="fixed"
-                    app:tabGravity="fill"
-                    app:tabIndicatorHeight="@dimen/dp_1"
-                    app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextColor="@color/font_black_disabled_38"
-                    app:tabTextAppearance="@style/Tabs.Secondary"
-                    app:tabIndicatorColor="@color/tkpd_main_green"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    app:layout_scrollFlags="enterAlways"/>
+                    android:visibility="visible"
+                    app:layout_scrollFlags="enterAlways"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/tkpd_main_green"
+                    app:tabIndicatorHeight="@dimen/dp_1"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/tkpd_main_green"
+                    app:tabTextAppearance="@style/Tabs.Secondary"
+                    app:tabTextColor="@color/font_black_disabled_38" />
 
             </com.google.android.material.appbar.AppBarLayout>
 

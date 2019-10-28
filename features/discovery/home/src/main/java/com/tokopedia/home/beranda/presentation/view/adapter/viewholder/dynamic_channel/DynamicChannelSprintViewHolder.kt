@@ -1,32 +1,30 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.graphics.Paint
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.bumptech.glide.Glide
 import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.TextViewHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import java.util.HashMap
+import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by devarafikry on 12/08/19.
@@ -41,22 +39,14 @@ class DynamicChannelSprintViewHolder(sprintView: View,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_dc_lego_product
+        val LAYOUT = R.layout.home_dc_lego_sprint
     }
 
     val context: Context = sprintView.context
-    val defaultSpanCount = 3
+    private val defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        when(getLayoutType(channel)) {
-            TYPE_SPRINT_SALE -> HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
-            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
-            TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
-            else -> HomePageTracking.eventClickSeeAllDynamicChannel(
-                    context,
-                    DynamicLinkHelper.getActionLink(channel.header),
-                    channel.id)
-        }
+        HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
     }
 
     override fun getViewHolderClassName(): String {
@@ -65,10 +55,35 @@ class DynamicChannelSprintViewHolder(sprintView: View,
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+        val backgroundThematic: ImageView = itemView.findViewById(R.id.background_thematic)
+        val seeAllButton: UnifyButton = itemView.findViewById(R.id.see_all_button_unify)
+        val seeAllButtonText: TextView = itemView.findViewById(R.id.see_all_button)
+
+        if(channel.header.backImage.isNotBlank()) {
+            val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
+            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
+            backgroundThematic.show()
+            seeAllButton.show()
+            seeAllButtonText.hide()
+            seeAllButton.setOnClickListener {
+                homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
+                HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
+                        DynamicLinkHelper.getActionLink(channel.header))
+                onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
+
+            }
+            Glide.with(context)
+                    .load(channel.header.backImage)
+                    .into(backgroundThematic);
+        }else {
+            seeAllButton.hide()
+            seeAllButtonText.show()
+            backgroundThematic.hide()
+        }
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
                 true))
 
         recyclerView.layoutManager = GridLayoutManager(
@@ -76,14 +91,15 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
 
-        recyclerView.adapter = SprintAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView)
+        recyclerView.adapter = SprintAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView, channel.showPromoBadge)
     }
 
     class SprintAdapter(private val context: Context,
                              private val listener: HomeCategoryListener,
                              private val channels: DynamicHomeChannel.Channels,
                              private val sprintType: Int,
-                             private val countDownView: CountDownView) : RecyclerView.Adapter<SprintViewHolder>() {
+                             private val countDownView: CountDownView,
+                             private val isFreeOngkir: Boolean) : RecyclerView.Adapter<SprintViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SprintViewHolder {
@@ -94,46 +110,24 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: SprintViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                ImageHandler.loadImageThumbs(holder.context, holder.channelImage1, grid.imageUrl)
-
-                holder.channelName.displayTextOrHide(grid.name)
-                holder.channelPrice1.displayTextOrHide(grid.price)
-                holder.channelDiscount1.displayTextOrHide(grid.discount)
-                holder.channelBeforeDiscPrice1.displayTextOrHide(grid.slashedPrice)
-                holder.channelCashback.displayTextOrHide(grid.cashback)
-                holder.channelBeforeDiscPrice1.paintFlags = holder.channelBeforeDiscPrice1.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-                holder.itemContainer1.setOnClickListener {
-                    var attr = ""
-                    when(sprintType){
-                        TYPE_SPRINT_SALE -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                    channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown))
-                            attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
-                        }
-                        TYPE_SPRINT_LEGO -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                    channels.getEnhanceClickSprintSaleLegoHomePage(position))
-                            attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
-                        }
-                        TYPE_ORGANIC -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                    channels.getEnhanceClickSprintSaleLegoHomePage(position))
-                            attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
-                        }
-                        TYPE_CURATED -> {
-                            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context,
-                                    channels.getEnhanceClickDynamicChannelHomePage(grid, position + 1))
-                            attr = channels.getHomeAttribution(position + 1, grid.attribution)
-                        }
+                holder.thematicCardView.run {
+                    initProductImage(grid.imageUrl)
+                    initProductName(grid.name)
+                    initProductPrice(grid.price)
+                    initLabelDiscount(grid.discount)
+                    initSlashedPrice(grid.slashedPrice)
+                    initLabelPromo(grid.cashback, ThematicCardView.LIGHT_RED)
+                    setBlankSpaceConfig(BlankSpaceConfig(freeOngkir = isFreeOngkir))
+                    initFreeOngkir(grid.freeOngkir.isActive, grid.freeOngkir.imageUrl)
+                    setOnClickListener {
+                        HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown, grid.freeOngkir.isActive))
+                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
-
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
 
         override fun getItemCount(): Int {
@@ -142,13 +136,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     }
 
     class SprintViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val channelImage1: ImageView = view.findViewById(R.id.channel_image_1)
-        val channelName: TextView = view.findViewById(R.id.product_name)
-        val channelPrice1: TextView = view.findViewById(R.id.channel_price_1)
-        val channelDiscount1: TextView = view.findViewById(R.id.channel_discount_1)
-        val channelCashback: TextView = view.findViewById(R.id.channel_cashback)
-        val channelBeforeDiscPrice1: TextView = view.findViewById(R.id.channel_before_disc_price_1)
-        val itemContainer1: RelativeLayout = view.findViewById(R.id.channel_item_container_1)
+        val thematicCardView: ThematicCardView = view.findViewById(R.id.thematic_card)
         val context: Context
             get() = itemView.context
     }

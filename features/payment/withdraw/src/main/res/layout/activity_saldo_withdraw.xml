@@ -34,6 +34,19 @@
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_16" />
 
+            <TextView
+                android:id="@+id/toolbar_withdraw_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:padding="@dimen/dp_4"
+                android:text="@string/withdraw_help"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sp_12" />
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>

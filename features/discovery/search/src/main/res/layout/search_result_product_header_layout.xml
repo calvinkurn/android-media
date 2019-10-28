@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.tokopedia.topads.sdk.widget.TopAdsBannerView
@@ -10,18 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:closeButtonVisibility="visible"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/suggestion_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1px"
         android:orientation="vertical" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/guidedSearchRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickFilterListView"

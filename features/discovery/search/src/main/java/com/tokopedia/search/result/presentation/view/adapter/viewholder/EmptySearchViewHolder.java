@@ -124,24 +124,26 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
                 .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.CPM)
                 .build();
-        topAdsBannerView.setConfig(bannerAdsConfig);
-        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
-            if(bannerAdsListener != null) {
-                bannerAdsListener.onBannerAdsClicked(position, appLink, data);
-            }
-        });
-        topAdsBannerView.setAdsListener(new TopAdsListener() {
-            @Override
-            public void onTopAdsLoaded(List<Item> list) {
-                loadProductAds();
-            }
+        if(topAdsBannerView != null) {
+            topAdsBannerView.setConfig(bannerAdsConfig);
+            topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
+                if (bannerAdsListener != null) {
+                    bannerAdsListener.onBannerAdsClicked(position, appLink, data);
+                }
+            });
+            topAdsBannerView.setAdsListener(new TopAdsListener() {
+                @Override
+                public void onTopAdsLoaded(List<Item> list) {
+                    loadProductAds();
+                }
 
-            @Override
-            public void onTopAdsFailToLoad(int errorCode, String message) {
-                loadProductAds();
-            }
-        });
-        topAdsBannerView.loadTopAds();
+                @Override
+                public void onTopAdsFailToLoad(int errorCode, String message) {
+                    loadProductAds();
+                }
+            });
+            topAdsBannerView.loadTopAds();
+        }
     }
 
     @Override

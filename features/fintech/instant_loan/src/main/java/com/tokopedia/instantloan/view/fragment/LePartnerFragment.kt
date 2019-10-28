@@ -33,7 +33,7 @@ class LePartnerFragment : TkpdBaseV4Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_content_fragment, null)
+        return inflater.inflate(com.tokopedia.instantloan.R.layout.fragment_content_fragment, null)
     }
 
     override fun onAttachActivity(context: Context) {
