@@ -67,7 +67,7 @@ class DashboardWidgetViewModel @Inject constructor(private val repository: Graph
                             END_DATE to DateObject.endDate)
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(rawQueries[QUERY_TOPADS_STATISTIC],
-                                TopAdsDepositResponse::class.java,
+                                TopAdsStatisticResponse::class.java,
                                 param, false)
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.ALWAYS_CLOUD).build()
