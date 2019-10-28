@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
 import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -23,7 +24,6 @@ import com.tokopedia.topads.widget.dashboard.internal.ParamObject.START_DATE
 import com.tokopedia.topads.widget.dashboard.internal.DateObject
 import com.tokopedia.topads.widget.dashboard.internal.ParamObject.CREDIT_DATA
 import com.tokopedia.topads.widget.dashboard.internal.ParamObject.SHOP_DATA
-import java.util.*
 
 /**
  * Author errysuprayogi on 25,October,2019
@@ -34,19 +34,11 @@ class DashboardWidgetViewModel @Inject constructor(private val repository: Graph
                                                    @Named("Main")
                                                    val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    private val REQUEST_DATE_FORMAT = "yyyy-MM-dd"
-
-    private fun getDate(daysAgo: Int): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, -daysAgo)
-        return calendar.time
-    }
-
     fun getTopAdsDeposit(onSuccessGetDeposit: ((TopAdsDepositResponse.Data) -> Unit),
                          onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val param = mapOf(SHOP_ID to userSession.shopId,
+                    val param = mapOf(SHOP_ID to userSession.shopId?.toIntOrZero(),
                             CREDIT_DATA to "unclaimed", SHOP_DATA to "1")
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
@@ -70,7 +62,7 @@ class DashboardWidgetViewModel @Inject constructor(private val repository: Graph
                             onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val param = mapOf(SHOP_ID to userSession.shopId,
+                    val param = mapOf(SHOP_ID to userSession.shopId?.toIntOrZero(),
                             START_DATE to DateObject.startDate,
                             END_DATE to DateObject.endDate)
                     val data = withContext(Dispatchers.IO) {

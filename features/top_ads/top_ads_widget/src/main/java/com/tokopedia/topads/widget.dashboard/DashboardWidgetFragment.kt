@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.widget.R
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
 import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
@@ -82,6 +84,9 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
                 statistic_container.visibility = View.VISIBLE
                 btn_expander.setImageResource(R.drawable.ic_expand_less)
             }
+        }
+        btn_go_to_dashboard_topads.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
         }
     }
 }
