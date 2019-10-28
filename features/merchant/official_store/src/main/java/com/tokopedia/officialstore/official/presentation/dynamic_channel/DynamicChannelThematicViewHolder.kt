@@ -17,7 +17,6 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
-// TODO: Update data mapping when back-end finished
 class DynamicChannelThematicViewHolder(
         private val view: View?
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
@@ -93,7 +92,7 @@ class DynamicChannelThematicViewHolder(
 
             contentList.apply {
                 layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = ThematicListAdapter(grids)
+                adapter = ThematicListAdapter(view?.context, grids)
             }
         } else {
             mainContainer.visibility = View.GONE

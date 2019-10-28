@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.officialstore.DynamicChannelLayoutType
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -11,7 +12,6 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import timber.log.Timber
 
 class OfficialHomeMapper {
 
@@ -43,11 +43,18 @@ class OfficialHomeMapper {
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
             if (dynamicChannel.channels.isNotEmpty()) {
+                val availableScreens = setOf(
+                        DynamicChannelLayoutType.LAYOUT_BANNER_CAROUSEL,
+                        DynamicChannelLayoutType.LAYOUT_SPRINT_LEGO,
+                        DynamicChannelLayoutType.LAYOUT_6_IMAGE,
+                        DynamicChannelLayoutType.LAYOUT_LEGO_3_IMAGE
+                )
                 val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
 
                 dynamicChannel.channels.forEach { channel ->
-                    Timber.d(">>> " + channel.layout)
-                    views.add(DynamicChannelViewModel(channel))
+                    if (availableScreens.contains(channel.layout)) {
+                        views.add(DynamicChannelViewModel(channel))
+                    }
                 }
 
                 adapter?.addElement(views)

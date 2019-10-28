@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -29,6 +29,7 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.OfficialStoreMockHelper
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -37,7 +38,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHomeComponent>, RecommendationListener {
+class OfficialHomeFragment :
+        BaseDaggerFragment(),
+        CountDownView.CountDownListener,
+        HasComponent<OfficialStoreHomeComponent>,
+        RecommendationListener
+{
 
     companion object {
         const val DEFAULT_PAGE = 1
@@ -89,7 +95,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         recyclerView?.layoutManager = layoutManager
         endlesScrollListener = getEndlessRecyclerViewScrollListener()
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -175,7 +181,10 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
             when (result) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingDynamicChannel(result.data, adapter)
+                    OfficialHomeMapper.mappingDynamicChannel(
+                            OfficialStoreMockHelper.getDataFromJSON(resources.openRawResource(R.raw.dc_response_mock)),
+                            adapter
+                    )
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG) result.throwable.printStackTrace()
@@ -343,5 +352,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), HasComponent<OfficialStoreHom
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+    }
+
+    override fun onCountDownFinished() {
+        refreshData()
     }
 }
