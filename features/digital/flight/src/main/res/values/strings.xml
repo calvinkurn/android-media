@@ -445,6 +445,10 @@
     <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
     <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Paspor harus diisi</string>
     <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Paspor harus diisi</string>
+    <string name="flight_booking_loading_text_1">Makan roti pakai meses\nPesananmu lagi diproses</string>
+    <string name="flight_booking_loading_text_2">Nginap di hutan ketemu tupai\nNaik pesawat lebih cepat sampai</string>
+    <string name="flight_booking_loading_text_3">Siang-siang main basket\nJangan lupa kencangkan seat belt!</string>
+    <string name="flight_booking_loading_text_4">Pergi ke pasar di hari Jumat\nSudah siap naik pesawat?</string>
     <string name="flight_passport_search_hint">Cari Negara Penerbit Paspor</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
     <string name="flight_detail_order_protection_label">Terproteksi</string>
