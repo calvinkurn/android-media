@@ -1,16 +1,19 @@
 package com.tokopedia.topads.widget.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.widget.R
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
 import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
+import com.tokopedia.topads.widget.dashboard.di.DaggerDashboardWidgetComponent
 import com.tokopedia.topads.widget.dashboard.di.DashboardWidgetComponent
 import com.tokopedia.topads.widget.dashboard.viewmodel.DashboardWidgetViewModel
 import kotlinx.android.synthetic.main.fragment_widget_dashboard_topads.*
@@ -28,8 +31,13 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     private lateinit var viewModel: DashboardWidgetViewModel
 
     override fun initInjector() {
-        getComponent(DashboardWidgetComponent::class.java).inject(this)
+        context?.let {
+            getComponent(it).inject(this)
+        }
     }
+
+    private fun getComponent(context: Context): DashboardWidgetComponent = DaggerDashboardWidgetComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getScreenName(): String? {
         return DashboardWidgetFragment::class.simpleName
