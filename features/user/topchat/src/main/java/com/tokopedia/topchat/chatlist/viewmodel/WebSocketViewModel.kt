@@ -76,13 +76,13 @@ class WebSocketViewModel
         val time = responseData?.startTime.toEmptyStringIfNull()
 
         val contact = ItemChatAttributesContactPojo(
-                responseData.fromUid.toString(),
-                responseData.fromRole,
+                responseData?.fromUid.toString(),
+                responseData?.fromRole,
                 "",
-                responseData.from,
+                responseData?.from,
                 0,
-                responseData.fromRole,
-                responseData.imageUri
+                responseData?.fromRole,
+                responseData?.imageUri
         )
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
