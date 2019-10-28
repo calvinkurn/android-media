@@ -182,7 +182,7 @@ public class ShipmentDataRequestConverter {
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                 PromoRequest promoRequest = new PromoRequest();
-                promoRequest.setCode(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                promoRequest.setCode(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                 promoRequest.setType(PromoRequest.TYPE_LOGISTIC);
                 promoRequests.add(promoRequest);
             }
