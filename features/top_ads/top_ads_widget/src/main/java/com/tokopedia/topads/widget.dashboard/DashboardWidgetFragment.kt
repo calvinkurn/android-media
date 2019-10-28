@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.widget.R
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
@@ -49,7 +48,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(DashboardWidgetViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardWidgetViewModel::class.java)
         viewModel.getTopAdsDeposit(this::onSuccessGetDeposit, this::onError)
         viewModel.getTopAdsStatisctic(this::onSuccessGetStatistic, this::onError)
         setupView()
