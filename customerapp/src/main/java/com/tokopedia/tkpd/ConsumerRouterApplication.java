@@ -1082,35 +1082,51 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customMessage, source, avatar);
+//        return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
+//                customMessage, source, avatar);
+
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKBUYER
+                , toUserId
+                , customMessage
+                , source
+                , customerName
+                , avatar);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
 
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                customMessage, source, avatar);
+//        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+//                customMessage, source, avatar);
+
+        return RouteManager.getIntent(context
+                , ApplinkConst.TOPCHAT_ASKSELLER
+                , toShopId
+                , customMessage
+                , source
+                , shopName
+                , avatar);
 
     }
 
 
-    @Override
-    public Intent getAskUserIntent(Context context, String userId, String userName, String source,
-                                   String avatar) {
-
-        return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
-
-
-    }
-
-    @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String source) {
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject,
-                source, "");
-    }
+//    @Override
+//    public Intent getAskUserIntent(Context context, String userId, String userName, String source,
+//                                   String avatar) {
+//
+//        return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
+//
+//
+//    }
+//
+//    @Override
+//    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+//                                     String customSubject, String source) {
+//        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject,
+//                source, "");
+//    }
 
     @Override
     public void goToGMSubscribe(Activity activity) {

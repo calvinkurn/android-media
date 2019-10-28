@@ -338,6 +338,9 @@ public interface ApplinkConst {
         String INVOICE_STATUS_ID = "invoice_status_id";
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
+
+        String PATH_ASK_SELLER = "askseller";
+        String PATH_ASK_BUYER = "askbuyer";
     }
 
     interface Play {

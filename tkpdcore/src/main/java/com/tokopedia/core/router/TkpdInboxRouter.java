@@ -33,14 +33,14 @@ public interface TkpdInboxRouter {
                               String shopName, String customSubject,
                               String customMessage, String source, String avatarUrl);
 
-    Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source,
-                              String avatarUrl);
+//    Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source,
+//                              String avatarUrl);
 
-    Intent getAskUserIntent(Context context, String toUserId, String userName, String source, String avatarUrl);
+//    Intent getAskUserIntent(Context context, String toUserId, String userName, String source, String avatarUrl);
 
-    Intent getInboxMessageIntent(Context context);
+//    Intent getInboxMessageIntent(Context context);
 
-    Intent getContactUsIntent(Context context);
+//    Intent getContactUsIntent(Context context);
 
     Intent getHomeIntent(Context context);
 
@@ -54,7 +54,7 @@ public interface TkpdInboxRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getHelpUsIntent(Context context);
+//    Intent getHelpUsIntent(Context context);
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
 
