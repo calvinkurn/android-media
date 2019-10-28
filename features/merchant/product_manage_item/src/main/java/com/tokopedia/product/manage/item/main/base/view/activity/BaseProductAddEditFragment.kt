@@ -24,7 +24,6 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
@@ -56,13 +55,14 @@ import com.tokopedia.product.manage.item.price.view.activity.ProductEditPriceAct
 import com.tokopedia.product.manage.item.stock.view.activity.ProductEditStockActivity
 import com.tokopedia.product.manage.item.stock.view.model.ProductStock
 import com.tokopedia.product.manage.item.utils.*
+import com.tokopedia.product.manage.item.utils.constant.AddProductTrackingConstant
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
-import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
@@ -70,6 +70,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     @Inject
     lateinit var presenter: T
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     @ProductStatus
     protected abstract var statusUpload: Int
@@ -532,21 +535,31 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 false
         )
-        for (labelAnalytics in listLabelAnalytics) {
-            if (isAddStatus()) {
-                eventAddProductAdd(labelAnalytics)
-            } else if (isEditStatus()) {
+
+        if (isAddStatus()) {
+            eventAddProductAdd(listLabelAnalytics)
+        } else if (isEditStatus()) {
+            for (labelAnalytics in listLabelAnalytics) {
                 eventAddProductEdit(labelAnalytics)
             }
         }
     }
 
-    private fun eventAddProductAdd(label: String) {
-        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
-                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
-                AppEventTracking.AddProduct.EVENT_ACTION_ADD,
-                label)
+    private fun eventAddProductAdd(labels: MutableList<String>) {
+        val action = if(labels.isEmpty()){
+            AddProductTrackingConstant.Action.CLICK_ADD_NO_OPTIONAL_FIELD
+        }else{
+            AddProductTrackingConstant.Action.CLICK_ADD_OPTIONAL_FIELD
+        }
+        userSessionInterface
+        val mapEvent = TrackAppUtils.gtmData(
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
+                action,
+                labels.joinToString()
+        )
+        mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = userSessionInterface.shopId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     private fun eventAddProductEdit(label: String) {
