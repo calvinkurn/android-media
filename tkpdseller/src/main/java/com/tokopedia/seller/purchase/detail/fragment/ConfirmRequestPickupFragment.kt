@@ -2,7 +2,7 @@ package com.tokopedia.seller.purchase.detail.fragment
 
 import android.app.Fragment
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +45,7 @@ class ConfirmRequestPickupFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        (activity as OrderDetailActivity).setActionBarTitle(getString(R.string.request_pickup_title))
         return inflater.inflate(R.layout.fragment_confirm_request_pickup, container, false)
     }
 

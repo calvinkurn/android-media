@@ -60,7 +60,7 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         Uri uri = getIntent().getData();
         List<String> linkPathSegments = UriUtil.destructureUri(
                 ApplinkConstInternalGlobal.REFERRAL_WELCOME_FRIENDS, uri, true);

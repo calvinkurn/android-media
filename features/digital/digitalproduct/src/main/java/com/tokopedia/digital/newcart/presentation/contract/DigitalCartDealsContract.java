@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.facade;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.helpful_review.HelpfulReviewList;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.AdvanceReview;

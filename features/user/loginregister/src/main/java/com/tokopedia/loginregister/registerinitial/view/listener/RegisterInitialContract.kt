@@ -1,6 +1,6 @@
 package com.tokopedia.loginregister.registerinitial.view.listener
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView

@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;

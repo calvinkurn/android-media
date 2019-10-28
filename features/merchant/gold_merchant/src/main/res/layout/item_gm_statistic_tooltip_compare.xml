@@ -29,7 +29,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_circle_top"
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"
@@ -55,7 +55,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_circle_bottom"
                     android:layout_width="@dimen/gm_tooltip_dot_image"
                     android:layout_height="@dimen/gm_tooltip_dot_image"

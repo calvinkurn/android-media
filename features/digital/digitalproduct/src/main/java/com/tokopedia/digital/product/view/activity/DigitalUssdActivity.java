@@ -104,7 +104,7 @@ public class DigitalUssdActivity extends BaseSimpleActivity implements DigitalUs
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         return DigitalUssdFragment.newInstance(pulsaBalance, selectedOperator, validationList, mCategoryId, mCategoryName, selectedSimIndex, selectedOperatorList);
     }
 }

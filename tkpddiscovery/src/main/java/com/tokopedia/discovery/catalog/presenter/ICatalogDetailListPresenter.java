@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.catalog.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemProduct;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemShop;

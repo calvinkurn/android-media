@@ -3,7 +3,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailAllFacilityFragment
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel

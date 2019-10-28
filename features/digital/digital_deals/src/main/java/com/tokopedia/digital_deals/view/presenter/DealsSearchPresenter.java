@@ -1,7 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;

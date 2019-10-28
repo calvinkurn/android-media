@@ -1,7 +1,7 @@
 package com.tokopedia.shop.note.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;

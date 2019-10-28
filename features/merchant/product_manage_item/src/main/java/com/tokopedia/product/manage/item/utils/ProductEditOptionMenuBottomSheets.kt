@@ -3,10 +3,10 @@ package com.tokopedia.product.manage.item.utils
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.support.annotation.MenuRes
-import android.support.v7.view.SupportMenuInflater
-import android.support.v7.view.menu.MenuBuilder
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.MenuRes
+import androidx.appcompat.view.SupportMenuInflater
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageButton
 import com.tokopedia.design.component.BottomSheets

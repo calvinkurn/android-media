@@ -4,9 +4,9 @@ package com.tokopedia.chatbot.view.customview
 import android.app.Dialog
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.View
 import android.widget.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

@@ -9,8 +9,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
-import android.support.annotation.DimenRes
-import android.support.annotation.StringRes
+import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout

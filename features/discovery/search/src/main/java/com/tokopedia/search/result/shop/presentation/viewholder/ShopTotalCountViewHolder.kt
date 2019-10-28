@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
-import android.support.annotation.DimenRes
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintSet
+import androidx.annotation.DimenRes
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
