@@ -3,13 +3,13 @@ package com.tokopedia.emoney.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeEmoneyInquiryResponse(
-        @SerializedName("rechargeEmoneyInquiry")
+class EmoneyInquiryResponse(
+        @SerializedName("emoneyInquiry")
         @Expose
-        val rechargeEmoneyInquiry: RechargeEmoneyInquiry
+        val emoneyInquiry: EmoneyInquiry
 )
 
-class RechargeEmoneyInquiry(
+class EmoneyInquiry(
         @SerializedName("id")
         @Expose
         val id: String = "",
@@ -21,7 +21,7 @@ class RechargeEmoneyInquiry(
         val attributesEmoneyInquiry: AttributesEmoneyInquiry? = null,
         @SerializedName("error")
         @Expose
-        val error: RechargeEmoneyInquiryError? = null
+        val error: EmoneyInquiryError? = null
 )
 
 class AttributesEmoneyInquiry(
@@ -49,7 +49,7 @@ class AttributesEmoneyInquiry(
 
 )
 
-class RechargeEmoneyInquiryError(
+class EmoneyInquiryError(
         @SerializedName("id")
         @Expose
         val id: Int = 0,

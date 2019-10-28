@@ -1,7 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.emoney.data.RechargeBrizziInquiryLogResponse
+import com.tokopedia.emoney.data.BrizziInquiryLogResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -26,12 +26,12 @@ class EmoneyBrizziLogViewModel @Inject constructor(private val graphqlRepository
             mapParam.put(RC, rc)
             mapParam.put(LAST_BALANCE, lastBalance)
 
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeBrizziInquiryLogResponse::class.java, mapParam)
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawQuery, BrizziInquiryLogResponse::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<RechargeBrizziInquiryLogResponse>()
+            }.getSuccessData<BrizziInquiryLogResponse>()
 
-            data.rechargeEmoneyInquiryLog?.let {
+            data.emoneyInquiryLog?.let {
                 onSuccess(it.inquiryId)
             }
         }) {

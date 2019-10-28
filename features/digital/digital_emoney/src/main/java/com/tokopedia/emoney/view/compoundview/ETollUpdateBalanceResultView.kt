@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.emoney.R
-import com.tokopedia.emoney.data.RechargeEmoneyInquiry
+import com.tokopedia.emoney.data.EmoneyInquiry
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -46,7 +46,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         textLabelProgressMessage = view.findViewById(R.id.text_label_progress_message)
     }
 
-    fun showCardInfoFromApi(inquiryBalanceModel: RechargeEmoneyInquiry) {
+    fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
         buttonTopup.visibility = View.VISIBLE

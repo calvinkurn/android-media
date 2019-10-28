@@ -3,13 +3,13 @@ package com.tokopedia.emoney.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeBrizziInquiryLogResponse(
-        @SerializedName("rechargeEmoneyInquiryLog")
+class BrizziInquiryLogResponse(
+        @SerializedName("emoneyInquiryLog")
         @Expose
-        val rechargeEmoneyInquiryLog: RechargeBrizziInquiryLog? = null
+        val emoneyInquiryLog: BrizziInquiryLog? = null
 )
 
-class RechargeBrizziInquiryLog(
+class BrizziInquiryLog(
         @SerializedName("inquiry_id")
         @Expose
         val inquiryId: Int = 0,

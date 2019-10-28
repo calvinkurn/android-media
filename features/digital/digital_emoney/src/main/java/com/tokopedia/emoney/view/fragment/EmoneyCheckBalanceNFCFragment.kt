@@ -34,8 +34,8 @@ import com.tokopedia.emoney.EmoneyAnalytics
 import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.data.AttributesEmoneyInquiry
-import com.tokopedia.emoney.data.RechargeEmoneyInquiry
-import com.tokopedia.emoney.data.RechargeEmoneyInquiryError
+import com.tokopedia.emoney.data.EmoneyInquiry
+import com.tokopedia.emoney.data.EmoneyInquiryError
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.view.activity.EmoneyCheckBalanceActivity
 import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
@@ -288,8 +288,8 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
     }
 
     //TODO remove hardcode after brizzi token finish
-    private fun mapperBrizzi(brizziCardObject: BrizziCardObject): RechargeEmoneyInquiry {
-        return RechargeEmoneyInquiry(
+    private fun mapperBrizzi(brizziCardObject: BrizziCardObject): EmoneyInquiry {
+        return EmoneyInquiry(
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
                         "Top Up",
                         "6013500601505093",
@@ -301,22 +301,22 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                         ISSUER_ID_BRIZZI,
                         ETOLL_BRIZZI_OPERATOR_ID
                 ),
-                error = RechargeEmoneyInquiryError(title = "Tidak ada pending balance"))
+                error = EmoneyInquiryError(title = "Tidak ada pending balance"))
     }
 
 
     private fun onSuccessInquiryBalance(mapAttributes: HashMap<String, Any>,
-                                        rechargeEmoneyInquiry: RechargeEmoneyInquiry) {
-        rechargeEmoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
+                                        emoneyInquiry: EmoneyInquiry) {
+        emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
             when {
                 attributes.status == 0 -> {
-                    sendCommand(rechargeEmoneyInquiry, mapAttributes)
+                    sendCommand(emoneyInquiry, mapAttributes)
                 }
                 attributes.status == 1 -> {
-                    showCardLastBalance(rechargeEmoneyInquiry)
+                    showCardLastBalance(emoneyInquiry)
                 }
                 attributes.status == 2 -> {
-                    rechargeEmoneyInquiry.error?.let { error ->
+                    emoneyInquiry.error?.let { error ->
                         showError(error.title)
                     }
                 }
@@ -327,11 +327,11 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun sendCommand(rechargeEmoneyInquiry: RechargeEmoneyInquiry, mapAttributes: HashMap<String, Any>) {
+    private fun sendCommand(emoneyInquiry: EmoneyInquiry, mapAttributes: HashMap<String, Any>) {
         if (isoDep != null && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(
-                        rechargeEmoneyInquiry.attributesEmoneyInquiry?.payload))
+                        emoneyInquiry.attributesEmoneyInquiry?.payload))
 
                 run {
                     if (responseInByte != null) {
@@ -342,7 +342,7 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
                             emoneyInquiryBalanceViewModel.getEmoneyInquiryBalance(
                                     EmoneyInquiryBalanceViewModel.PARAM_SEND_COMMAND,
                                     GraphqlHelper.loadRawString(it.resources, R.raw.query_emoney_inquiry_balance),
-                                    rechargeEmoneyInquiry.id.toInt(),
+                                    emoneyInquiry.id.toInt(),
                                     mapAttributes,
                                     this::onSuccessInquiryBalance,
                                     this::onErrorInquiryBalance)
@@ -377,12 +377,12 @@ class EmoneyCheckBalanceNFCFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showCardLastBalance(rechargeEmoneyInquiry: RechargeEmoneyInquiry) {
+    private fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
         eTollUpdateBalanceResultView.visibility = View.VISIBLE
-        eTollUpdateBalanceResultView.showCardInfoFromApi(rechargeEmoneyInquiry)
-        rechargeEmoneyInquiry.error?.let {
+        eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
+        emoneyInquiry.error?.let {
             NetworkErrorHelper.showGreenCloseSnackbar(activity, it.title)
         }
     }
