@@ -99,7 +99,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'

@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.domain
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.common.travel.data.PhoneCodeRepository
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 

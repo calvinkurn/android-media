@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;

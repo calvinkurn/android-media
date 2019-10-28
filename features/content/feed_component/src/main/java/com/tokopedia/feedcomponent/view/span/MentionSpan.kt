@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.span
 
 import android.graphics.Typeface
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View

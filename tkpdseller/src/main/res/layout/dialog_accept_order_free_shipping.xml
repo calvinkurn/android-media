@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -27,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@id/title_dialog">
 
         <RelativeLayout
+            android:id="@+id/rl_confirmation_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             xmlns:tools="http://schemas.android.com/tools"
@@ -50,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="body_1"
-                tools:text="@string/confirm_msg_3"
+                tools:text="@string/confirm_msg_3_reguler"
                 android:layout_toRightOf="@id/ic_checklist_confirmation_1"
                 android:layout_toEndOf="@id/ic_checklist_confirmation_1"
                 android:layout_marginLeft="@dimen/dp_10"
@@ -85,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="body_1"
-                tools:text="@string/confirm_msg_3"
+                tools:text="@string/confirm_msg_3_reguler"
                 android:layout_toRightOf="@id/ic_checklist_confirmation_2"
                 android:layout_toEndOf="@id/ic_checklist_confirmation_2"
                 android:layout_marginLeft="@dimen/dp_10"
@@ -120,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="body_1"
-                tools:text="@string/confirm_msg_3"
+                tools:text="@string/confirm_msg_3_reguler"
                 android:layout_toRightOf="@id/ic_checklist_confirmation_3"
                 android:layout_toEndOf="@id/ic_checklist_confirmation_3"
                 android:layout_marginLeft="@dimen/dp_10"
@@ -170,4 +171,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

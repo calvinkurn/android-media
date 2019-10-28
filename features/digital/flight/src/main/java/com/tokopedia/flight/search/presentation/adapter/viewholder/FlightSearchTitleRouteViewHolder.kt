@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.presentation.adapter.viewholder
 
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.google.android.gms.security.ProviderInstaller;

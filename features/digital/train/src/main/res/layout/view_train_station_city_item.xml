@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_16">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_city_name"
         style="@style/TextView.Small.Bold"
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         android:paddingStart="@dimen/dp_16"
         tools:text="Gambir (GMR)" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

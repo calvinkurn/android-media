@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.viewmodel
 
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.search.di.scope.SearchScope

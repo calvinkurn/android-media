@@ -2,10 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Point
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView

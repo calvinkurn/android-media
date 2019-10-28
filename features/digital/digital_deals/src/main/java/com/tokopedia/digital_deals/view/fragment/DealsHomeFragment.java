@@ -8,26 +8,27 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,11 +41,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkContentPosition;
@@ -66,13 +70,14 @@ import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -114,6 +119,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private TextView topDealsHeading;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
+    CurrentLocationCallBack currentLocationCallBack;
 
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
@@ -132,6 +138,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private boolean isFirstTime = false;
     private TextView promoheading;
     private UserSession userSession;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
         DealsHomeFragment fragment = new DealsHomeFragment();
@@ -148,6 +155,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (getArguments() != null) {
             isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
         }
+        permissionCheckerHelper = new PermissionCheckerHelper();
     }
 
     @Override
@@ -172,8 +180,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-            });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
@@ -183,15 +189,21 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void checkLocationStatus() {
 
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        permissionCheckerHelper.checkPermission(DealsHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                setDefaultLocation();
+            }
 
-        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
-            mPresenter.getLocations();
-        } else if (location != null){
-            tvLocationName.setText(location.getName());
-            mPresenter.getDealsList(true);
-            mPresenter.getBrandsHome();
-        }
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
+            }
+        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     private void startShowCase() {
@@ -218,8 +230,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DealsHomeActivity)
+        if (context instanceof DealsHomeActivity) {
             openTrendingDeals = (OpenTrendingDeals) context;
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
     }
 
     private void setUpVariables(View view) {
@@ -278,7 +292,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 } else {
                     DealsHomeFragment.this.showSearchButton();
                 }
-                Log.d("Offest Changed", "Offset : " + verticalOffset);
             }
         });
 
@@ -571,6 +584,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    @Override
     public int getRequestCode() {
         return DealsHomeActivity.REQUEST_CODE_LOGIN;
     }
@@ -745,6 +764,28 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        });
+        setDefaultLocation();
+    }
+
+    @Override
     public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
@@ -771,6 +812,30 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             tvLocationName.setText(location.getName());
             Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
             });
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    public void setDefaultLocationName() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        if (location != null) {
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), TkpdCache.DEALS_LOCATION);
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
         }
