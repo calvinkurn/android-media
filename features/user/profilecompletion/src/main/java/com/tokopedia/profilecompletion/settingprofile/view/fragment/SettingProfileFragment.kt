@@ -36,7 +36,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
@@ -299,7 +298,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
-        name.showFilled(
+        name?.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,
                 showVerified = false,
