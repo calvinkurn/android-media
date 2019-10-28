@@ -284,8 +284,18 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void replyToUser(MentionableUserViewModel user) {
-        CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
-        kolComment.append(userToMention);
+        if (!user.isShop()) {
+            CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
+            kolComment.append(userToMention);
+        } else {
+            StringBuilder mentionFormatBuilder = new StringBuilder();
+            if (kolComment.getText().length() > 0 && kolComment.getText().charAt(kolComment.length() - 1) != ' ') mentionFormatBuilder.append(" ");
+            mentionFormatBuilder
+                    .append("@")
+                    .append(user.getFullName())
+                    .append(" ");
+            kolComment.append(mentionFormatBuilder.toString());
+        }
         kolComment.setSelection(kolComment.length());
     }
 
@@ -334,7 +344,8 @@ public class KolCommentFragment extends BaseDaggerFragment
                 sendKolCommentDomain.getTime(),
                 sendKolCommentDomain.getDomainUser().isKol(),
                 sendKolCommentDomain.canDeleteComment(),
-                ""
+                "",
+                false
         ));
 
         kolComment.setText("");

@@ -11,6 +11,7 @@ import com.tokopedia.kol.feature.comment.data.pojo.get.Comment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
+import com.tokopedia.kol.feature.comment.data.type.SourceType;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
@@ -52,7 +53,8 @@ public class KolGetCommentMapper
                 String.valueOf(postKol.getUserId()),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
-                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : ""
+                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
+                postKol.getSource().getType() == SourceType.SHOP.getTypeInt()
         );
 
         return new KolComments(
@@ -100,7 +102,8 @@ public class KolGetCommentMapper
                             TimeConverter.generateTime(context, comment.getCreateTime()),
                     comment.isKol(),
                     comment.isCommentOwner(),
-                    comment.getUserBadges()
+                    comment.getUserBadges(),
+                    comment.isShop()
             );
             viewModelList.add(kolCommentViewModel);
         }

@@ -107,7 +107,8 @@ class KolCommentCardView : LinearLayout {
                                 id,
                                 "",
                                 element.name,
-                                "")
+                                "",
+                                element.isShop)
                 )
             }
         }
