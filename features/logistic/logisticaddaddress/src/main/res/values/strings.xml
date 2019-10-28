@@ -141,6 +141,7 @@
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="something_wrong_happened">Terjadi Kesalahan</string>
     <string name="title_dropoff_picker">Pilih lokasi Drop Off</string>
+    <string name="searchbar_dropoff_hint">Cari Tempat Drop Off...</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

@@ -6,16 +6,20 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.EditText
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     lateinit var mMapView: MapView
+    lateinit var mSearchInput: SearchInputView
+    lateinit var mSearchText: EditText
     var mMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +28,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
         setSupportActionBar(toolbar)
+        mSearchInput = findViewById(R.id.search_input_dropoff)
+        mSearchText = mSearchInput.searchTextView
+        mSearchText.isCursorVisible = false
+        mSearchText.isFocusable = false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
