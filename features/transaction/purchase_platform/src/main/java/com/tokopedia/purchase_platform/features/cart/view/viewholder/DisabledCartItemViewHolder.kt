@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.purchase_platform.R

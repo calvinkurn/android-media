@@ -8,10 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
@@ -93,7 +93,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -110,11 +109,7 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
+import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
@@ -173,6 +168,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomA
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.common.PopUpNotif;
@@ -203,6 +199,8 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.di.DaggerOmsComponent;
+import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -215,7 +213,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
-import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
@@ -228,8 +225,6 @@ import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.recentview.RecentViewRouter;
-import com.tokopedia.referral.ReferralAction;
-import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -334,7 +329,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PdpRouter,
         IPaymentModuleRouter,
         TransactionRouter,
-        IReactNativeRouter,
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
@@ -361,7 +355,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
-        DealsModuleRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
         ChangePasswordRouter,
@@ -381,7 +374,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalRouter,
         TopAdsRouter,
         CMRouter,
-        ReferralRouter,
         ILoyaltyRouter,
         ChatbotRouter,
         ResolutionRouter,
@@ -402,7 +394,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private EventComponent eventComponent;
-    private DealsComponent dealsComponent;
+    private OmsComponent omsComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -482,7 +474,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .serviceApiModule(new ServiceApiModule())
                 .build();
 
-        dealsComponent = DaggerDealsComponent.builder()
+        omsComponent = DaggerOmsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
                 .build();
     }
@@ -936,15 +928,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                       boolean enableRecommendation,
                                       boolean enableShare,
                                       boolean enableLike) {
-        return DealDetailsActivity.getCallingIntent(activity,
-                new DealDetailPassData.Builder()
-                        .slug(slug)
-                        .enableBuy(enableBuy)
-                        .enableRecommendation(enableRecommendation)
-                        .enableShare(enableShare)
-                        .enableLike(enableLike)
-                        .build()
-        );
+        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG);
+        return intent;
     }
 
     @Override
@@ -1006,11 +991,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
-        return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
-    }
-
-    @Override
     public void goToUserPaymentList(Activity activity) {
         activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
     }
@@ -1022,28 +1002,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendAddWishlistEmitter(String productId, String userId) {
-        reactUtils.sendAddWishlistEmitter(productId, userId);
-    }
-
-    @Override
-    public void sendRemoveWishlistEmitter(String productId, String userId) {
-        reactUtils.sendRemoveWishlistEmitter(productId, userId);
-    }
-
-    @Override
-    public void sendRemoveFavoriteEmitter(String shopId, String userId) {
-        reactUtils.sendRemoveFavoriteEmitter(shopId, userId);
-    }
-
-    @Override
     public void sendLoginEmitter(String userId) {
         reactUtils.sendLoginEmitter(userId);
-    }
-
-    @Override
-    public void sendAddFavoriteEmitter(String shopId, String userId) {
-        reactUtils.sendAddFavoriteEmitter(shopId, userId);
     }
 
     private ReactNativeComponent getReactNativeComponent() {
@@ -1190,12 +1150,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
-    public String getUserEmailProfil() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler.getEmail();
     }
 
     @Override
@@ -1415,13 +1369,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
-        ReferralAction<Context, String, Integer, String, String, String, Context> referralAction = new ReferralAction<>();
-        referralAction.doAction(com.tokopedia.referral.Constants.Action.ACTION_GET_REFERRAL_CODE, dataObj,
-                actionCreator, actionUIDelegate);
-    }
-
-    @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
@@ -1568,7 +1515,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+        return new PostVerifyCartWrapper(this, omsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
     }
 
@@ -1583,37 +1530,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(promoData.getLink())
                 .build();
         new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
-    public void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType("")
-                .setName(name)
-                .setUri(uri)
-                .setDesktopUrl(desktopUrl)
-                .setImgUri(imageUrl)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
-                        Intent intent = Intent.createChooser(share, getString(R.string.share_link));
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        context.startActivity(intent);
-
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-
     }
 
     @Override
@@ -2233,60 +2149,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void refreshFCMTokenFromForegroundToCM() {
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
-    }
-
-    @Override
-    public void eventReferralAndShare(Context context, String action, String label) {
-        UnifyTracking.eventReferralAndShare(context, action, label);
-    }
-
-    @Override
-    public void setBranchReferralCode(String referralCode) {
-        PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, referralCode);
-    }
-
-    @Override
-    public void sendMoEngageReferralScreenOpen(Context context, String screenName) {
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.SCREEN_NAME, screenName
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
-    }
-
-    @Override
-    public void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap) {
-        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
-    }
-
-    @Override
-    public void executeShareSocmedHandler(Activity activity, HashMap<String, String> keyValueMap, String packageName) {
-        ShareSocmedHandler.ShareSpecific(createShareDataFromHashMap(keyValueMap), activity, packageName,
-                "text/plain", null, null);
-    }
-
-    @Override
-    public void sendAnalyticsToGTM(Context context, String type, String channel) {
-        if (type.equals(ShareData.REFERRAL_TYPE)) {
-            eventReferralAndShare(context,
-                    com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
-            TrackingUtils.sendMoEngageReferralShareEvent(context.getApplicationContext(), channel);
-        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
-            UnifyTracking.eventAppShareWhenReferralOff(context.getApplicationContext(), com.tokopedia.referral.Constants.Values.Companion.SELECT_CHANNEL, channel);
-        } else {
-            UnifyTracking.eventShare(context.getApplicationContext(), channel);
-        }
-    }
-
-    private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
-                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
-                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
-                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
-                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
-                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
-                .build();
-        return shareData;
     }
 
     @Override

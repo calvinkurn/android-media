@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tkpd.library.utils.ImageHandler;

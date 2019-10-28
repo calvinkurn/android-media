@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatlist.listener
 
-import android.support.design.widget.FloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.view.View
 import com.tokopedia.design.component.FloatingButton
 import com.tokopedia.topchat.R

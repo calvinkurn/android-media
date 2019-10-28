@@ -129,8 +129,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
-        val EXTRA_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
-        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
+        val PROMO_CODE = "PROMO_CODE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
@@ -139,8 +139,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                            promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
+            bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putString(PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)

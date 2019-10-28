@@ -4,5 +4,6 @@
     <string name="applink_setting_bank_title">Rekening Bank</string>
     <string name="applink_change_phone_number">Change Phone Number</string>
     <string name="applink_instant_loan_title">Pinjaman Online</string>
+    <string name="applink_digital_deals_title">digital_deals</string>
 
 </resources>

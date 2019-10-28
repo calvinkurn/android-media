@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Mapper

@@ -112,7 +112,7 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            ext.enableHansel = true
+            ext.enableHansel = false
         }
         release {
             signingConfig signingConfigs.debug
@@ -144,7 +144,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

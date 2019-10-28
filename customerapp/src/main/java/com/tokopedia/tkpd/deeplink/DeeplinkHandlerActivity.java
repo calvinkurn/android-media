@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -46,8 +46,6 @@ import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkM
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
@@ -114,8 +112,6 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
-import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
-import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -158,7 +154,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
-        ReferralDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
@@ -174,7 +169,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
@@ -222,7 +216,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ConsumerDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
-                    new ReferralDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
@@ -238,7 +231,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ReputationApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new DealsDeepLinkModuleLoader(),
                     new ShopAppLinkModuleLoader(),
                     new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),

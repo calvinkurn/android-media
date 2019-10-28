@@ -16,11 +16,12 @@
     <string name="label_period">Periode Berlangsung</string>
     <string name="title_campaign_product_selection_end">Proses seleksi produk selesai</string>
     <string name="desc_campaign_product_selection_end">Lihat status produk Anda pada Daftar Produk</string>
-    <string name="label_discount_range">Kisaran Harga Diskon</string>
+    <string name="label_final_range_price">Kisaran Harga Final</string>
     <string name="label_discount">Diskon</string>
     <string name="label_rating">Rating</string>
     <string name="label_limit_request">Batas Pengajuan</string>
     <string name="label_min_stock">Min Stok</string>
+    <string name="label_max_stock">Max Stok</string>
     <string name="label_stock">Stok</string>
     <string name="label_sold_x_from_x">Terjual %1$d dari %2$d</string>
     <string name="label_min_cashback">Min Cashback</string>
@@ -69,6 +70,7 @@
     <string name="flash_sale_no_discount">-%</string>
     <string name="flash_sale_x_percent">%1$s%%</string>
     <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
+    <string name="flash_sale_max_stock_x">Stok maksimal %1$d</string>
     <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
     <string name="html_process_web_view_no_padding"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding-top:24px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
 

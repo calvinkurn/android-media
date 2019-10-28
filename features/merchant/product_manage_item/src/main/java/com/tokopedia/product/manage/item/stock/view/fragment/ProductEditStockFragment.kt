@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.item.stock.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextWatcher
 import android.view.*
 import android.widget.TextView

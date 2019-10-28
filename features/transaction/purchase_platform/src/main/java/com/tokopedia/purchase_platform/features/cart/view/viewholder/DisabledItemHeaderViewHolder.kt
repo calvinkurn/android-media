@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledItemHeaderHolderData

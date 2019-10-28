@@ -10,7 +10,7 @@
     android:paddingEnd="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_8"
@@ -19,7 +19,7 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="0dp">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/r_100">
@@ -65,8 +65,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_6" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

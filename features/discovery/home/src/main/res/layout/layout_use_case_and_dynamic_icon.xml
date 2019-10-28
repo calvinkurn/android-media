@@ -9,7 +9,7 @@
     android:layout_marginTop="@dimen/dp_8"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
         android:layout_width="@dimen/use_case_and_dynamic_image_size"
         android:layout_height="@dimen/use_case_and_dynamic_image_size"

@@ -60,7 +60,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         return null;
     }
 
