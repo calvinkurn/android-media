@@ -28,8 +28,6 @@ class WishlistItemViewHolder(
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
                             shopLocation = element.productItem.shop.location,
-                            isWishlistVisible = true,
-                            isWishlisted = true,
                             shopBadgeList = element.productItem.badges.map {
                                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                             },
