@@ -85,6 +85,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .target(latLng)
                 .zoom(16f)
                 .build()
-        mMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        mMap?.addMarker(MarkerOptions().position(latLng))
+        mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 }
