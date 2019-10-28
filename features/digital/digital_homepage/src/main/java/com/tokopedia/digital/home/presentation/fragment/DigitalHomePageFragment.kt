@@ -60,6 +60,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        trackingUtil.trackScreenNameDigitalHomepage()
         hideStatusBar()
         digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         calculateToolbarView(0)
