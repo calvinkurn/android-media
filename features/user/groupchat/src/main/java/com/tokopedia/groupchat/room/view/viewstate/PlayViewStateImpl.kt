@@ -252,7 +252,7 @@ open class PlayViewStateImpl(
 
         backgroundHelper = PlayBackgroundHelper(viewModel, activity)
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(com.tokopedia.videoplayer.R.id.playerView)
+        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
         val rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
         overflowMenuHelper = OverflowMenuHelper(
                 viewModel,
@@ -613,7 +613,7 @@ open class PlayViewStateImpl(
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
-                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                val bottomSheet = d.findViewById<FrameLayout>(R.id.design_bottom_sheet)
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
@@ -1145,7 +1145,7 @@ open class PlayViewStateImpl(
         pinnedMessageDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
@@ -1177,8 +1177,8 @@ open class PlayViewStateImpl(
     }
 
     private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action: () -> Unit) {
-        val imageView = errorView.findViewById<ImageView>(com.tokopedia.design.R.id.image)
-        val title = errorView.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val imageView = errorView.findViewById<ImageView>(R.id.image)
+        val title = errorView.findViewById<TextView>(R.id.title)
         val body = errorView.findViewById<TextView>(R.id.body)
         val button = errorView.findViewById<View>(R.id.button)
         val buttonTxt = errorView.findViewById<TextView>(R.id.button_text)
