@@ -113,7 +113,7 @@ open class PlayViewStateImpl(
     private var chatNotificationView = view.findViewById<View>(R.id.layout_new_chat)
     private var youTubePlayer: YouTubePlayer? = null
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
-    private var login: View = view.findViewById(com.tokopedia.design.R.id.login)
+    private var login: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
     private var sendButton: View = view.findViewById(R.id.button_send)
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
