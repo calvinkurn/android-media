@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.presentation.adapter;
+package com.tokopedia.flight.search.presentation.adapter;
 
 import android.view.View;
 
@@ -9,16 +9,16 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder;
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.EmptyResultViewHolder;
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.FlightSearchViewHolder;
-import com.tokopedia.flight.searchV3.presentation.model.EmptyResultViewModel;
-import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchSeeAllResultViewModel;
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.FlightSearchTitleRouteViewHolder;
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchTitleRouteViewHolder;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchViewHolder;
+import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchTitleRouteViewModel;
 
 /**
  * @author by furqan on 02/10/18.

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV3.presentation.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.flight.searchV3.presentation.adapter.FlightFilterAirlineAdapterTypeFactory;
 import com.tokopedia.flight.searchV3.presentation.fragment.base.BaseFlightFilterFragment;

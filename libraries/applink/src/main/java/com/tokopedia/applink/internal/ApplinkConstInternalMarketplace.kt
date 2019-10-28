@@ -22,7 +22,7 @@ object ApplinkConstInternalMarketplace {
 
     // QrScannerActivity
     @JvmField
-    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner"
+    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
     // IntermediaryActivity
     @JvmField
@@ -34,9 +34,15 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // ShipmentActivity
+    @JvmField
+    val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // NormalCheckoutActivity
     @JvmField
     val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
+    // CartAddressChoiceActivity
+    @JvmField
+    val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
 
     // ProductDetailActivity
     @JvmField
@@ -74,6 +80,9 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -114,6 +123,14 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
 
+    //GeolocationActivity
+    @JvmField
+    val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
+
+    //CodActivity
+    @JvmField
+    val COD = "$INTERNAL_MARKETPLACE/cod"
+
     // OnboardingActivity
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
@@ -121,10 +138,6 @@ object ApplinkConstInternalMarketplace {
     // SettingFieldActivity
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
-
-    // SettingField for old push notification page(phase 1)
-    @JvmField
-    val USER_PUSH_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-push-notification-setting"
 
     //Report Product
     @JvmField

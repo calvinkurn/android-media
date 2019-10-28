@@ -6,13 +6,13 @@
     android:orientation="vertical"
     android:padding="@dimen/dp_20">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/flight_resend_eticket_dialog_title" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         app:errorEnabled="true"
         app:hintEnabled="false">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_resend_eticket_email"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
         android:gravity="end|right"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_resend_eticket_cancel"
             style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
             android:text="@string/flight_resend_eticket_dialog_abort"
             android:textColor="@color/font_black_secondary_54" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_resend_eticket_send"
             style="@style/TextView.Small.Green.Bold"
             android:layout_width="wrap_content"

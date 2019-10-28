@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
-import com.tokopedia.digital_deals.view.contractor.TrendingDealsContract;
 import com.tokopedia.digital_deals.view.model.Rating;
 import com.tokopedia.digital_deals.view.model.response.LikeUpdateModel;
 import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult;

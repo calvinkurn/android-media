@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.drew.lang.annotations.NotNull;
 import com.facebook.FacebookSdk;

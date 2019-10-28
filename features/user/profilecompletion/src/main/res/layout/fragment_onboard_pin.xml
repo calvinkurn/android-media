@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainView"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,31 +24,46 @@
             android:id="@+id/titleOnboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/title_onboard_pin"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
             android:textAlignment="center"
             android:textColor="#b3000000"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/onboardImage" />
+
+        <TextView
+            android:id="@+id/subtitleOnboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/subtitle_onboard_pin"
+            android:textAlignment="center"
+            android:textColor="#85000000"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintTop_toBottomOf="@+id/titleOnboard" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/subtitle_onboard_pin"
-            android:textSize="@dimen/sp_12"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/subtitle_onboard_pin_2"
             android:textAlignment="center"
             android:textColor="#85000000"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@+id/titleOnboard" />
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintTop_toBottomOf="@+id/subtitleOnboard" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btnNext"
@@ -58,22 +74,40 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center"
             android:text="@string/create_pin"
             android:textColor="@color/black_70"
             app:buttonCompatSize="big"
             app:buttonCompatType="primary"
+            app:layout_constraintBottom_toTopOf="@+id/btnIgnore" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/btnIgnore"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:gravity="center"
+            android:text="@string/ignore_pin"
+            android:textColor="@color/black_70"
+            android:visibility="visible"
+            app:buttonCompatSize="big"
+            app:buttonCompatType="white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-</RelativeLayout>
+        android:layout_gravity="center"
+        android:visibility="visible" />
+</FrameLayout>

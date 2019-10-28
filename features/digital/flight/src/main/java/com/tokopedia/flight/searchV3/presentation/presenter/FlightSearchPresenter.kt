@@ -1,10 +1,11 @@
-package com.tokopedia.flight.searchV3.presentation.presenter
+package com.tokopedia.flight.search.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
@@ -12,11 +13,11 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.searchV3.domain.*
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
-import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
-import com.tokopedia.flight.searchV3.presentation.model.*
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.domain.usecase.*
+import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
+import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
+import com.tokopedia.flight.search.presentation.model.*
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -70,7 +71,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Subscriber<Long>() {
+                .subscribe(object : Subscriber<Long>() {
                     override fun onNext(t: Long?) {
                         view.hideHorizontalProgress()
                     }
@@ -130,11 +131,11 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val twoYears: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
 
         if (dateToSet.after(twoYears)) {
-            view.showDepartureDateMaxTwoYears(com.tokopedia.flight.R.string.flight_dashboard_departure_max_one_years_from_today_error)
+            view.showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error)
         } else if (!view.isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
-            view.showDepartureDateShouldAtLeastToday(com.tokopedia.flight.R.string.flight_dashboard_departure_should_atleast_today_error)
+            view.showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error)
         } else if (view.isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.departureDate))) {
-            view.showReturnDateShouldGreatedOrEqual(com.tokopedia.flight.R.string.flight_dashboard_return_should_greater_equal_error)
+            view.showReturnDateShouldGreatedOrEqual(R.string.flight_dashboard_return_should_greater_equal_error)
         } else {
             val dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT)
 
@@ -235,7 +236,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe (object: Subscriber<Long>() {
+                    .subscribe(object : Subscriber<Long>() {
                         override fun onNext(t: Long?) {
                             fetchSearchDataCloud(passDataViewModel, airportCombineModel)
                         }
@@ -292,7 +293,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                     override fun onNext(flightSearchMetaViewModel: FlightSearchMetaViewModel?) {
                         if (flightSearchMetaViewModel != null) {
-                            if (!flightSearchMetaViewModel.isNeedRefresh) {
+                            if (!flightSearchMetaViewModel.isNeedRefresh || (airportCombineModel.noOfRetry + 1) > flightSearchMetaViewModel.maxRetry) {
                                 callCounter++
                             }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.flight.searchV3.data.db
 
-import android.arch.persistence.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.searchV3.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.searchV3.presentation.model.FlightAirportViewModel

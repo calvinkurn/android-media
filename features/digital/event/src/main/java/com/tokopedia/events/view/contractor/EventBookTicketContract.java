@@ -1,6 +1,6 @@
 package com.tokopedia.events.view.contractor;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
@@ -41,7 +41,7 @@ public class EventBookTicketContract {
 
         void validateSelection();
 
-        void payTicketsClick(String title);
+        void payTicketsClick(String title, String selectedPackageDate, String locationName);
 
         String getSCREEN_NAME();
 

@@ -1,10 +1,14 @@
 package com.tokopedia.product.manage.item.category.di
 
+import android.content.Context
+import com.tokopedia.core.base.di.qualifier.ApplicationContext
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
 import com.tokopedia.core.common.category.data.source.CategoryDataSource
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi
+import com.tokopedia.core.common.category.data.source.db.CategoryDB
+import com.tokopedia.core.common.category.data.source.db.CategoryDao
 import com.tokopedia.core.common.category.domain.CategoryRepository
 import com.tokopedia.core.network.di.qualifier.AceQualifier
 import com.tokopedia.core.network.di.qualifier.HadesQualifier
@@ -40,6 +44,12 @@ class ProductEditCategoryCatalogModule{
     @Provides
     fun provideCatalogRepository(catalogDataSource: CatalogDataSource): CatalogRepository {
         return CatalogRepositoryImpl(catalogDataSource)
+    }
+
+    @ProductAddScope
+    @Provides
+    fun provideCategoryDao(@ApplicationContext context: Context): CategoryDao {
+        return CategoryDB.getInstance(context).getCategoryDao()
     }
 
     @ProductAddScope

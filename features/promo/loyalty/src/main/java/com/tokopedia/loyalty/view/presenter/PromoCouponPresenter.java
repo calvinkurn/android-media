@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -390,7 +390,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {

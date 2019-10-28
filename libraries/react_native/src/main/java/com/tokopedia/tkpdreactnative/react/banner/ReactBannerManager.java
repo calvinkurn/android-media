@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react.banner;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -11,10 +11,10 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.banner.Indicator;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.ArrayList;
@@ -108,10 +108,7 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         if (applink.toLowerCase().contains("tokopedia://")) {
             RouteManager.route(context, applink);
         } else {
-            if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-                context.startActivity(((ReactNativeRouter) context.getApplicationContext())
-                        .getBrandsWebViewIntent(context, applink));
-            }
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, applink);
         }
     }
 }

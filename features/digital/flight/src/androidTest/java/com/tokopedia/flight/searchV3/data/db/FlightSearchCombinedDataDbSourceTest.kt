@@ -1,11 +1,11 @@
-package com.tokopedia.flight.searchV3.data.db
+package com.tokopedia.flight.search.data.db
 
-import android.arch.persistence.room.Room
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
-import com.tokopedia.flight.searchV3.data.db.util.createCombo
-import com.tokopedia.flight.searchV3.data.db.util.createFlightJourneyTable
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
+import androidx.room.Room
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
+import com.tokopedia.flight.search.data.db.util.createCombo
+import com.tokopedia.flight.search.data.db.util.createFlightJourneyTable
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After

@@ -5,9 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewTreeObserver
@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.view.widget.RatingBarReview
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify
 import kotlin.math.roundToInt
 
 /**
@@ -38,7 +39,7 @@ import kotlin.math.roundToInt
 class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHolder.DynamicPostListener)
     : AbstractViewHolder<ProductPostTagViewModel>(mainView) {
 
-    private lateinit var productLayout: CardView
+    private lateinit var productLayout: FrameLayout
     private lateinit var productImage: ImageView
     private lateinit var productPrice: TextView
     private lateinit var productName: TextView
@@ -46,7 +47,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
     private lateinit var btnBuy: FrameLayout
     private lateinit var textBtnBuy: TextView
     private lateinit var productNameSection: LinearLayout
-    private lateinit var container: CardView
+    private lateinit var container: CardUnify
     private lateinit var widgetRating: RatingBarReview
 
     private val RAD_10f = 10f
@@ -73,7 +74,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
             val isCTADisabled = btnCtaPojo.isDisabled
             btnBuy.apply {
                 isEnabled = !isCTADisabled
-                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo) }
+                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo, item.authorType) }
             }
             textBtnBuy.apply {
                 text =
@@ -190,8 +191,8 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         return trackList
     }
 
-    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem) {
-        listener.onPostTagItemBuyClicked(positionInFeed, itemPojo)
+    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem, authorType: String) {
+        listener.onPostTagItemBuyClicked(positionInFeed, itemPojo, authorType)
         listener.onAffiliateTrackClicked(mappingTracking(itemPojo.tracking), true)
     }
 

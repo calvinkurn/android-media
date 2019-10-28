@@ -1,10 +1,11 @@
-package com.tokopedia.flight.searchV3.presentation.activity
+package com.tokopedia.flight.search.presentation.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
@@ -14,9 +15,9 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
-import com.tokopedia.flight.searchV3.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -64,12 +65,12 @@ open class FlightSearchActivity : BaseFlightActivity(),
         var passengerFmt = ""
 
         if (passData.adult > 0) {
-            passengerFmt += "${passData.adult}  ${getString(com.tokopedia.flight.R.string.flight_dashboard_adult_passenger)}"
+            passengerFmt += "${passData.adult}  ${getString(R.string.flight_dashboard_adult_passenger)}"
             if (passData.children > 0) {
-                passengerFmt += ", ${passData.children} ${getString(com.tokopedia.flight.R.string.flight_dashboard_adult_children)}"
+                passengerFmt += ", ${passData.children} ${getString(R.string.flight_dashboard_adult_children)}"
             }
             if (passData.infant > 0) {
-                passengerFmt += ", ${passData.infant} ${getString(com.tokopedia.flight.R.string.flight_dashboard_adult_infant)}"
+                passengerFmt += ", ${passData.infant} ${getString(R.string.flight_dashboard_adult_infant)}"
             }
         }
 
@@ -82,7 +83,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun setupSearchToolbar() {
         toolbar.contentInsetStartWithNavigation = 0
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500))
         val title = "${getDepartureAirport().cityName} ➝ ${getArrivalAirport().cityName}"
         val subtitle = "$dateString | $passengerString | $classString"
         updateTitle(title, subtitle)

@@ -1,8 +1,8 @@
 package com.tokopedia.flight.searchV3.data.db
 
-import android.arch.persistence.room.Room
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
+import androidx.room.Room
+import androidx.test.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.searchV3.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.searchV3.data.db.util.createRoutes

@@ -1,6 +1,6 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingTypeViewHolder
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment

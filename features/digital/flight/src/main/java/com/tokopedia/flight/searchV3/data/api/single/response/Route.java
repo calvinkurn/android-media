@@ -53,6 +53,9 @@ public class Route implements Parcelable {
     @SerializedName("stop_detail")
     @Expose
     private List<StopDetailEntity> stopDetails;
+    @SerializedName("operating_airline")
+    @Expose
+    private String operatingAirline;
 
     private String airlineName; // mergeResult
     private String airlineLogo; // mergeResult
@@ -67,7 +70,7 @@ public class Route implements Parcelable {
                  String arrivalTimestamp, String duration, String layover, List<Info> infos, String flightNumber,
                  boolean isRefundable, List<Amenity> amenities, int stops, List<StopDetailEntity> stopDetails,
                  String airlineName, String airlineLogo, String departureAirportName, String departureAirportCity,
-                 String arrivalAirportName, String arrivalAirportCity) {
+                 String arrivalAirportName, String arrivalAirportCity, String operatingAirline) {
         this.airline = airline;
         this.departureAirport = departureAirport;
         this.departureTimestamp = departureTimestamp;
@@ -87,6 +90,7 @@ public class Route implements Parcelable {
         this.departureAirportCity = departureAirportCity;
         this.arrivalAirportName = arrivalAirportName;
         this.arrivalAirportCity = arrivalAirportCity;
+        this.operatingAirline = operatingAirline;
     }
 
     protected Route(Parcel in) {
@@ -109,6 +113,7 @@ public class Route implements Parcelable {
         departureAirportCity = in.readString();
         arrivalAirportName = in.readString();
         arrivalAirportCity = in.readString();
+        operatingAirline = in.readString();
     }
 
     public static final Creator<Route> CREATOR = new Creator<Route>() {
@@ -231,6 +236,14 @@ public class Route implements Parcelable {
         this.stopDetails = stopDetails;
     }
 
+    public String getOperatingAirline() {
+        return operatingAirline;
+    }
+
+    public void setOperatingAirline(String operatingAirline) {
+        this.operatingAirline = operatingAirline;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -257,5 +270,6 @@ public class Route implements Parcelable {
         parcel.writeString(departureAirportCity);
         parcel.writeString(arrivalAirportName);
         parcel.writeString(arrivalAirportCity);
+        parcel.writeString(operatingAirline);
     }
 }

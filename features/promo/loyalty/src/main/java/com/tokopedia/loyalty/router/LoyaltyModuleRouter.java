@@ -18,10 +18,6 @@ public interface LoyaltyModuleRouter {
 
     Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams);
 
-    void trainSendTrackingOnClickUseVoucherCode(String voucherCode);
-
-    void trainSendTrackingOnCheckVoucherCodeError(String errorMessage);
-
     void sharePromoLoyalty(Activity activity, PromoData promoData);
 
     void actionOpenGeneralWebView(Activity activity, String url);

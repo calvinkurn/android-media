@@ -220,7 +220,7 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
+        resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
         resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
@@ -254,10 +254,10 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
@@ -266,13 +266,13 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
-    implementation project(rootProject.ext.features.tokoCash)
+    implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
@@ -283,7 +283,6 @@ dependencies {
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
-    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
@@ -300,7 +299,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.voucherGame)
-    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsDashboard)
@@ -309,12 +307,11 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantDebitBca)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.checkout)
-    implementation project(rootProject.ext.features.expressCheckout)
+    implementation project(rootProject.ext.features.purchase_platform)
+    implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
@@ -326,7 +323,6 @@ dependencies {
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
-    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.withdraw)
@@ -335,7 +331,6 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
-    implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
@@ -345,11 +340,11 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.mitraToppers)
-    implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -378,13 +373,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.features.imageSearch)
-    implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -400,7 +393,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.paymentSetting)
-    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
@@ -409,14 +401,11 @@ dependencies {
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.features.ovop2p)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.tradeIn)
-    implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -483,7 +472,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation project(rootProject.ext.libraries.cameraview)
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'

@@ -1,8 +1,8 @@
 package com.tokopedia.home.account.presentation.viewholder
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,6 +14,7 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.unifycomponents.Toaster
 
@@ -29,29 +30,28 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
 
     override fun bind(element: RecommendationProductViewModel) {
         productCardView.run {
-            removeAllShopBadges()
-            setProductNameVisible(true)
-            setPriceVisible(true)
-            setImageProductVisible(true)
-            setButtonWishlistVisible(true)
-            setSlashedPriceVisible(element.product.slashedPriceInt > 0 && element.product.discountPercentage > 0)
-            setLabelDiscountVisible(element.product.slashedPriceInt > 0 && element.product.discountPercentage > 0)
-            setImageRatingVisible(element.product.rating > 0 && element.product.countReview > 0)
-            setReviewCountVisible(element.product.rating > 0 && element.product.countReview > 0)
-            setShopLocationVisible(true)
-            setShopBadgesVisible(true)
-            setButtonWishlistImage(element.product.isWishlist)
-            setProductNameText(element.product.name)
-            setPriceText(element.product.price)
-            setImageProductUrl(element.product.imageUrl)
-            setImageTopAdsVisible(element.product.isTopAds)
-            setSlashedPriceText(element.product.slashedPrice)
-            setLabelDiscountText(element.product.discountPercentage)
-            setReviewCount(element.product.countReview)
-            setRating(element.product.rating)
-            mapBadges(element.product.badgesUrl)
-            setShopLocationText(element.product.location)
-            realignLayout()
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.product.slashedPrice,
+                            productName = element.product.name,
+                            formattedPrice = element.product.price,
+                            productImageUrl = element.product.imageUrl,
+                            isTopAds = element.product.isTopAds,
+                            discountPercentage = element.product.discountPercentage.toString(),
+                            reviewCount = element.product.countReview,
+                            ratingCount = element.product.rating,
+                            shopLocation = element.product.location,
+                            isWishlistVisible = true,
+                            isWishlisted = element.product.isWishlist,
+                            shopBadgeList = element.product.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.product.isFreeOngkirActive,
+                                    imageUrl = element.product.freeOngkirImageUrl
+                            )
+                    )
+            )
             setImageProductViewHintListener(element.product, object : ViewHintListener {
                 override fun onViewHint() {
                     accountItemListener.onProductRecommendationImpression(element.product, adapterPosition)

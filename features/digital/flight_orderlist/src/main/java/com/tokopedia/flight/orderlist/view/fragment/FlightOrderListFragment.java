@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.app.TaskStackBuilder;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -330,7 +329,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalTravel.CANCELLATION_FLIGHT);
         intent.putExtra(EXTRA_INVOICE_ID, invoiceId);
         intent.putParcelableArrayListExtra(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) items);
-        
+
         startActivityForResult(intent, REQUEST_CODE_CANCELLATION);
     }
 

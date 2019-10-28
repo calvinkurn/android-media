@@ -2,9 +2,9 @@ package com.tokopedia.flight.searchV3.presentation.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;

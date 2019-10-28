@@ -1,7 +1,7 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +22,7 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.il_lending_partner_item, null)
+        val view: View = inflater.inflate(com.tokopedia.instantloan.R.layout.il_lending_partner_item, null)
         return LendingPartnerAdapter.LePartnerViewHolder(view)
     }
 
@@ -40,7 +40,7 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
 
         init {
             context = view.context
-            imageView = view.findViewById(R.id.partner_image_view)
+            imageView = view.findViewById(com.tokopedia.instantloan.R.id.partner_image_view)
         }
 
         fun bindData(partnerItem: GqlLendingPartnerData, position: Int) {

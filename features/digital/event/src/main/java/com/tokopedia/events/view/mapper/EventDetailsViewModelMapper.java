@@ -46,13 +46,11 @@ public class EventDetailsViewModelMapper {
         target.setCityName(source.getCityName());
         target.setCustomText1(source.getCustomText1());
         String dateRange = "";
-        if (source.getMinStartDate() != 0) {
-            if (source.getMinStartDate() == source.getMaxEndDate()) {
-                dateRange = Utils.getSingletonInstance().convertEpochToString(source.getMinStartDate());
-            } else {
-                dateRange = Utils.getSingletonInstance().convertEpochToString(source.getMinStartDate())
-                        + " - " + Utils.getSingletonInstance().convertEpochToString(source.getMaxEndDate());
-            }
+        if (source.getSaleStartDate() == source.getSaleEndDate()) {
+            dateRange = Utils.getSingletonInstance().convertEpochToString(source.getSaleStartDate());
+        } else {
+            dateRange = Utils.getSingletonInstance().convertEpochToString(source.getSaleStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(source.getSaleEndDate());
         }
         target.setTimeRange(dateRange);
         if (source.getSchedules() != null && source.getSchedules().size() > 0) {

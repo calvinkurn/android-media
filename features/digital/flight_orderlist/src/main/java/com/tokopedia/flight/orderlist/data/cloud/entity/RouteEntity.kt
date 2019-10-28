@@ -72,4 +72,7 @@ class RouteEntity(
         val stops: Int = 0,
         @SerializedName("stop_detail")
         @Expose
-        val stopDetailEntities: List<OrderStopDetailEntity>)
+        val stopDetailEntities: List<OrderStopDetailEntity>,
+        @SerializedName("operating_airline")
+        @Expose
+        val operatingAirline: String)

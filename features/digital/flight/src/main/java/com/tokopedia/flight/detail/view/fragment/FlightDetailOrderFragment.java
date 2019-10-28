@@ -7,15 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -33,10 +33,15 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter;
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
+import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -59,11 +64,17 @@ import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -87,6 +98,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
+    @Inject
+    TrackingCrossSellUtil trackingCrossSellUtil;
+
+    private RemoteConfig remoteConfig;
 
     private TextView orderId;
     private ImageView copyOrderId;
@@ -128,6 +143,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Ticker cancellationWarningTicker;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
+    private TravelCrossSellWidget travelCrossSellWidget;
 
     private boolean isCancellation;
 
@@ -156,39 +172,41 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
         isCancellation = getArguments().getBoolean(EXTRA_IS_CANCELLATION, false);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_detail_order, container, false);
-        orderId = view.findViewById(com.tokopedia.flight.R.id.order_id_detail);
-        copyOrderId = view.findViewById(com.tokopedia.flight.R.id.copy_order_id);
-        containerSendEticket = view.findViewById(com.tokopedia.flight.R.id.container_send_eticket);
-        orderStatus = view.findViewById(com.tokopedia.flight.R.id.status_ticket);
-        transactionDate = view.findViewById(com.tokopedia.flight.R.id.transaction_date);
-        layoutExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.layout_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
-        recyclerViewFlight = view.findViewById(com.tokopedia.flight.R.id.recycler_view_flight);
-        recyclerViewPassenger = view.findViewById(com.tokopedia.flight.R.id.recycler_view_data_passenger);
-        recyclerViewPrice = view.findViewById(com.tokopedia.flight.R.id.recycler_view_detail_price);
-        containerDownloadInvoice = view.findViewById(com.tokopedia.flight.R.id.container_download_invoice);
-        totalPrice = view.findViewById(com.tokopedia.flight.R.id.total_price);
-        orderHelp = view.findViewById(com.tokopedia.flight.R.id.help);
-        buttonCancelTicket = view.findViewById(com.tokopedia.flight.R.id.button_cancel);
-        buttonRescheduleTicket = view.findViewById(com.tokopedia.flight.R.id.button_reschedule);
-        buttonReorder = view.findViewById(com.tokopedia.flight.R.id.button_reorder);
-        paymentInfoLayout = view.findViewById(com.tokopedia.flight.R.id.payment_info_layout);
-        paymentCostLayout = view.findViewById(com.tokopedia.flight.R.id.payment_cost_layout);
-        paymentDueDateLayout = view.findViewById(com.tokopedia.flight.R.id.payment_due_date_layout);
-        tvPaymentDescriptionLabel = view.findViewById(com.tokopedia.flight.R.id.tv_payment_description_label);
-        tvPaymentDescription = view.findViewById(com.tokopedia.flight.R.id.tv_payment_description);
-        tvPaymentCost = view.findViewById(com.tokopedia.flight.R.id.tv_payment_cost);
-        tvPaymentCostLabel = view.findViewById(com.tokopedia.flight.R.id.tv_payment_cost_label);
-        tvPaymentDueDate = view.findViewById(com.tokopedia.flight.R.id.tv_payment_due_date);
-        insuranceLayout = view.findViewById(com.tokopedia.flight.R.id.insurance_layout);
-        insuranceRecyclerView = view.findViewById(com.tokopedia.flight.R.id.rv_insurance);
-        showEticket = view.findViewById(com.tokopedia.flight.R.id.tv_lihat_e_ticket);
+        View view = inflater.inflate(R.layout.fragment_flight_detail_order, container, false);
+        orderId = view.findViewById(R.id.order_id_detail);
+        copyOrderId = view.findViewById(R.id.copy_order_id);
+        containerSendEticket = view.findViewById(R.id.container_send_eticket);
+        orderStatus = view.findViewById(R.id.status_ticket);
+        transactionDate = view.findViewById(R.id.transaction_date);
+        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
+        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
+        recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
+        recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
+        recyclerViewPrice = view.findViewById(R.id.recycler_view_detail_price);
+        containerDownloadInvoice = view.findViewById(R.id.container_download_invoice);
+        totalPrice = view.findViewById(R.id.total_price);
+        orderHelp = view.findViewById(R.id.help);
+        buttonCancelTicket = view.findViewById(R.id.button_cancel);
+        buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
+        buttonReorder = view.findViewById(R.id.button_reorder);
+        paymentInfoLayout = view.findViewById(R.id.payment_info_layout);
+        paymentCostLayout = view.findViewById(R.id.payment_cost_layout);
+        paymentDueDateLayout = view.findViewById(R.id.payment_due_date_layout);
+        tvPaymentDescriptionLabel = view.findViewById(R.id.tv_payment_description_label);
+        tvPaymentDescription = view.findViewById(R.id.tv_payment_description);
+        tvPaymentCost = view.findViewById(R.id.tv_payment_cost);
+        tvPaymentCostLabel = view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentDueDate = view.findViewById(R.id.tv_payment_due_date);
+        insuranceLayout = view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
+        showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
+        travelCrossSellWidget = view.findViewById(R.id.cross_sell_widget);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(com.tokopedia.flight.R.id.cancellation_container);
@@ -218,6 +236,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
         flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
         flightDetailOrderPresenter.onGetProfileData();
     }
 
@@ -319,6 +338,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onRetryClicked() {
                 flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+                if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+
             }
         }).showRetrySnackbar();
     }
@@ -375,6 +396,22 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         if (isCancellation) {
             navigateToCancellationListPage();
         }
+    }
+
+    @Override
+    public void showCrossSellingItems(TravelCrossSelling travelCrossSelling) {
+        trackingCrossSellUtil.crossSellImpression(travelCrossSelling.getItems());
+        travelCrossSellWidget.setVisibility(View.VISIBLE);
+        travelCrossSellWidget.buildView(travelCrossSelling);
+        travelCrossSellWidget.setListener((item, position) -> {
+            trackingCrossSellUtil.crossSellClick(item, position);
+            RouteManager.route(getContext(), item.getUri());
+        });
+    }
+
+    @Override
+    public void hideCrossSellingItems() {
+        travelCrossSellWidget.setVisibility(View.GONE);
     }
 
     @Override

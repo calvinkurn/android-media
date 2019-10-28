@@ -48,6 +48,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setAmenities(transform(route.getAmenities()));
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails(), null));
+            flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
         }
         return flightDetailRouteViewModel;
     }
@@ -146,6 +147,7 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
             flightDetailRouteViewModel.setStopOverDetail(transform(null, route.getStopDetailEntities()));
+            flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
 
             if (route.getDepartureTerminal() != null && route.getDepartureTerminal().length() > 0) {
                 flightDetailRouteViewModel.setDepartureTerminal(route.getDepartureTerminal());

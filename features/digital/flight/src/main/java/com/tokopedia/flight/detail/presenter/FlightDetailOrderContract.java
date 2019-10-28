@@ -1,10 +1,12 @@
 package com.tokopedia.flight.detail.presenter;
 
 import android.app.Activity;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
@@ -99,10 +101,16 @@ public interface FlightDetailOrderContract {
 
         void checkIfShouldGoToCancellation();
 
+        void showCrossSellingItems(TravelCrossSelling travelCrossSelling);
+
+        void hideCrossSellingItems();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData);
+
+        void getCrossSellingItems(String orderId, String crossSellingQuery);
 
         void actionCancelOrderButtonClicked();
 

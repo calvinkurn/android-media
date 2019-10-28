@@ -1,7 +1,7 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -303,7 +303,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onReturnDateButtonClicked() {
-        Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
         Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
         Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
@@ -313,7 +312,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
 
-        getView().showReturnCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
+        getView().showReturnCalendarDatePicker(null, minDate, maxDateCalendar.getTime());
     }
 
     @Override

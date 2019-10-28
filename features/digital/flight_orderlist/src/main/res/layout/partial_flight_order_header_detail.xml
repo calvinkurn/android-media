@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/TextView.Small.Bold.BlackSecondary"
         android:layout_width="match_parent"
@@ -22,18 +22,18 @@
         android:layout_marginTop="@dimen/dp_10"
         android:padding="@dimen/dp_10">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_order_date"
             style="@style/TextView.Micro"
             tools:text="9 Jan 2017" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_order_id"
             style="@style/TextView.Micro"
             android:layout_below="@+id/tv_order_date"
             tools:text="Order ID: 323088926194" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_overflow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

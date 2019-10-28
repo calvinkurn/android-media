@@ -3,7 +3,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.customview;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +69,7 @@ public class BookingCodeView extends RelativeLayout {
                 ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
                 myClip = ClipData.newPlainText(TEXT, bookingCode);
                 myClipboard.setPrimaryClip(myClip);
-                Toaster.Companion.showNormalWithAction(view, TEXT_COPIED, Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                Toaster.INSTANCE.showNormalWithAction(view, TEXT_COPIED, Snackbar.LENGTH_LONG, "Ok", v1 -> {
                 });
 
             }

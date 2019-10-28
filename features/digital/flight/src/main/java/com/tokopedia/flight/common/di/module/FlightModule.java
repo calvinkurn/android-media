@@ -40,10 +40,11 @@ import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
-import com.tokopedia.flight.searchV3.data.db.FlightComboDao;
-import com.tokopedia.flight.searchV3.data.db.FlightJourneyDao;
-import com.tokopedia.flight.searchV3.data.db.FlightRouteDao;
-import com.tokopedia.flight.searchV3.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.db.FlightComboDao;
+import com.tokopedia.flight.search.data.db.FlightJourneyDao;
+import com.tokopedia.flight.search.data.db.FlightRouteDao;
+import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -76,6 +77,12 @@ public class FlightModule {
     @FlightChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
         return new ChuckInterceptor(context);
+    }
+
+    @FlightScope
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
     }
 
     @FlightScope

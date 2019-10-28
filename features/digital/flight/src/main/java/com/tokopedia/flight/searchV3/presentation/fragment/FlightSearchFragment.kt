@@ -1,12 +1,12 @@
-package com.tokopedia.flight.searchV3.presentation.fragment
+package com.tokopedia.flight.search.presentation.fragment
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,23 +22,25 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
+import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
-import com.tokopedia.flight.searchV3.di.DaggerFlightSearchComponent
-import com.tokopedia.flight.searchV3.di.FlightSearchComponent
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchFilterActivity
-import com.tokopedia.flight.searchV3.presentation.adapter.FlightSearchAdapterTypeFactory
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.EmptyResultViewHolder
-import com.tokopedia.flight.searchV3.presentation.adapter.viewholder.EmptyResultViewHolder.Callback
-import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
-import com.tokopedia.flight.searchV3.presentation.model.*
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV3.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
+import com.tokopedia.flight.search.di.FlightSearchComponent
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.search.presentation.activity.FlightSearchFilterActivity
+import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder.Callback
+import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
+import com.tokopedia.flight.search.presentation.model.*
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
@@ -177,7 +179,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         val adapter: BaseListAdapter<FlightJourneyViewModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
 
         val errorNetworkModel: ErrorNetworkModel = adapter.errorNetworkModel
-        errorNetworkModel.iconDrawableRes = com.tokopedia.flight.R.drawable.ic_flight_empty_state
+        errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
         errorNetworkModel.onRetryListener = this
 
         adapter.errorNetworkModel = errorNetworkModel
@@ -229,7 +231,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun isListEmpty(): Boolean = !adapter.isContainData
 
-    open fun getLayout(): Int = com.tokopedia.flight.R.layout.fragment_search_flight
+    open fun getLayout(): Int = R.layout.fragment_search_flight
 
     override fun onDestroyView() {
         flightSearchPresenter.unsubscribeAll()
@@ -266,7 +268,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             showLoading()
         }
 
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true,  fromCombo)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true, fromCombo)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -290,7 +292,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun addToolbarElevation() {
         (activity as AppCompatActivity).supportActionBar!!.elevation =
-                resources.getDimension(com.tokopedia.design.R.dimen.dp_4)
+                resources.getDimension(R.dimen.dp_4)
     }
 
     override fun addProgress(numberToAdd: Int) {
@@ -508,10 +510,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
-        emptyResultViewModel.iconRes = com.tokopedia.flight.R.drawable.ic_flight_empty_state
+        emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         if (inFilterMode) {
-            emptyResultViewModel.contentRes = com.tokopedia.flight.R.string.flight_there_is_zero_flight_for_the_filter
-            emptyResultViewModel.buttonTitleRes = com.tokopedia.flight.R.string.reset_filter
+            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
+            emptyResultViewModel.buttonTitleRes = R.string.reset_filter
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
@@ -522,8 +524,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 }
             }
         } else {
-            emptyResultViewModel.contentRes = com.tokopedia.flight.R.string.flight_there_is_no_flight_available
-            emptyResultViewModel.buttonTitleRes = com.tokopedia.flight.R.string.change_date
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
+            emptyResultViewModel.buttonTitleRes = R.string.change_date
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 
@@ -549,9 +551,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
         val emptyResultViewModel = EmptyResultViewModel()
-        emptyResultViewModel.iconRes = com.tokopedia.flight.R.drawable.ic_flight_empty_state
+        emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         emptyResultViewModel.title = message
-        emptyResultViewModel.buttonTitleRes = com.tokopedia.flight.R.string.flight_change_search_content_button
+        emptyResultViewModel.buttonTitleRes = R.string.flight_change_search_content_button
         emptyResultViewModel.callback = object : Callback {
             override fun onEmptyButtonClicked() {
                 finishFragment()
@@ -585,16 +587,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         bottom_action_filter_sort.setButton2OnClickListener {
             val bottomSheetBuilder: BottomSheetBuilder = CheckedBottomSheetBuilder(activity)
                     .setMode(BottomSheetBuilder.MODE_LIST)
-                    .addTitleItem(getString(com.tokopedia.flight.R.string.flight_search_sort_title))
+                    .addTitleItem(getString(R.string.flight_search_sort_title))
 
-            (bottomSheetBuilder as CheckedBottomSheetBuilder).addItem(TravelSortOption.CHEAPEST, getString(com.tokopedia.flight.R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == TravelSortOption.CHEAPEST)
-            bottomSheetBuilder.addItem(TravelSortOption.MOST_EXPENSIVE, getString(com.tokopedia.flight.R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == TravelSortOption.MOST_EXPENSIVE)
-            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_DEPARTURE, getString(com.tokopedia.flight.R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == TravelSortOption.EARLIEST_DEPARTURE)
-            bottomSheetBuilder.addItem(TravelSortOption.LATEST_DEPARTURE, getString(com.tokopedia.flight.R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == TravelSortOption.LATEST_DEPARTURE)
-            bottomSheetBuilder.addItem(TravelSortOption.SHORTEST_DURATION, getString(com.tokopedia.flight.R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == TravelSortOption.SHORTEST_DURATION)
-            bottomSheetBuilder.addItem(TravelSortOption.LONGEST_DURATION, getString(com.tokopedia.flight.R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == TravelSortOption.LONGEST_DURATION)
-            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_ARRIVAL, getString(com.tokopedia.flight.R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == TravelSortOption.EARLIEST_ARRIVAL)
-            bottomSheetBuilder.addItem(TravelSortOption.LATEST_ARRIVAL, getString(com.tokopedia.flight.R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == TravelSortOption.LATEST_ARRIVAL)
+            (bottomSheetBuilder as CheckedBottomSheetBuilder).addItem(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == TravelSortOption.CHEAPEST)
+            bottomSheetBuilder.addItem(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == TravelSortOption.MOST_EXPENSIVE)
+            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == TravelSortOption.EARLIEST_DEPARTURE)
+            bottomSheetBuilder.addItem(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == TravelSortOption.LATEST_DEPARTURE)
+            bottomSheetBuilder.addItem(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == TravelSortOption.SHORTEST_DURATION)
+            bottomSheetBuilder.addItem(TravelSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == TravelSortOption.LONGEST_DURATION)
+            bottomSheetBuilder.addItem(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == TravelSortOption.EARLIEST_ARRIVAL)
+            bottomSheetBuilder.addItem(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == TravelSortOption.LATEST_ARRIVAL)
 
             val bottomSheetDialog: BottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                     .setItemClickListener { menuItem ->
@@ -625,9 +627,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             flightSearchPassData.arrivalAirport
 
     private fun getSearchRouteTitle(): Int = if (isReturning()) {
-        com.tokopedia.flight.R.string.flight_search_choose_return_flight
+        R.string.flight_search_choose_return_flight
     } else {
-        com.tokopedia.flight.R.string.flight_search_choose_departure_flight
+        R.string.flight_search_choose_departure_flight
     }
 
     private fun setUpCombinationAirport() {
@@ -738,14 +740,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             var maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR)
             maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1)
             maxDate = FlightDateUtil.trimDate(maxDate)
-            var title = getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date)
+            var title = getString(R.string.travel_calendar_label_choose_departure_trip_date)
             var minDate: Date
 
             if (isReturning()) {
                 val dateDepStr = flightSearchPassData.getDate(false)
                 val dateDep = FlightDateUtil.stringToDate(dateDepStr)
                 minDate = FlightDateUtil.trimDate(dateDep)
-                title = getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date)
+                title = getString(R.string.travel_calendar_label_choose_return_trip_date)
             } else {
                 minDate = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate())
 
@@ -758,16 +760,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
             val dateInput = flightSearchPassData.getDate(isReturning())
             val date = FlightDateUtil.stringToDate(dateInput)
-            val travelCalendarBottomSheet = TravelCalendarBottomSheet.Builder()
-                    .setShowHoliday(true)
-                    .setMinDate(minDate)
-                    .setMaxDate(maxDate)
-                    .setTitle(title)
-                    .setSelectedDate(date)
-                    .setBottomSheetState(BottomSheets.BottomSheetsState.NORMAL)
-                    .build()
-            travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
-                override fun onClickDate(dateSelected: Date) {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date),
+                    flightSearchPassData.departureAirport.airportCode,
+                    flightSearchPassData.arrivalAirport.airportCode,
+                    flightSearchPassData.flightClass.id)
+            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+                override fun onDateSelected(dateSelected: Date) {
                     val calendar = FlightDateUtil.getCurrentCalendar()
                     calendar.time = dateSelected
                     flightSearchPresenter.resetCounterCall()
@@ -775,7 +776,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                             calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
                 }
             })
-            travelCalendarBottomSheet.show(activity!!.supportFragmentManager, "travel calendar")
+            flightCalendarDialog.show(activity!!.supportFragmentManager, "travel calendar")
         }
     }
 

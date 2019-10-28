@@ -6,7 +6,7 @@ android {
     configurations {
         all {
             resolutionStrategy {
-                force "android.arch.core:runtime:1.1.1"
+                force "androidx.arch.core:core-runtime:2.0.0-rc01"
             }
         }
     }
@@ -54,6 +54,18 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.banner
+
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -15,7 +15,9 @@ import dagger.Provides;
 
 @Module
 public class ReactNativeModule {
+
     private Application reactApplication;
+
     public ReactNativeModule(Application reactApplication) {
         this.reactApplication = reactApplication;
     }

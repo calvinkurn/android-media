@@ -3,12 +3,21 @@ package com.tokopedia.promocheckout.detail.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.BasePromoCheckoutDetailFragment
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailFlightFragment
 
-class PromoCheckoutDetailFlightActivity : BaseSimpleActivity() {
+class PromoCheckoutDetailFlightActivity : BaseSimpleActivity() ,HasComponent<PromoCheckoutDetailComponent>{
+
+    override fun getComponent(): PromoCheckoutDetailComponent = DaggerPromoCheckoutDetailComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailFlightFragment.createInstance(
                 intent?.extras?.getString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE) ?: "",

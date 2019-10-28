@@ -1,8 +1,8 @@
 package com.tokopedia.flight.cancellation.view.adapter;
 
 import android.graphics.Typeface;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;

@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.applink.RouteManager;
@@ -90,7 +90,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             Activity activity = (Activity) context;
             Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
-            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
+            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position, "");
         }
     }
 

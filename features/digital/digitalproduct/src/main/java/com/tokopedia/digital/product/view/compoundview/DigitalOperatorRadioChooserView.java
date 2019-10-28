@@ -1,8 +1,8 @@
 package com.tokopedia.digital.product.view.compoundview;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.IdRes;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;

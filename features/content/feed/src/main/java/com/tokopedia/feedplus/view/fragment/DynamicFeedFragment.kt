@@ -3,9 +3,9 @@ package com.tokopedia.feedplus.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,6 +93,7 @@ class DynamicFeedFragment:
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
+        updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
     }
@@ -108,6 +109,7 @@ class DynamicFeedFragment:
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String) {
         isLoading = false
+        clearAllData()
         renderList(element, lastCursor.isNotEmpty())
         updateCursor(lastCursor)
     }
@@ -182,9 +184,11 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+        presenter.likeKol(id, positionInFeed, columnNumber)
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+        startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {

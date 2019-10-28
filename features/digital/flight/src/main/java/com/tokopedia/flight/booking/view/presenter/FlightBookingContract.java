@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;

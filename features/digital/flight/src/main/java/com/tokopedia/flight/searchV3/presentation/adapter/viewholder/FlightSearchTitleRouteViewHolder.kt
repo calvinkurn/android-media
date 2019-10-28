@@ -1,9 +1,10 @@
-package com.tokopedia.flight.searchV3.presentation.adapter.viewholder
+package com.tokopedia.flight.search.presentation.adapter.viewholder
 
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchTitleRouteViewModel
+import com.tokopedia.flight.R
+import com.tokopedia.flight.search.presentation.model.FlightSearchTitleRouteViewModel
 
 /**
  * @author by furqan on 18/01/19
@@ -15,7 +16,7 @@ class FlightSearchTitleRouteViewHolder(itemView: View?) :
 
     init {
         if (itemView != null) {
-            tvTitleRoute = itemView.findViewById(com.tokopedia.flight.R.id.tv_flight_search_title_route)
+            tvTitleRoute = itemView.findViewById(R.id.tv_flight_search_title_route)
         }
     }
 
@@ -26,7 +27,7 @@ class FlightSearchTitleRouteViewHolder(itemView: View?) :
     }
 
     companion object {
-        val LAYOUT = com.tokopedia.flight.R.layout.item_flight_search_title_route
+        val LAYOUT = R.layout.item_flight_search_title_route
     }
 
 }

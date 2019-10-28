@@ -1,6 +1,6 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;

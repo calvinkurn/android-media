@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.tracking.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.feature.tracking.domain.interactor.GetByMeUseCase;

@@ -1,6 +1,6 @@
 package com.tokopedia.core.common.category.data.source;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.common.category.data.mapper.CategoryServiceToDbMapper;
 import com.tokopedia.core.common.category.data.source.cloud.CategoryCloud;
