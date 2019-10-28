@@ -1637,7 +1637,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (dPresenter.getCartListData() != null) {
             dPresenter.getCartListData().setAllSelected(selectAllCartItem);
         }
-        cbSelectAll.setChecked(selectAllCartItem);
+        if (cbSelectAll.isChecked() != selectAllCartItem) {
+            cbSelectAll.setChecked(selectAllCartItem);
+        }
         btnRemove.setVisibility(unselectAllItem ? View.INVISIBLE : View.VISIBLE);
         cardHeader.setVisibility(cartAdapter.getAllAvailableCartItemData().isEmpty() ? View.GONE : View.VISIBLE);
         tvTotalPrice.setText(subtotalPrice);

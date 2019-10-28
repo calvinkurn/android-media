@@ -1,8 +1,9 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -549,7 +550,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToUpdateAndReloadCartData() {
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (CartItemData data : view.getAllCartDataList()) {
+        for (CartItemData data : view.getAllAvailableCartDataList()) {
             if (!data.isError()) {
                 cartItemDataList.add(data);
             }

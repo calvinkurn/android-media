@@ -1083,7 +1083,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } else if (obj instanceof DisabledCartItemHolderData) {
                 if (cartIds.contains(((DisabledCartItemHolderData) obj).getCartId())) {
                     Object before = cartDataList.get(i - 1);
-                    Object after = cartDataList.get(i + 1);
+                    Object after = null;
+                    if ((i + 1) < cartDataList.size()) {
+                        after = cartDataList.get(i + 1);
+                    }
                     if (before instanceof DisabledShopHolderData) {
                         if (!(after instanceof DisabledCartItemHolderData)) {
                             toBeRemovedData.add(before);

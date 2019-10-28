@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.data.repository
 
-import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.DeleteCartDataResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.UpdateCartDataResponse
 import rx.Observable
@@ -11,7 +10,8 @@ import rx.Observable
 
 interface ICartRepository {
 
-    fun getShopGroupList(param: Map<String, String>): Observable<CartDataListResponse>
+//    @Deprecated("Use GetCartListSimplifiedUseCase instead")
+//    fun getShopGroupList(param: Map<String, String>): Observable<CartDataListResponse>
 
     fun deleteCartData(param: Map<String, String>): Observable<DeleteCartDataResponse>
 
