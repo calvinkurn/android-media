@@ -62,6 +62,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             txt_click_count.setText(it.data.summary.adsClickSumFmt)
             txt_profit_count.setText(it.data.summary.adsAllGrossProfitFmt)
             txt_spend_count.setText(it.data.summary.adsCostSumFmt)
+            toggleStatisticView(true)
         }
     }
 
@@ -77,16 +78,35 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
 
     private fun setupView() {
         btn_expander.setOnClickListener {
-            if(statistic_container.visibility == View.VISIBLE) {
-                statistic_container.visibility = View.GONE
-                btn_expander.setImageResource(R.drawable.ic_expand_more)
-            } else{
-                statistic_container.visibility = View.VISIBLE
-                btn_expander.setImageResource(R.drawable.ic_expand_less)
-            }
+            toggleStatisticView(statistic_container.visibility != View.VISIBLE)
         }
         btn_go_to_dashboard_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+        }
+        btn_mulai_beriklan.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+        }
+    }
+
+    private fun toggleEmptyView(isVisible: Boolean) {
+        statistic_container.visibility = View.GONE
+        if (isVisible) {
+            empty_state_container.visibility = View.VISIBLE
+            btn_expander.setImageResource(R.drawable.ic_expand_less)
+        } else {
+            empty_state_container.visibility = View.GONE
+            btn_expander.setImageResource(R.drawable.ic_expand_more)
+        }
+    }
+
+    private fun toggleStatisticView(isVisible: Boolean) {
+        empty_state_container.visibility = View.GONE
+        if (isVisible) {
+            statistic_container.visibility = View.VISIBLE
+            btn_expander.setImageResource(R.drawable.ic_expand_less)
+        } else {
+            statistic_container.visibility = View.GONE
+            btn_expander.setImageResource(R.drawable.ic_expand_more)
         }
     }
 }

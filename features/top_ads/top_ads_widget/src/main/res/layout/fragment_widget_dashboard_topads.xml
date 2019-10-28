@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="TopAds" />
+            android:paddingLeft="@dimen/dp_5"
+            android:text="@string/topads" />
 
         <TextView
             android:id="@+id/btn_go_to_dashboard_topads"
@@ -29,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingRight="@dimen/dp_5"
             android:gravity="right"
             android:text="Lihat Dashboard" />
     </LinearLayout>
@@ -50,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:text="Kredit TopAds" />
+                android:text="@string/kredit_topads" />
 
             <TextView
                 android:id="@+id/txt_saldo_topads"
@@ -58,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                tools:text="Rp 0" />
+                android:text="@string/rp_0" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -86,7 +88,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:text="Statistik TopAds Minggu ini" />
+                    android:text="@string/statistik_topads_minggu_ini" />
 
                 <ImageView
                     android:id="@+id/btn_expander"
@@ -101,8 +103,31 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/statistic_container"
+                android:id="@+id/empty_state_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="visible"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Produkmu belum diiklankan. Bikin produkmu tampil teratas dengan TopAds!" />
+
+                <Button
+                    android:id="@+id/btn_mulai_beriklan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_40"
+                    android:text="Mulai Beriklan"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingLeft="@dimen/dp_10"
+                    style="@style/Button.Submit.Green" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/statistic_container"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
@@ -117,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Tampil" />
+                        android:text="@string/tampil" />
 
                     <TextView
                         android:id="@+id/txt_impresion_count"
@@ -135,7 +160,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Klik" />
+                        android:text="@string/klik" />
 
                     <TextView
                         android:id="@+id/txt_click_count"
@@ -153,7 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Pengeluaran" />
+                        android:text="@string/pengeluaran" />
 
                     <TextView
                         android:id="@+id/txt_spend_count"
@@ -171,7 +196,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Pendapatan" />
+                        android:text="@string/pendapatan" />
 
                     <TextView
                         android:id="@+id/txt_profit_count"
