@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
+
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.purchase_platform_common)
 

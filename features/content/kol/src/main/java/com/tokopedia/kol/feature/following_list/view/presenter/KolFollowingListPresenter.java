@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.following_list.view.presenter;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -16,6 +18,7 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
 import com.tokopedia.kol.feature.following_list.view.subscriber
         .GetKolFollowingListLoadMoreSubscriber;
 import com.tokopedia.kol.feature.following_list.view.subscriber.GetKolFollowingListSubscriber;
+import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscriber;
 
@@ -33,8 +37,8 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View>
-        implements KolFollowingList.Presenter {
+public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View<KolFollowingViewModel, KolFollowingResultViewModel>>
+        implements KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> {
 
     private KolFollowingList.View mainView;
     private final GetKolFollowingListUseCase getKolFollowingListUseCase;
@@ -135,5 +139,10 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
                 }
             });
         }
+    }
+
+    @Override
+    public void unfollowShop(@NonNull FollowingViewModel model) {
+
     }
 }

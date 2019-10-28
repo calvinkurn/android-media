@@ -16,7 +16,7 @@
         android:scrollbars="none"
         android:layout_marginBottom="-6dp">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -190,7 +190,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
                 app:layout_goneMarginBottom="@dimen/dp_8" />
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/gift_section_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -241,12 +241,12 @@
                     app:typographyWeight="bold" />
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/catalog_bottom_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -354,5 +354,5 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.review.shop.view;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;

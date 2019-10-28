@@ -18,6 +18,5 @@ interface PmSubscribeContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun getPmStatusInfo(shopId: String)
-        fun setAutoExtendOff()
     }
 }

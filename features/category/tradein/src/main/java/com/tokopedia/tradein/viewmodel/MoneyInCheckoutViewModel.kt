@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.model.*

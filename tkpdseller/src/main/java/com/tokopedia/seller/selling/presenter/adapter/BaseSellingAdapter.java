@@ -1,7 +1,7 @@
 package com.tokopedia.seller.selling.presenter.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +9,6 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
-import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.var.TkpdState;
@@ -38,29 +36,30 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
         public void onRetryCliked();
     }
 
-    public static class ViewHolder extends SwappingHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         public ViewHolder(View itemView) {
+            super(itemView);
 //            super(itemView);
-            super(itemView, new MultiSelector());
+
         }
     }
 
-    public static class ViewHolderRetry extends SwappingHolder {
+    public static class ViewHolderRetry extends RecyclerView.ViewHolder {
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
-//            super(itemView);
-            super(itemView, new MultiSelector());
+            super(itemView);
+
             retry = (TextView) itemView.findViewById(R.id.button_retry);
         }
     }
 
-    public static class ViewHolderEmpty extends SwappingHolder {
+    public static class ViewHolderEmpty extends RecyclerView.ViewHolder {
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {
-//            super(itemView);
-            super(itemView, new MultiSelector());
+            super(itemView);
+
             emptyImage = (ImageView) itemView.findViewById(R.id.no_result_image);
         }
     }

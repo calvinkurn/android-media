@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.addpin.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -51,6 +51,8 @@ class AddChangePinViewModel @Inject constructor(
     private val mutableSkipOtpPinResponse = MutableLiveData<Result<SkipOtpPinData>>()
     val skipOtpPinResponse: LiveData<Result<SkipOtpPinData>>
         get() = mutableSkipOtpPinResponse
+
+    val loadingState = MutableLiveData<Boolean>()
 
     fun addPin(token: String){
         rawQueries[ProfileCompletionQueryConstant.MUTATION_CREATE_PIN]?.let { query ->
@@ -152,6 +154,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun getStatusPin(){
+        loadingState.postValue(true)
         rawQueries[ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN]?.let { query ->
             getStatusPinUseCase.setTypeClass(StatusPinPojo::class.java)
             getStatusPinUseCase.setGraphqlQuery(query)
@@ -163,6 +166,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     private fun onErrorGetStatusPin(): (Throwable) -> Unit {
+        loadingState.postValue(false)
         return {
             it.printStackTrace()
             mutableGetStatusPinResponse.value = Fail(it)
@@ -170,6 +174,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     private fun onSuccessGetStatusPin(): (StatusPinPojo) -> Unit {
+        loadingState.postValue(false)
         return {
             when {
                 it.data.errorMessage.isEmpty() -> mutableGetStatusPinResponse.value = Success(it.data)

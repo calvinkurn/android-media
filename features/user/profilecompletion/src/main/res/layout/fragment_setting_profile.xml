@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mainView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -104,7 +104,7 @@
                     app:tickerType="warning"
                     app:tickerShapeType="full"/>
             </LinearLayout>
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <FrameLayout

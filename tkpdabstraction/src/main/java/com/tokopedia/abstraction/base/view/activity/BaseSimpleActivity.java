@@ -1,8 +1,8 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.R;
 
@@ -44,6 +44,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
         return R.id.parent_view;
     }
 
+    @Nullable
     protected Fragment getFragment() {
         return getSupportFragmentManager().findFragmentByTag(getTagFragment());
     }

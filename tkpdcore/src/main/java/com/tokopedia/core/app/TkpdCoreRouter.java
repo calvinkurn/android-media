@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -129,8 +129,6 @@ public interface TkpdCoreRouter {
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
-    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
-
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
@@ -144,8 +142,6 @@ public interface TkpdCoreRouter {
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
     Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShopPageIntentByDomain(Context context, String domain);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
