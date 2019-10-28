@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
  */
 
 public class DashboardActivity extends DrawerPresenterActivity
-        implements GCMHandlerListener, SellerDashboardDrawerPresenter.SellerDashboardView {
+        implements GCMHandlerListener, SellerDashboardDrawerPresenter.SellerDashboardView, HasComponent {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
@@ -200,5 +201,10 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }
