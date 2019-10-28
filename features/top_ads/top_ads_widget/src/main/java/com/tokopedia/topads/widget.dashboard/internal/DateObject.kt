@@ -15,7 +15,7 @@ object DateObject {
         return calendar.time
     }
 
-    val endDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(7))
-    val startDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(0))
+    val endDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(0))
+    val startDate = SimpleDateFormat(REQUEST_DATE_FORMAT, Locale.ENGLISH).format(getDate(7))
 
 }

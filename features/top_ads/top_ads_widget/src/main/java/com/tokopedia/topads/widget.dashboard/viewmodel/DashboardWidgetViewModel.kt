@@ -42,13 +42,13 @@ class DashboardWidgetViewModel @Inject constructor(private val repository: Graph
                             CREDIT_DATA to "unclaimed", SHOP_DATA to "1")
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
-                                TopAdsDepositResponse::class.java,
+                                TopAdsDepositResponse.Data::class.java,
                                 param, false)
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.ALWAYS_CLOUD).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    data.getSuccessData<TopAdsDepositResponse>().data.let {
+                    data.getSuccessData<TopAdsDepositResponse.Data>().let {
                         onSuccessGetDeposit(it)
                     }
                 },
@@ -67,13 +67,13 @@ class DashboardWidgetViewModel @Inject constructor(private val repository: Graph
                             END_DATE to DateObject.endDate)
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(rawQueries[QUERY_TOPADS_STATISTIC],
-                                TopAdsStatisticResponse::class.java,
+                                TopAdsStatisticResponse.Data::class.java,
                                 param, false)
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.ALWAYS_CLOUD).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    data.getSuccessData<TopAdsStatisticResponse>().data.let {
+                    data.getSuccessData<TopAdsStatisticResponse.Data>().let {
                         onSuccessGetStatistic(it)
                     }
                 },
