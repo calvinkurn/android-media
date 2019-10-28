@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.SomComponentInstance

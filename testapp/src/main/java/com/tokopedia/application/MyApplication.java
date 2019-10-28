@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.Toast;
 
+import com.google.android.gms.security.ProviderInstaller;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -24,12 +25,10 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
-
-import timber.log.Timber;
+import com.tokopedia.tkpd.network.DataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
+import timber.log.Timber;
 
 /**
  * Created by hendry on 25/06/18.
@@ -61,6 +61,8 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
+        upgradeSecurityProvider();
+
         GraphqlClient.init(this);
         NetworkClient.init(this);
         TrackApp.initTrackApp(this);
@@ -75,6 +77,24 @@ public class MyApplication extends BaseMainApplication
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+        }
+    }
+
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onProviderInstallFailed(int i, Intent intent) {
+                    // Do nothing
+                }
+            });
+        } catch (Throwable t) {
+            // Do nothing
         }
     }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,6 +41,8 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                     list_recycler_view.layoutManager = layoutManager
                     list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator())
                     list_recycler_view.adapter = recentSearchAdapter
+                } else {
+                    recentSearchAdapter.updateList(element.destination)
                 }
             }
         } else {

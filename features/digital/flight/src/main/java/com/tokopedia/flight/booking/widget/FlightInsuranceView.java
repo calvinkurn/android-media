@@ -4,14 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -159,24 +159,23 @@ public class FlightInsuranceView extends LinearLayout {
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
                 ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
         );
+
         if (insuranceViewModel.getBenefits().size() > 1) {
             renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
-        }
-    }
-
-    private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
-        if (benefits.size() > 0) {
-            otherProtection.setVisibility(VISIBLE);
-            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
-            benefitsRecyclerView.setVisibility(GONE);
-            FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
-            benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            benefitsRecyclerView.setAdapter(benefitAdapter);
-            dividerBenefit.setVisibility(VISIBLE);
         } else {
             dividerBenefit.setVisibility(GONE);
             otherProtection.setVisibility(GONE);
         }
+    }
+
+    private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
+        otherProtection.setVisibility(VISIBLE);
+        protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
+        benefitsRecyclerView.setVisibility(GONE);
+        FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
+        benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        benefitsRecyclerView.setAdapter(benefitAdapter);
+        dividerBenefit.setVisibility(VISIBLE);
     }
 
     private SpannableStringBuilder buildTncText(String tncAggreement, String tncUrl, String title) {

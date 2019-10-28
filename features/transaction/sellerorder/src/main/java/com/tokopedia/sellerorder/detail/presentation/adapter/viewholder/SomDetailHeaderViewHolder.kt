@@ -2,9 +2,9 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -17,7 +17,6 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import kotlinx.android.synthetic.main.detail_header_item.view.*
-import kotlinx.android.synthetic.main.fragment_som_detail.*
 
 /**
  * Created by fwidjaja on 2019-10-03.
@@ -29,7 +28,7 @@ class SomDetailHeaderViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolde
     @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
-            itemView.header_title?.text = item.dataObject.statusText
+            itemView.header_title.text = item.dataObject.statusText
             itemView.header_see_history?.setOnClickListener {
                 itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.HISTORY_ORDER, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)

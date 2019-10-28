@@ -1,17 +1,17 @@
 package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -396,7 +396,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                         if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
                         selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
                         it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name
+                        list, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name,it.freeOngkir.isActive
                 )
             }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
@@ -479,7 +479,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     selectedEtalaseName,
                     CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
-                    shopProductViewModel, productPosition, shopId, it.shopCore.name)
+                    shopProductViewModel, productPosition, shopId, it.shopCore.name,it.freeOngkir.isActive)
         }
 
         //attribution & shopPageTracking.getListNameOfProduct(ShopPageTrackingConstant.SEARCH, selectedEtalaseName)

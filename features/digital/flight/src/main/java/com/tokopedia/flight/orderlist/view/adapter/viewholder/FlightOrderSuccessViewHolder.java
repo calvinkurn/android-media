@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;

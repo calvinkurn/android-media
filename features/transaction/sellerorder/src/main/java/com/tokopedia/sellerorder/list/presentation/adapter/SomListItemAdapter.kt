@@ -1,18 +1,13 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
-import android.content.Intent
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable

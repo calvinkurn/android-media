@@ -3,11 +3,11 @@ package com.tokopedia.sellerorder.detail.presentation.bottomsheet.viewholder
 import android.view.View
 import com.tokopedia.sellerorder.detail.data.model.SomRejectData
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
-import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-24.
  */
+/*
 class SomRejectOrderViewHolder(itemView: View, private val hasRadioBtn: Boolean, private val hasReasonEditText: Boolean) : SomBottomSheetRejectOrderAdapter.BaseViewHolder<SomRejectData>(itemView) {
     override fun bind(item: SomRejectData, position: Int, listener: SomBottomSheetRejectOrderAdapter.ActionListener) {
         val arrayValues = item.keyMap.values.toMutableList()
@@ -30,4 +30,4 @@ class SomRejectOrderViewHolder(itemView: View, private val hasRadioBtn: Boolean,
             listener.onBottomSheetItemClick(arrayKeys[position])
         }
     }
-}
+}*/

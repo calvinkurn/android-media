@@ -2,10 +2,10 @@ package com.tokopedia.sellerorder.detail.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import kotlinx.android.synthetic.main.detail_label_info_item.view.*

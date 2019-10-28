@@ -3,9 +3,9 @@ package com.tokopedia.otp.cotp.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -194,7 +194,7 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public void goToOnboardingMiscallPage(MethodItem methodItem) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
-                VerificationFragment)) {
+                OnboardingOtpMiscallFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
-import android.support.design.widget.BottomSheetDialogFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -509,7 +509,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void clickRate(int id, String commentID) {
         rateCommentID = commentID;
-        if (id == R.id.btn_yes) {
+        if (id == com.tokopedia.inbox.R.id.btn_yes) {
             String YES = "YES";
             postRatingUseCase.setQueryMap(rateCommentID, YES, 0, 0, "");
             mView.showProgressBar();
@@ -602,7 +602,7 @@ public class InboxDetailPresenterImpl
                     try {
                         file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
                     } catch (IOException e) {
-                        throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                     }
                     RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                             networkCalculator.getContent().get(NetworkCalculator.USER_ID));

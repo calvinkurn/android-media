@@ -7,10 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseIntArray;
@@ -19,8 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ProductVariantConstant;
@@ -50,7 +52,6 @@ import java.util.List;
 
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV1;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV2;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 4/3/17.

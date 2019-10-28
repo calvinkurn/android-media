@@ -1,9 +1,9 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS

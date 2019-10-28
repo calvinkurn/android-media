@@ -8,7 +8,6 @@
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
 
-    <color name="color_item_preview_border">#e0e0e0</color>
     <color name="black_54">#8a000000</color>
     <color name="search_empty_state_selected_filter_text_color">#03ac0e</color>
 
@@ -19,10 +18,11 @@
     <color name="shop_status_background">#ae31353b</color>
     <color name="shop_status_text_background">#e131353b</color>
     <color name="shop_status_text_color">#f5ffffff</color>
-    <color name="shop_separator_color">#DBDEE2</color>
-    <color name="product_separator_color">#EAEAEA</color>
     <color name="shadow">#AD31353B</color>
     <color name="grey_400">#bdbdbd</color>
 
     <color name="tkpd_bg_color">#EAEAEA</color>
+
+    <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
+    <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
 </resources>

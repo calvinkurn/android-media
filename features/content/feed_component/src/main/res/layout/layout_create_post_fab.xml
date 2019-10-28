@@ -14,7 +14,7 @@
 
     </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -29,7 +29,7 @@
         app:srcCompat="@drawable/ic_feed_post_plus"
         tools:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed_byme"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -61,7 +61,7 @@
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed_shop"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"

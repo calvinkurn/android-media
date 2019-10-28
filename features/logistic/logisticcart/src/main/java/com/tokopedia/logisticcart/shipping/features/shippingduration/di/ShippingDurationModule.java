@@ -1,12 +1,14 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.di;
 
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationPresenter;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,7 +48,7 @@ public class ShippingDurationModule {
     @Provides
     @ShippingDurationScope
     GetCourierRecommendationUseCase getCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
-        return new GetCourierRecommendationUseCase(shippingDurationConverter);
+        return new GetCourierRecommendationUseCase(shippingDurationConverter, new Gson());
     }
 
     @Provides

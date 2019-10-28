@@ -24,13 +24,13 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/shopImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/ic_loading_toped"/>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/shopStatusImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -52,7 +52,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/shopLabelIcon"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
@@ -75,7 +75,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/shopReputationView"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_12"
@@ -96,6 +96,16 @@
                     tools:text=" - 1000 followers"/>
 
             </LinearLayout>
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/label_free_ongkir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:visibility="gone"
+                app:labelType="general_light_green"
+                tools:text="Free Ongkir"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,7 +144,7 @@
                     android:text="@string/shop_page_label_follow"
                     android:visibility="gone"/>
 
-                <android.support.v7.widget.AppCompatImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/buttonFollowed"
                     style="@style/Button.Shop.Page.Header"
                     android:layout_width="@dimen/dp_50"

@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.common.di
 
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module

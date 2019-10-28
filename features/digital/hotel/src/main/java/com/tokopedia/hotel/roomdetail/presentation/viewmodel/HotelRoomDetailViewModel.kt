@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.roomdetail.presentation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.hotel.roomlist.data.model.*
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase

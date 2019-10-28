@@ -16,8 +16,8 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE
+import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
+import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R

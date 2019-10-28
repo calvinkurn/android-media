@@ -7,9 +7,9 @@
     android:background="@drawable/cards_ui_flat"
     android:gravity="center"
     android:padding="@dimen/padding_small"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_search_review"
             android:singleLine="true" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <RadioGroup
         android:id="@+id/radio_read"

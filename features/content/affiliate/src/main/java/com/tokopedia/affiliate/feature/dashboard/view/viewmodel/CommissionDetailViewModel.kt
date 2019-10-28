@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.commission.AffiliateHistoryPojo
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.commission.AffiliateProductDetailResponse
@@ -63,25 +63,29 @@ class CommissionDetailViewModel
     private suspend fun loadFirstCommissionDataAsync(affId:String, forceRefresh: Boolean): Deferred<CommissionData> {
         return async(Dispatchers.IO) {
             val resultData = CommissionData()
-            val productParam = mapOf(PARAM_AFF_ID to affId.toInt())
-            val productRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_DETAIL],
+            try {
+                val productParam = mapOf(PARAM_AFF_ID to affId.toInt())
+                val productRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_DETAIL],
                     AffiliateProductDetailResponse::class.java, productParam)
 
-            val txParam = mapOf(PARAM_AFF_ID to affId.toInt(), PARAM_LIMIT to 3, PARAM_CURSOR to "")
-            val txRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_TX_LIST],
+                val txParam = mapOf(PARAM_AFF_ID to affId.toInt(), PARAM_LIMIT to 3, PARAM_CURSOR to "")
+                val txRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_AFF_PRODUCT_TX_LIST],
                     AffiliateProductTxResponse::class.java, txParam)
 
-            val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-            val requests = mutableListOf(productRequest, txRequest)
-            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-            if (gqlResponse.getError(AffiliateProductDetailResponse::class.java)?.isNotEmpty() != true) {
-                val result = (gqlResponse.getData(AffiliateProductDetailResponse::class.java) as AffiliateProductDetailResponse)
-                resultData.commissionDetailHeaderViewModel = mapProductDetailData(result)
-            }
+                val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+                val requests = mutableListOf(productRequest, txRequest)
+                val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+                if (gqlResponse.getError(AffiliateProductDetailResponse::class.java)?.isNotEmpty() != true) {
+                    val result = (gqlResponse.getData(AffiliateProductDetailResponse::class.java) as AffiliateProductDetailResponse)
+                    resultData.commissionDetailHeaderViewModel = mapProductDetailData(result)
+                }
 
-            if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
-                val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
-                resultData.commissionTransactionViewModel = mapProductTransactionData(result)
+                if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
+                    val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
+                    resultData.commissionTransactionViewModel = mapProductTransactionData(result)
+                }
+            } catch (e:Throwable) {
+
             }
             resultData
         }

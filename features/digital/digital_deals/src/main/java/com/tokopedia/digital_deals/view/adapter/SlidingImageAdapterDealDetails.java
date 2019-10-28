@@ -3,14 +3,13 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.model.Media;
 
 
@@ -48,12 +47,12 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
         this.context=view.getContext();
-        View imageLayout = LayoutInflater.from(context).inflate(R.layout.deal_image_item, view, false);
+        View imageLayout = LayoutInflater.from(context).inflate(com.tokopedia.digital_deals.R.layout.deal_image_item, view, false);
 
         assert imageLayout != null;
-        final ImageView imageView = imageLayout.findViewById(R.id.deal_image);
+        final ImageView imageView = imageLayout.findViewById(com.tokopedia.digital_deals.R.id.deal_image);
 
-        ImageHandler.loadImage(context, imageView, images.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, images.get(position), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         view.addView(imageLayout, 0);
 

@@ -3,8 +3,8 @@ package com.tokopedia.shop.open.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,6 +35,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
@@ -191,6 +192,18 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             onButtonSubmitClicked();
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!userSession.isMsisdnVerified()
+                && getActivity() != null
+                && getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            Intent intent = ((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getPhoneVerificationActivityIntent(getActivity());
+            startActivity(intent);
+        }
     }
 
     @Override

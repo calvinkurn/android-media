@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.view.adapter
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl

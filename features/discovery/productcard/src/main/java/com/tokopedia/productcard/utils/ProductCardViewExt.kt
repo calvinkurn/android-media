@@ -1,8 +1,8 @@
 package com.tokopedia.productcard.utils
 
-import android.support.annotation.DimenRes
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -59,5 +59,16 @@ private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean
     }
     else {
         View.GONE
+    }
+}
+
+fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+    if (this == null) return
+
+    if (shouldShow) {
+        this.visibility = View.VISIBLE
+        action(this)
+    } else {
+        this.visibility = View.GONE
     }
 }

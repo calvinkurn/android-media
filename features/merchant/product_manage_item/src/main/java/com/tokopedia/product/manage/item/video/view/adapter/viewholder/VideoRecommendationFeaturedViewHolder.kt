@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.video.view.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.product.manage.item.video.view.model.VideoRecommendationViewModel
 import kotlinx.android.synthetic.main.item_product_add_video_recommendation_featured.view.*

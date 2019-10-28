@@ -33,7 +33,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
+        isCouponActive = arguments?.getBoolean(EXTRA_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
         categoryId = promoDigitalModel.categoryId
@@ -90,7 +90,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putParcelable(EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(PAGE_TRACKING, pageTracking)

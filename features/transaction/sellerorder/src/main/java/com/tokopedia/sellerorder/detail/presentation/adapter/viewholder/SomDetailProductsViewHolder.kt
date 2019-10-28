@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter

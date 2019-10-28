@@ -1,13 +1,13 @@
 package com.tokopedia.sellerorder.detail.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
@@ -62,7 +62,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -331,12 +330,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             var map = HashMap<String, String>()
             createOptionsRejectOrder(map)
 
-            val rejectData = SomRejectData(createOptionsRejectOrder(), BOTTOMSHEET_TEXT_ONLY_TYPE)
+            /*val rejectData = SomRejectData(createOptionsRejectOrder(), BOTTOMSHEET_TEXT_ONLY_TYPE)
             listRejectData = arrayListOf()
             listRejectData.add(rejectData)
 
             somBottomSheetRejectOrderAdapter.mapKey = createOptionsRejectOrder()
-            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()*/
 
         } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
@@ -351,8 +350,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             mapRadio[KEY_REASON_OTHER] = VALUE_REASON_OTHER
             listRejectData.add(SomRejectData(createOptionsCourierProblems(), BOTTOMSHEET_TEXT_RADIO_TYPE))
             listRejectData.add(SomRejectData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
-            somBottomSheetRejectOrderAdapter.listRejectData = listRejectData
-            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+            // somBottomSheetRejectOrderAdapter.listRejectData = listRejectData
+            // somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
         }
     }
 

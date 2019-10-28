@@ -1,8 +1,8 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -57,7 +57,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
                         }
                         return 0;
                     }
-                });
+                }, true);
         flightDetailAdapter = new FlightDetailAdapter(detailRouteTypeFactory, new ArrayList<Visitable>());
         recyclerViewFlightJourney.setAdapter(flightDetailAdapter);
 
