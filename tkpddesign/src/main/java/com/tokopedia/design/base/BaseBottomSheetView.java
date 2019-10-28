@@ -2,9 +2,9 @@ package com.tokopedia.design.base;
 
 import android.app.Service;
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

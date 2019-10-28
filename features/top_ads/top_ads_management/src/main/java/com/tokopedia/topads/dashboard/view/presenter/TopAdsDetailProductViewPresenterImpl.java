@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;

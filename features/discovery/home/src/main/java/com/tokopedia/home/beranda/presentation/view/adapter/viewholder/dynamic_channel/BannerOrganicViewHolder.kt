@@ -5,27 +5,30 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v7.widget.CardView
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
@@ -34,6 +37,7 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener, countDownListener: CountDownView.CountDownListener)
     : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
@@ -67,6 +71,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
     var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
     val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     companion object {
         val TYPE_CAROUSEL = "carousel"
@@ -107,7 +112,10 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                         LinearLayoutManager.HORIZONTAL,
                         false
                 )
-
+                /**
+                 * Attach startSnapHelper to recyclerView
+                 */
+                startSnapHelper.attachToRecyclerView(recyclerView)
                 /**
                  * Make recyclerview to fill viewport width
                  */
@@ -131,13 +139,13 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+        val textColor = if(bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        bannerTitle.setTextColor(textColor)
+        bannerDescription.setTextColor(textColor)
 
         Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
                 .asBitmap()
+                .load(bannerItem.imageUrl)
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 24f))
@@ -151,7 +159,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 visitables
         )
 
-        itemView.setOnClickListener {
+        itemView.dc_banner_card.setOnClickListener {
             HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }
@@ -237,7 +245,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
         return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
+            override fun setResource(resource: Bitmap?) {
                 val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
                 circularBitmapDrawable.cornerRadius = radius
                 imageView.setImageDrawable(circularBitmapDrawable)

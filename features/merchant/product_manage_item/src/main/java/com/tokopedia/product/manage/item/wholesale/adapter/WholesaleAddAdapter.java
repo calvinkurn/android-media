@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.item.wholesale.adapter;
 
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;

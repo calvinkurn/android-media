@@ -1,6 +1,6 @@
 package com.tokopedia.core.common.category.view.mapper;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.common.category.domain.model.CategoryDomainModel;
 import com.tokopedia.core.common.category.domain.model.CategoryLevelDomainModel;
