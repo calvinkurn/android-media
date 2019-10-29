@@ -477,13 +477,13 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private Bundle viewProductMap(Map<String, Object> value, int index) {
-        String id = bruteForceCastToString(value.get(ProductKey.KEY_ID));
-        String name = (String) value.get(ProductKey.KEY_NAME);
-        String price = bruteForceCastToString(value.get(ProductKey.KEY_PRICE));
-        String brand = (String) value.get(ProductKey.KEY_BRAND);
-        String category = bruteForceCastToString(value.get(ProductKey.KEY_CAT));
-        String variant = (String) value.get(ProductKey.KEY_VARIANT);
-        String position = bruteForceCastToString(value.get(ProductKey.KEY_POSITION));
+        String id = bruteForceCastToString(value.remove(ProductKey.KEY_ID));
+        String name = (String) value.remove(ProductKey.KEY_NAME);
+        String price = bruteForceCastToString(value.remove(ProductKey.KEY_PRICE));
+        String brand = (String) value.remove(ProductKey.KEY_BRAND);
+        String category = bruteForceCastToString(value.remove(ProductKey.KEY_CAT));
+        String variant = (String) value.remove(ProductKey.KEY_VARIANT);
+        String position = bruteForceCastToString(value.remove(ProductKey.KEY_POSITION));
 
         Bundle product1 = new Bundle();
         product1.putString(FirebaseAnalytics.Param.ITEM_ID, id);                    // dimension69 (Product_ID), mandatory
@@ -510,13 +510,13 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private Bundle atcMap(Map<String, Object> value) {
-        String id = bruteForceCastToString(value.get(ATCKey.KEY_ID));
-        String name = (String) value.get(ATCKey.KEY_NAME);
-        String price = bruteForceCastToString(value.get(ATCKey.KEY_PRICE));
-        String brand = (String) value.get(ATCKey.KEY_BRAND);
-        String category = (String) value.get(ATCKey.KEY_CAT);
-        String variant = (String) value.get(ATCKey.KEY_VARIANT);
-        String quantity = bruteForceCastToString(value.get(ATCKey.KEY_QTY));
+        String id = bruteForceCastToString(value.remove(ATCKey.KEY_ID));
+        String name = (String) value.remove(ATCKey.KEY_NAME);
+        String price = bruteForceCastToString(value.remove(ATCKey.KEY_PRICE));
+        String brand = (String) value.remove(ATCKey.KEY_BRAND);
+        String category = (String) value.remove(ATCKey.KEY_CAT);
+        String variant = (String) value.remove(ATCKey.KEY_VARIANT);
+        String quantity = bruteForceCastToString(value.remove(ATCKey.KEY_QTY));
 
         // bundle.putLong (Long.class) <-- Long <-- String<-- Long, Int, String
         // safecast (ke string) kalau null safecast ke integer kalau null safecast ke long
