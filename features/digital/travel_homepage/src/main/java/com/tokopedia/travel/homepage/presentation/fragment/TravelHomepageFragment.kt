@@ -1,16 +1,16 @@
 package com.tokopedia.travel.homepage.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -203,6 +203,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
                 RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
                 DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
                 webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
+                else -> { /* do nothing */ }
             }
         }
     }
