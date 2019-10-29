@@ -1,7 +1,7 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +53,7 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
 
     @Override
     protected FlightDetailRouteTypeFactory getAdapterTypeFactory() {
-        return new FlightDetailAdapterTypeFactory(this);
+        return new FlightDetailAdapterTypeFactory(this, false);
     }
 
     @Override

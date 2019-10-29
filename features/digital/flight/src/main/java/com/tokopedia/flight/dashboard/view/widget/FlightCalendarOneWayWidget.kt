@@ -1,8 +1,8 @@
 package com.tokopedia.flight.dashboard.view.widget
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +46,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     lateinit var selectedDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
+
+    var isFirstTime: Boolean = true
+
     var classFlight: Int = 0
 
     @Inject
@@ -114,10 +117,13 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(this, android.arch.lifecycle.Observer {
+        holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
-                renderSinglePickCalendar(it)
+                if (isFirstTime) {
+                    renderSinglePickCalendar(it)
+                    isFirstTime = false
+                }
             }
         })
 
@@ -150,7 +156,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             }
 
 
-            fareCalendarViewModel.fareFlightCalendarData.observe(this, android.arch.lifecycle.Observer {
+            fareCalendarViewModel.fareFlightCalendarData.observe(this, androidx.lifecycle.Observer {
                 it?.let {
                     calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
                 }

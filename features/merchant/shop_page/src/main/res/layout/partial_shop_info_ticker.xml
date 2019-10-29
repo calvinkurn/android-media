@@ -48,7 +48,7 @@
                 tools:text="Closed Description" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonAction"
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"

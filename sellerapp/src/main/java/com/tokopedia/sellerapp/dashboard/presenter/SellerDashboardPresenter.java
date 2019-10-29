@@ -13,20 +13,14 @@ import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
-import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
-import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
-import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
-import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
-import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
@@ -43,7 +37,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final NewNotificationUseCase newNotificationUseCase;
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
-    private final GetProductListSellingUseCase getProductListSellingUseCase;
     private final GetApprovalStatusUseCase getVerificationStatusUseCase;
     private final UserSessionInterface userSession;
 
@@ -53,7 +46,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                                     NewNotificationUseCase newNotificationUseCase,
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase,
-                                    GetProductListSellingUseCase getProductListSellingUseCase,
                                     GetApprovalStatusUseCase getVerificationStatusUseCase,
                                     UserSessionInterface userSession) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
@@ -61,7 +53,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         this.newNotificationUseCase = newNotificationUseCase;
         this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
-        this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.getVerificationStatusUseCase = getVerificationStatusUseCase;
         this.userSession = userSession;
     }
@@ -187,30 +178,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 } else {
                     getView().onErrorOpenShop();
                 }
-            }
-        };
-    }
-
-    public void getProductList() {
-        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
-                "", CatalogProductOption.WITH_AND_WITHOUT, ConditionProductOption.ALL_CONDITION, "", 0,
-                PictureStatusProductOption.WITH_AND_WITHOUT, SortProductOption.POSITION), getSubscriberGetListProduct());
-    }
-
-    private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
-        return new Subscriber<ProductListSellerModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(ProductListSellerModel productListSellerModel) {
-
             }
         };
     }

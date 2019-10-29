@@ -10,7 +10,6 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import java.util.HashMap
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -42,7 +41,7 @@ class RequestModerateShopUseCase @Inject constructor(@Named(ShopPageConstant.MOD
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = getModerateSubmitInput(requestParams)
 
-        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateData::class.java,variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

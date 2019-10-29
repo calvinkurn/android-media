@@ -3,7 +3,7 @@ package com.tokopedia.flight;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
@@ -38,8 +38,6 @@ public interface FlightModuleRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData);
-
     Intent getDefaultContactUsIntent(Activity activity);
 
     Intent getDefaultContactUsIntent(Activity activity, String url);
@@ -55,10 +53,6 @@ public interface FlightModuleRouter {
     Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId);
 
     FlightVoucherCodeWrapper getFlightVoucherCodeWrapper();
-
-    Intent getPromoListIntent(Activity activity);
-
-    Intent getPromoDetailIntent(Context context, String slug);
 
     File writeImage(String filePath, int qualityProcentage);
 

@@ -12,15 +12,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +46,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
@@ -215,6 +216,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
     UserSession userSession;
     @Inject
     DigitalModuleRouter digitalModuleRouter;
+    @Inject
+    RechargeAnalytics rechargeAnalytics;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -260,7 +263,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         // (Temporary) Ignore unparsable categoryId error
         try {
             if (categoryId != null)
-                presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
+                presenter.trackVisitRechargePushEventRecommendation(Integer.parseInt(categoryId));
         } catch (Exception e) {
             // do nothing
         }
@@ -432,7 +435,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        digitalAnalytics.eventDigitalCategoryScreenLaunch(categoryData);
+        rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryData.getName(), categoryData.getCategoryId());
 
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;

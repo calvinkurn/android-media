@@ -3,15 +3,16 @@ package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.LayoutRes;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -69,8 +70,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
         if (element.getFilepath() != null && element.getFilepath().length() > 0) {
             Glide.with(itemView.getContext())
-                    .load(new File(element.getFilepath()))
                     .asBitmap()
+                    .load(new File(element.getFilepath()))
                     .centerCrop()
                     .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
 

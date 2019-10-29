@@ -125,9 +125,12 @@
     <string name="enter_additional_data">Silahkan Isi Data Pelanggan Tambahan</string>
     <string name="digital_event_reset_label">Reset</string>
     <string name="digital_event_all_time_label">Semua Waktu</string>
-
+    <string name="coachicon_event_date">Bebas pilih tanggal kunjungan</string>
+    <string name="coachicon_event_date_description">Nggak perlu ribet atur waktu, tinggal pilih tanggal yang sesuai dengan rencana kegiatanmu.</string>
+    <string name="ticker_info_description">Hanya bisa beli satu jenis tiket, lakukan transaksi baru untuk beli jenis tiket lainnya.</string>
 
     <string name="reset">Reset</string>
+    <string name="event_ended">Penjualan tiket untuk event ini telah berakhir</string>
     <!-- need to changed -->
 
 </resources>

@@ -18,6 +18,9 @@
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
 
+    <!--    Change Phone Number-->
+    <string name="change_phone_number_app_module_name">changephonenumber</string>
+
     <!-- Dynamic feature for Open Shop-->
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_shop_postal_code">Kode Pos</string>
@@ -31,6 +34,7 @@
 
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
+    <string name="ovop2p_app_name">Saldo</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
@@ -38,6 +42,9 @@
 
     <!-- Dynamic feature for Digital Subhomepage -->
     <string name="digital_subhomepage_app_name"><![CDATA[Top-up & Tagihan]]></string>
+
+    <!-- Dynamic feature for Voucher Game -->
+    <string name="voucher_game_app_name">Cari Voucher</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
@@ -78,4 +85,26 @@
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="label_dob">Tanggal Lahir</string>
+
+    <!--Contact Us-->
+    <string name="title_module_contact_us">Pusat Bantuan</string>
+    <string name="contact_us_title_home">Pusat Bantuan</string>
+    <string name="invoice_list_title">Riwayat Transaksi</string>
+    <string name="order_query_ticket_title">Kendala</string>
+    <string name="submit_ticket_title">Form Bantuan</string>
+    <string name="survey_layanan">Survey Layanan</string>
+    <string name="detail_kendala">Detail Kendala</string>
+    <string name="inbox">Inbox</string>
+
+    <string name="instant_loan_app_name">Dana Instan</string>
+
+    <!-- Referral -->
+    <string name="title_module_referral">Referral</string>
+    <!--Ovo Wallet-->
+    <string name="wallet_title">Ovo</string>
+    <string name="wallet_title_header_ovo">TokoCash to OVO</string>
+    <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+
+    <!-- Digital-Deals-->
+    <string name="digital_deals">digital_deals</string>
 </resources>

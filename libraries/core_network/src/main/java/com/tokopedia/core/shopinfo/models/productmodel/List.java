@@ -3,7 +3,7 @@ package com.tokopedia.core.shopinfo.models.productmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

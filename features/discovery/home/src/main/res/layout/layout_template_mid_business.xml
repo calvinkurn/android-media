@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="170dp"
         android:layout_height="108dp"
         android:layout_marginTop="@dimen/dp_20"
@@ -97,7 +96,7 @@
             tools:text="Voucher Tous Les Jours Rp 100.000,-"
             tools:visibility="visible" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/layout_template_icon_business_widget"
         android:layout_width="wrap_content"

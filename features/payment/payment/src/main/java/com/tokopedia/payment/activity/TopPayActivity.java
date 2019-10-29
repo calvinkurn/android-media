@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -40,6 +40,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.R;
@@ -69,7 +70,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA;
 
 
 /**
@@ -78,8 +80,6 @@ import rx.subscriptions.CompositeSubscription;
 
 public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
-
-    public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
 
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
     public static final String KEY_QUERY_PAYMENT_ID = "id";
@@ -91,9 +91,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
-    public static final int PAYMENT_SUCCESS = 5;
-    public static final int PAYMENT_CANCELLED = 6;
-    public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     public static final long FORCE_TIMEOUT = 90000L;
 
@@ -109,7 +106,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private TextView tvTitle;
     private ProgressDialog progressDialog;
 
-    public static final int REQUEST_CODE = 45675;
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
@@ -322,7 +318,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         hideProgressLoading();
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-        setResult(PAYMENT_CANCELLED, intent);
+        setResult(PaymentConstant.PAYMENT_CANCELLED, intent);
         finish();
     }
 
@@ -330,7 +326,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         hideProgressLoading();
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-        setResult(PAYMENT_SUCCESS, intent);
+        setResult(PaymentConstant.PAYMENT_SUCCESS, intent);
         finish();
     }
 
@@ -338,7 +334,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         hideProgressLoading();
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-        setResult(PAYMENT_FAILED, intent);
+        setResult(PaymentConstant.PAYMENT_FAILED, intent);
         finish();
     }
 
@@ -400,7 +396,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY)
                     || url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
-                String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
+                String deepLinkUrl = ApplinkConst.WEBVIEW_PARENT_HOME
                         + "?url=" + URLEncoder.encode(url);
                 RouteManager.route(TopPayActivity.this, deepLinkUrl);
                 return true;

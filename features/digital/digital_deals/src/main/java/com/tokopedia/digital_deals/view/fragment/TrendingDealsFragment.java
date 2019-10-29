@@ -3,14 +3,14 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,24 +18,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
-import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
-import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
-import com.tokopedia.digital_deals.view.contractor.TrendingDealsContract;
-import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
-import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -56,7 +46,7 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.trending_deals_fragment, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.trending_deals_fragment, container, false);
         setHasOptionsMenu(false);
         setViewIds(view);
 
@@ -75,16 +65,16 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
     }
 
     private void setViewIds(View view) {
-        toolbar = view.findViewById(R.id.toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
+        appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.toolbar_back_black));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.toolbar_back_black));
         if (!TextUtils.isEmpty(trendingDealsCallBacks.getToolBarTitle())) {
             toolbar.setTitle(trendingDealsCallBacks.getToolBarTitle());
         } else {
             toolbar.setTitle("Trending Deals");
         }
-        recyclerView = view.findViewById(R.id.rv_trending_deals);
+        recyclerView = view.findViewById(com.tokopedia.digital_deals.R.id.rv_trending_deals);
     }
 
     @Override

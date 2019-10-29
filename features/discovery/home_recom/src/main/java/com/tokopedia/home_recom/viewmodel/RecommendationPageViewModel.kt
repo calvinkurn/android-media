@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -100,13 +100,14 @@ open class RecommendationPageViewModel @Inject constructor(
      */
     fun getRecommendationList(
             productIds: List<String>,
-            ref: String,
+            queryParam: String,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
                         pageNumber = 1,
                         productIds = productIds,
-                        ref = ref), object : Subscriber<List<RecommendationWidget>>() {
+                        pageName = "recom_1,recom_2,recom_3",
+                        queryParam = queryParam), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
             }

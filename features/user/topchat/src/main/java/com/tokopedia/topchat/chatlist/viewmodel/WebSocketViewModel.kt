@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.chat_common.network.ChatUrl
@@ -59,9 +59,18 @@ class WebSocketViewModel
                 for (response in it.textChannel) {
                     debug(TAG," Response: $response")
                     when(response.getCode()) {
-                        EVENT_TOPCHAT_REPLY_MESSAGE -> _itemChat.postValue(Success(mapToIncomingChat(response)))
-                        EVENT_TOPCHAT_TYPING -> _itemChat.postValue(Success(mapToIncomingTypeState(response, true)))
-                        EVENT_TOPCHAT_END_TYPING -> _itemChat.postValue(Success(mapToIncomingTypeState(response, false)))
+                        EVENT_TOPCHAT_REPLY_MESSAGE ->  {
+                            val chat = Success(mapToIncomingChat(response))
+                            _itemChat.value = chat
+                        }
+                        EVENT_TOPCHAT_TYPING -> {
+                            val stateTyping = Success(mapToIncomingTypeState(response, true))
+                            _itemChat.value = stateTyping
+                        }
+                        EVENT_TOPCHAT_END_TYPING -> {
+                            val stateEndTyping = Success(mapToIncomingTypeState(response, false))
+                            _itemChat.value = stateEndTyping
+                        }
                     }
                 }
             }
@@ -71,17 +80,17 @@ class WebSocketViewModel
     private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData?.msgId.toString()
-        val message = responseData?.message?.censoredReply?.trim().toEmptyStringIfNull()
-        val time = responseData?.startTime.toEmptyStringIfNull()
+        val msgId = responseData.msgId.toString()
+        val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
+        val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
 
         val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),
-                responseData.fromRole,
+                responseData?.fromRole.toString(),
                 "",
-                responseData.from,
+                responseData?.from.toString(),
                 0,
-                responseData.fromRole,
+                responseData?.fromRole.toString(),
                 responseData.imageUri
         )
         return IncomingChatWebSocketModel(msgId, message, time, contact)

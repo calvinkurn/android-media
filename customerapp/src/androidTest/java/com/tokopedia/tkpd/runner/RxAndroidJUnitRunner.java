@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.runner;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.test.espresso.Espresso;
+import androidx.test.espresso.Espresso;
 
 import com.tokopedia.tkpd.util.RxIdlingExecutionHook;
 import com.tokopedia.tkpd.util.RxIdlingResource;

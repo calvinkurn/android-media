@@ -20,7 +20,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/gm_statistic_most_popular_keyword"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"

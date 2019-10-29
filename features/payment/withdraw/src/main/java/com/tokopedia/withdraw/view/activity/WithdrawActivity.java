@@ -7,8 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -83,6 +83,13 @@ public class WithdrawActivity extends BaseSimpleActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        TextView withdrawInfo = findViewById(R.id.toolbar_withdraw_help);
+
+        withdrawInfo.setVisibility(View.VISIBLE);
+        withdrawInfo.setOnClickListener(v -> {
+            showWithdrawInfoBottomSheet();
+        });
     }
 
     private void showWithdrawInfoBottomSheet() {

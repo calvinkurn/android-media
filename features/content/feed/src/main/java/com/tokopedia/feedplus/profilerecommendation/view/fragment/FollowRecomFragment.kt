@@ -2,21 +2,23 @@ package com.tokopedia.feedplus.profilerecommendation.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
 import com.tokopedia.feedplus.profilerecommendation.view.adapter.FollowRecomAdapter
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecomContract
 import com.tokopedia.feedplus.profilerecommendation.view.presenter.FollowRecomPresenter
@@ -60,6 +62,9 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     @Inject
     lateinit var presenter: FollowRecomPresenter
 
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
     private val dialogOnboardingFollowView: DialogOnboardingRecomFollowView? by lazy {
         context?.let(::DialogOnboardingRecomFollowView)
     }
@@ -84,7 +89,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun getScreenName(): String {
-        return "Follow Recommendation"
+        return FeedAnalyticTracker.Screen.ONBOARDING_PROFILE_RECOM
     }
 
     override fun initInjector() {
@@ -102,6 +107,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedAnalyticTracker.eventOpenOnboardingProfileRecom()
         initView(view)
         setupView(view)
         presenter.getFollowRecommendationList(interestIds, cursor)
@@ -128,6 +134,12 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction) {
+        onFollowButtonClicked(authorId, actionToCall)
+        if (isFollowed) {
+            feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
+        } else {
+            feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
+        }
         onFollowButtonClicked(authorId, actionToCall)
     }
 
@@ -177,6 +189,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onNameOrAvatarClicked(model: FollowRecomCardViewModel) {
+        feedAnalyticTracker.eventClickFollowRecomNameAndImage(model.authorId)
         setupDialogViewWithModel(model)
         dialogOnboardingFollow.show()
     }
@@ -202,6 +215,10 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onFollowButtonClicked(authorId: String, action: FollowRecomAction) {
+        when(action) {
+            FollowRecomAction.FOLLOW -> feedAnalyticTracker.eventClickFollowShopOrProfile(authorId)
+            FollowRecomAction.UNFOLLOW -> feedAnalyticTracker.eventClickUnFollowShopOrProfile(authorId)
+        }
         if (!actionFollowIdList.contains(authorId)) {
             actionFollowIdList.add(authorId)
             followRecomAdapter.updateFollowState(authorId, action)
@@ -210,11 +227,21 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         }
     }
 
-    override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel) {
+    override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?) {
+
+        authorType?.let {
+            feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos, it.typeString)
+        }
         context?.let { ctx ->
             startActivity(
                     MediaPreviewActivity.createIntent(ctx, model.id, 0)
             )
+        }
+    }
+
+    override fun onFirstTimeCardShown(element: FollowRecomCardViewModel, adapterPosition: Int) {
+        element.authorType?.let {
+            feedAnalyticTracker.eventViewContentRecommendation(element.authorId, adapterPosition, it.typeString)
         }
     }
 
@@ -266,13 +293,10 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
         if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
             RouteManager.route(context, ApplinkConst.FEED)
         }
-//        activity?.let{
-//            it.setResult(Activity.RESULT_OK, Intent())
-//            it.finish()
-//        }
     }
 
     private fun followAllRecommendation() {
+        feedAnalyticTracker.eventClickFollowAll()
         presenter.followAllRecommendation(interestIds)
     }
 

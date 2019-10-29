@@ -2,8 +2,8 @@ package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
 import android.content.Context;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import android.graphics.Bitmap;
+import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
@@ -39,6 +39,23 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
+        if (applinkNotificationModel.hasImages()) {
+            setBigPictureNotification(builder, applinkNotificationModel);
+        }
+
         return builder.build();
+    }
+
+    private void setBigPictureNotification(
+            NotificationCompat.Builder builder,
+            ApplinkNotificationModel applinkNotificationModel
+    ) {
+        String imageUrl = applinkNotificationModel.getBigPictureImageUrl();
+        Bitmap image = getBitmap(imageUrl);
+
+        NotificationCompat.Style bigPictureStyle = new NotificationCompat.BigPictureStyle()
+                .bigPicture(image);
+
+        builder.setStyle(bigPictureStyle);
     }
 }

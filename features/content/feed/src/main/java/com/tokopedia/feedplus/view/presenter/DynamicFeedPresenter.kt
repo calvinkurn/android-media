@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
@@ -36,7 +36,10 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 .setSessionIncluded(true)
                 .build())
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -61,7 +64,10 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
 
     override fun getFeed() {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -140,6 +146,6 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
     }
 
     private fun getUserId(): String {
-        return if (userSession.isLoggedIn()) userSession.getUserId() else NON_LOGIN_USER_ID
+        return if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
     }
 }

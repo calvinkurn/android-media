@@ -51,6 +51,12 @@ interface Constants {
         }
     }
 
+    interface Cache {
+        companion object {
+            const val KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE"
+        }
+    }
+
     interface Placeholder {
         companion object {
             const val USER = "%user";
