@@ -1,11 +1,11 @@
 package com.tokopedia.emoney.view.compoundview
 
 import android.content.Context
-import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.emoney.R

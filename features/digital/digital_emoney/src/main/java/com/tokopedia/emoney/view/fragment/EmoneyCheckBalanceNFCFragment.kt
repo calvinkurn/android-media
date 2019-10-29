@@ -3,8 +3,6 @@ package com.tokopedia.emoney.view.fragment
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
@@ -15,12 +13,14 @@ import android.nfc.tech.NfcA
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
