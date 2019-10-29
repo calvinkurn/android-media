@@ -34,6 +34,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -467,11 +468,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-//        et_search.setOnClickListener {
-//            productDetailTracking.eventClickSearchBar()
-//            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-//        }
-//        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
+        if (GlobalConfig.APPLICATION_TYPE === GlobalConfig.SELLER_APPLICATION) {
+            val linearLayout = view.findViewById<LinearLayout>(R.id.layout_search)
+            linearLayout.visibility = View.GONE
+        }
+
+        et_search.setOnClickListener {
+            productDetailTracking.eventClickSearchBar()
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+        }
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -1537,7 +1543,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-//        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
