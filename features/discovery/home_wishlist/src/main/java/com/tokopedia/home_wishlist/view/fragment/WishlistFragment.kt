@@ -172,7 +172,7 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
             }
 
             override fun onSearchTextChanged(text: String?) {
-                viewModel.search(text ?: "")
+                viewModel.getWishlistData(text ?: "")
             }
         })
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -196,6 +196,7 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
             renderList(response)
         })
         viewModel.loadInitialPage()
+        viewModel.getWishlistData()
     }
 
     /**
