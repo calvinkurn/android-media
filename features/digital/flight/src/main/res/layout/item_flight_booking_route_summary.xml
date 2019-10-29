@@ -8,12 +8,12 @@
     android:layout_marginTop="@dimen/dp_6"
     android:layout_marginBottom="@dimen/dp_6">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_4">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_flight_airlines_logo"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -68,7 +68,7 @@
             app:typographyType="body_3"
             tools:text="Kam, 23 Des 19 • 06:00-18:00 (+1 hari)" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_refundable"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
@@ -92,7 +92,7 @@
             app:typographyWeight="bold"
             tools:text="Refundable" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_transit"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
@@ -119,5 +119,5 @@
             tools:text="Langsung" />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

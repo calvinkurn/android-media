@@ -1,10 +1,11 @@
 package com.tokopedia.flight.bookingV3.presentation.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -63,7 +64,7 @@ class FlightBookingFragment: BaseDaggerFragment() {
         hideShimmering()
 
         flightRouteAdapter = FlightJourneyAdapter()
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_flight_booking_route_summary.layoutManager = layoutManager
         rv_flight_booking_route_summary.setHasFixedSize(true)
         rv_flight_booking_route_summary.adapter = flightRouteAdapter

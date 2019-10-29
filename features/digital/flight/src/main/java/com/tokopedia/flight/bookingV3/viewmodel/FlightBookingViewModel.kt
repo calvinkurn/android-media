@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV3.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart

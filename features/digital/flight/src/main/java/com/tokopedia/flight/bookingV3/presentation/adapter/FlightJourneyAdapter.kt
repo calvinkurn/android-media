@@ -1,9 +1,9 @@
 package com.tokopedia.flight.bookingV3.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import kotlinx.android.synthetic.main.item_flight_booking_route_summary.view.*
