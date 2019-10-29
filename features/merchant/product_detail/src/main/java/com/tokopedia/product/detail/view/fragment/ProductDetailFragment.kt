@@ -329,7 +329,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ARG_PRODUCT_ID)
-            warehouseId = it.getString(ARG_WAREHOUSE_ID)
+            warehouseId = itbuildconfig/appcompile/compile-sellerapp.gradle.getString(ARG_WAREHOUSE_ID)
             productKey = it.getString(ARG_PRODUCT_KEY)
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
             trackerAttribution = it.getString(ARG_TRACKER_ATTRIBUTION)
@@ -469,8 +469,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
         if (GlobalConfig.isSellerApp()) {
-            val linearLayout = view.findViewById<LinearLayout>(R.id.layout_search)
-            linearLayout.visibility = View.GONE
+            val linearLayout = view.findViewById<ViewGroup>(R.id.layout_search)
+            linearLayout.hide()
         }
 
         et_search.setOnClickListener {
