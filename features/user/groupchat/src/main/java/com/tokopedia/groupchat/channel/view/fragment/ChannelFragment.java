@@ -90,7 +90,10 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_channel_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        return view;
     }
 
     @Override
@@ -99,11 +102,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        recyclerView = view.findViewById(R.id.recycler_view);
+    public RecyclerView getRecyclerView(View view) {
         recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
+        return recyclerView;
     }
 
     @Override
