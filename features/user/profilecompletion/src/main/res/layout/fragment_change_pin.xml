@@ -79,7 +79,8 @@
                 android:visibility="visible"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                app:TextBottomPadding="@dimen/dp_20" />
+                app:TextBottomPadding="@dimen/dp_20"
+                app:PinInputLineColors="@color/add_pin_input_line_colors" />
         </LinearLayout>
 
         <TextView
