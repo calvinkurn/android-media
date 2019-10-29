@@ -4,6 +4,7 @@ import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -83,7 +84,7 @@ open class PlayActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         channelId = when {
-            intent.data != null -> intent?.data?.getQueryParameter(ApplinkConstant.PARAM_CHANNEL_ID)
+            intent.data != null -> Uri.parse(intent?.data?.toString()).lastPathSegment
             intent.extras != null -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
             else -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
         }
