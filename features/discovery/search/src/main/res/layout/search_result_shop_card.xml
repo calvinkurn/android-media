@@ -6,6 +6,7 @@
     android:id="@+id/cardViewShopCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
@@ -26,7 +27,7 @@
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerViewShopProductItem" />
+            app:layout_constraintBottom_toTopOf="@+id/dummyViewForAvatarAndSeeShop" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/buttonSeeShop"
@@ -43,9 +44,10 @@
             android:paddingBottom="@dimen/dp_8"
             android:textStyle="bold"
             android:text="@string/shop_see_shop_button"
+            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerViewShopProductItem"
+            app:layout_constraintBottom_toTopOf="@+id/dummyViewForAvatarAndSeeShop"
             app:buttonCompatSize="medium"
             app:buttonCompatType="ghost" />
         
@@ -113,23 +115,114 @@
             app:layout_constraintRight_toLeftOf="@id/buttonSeeShop"
             tools:src="@drawable/ic_badge_gold" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewShopProductItem"
+        <View
+            android:id="@+id/dummyViewForAvatarAndSeeShop"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginTop="@dimen/dp_8"
-            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewShopItemProductImage1"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:foreground="?attr/selectableItemBackground"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewShopItemProductImage2"
+            app:layout_constraintHorizontal_bias="0.5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewShopItemProductPrice1"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/shop_item_product_price_color"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopItemProductImage1"
+            app:layout_constraintStart_toStartOf="@id/imageViewShopItemProductImage1"
+            app:layout_constraintEnd_toEndOf="@id/imageViewShopItemProductImage1"
+            tools:text="@string/shop_product_item_price"
+            tools:visibility="visible"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewShopItemProductImage2"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:foreground="?attr/selectableItemBackground"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
+            app:layout_constraintStart_toEndOf="@id/imageViewShopItemProductImage1"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewShopItemProductImage3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewShopItemProductPrice2"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/shop_item_product_price_color"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/imageViewShopItemProductImage2"
+            app:layout_constraintStart_toStartOf="@id/imageViewShopItemProductImage2"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewShopItemProductImage2"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="@string/shop_product_item_price"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewShopItemProductImage3"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            android:foreground="?attr/selectableItemBackground"
+            app:srcCompat="@color/shop_item_product_empty_color"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/imageViewShopReputation"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:visibility="visible"
-            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            tools:orientation="vertical"
-            tools:spanCount="3"/>
+            app:layout_constraintStart_toEndOf="@id/imageViewShopItemProductImage2"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewShopItemProductPrice3"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/shop_item_product_price_color"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopItemProductImage3"
+            app:layout_constraintStart_toStartOf="@id/imageViewShopItemProductImage3"
+            app:layout_constraintEnd_toEndOf="@id/imageViewShopItemProductImage3"
+            tools:text="@string/shop_product_item_price"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopHasNoProduct"
@@ -160,7 +253,7 @@
             app:labelTitle="@string/shop_voucher_free_shipping"
             app:labelType="general_light_green"
             app:layout_constraintLeft_toLeftOf="@id/imageViewShopAvatar"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewShopProductItem"
+            app:layout_constraintTop_toBottomOf="@id/textViewShopItemProductPrice1"
             tools:text="@string/shop_voucher_free_shipping"
             tools:visibility="visible" />
 
@@ -173,7 +266,7 @@
             android:layout_marginStart="@dimen/dp_4"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@id/labelVoucherFreeShipping"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewShopProductItem"
+            app:layout_constraintTop_toBottomOf="@id/textViewShopItemProductPrice1"
             app:labelType="general_light_green"
             app:labelTitle="@string/shop_voucher_cashback_percentage"
             tools:visibility="visible"

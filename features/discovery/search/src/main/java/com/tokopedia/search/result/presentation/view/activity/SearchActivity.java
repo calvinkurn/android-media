@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -49,25 +51,32 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.URLEncoder;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
@@ -101,16 +110,22 @@ public class SearchActivity extends BaseActivity
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     private String productTabTitle;
-    private String catalogTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
+    private String catalogTabTitle;
     private String autocompleteApplink;
 
-    @Inject
-    SearchTracking searchTracking;
+    @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
-    @Inject LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
+    @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchShopViewModelFactory;
+    @Inject @Named(SearchConstant.SEARCH_VIEW_MODEL_FACTORY)
+    ViewModelProvider.Factory searchViewModelFactory;
+
+    @Nullable
+    SearchViewModel searchViewModel;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -122,14 +137,19 @@ public class SearchActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
 
+        getExtrasFromIntent(getIntent());
         initActivityOnCreate();
         proceed();
-        handleIntent(getIntent());
+        handleIntent();
     }
 
     @Override
     public void startPerformanceMonitoring() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+    }
+
+    private void getExtrasFromIntent(Intent intent) {
+        searchParameter = getSearchParameterFromIntentUri(intent);
     }
 
     private void initActivityOnCreate() {
@@ -140,7 +160,9 @@ public class SearchActivity extends BaseActivity
     private void initInjector() {
         SearchViewComponent searchComponent = DaggerSearchViewComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .searchShopViewModelFactoryModule(new SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
                 .build();
+
         searchComponent.inject(this);
     }
 
@@ -218,7 +240,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        String query = searchParameter.getSearchQuery();
+        String query = URLEncoder.encode(searchParameter.getSearchQuery());
 
         if (!TextUtils.isEmpty(autocompleteApplink)) {
             startActivityWithApplink(autocompleteApplink);
@@ -269,10 +291,10 @@ public class SearchActivity extends BaseActivity
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
                 break;
             case TAB_SECOND_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                break;
-            case TAB_THIRD_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                break;
+            case TAB_FORTH_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
                 break;
         }
     }
@@ -354,22 +376,76 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void handleIntent(Intent intent) {
+    private void handleIntent() {
         initResources();
-        getExtrasFromIntent(intent);
+        initViewModel();
+        observeViewModel();
         performProductSearch();
         setToolbarTitle(searchParameter.getSearchQuery());
     }
 
     private void initResources() {
         productTabTitle = getString(R.string.product_tab_title);
-        catalogTabTitle = getString(R.string.catalog_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
+        catalogTabTitle = getString(R.string.catalog_tab_title);
     }
 
-    private void getExtrasFromIntent(Intent intent) {
-        searchParameter = getSearchParameterFromIntentUri(intent);
+    private void initViewModel() {
+        ViewModelProviders.of(this, searchShopViewModelFactory).get(SearchShopViewModel.class);
+
+        searchViewModel = ViewModelProviders.of(this, searchViewModelFactory).get(SearchViewModel.class);
+    }
+
+    private void observeViewModel() {
+        observeAutoCompleteEvent();
+        observeHideLoadingEvent();
+        observeChildViewVisibilityChangedEvent();
+    }
+
+    private void observeAutoCompleteEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getShowAutoCompleteViewEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    showSearchInputView();
+                }
+            }
+        });
+    }
+
+    private void observeHideLoadingEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getHideLoadingEventLiveData().observe(this, booleanEvent -> {
+            if (booleanEvent != null) {
+                Boolean content = booleanEvent.getContentIfNotHandled();
+
+                if (content != null && content) {
+                    removeSearchPageLoading();
+                }
+            }
+        });
+    }
+
+    private void observeChildViewVisibilityChangedEvent() {
+        if (searchViewModel == null) return;
+
+        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
+            if (childViewVisibilityChangedEvent != null) {
+                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
+
+                if (childViewVisibilityChangedModel != null) {
+                    setupSearchNavigation(
+                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
+                            childViewVisibilityChangedModel.isSortEnabled()
+                    );
+                }
+            }
+        });
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -423,9 +499,9 @@ public class SearchActivity extends BaseActivity
     private boolean shouldSetActiveTabToDefault(String activeTab) {
         List<String> availableSearchTabs = new ArrayList<>();
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
+        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -463,9 +539,9 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentTitlesToList(List<String> searchSectionItemList) {
         searchSectionItemList.add(productTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
+        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -485,13 +561,13 @@ public class SearchActivity extends BaseActivity
                     productListFragmentExecuteBackToTop();
                     break;
                 case TAB_SECOND_POSITION:
-                    catalogListFragmentExecuteBackToTop();
-                    break;
-                case TAB_THIRD_POSITION:
                     shopListFragmentExecuteBackToTop();
                     break;
-                case TAB_FORTH_POSITION:
+                case TAB_THIRD_POSITION:
                     profileListFragmentExecuteBackToTop();
+                    break;
+                case TAB_FORTH_POSITION:
+                    catalogListFragmentExecuteBackToTop();
                     break;
             }
         }
@@ -500,12 +576,6 @@ public class SearchActivity extends BaseActivity
     private void productListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getProductListFragment() != null) {
             searchSectionPagerAdapter.getProductListFragment().backToTop();
-        }
-    }
-
-    private void catalogListFragmentExecuteBackToTop() {
-        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
-            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
         }
     }
 
@@ -518,6 +588,12 @@ public class SearchActivity extends BaseActivity
     private void profileListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getProfileListFragment() != null) {
             searchSectionPagerAdapter.getProfileListFragment().backToTop();
+        }
+    }
+
+    private void catalogListFragmentExecuteBackToTop() {
+        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
+            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
         }
     }
 
@@ -535,11 +611,11 @@ public class SearchActivity extends BaseActivity
         String activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB);
 
         switch (activeTab) {
-            case SearchConstant.ActiveTab.CATALOG:
-                return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.SHOP:
-                return TAB_THIRD_POSITION;
+                return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.PROFILE:
+                return TAB_THIRD_POSITION;
+            case SearchConstant.ActiveTab.CATALOG:
                 return TAB_FORTH_POSITION;
             default:
                 return TAB_FIRST_POSITION;

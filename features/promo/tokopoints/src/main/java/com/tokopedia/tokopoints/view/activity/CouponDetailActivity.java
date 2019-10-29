@@ -34,13 +34,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     protected Fragment getNewFragment() {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
             return CouponDetailFragment.newInstance(getIntent().getExtras());
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
     }
 
     @Override

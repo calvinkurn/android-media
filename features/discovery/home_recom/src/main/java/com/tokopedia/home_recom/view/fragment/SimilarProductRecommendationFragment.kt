@@ -43,6 +43,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private val staggeredGrid by lazy { StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var ref: String
+    private lateinit var source: String
     private lateinit var productId: String
 
     companion object{
@@ -51,10 +52,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val SAVED_PRODUCT_ID = "saved_product_id"
         private const val SAVED_REF = "saved_ref"
+        private const val SAVED_SOURCE = "saved_source"
         private const val REQUEST_FROM_PDP = 399
 
-        fun newInstance(productId: String = "", ref: String = "") = SimilarProductRecommendationFragment().apply {
+        fun newInstance(productId: String = "", ref: String = "", source: String = "") = SimilarProductRecommendationFragment().apply {
             this.ref = ref
+            this.source = source
             this.productId = productId
         }
     }
@@ -67,6 +70,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
+            source = it.getString(SAVED_SOURCE) ?: ""
         }
     }
 
@@ -86,9 +90,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                     it.status.isEmpty() -> showEmpty()
                     it.status.isError() -> showGetListError(Throwable(it.message))
                     it.status.isSuccess() -> {
-                        it.data?.get(0)?.let {
-                            activity?.run{
-                                (this as HomeRecommendationActivity).supportActionBar?.title = it.header
+                        if(it.data?.isNotEmpty() == true){
+                            it.data[0].let {
+                                activity?.run{
+                                    (this as HomeRecommendationActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                }
                             }
                         }
                         renderList(mapDataModel(it.data ?: emptyList()), true)
@@ -145,7 +151,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, ref, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {

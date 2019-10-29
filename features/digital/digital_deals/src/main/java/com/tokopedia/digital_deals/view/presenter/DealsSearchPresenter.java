@@ -3,7 +3,6 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -11,17 +10,13 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
-import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -134,9 +129,9 @@ public class DealsSearchPresenter
 
     @Override
     public boolean onItemClick(int id) {
-        if (id == R.id.tv_location) {
+        if (id == com.tokopedia.digital_deals.R.id.tv_location) {
             getLocations(false);
-        } else if (id == R.id.imageViewBack) {
+        } else if (id == com.tokopedia.digital_deals.R.id.imageViewBack) {
             getView().goBack();
         }
         return true;

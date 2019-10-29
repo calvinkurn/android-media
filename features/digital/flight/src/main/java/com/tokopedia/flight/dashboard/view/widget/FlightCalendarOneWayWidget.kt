@@ -46,6 +46,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     lateinit var selectedDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
+
+    var isFirstTime: Boolean = true
+
     var classFlight: Int = 0
 
     @Inject
@@ -117,7 +120,10 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
-                renderSinglePickCalendar(it)
+                if (isFirstTime) {
+                    renderSinglePickCalendar(it)
+                    isFirstTime = false
+                }
             }
         })
 

@@ -30,6 +30,7 @@ class GetExploreDataSubscriber(private val mainView: ExploreContract.View?,
             mainView?.onSuccessGetData(
                     exploreViewModel.exploreProducts,
                     exploreViewModel.nextCursor,
+                    exploreParams.keyword,
                     isSearch
             )
         }

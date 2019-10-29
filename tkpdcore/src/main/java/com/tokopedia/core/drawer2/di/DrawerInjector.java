@@ -63,7 +63,7 @@ public class DrawerInjector {
         GetSellerUserAttributesUseCase getSellerrAttributesUseCase = new GetSellerUserAttributesUseCase(jobExecutor,
                 new UIThread(), userAttributesRepository);
 
-        Observable<TokoCashData> tokoCashModelObservable = ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance();
+        Observable<TokoCashData> tokoCashModelObservable = Observable.just(new TokoCashData());
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
                 jobExecutor,
                 uiThread,

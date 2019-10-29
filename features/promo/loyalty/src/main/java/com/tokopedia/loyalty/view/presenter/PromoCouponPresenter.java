@@ -439,7 +439,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
