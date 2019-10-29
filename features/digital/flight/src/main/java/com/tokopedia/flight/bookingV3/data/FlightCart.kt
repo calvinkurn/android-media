@@ -8,13 +8,59 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class FlightCart(
-        @SerializedName("id")
-        @Expose
-        val id: String = "",
 
-        @SerializedName("flight")
-        val flight: Flight = Flight()
+        @SerializedName("meta")
+        @Expose
+        val meta: Meta = Meta(),
+
+        @SerializedName("data")
+        @Expose
+        val cartData: CartData = CartData()
 ) {
+    data class CartData(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("status")
+            @Expose
+            val status: String = "",
+
+            @SerializedName("newPrice")
+            @Expose
+            val newPrice: List<NewPrice> = listOf(),
+
+            @SerializedName("flight")
+            @Expose
+            val flight: Flight = Flight(),
+
+            @SerializedName("voucher")
+            @Expose
+            val voucher: Voucher = Voucher()
+    )
+
+    data class NewPrice(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("fare")
+            @Expose
+            val fare: Fare = Fare()
+    )
+
+    data class Meta(
+            @SerializedName("needRefresh")
+            @Expose
+            val needRefresh: Boolean = false,
+
+            @SerializedName("refreshTime")
+            @Expose
+            val refreshTime: Int = 0,
+
+            @SerializedName("maxRetry")
+            val maxRetry: Int = 0
+    )
 
     data class Response(
             @SerializedName("flightCart")
@@ -114,9 +160,9 @@ data class FlightCart(
     )
 
     data class Amenity(
-            @SerializedName("depatureAirportID")
+            @SerializedName("departureAirportID")
             @Expose
-            val depatureAirportId: String = "",
+            val departureAirportId: String = "",
 
             @SerializedName("arrivalAirportID")
             @Expose
@@ -182,11 +228,7 @@ data class FlightCart(
 
             @SerializedName("benefits")
             @Expose
-            val benefits: List<Benefit>,
-
-            @SerializedName("voucher")
-            @Expose
-            val voucher: Voucher = Voucher()
+            val benefits: List<Benefit>
     )
 
     data class Voucher(
@@ -274,15 +316,15 @@ data class FlightCart(
 
             @SerializedName("departureAirportID")
             @Expose
-            val depatureAirportId: String = "",
+            val departureAirportId: String = "",
 
-            @SerializedName("depatureTime")
+            @SerializedName("departureTime")
             @Expose
-            val depatureTime: String = "",
+            val departureTime: String = "",
 
-            @SerializedName("depatureTerminal")
+            @SerializedName("departureTerminal")
             @Expose
-            val depatureTerminal: String = "",
+            val departureTerminal: String = "",
 
             @SerializedName("arrivalAirportID")
             @Expose
@@ -326,7 +368,7 @@ data class FlightCart(
 
             @SerializedName("routes")
             @Expose
-            val routes: Route = Route(),
+            val routes: List<Route> = listOf(),
 
             @SerializedName("passengers")
             @Expose

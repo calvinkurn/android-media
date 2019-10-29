@@ -24,5 +24,5 @@ abstract class FlightBookingViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(FlightBookingViewModel::class)
-    abstract fun flightDestinationViewModel(viewModel: FlightBookingViewModel): ViewModel
+    abstract fun flightBookingViewModel(viewModel: FlightBookingViewModel): ViewModel
 }

@@ -17,8 +17,9 @@ import dagger.Component;
 /**
  * Created by alvarisi on 11/8/17.
  */
+
 @FlightBookingScope
-@Component(modules = {FlightBookingModule.class, CommonTravelModule.class, FlightBookingViewModelModule.class}, dependencies = FlightComponent.class)
+@Component(modules = {FlightBookingModule.class, CommonTravelModule.class}, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
     FlightModuleRouter flightModuleRouter();
 

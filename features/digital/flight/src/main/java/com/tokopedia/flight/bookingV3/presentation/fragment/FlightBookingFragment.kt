@@ -1,22 +1,22 @@
 package com.tokopedia.flight.bookingV3.presentation.fragment
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.flight.bookingV3.data.FlightCart
+import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
 import kotlinx.coroutines.*
-import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-10-24
@@ -25,10 +25,13 @@ import javax.inject.Inject
 class FlightBookingFragment: BaseDaggerFragment() {
 
     val uiScope = CoroutineScope(Dispatchers.Main)
+    var data: FlightCart = FlightCart()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var bookingViewModel: FlightBookingViewModel
+    lateinit var flightRouteAdapter: FlightJourneyAdapter
+
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    lateinit var bookingViewModel: FlightBookingViewModel
 
     override fun getScreenName(): String = ""
 
@@ -36,24 +39,35 @@ class FlightBookingFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
+//            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+//            bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.flightCartResult.observe(this, android.arch.lifecycle.Observer {
-            when (it) {
-                is Success -> {
+//        bookingViewModel.flightCartResult.observe(this, android.arch.lifecycle.Observer {
+//            when (it) {
+//                is Success -> {
+//
+//                }
+//                is Fail -> {
+//
+//                }
+//            }
+//        })
+    }
 
-                }
-                is Fail -> {
+    fun renderData(cart: FlightCart) {
+        hideShimmering()
 
-                }
-            }
-        })
+        flightRouteAdapter = FlightJourneyAdapter()
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        rv_flight_booking_route_summary.layoutManager = layoutManager
+        rv_flight_booking_route_summary.setHasFixedSize(true)
+        rv_flight_booking_route_summary.adapter = flightRouteAdapter
+        flightRouteAdapter.updateRoutes(cart.cartData.flight.journeys)
     }
 
     override fun initInjector() {
@@ -66,8 +80,13 @@ class FlightBookingFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, R.raw.dummy_get_cart), "")
+        val gson = Gson()
+        data = gson.fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_get_cart),
+                FlightCart.Response::class.java).flightCart
+
+//        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, R.raw.dummy_get_cart), "")
         launchLoadingPage(randomLoadingSubtitle())
+
     }
 
     private fun randomLoadingSubtitle(): List<String> {
@@ -88,6 +107,13 @@ class FlightBookingFragment: BaseDaggerFragment() {
         delay(2000L)
         layout_loading.visibility = View.GONE
         layout_shimmering.visibility = View.VISIBLE
+        delay(2000L)
+        renderData(data)
+    }
+
+    private fun hideShimmering() {
+        if (layout_loading.isVisible) layout_loading.hide()
+        if (layout_shimmering.isVisible) layout_shimmering.hide()
     }
 
     companion object {
