@@ -468,7 +468,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-        if (GlobalConfig.APPLICATION_TYPE === GlobalConfig.SELLER_APPLICATION) {
+        if (GlobalConfig.isSellerApp()) {
             val linearLayout = view.findViewById<LinearLayout>(R.id.layout_search)
             linearLayout.visibility = View.GONE
         }
