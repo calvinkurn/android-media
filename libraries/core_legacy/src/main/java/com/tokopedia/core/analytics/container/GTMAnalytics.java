@@ -31,6 +31,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(value);
+        pushGeneral(clone(value));
 
         // V5
         String keyEvent = keyEvent(clone(value));
@@ -589,10 +590,66 @@ public class GTMAnalytics extends ContextAnalytics {
 
     }
 
-    public static <K, V> Map<K, V> clone(Map<K, V> original) {
-        Map<K, V> copy = new HashMap<>();
-        copy.putAll(original);
-        return copy;
+    public static Map<String, Object> clone(Map<String, Object> original){
+        Map<String, Object> map = new HashMap<>();
+        for(Iterator<String> iterator = original.keySet().iterator(); iterator.hasNext(); ){
+            String key = iterator.next();
+            Object value = original.get(key);
+            if(value != null){
+                if(value instanceof Map){
+                    map.put(key, clone((Map<String, Object>) value));
+                }else if(value instanceof Object[]){
+                    map.put(key, clone((Object[]) value));
+                }else if(value instanceof List){
+                    map.put(key,clone((List) value));
+                }else{
+                    map.put(key,value);
+                }
+            }
+        }
+        return map;
+    }
+
+    public static List clone(List original) {
+        List result = new ArrayList();
+        if(original!=null){
+            for (int i = 0; i < original.size(); i++) {
+                Object value = original.get(i);
+                if(value != null){
+                    if(value instanceof Map){
+                        result.add(clone((Map<String, Object>) value));
+                    }else if(value instanceof Object[]){
+                        result.add(clone((Object[]) value));
+                    }else if(value instanceof List){
+                        result.add(clone((List) value));
+                    }else{
+                        result.add(value);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Object[] clone(Object original[]) {
+        Object result[] = new Object[original.length];
+        if(original!=null){
+            for (int i = 0; i < original.length; i++) {
+                Object value = original[i];
+                if(value != null){
+                    if(value instanceof Map){
+                        result[i] = clone((Map<String, Object>) value);
+                    }else if(value instanceof Object[]){
+                        result[i] = clone((Object[]) value);
+                    }else if(value instanceof List){
+                        result[i] = clone((List) value);
+                    }else{
+                        result[i] = value;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 
