@@ -458,40 +458,41 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
 
 
-//        if (!TextUtils.isEmpty(imageUrl)) {
-//            if (imageUrl.endsWith(".gif")) {
-//                Glide.with(getContext())
-//                        .asGif()
-//                        .load(imageUrl)
-//                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-//                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
-//                            @Override
-//                            protected void setResource(GifDrawable resource) {
-//                                ivFloatingEgg.setImageDrawable(resource);
-//                                resource.start();
-//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-//
-//                            }
-//                        });
-//            } else {
-//                Glide.with(getContext())
-//                        .asBitmap()
-//                        .load(imageUrl)
-//                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-//                        .into(new CustomTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                                ivFloatingEgg.setImageBitmap(resource);
-//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-//                            }
-//
-//                            @Override
-//                            public void onLoadCleared(@Nullable Drawable placeholder) {
-//
-//                            }
-//                        });
-//            }
-//        }
+        if (!TextUtils.isEmpty(imageUrl)) {
+            if (imageUrl.endsWith(".gif")) {
+                Glide.with(getContext())
+                        .asGif()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
+                            @Override
+                            protected void setResource(GifDrawable resource) {
+                                if (resource != null) {
+                                    ivFloatingEgg.setImageDrawable(resource);
+                                    resource.start();
+                                    onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                                }
+                            }
+                        });
+            } else {
+                Glide.with(getContext())
+                        .asBitmap()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                ivFloatingEgg.setImageBitmap(resource);
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                            }
+                        });
+            }
+        }
     }
 
     private void setMinimizeBehaviourHyperParameters(boolean isCurrentlyMinimized, boolean wasOnRightEarlier, float startXPos, float startAngle) {
