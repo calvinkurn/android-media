@@ -64,7 +64,7 @@ class PlayWelcomeHelper constructor(
 
         val image = welcomeInfoView.findViewById<ImageView>(R.id.product_image)
         val profile = welcomeInfoView.findViewById<ImageView>(R.id.prof_pict)
-        val title = welcomeInfoView.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val title = welcomeInfoView.findViewById<TextView>(R.id.title)
         val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
         val name = welcomeInfoView.findViewById<TextView>(R.id.name)
         val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
