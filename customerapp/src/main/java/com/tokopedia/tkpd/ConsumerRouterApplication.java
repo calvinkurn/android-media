@@ -50,7 +50,6 @@ import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.MaintenancePage;
@@ -75,7 +74,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -271,7 +269,6 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1252,7 +1249,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NonNull
     @Override
     public Intent getKYCIntent(Context context, int projectId) {
-       return RouteManager.getIntent(context, ApplinkConst.KYC_FORM, String.valueOf(projectId));
+        return RouteManager.getIntent(context, ApplinkConst.KYC_FORM, String.valueOf(projectId));
     }
 
     @Override
@@ -1327,7 +1324,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (isSupportedDelegateDeepLink(url)) {
             actionApplinkFromActivity(activity, url);
         } else {
-            activity.startActivity(getWebviewActivity(activity, url));
+            activity.startActivity(RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url));
         }
     }
 
