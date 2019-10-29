@@ -260,7 +260,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int) {
         adapter.notifyItemChanged(adapterPosition, NotificationUpdateItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
-        analytics.trackClickNotifList(viewModel.templateKey)
+        analytics.trackClickNotifList(viewModel)
         presenter.markReadNotif(viewModel.notificationId)
         val needToResetCounter = !viewModel.isRead
         if (needToResetCounter) {

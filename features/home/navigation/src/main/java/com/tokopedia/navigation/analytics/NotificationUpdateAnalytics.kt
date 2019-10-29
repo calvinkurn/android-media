@@ -62,12 +62,13 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC2
-    fun trackClickNotifList(templateKey: String) {
+    fun trackClickNotifList(viewModel: NotificationUpdateItemViewModel) {
+        val label = viewModel.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
                 EVENT_CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_CLICK_NOTIF_LIST,
-                templateKey
+                label
         ))
     }
     // #NC3
