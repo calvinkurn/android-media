@@ -120,14 +120,6 @@ okbuck {
         repo = 'https://github.com/facebook/buck.git'
     }
 
-//    lint {
-//        version = "26.0.1"
-//    }
-
-//    externalDependencies {
-//        downloadInBuck = false
-//    }
-
     jetifier {
         aarOnly = true
         exclude = [
@@ -135,33 +127,12 @@ okbuck {
         ]
     }
 
-//    buckBinary = "com.github.rifqimfahmi:buck:7b51ed6dff5282f8eea1864adeb9325e56d92fc7@pex"
-    buckBinary = "com.github.tokopedia:buck:7c9bdd9e65d5c25eeb5c4c4e2542267b6b6c6900@pex" // tokped
-//    buckBinary = "com.github.facebook:buck:f6578801138a7b6b89d4a485dd2d0c740fdefe8a@pex"
-
-//    buckBinary = "com.github.facebook:buck:65a76352d5f5a09559e12123b06afb9a9f9df320@pex"
-//    buckBinary = "com.github.facebook:buck:cd9aead193ce510352320b62fa2c21af19b6b1d5@pex"
-//    buckBinary = "com.github.facebook:buck:54d84e9743508639f78ae0a6bf28595b8a33174c@pex" // work
-//    buckBinary = "com.github.facebook:buck:65d40321524a036082abcc95905fdc012891f4bf@pex"
-//    buckBinary = "com.github.facebook:buck:279678da2c3926c5e3ab5b3a83f67babae0f6fa8@pex"
-//    buckBinary = "com.github.facebook:buck:adc81f627d90397018187430e2520fd9199ac484@pex"
-//    buckBinary = "com.github.facebook:buck:f60b9e24e4489e22b75ebe65ed970445974df1ff@pex" // work
-//    buckBinary = "com.github.facebook:buck:7f7d258617cd8ef034027a4459fada210db4c617@pex"
-//    buckBinary = "com.github.facebook:buck:107a0f02125fc17325fbd7bda661bf85dcbfc086@pex" //work
-//    buckBinary = "com.github.facebook:buck:e7ca247e733604cad7e94d18ba479f5f2331624c@pex" // work
-
-//    buckBinary = "com.github.facebook:buck:33eaa0a2ad2b684a0ee126c242f64894b7a38623@pex" // default v45
-//    buckBinary = "com.github.facebook:buck:ff25c89dae7c603c5a711959a1dd79904de3369b@pex" // default v46
-//    buckBinary = "com.github.facebook:buck:bd4fe7cc1c4459bbb1de3f54eebb87f11fc9bbd1@pex" // default v46.least
-//    buckBinary = "com.github.lyft:buck:37e1d62d0f04fb2c9b55f19ab6a202573ed87fe4@pex" // lyft for <= 46
-//    buckBinary = "com.github.rifqimfahmi:buck:7b51ed6dff5282f8eea1864adeb9325e56d92fc7@pex" // financial statement
-//    buckBinary = "com.github.lyft:buck:72b5ee6b682be1e85eb7950ef44232a76cc2cea6@pex"// lyft <= 47 kotlin home
+    buckBinary = "com.github.tokopedia:buck:7c9bdd9e65d5c25eeb5c4c4e2542267b6b6c6900@pex"
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
 
 ext {
     artifactoryUrl = "${artifactory_url}"
