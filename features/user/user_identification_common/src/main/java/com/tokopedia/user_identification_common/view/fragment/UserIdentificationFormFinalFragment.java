@@ -366,6 +366,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     @Override
     public void onKtpValid() {
         hideLoading();
-        showKtpInvalidView();
+        uploadImage();
     }
 }
