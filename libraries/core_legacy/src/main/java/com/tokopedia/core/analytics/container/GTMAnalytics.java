@@ -188,11 +188,11 @@ public class GTMAnalytics extends ContextAnalytics {
         Object impressions = ecommerce.remove("impressions");
         if (impressions instanceof List) {
             List viewProduct = (List) impressions;
+            ArrayList<Bundle> promotionBundles = new ArrayList<>();
             for (int j = 0; j < viewProduct.size(); j++) {
                 Object promotionObj = viewProduct.get(j);
                 if (promotionObj != null) {
-                    ArrayList<Bundle> promotionBundles = new ArrayList<>();
-                    if (promotionObj instanceof Object[]) {
+                    if (promotionObj instanceof Map) {
                         Object[] promotions = (Object[]) promotionObj;
 
                         for (int i = 0; i < promotions.length; i++) {
@@ -206,10 +206,18 @@ public class GTMAnalytics extends ContextAnalytics {
                             Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
                             promotionBundles.add(viewProductMap(promotion, i + 1));
                         }
+                    } else if (promotionObj instanceof Map) {
+                        Map promotions = (Map) promotionObj;
+                        int i=0;
+                        for (Iterator iterator = promotions.keySet().iterator(); iterator.hasNext(); i++) {
+                            String key = (String)iterator.next();
+                            Map<String, Object> promotion = (Map<String, Object>) promotions.get(key);
+                            promotionBundles.add(viewProductMap(promotion, i + 1));
+                        }
                     }
-                    bundle.putParcelableArrayList("items", promotionBundles);
                 }
             }
+            bundle.putParcelableArrayList("items", promotionBundles);
         }
     }
 
