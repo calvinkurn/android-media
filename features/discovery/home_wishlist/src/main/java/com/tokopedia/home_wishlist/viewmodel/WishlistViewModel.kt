@@ -3,13 +3,20 @@ package com.tokopedia.home_wishlist.viewmodel
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -23,8 +30,12 @@ import javax.inject.Named
 open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val wishlistRepository: WishlistRepository,
+        private val addToCartUseCase: AddToCartUseCase,
         @Named("Main") val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher){
+    private val CART_ID = "cartId"
+    private val MESSAGE = "message"
+    private val STATUS = "status"
 
     private val listVisitable = mutableListOf<Visitable<*>>()
     private var keywordSearch = ""
@@ -80,6 +91,52 @@ open class WishlistViewModel @Inject constructor(
 
     fun onAddToCart(productId: Int){
 
+    }
+    /**
+     * [addToCart] is the void for handling adding add to cart
+     * @param addTocartRequestParams the default pojo request to add cart
+     * @param success the callback for handling success add to cart
+     * @param error the callback for handling error add to cart
+     */
+    fun addToCart(productId: Int,
+                  shopId: Int,
+                  success: (Map<String, Any>) -> Unit,
+                  error: (Throwable) -> Unit) {
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = productId.toLong()
+        addToCartRequestParams.shopId = shopId
+        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.notes = ""
+        val requestParams = RequestParams.create()
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<AddToCartDataModel>() {
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        error(e)
+                    }
+
+                    override fun onNext(addToCartResult: AddToCartDataModel) {
+                        val result = HashMap<String, Any>()
+
+                        if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
+                            result[STATUS] = true
+                            result[CART_ID] = addToCartResult.data.cartId
+                            result[MESSAGE] = addToCartResult.data.message
+                            success(result)
+                        } else {
+                            result[STATUS] = false
+                            result[MESSAGE] = addToCartResult.errorMessage
+                            if(addToCartResult.errorMessage.isNotEmpty()) error(Throwable(addToCartResult.errorMessage.first()))
+                            else error(Throwable())
+                        }
+                    }
+                })
     }
 
     fun onAddWishlist(productId: Int){

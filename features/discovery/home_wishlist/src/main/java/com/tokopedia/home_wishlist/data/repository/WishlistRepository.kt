@@ -27,7 +27,6 @@ class WishlistRepository @Inject constructor(
         private const val PARAM_QUERY = "query"
         private const val DEFAULT_COUNT = 20
         const val DEFAULT_START_PAGE = 1
-        private const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan koneksi, silahkan coba lagi."
     }
 
     suspend fun getData(filter: String, page: Int) : List<WishlistItem>{

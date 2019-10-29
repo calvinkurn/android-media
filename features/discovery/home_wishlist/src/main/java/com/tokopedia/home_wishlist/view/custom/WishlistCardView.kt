@@ -7,12 +7,13 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class WishlistCardView : ProductCardView{
 
     private var deleteActionButton: FrameLayout ? = null
-    private var addToCardActionButton: Typography? = null
+    private var addToCardActionButton: UnifyButton? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -36,12 +37,20 @@ class WishlistCardView : ProductCardView{
         deleteActionButton?.setOnClickListener(clickListener)
     }
 
-    fun setAddToCardButtonVisible(isVisible: Boolean){
+    fun setAddToCartButtonVisible(isVisible: Boolean){
         addToCardActionButton?.visibility = if(isVisible) View.VISIBLE else View.GONE
     }
 
-    fun setAddToCardButtonOnClickListener(clickListener: OnClickListener){
+    fun setAddToCartButtonOnClickListener(clickListener: OnClickListener){
         addToCardActionButton?.setOnClickListener(clickListener)
+    }
+
+    fun disableAddToCartButton(){
+        addToCardActionButton?.isEnabled = false
+    }
+
+    fun enableAddToCartButton(){
+        addToCardActionButton?.isEnabled = true
     }
 
     override fun setOnClickListener(clickListener: OnClickListener){

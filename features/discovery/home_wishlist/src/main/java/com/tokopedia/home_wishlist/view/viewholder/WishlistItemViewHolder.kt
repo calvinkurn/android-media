@@ -39,9 +39,12 @@ class WishlistItemViewHolder(
                             )
                     )
             )
+            if(element.isOnAddToCart) disableAddToCartButton()
+            else enableAddToCartButton()
 
-            productCardView.setAddToCardButtonVisible(true)
+            productCardView.setAddToCartButtonVisible(true)
             productCardView.setDeleteButtonVisible(true)
+
             checkBox.isChecked = element.isChecked
             checkBox.setOnClickListener {
                 element.isChecked = !element.isChecked
@@ -62,8 +65,13 @@ class WishlistItemViewHolder(
 //                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
             }
 
-            setAddToCardButtonOnClickListener(View.OnClickListener {
-                (listener as WishlistListener).onAddToCartClick(element)
+            setAddToCartButtonOnClickListener(View.OnClickListener {
+                element.isOnAddToCart = true
+                disableAddToCartButton()
+                (listener as WishlistListener).onAddToCartClick(element){
+                    element.isOnAddToCart = false
+                    enableAddToCartButton()
+                }
             })
 
             setDeleteButtonOnClickListener(View.OnClickListener {

@@ -21,4 +21,8 @@
     <string name="wishlist_try_again">Coba Lagi</string>
     <string name="wishlist_error_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="wishlist_hint_search">Cari Wishlist kamu</string>
+    <string name="wishlist_coach_mark_title">Pengaturan Wishlist</string>
+    <string name="wishlist_coach_mark_description">Gunakan pilihan ‘Atur’ untuk lebih cepat menghapus produk dari Wishlist kamu</string>
+    <string name="wishlist_success_atc">Yay! Barang berhasil ditambahkan ke keranjang.</string>
+    <string name="wishlist_default_error_message">Terjadi kesalahan koneksi, silahkan coba lagi.</string>
 </resources>

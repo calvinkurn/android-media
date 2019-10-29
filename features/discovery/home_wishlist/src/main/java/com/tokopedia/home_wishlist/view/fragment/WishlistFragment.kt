@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
@@ -190,6 +192,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
+        showOnBoarding()
     }
 
     /**
@@ -229,9 +232,16 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
     }
 
-    override fun onAddToCartClick(dataModel: WishlistDataModel) {
-        this.view?.let { Toaster.make(it, "Yay! Barang berhasil ditambahkan ke keranjang.") }
-        viewModel.onAddToCart(getProductId(dataModel))
+    override fun onAddToCartClick(dataModel: WishlistDataModel, callback: (Boolean) -> Unit) {
+        viewModel.addToCart(getProductId(dataModel), getShopId(dataModel), success = {data ->
+            callback.invoke(true)
+            this.view?.let {
+                Toaster.make(it, getString(R.string.wishlist_success_atc))
+            }
+        }, error = {error ->
+            callback.invoke(false)
+            this.view?.let { Toaster.make(it, error.message ?: getString(R.string.wishlist_default_error_message)) }
+        })
     }
 
     override fun onWishlistClick(dataModel: WishlistDataModel) {
@@ -248,6 +258,26 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             is RecommendationCarouselItemDataModel -> dataModel.recommendationItem.productId
             else -> -1
         }
+    }
+    private fun getShopId(dataModel: WishlistDataModel): Int{
+        return when (dataModel) {
+            is WishlistItemDataModel -> dataModel.productItem.shop.id.toInt()
+            is RecommendationCarouselItemDataModel -> dataModel.recommendationItem.shopId
+            else -> -1
+        }
+    }
+
+    private fun showOnBoarding(){
+        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+        coachMarkItems.add(
+                CoachMarkItem(
+                        recyclerView,
+                        getString(R.string.wishlist_coach_mark_title),
+                        getString(R.string.wishlist_coach_mark_description)
+                )
+        )
+        val coachMark = CoachMarkBuilder().build()
+        coachMark.show(activity, tag, coachMarkItems)
     }
 
     /**

@@ -9,7 +9,8 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 data class WishlistItemDataModel(
         val productItem: WishlistItem,
         var isBulkMode: Boolean = false,
-        var isChecked: Boolean = false
+        var isChecked: Boolean = false,
+        var isOnAddToCart: Boolean = false
 ) : WishlistDataModel{
 
     override fun getUniqueIdentity(): Any = productItem.id
