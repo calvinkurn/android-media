@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.FlightCart
+import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import kotlinx.android.synthetic.main.item_flight_booking_route_summary.view.*
 
 /**
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.item_flight_booking_route_summary.view.*
 
 class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder>() {
 
-    var journeys: List<FlightCart.Journey> = listOf()
+    var journeys: List<FlightCartViewEntity.JourneySummary> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
             LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
@@ -25,15 +26,15 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
         holder.bind(journeys[position])
     }
 
-    fun updateRoutes(list: List<FlightCart.Journey>) {
+    fun updateRoutes(list: List<FlightCartViewEntity.JourneySummary>) {
         this.journeys = list
         notifyDataSetChanged()
     }
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-        fun bind(journey: FlightCart.Journey) {
-            view.tv_flight_airline_name.text = String.format("%s -> %s", journey.departureAirportId, journey.arrivalAirportId)
+        fun bind(journey: FlightCartViewEntity.JourneySummary) {
+            view.tv_flight_airline_name.text = journey.airline
         }
 
         companion object {

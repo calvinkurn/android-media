@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.data.FlightCart
+import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
+import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -68,7 +70,8 @@ class FlightBookingFragment: BaseDaggerFragment() {
         rv_flight_booking_route_summary.layoutManager = layoutManager
         rv_flight_booking_route_summary.setHasFixedSize(true)
         rv_flight_booking_route_summary.adapter = flightRouteAdapter
-        flightRouteAdapter.updateRoutes(cart.cartData.flight.journeys)
+        var x = FlightBookingMapper.mapToFlightCartView(cart)
+        flightRouteAdapter.updateRoutes(x.journeySummaries)
     }
 
     override fun initInjector() {

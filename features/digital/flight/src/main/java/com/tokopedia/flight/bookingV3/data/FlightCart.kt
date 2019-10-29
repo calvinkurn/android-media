@@ -13,10 +13,47 @@ data class FlightCart(
         @Expose
         val meta: Meta = Meta(),
 
+        @SerializedName("included")
+        @Expose
+        val included: List<Included> = listOf(),
+
         @SerializedName("data")
         @Expose
         val cartData: CartData = CartData()
 ) {
+
+    data class Included(
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("attributes")
+            @Expose
+            val attributes: Attributes = Attributes()
+    )
+
+    data class Attributes(
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("short_name")
+            @Expose
+            val shortName: String = "",
+
+            @SerializedName("logo")
+            @Expose
+            val logo: String = "",
+
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
+    )
+
     data class CartData(
             @SerializedName("id")
             @Expose
@@ -59,6 +96,7 @@ data class FlightCart(
             val refreshTime: Int = 0,
 
             @SerializedName("maxRetry")
+            @Expose
             val maxRetry: Int = 0
     )
 

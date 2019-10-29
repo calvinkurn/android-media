@@ -5,6 +5,33 @@
         "refreshTime": 8,
         "maxRetry": 5
       },
+      "included": [
+          {
+              "type": "airline",
+              "id": "SI",
+              "attributes": {
+                  "name": "Batavia Air",
+                  "short_name": "Batavia Air",
+                  "logo": ""
+              }
+          },
+          {
+              "type": "airport",
+              "id": "CGK",
+              "attributes": {
+                  "name": "Cengkareng",
+                  "city": "Jakarta"
+              }
+          },
+          {
+              "type": "airport",
+              "id": "DPS",
+              "attributes": {
+                  "name": "Denpasar",
+                  "city": "Bali"
+              }
+          }
+        ],
       "data": {
         "id": "551249688bbb4f6478293e27489b75a97dd750f",
         "status": 2,
