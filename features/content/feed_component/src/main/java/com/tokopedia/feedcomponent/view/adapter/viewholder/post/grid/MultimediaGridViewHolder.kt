@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.item_post_multimedia.view.*
 
 /**
@@ -86,6 +87,10 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
             itemView.layout_video.setZOrderOnTop(true);
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
                 override fun onPrepared(mp: MediaPlayer) {
+
+                    val videoSize = Video.resize(itemView.context, mp.videoWidth, mp.videoHeight)
+                    itemView.layout_video.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                    itemView.layout_video.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
                     mp.isLooping = true
                     mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
