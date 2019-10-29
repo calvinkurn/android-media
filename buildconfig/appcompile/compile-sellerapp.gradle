@@ -130,12 +130,12 @@ include "features:category:tradein"
 include "features:category:tradein_common"
 include "features:fintech:merchant_lending_widget"
 
-include "features:user:profilecompletion"
-include "features:transaction:checkout"
-include "features:logistic:logisticcart"
-include "features:user:stickylogin"
-include "features:home:navigation-common"
-include "features:operational:csat_rating"
+//include "features:user:profilecompletion"
+//include "features:transaction:checkout"
+//include "features:logistic:logisticcart"
+//include "features:user:stickylogin"
+//include "features:home:navigation-common"
+//include "features:operational:csat_rating"
 
 include 'tkpdloyalty'
 include 'tkpdcore'
