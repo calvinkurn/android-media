@@ -45,10 +45,6 @@ open class PlayActivity : BaseSimpleActivity() {
 
     var channelId: String? = ""
 
-    var pipDuration = 0L
-    var pipStartTime = 0L
-    var pipEndTime = 0L
-
     private val mPictureInPictureParamsBuilder
             = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         PictureInPictureParams.Builder()
