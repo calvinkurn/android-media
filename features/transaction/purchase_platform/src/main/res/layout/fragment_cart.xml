@@ -97,8 +97,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/card_footer"
-                    android:layout_below="@+id/card_header"
+                    android:layout_above="@+id/bottom_layout_shadow"
+                    android:layout_alignParentTop="true"
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -109,25 +109,33 @@
 
                 </LinearLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_footer"
+                <View
+                    android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="-2dp"
-                    android:layout_marginTop="-2dp"
-                    android:layout_marginRight="-2dp"
-                    android:layout_marginBottom="-4dp"
-                    android:visibility="gone"
-                    app:cardPreventCornerOverlap="false"
-                    app:cardUseCompatPadding="true"
-                    tools:visibility="visible">
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_above="@+id/bottom_layout"
+                    android:background="@drawable/bottom_sheet_shadow" />
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/card_footer"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentBottom="true"-->
+<!--                    android:layout_marginLeft="-2dp"-->
+<!--                    android:layout_marginTop="-2dp"-->
+<!--                    android:layout_marginRight="-2dp"-->
+<!--                    android:layout_marginBottom="-4dp"-->
+<!--                    android:visibility="gone"-->
+<!--                    app:cardPreventCornerOverlap="false"-->
+<!--                    app:cardUseCompatPadding="true"-->
+<!--                    tools:visibility="visible">-->
 
                     <LinearLayout
                         android:id="@+id/bottom_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_alignParentBottom="true"
                         tools:visibility="visible">
 
                         <View
@@ -189,7 +197,7 @@
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+<!--                </androidx.cardview.widget.CardView>-->
 
             </RelativeLayout>
 
