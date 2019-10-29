@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.content.Context
 import android.graphics.Paint
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class SprintSaleListAdapter(
@@ -39,6 +41,7 @@ class SprintSaleListAdapter(
                 oldPrice.text = item.slashedPrice
                 oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 newPrice.text = item.price
+                ImageHandler.loadImageFitCenter(ctx, freeOngkirView, item.freeOngkir?.imageUrl)
             }
         }
     }
@@ -50,8 +53,8 @@ class SprintSaleListAdapter(
             view.findViewById<SquareImageView>(R.id.dc_sprintsale_item_image)
         }
 
-        val discountView: AppCompatTextView by lazy {
-            view.findViewById<AppCompatTextView>(R.id.dc_sprintsale_item_disc_label)
+        val discountView: Label by lazy {
+            view.findViewById<Label>(R.id.dc_sprintsale_item_disc_label)
         }
 
         val oldPrice: Typography by lazy {
@@ -60,6 +63,10 @@ class SprintSaleListAdapter(
 
         val newPrice: Typography by lazy {
             view.findViewById<Typography>(R.id.dc_sprintsale_item_new_price)
+        }
+
+        val freeOngkirView: AppCompatImageView by lazy {
+            view.findViewById<AppCompatImageView>(R.id.dc_sprintsale_item_freeongkir)
         }
     }
 }

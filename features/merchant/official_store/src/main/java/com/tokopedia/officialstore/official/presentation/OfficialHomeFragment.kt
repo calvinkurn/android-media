@@ -182,7 +182,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingDynamicChannel(
-                            OfficialStoreMockHelper.getDataFromJSON(resources.openRawResource(R.raw.dc_response_mock)),
+                            result.data,
                             adapter
                     )
                 }
