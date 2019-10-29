@@ -463,6 +463,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 Glide.with(getContext())
                         .asGif()
                         .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
                             @Override
                             protected void setResource(GifDrawable resource) {
