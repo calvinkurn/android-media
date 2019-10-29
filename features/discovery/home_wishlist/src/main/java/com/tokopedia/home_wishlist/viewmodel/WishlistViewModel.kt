@@ -36,14 +36,14 @@ open class WishlistViewModel @Inject constructor(
     }
 
     fun loadNextPage(page: Int){
-        wishlistData.postValue(listVisitable.plus(listOf(LoadMoreDataModel())))
+        wishlistData.value = combineVisitable(listVisitable, listOf(LoadMoreDataModel()))
         launchCatchError(block = {
             val data = wishlistRepository.getData(keywordSearch, page)
             if(data.isNotEmpty()){
                 val visitableWishlist = mappingWishlistToVisitable(data)
-                wishlistData.postValue(listVisitable.plus(mappingLoadingRecommendation(visitableWishlist)))
-                val recommendationData = wishlistRepository.getRecommendationData(visitableWishlist.size / 4, page * 2 - 1, data.map { it.id })
-                listVisitable.addAll(mappingRecommendationToWishlist(recommendationList = recommendationData, wishlistVisitable = visitableWishlist))
+                wishlistData.postValue(ArrayList(combineVisitable(listVisitable, visitableWishlist)))
+                val recommendationData = wishlistRepository.getRecommendationData(page, data.map { it.id })
+                if(recommendationData.isNotEmpty()) listVisitable.addAll(mappingRecommendationToWishlist(recommendationList = recommendationData, wishlistVisitable = visitableWishlist))
                 wishlistData.postValue(ArrayList(listVisitable))
             }
         }){
@@ -65,13 +65,57 @@ open class WishlistViewModel @Inject constructor(
             }else {
                 val visitableWishlist = mappingWishlistToVisitable(data)
                 wishlistData.postValue(mappingLoadingRecommendation(visitableWishlist))
-                val recommendationData = wishlistRepository.getRecommendationData(visitableWishlist.size / 4, 1, data.map { it.id })
-                listVisitable.addAll(mappingRecommendationToWishlist(recommendationList = recommendationData, wishlistVisitable = visitableWishlist))
+                val recommendationData = wishlistRepository.getRecommendationData(1, data.map { it.id })
+                if(recommendationData.isNotEmpty()) listVisitable.addAll(mappingRecommendationToWishlist(recommendationList = recommendationData, wishlistVisitable = visitableWishlist))
                 wishlistData.postValue(ArrayList(listVisitable))
             }
         }){
             wishlistData.postValue(listOf(ErrorWishlistDataModel(it.message)))
         }
+    }
+
+    fun onDeleteClick(productId: Int){
+
+    }
+
+    fun onAddToCart(productId: Int){
+
+    }
+
+    fun onAddWishlist(productId: Int){
+
+    }
+
+    fun updateWishlist(productId: Int, position: Int, wishlistStatus: Boolean){
+        if(position <= listVisitable.size - 1){
+            val visitable = listVisitable[position]
+            if(visitable is RecommendationCarouselDataModel){
+                visitable.list.find { it.recommendationItem.productId == productId }?.let {
+                    it.recommendationItem.isWishlist = wishlistStatus
+                    wishlistData.postValue(ArrayList(listVisitable))
+                }
+            }
+        }
+    }
+
+    fun updateBulkMode(isBulkMode: Boolean){
+        val newList = mutableListOf<Visitable<*>>()
+        for (dataModel in listVisitable){
+            when (dataModel) {
+                is WishlistItemDataModel -> {
+                    newList.add(dataModel.copy(isBulkMode = isBulkMode))
+                }
+                is RecommendationCarouselDataModel -> {
+                    newList.add(dataModel.copy(isBulkMode = isBulkMode))
+                }
+                else -> newList.add(dataModel)
+            }
+        }
+        wishlistData.postValue(newList)
+    }
+
+    fun onBulkDelete(callback: (Boolean, Throwable?) -> Unit){
+        callback.invoke(true, null)
     }
 
     private fun mappingWishlistToVisitable(list: List<WishlistItem>): List<Visitable<*>>{
@@ -80,26 +124,27 @@ open class WishlistViewModel @Inject constructor(
 
     private fun mappingLoadingRecommendation(list: List<Visitable<*>>): List<Visitable<*>>{
         val newMappingList = ArrayList(list)
-        val countRecommendationWidget = list.size / 4
-        for(i in countRecommendationWidget downTo 1){
-            newMappingList.add(i * 4, LoadMoreDataModel())
-        }
+        newMappingList.add(4, LoadMoreDataModel())
         return newMappingList
     }
 
     private fun mappingRecommendationToWishlist(wishlistVisitable: List<Visitable<*>>, recommendationList: List<RecommendationWidget>): List<Visitable<*>>{
         val list = mutableListOf<Visitable<*>>()
         list.addAll(wishlistVisitable)
-        for(i in recommendationList.size downTo 1) {
-            list.add(i * 4,
-                    RecommendationCarouselDataModel(
-                            title = recommendationList[i-1].title,
-                            list = recommendationList[i-1].recommendationItemList.map { RecommendationCarouselItemDataModel(it) },
-                            seeMoreAppLink = recommendationList[i-1].seeMoreAppLink))
-        }
+        list.add(4,
+                RecommendationCarouselDataModel(
+                        id = recommendationList.first().tid,
+                        title = recommendationList.first().title,
+                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it) },
+                        seeMoreAppLink = recommendationList.first().seeMoreAppLink))
         return list
     }
 
+    private fun combineVisitable(firstList: List<Visitable<*>>, secondList: List<Visitable<*>>): List<Visitable<*>>{
+        val newList = ArrayList(firstList)
+        newList.addAll(secondList)
+        return newList
+    }
     /**
      * [isLoggedIn] is the function get user session is login or not login
      */

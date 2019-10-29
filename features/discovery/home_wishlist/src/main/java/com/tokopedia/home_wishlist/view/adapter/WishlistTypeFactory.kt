@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.model.datamodel.*
 
 /**
@@ -21,5 +22,5 @@ interface WishlistTypeFactory {
     fun type(emptyWishlistDataModel: EmptyWishlistDataModel): Int
     fun type(loadingDataModel: LoadingDataModel): Int
     fun type(loadingMoreModel: LoadMoreDataModel): Int
-    fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
+    fun createViewHolder(view: View, type: Int): SmartAbstractViewHolder<*>
 }

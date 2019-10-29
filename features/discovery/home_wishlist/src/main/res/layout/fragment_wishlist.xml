@@ -19,39 +19,63 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <com.tokopedia.home_wishlist.view.custom.CustomSearchView
-            android:id="@+id/search_view"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginStart="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_6"
-            android:layout_marginEnd="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_8"
-            app:layout_scrollFlags="scroll|enterAlways"/>
-    </com.google.android.material.appbar.AppBarLayout>
+            app:layout_scrollFlags="scroll|enterAlways">
 
+            <com.tokopedia.home_wishlist.view.custom.CustomSearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginStart="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                android:layout_marginEnd="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_8"
+                app:layout_scrollFlags="scroll|enterAlways"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            tools:visibility="visible" />
+            android:layout_height="match_parent"
+            tools:visibility="visible"/>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
+    <FrameLayout
+        android:id="@+id/container_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_delete_wishlist"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hapus Wishlist"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"/>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -14,13 +14,13 @@ abstract class SmartRecyclerAdapter<T, V : WishlistTypeFactoryImpl>(
         appExecutors: SmartExecutors,
         private val adapterTypeFactory: V,
         diffCallback: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, AbstractViewHolder<*>>(
+) : ListAdapter<T, SmartAbstractViewHolder<*>>(
         AsyncDifferConfig.Builder<T>(diffCallback)
                 .setBackgroundThreadExecutor(appExecutors.diskIO())
                 .build()
 ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartAbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
         return adapterTypeFactory.createViewHolder(view, viewType)
     }
@@ -29,11 +29,11 @@ abstract class SmartRecyclerAdapter<T, V : WishlistTypeFactoryImpl>(
         return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        bind(holder as AbstractViewHolder<Visitable<*>>, getItem(position))
+    override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int) {
+        bind(holder as SmartAbstractViewHolder<Visitable<*>>, getItem(position))
     }
 
-    protected abstract fun bind(visitable: AbstractViewHolder<Visitable<*>>, item: T)
+    protected abstract fun bind(visitable: SmartAbstractViewHolder<Visitable<*>>, item: T)
 
     abstract override fun getItemViewType(position: Int): Int
 }

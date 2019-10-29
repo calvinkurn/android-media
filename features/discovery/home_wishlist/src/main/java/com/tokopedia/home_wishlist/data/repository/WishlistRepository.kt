@@ -1,22 +1,16 @@
 package com.tokopedia.home_wishlist.data.repository
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,7 +25,7 @@ class WishlistRepository @Inject constructor(
         private const val PARAM_COUNT = "count"
         private const val PARAM_PAGE = "page"
         private const val PARAM_QUERY = "query"
-        private const val DEFAULT_COUNT = 8
+        private const val DEFAULT_COUNT = 20
         const val DEFAULT_START_PAGE = 1
         private const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan koneksi, silahkan coba lagi."
     }
@@ -67,19 +61,15 @@ class WishlistRepository @Inject constructor(
         }
     }
 
-    suspend fun getRecommendationData(count: Int, startPageNumber: Int, productIds: List<String>): List<RecommendationWidget>{
+    suspend fun getRecommendationData(page: Int, productIds: List<String>): List<RecommendationWidget>{
         val list = mutableListOf<RecommendationWidget>()
-        var page = startPageNumber
-        for(i in count downTo 1){
-            val widget = recommendationDataSource.load(
-                    pageName = "wishlist",
-                    pageNumber = page,
-                    productIds = productIds
-            )
-            if(widget.isNotEmpty()){
-                list.add(widget[0])
-                page++
-            }
+        val widget = recommendationDataSource.load(
+                pageName = "wishlist",
+                pageNumber = page,
+                productIds = productIds
+        )
+        if(widget.isNotEmpty()){
+            list.add(widget[0])
         }
         return list
     }

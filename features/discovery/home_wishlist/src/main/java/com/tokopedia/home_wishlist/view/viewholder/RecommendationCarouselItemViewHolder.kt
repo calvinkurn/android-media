@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -24,12 +27,13 @@ import com.tokopedia.unifycomponents.Toaster
  */
 class RecommendationCarouselItemViewHolder (
         private val view: View
-) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view){
+) : SmartAbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
 
-    override fun bind(element: RecommendationCarouselItemDataModel) {
+    override fun bind(element: RecommendationCarouselItemDataModel, listener: SmartListener) {
         productCardView.run {
+
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -63,46 +67,21 @@ class RecommendationCarouselItemViewHolder (
                     if(element.recommendationItem.isTopAds){
                         ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
                     }
-
                 }
             })
 
             setOnClickListener {
-
+                (listener as WishlistListener).onProductClick(element, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
                     ImpresionTask().execute(element.recommendationItem.clickUrl)
                 }
             }
 
             setButtonWishlistOnClickListener {
-
+                (listener as WishlistListener).onWishlistClick(element)
             }
         }
     }
-
-    private fun mapBadges(badges: List<String?>){
-        for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
-            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge)
-            productCardView.addShopBadge(view)
-        }
-    }
-
-    private fun showSuccessAddWishlist(view: View, message: String){
-        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
-            RouteManager.route(view.context, ApplinkConst.WISHLIST)
-        })
-    }
-
-    private fun showSuccessRemoveWishlist(view: View, message: String){
-        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
-    }
-
-    private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
-    }
-
 
     companion object{
         val LAYOUT = R.layout.layout_recommendation_carousel_item

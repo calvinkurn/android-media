@@ -9,25 +9,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
 
-class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
+class RecommendationCarouselViewHolder(view: View) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view) {
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
+    private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
     internal val list = mutableListOf<RecommendationCarouselItemDataModel>()
 
-    override fun bind(element: RecommendationCarouselDataModel?) {
-        element?.let {
+    override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
+        element.let {
             title.text = element.title
             list.addAll(element.list)
+            disabledView.visibility = if(element.isBulkMode) View.VISIBLE else View.GONE
             seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
             seeMore.setOnClickListener { RouteManager.route(itemView.context, element.seeMoreAppLink) }
-            setupRecyclerView(element)
+            setupRecyclerView(element, listener)
         }
     }
-    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
+    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel, listener: SmartListener){
         list.clear()
         list.addAll(dataModel.list)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -40,7 +44,7 @@ class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<Recommen
             override fun getItemCount(): Int = list.size
 
             override fun onBindViewHolder(holder: RecommendationCarouselItemViewHolder, position: Int) {
-                holder.bind(list[position])
+                holder.bind(list[position], listener)
             }
         }
     }

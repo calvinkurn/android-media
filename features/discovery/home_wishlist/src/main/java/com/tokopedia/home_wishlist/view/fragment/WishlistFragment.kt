@@ -2,9 +2,9 @@ package com.tokopedia.home_wishlist.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.FrameLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +21,9 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
+import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
+import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
@@ -32,10 +34,13 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SAVE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 /**
@@ -58,7 +63,7 @@ import javax.inject.Inject
  * @property REQUEST_FROM_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
  * @constructor Creates an empty recommendation.
  */
-open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
+open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -69,11 +74,15 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     internal val viewModel by lazy{ viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl() }
-    private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory) }
+    private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
     private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.search_view) }
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
+    private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    internal var menu: Menu? = null
+    private var modeBulkDelete = false
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -112,7 +121,7 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(id.toInt(), wishlistStatusFromPdp, position)
+                viewModel.updateWishlist(id.toInt(), position, wishlistStatusFromPdp)
             }
         }
     }
@@ -129,41 +138,26 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         getComponent(WishlistComponent::class.java).inject(this)
     }
 
-    /**
-     * This void from Callback [RecommendationListener]
-     * It handling wishlist click from item
-     * @param item the item clicked
-     * @param isAddWishlist the wishlist is selected or not
-     * @param callback the callback for notify when success or not, there are have 2 params [Boolean] and [Throwable]
-     */
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.wishlist_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
     }
 
-    /**
-     * This void from Callback [RecommendationListener]
-     * It handling product impression item
-     * @param item the item clicked
-     */
-    override fun onProductImpression(item: RecommendationItem) {
-
-    }
-
-    /**
-     * This void from Callback [RecommendationListener]
-     * It handling item click
-     * @param item the item clicked
-     * @param layoutType the layoutType is type layout where item placed
-     * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
-     */
-    override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.manage -> manageDeleteWishlist()
+            R.id.cancel -> cancelDeleteWishlist()
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun initView(){
         swipeToRefresh?.setOnRefreshListener{
-            endlessRecyclerViewScrollListener?.resetState()
-            viewModel.refresh()
+            if(menu?.findItem(R.id.cancel)?.isVisible == false) {
+                endlessRecyclerViewScrollListener?.resetState()
+                viewModel.refresh()
+            }
         }
         searchView?.setDelayTextChanged(250)
         searchView?.setListener(object : SearchInputView.Listener{
@@ -175,13 +169,24 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
                 viewModel.search(text ?: "")
             }
         })
+        deleteButton?.setOnClickListener {
+            AlertDialog.Builder(it.context)
+                    .setTitle("Hapus Wishlist")
+                    .setMessage("Yakin kamu mau menghapus produk ini dari Wishlist?")
+                    .setPositiveButton("Hapus") { dialog, which -> viewModel.onBulkDelete{ isSuccess, error ->
+                        Toaster.make(it, "Barang berhasil dihapus dari Wishlist.")
+                        viewModel.refresh()
+                    } }
+                    .setNegativeButton("Batal") { dialog, which -> }
+                    .show()
+        }
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView?.adapter = adapter
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun getCurrentPage(): Int = 1
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextPage(page + 1)
+                if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.loadNextPage(page + 1)
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
@@ -198,20 +203,51 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
         viewModel.loadInitialPage()
     }
 
-    /**
-     * Void [eventTrackerClickListener]
-     * It handling tracker event from click Product
-     * @param item the recommendation item product
-     */
-    private fun eventTrackerClickListener(item: RecommendationItem){
-
-    }
-
     private fun renderList(list: List<Visitable<*>>?){
         swipeToRefresh?.isRefreshing = false
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list as MutableList<WishlistDataModel>)
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
+    }
+
+    override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
+        if(dataModel is WishlistItemDataModel){
+            goToPDP(dataModel.productItem.id, position)
+        } else if(dataModel is RecommendationCarouselItemDataModel){
+            goToPDP(dataModel.recommendationItem.productId.toString(), position)
+        }
+    }
+
+    override fun onDeleteClick(dataModel: WishlistDataModel) {
+        context?.let {
+            AlertDialog.Builder(it)
+                    .setTitle("Hapus Wishlist")
+                    .setMessage("Yakin kamu mau menghapus produk ini dari Wishlist?")
+                    .setPositiveButton("Hapus") { dialog, which -> viewModel.onDeleteClick(getProductId(dataModel))}
+                    .setNegativeButton("Batal") { dialog, which -> }
+                    .show()
+        }
+    }
+
+    override fun onAddToCartClick(dataModel: WishlistDataModel) {
+        this.view?.let { Toaster.make(it, "Yay! Barang berhasil ditambahkan ke keranjang.") }
+        viewModel.onAddToCart(getProductId(dataModel))
+    }
+
+    override fun onWishlistClick(dataModel: WishlistDataModel) {
+        viewModel.onAddWishlist(getProductId(dataModel))
+    }
+
+    override fun onProductImpression(dataModel: WishlistDataModel) {
+        // Add tracker
+    }
+
+    private fun getProductId(dataModel: WishlistDataModel): Int{
+        return when (dataModel) {
+            is WishlistItemDataModel -> dataModel.productItem.id.toInt()
+            is RecommendationCarouselItemDataModel -> dataModel.recommendationItem.productId
+            else -> -1
+        }
     }
 
     /**
@@ -220,21 +256,30 @@ open class WishlistFragment: BaseDaggerFragment(), RecommendationListener {
      * @param item the recommendation item
      * @param position the position of the item at adapter
      */
-    private fun goToPDP(item: RecommendationItem, position: Int){
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+    private fun goToPDP(productId: String, position: Int){
+        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
-    /**
-     * Void [updateWishlist]
-     * It handling show intent share
-     * @param id the product id
-     * @param isWishlist the state wishlist or not wishlist
-     * @param position the position of item at adapter
-     */
-    private fun updateWishlist(id: Int, isWishlist: Boolean, position: Int){
+    private fun manageDeleteWishlist(): Boolean{
+        menu?.findItem(R.id.cancel)?.isVisible = true
+        menu?.findItem(R.id.manage)?.isVisible = false
+        containerDelete?.show()
+        searchView?.hide()
+        viewModel.updateBulkMode(true)
+        swipeToRefresh?.isRefreshing = false
+        swipeToRefresh?.isEnabled = false
+        return true
+    }
 
+    private fun cancelDeleteWishlist(): Boolean{
+        menu?.findItem(R.id.cancel)?.isVisible = false
+        menu?.findItem(R.id.manage)?.isVisible = true
+        containerDelete?.hide()
+        searchView?.show()
+        viewModel.updateBulkMode(false)
+        return true
     }
 }
