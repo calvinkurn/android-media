@@ -1,8 +1,8 @@
 package com.tokopedia.salam.umrah.orderdetail.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.viewholder.UmrahOrderDetailButtonViewHolder
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 

@@ -2,8 +2,8 @@ package com.tokopedia.salam.umrah.common.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.unifyprinciples.Typography

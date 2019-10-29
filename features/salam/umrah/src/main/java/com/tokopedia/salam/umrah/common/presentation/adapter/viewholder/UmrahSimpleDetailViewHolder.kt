@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.common.presentation.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import kotlinx.android.synthetic.main.item_umrah_simple_detail_view.view.*

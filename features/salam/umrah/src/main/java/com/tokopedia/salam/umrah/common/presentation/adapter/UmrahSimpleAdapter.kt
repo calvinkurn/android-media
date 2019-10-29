@@ -1,8 +1,8 @@
 package com.tokopedia.salam.umrah.common.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.adapter.viewholder.UmrahSimpleViewHolder
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
