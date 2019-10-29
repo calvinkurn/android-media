@@ -402,8 +402,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int cartItemCounter = 0;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                    if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByPickup()) ||
-                            (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null && shipmentAdapterActionListener.isTradeInByPickup())) {
+                    if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
+                            (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
                         cartItemCounter++;
                     }
                 }
@@ -680,10 +680,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object;
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-                    shipmentDetailData.setSelectedCourierTradeInPickup(courierItemData);
+                    shipmentDetailData.setSelectedCourierTradeInDropOff(courierItemData);
                 } else {
                     ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-                    shipmentDetailData.setSelectedCourierTradeInPickup(courierItemData);
+                    shipmentDetailData.setSelectedCourierTradeInDropOff(courierItemData);
                     shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 }
 
@@ -812,8 +812,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                    if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByPickup()) ||
-                            (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null && shipmentAdapterActionListener.isTradeInByPickup())) {
+                    if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
+                            (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
                         cartItemCounter++;
                     }
                 }
@@ -870,21 +870,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null && (!((ShipmentCartItemModel) shipmentData).isError())) {
                     Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                     Boolean isOrderPriority = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isOrderPriority();
-                    boolean isTradeInPickup = shipmentAdapterActionListener.isTradeInByPickup();
+                    boolean isTradeInPickup = shipmentAdapterActionListener.isTradeInByDropOff();
                     if (isTradeInPickup) {
-                        if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourierTradeInPickup() != null) {
+                        if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                             shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourierTradeInPickup().getShipperPrice();
+                                    .getSelectedCourierTradeInDropOff().getShipperPrice();
                             if (useInsurance != null && useInsurance) {
                                 insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                        .getSelectedCourierTradeInPickup().getInsurancePrice();
+                                        .getSelectedCourierTradeInDropOff().getInsurancePrice();
                             }
                             if (isOrderPriority != null && isOrderPriority) {
                                 orderPriorityFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                        .getSelectedCourierTradeInPickup().getPriorityPrice();
+                                        .getSelectedCourierTradeInDropOff().getPriorityPrice();
                             }
                             additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourierTradeInPickup().getAdditionalPrice();
+                                    .getSelectedCourierTradeInDropOff().getAdditionalPrice();
                         } else {
                             shippingFee = 0;
                             insuranceFee = 0;
@@ -1277,7 +1277,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.shipmentCartItemModelList = shipmentCartItemModelList;
         }
         return shipmentDataRequestConverter.generateRequestData(
-                this.shipmentCartItemModelList, addressModel, isAnalyticsPurpose, shipmentAdapterActionListener.isTradeInByPickup()
+                this.shipmentCartItemModelList, addressModel, isAnalyticsPurpose, shipmentAdapterActionListener.isTradeInByDropOff()
         );
     }
 

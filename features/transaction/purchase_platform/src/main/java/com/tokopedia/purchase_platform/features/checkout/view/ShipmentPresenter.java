@@ -770,7 +770,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+    public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+                                boolean isOneClickShipment, boolean isTradeIn, boolean isTradeInDropOff,
+                                String deviceId, String leasingId) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -781,7 +783,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RequestParams requestParams = RequestParams.create();
             if (isTradeIn) {
                 Map<String, String> params = new HashMap<>();
-                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(true));
+                params.put(CheckoutUseCase.PARAM_IS_TRADE_IN_DROP_OFF, String.valueOf(isTradeInDropOff));
                 params.put(CheckoutUseCase.PARAM_DEVICE_ID, deviceId);
                 requestParams.putObject(CheckoutUseCase.PARAM_TRADE_IN_DATA, params);
             }
@@ -1341,8 +1344,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         // todo: refactor to converter class
         CourierItemData courierData = null;
-        if (getView().isTradeInByPickup()) {
-            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInPickup();
+        if (getView().isTradeInByDropOff()) {
+            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
         } else {
             courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
         }
@@ -1799,7 +1802,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+                                   boolean isOneClickShipment, boolean isTradeIn,
+                                   String deviceId, String leasingId) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );

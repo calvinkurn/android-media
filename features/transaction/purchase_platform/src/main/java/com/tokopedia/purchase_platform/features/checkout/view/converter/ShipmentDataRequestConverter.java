@@ -143,10 +143,10 @@ public class ShipmentDataRequestConverter {
                                                                  boolean isTradeInPickup) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentDetailData != null && (shipmentDetailData.getSelectedCourier() != null ||
-                shipmentDetailData.getSelectedCourierTradeInPickup() != null)) {
+                shipmentDetailData.getSelectedCourierTradeInDropOff() != null)) {
             CourierItemData courierItemData = null;
-            if (isTradeInPickup && shipmentDetailData.getSelectedCourierTradeInPickup() != null) {
-                courierItemData = shipmentDetailData.getSelectedCourierTradeInPickup();
+            if (isTradeInPickup && shipmentDetailData.getSelectedCourierTradeInDropOff() != null) {
+                courierItemData = shipmentDetailData.getSelectedCourierTradeInDropOff();
             } else if (!isTradeInPickup && shipmentDetailData.getSelectedCourier() != null) {
                 courierItemData = shipmentDetailData.getSelectedCourier();
             }

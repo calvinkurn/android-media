@@ -172,7 +172,7 @@ public interface ShipmentContract {
 
         void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
 
-        boolean isTradeInByPickup();
+        boolean isTradeInByDropOff();
     }
 
     interface AnalyticsActionListener {
@@ -270,7 +270,9 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String lesingId);
+        void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+                             boolean isOneClickShipment, boolean isTradeIn,
+                             boolean isTradeInDropOff, String deviceId, String lesingId);
 
         void checkPromoFinalStackShipment(Promo promo);
 //

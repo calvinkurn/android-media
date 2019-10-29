@@ -59,8 +59,6 @@ import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -719,7 +717,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-        shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
+        shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
+                isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCheckoutLeasingId());
     }
 
     @Override
@@ -1959,10 +1958,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
+                shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
+                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
-                shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
+                shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
+                        isTradeIn(), getDeviceId(), getCheckoutLeasingId());
         }
     }
 
@@ -2986,7 +2987,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public boolean isTradeInByPickup() {
+    public boolean isTradeInByDropOff() {
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel == null) return false;
         return recipientAddressModel.getSelectedTabIndex() == 1;

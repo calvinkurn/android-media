@@ -123,7 +123,7 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeTradeInDopOffClicked();
 
-    boolean isTradeInByPickup();
+    boolean isTradeInByDropOff();
 
     void onTradeInAddressTabChanged(int position);
 }
