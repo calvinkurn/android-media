@@ -22,20 +22,13 @@ import timber.log.Timber;
  * If there is log, it might be sent to logging server
  */
 public class TimberReportingTree extends Timber.DebugTree {
-//    public TimberReportingTreeContract contract;
-
-    String TAG = "TimberReportingTree";
 
     public static final String PREFIX = "P";
     public static final String P1 = "P1";
     public static final String P2 = "P2";
-    public static final String P3 = "P3";
 
     public static final int SEVERITY_HIGH = 1;
     public static final int SEVERITY_MEDIUM = 2;
-    public static final int SEVERITY_LOW = 3;
-    public static final int SEVERITY_P1_Testing = 4;
-    public static final int SEVERITY_P2_Testing = 5;
     public static final int NO_SEVERITY = 0;
 
     private int serverSeverity;
@@ -47,7 +40,6 @@ public class TimberReportingTree extends Timber.DebugTree {
     public TimberReportingTree(@Nullable List<String> tags, Long AppVersionMin) {
         this.tags = tags;
         this.AppVersionMin = AppVersionMin;
-//        this.contract = contract;
     }
 
     @Override
@@ -57,7 +49,6 @@ public class TimberReportingTree extends Timber.DebugTree {
         int priority = getPriority(message);
 
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
-//            contract.logNotImportant();
             return;
         }
         // only log the message starts with P
@@ -79,8 +70,7 @@ public class TimberReportingTree extends Timber.DebugTree {
                     else if (!message.contains("offline")) {
                         serverSeverity = setSeverity(message);
                         message = getMessage(message);
-                        LogManager.log(
-                                logToString(logPriority) + "#" + message + "#" + tag, timeStamp, priority);
+                        LogManager.log(logToString(logPriority) + "#" + message + "#" + tag, timeStamp, priority);
                     }
                 }
             }
@@ -131,14 +121,11 @@ public class TimberReportingTree extends Timber.DebugTree {
 
     private int setSeverity(String message) {
         if (message.startsWith(P1)) {
-            serverSeverity = SEVERITY_P1_Testing;
+            serverSeverity = SEVERITY_HIGH;
         } else if (message.startsWith(P2)) {
-            serverSeverity = SEVERITY_P2_Testing;
-        } else if (message.startsWith(P3)) {
-            serverSeverity = SEVERITY_LOW;
+            serverSeverity = SEVERITY_MEDIUM;
         } else {
             serverSeverity = NO_SEVERITY;
-//                    contract.fail();
         }
         return serverSeverity;
     }

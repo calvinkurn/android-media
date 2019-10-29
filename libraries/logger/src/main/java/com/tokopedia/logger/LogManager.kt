@@ -8,15 +8,17 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
-import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.*
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
@@ -151,9 +153,8 @@ class LogManager(val application: Application) : CoroutineScope {
 
         private fun setSeverity(message: String): Int {
             return when {
-                message.contains(TimberReportingTree.P1) -> TimberReportingTree.SEVERITY_P1_Testing
-                message.contains(TimberReportingTree.P2) -> TimberReportingTree.SEVERITY_P2_Testing
-                message.contains(TimberReportingTree.P3) -> TimberReportingTree.SEVERITY_LOW
+                message.contains(TimberReportingTree.P1) -> TimberReportingTree.SEVERITY_HIGH
+                message.contains(TimberReportingTree.P2) -> TimberReportingTree.SEVERITY_MEDIUM
                 else -> TimberReportingTree.NO_SEVERITY
             }
         }
