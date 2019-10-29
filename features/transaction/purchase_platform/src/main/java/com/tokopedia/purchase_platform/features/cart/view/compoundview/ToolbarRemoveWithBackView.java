@@ -69,7 +69,7 @@ public class ToolbarRemoveWithBackView extends BaseCustomView {
             btnRemove.setOnClickListener(v -> listener.onToolbarRemoveAllCart());
     }
 
-    public void setOnClickGoToCkuck(ToolbarRemoveView.ToolbarCartListener listener) {
+    public void setOnClickGoToChuck(ToolbarRemoveView.ToolbarCartListener listener) {
         if (btnOpenChuck != null) {
             btnOpenChuck.setOnClickListener(new OnClickListener() {
                 @Override

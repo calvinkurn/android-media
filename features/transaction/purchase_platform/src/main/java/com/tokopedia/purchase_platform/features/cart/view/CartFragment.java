@@ -483,7 +483,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         ToolbarRemoveWithBackView toolbar = new ToolbarRemoveWithBackView(getActivity());
         toolbar.navigateUp(getActivity());
         toolbar.setOnClickRemove(this);
-        toolbar.setOnClickGoToCkuck(this);
+        toolbar.setOnClickGoToChuck(this);
         toolbar.setTitle(getString(R.string.cart));
         return toolbar;
     }
