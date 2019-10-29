@@ -1,0 +1,61 @@
+package com.tokopedia.logger.datasource.cloud
+
+import android.util.Log
+import com.tokopedia.logger.datasource.db.Logger
+import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.decrypt
+import com.tokopedia.logger.utils.launchCatchError
+import kotlinx.coroutines.runBlocking
+import java.io.DataOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import javax.crypto.SecretKey
+import javax.net.ssl.SSLContext
+
+class LoggerCloudDatasource {
+    fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, key:SecretKey): Int{
+         val decryptedMessage = decrypt(logger.message , key)
+         val message = logger.timeStamp.toString() + decryptedMessage
+         val truncatedMessage: String
+         var errCode = 404
+         truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
+             message.substring(0, Constants.MAX_BUFFER)
+         } else {
+             message
+         }
+         val token = TOKEN[serverSeverity - 1]
+         runBlocking {
+            launchCatchError(block = {errCode = openURL(token,truncatedMessage)}){
+                Log.e("openURL","Error here")
+            }
+         }
+         return errCode
+    }
+
+    private fun openURL(token: String, message: String): Int{
+        var urlConnection: HttpURLConnection? = null
+        val url: URL
+
+        try {
+            Log.e("openURL","SENDING")
+            url = URL(Constants.URL_LOGENTRIES + token)
+            urlConnection = url.openConnection() as HttpURLConnection
+            urlConnection.requestMethod = "POST"
+            urlConnection.doOutput = true
+            val wr = DataOutputStream(urlConnection.outputStream)
+            wr.writeBytes(message)
+            wr.flush()
+            wr.close()
+
+            urlConnection.responseCode
+            Log.e("ErrCode",urlConnection.responseCode.toString())
+            Log.e("SENT","SUCCESS")
+
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        } finally {
+            urlConnection?.disconnect()
+            return urlConnection!!.responseCode
+        }
+    }
+}
