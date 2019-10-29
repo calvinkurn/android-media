@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.fragment
 
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -39,6 +40,20 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     private var contentTitle = ""
     private var btnText = ""
     private var appLink = ""
+    private var templateKey = ""
+
+    private var listener: LongerContentListener? = null
+
+    interface LongerContentListener {
+        fun trackOnClickCtaButton(templateKey: String)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is LongerContentListener) {
+            listener = context
+        }
+    }
 
     override fun getTheme(): Int = R.style.BottomSheetDialogTheme
 
@@ -82,6 +97,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
 
         ctaButton.setOnClickListener {
             RouteManager.route(it.context, appLink)
+            listener?.trackOnClickCtaButton(templateKey)
             dismiss()
         }
     }
@@ -133,6 +149,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentTitle = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TITLE, arguments, null, "")
             btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
             appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
+            templateKey = getParamString(NotificationUpdateFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
         }
     }
 

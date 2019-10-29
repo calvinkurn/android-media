@@ -45,6 +45,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
         val ACTION_CLICK_ATC_BUTTON = "click on atc button"
         val ACTION_VIEW_NOTIF_LIST = "view on notif list"
+        val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
 
         // Label
         val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
@@ -240,6 +241,17 @@ class NotificationUpdateAnalytics @Inject constructor() {
                         CATEGORY_NOTIF_CENTER,
                         ACTION_VIEW_NOTIF_LIST,
                         label
+                )
+        )
+    }
+
+    fun trackOnClickLongerContentBtn(templateKey: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_NAME_CLICK_NOTIF_CENTER,
+                        EVENT_CATEGORY_NOTIF_CENTER,
+                        ACTION_CLICK_LONGER_CONTENT_BUTTON,
+                        templateKey
                 )
         )
     }
