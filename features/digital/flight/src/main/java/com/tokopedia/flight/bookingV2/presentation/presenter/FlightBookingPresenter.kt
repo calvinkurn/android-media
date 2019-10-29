@@ -24,10 +24,10 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
-import com.tokopedia.flight.searchV3.data.api.single.response.Fare
-import com.tokopedia.flight.searchV3.domain.FlightSearchJourneyByIdUseCase
-import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.data.api.single.response.Fare
+import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
+import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase

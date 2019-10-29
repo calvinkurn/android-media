@@ -19,10 +19,10 @@ import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
-import com.tokopedia.flight.searchV3.data.db.FlightComboDao;
-import com.tokopedia.flight.searchV3.data.db.FlightJourneyDao;
-import com.tokopedia.flight.searchV3.data.db.FlightRouteDao;
-import com.tokopedia.flight.searchV3.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.db.FlightComboDao;
+import com.tokopedia.flight.search.data.db.FlightJourneyDao;
+import com.tokopedia.flight.search.data.db.FlightRouteDao;
+import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;

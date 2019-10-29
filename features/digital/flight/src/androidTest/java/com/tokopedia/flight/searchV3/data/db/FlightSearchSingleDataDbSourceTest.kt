@@ -1,14 +1,14 @@
-package com.tokopedia.flight.searchV3.data.db
+package com.tokopedia.flight.search.data.db
 
 import androidx.room.Room
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.searchV3.data.db.util.createFlightJourneyTable
-import com.tokopedia.flight.searchV3.data.db.util.createRoutes
-import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV3.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV3.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.data.db.util.createFlightJourneyTable
+import com.tokopedia.flight.search.data.db.util.createRoutes
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After

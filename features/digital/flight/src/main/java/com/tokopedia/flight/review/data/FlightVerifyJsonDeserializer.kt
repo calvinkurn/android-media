@@ -5,7 +5,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify
-import com.tokopedia.flight.searchV3.data.api.single.response.Meta
+import com.tokopedia.flight.search.data.api.single.response.Meta
 import java.lang.reflect.Type
 import javax.inject.Inject
 

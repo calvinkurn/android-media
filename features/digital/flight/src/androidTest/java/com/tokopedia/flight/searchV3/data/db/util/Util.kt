@@ -1,9 +1,9 @@
-package com.tokopedia.flight.searchV3.data.db.util
+package com.tokopedia.flight.search.data.db.util
 
-import com.tokopedia.flight.searchV3.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV3.data.db.FlightComboTable
-import com.tokopedia.flight.searchV3.data.db.FlightJourneyTable
-import com.tokopedia.flight.searchV3.data.db.FlightRouteTable
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.data.db.FlightComboTable
+import com.tokopedia.flight.search.data.db.FlightJourneyTable
+import com.tokopedia.flight.search.data.db.FlightRouteTable
 
 /**
  * Created by Rizky on 07/10/18.

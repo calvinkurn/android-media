@@ -7,8 +7,8 @@ import com.google.gson.JsonElement
 import com.tokopedia.flight.booking.data.cloud.entity.Amenity
 import com.tokopedia.flight.booking.data.cloud.entity.InsuranceEntity
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
-import com.tokopedia.flight.searchV3.data.api.single.response.AttributesAirport
-import com.tokopedia.flight.searchV3.data.api.single.response.Meta
+import com.tokopedia.flight.search.data.api.single.response.AttributesAirport
+import com.tokopedia.flight.search.data.api.single.response.Meta
 import java.lang.reflect.Type
 import javax.inject.Inject
 

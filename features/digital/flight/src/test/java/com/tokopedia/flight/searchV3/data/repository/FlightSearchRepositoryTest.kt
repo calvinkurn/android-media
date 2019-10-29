@@ -1,15 +1,15 @@
-package com.tokopedia.flight.searchV3.data.repository
+package com.tokopedia.flight.search.data.repository
 
-import com.tokopedia.flight.searchV3.data.api.combined.FlightSearchCombinedDataApiSource
-import com.tokopedia.flight.searchV3.data.api.single.FlightSearchDataCloudSource
-import com.tokopedia.flight.searchV3.data.api.single.response.Meta
-import com.tokopedia.flight.searchV3.data.db.*
-import com.tokopedia.flight.searchV3.data.repository.mapper.FlightSearchMapper
-import com.tokopedia.flight.searchV3.data.repository.util.createCombine
-import com.tokopedia.flight.searchV3.data.repository.util.createFlightDataResponse
-import com.tokopedia.flight.searchV3.data.repository.util.createFlightListSearchDataResponse
-import com.tokopedia.flight.searchV3.presentation.model.FlightRouteModel
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchCombinedApiRequestModel
+import com.tokopedia.flight.search.data.api.combined.FlightSearchCombinedDataApiSource
+import com.tokopedia.flight.search.data.api.single.FlightSearchDataCloudSource
+import com.tokopedia.flight.search.data.api.single.response.Meta
+import com.tokopedia.flight.search.data.db.*
+import com.tokopedia.flight.search.data.repository.mapper.FlightSearchMapper
+import com.tokopedia.flight.search.data.repository.util.createCombine
+import com.tokopedia.flight.search.data.repository.util.createFlightDataResponse
+import com.tokopedia.flight.search.data.repository.util.createFlightListSearchDataResponse
+import com.tokopedia.flight.search.presentation.model.FlightRouteModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchCombinedApiRequestModel
 import com.tokopedia.usecase.RequestParams
 import org.junit.Before
 import org.junit.Test

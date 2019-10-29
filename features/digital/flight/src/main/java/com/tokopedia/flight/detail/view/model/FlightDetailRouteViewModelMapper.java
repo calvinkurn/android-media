@@ -4,9 +4,9 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderStopDetailEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
-import com.tokopedia.flight.searchV3.data.api.single.response.Route;
-import com.tokopedia.flight.searchV3.data.api.single.response.StopDetailEntity;
-import com.tokopedia.flight.searchV3.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.search.data.api.single.response.Route;
+import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,27 +45,12 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setLayover(route.getLayover());
             flightDetailRouteViewModel.setRefundable(route.getRefundable());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getInfos()));
-            flightDetailRouteViewModel.setAmenities(transform(route.getAmenities()));
+            flightDetailRouteViewModel.setAmenities(route.getAmenities());
             flightDetailRouteViewModel.setStopOver(route.getStops());
             flightDetailRouteViewModel.setStopOverDetail(transform(route.getStopDetails(), null));
             flightDetailRouteViewModel.setOperatingAirline(route.getOperatingAirline());
         }
         return flightDetailRouteViewModel;
-    }
-
-    private List<Amenity> transform(List<com.tokopedia.flight.searchV3.data.api.single.response.Amenity> amenities) {
-        List<Amenity> amenityList = new ArrayList<>();
-
-        for (com.tokopedia.flight.searchV3.data.api.single.response.Amenity item : amenities) {
-            Amenity model = new Amenity();
-            model.setDefault(item.isDefault());
-            model.setIcon(item.getIcon());
-            model.setLabel(item.getLabel());
-
-            amenityList.add(model);
-        }
-
-        return amenityList;
     }
 
     private List<FlightStopOverViewModel> transform(List<StopDetailEntity> stopDetails, List<OrderStopDetailEntity> orderStopDetails) {

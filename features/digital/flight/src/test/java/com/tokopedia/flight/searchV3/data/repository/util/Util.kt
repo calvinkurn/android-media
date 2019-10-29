@@ -1,9 +1,9 @@
-package com.tokopedia.flight.searchV3.data.repository.util
+package com.tokopedia.flight.search.data.repository.util
 
-import com.tokopedia.flight.searchV3.data.api.combined.response.AttributesResponse
-import com.tokopedia.flight.searchV3.data.api.combined.response.ComboResponse
-import com.tokopedia.flight.searchV3.data.api.combined.response.FlightSearchCombinedResponse
-import com.tokopedia.flight.searchV3.data.api.single.response.*
+import com.tokopedia.flight.search.data.api.combined.response.AttributesResponse
+import com.tokopedia.flight.search.data.api.combined.response.ComboResponse
+import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse
+import com.tokopedia.flight.search.data.api.single.response.*
 import java.util.*
 
 /**

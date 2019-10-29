@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV3.data.repository
+package com.tokopedia.flight.search.data.repository
 
 import org.junit.Test
 import rx.Observable

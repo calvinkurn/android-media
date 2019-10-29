@@ -2,20 +2,21 @@ package com.tokopedia.flight.passenger.view.fragment
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -57,8 +58,6 @@ import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.item_flight_booking_passenger.*
 
 /**
  * @author by jessica on 2019-09-05
@@ -367,7 +366,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             navigateToMealPicker(meal.amenities, existingSelected)
         }
 
-        rv_meals.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        rv_meals.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_meals.setHasFixedSize(true)
         rv_meals.isNestedScrollingEnabled = false
         rv_meals.adapter = mealAdapter
@@ -434,7 +433,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             navigateToLuggagePicker(luggage.amenities, existingSelected)
         }
 
-        rv_luggages.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        rv_luggages.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_luggages.setHasFixedSize(true)
         rv_luggages.isNestedScrollingEnabled = false
         rv_luggages.adapter = luggageAdapter

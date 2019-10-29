@@ -7,8 +7,8 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
-import com.tokopedia.flight.searchV3.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import java.util.*
 
 /**
