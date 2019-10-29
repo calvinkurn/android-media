@@ -40,7 +40,6 @@ import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
@@ -73,6 +72,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         const val GROUP_CHAT_NETWORK_PREFERENCES = "gc_network"
 
         var VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1)
+        const val STICKY_COMPONENT = 102
         const val REQUEST_LOGIN = 111
         const val YOUTUBE_DELAY = 1500
 
@@ -786,9 +786,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_LOGIN) {
-            viewState.onSuccessLogin()
-            loadFirstTime()
+        when(requestCode) {
+            REQUEST_LOGIN -> {
+                viewState.onSuccessLogin()
+                loadFirstTime()
+            }
+            STICKY_COMPONENT -> {
+                ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.play_atc_success))
+            }
         }
     }
 
