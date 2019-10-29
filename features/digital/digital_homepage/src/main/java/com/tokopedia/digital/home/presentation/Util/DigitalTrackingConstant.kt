@@ -36,7 +36,3 @@ object DigitaHomepageTrackingEEConstant {
     const val ECOMMERCE = "ecommerce"
     const val PROMOTIONS = "promotions"
 }
-
-object DigitalHomepageTrackingScreenConstant {
-    const val DIGITAL_HOMEPAGE = "/digital/subhomepage/topup"
-}
