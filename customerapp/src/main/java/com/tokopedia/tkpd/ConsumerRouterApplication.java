@@ -1159,39 +1159,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public boolean isPromoNativeEnable() {
-        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST);
-    }
-
-    @Override
     public Intent getLoginIntent() {
         Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
         return intent;
-    }
-
-    @Override
-    public int getTopPayPaymentSuccessCode() {
-        return PaymentConstant.PAYMENT_SUCCESS;
-    }
-
-    @Override
-    public int getTopPayPaymentFailedCode() {
-        return PaymentConstant.PAYMENT_FAILED;
-    }
-
-    @Override
-    public int getTopPayPaymentCancelCode() {
-        return PaymentConstant.PAYMENT_CANCELLED;
-    }
-
-    @Override
-    public Intent getBannerWebViewIntent(Activity activity, String url) {
-        return RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url);
-    }
-
-    @Override
-    public Intent getWebviewActivity(Activity activity, String url) {
-        return RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override
@@ -1385,11 +1355,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openTokopointWebview(Context context, String url, String title) {
         context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
-    }
-
-    @Override
-    public File writeImage(String filePath, int qualityProcentage) {
-        return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
     }
 
     @Override
