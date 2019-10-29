@@ -16,5 +16,6 @@ query {
     unused
     promo
     expirePromo
+    url
   }
 }

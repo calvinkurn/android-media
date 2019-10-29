@@ -149,6 +149,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
+        if (!::filterRecyclerView.isInitialized) return
         coachMarkItems.add(
                 1 ,
                 CoachMarkItem(
@@ -357,7 +358,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         if (!longerTextDialog.isAdded)
-            longerTextDialog.show(activity?.supportFragmentManager, "Longer Text Bottom Sheet")
+            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
     }
 
     companion object {

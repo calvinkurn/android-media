@@ -13,12 +13,15 @@ class GetShopReputationUseCase (private val gqlQuery: String,
 
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
+    val request by lazy{
+        GraphqlRequest(gqlQuery, ShopBadge.Response::class.java, params)
+    }
 
     override suspend fun executeOnBackground(): ShopBadge {
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
-        gqlUseCase.addRequest(GraphqlRequest(gqlQuery, ShopBadge.Response::class.java, params))
+        gqlUseCase.addRequest(request)
         val gqlResponse = gqlUseCase.executeOnBackground()
 
         val gqlError = gqlResponse.getError(ShopBadge.Response::class.java)

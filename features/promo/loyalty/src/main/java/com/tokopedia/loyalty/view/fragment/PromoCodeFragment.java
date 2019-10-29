@@ -159,10 +159,6 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() instanceof LoyaltyModuleRouter) {
-                    ((LoyaltyModuleRouter) getActivity())
-                            .trainSendTrackingOnClickUseVoucherCode(voucherCodeField.getText().toString());
-                }
                 voucherCodeFieldHolder.setError(null);
                 if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
@@ -355,14 +351,6 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     @Override
     public void sendTrackingOnCheckDigitalVoucherSuccess(String voucherCode) {
         LoyaltyTracking.eventclickBtnSuccessUsePromoCode(getArguments().getString(CATEGORY_NAME_KEY), voucherCode);
-    }
-
-    @Override
-    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
-        if (getActivity() instanceof LoyaltyModuleRouter) {
-            ((LoyaltyModuleRouter) getActivity())
-                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
-        }
     }
 
     @Override

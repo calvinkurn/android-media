@@ -439,6 +439,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.finish()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
+                logoutGoogleAccountIfExist()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -745,6 +746,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit {
+        logoutGoogleAccountIfExist()
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
             onErrorRegister(errorMessage)
@@ -964,5 +966,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         context?.let {
             permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 }

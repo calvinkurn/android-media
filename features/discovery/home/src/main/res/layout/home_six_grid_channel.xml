@@ -58,9 +58,13 @@
         android:textColor="@color/medium_green"
         android:textSize="13sp"
         android:textStyle="normal"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/channel_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/channel_title" />
+        app:layout_constraintTop_toTopOf="@+id/channel_title"
+        android:layout_alignParentEnd="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleList"

@@ -8,11 +8,15 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartExecutors
+import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
+import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,8 +36,7 @@ class WishlistModule {
 
     @WishlistScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideWishlistProductionDispatcherProvider(): WishlistDispatcherProvider = WishlistProductionDispatcherProvider()
 
     @Provides
     @WishlistScope
@@ -49,6 +52,14 @@ class WishlistModule {
     fun provideGetSingleRecommendationUseCase(@Named("singleProductRecommendation") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+
+    @Provides
+    @WishlistScope
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context) = RemoveWishListUseCase(context)
+
+    @Provides
+    @WishlistScope
+    fun provideBulkRemoveWishlistUseCase(@ApplicationContext context: Context) = BulkRemoveWishlistUseCase(context)
 
     @Provides
     @WishlistScope

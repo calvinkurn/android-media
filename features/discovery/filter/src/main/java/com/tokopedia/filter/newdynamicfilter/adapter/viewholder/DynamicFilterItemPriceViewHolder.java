@@ -141,8 +141,15 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         pricePillsAdapter = new PricePillsAdapter(new PricePillsAdapter.Callback() {
             @Override
-            public void onPriceRangeClicked(int minValue, int maxValue) {
+            public void onPriceRangeSelected(int minValue, int maxValue) {
                 priceRangeInputView.setData(minBound, maxBound, minValue, maxValue);
+                refreshPricePills();
+                dynamicFilterView.onPriceRangeClicked();
+            }
+
+            @Override
+            public void onPriceRangeRemoved() {
+                priceRangeInputView.setData(minBound, maxBound, minBound, maxBound);
                 refreshPricePills();
                 dynamicFilterView.onPriceRangeClicked();
             }

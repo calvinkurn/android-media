@@ -74,14 +74,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         return TERMS_AND_CONDITION_URL
     }
 
-    override fun getUserIdForHeader(): String? {
-        return userSession.userId
-    }
-
-    override fun getAccessToken(): String? {
-        return userSession.accessToken
-    }
-
     override fun onLoadFinished() {
         super.onLoadFinished()
         footer?.visible()

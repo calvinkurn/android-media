@@ -8,6 +8,7 @@
     android:background="@color/white">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/vg_detail_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/checkout_view"

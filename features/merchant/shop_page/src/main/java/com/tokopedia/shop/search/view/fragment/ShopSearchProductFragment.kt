@@ -141,6 +141,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     override fun onDestroy() {
         viewModel.shopSearchProductResult.removeObservers(this)
+        searchInputView.setListener(null)
         super.onDestroy()
     }
 
@@ -314,6 +315,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun populateFixedSearchResult() {
+        if (context == null) {
+            return
+        }
         val listData = mutableListOf<ShopSearchProductDataModel>().apply {
             add(ShopSearchProductFixedResultDataModel(
                     searchQuery,

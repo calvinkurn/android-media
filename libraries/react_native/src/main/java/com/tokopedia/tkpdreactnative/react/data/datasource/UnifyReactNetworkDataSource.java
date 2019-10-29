@@ -2,11 +2,12 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 
 import android.net.Uri;
 
-import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.ReactNativeInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import rx.Observable;
 
@@ -16,16 +17,18 @@ import rx.Observable;
 
 public class UnifyReactNetworkDataSource {
     private Retrofit.Builder retrofit;
+    private OkHttpClient okHttpClient;
 
-    public UnifyReactNetworkDataSource(Retrofit.Builder retrofit) {
+    public UnifyReactNetworkDataSource(Retrofit.Builder retrofit, OkHttpClient okHttpClient) {
         this.retrofit = retrofit;
+        this.okHttpClient = okHttpClient;
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientReactNativeNoAuth(configuration.getHeaders()).newBuilder().build())
+                .client(okHttpClient.newBuilder().addInterceptor(new ReactNativeInterceptor(configuration.getHeaders())).build())
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
     }

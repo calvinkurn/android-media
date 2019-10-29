@@ -67,6 +67,41 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/grey_300" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_detect_current_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/img_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_current_location"/>
+
+                <TextView
+                    android:id="@+id/detect_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/deal_product_text_color"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    app:layout_constraintLeft_toRightOf="@+id/img_current_location"
+                    android:text="@string/detect_current_location"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_300" />
+
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nested_scroll_view"
                 android:layout_width="match_parent"
