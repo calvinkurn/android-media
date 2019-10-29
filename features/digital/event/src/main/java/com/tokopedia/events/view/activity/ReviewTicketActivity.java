@@ -2,15 +2,18 @@ package com.tokopedia.events.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
@@ -27,17 +31,20 @@ import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+
+import javax.inject.Inject;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
+    public static final String SCREEN_NAME = "digital/events/summary";
     ImageView eventImageSmall;
     TextView eventNameTv;
     View eventTimeTv;
@@ -59,10 +66,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View updateNumber;
     ScrollView scrollView;
     View formLayout;
-    EditText edForm1;
-    EditText edForm2;
-    EditText edForm3;
-    EditText edForm4;
     FrameLayout mainContent;
     TextView tvPromoSuccessMsg;
     TextView tvPromoCashbackMsg;
@@ -80,17 +83,19 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View gotoPromo;
     View sectionDiscount;
     TextView tvDiscount;
+    LinearLayout formsLayout;
 
     private int baseFare;
     private int convFees;
+
+    private List<EditText> formsList = new ArrayList<>();
 
     EventReviewTicketsContractor.EventReviewTicketPresenter eventReviewTicketPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
-    public static final int PROMO_CODE_CHECK = 4096;
-    private ImageTextViewHolder timeHolder;
-    private ImageTextViewHolder addressHolder;
+    private TextView dateRangeName, cityName;
+    private ImageView dateImageView, cityImageView;
     private EventsAnalytics eventsAnalytics;
 
     @Override
@@ -114,7 +119,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        eventsAnalytics = new EventsAnalytics();
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
@@ -128,6 +132,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     void setupVariables() {
+        eventsAnalytics = new EventsAnalytics();
         eventImageSmall = findViewById(R.id.event_image_small);
         eventNameTv = findViewById(R.id.event_name_tv);
         eventTimeTv = findViewById(R.id.event_time_tv);
@@ -149,11 +154,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         updateNumber = findViewById(R.id.update_number);
         scrollView = findViewById(R.id.scroll_view);
         formLayout = findViewById(R.id.form_layout);
-        edForm1 = findViewById(R.id.ed_form_1);
-        edForm2 = findViewById(R.id.ed_form_2);
-        edForm3 = findViewById(R.id.ed_form_3);
-        edForm4 = findViewById(R.id.ed_form_4);
         mainContent = findViewById(R.id.main_content);
+        formsLayout = findViewById(R.id.forms_layout);
         tvPromoSuccessMsg = findViewById(R.id.tv_promo_success_msg);
         tvPromoCashbackMsg = findViewById(R.id.tv_promo_cashback_msg);
         batal = findViewById(R.id.batal);
@@ -171,6 +173,14 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         sectionDiscount = findViewById(R.id.rl_section_discount);
         tvDiscount = findViewById(R.id.tv_discount);
 
+        View view = findViewById(R.id.event_time_tv);
+        dateRangeName = view.findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.image_holder_small);
+
+        View cityView = findViewById(R.id.event_address_tv);
+        cityName = cityView.findViewById(R.id.textview_holder_small);
+        cityImageView = cityView.findViewById(R.id.image_holder_small);
+
         btnGoToPayment.setOnClickListener(this);
         infoEmail.setOnClickListener(this);
         infoMoreinfo.setOnClickListener(this);
@@ -180,36 +190,33 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         gotoPromo.setOnClickListener(this);
         dismissTooltip.setOnClickListener(this);
 
-        edForm1.setOnFocusChangeListener(this);
-        edForm2.setOnFocusChangeListener(this);
-        edForm3.setOnFocusChangeListener(this);
-        edForm4.setOnFocusChangeListener(this);
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1) {
         gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (this, R.drawable.promo_code), null, null , null);
+                (this, R.drawable.promo_code), null, null, null);
 
-        int result = customText1&4096;
+        int result = customText1 & 4096;
         if (result == 0) {
             gotoPromo.setVisibility(View.VISIBLE);
         } else {
-            gotoPromo.setVisibility(View.GONE   );
+            gotoPromo.setVisibility(View.GONE);
         }
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
-        timeHolder = new ImageTextViewHolder(this);
-        addressHolder = new ImageTextViewHolder(this);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
         } else {
-            setHolder(R.drawable.ic_time, timerange, timeHolder);
+            dateImageView.setImageResource(R.drawable.ic_time);
+            dateRangeName.setText(timerange);
         }
-        setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
+        cityName.setText(packageViewModel.getAddress());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
@@ -236,6 +243,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             seatNumbers.setText(builder.toString());
             selectedSeatLayout.setVisibility(View.VISIBLE);
         }
+        eventsAnalytics.sendViewCheckoutEvent(packageViewModel);
     }
 
     @Override
@@ -264,23 +272,20 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public void initForms(String[] hintText, String[] regex) {
         formLayout.setVisibility(View.VISIBLE);
+        formsLayout.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.rightMargin = getResources().getDimensionPixelOffset(R.dimen.dp_16);
         try {
-            edForm1.setHint(hintText[0]);
-            edForm1.setVisibility(View.VISIBLE);
-            edForm1.setTag(regex[0]);
-
-            edForm2.setHint(hintText[1]);
-            edForm2.setVisibility(View.VISIBLE);
-            edForm2.setTag(regex[1]);
-
-            edForm3.setHint(hintText[2]);
-            edForm3.setVisibility(View.VISIBLE);
-            edForm3.setTag(regex[2]);
-
-            edForm4.setHint(hintText[3]);
-            edForm4.setVisibility(View.VISIBLE);
-            edForm4.setTag(regex[3]);
-
+            for (int i = 0; i < hintText.length; i++) {
+                EditText editText = new EditText(this);
+                editText.setHint(hintText[i]);
+                editText.setTag(regex[i]);
+                editText.setTextColor(getResources().getColor(R.color.grey_500));
+                editText.setTextSize(14);
+                editText.setLayoutParams(params);
+                formsLayout.addView(editText);
+                formsList.add(editText);
+            }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -325,14 +330,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public boolean validateAllFields() {
         boolean result = true;
-        if (edForm1.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm1);
-        if (edForm2.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm2);
-        if (edForm3.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm3);
-        if (edForm4.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm4);
+        for (int i= 0; i<formsList.size(); i++) {
+            result = result && eventReviewTicketPresenter.validateEditText(formsList.get(i));
+        }
         return result;
     }
 
@@ -413,10 +413,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         super.onResume();
     }
 
-    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-        holder.setImage(resID);
-        holder.setTextView(label);
-    }
 
     private void showDiscountSection(long discount, boolean show) {
         if (show) {
@@ -443,7 +439,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventReviewTicketPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

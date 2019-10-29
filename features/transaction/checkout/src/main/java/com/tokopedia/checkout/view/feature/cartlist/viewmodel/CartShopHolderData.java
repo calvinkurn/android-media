@@ -62,6 +62,7 @@ public class CartShopHolderData implements Parcelable {
 
     public void setAllSelected(boolean allSelected) {
         this.allSelected = allSelected;
+        this.shopGroupData.setChecked(allSelected);
     }
 
     public boolean isPartialSelected() {

@@ -7,10 +7,10 @@ import android.view.View
 
 import com.bca.xco.widget.BCAEditXCOWidget
 import com.bca.xco.widget.XCOEnum
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase
 import com.tokopedia.instantdebitbca.data.view.activity.BcaEditLimitActivity
 import com.tokopedia.instantdebitbca.data.view.activity.InstantDebitBcaActivity
-import com.tokopedia.network.utils.AuthUtil
 
 import java.util.HashMap
 import javax.inject.Inject
@@ -35,8 +35,8 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
 
     override fun openWidgetBca(accessToken: String) {
         if(::widgetBca.isInitialized) {
-            widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
-                    userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
+            widgetBca.openWidget(accessToken, AuthKey.API_KEY_INSTANT_DEBIT_BCA, AuthKey.API_SEED_INSTANT_DEBIT_BCA,
+                    userSession.userId, AuthKey.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
         }
     }
 

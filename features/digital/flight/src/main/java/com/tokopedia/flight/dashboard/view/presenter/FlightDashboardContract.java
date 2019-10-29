@@ -60,10 +60,6 @@ public interface FlightDashboardContract {
 
         void showAirportShouldDifferentCity(@StringRes int resId);
 
-        void navigateToLoginPage();
-
-        void closePage();
-
         void renderBannerView(List<BannerDetail> bannerList);
 
         void hideBannerView();
@@ -83,6 +79,8 @@ public interface FlightDashboardContract {
         String getInfantPassengerArguments();
 
         String getClassArguments();
+
+        Boolean isAutoSearch();
 
         FlightDashboardPassDataViewModel getDashboardPassData();
 
@@ -128,8 +126,6 @@ public interface FlightDashboardContract {
         void onSearchTicketButtonClicked();
 
         void onDestroyView();
-
-        void onLoginResultReceived();
 
         void onBannerItemClick(int position, BannerDetail bannerDetail);
 

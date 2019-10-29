@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListComponent;
@@ -46,6 +47,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private View emptyState;
     private Button emptyButton;
+    private Boolean openFollowerPage = false;
 
     @Inject
     KolFollowingList.Presenter presenter;
@@ -95,6 +97,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        openFollowerPage = getArguments().getBoolean(KolFollowingListActivity.ARGS_OPEN_FOLLOWER, false);
         initView();
         initViewListener();
     }
@@ -223,11 +226,15 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onListItemClicked(KolFollowingViewModel item) {
-        String url = item.getProfileApplink();
-        if (!TextUtils.isEmpty(url)) {
-            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-            applinkRouter.goToApplinkActivity(getActivity(), url);
+        if (RouteManager.isSupportApplink(getContext(), item.getProfileApplink())
+                && !item.getProfileApplink().contains("m.tokopedia.com")) {
+            RouteManager.route(getContext(), item.getProfileApplink());
         }
+    }
+
+    @Override
+    public boolean isOpenFollowerPage() {
+        return openFollowerPage;
     }
 
     @Override

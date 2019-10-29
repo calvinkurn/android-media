@@ -1,6 +1,5 @@
 package com.tokopedia.flight.detail.view.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
@@ -51,6 +49,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
@@ -64,6 +63,8 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import java.util.List;
 
@@ -83,7 +84,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-    private static final String CANCEL_SOLUTION_ID = "1378";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
     public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
 
@@ -129,15 +129,17 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView tvPaymentCost;
     private TextView tvPaymentCostLabel;
     private TextView tvPaymentDueDate;
-    private LinearLayout containerTicketCancellationStatus;
-    private AppCompatTextView tvTicketCancellationStatus;
+    private Ticker cancellationWarningTicker;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
 
-    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
+    private boolean isCancellation;
+
+    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData, boolean isCancellation) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
+        bundle.putBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, isCancellation);
         flightDetailOrderFragment.setArguments(bundle);
         return flightDetailOrderFragment;
     }
@@ -157,6 +159,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
+        isCancellation = getArguments().getBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, false);
     }
 
     @Nullable
@@ -179,22 +182,21 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket = view.findViewById(R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
         buttonReorder = view.findViewById(R.id.button_reorder);
-        paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
-        paymentCostLayout = (LinearLayout) view.findViewById(R.id.payment_cost_layout);
-        paymentDueDateLayout = (LinearLayout) view.findViewById(R.id.payment_due_date_layout);
-        tvPaymentDescriptionLabel = (TextView) view.findViewById(R.id.tv_payment_description_label);
-        tvPaymentDescription = (TextView) view.findViewById(R.id.tv_payment_description);
-        tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
-        tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
-        tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
-        insuranceLayout = (LinearLayout) view.findViewById(R.id.insurance_layout);
-        insuranceRecyclerView = (RecyclerView) view.findViewById(R.id.rv_insurance);
+        paymentInfoLayout = view.findViewById(R.id.payment_info_layout);
+        paymentCostLayout = view.findViewById(R.id.payment_cost_layout);
+        paymentDueDateLayout = view.findViewById(R.id.payment_due_date_layout);
+        tvPaymentDescriptionLabel = view.findViewById(R.id.tv_payment_description_label);
+        tvPaymentDescription = view.findViewById(R.id.tv_payment_description);
+        tvPaymentCost = view.findViewById(R.id.tv_payment_cost);
+        tvPaymentCostLabel = view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentDueDate = view.findViewById(R.id.tv_payment_due_date);
+        insuranceLayout = view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
         showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
-        containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
-        tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
+        cancellationWarningTicker = view.findViewById(R.id.cancellation_warning);
 
         setViewClickListener();
 
@@ -370,6 +372,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         FlightOrderDetailInsuranceAdapter adapter = new FlightOrderDetailInsuranceAdapter(insurances);
         insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         insuranceRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void checkIfShouldGoToCancellation() {
+        if (isCancellation) {
+            navigateToCancellationListPage();
+        }
     }
 
     @Override
@@ -550,16 +559,20 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void showCancellationStatus() {
-        tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
-    }
+    public void showCancellationStatus(String status) {
+        cancellationWarningTicker.setHtmlDescription(status);
+        cancellationWarningTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(CharSequence charSequence) {
+                navigateToCancellationListPage();
+            }
 
-    @Override
-    public void showCancellationStatusInProgress(int numberOfProcess) {
-        tvTicketCancellationStatus.setText(String.format(getString(
-                R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+            @Override
+            public void onDismiss() {
+
+            }
+        });
+        cancellationWarningTicker.setVisibility(View.VISIBLE);
     }
 
     @Override

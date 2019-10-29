@@ -70,4 +70,8 @@ public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewMo
     public void setPayment(PaymentInfoEntity payment) {
         this.payment = payment;
     }
+
+    public void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
+
+    public String getContactUsUrl() { return contactUsUrl; }
 }

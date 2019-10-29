@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -16,38 +16,48 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'explore'
-    groupId = 'com.tokopedia.explore'
-    versionName = "${tkpdExploreVersion}"
-    artifactName = "explore-release"
-}
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.kol)
-
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.topAdsSdk)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.miscDependencies.multiDex
-
-
-    implementation project(rootProject.ext.libraries.track)
-
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'explore'
+    groupId = 'com.tokopedia.content'
+    versionName = "1.0.0"
+    artifactName = "explore-release"
 }
 
 apply from: '../../../publish_local.gradle'

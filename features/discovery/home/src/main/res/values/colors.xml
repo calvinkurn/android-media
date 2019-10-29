@@ -30,4 +30,6 @@
     <color name="bg_label_grey">#f3f4f5</color>
     <color name="font_title_bu_widget">#f531353b</color>
     <color name="font_subtitle_bu_widget">#ae31353b</color>
+    <color name="shadow_6">#60727272</color>
+    <color name="sticky_bg_color">#E6EBFFEF</color>
 </resources>

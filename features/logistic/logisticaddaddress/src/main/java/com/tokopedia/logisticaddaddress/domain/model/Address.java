@@ -3,13 +3,16 @@ package com.tokopedia.logisticaddaddress.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory;
+
 import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 17/11/17.
  */
 
-public class Address implements Parcelable {
+public class Address implements Parcelable, Visitable<DistrictTypeFactory> {
 
     private int districtId;
     private String districtName;
@@ -98,6 +101,11 @@ public class Address implements Parcelable {
 
     public void setZipCodes(ArrayList<String> zipCodes) {
         this.zipCodes = zipCodes;
+    }
+
+    @Override
+    public int type(DistrictTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     @Override

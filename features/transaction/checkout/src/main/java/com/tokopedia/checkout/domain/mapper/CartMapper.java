@@ -7,22 +7,28 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.SimilarProduct;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
+import com.tokopedia.transactiondata.entity.response.cartlist.Ticker;
+import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
@@ -91,22 +97,24 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
+        if (cartDataListResponse.getTickers() != null && !cartDataListResponse.getTickers().isEmpty()) {
+            Ticker ticker = cartDataListResponse.getTickers().get(0);
+            cartListData.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+        }
+
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
-        boolean isDisableAllProducts = false;
+        boolean isDisableAllProducts = true;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
 
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
+            isDisableAllProducts = true;
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;
-                String defaultErrorMessage = "";
                 for (CartDetail cartDetail : shopGroup.getCartDetails()) {
                     if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
                         errorItemCountPerShop++;
-                        if (TextUtils.isEmpty(defaultErrorMessage) && cartDetail.getErrors().size() > 0) {
-                            defaultErrorMessage = cartDetail.getErrors().get(0);
-                        }
                     }
                 }
 
@@ -114,7 +122,6 @@ public class CartMapper implements ICartMapper {
                 if (errorItemCountPerShop == shopGroup.getCartDetails().size()) {
                     shopError = true;
                     isDisableAllProducts = true;
-                    shopGroupData.setErrorTitle(defaultErrorMessage);
                 } else {
                     isDisableAllProducts = false;
                 }
@@ -183,6 +190,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setPriceFormatted(data.getProduct().getProductPriceFmt());
                 cartItemDataOrigin.setPricePlan(data.getProduct().getProductPrice());
                 cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
+                cartItemDataOrigin.setPriceOriginal(data.getProduct().getProductOriginalPrice());
                 cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
                 cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
                 if (data.getProduct().getProductPreorder() != null
@@ -220,6 +228,11 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
                 cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
+                if (data.getProduct().getFreeShipping() != null && data.getProduct().getFreeShipping().getEligible() &&
+                        !TextUtils.isEmpty(data.getProduct().getFreeShipping().getBadgeUrl())) {
+                    cartItemDataOrigin.setFreeShipping(true);
+                    cartItemDataOrigin.setFreeShippingBadgeUrl(data.getProduct().getFreeShipping().getBadgeUrl());
+                }
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
@@ -263,6 +276,10 @@ public class CartMapper implements ICartMapper {
                 if (data.getErrors() != null && data.getErrors().size() > 0) {
                     cartItemData.setError(true);
                     cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+                    com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.SimilarProduct dataSimilarProduct = data.getSimilarProduct();
+                    if (dataSimilarProduct != null && !TextUtils.isEmpty(dataSimilarProduct.getText()) && !TextUtils.isEmpty(dataSimilarProduct.getUrl())) {
+                        cartItemData.setSimilarProduct(new SimilarProduct(dataSimilarProduct.getText(), dataSimilarProduct.getUrl()));
+                    }
 
                     if (data.getErrors().size() > 1) {
                         cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
@@ -280,24 +297,12 @@ public class CartMapper implements ICartMapper {
                     }
                 }
 
-                // if (cartItemData.isSingleChild()) {
                 if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
                     cartItemData.setParentHasErrorOrWarning(false);
                 } else {
                     cartItemData.setParentHasErrorOrWarning(true);
                 }
-                // if (cartItemData.isError()) {
-                if (isDisableAllProducts) {
-                    shopGroupData.setError(true);
-                    shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                    shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                } else if (cartItemData.isWarning()) {
-                    shopGroupData.setWarning(true);
-                    shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                    shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
-                }
                 cartItemData.setDisableAllProducts(isDisableAllProducts);
-                // }
 
                 if (!cartItemData.isError() && shopGroupData.isError()) {
                     cartItemData.setError(true);
@@ -332,25 +337,26 @@ public class CartMapper implements ICartMapper {
         cartListData.setGlobalCouponAttr(globalCouponAttr);
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
-        if (cartDataListResponse.getAutoapplyStack() != null) {
+        AutoapplyStack autoapplyStack = cartDataListResponse.getAutoapplyStack();
+        if (autoapplyStack != null) {
             autoApplyStackData = new AutoApplyStackData();
-            if (cartDataListResponse.getAutoapplyStack().getCodes() != null) {
-                if (cartDataListResponse.getAutoapplyStack().getCodes().size() > 0) {
-                    autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
+            if (autoapplyStack.getCodes() != null) {
+                if (autoapplyStack.getCodes().size() > 0) {
+                    autoApplyStackData.setCode(autoapplyStack.getCodes().get(0));
                 }
-                autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
-                autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
-                if (cartDataListResponse.getAutoapplyStack().getMessage() != null) {
-                    autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
-                    autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
+                autoApplyStackData.setDiscountAmount(autoapplyStack.getDiscountAmount());
+                autoApplyStackData.setIsCoupon(autoapplyStack.getIsCoupon());
+                if (autoapplyStack.getMessage() != null) {
+                    autoApplyStackData.setMessageSuccess(autoapplyStack.getMessage().getText());
+                    autoApplyStackData.setState(autoapplyStack.getMessage().getState());
                 }
-                autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
-                autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
-                autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
-                if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
-                    if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
+                autoApplyStackData.setPromoCodeId(autoapplyStack.getPromoCodeId());
+                autoApplyStackData.setSuccess(autoapplyStack.isSuccess());
+                autoApplyStackData.setTitleDescription(autoapplyStack.getTitleDescription());
+                if (autoapplyStack.getVoucherOrders() != null) {
+                    if (autoapplyStack.getVoucherOrders().size() > 0) {
                         List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
-                        for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+                        for (VoucherOrdersItem voucherOrdersItem : autoapplyStack.getVoucherOrders()) {
                             VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                             voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                             voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
@@ -371,6 +377,21 @@ public class CartMapper implements ICartMapper {
                     }
                 }
             }
+
+            if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
+                for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {
+                    for (ShopGroupData shopGroupData : shopGroupDataList) {
+                        for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                            CartItemData.OriginData originData = cartItemHolderData.getCartItemData().getOriginData();
+                            if (originData.getProductId().equalsIgnoreCase(String.valueOf(trackingDetail.getProductId()))) {
+                                originData.setPromoCodes(trackingDetail.getPromoCodesTracking());
+                                originData.setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         cartListData.setAutoApplyStackData(autoApplyStackData);
 

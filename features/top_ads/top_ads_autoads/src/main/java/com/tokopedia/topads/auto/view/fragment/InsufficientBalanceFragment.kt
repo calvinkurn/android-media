@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
-import java.net.URL
-
 /**
  * Author errysuprayogi on 09,May,2019
  */
@@ -18,8 +17,7 @@ class InsufficientBalanceFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_autoads_insufficient_budget, container, false)
         view.findViewById<View>(R.id.add_fund).setOnClickListener {
-            var intent = (activity!!.application as TopAdsAutoRouter).getTopAdsAddCreditIntent(activity!!)
-            startActivity(intent)
+            startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT))
             activity!!.finish()
         }
         return view

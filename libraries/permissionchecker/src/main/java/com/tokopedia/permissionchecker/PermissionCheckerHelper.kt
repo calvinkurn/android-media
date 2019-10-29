@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -17,10 +16,10 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISS
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import org.jetbrains.annotations.NotNull
-import com.tokopedia.permissionchecker.R
 
 /**
  * @author by nisie on 28/11/18.
@@ -59,6 +58,7 @@ class PermissionCheckerHelper {
         const val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         const val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
         const val PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        const val PERMISSION_READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE
         const val PERMISSION_NFC = Manifest.permission.NFC
         const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
@@ -146,6 +146,7 @@ class PermissionCheckerHelper {
             PERMISSION_CAMERA -> context.getString(R.string.permission_camera)
             PERMISSION_RECORD_AUDIO -> context.getString(R.string.permission_audio)
             PERMISSION_WRITE_EXTERNAL_STORAGE -> context.getString(R.string.permission_write_storage)
+            PERMISSION_READ_EXTERNAL_STORAGE -> context.getString(R.string.permission_read_storage)
             PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
             else -> ""
         }

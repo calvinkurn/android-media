@@ -2,7 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
 
 /**
  * Created by Irfan Khoirul on 09/01/19.
@@ -64,6 +64,16 @@ data class FragmentViewModel(
     fun getSummaryViewModel(): SummaryViewModel? {
         for (visitable in viewModels) {
             if (visitable is SummaryViewModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
+    fun getInsuranceRecommendationViewModel(): InsuranceRecommendationViewModel? {
+        for (visitable in viewModels) {
+            if (visitable is InsuranceRecommendationViewModel) {
                 return visitable
             }
         }

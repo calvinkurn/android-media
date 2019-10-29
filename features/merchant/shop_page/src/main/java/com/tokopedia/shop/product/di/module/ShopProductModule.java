@@ -14,12 +14,13 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase;
 import com.tokopedia.shop.product.data.GQLQueryConstant;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
@@ -57,6 +58,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP;
+import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS;
+
 @ShopProductScope
 @Module(includes = ShopProductViewModelModule.class)
 public class ShopProductModule {
@@ -73,6 +77,34 @@ public class ShopProductModule {
     @Named(GQLQueryConstant.SHOP_PRODUCT)
     public String getShopProductQuery(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_product);
+    }
+
+    @Provides
+    @Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS)
+    public String provideQueryStampProgress(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.shop.common.R.raw.gql_get_stamp_progress);
+    }
+
+    @Provides
+    @Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP)
+    public String provideQueryClaimBenefit (@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.shop.common.R.raw.gql_mutation_membership_claim);
+    }
+
+    @ShopProductScope
+    @Provides
+    public GetMembershipUseCase provideGetMembershipUseCase(@Named(QUERY_STAMP_PROGRESS)
+                                                                    String gqlQuery,
+                                                            MultiRequestGraphqlUseCase gqlUseCase) {
+        return new GetMembershipUseCase(gqlQuery, gqlUseCase);
+    }
+
+    @ShopProductScope
+    @Provides
+    public ClaimBenefitMembershipUseCase provideClaimBenefitMembershipUseCase (@Named(QUERY_CLAIM_MEMBERSHIP)
+                                                                    String gqlQuery,
+                                                                     MultiRequestGraphqlUseCase gqlUseCase) {
+        return new ClaimBenefitMembershipUseCase(gqlQuery, gqlUseCase);
     }
 
     @ShopProductScope
@@ -141,12 +173,6 @@ public class ShopProductModule {
     @Provides
     public GMCommonRepository provideGMCommonRepository(GMCommonDataSource gmCommonDataSource) {
         return new GMCommonRepositoryImpl(gmCommonDataSource);
-    }
-
-    @ShopProductScope
-    @Provides
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     // WishList

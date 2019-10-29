@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <!-- Untuk onRetry satu halaman -->
+    <ImageView
+        android:id="@+id/no_result_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:gravity="center_horizontal"
+        app:srcCompat="@drawable/ic_empty_state" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/text_view_empty_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:text="@string/msg_network_error_1"
+        app:fontSize="title"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/text_view_empty_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:text="@string/msg_network_error_2"
+        android:textColor="@color/clr_ae31353b"
+        app:fontSize="micro"
+        app:weight="regular" />
+
+
+    <TextView
+        android:id="@+id/text_view_empty_content_item_text"
+        style="@style/TextView.Small.Green"
+        android:layout_margin="@dimen/dp_20"
+        android:visibility="gone"
+        tools:text="@string/app_name" />
+
+    <!-- text will be override programmatically -->
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/button_add_promo"
+        style="@style/TextView.Small.White.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:text="@string/title_try_again"
+        android:textSize="@dimen/dp_14"
+        app:buttonCompatSize="medium"
+        app:buttonCompatTextAllCaps="false"
+        app:buttonCompatType="primary"
+        tools:gravity="center_vertical" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="3" />
+
+</LinearLayout>

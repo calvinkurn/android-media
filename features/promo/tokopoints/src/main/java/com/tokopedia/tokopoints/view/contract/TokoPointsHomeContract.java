@@ -23,7 +23,7 @@ import java.util.List;
 public interface TokoPointsHomeContract {
 
     interface View extends CustomerView {
-        void onError(String error);
+        void onError(String error, boolean hasInternet);
 
         Context getAppContext();
 
@@ -74,7 +74,7 @@ public interface TokoPointsHomeContract {
 
         void renderPurchaseBottomsheet(LobDetails data);
 
-        void renderExploreSectionTab(List<SectionContent> sections, SectionContent couponSection);
+        void renderExploreSectionTab(List<SectionContent> sections);
 
         void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections);
     }

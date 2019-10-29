@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:visibility="visible"
-            app:tabMode="scrollable"
+            app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
             app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -47,10 +48,107 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+        <include layout="@layout/partial_feed_loading"
+            android:id="@+id/feed_loading"
+            android:visibility="gone"/>
+
+        <include layout="@layout/partial_feed_error"
+            android:id="@+id/feed_error"
+            android:visibility="gone"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/dp_2">
+
+        <FrameLayout
+            android:id="@+id/layout_grey_popup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_54">
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_feed"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:visibility="gone"
+            app:backgroundTint="@color/tkpd_main_green"
+            app:srcCompat="@drawable/ic_feed_post_plus"
+            tools:visibility="visible"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_feed_byme"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_above="@id/fab_feed"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:visibility="invisible"
+            app:backgroundTint="@color/white"
+            app:srcCompat="@drawable/ic_feed_post_byme"/>
+
+
+        <TextView
+            android:id="@+id/text_fab_byme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/feed_create_post_byme"
+            android:layout_toLeftOf="@id/fab_feed_byme"
+            android:layout_alignTop="@id/fab_feed_byme"
+            android:layout_alignBottom="@id/fab_feed_byme"
+            android:textColor="@color/white"
+            android:layout_marginRight="@dimen/dp_12"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_feed_shop"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_above="@id/fab_feed_byme"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:visibility="invisible"
+            app:backgroundTint="@color/white"
+            app:srcCompat="@drawable/ic_feed_post_shop"/>
+
+        <TextView
+            android:id="@+id/text_fab_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/feed_create_post_shop"
+            android:layout_toLeftOf="@id/fab_feed_shop"
+            android:layout_alignTop="@id/fab_feed_shop"
+            android:layout_alignBottom="@id/fab_feed_shop"
+            android:textColor="@color/white"
+            android:layout_marginRight="@dimen/dp_12"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

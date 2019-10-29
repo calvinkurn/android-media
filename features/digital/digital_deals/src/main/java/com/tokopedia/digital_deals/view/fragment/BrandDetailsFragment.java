@@ -1,20 +1,12 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +16,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -77,6 +80,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private String locationName;
     private int adapterPosition = -1;
     private boolean forceRefresh;
+    private UserSession userSession;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -90,6 +94,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         View view = inflater.inflate(R.layout.fragment_brand_detail, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
+        userSession = new UserSession(getActivity());
         mPresenter.getBrandDetails(true);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -103,6 +108,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 }
             }
         });
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "brand-detail");
+        }
         return view;
     }
 
@@ -113,8 +121,8 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
 
+    @SuppressLint("WrongConstant")
     private void setViewIds(View view) {
-
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         ivHeader = view.findViewById(R.id.header_image);
@@ -183,15 +191,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
     private void loadBrandImage(ImageView imageView, String featuredImageUrl) {
-        ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new SimpleTarget<Bitmap>() {
+        ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new CustomTarget<Bitmap>() {
             @Override
-            public void onLoadStarted(Drawable placeholder) {
-                super.onLoadStarted(placeholder);
-                imageView.setImageResource(R.color.grey_1100);
-            }
-
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     try {
                         imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
@@ -204,8 +206,19 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             }
 
             @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+
+            @Override
+            public void onLoadStarted(Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                imageView.setImageResource(R.color.grey_1100);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 imageView.setImageResource(R.color.grey_1100);
             }
         });
@@ -241,8 +254,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+        }
         return requestParams;
     }
 

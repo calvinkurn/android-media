@@ -7,4 +7,8 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
  */
 interface CreatePostActivityListener {
     fun updateHeader(header: HeaderViewModel)
+
+    fun updateShareHeader(text: String)
+
+    fun invalidatePostMenu(isPostEnabled: Boolean)
 }

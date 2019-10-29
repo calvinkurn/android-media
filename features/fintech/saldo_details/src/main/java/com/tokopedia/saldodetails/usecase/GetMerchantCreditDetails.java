@@ -39,7 +39,7 @@ public class GetMerchantCreditDetails {
         Map<String, Object> variables = new HashMap<>();
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_credit_details),
+                GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.saldodetails.R.raw.query_get_merchant_credit_details),
                 GqlMerchantCreditDetailsResponse.class,
                 variables, false);
 

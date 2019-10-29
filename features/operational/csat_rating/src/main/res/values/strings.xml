@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Csat_Rating</string>
+    <string name="cu_surey_layana">Survey Layana</string>
+    <string name="csat_txt_help_title">Beri nilai untuk layanan Toped Bot kami</string>
+    <string name="csat_submit">Selesai</string>
+    <string name="csat_survey_toolbar_text">Survei Layanan</string>
+</resources>

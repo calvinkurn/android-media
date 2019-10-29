@@ -80,14 +80,16 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setRcvrUserData() {
-        rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
-        var name = arguments?.getString(Constants.Keys.RECIEVER_PHONE)
-        if (!TextUtils.isEmpty(name)) {
-            name = Constants.Prefixes.OVO + name
-        } else {
-            name = ""
+        thankYouDataCntnr.ovoP2pTransferThankyou.destination.let {
+            rcvrName.text = it.name
+            var number = it.phone
+            if (!TextUtils.isEmpty(number)) {
+                number = Constants.Prefixes.OVO + number
+            } else {
+                number = ""
+            }
+            rcvrNum.text = number
         }
-        rcvrNum.text = name
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,7 +142,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
         fragment.arguments = bundle
-        (activity as ActivityListener).addReplaceFragment(fragment, false, TransferError.TAG)
+        (activity as ActivityListener).addReplaceFragment(fragment, true, TransferError.TAG)
     }
 
     private fun updateHeader() {
@@ -182,8 +184,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                     }
                 }
                 R.id.back_to_app -> {
-                    activity?.finish()
                     context?.let {
+                        startActivity(OvoP2pUtil.getDiscoveryPageIntent(it))
+                        activity?.finish()
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }

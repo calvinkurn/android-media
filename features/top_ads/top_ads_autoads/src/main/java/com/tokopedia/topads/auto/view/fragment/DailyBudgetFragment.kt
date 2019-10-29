@@ -136,7 +136,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         priceEditText = view.findViewById(R.id.edit_text_max_price)
         seekBar = view.findViewById(R.id.seekbar)
         cardView = view.findViewById(R.id.card_layout)
-        progressBar = view.findViewById(R.id.loading)
+        progressBar = view.findViewById(com.tokopedia.seller.R.id.loading)
         setUpView(view)
         setListener()
         return view

@@ -2,39 +2,46 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
+import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;
 import com.tokopedia.tokopoints.view.presenter.SendGiftPresenter;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import javax.inject.Inject;
 
-public class SendGiftFragment extends BaseDaggerFragment implements SendGiftContract.View, View.OnClickListener {
+public class SendGiftFragment extends BottomSheetDialogFragment implements SendGiftContract.View, View.OnClickListener, TextWatcher {
     private static final int CONTAINER_SEND_FORM = 0;
     private static final int CONTAINER_PRE_CONFIRMATION = 1;
     private ViewFlipper mContainerMain;
     private TextInputEditText mEditEmail, mEditNotes;
-    private Button mBtnSendGift, mBtnSendNow;
+    private TextView mBtnSendGift, mBtnSendNow;
     private TkpdHintTextInputLayout mWrapperEmail;
+    TokoPointComponent tokoPointComponent;
 
     @Inject
     public SendGiftPresenter mPresenter;
@@ -45,12 +52,24 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_send_gift, container, false);
+        initView();
         return view;
+    }
+
+    public void initView() {
+        tokoPointComponent = ((CouponCatalogDetailsActivity) getActivity()).getComponent();
+        tokoPointComponent.inject(this);
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -66,6 +85,16 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
         mEditNotes = view.findViewById(R.id.edit_notes);
         mBtnSendGift = view.findViewById(R.id.button_send);
         mBtnSendNow = view.findViewById(R.id.button_send_now);
+
+        ImageView ivCancelInitial = getView().findViewById(R.id.iv_cancel);
+        ImageView ivCancelPreConfirm = getView().findViewById(R.id.iv_cancel_preconfirmation);
+        ivCancelInitial.setOnClickListener(view1 -> {
+            dismiss();
+        });
+        ivCancelPreConfirm.setOnClickListener(view1 -> dismiss());
+
+        mEditEmail.addTextChangedListener(this);
+        mEditNotes.addTextChangedListener(this);
         mBtnSendGift.setOnClickListener(this::onClick);
         mBtnSendNow.setOnClickListener(this::onClick);
     }
@@ -104,16 +133,6 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
                     getCouponTitle());
 
         }
-    }
-
-    @Override
-    protected void initInjector() {
-        getComponent(TokoPointComponent.class).inject(this);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
     }
 
     @Override
@@ -182,10 +201,13 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
             return;
         }
 
-        TextView textTitle = getView().findViewById(R.id.text_point_label);
-        TextView textPoint = getView().findViewById(R.id.text_point_value);
-        TextView textEmail = getView().findViewById(R.id.text_for_value);
-        TextView textNotes = getView().findViewById(R.id.text_notes_value);
+        TextView textTitle = getView().findViewById(R.id.tv_title_banner);
+        TextView textPoint = getView().findViewById(R.id.point);
+        TextView textEmail = getView().findViewById(R.id.email);
+        TextView textNotes = getView().findViewById(R.id.message);
+        ImageView imgBanner = getView().findViewById(R.id.iv_banner);
+        ImageHandler.loadImage(this.getContext(), imgBanner, getArguments().getString(CommonConstant.EXTRA_COUPON_BANNER), R.color.grey_100);
+
 
         textTitle.setText(getCouponTitle());
         textPoint.setText(getCouponPoint());
@@ -221,33 +243,48 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
     }
 
     @Override
-    public void showPopup(String title, String message) {
+    public void showPopup(String title, String message, int success) {
+        ConstraintLayout constraintLayout = getView().findViewById(R.id.pre_confirmation_parent_container);
+        constraintLayout.setVisibility(View.GONE);
+        View viewSentFail = View.inflate(this.getContext(), R.layout.tp_gift_coupon_sent_fail, null);
+        View viewSentSuccess = View.inflate(this.getContext(), R.layout.tp_gift_coupon_sent, null);
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
 
-        adb.setTitle(title);
-        adb.setMessage(message);
+        if (success == 1) {
+            TextView tvTitle = viewSentSuccess.findViewById(R.id.tv_title);
+            TextView tvContent = viewSentSuccess.findViewById(R.id.content);
+            TextView btnSuccess = viewSentSuccess.findViewById(R.id.btn_sentSuccess);
 
-        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
-                    if (getActivity() != null) {
-                        getActivity().finish();
-                        if(title.equalsIgnoreCase(getString(R.string.tp_send_gift_success_title))){
-                            AnalyticsTrackerUtil.sendEvent(getContext(),
-                                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
-                                    AnalyticsTrackerUtil.ActionKeys.CLICK_OK_ON_SUCCESS,
-                                    getCouponTitle());
-                        }else{
-                            AnalyticsTrackerUtil.sendEvent(getContext(),
-                                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
-                                    AnalyticsTrackerUtil.ActionKeys.CLICK_OK_ON_FAILED,
-                                    "");
-                        }
-                    }
-                }
-        );
+            btnSuccess.setOnClickListener(view -> {
+                getActivity().finish();
+            });
+
+            tvTitle.setText(title);
+            tvContent.setText(message);
+            adb.setView(viewSentSuccess);
+        } else {
+            TextView tvTitle = viewSentFail.findViewById(R.id.tv_title);
+            TextView tvContent = viewSentFail.findViewById(R.id.content);
+            TextView tvRoute = viewSentFail.findViewById(R.id.tv_route);
+            TextView btnFailed = viewSentFail.findViewById(R.id.btn_sentFail);
+
+            btnFailed.setOnClickListener(view -> {
+                getActivity().finish();
+            });
+
+            tvRoute.setOnClickListener(view -> {
+                RouteManager.route(this.getContext(), ApplinkConst.TOKOPOINTS);
+            });
+            tvTitle.setText(title);
+            tvContent.setText(message);
+            adb.setView(viewSentFail);
+        }
+
 
         AlertDialog dialog = adb.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+
         dialog.show();
         decorateDialog(dialog);
     }
@@ -258,5 +295,28 @@ public class SendGiftFragment extends BaseDaggerFragment implements SendGiftCont
                     R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        if (charSequence.length() == 0) {
+            mBtnSendGift.setEnabled(false);
+            mBtnSendGift.setTextColor(getResources().getColor(R.color.tp_btn_sent_gift_color));
+        } else {
+            mBtnSendGift.setEnabled(true);
+            mBtnSendGift.setTextColor(getResources().getColor(R.color.tp_bg_button_orange_border));
+        }
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }

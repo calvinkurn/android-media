@@ -190,11 +190,20 @@
                         android:paddingBottom="@dimen/dp_10" />
                 </LinearLayout>
 
-                <com.tokopedia.design.voucher.VoucherCartHachikoView
-                    android:id="@+id/voucher_check_view"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_20" />
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:padding="@dimen/dp_4"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+                        android:id="@+id/flight_promo_ticker_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -1,0 +1,7 @@
+mutation add_phone($msisdn: String!, $otpCode: String!) {
+  userProfileCompletionUpdate(msisdn: $msisdn, otpCode: $otpCode) {
+    isSuccess
+    msisdnMessage
+    completionScore
+  }
+}

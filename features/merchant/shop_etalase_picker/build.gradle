@@ -12,25 +12,31 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'shop-etalase-picker'
-    groupId = 'com.tokopedia.shopetalasepicker'
-    versionName = "${tkpdShopVersion}"
-    artifactName ="shop_etalase_picker"
-}
-
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.libraries.userSession)
 
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
-    implementation project(rootProject.ext.libraries.design)
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = 'shop-etalase-picker'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="shop_etalase_picker-release"
 }
 
 apply from: '../../../publish_local.gradle'

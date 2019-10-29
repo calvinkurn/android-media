@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -18,13 +19,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.common.travel.data.entity.TravelContactListModel;
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter;
+import com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -36,12 +40,14 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresent
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +57,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightBookingPassengerFragment extends BaseDaggerFragment implements FlightBookingPassengerContract.View {
+public class FlightBookingPassengerFragment extends BaseDaggerFragment implements FlightBookingPassengerContract.View,
+        TravelContactArrayAdapter.ContactArrayListener {
     public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     public static final String EXTRA_LUGGAGES = "EXTRA_LUGGAGES";
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
@@ -71,9 +78,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
-    private SpinnerTextView spTitle;
     private TkpdHintTextInputLayout tilFirstName;
-    private AppCompatEditText etFirstName;
+    private AppCompatAutoCompleteTextView etFirstName;
     private TkpdHintTextInputLayout tilLastName;
     private AppCompatEditText etLastName;
     private TkpdHintTextInputLayout tilBirthDate;
@@ -82,13 +88,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private RecyclerView rvLuggages;
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
-    private AppCompatEditText etSavedPassenger;
     private AppCompatEditText etPassportNumber;
     private AppCompatEditText etPassportExpired;
     private AppCompatEditText etPassportNationality;
     private AppCompatEditText etPassportIssuerCountry;
     private AppCompatButton buttonSubmit;
     private LinearLayout passportContainer;
+
+    private FilterChipRecyclerView rvPassengerTitle;
 
     private FlightBookingPassengerViewModel viewModel;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
@@ -101,6 +108,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private String selectedPassengerId;
     private String requestId;
     private boolean isDomestic = true;
+
+    private TravelContactArrayAdapter travelContactArrayAdapter;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -171,20 +180,17 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_booking_passenger, container, false);
 
-        tvHeader = (AppCompatTextView) view.findViewById(R.id.tv_header);
-        tvSubheader = (AppCompatTextView) view.findViewById(R.id.tv_subheader);
-        spTitle = (SpinnerTextView) view.findViewById(R.id.sp_title);
         tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
-        etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
+        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(R.id.et_first_name);
         tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
         etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
+        rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(R.id.rv_passenger_title);
         tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(R.id.til_birth_date);
         etBirthDate = (AppCompatEditText) view.findViewById(R.id.et_birth_date);
         luggageContainer = (LinearLayout) view.findViewById(R.id.luggage_container);
         rvLuggages = (RecyclerView) view.findViewById(R.id.rv_luggages);
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
-        etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
         etPassportNumber = view.findViewById(R.id.et_passport_no);
         etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
         etPassportNationality = view.findViewById(R.id.et_nationality);
@@ -197,20 +203,26 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 presenter.onSaveButtonClicked();
             }
         });
+        rvPassengerTitle.listener = (title, isSelected) -> {
+
+        };
+
+        travelContactArrayAdapter = new TravelContactArrayAdapter(getContext(), com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+                new ArrayList(), this);
+        etFirstName.setAdapter(travelContactArrayAdapter);
+        etFirstName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                autofillPassengerContact(travelContactArrayAdapter.getItem(position));
+            }
+        });
+
         etBirthDate.setClickable(true);
         etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
-            }
-        });
-        etSavedPassenger.setClickable(true);
-        etSavedPassenger.setFocusable(false);
-        etSavedPassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSavedPassengerClicked();
             }
         });
         etPassportExpired.setClickable(true);
@@ -238,6 +250,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         });
         return view;
+    }
+
+    private void autofillPassengerContact(TravelContactListModel.Contact contact) {
+        //autofill
     }
 
     @Override
@@ -269,16 +285,16 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
-        spTitle.setEntries(entries);
-        spTitle.setValues(entries);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_titles);
+        rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0, null);
+        rvPassengerTitle.selectOnlyOneChip(true);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
-        spTitle.setEntries(entries);
-        spTitle.setValues(entries);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_titles);
+        rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0, null);
+        rvPassengerTitle.selectOnlyOneChip(true);
     }
 
     @Override
@@ -399,11 +415,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public int getTitleSpinnerPosition() {
-        return spTitle.getSpinnerPosition();
-    }
-
-    @Override
     public void hideBirthdayInputView() {
         tilBirthDate.setVisibility(View.GONE);
     }
@@ -435,8 +446,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public String getPassengerTitle() {
-        return spTitle.getSpinnerValue().equalsIgnoreCase(getString(R.string.flight_passenger_choose_salutation))
-                ? "" : spTitle.getSpinnerValue();
+        return rvPassengerTitle.getFirstSelectedItem();
     }
 
     @Override
@@ -672,12 +682,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderPassengerTitle(String passengerTitle) {
-        spTitle.setSpinnerValueByEntries(passengerTitle);
-    }
-
-    @Override
-    public void renderSelectedList(String passengerName) {
-        etSavedPassenger.setText(passengerName);
+        rvPassengerTitle.onResetChip();
+        switch (passengerTitle) {
+            case FlightPassengerTitle.TUAN: rvPassengerTitle.selectChipByPosition(0);
+            case FlightPassengerTitle.NYONYA: rvPassengerTitle.selectChipByPosition(1);
+            case FlightPassengerTitle.NONA: rvPassengerTitle.selectChipByPosition(2);
+        }
     }
 
     @Override
@@ -751,13 +761,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
                 case REQUEST_CODE_PICK_NATIONALITY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onNationalityChanged(flightPassportNationalityViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_ISSUER_COUNTRY:
                     if (data != null) {
-                        FlightBookingPhoneCodeViewModel flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        CountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
                         presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
                     }
             }
@@ -776,6 +786,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private void navigateToChooseIssuerCountry() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
                 getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+    }
+
+    @Override
+    public String getFilterText() {
+        return "";
     }
 
     public interface OnFragmentInteractionListener {

@@ -38,7 +38,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener{
+public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener, SearchInputView.FocusChangeListener{
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
@@ -212,8 +212,14 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+            }
+        }
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         }
@@ -302,6 +308,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
                 onLocationUpdated();
             }
         }
+
+    }
+
+    @Override
+    public void onFocusChanged(boolean hasFocus) {
 
     }
 

@@ -10,5 +10,8 @@
     <color name="default_reward_color">#FFD65C</color>
     <color name="toolbar_color">#33ffffff</color>
     <color name="egg_source_color">#ffd63b</color>
-    <color name="red_toast_bg_color">#ef144a</color>
+    <color name="red_toast_bg_color">#e6d6001c</color>
+    <color name="gf_tint_close_color">#6C727C</color>
+    <color name="charcoal_gray_88">#e131353b</color>
+    <color name="gf_tooltip_transparent">#4c31353b</color>
 </resources>

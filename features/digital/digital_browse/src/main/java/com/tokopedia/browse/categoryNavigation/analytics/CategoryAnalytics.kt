@@ -11,9 +11,11 @@ import com.tokopedia.track.interfaces.Analytics
 
 class CategoryAnalytics {
 
-    val LAUNCH_PAGE_CATEGORY = "belanja/category"
+    val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
     val LAUNCH_PAGE_HOME = "belanja/home"
 
+    val pageName = "/kategori-belanja"
+    val nameWithPageName = "$pageName - %s"
 
     companion object {
         fun createInstance(): CategoryAnalytics {
@@ -25,14 +27,13 @@ class CategoryAnalytics {
         }
     }
 
-
     //3
 
-    fun eventSearchBarClick(context: Context) {
+    fun eventSearchBarClick() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickTopNav",
-                "eventCategory", "top nav - " + getLaunchPageName(context),
+                "eventCategory", "top nav - $EVENT_CATEGORY_BELANJA_PAGE",
                 "eventAction", "click search box",
                 "eventLabel", ""
         )
@@ -42,100 +43,102 @@ class CategoryAnalytics {
 
     // 53
 
-    fun eventPromoClick(context: Context, product: ChildItem, position: Int) {
-        val tracker = getTracker()
-        val map = DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", getLaunchPageName(context),
-                "eventAction", "click banner inside kategori pilihan",
-                "eventLabel", product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", position + 1)))
-        ))
-        tracker.sendEnhanceEcommerceEvent(map)
+    fun eventPromoClick(product: ChildItem, position: Int) {
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoClick",
+                        "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
+                        "eventAction", "click banner inside kategori pilihan",
+                        "eventLabel", product.name,
+                        "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                        "promotions", DataLayer.listOf(
+                        DataLayer.mapOf(
+                                "id", product.id.toString(),
+                                "name", String.format(nameWithPageName, product.parentCategoryname),
+                                "creative", product.name,
+                                "creative_url", product.iconImageUrl,
+                                "position", (position + 1).toString()
+                        )
+                )
+                )
+                )
+                )
+        )
     }
-
 
     // 54
 
 
-    fun eventPromoView(context: Context, product: ChildItem, position: Int) {
+    fun eventPromoView(product: ChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "impression banner inside kategori pilihan",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, product.parentCategoryname),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-
     // 55
 
-
-    fun eventCategoryLevelOneClick(context: Context, product: CategoriesItem, position: Int) {
+    fun eventCategoryLevelOneClick(product: CategoriesItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "click category on side bar",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.name,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "side bar"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    //56
 
-    fun eventCategoryLevelOneView(context: Context, product: CategoriesItem, position: Int) {
+    fun eventCategoryLevelOneView(product: CategoriesItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "impression category on side bar",
-                "eventLabel", product.name,
+                "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.name,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "side bar"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
     // 57
 
-
-    fun eventClickLihatSemua(context: Context, categoryName: String) {
+    fun eventClickLihatSemua(categoryName: String) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "click lihat semua on category level 1",
                 "eventLabel", categoryName
         )
@@ -144,154 +147,149 @@ class CategoryAnalytics {
 
     //58
 
-    fun eventDropDownPromoClick(context: Context, product: ChildItem, position: Int) {
+    fun eventDropDownPromoClick(product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", getLaunchPageName(context),
-                "eventAction", "click banner inside category level 1",
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
+                "eventAction", "click lihat semua category level 1",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "inside category level 1"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    //59
 
-    fun eventDropDownPromoView(context: Context, product: ChildItem, position: Int) {
+    fun eventDropDownPromoView(product: ChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "impression inside category level 1",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "inside category level 1"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    //60
 
-    fun eventBannerInsideLevelTwoClick(context: Context, product: ChildItem, position: Int) {
+    fun eventBannerInsideLevelTwoClick(product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "click banner inside category level 2",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "inside category level 2"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 61
 
-    fun eventBannerInsideLevelTwoView(context: Context, product: ChildItem, position: Int) {
+    fun eventBannerInsideLevelTwoView(product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "impression inside category level 2",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentCategoryname,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, "inside category level 2"),
                 "creative", product.name,
                 "creative_url", product.iconImageUrl,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 62
 
-    fun eventHotlistBannerClick(context: Context, product: ListItem, position: Int) {
+    fun eventHotlistBannerClick(product: ListItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "click on hotlist banner",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentName,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, product.parentName),
                 "creative", product.title,
                 "creative_url", product.imgSquare,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
 
     }
 
+    //63
 
-    fun eventHotlistBannerView(context: Context, product: ListItem, position: Int) {
+    fun eventHotlistBannerView(product: ListItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "impression on hotlist banner",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id,
-                "name", product.parentName,
+                "id", product.id.toString(),
+                "name", String.format(nameWithPageName, product.parentName),
                 "creative", product.title,
                 "creative_url", product.imgSquare,
-                "position", position + 1)))
+                "position", (position + 1).toString())))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
 
     }
 
-    fun eventBackButtonClick(context: Context) {
+    // 64
+
+    fun eventBackButtonClick() {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
-                "eventCategory", getLaunchPageName(context),
+                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
                 "eventAction", "click back",
                 "eventLabel", ""
         )
         tracker.sendEnhanceEcommerceEvent(map)
 
     }
-
-
-    // 65
-
-    private fun getLaunchPageName(context: Context): String {
-        return if (context is CategoryBrowseActivity) {
-            LAUNCH_PAGE_CATEGORY
-        } else {
-            LAUNCH_PAGE_HOME
-        }
-    }
-
 }

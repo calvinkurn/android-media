@@ -11,37 +11,37 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'top_ads_dashboard'
-    groupId = 'com.tokopedia.topads'
-    versionName = "${tkpdTopAdsSDKVersion}"
-    artifactName ="top_ads_dashboard-release"
-}
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.productManageItem)
-
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.applink)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.track)
-    
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tkpdseller)
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -49,32 +49,32 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.chips
-
     implementation rootProject.ext.viewDependencies.appIntro
-
     implementation rootProject.ext.playServicesDependencies.maps
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+}
+
+project.ext {
+    artifactId = 'dashboard'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName ="top_ads_dashboard-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
@@ -19,6 +20,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 import org.json.JSONObject;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -80,7 +83,8 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

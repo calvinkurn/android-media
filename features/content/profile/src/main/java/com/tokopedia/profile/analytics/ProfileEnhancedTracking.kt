@@ -59,32 +59,7 @@ class ProfileEnhancedTracking {
 
     }
 
-    class Promotion(id: Int, name: String, creative: String, position: Int,
-                    category: String, promoId: Int, promoCode: String) {
-        var id: Int = 0
-            internal set
-        var name: String
-            internal set
-        var creative: String
-            internal set
-        var position: Int = 0
-            internal set
-        var category: String
-            internal set
-        var promoId: Int = 0
-            internal set
-        var promoCode: String
-            internal set
+    data class Promotion(val id: Int, val name: String, val creative: String, val position: Int,
+                         val category: String, val promoId: Int, val promoCode: String)
 
-        init {
-            this.id = id
-            this.name = name
-            this.creative = creative
-            this.position = position
-            this.category = category
-            this.promoId = promoId
-            this.promoCode = promoCode
-        }
-
-    }
 }

@@ -47,6 +47,7 @@ public class AddressConstants {
     public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
     public static final String EXTRA_IS_CHANGES_REQUESTED = "EXTRA_IS_CHANGES_REQUESTED";
+    public static final String EXTRA_IS_UNNAMED_ROAD = "EXTRA_UNNAMED_ROAD";
     public static final Double MONAS_LAT = -6.175794;
     public static final Double MONAS_LONG = 106.826457;
     public static final String ANA_POSITIVE = "positive";

@@ -1,0 +1,14 @@
+query {
+  TravelGetHoliday(input:{
+    languageID:"id-id",
+    countryID:"ID",
+  }){
+    data {
+      ID,
+      attribute{
+        date,
+        label
+      }
+    }
+  }
+}

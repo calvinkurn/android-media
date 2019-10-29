@@ -48,23 +48,11 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
 
     private Func1<Map<Type, RestResponse>, Map<Type, RestResponse>> checkForNull() {
         return responseMap -> {
-            for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
-                NullCheckerKt.isContainNull(pair.getValue().getData(), errorMessage -> {
-                    String message = String.format("Found %s in %s | shouldThrowException: %s",
-                            errorMessage,
-                            RestRequestSupportInterceptorUseCase.class.getSimpleName(),
-                            shouldThrowException()
-                    );
-                    ContainNullException exception = new ContainNullException(message);
-                    if (shouldThrowException()) {
-                        if (!BuildConfig.DEBUG) {
-                            Crashlytics.logException(exception);
-                        }
-                        throw exception;
-                    }
-                    return Unit.INSTANCE;
-                });
-
+            if (shouldThrowException()) {
+                for (Map.Entry<Type, RestResponse> pair : responseMap.entrySet()) {
+                    NullCheckerKt.throwIfNull(pair.getValue().getData(),
+                            RestRequestSupportInterceptorUseCase.class);
+                }
             }
             return responseMap;
         };

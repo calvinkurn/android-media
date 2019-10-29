@@ -17,12 +17,17 @@ import javax.inject.Inject;
 
 public class GetCategoryDetailRequestUseCase extends RestRequestUseCase {
     private String  url;
+    private RequestParams params;
 
     @Inject
     public GetCategoryDetailRequestUseCase(){ }
 
-    public void setRequestParams(String url) {
+    public void setCategoryUrl(String url) {
         this.url = url;
+    }
+
+    public void setRequestParams(RequestParams params) {
+        this.params = params;
     }
 
     @Override
@@ -33,6 +38,7 @@ public class GetCategoryDetailRequestUseCase extends RestRequestUseCase {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .setQueryParams(params.getParameters())
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;

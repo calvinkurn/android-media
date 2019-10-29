@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
 import com.tokopedia.home.account.di.component.SellerAccountComponent;
@@ -28,10 +28,18 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.track.TrackApp;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 /**
  * @author okasurya on 7/16/18.
@@ -51,7 +59,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
-//    private RemoteConfig remoteConfig;
 
     public static SellerAccountFragment newInstance() {
         SellerAccountFragment fragment = new SellerAccountFragment();
@@ -105,9 +112,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && !isLoaded) {
-            getData();
-            isLoaded = !isLoaded;
+        if (isVisibleToUser) {
+            if (!isLoaded) {
+                getData();
+                isLoaded = !isLoaded;
+            }
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
@@ -129,7 +139,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     protected String getScreenName() {
-        return TAG;
+        return String.format("/%s/%s",
+                AccountConstants.Analytics.USER,
+                AccountConstants.Analytics.JUAL);
     }
 
     private void initInjector() {
@@ -158,26 +170,28 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void showError(String message) {
-        if (getView() != null) {
+        if (getView() != null && getUserVisibleHint()) {
             ToasterError.make(getView(), message)
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+
         fpmSeller.stopTrace();
     }
 
     @Override
     public void showError(Throwable e) {
-        if (getView() != null && getContext() != null) {
+        if (getView() != null && getContext() != null && getUserVisibleHint()) {
             ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+
         fpmSeller.stopTrace();
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         showError(getString(R.string.error_no_internet_connection));
     }
 
@@ -215,5 +229,20 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     void notifyItemChanged(int position) {
         adapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onProductRecommendationClicked(@NotNull RecommendationItem product, int adapterPosition, String widgetTitle) {
+
+    }
+
+    @Override
+    public void onProductRecommendationImpression(@NotNull RecommendationItem product, int adapterPosition) {
+
+    }
+
+    @Override
+    public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+
     }
 }

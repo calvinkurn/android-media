@@ -14,10 +14,10 @@ class TopAdsAutoTopUpPriceViewHolder(val view: View,
     override fun bind(element: AutoTopUpItem) {
         with(itemView){
             if (listener?.isActive() == true){
-                title.setTextColor(ContextCompat.getColor(context, R.color.light_primary))
+                title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.light_primary))
                 radio_button.isEnabled = true
             } else {
-                title.setTextColor(ContextCompat.getColor(context, R.color.black_24))
+                title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.black_24))
                 radio_button.isEnabled = false
             }
 

@@ -22,6 +22,7 @@ public class FingerPrint {
     private String screen_resolution;
     private String location_latitude;
     private String location_longitude;
+    private String is_nakama;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -40,6 +41,7 @@ public class FingerPrint {
         language = fingerPrintBuilder.language;
         ssid = fingerPrintBuilder.ssid;
         carrier = fingerPrintBuilder.carrier;
+        is_nakama = fingerPrintBuilder.is_nakama;
     }
 
     public String getDevice_model() {
@@ -187,9 +189,15 @@ public class FingerPrint {
         private String language;
         private String ssid;
         private String carrier;
+        private String is_nakama;
 
         public FingerPrintBuilder() {
 
+        }
+
+        public FingerPrintBuilder isNakama(String isNakama){
+            this.is_nakama = is_nakama;
+            return this;
         }
 
         public FingerPrintBuilder system(String deviceSystem) {

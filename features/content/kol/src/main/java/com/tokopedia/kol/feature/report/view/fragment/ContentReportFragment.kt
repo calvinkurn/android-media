@@ -124,6 +124,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     private fun initView() {
+        sendBtn.isEnabled = false
         reasonRv.adapter = adapter
         adapter.addAll(getReasonList())
 

@@ -19,10 +19,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -39,12 +39,16 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -161,13 +165,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 it.itemId == android.R.id.home -> {
                     backPress()
                     true
-                }
-                it.itemId == R.id.action_info -> {
-                    onInfoClicked()
+                }it.itemId == R.id.action_share -> {
+                    shareChannel()
                     true
                 }
-                it.itemId == R.id.action_share -> {
-                    shareChannel()
+                it.itemId == R.id.action_overflow -> {
+                    onOverflowMenuClicked()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -179,8 +182,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.action_info).isEnabled = optionsMenuEnable
         menu.findItem(R.id.action_share).isEnabled = optionsMenuEnable
+        menu.findItem(R.id.action_overflow).isEnabled = optionsMenuEnable
     }
 
     private fun onGetNotif(data: Bundle) {
@@ -195,9 +198,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onInfoClicked() {
+    private fun onOverflowMenuClicked() {
         if (::viewState.isInitialized) {
-            viewState.onInfoMenuClicked()
+            viewState.onOverflowMenuClicked()
         }
     }
 
@@ -219,16 +222,21 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 userId = userSession.userId
             }
 
-            (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
-                    it,
-                    channelInfoViewModel.channelId,
-                    channelInfoViewModel.title,
-                    description,
-                    channelInfoViewModel.bannerUrl,
-                    channelInfoViewModel.channelUrl,
-                    userId,
-                    "sharing"
-            )
+            val shareData = LinkerData.Builder.getLinkerBuilder()
+                    .setId(channelInfoViewModel.channelId)
+                    .setName(channelInfoViewModel.title)
+                    .setTextContent(description)
+                    .setDescription(description)
+                    .setImgUri(channelInfoViewModel.bannerUrl)
+                    .setOgImageUrl(channelInfoViewModel.bannerUrl)
+                    .setOgTitle(channelInfoViewModel.title)
+                    .setUri(channelInfoViewModel.channelUrl)
+                    .setSource(userId) // just using existing variable
+                    .setPrice("sharing") // here too
+                    .setType(LinkerData.GROUPCHAT_TYPE)
+                    .build()
+
+            DefaultShareData(activity, shareData).show()
         }
 
     }
@@ -245,7 +253,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetStickyComponent(): (StickyComponentViewModel) -> Unit {
+    private fun onSuccessGetStickyComponent(): (StickyComponentsViewModel) -> Unit {
         return {
             viewState.onStickyComponentUpdated(it)
         }
@@ -266,7 +274,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
-
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
@@ -282,11 +290,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
-
-            viewState.onSuccessGetInfo(it, childFragmentManager)
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
+            viewState.onSuccessGetInfo(it)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
             setExitDialog(it.exitMessage)
+        }
+    }
+
+
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
+            viewState.onVideoVerticalUpdated(it)
+        }
+    }
+
+    private fun onErrorGetVideoStream(): (Throwable) -> Unit {
+        return {
+            viewState.onErrorVideoVertical()
         }
     }
 
@@ -343,12 +364,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                             analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
                         }
                     }
-
-                    activity?.let {
-                        if (it.isTaskRoot) {
-                            getInboxChannelsIntent()?.let {startActivity(it)}
-                        }
-                    }
+                    backToChannelList()
                     activity?.finish()
                 }
             }
@@ -358,7 +374,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun initView(view: View) {
         activity?.let {
             viewState = PlayViewStateImpl(userSession, analytics, view,
-                    it, this, this, this, this,
+                    it, this, childFragmentManager,this, this, this,
                     this, this, sendMessage(), this, this)
         }
         setToolbarView()
@@ -463,11 +479,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         if (generateLink.isBlank())
             return
 
-        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, generateLink)
+        if(RouteManager.isSupportApplink(activity, generateLink)) {
+            RouteManager.route(activity, generateLink)
+        } else {
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        }
     }
 
     private fun getInboxChannelsIntent(): Intent? {
-        return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
+        return RouteManager.getIntent(activity, ApplinkConst.GROUPCHAT_LIST)
     }
 
     override fun onOpenWebSocket(needRefreshInfo: Boolean) {
@@ -509,7 +529,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity(getInboxChannelsIntent())
+                startActivity(RouteManager.getIntent(it, ApplinkConst.HOME))
             }
             it.finish()
             it.onBackPressed()
@@ -517,7 +537,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVideoUpdated(it: VideoViewModel) {
-        viewState.onVideoUpdated(it, childFragmentManager)
+        viewState.onVideoHorizontalUpdated(it)
+    }
+
+    override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
+        if(isInPipMode() == true) {
+            activity?.finish()
+        } else {
+            viewState.onVideoVerticalUpdated(it)
+        }
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {
@@ -560,7 +588,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyUpdated(it)
     }
 
-    override fun onStickyComponentReceived(it: StickyComponentViewModel) {
+    override fun onStickyComponentReceived(it: StickyComponentsViewModel) {
         viewState.onStickyComponentUpdated(it)
     }
 
@@ -598,8 +626,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-        startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
-                .getLoginIntent(activity), REQUEST_LOGIN)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_LOGIN)
     }
 
     private fun loadFirstTime() {
@@ -630,7 +657,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun sendMessage(): (PendingChatViewModel) -> Unit {
         return {
-            analytics.eventClickSendChat(channelInfoViewModel.channelId)
             presenter.sendMessage(it, ::afterSendMessage, ::onSuccessSendMessage, ::onErrorSendMessage)
         }
     }
@@ -659,7 +685,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onPause() {
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()
-        presenter.destroyWebSocket()
         notifReceiver?.let { tempNotifReceiver ->
             context?.let {
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
@@ -667,6 +692,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
         timeStampAfterPause = System.currentTimeMillis()
 
+        if(isInPipMode() == true) {
+            snackBarWebSocket?.dismiss()
+            dismissDialog()
+        } else {
+            presenter.destroyWebSocket()
+        }
     }
 
     override fun onResume() {
@@ -766,6 +797,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
+
         if(::viewState.isInitialized){
             viewState?.destroy()
         }
@@ -801,4 +833,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return ""
     }
 
+    fun dismissDialog() {
+        exitDialog?.dismiss()
+        viewState.dismissAllBottomSheet()
+    }
+
+    override fun hasVideoVertical(): Boolean {
+        return viewState?.verticalVideoShown()
+    }
+
+    fun isChannelActive(): Boolean {
+        return viewState?.isChannelActive()
+    }
+
+    private fun isInPipMode(): Boolean? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activity?.isInPictureInPictureMode
+        } else {
+            false
+        }
+    }
 }

@@ -45,11 +45,6 @@
 
     </FrameLayout>
 
-    <com.tokopedia.discovery.search.view.DiscoverySearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"

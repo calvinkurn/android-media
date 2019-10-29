@@ -5,11 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -44,6 +45,8 @@ public class ProductViewModelMapper {
         productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
+        productViewModel.setResponseCode(searchProduct.getResponseCode());
+        productViewModel.setErrorMessage(searchProduct.getErrorMessage());
         productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
@@ -52,6 +55,8 @@ public class ProductViewModelMapper {
             productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
+        productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
+        productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
     }
@@ -170,6 +175,7 @@ public class ProductViewModelMapper {
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
+        productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         return productItem;
     }
 
@@ -223,6 +229,10 @@ public class ProductViewModelMapper {
                 );
 
         return labelGroupViewModel;
+    }
+
+    private FreeOngkirViewModel convertToFreeOngkirViewModel(SearchProductModel.FreeOngkir freeOngkir) {
+        return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {

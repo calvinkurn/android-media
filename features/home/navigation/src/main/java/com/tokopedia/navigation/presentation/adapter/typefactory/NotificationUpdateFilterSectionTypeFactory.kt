@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.adapter.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.navigation.presentation.adapter.viewholder.NotificationUpdateFilterSectionItemViewHolder
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
 
 /**
@@ -9,7 +10,11 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFi
  */
 interface NotificationUpdateFilterSectionTypeFactory{
 
-    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+    fun createViewHolder(
+            view: View,
+            viewType: Int,
+            filterListener: NotificationUpdateFilterSectionItemViewHolder.FilterSectionListener
+    ): AbstractViewHolder<*>
 
     fun type(viewModel: NotificationUpdateFilterSectionItemViewModel): Int
 }

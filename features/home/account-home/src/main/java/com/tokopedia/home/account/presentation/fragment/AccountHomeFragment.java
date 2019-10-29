@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.appbar.AppBarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -101,7 +100,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             List<AccountFragmentItem> fragmentItems = new ArrayList<>();
 
             AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.newInstance());
+            item.setFragment(BuyerAccountFragment.Companion.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_buyer));
             fragmentItems.add(item);
 
@@ -221,7 +220,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         showError(getString(R.string.error_no_internet_connection));
     }
 

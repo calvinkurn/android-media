@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -19,6 +21,8 @@ import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * Created by stevenfredian on 7/10/17.
@@ -96,5 +100,16 @@ public class ProfileCompletionModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
+    }
+
+    @Provides
+    GraphqlRepository provideGraphQlRepository(){
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @ProfileCompletionScope
+    @Provides
+    CoroutineDispatcher provideMainDispatcher(){
+        return Dispatchers.getMain();
     }
 }

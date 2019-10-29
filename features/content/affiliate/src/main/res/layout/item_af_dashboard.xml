@@ -1,173 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
-    app:cardElevation="@dimen/dp_5"
-    android:layout_marginLeft="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_8"
-    app:cardUseCompatPadding="true"
-    app:cardCornerRadius="@dimen/dp_8">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_section"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/black_70"
+        android:visibility="gone"
+        app:typographyType="heading_5"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:visibility="visible"
+        tools:text="Produk Afiliasi Berlangsung" />
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dp_10"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/dp_4"
-            app:cardElevation="0dp">
-
-            <com.tokopedia.design.image.SquareImageView
-                android:id="@+id/iv_item"
-                android:layout_width="@dimen/dp_100"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                tools:background="@tools:sample/avatars"/>
-        </androidx.cardview.widget.CardView>
+        android:layout_height="wrap_content"
+        android:id="@+id/card_view"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/dp_8">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dp_10"
+            android:orientation="horizontal">
 
-            <FrameLayout
-                android:id="@+id/layout_status"
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_af_ongoing"
-                android:fontFamily="sans-serif-medium"
-                android:paddingTop="@dimen/dp_4"
-                android:paddingBottom="@dimen/dp_3"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6">
+                app:cardCornerRadius="@dimen/dp_4"
+                app:cardElevation="0dp">
 
-                <TextView
-                    android:id="@+id/tv_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Berlangsung"
-                    android:textSize="@dimen/sp_11"
-                    android:textColor="@color/color_ongoing_text"
-                    />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_marginTop="@dimen/dp_4"
-                android:textColor="@color/black_70"
-                tools:text="Nasgi goreng roboto memang nikmat dan sedap tiada tara 2 kali makan padti nik"/>
+                <com.tokopedia.design.image.SquareImageView
+                    android:id="@+id/iv_item"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    tools:background="@tools:sample/avatars"/>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/layout_active"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_4">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/dp_8">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:textColor="@color/black_70"
+                    app:typographyType="heading_5"
+                    tools:text="Nasgi goreng roboto memang nikmat dan sedap tiada tara 2 kali makan padti nik"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_active"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/dp_4">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_af_active_1"
+                        android:textColor="@color/Neutral_N700_68"
+                        android:textSize="@dimen/sp_14"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_comission"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:textColor="@color/af_commission_blue"
+                        android:textSize="@dimen/sp_14"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
+                        tools:text="Rp10.000" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_from_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        app:srcCompat="@drawable/ic_af_dashboard_click_grey"/>
+
+                    <TextView
+                        android:id="@+id/tv_click_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:textColor="@color/font_black_disabled_38"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="20 klik"/>
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_marginLeft="@dimen/dp_6"
+                        app:srcCompat="@drawable/ic_af_dashboard_cart"/>
+
+                    <TextView
+                        android:id="@+id/tv_buy_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:textColor="@color/font_black_disabled_38"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="20 dibeli"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_from_traffic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp_10"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.feedcomponent.view.widget.RatingBarReview
+                        android:id="@+id/rb_curated_traffic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:numstars="5"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"
+                        tools:text="(2)"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_btn_create_post"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_af_active_1"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/font_black_secondary_54"/>
+                    android:background="@drawable/bg_btn_green_empty"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:paddingStart="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_4"
+                    android:paddingBottom="@dimen/dp_4">
 
-                <TextView
-                    android:id="@+id/tv_product_commission"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/text_af_income"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/tkpd_main_green"/>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Green_G500"
+                        android:text="@string/create_post"
+                        app:typographyType="heading_6"
+                        tools:text="Buat Post"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_af_active_2"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/font_black_secondary_54"/>
-
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_inactive"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_4">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_af_income"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/font_black_secondary_54"/>
-
-                <TextView
-                    android:id="@+id/tv_commission"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@string/text_af_income"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textSize="@dimen/sp_14"
-                    android:textColor="@color/tkpd_main_green"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_25"
-                android:layout_marginTop="@dimen/dp_4"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    app:srcCompat="@drawable/ic_af_dashboard_click_grey"/>
-
-                <TextView
-                    android:id="@+id/tv_click_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textColor="@color/font_black_disabled_38"
-                    android:textSize="@dimen/sp_12"
-                    tools:text="20 klik"/>
-
-                <ImageView
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_marginLeft="@dimen/dp_6"
-                    app:srcCompat="@drawable/ic_af_dashboard_cart"/>
-
-                <TextView
-                    android:id="@+id/tv_buy_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textColor="@color/font_black_disabled_38"
-                    android:textSize="@dimen/sp_12"
-                    tools:text="20 dibeli"/>
-
-            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

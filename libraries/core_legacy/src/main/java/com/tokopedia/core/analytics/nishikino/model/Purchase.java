@@ -21,6 +21,7 @@ public class Purchase {
     public static final String PURCHASE = "purchase";
     public static final String DEFAULT_CURRENCY_VALUE = "IDR";
     public static final String CURRENT_SITE = "currentSite";
+    public static final String CURRENCY_CODE = "currencyCode";
 
     public static final String ID = "id";
 
@@ -194,6 +195,10 @@ public class Purchase {
         this.eventAction = eventAction;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
     public void setCurrency(String currency) {
         this.currency = currency;
     }
@@ -202,7 +207,6 @@ public class Purchase {
         try {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
-            Purchase.put("currencyCode", currency);
         }catch (Exception e) {
             e.printStackTrace();
         }

@@ -61,6 +61,7 @@
                 android:id="@+id/sendBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:elevation="0dp"
                 android:enabled="false"
                 android:text="@string/button_send"

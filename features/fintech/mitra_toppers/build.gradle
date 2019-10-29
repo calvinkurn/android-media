@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'mitra_toppers'
-    groupId = 'com.tokopedia.mitratoppers'
-    versionName = "${tkpdMitraToppersVersion}"
-    artifactName ="mitra_toppers-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,25 +13,31 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.track)
-    
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.debugToolsDependencies.stetho
-    implementation project(rootProject.ext.libraries.url)
+}
+
+project.ext {
+    artifactId = 'mitra-toppers'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "1.0.0"
+    artifactName ="mitra_toppers-release"
 }
 
 apply from: '../../../publish_local.gradle'

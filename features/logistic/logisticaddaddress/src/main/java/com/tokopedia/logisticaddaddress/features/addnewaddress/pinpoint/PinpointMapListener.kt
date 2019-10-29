@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
-import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
@@ -13,8 +12,10 @@ interface PinpointMapListener: CustomerView {
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
     fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
     fun showFailedDialog()
-    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean)
+    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean)
     fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
     fun showAutoComplete(lat: Double, long: Double)
     fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean)
+    fun showOutOfReachDialog()
+    fun showUndetectedDialog()
 }

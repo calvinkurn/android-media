@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel;
 
 import rx.Subscriber;
 

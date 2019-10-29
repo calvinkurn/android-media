@@ -53,7 +53,7 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
             userSession.setToken(
                     accessToken,
                     tokenType,
-                    EncoderDecoder.Encrypt(accessToken, userSession.refreshTokenIV))
+                    EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV))
         }
     }
 

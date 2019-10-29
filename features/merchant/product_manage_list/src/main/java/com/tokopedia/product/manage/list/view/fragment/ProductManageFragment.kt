@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -19,12 +20,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -41,7 +42,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -53,7 +53,6 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -64,7 +63,6 @@ import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActi
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.R
-import com.tokopedia.product.manage.list.constant.CashbackOption
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
@@ -76,12 +74,15 @@ import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQU
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_SORT
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.list.constant.StatusProductOption
+import com.tokopedia.product.manage.list.constant.option.CashbackOption
+import com.tokopedia.product.manage.list.constant.option.SortProductOption
+import com.tokopedia.product.manage.list.constant.option.StatusProductOption
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
+import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
+import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
-import com.tokopedia.product.manage.list.di.ProductManageModule
 import com.tokopedia.product.manage.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity
@@ -95,17 +96,14 @@ import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.seller.common.utils.KMNumbers
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
-import com.tokopedia.seller.product.manage.constant.SortProductOption
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -145,9 +143,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var isOfficialStore: Boolean = false
     private var shopDomain: String = ""
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
-    lateinit var adapter: ProductManageListAdapter
+    lateinit var productManageListAdapter: ProductManageListAdapter
 
-    private var productManageViewModels: List<ProductManageViewModel> = listOf()
+    private var productManageViewModels: MutableList<ProductManageViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
@@ -208,19 +206,25 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
 
         bottomActionView.setButton1OnClickListener {
-            val intent = ProductManageSortActivity.createIntent(activity, sortProductOption)
-            startActivityForResult(intent, REQUEST_CODE_SORT)
+            context?.let {
+                val intent = ProductManageSortActivity.createIntent(it, sortProductOption)
+                startActivityForResult(intent, REQUEST_CODE_SORT)
+            }
         }
 
         bottomActionView.setButton2OnClickListener {
-            val intent = ProductManageFilterActivity.createIntent(activity, productManageFilterModel)
-            startActivityForResult(intent, REQUEST_CODE_FILTER)
+            context?.let {
+                val intent = ProductManageFilterActivity.createIntent(it, productManageFilterModel)
+                startActivityForResult(intent, REQUEST_CODE_FILTER)
+            }
         }
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            productManageViewModels.forEachIndexed { index, _ ->
-                if (!isChecked || !adapter.isChecked(index)) {
-                    adapter.updateListByCheck(isChecked, index)
+            if (!isListEmpty) {
+                adapter.data.forEachIndexed { index, _ ->
+                    if (!isChecked || !productManageListAdapter.isChecked(index)) {
+                        productManageListAdapter.updateListByCheck(isChecked, index)
+                    }
                 }
             }
         }
@@ -229,7 +233,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
-            onSearchSubmitted("")
+            loadInitialData()
         }
 
         displayOnBoardingCheck()
@@ -300,8 +304,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ProductManageViewModel, ProductManageFragmentFactoryImpl> {
-        adapter = ProductManageListAdapter(adapterTypeFactory, this)
-        return adapter
+        productManageListAdapter = ProductManageListAdapter(adapterTypeFactory, this)
+        return productManageListAdapter
     }
 
     override fun getAdapterTypeFactory(): ProductManageFragmentFactoryImpl = ProductManageFragmentFactoryImpl(this, this)
@@ -309,11 +313,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        context?.let {
+        activity?.let {
             GraphqlClient.init(it)
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerProductManageComponent.builder()
-                    .productManageModule(ProductManageModule())
-                    .productComponent(getComponent(ProductComponent::class.java))
+                    .baseAppComponent(appComponent)
                     .build()
                     .inject(this)
             productManagePresenter.attachView(this)
@@ -331,6 +335,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun renderList(list: MutableList<ProductManageViewModel>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
         /**
          * Keep checklist after user search or filter
          */
@@ -340,27 +349,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             it.index
         }.toHashSet()
 
-        adapter.setCheckedPositionList(listPositionChecked)
-        adapter.notifyDataSetChanged()
+        productManageListAdapter.setCheckedPositionList(listPositionChecked)
+        productManageListAdapter.notifyDataSetChanged()
     }
 
     override fun onSearchSubmitted(text: String) {
         ProductManageTracking.eventProductManageSearch()
-        isLoadingInitialData = true
-        val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
-
-        if (productManageViewModels.isNotEmpty()) {
-            val textLowerCase = text.toLowerCase()
-
-            for (data in productManageViewModels) {
-                if (data.productName.toLowerCase().contains(textLowerCase)) {
-                    tempShopEtalaseViewModels.add(data)
-                }
-            }
-        }
-
-        renderList(tempShopEtalaseViewModels, false)
-        showSearchViewWithDataSizeCheck()
+        loadInitialData()
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -395,7 +390,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessEditPrice(productId: String?, price: String?, currencyId: String?, currencyText: String?) {
-        adapter.updatePrice(
+        productManageListAdapter.updatePrice(
                 productId ?: "",
                 price ?: "",
                 currencyId ?: "",
@@ -451,7 +446,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessSetCashback(productId: String, cashback: Int) {
-        adapter.updateCashback(productId, cashback)
+        productManageListAdapter.updateCashback(productId, cashback)
     }
 
     override fun onErrorMultipleDeleteProduct(e: Throwable?, listOfResponse: ProductUpdateV3SuccessFailedResponse?) {
@@ -538,7 +533,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = ContextCompat.getColor(context, R.color.tkpd_main_green)
+                val backgroundColor = MethodChecker.getColor(context, R.color.tkpd_main_green)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
@@ -586,13 +581,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
-        adapter.resetCheckedItemSet()
+        productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
     }
 
-    override fun onErrorBulkUpdateProduct(e: Throwable?) {
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
+    }
+
+    override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
                 //No OP
@@ -677,9 +680,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    override fun isChecked(position: Int): Boolean = adapter.isChecked(position)
+    override fun isChecked(position: Int): Boolean = productManageListAdapter.isChecked(position)
 
-    override fun updateListByCheck(isChecked: Boolean, position: Int) = adapter.updateListByCheck(isChecked, position)
+    override fun updateListByCheck(isChecked: Boolean, position: Int) = productManageListAdapter.updateListByCheck(isChecked, position)
 
     override fun onClickOptionItem(productManageViewModel: ProductManageViewModel) {
         showActionProductDialog(productManageViewModel)
@@ -750,20 +753,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
-        activity?.let {
-            (it.application as PdpRouter).goToCreateTopadsPromo(it,
-                    productManageViewModel.itemId, userSession.userId,
-                    if (GlobalConfig.isSellerApp())
-                        TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                    else
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
+        context?.let {
+            val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.itemId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp())
+                                TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
+                            else
+                                TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT).build().toString()
+
+            RouteManager.route(it, uri)
         }
     }
 
     private fun onSetCashbackClicked(productManageViewModel: ProductManageViewModel) {
         activity?.let {
-            if (!GlobalConfig.isSellerApp() && it.application is SellerModuleRouter) {
-                (it.application as SellerModuleRouter).goToGMSubscribe(it)
+            if (!GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
                 return
             }
             showOptionCashback(productManageViewModel.productId, productManageViewModel.productPricePlain,
@@ -859,9 +866,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         val productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant, isOfficialStore)
-        productManageEditPriceDialogFragment.setListenerDialogEditPrice { productId, price, currencyId, currencyText -> productManagePresenter.editPrice(productId, price, currencyId, currencyText) }
+        productManageEditPriceDialogFragment.setListenerDialogEditPrice(object : ProductManageEditPriceDialogFragment.ListenerDialogEditPrice {
+            override fun onSubmitEditPrice(productId: String, price: String, currencyId: String, currencyText: String) {
+                productManagePresenter.editPrice(productId, price, currencyId, currencyText)
+            }
+        })
         activity?.let {
-            productManageEditPriceDialogFragment.show(it.fragmentManager, "")
+            fragmentManager?.let {
+                productManageEditPriceDialogFragment.show(it, "")
+            }
         }
     }
 
@@ -889,7 +902,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onProductClicked(productManageViewModel: ProductManageViewModel) {
-        adapter.notifyDataSetChanged()
+        productManageListAdapter.notifyDataSetChanged()
         goToPDP(productManageViewModel.productId)
         ProductManageTracking.eventProductManageClickDetail()
     }
@@ -920,7 +933,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         confirmationProductDataList = productManagePresenter.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, itemsChecked)
         val confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList)
         confirmationUpdateProductBottomSheet.setListener(this)
-        confirmationUpdateProductBottomSheet.show(fragmentManager, "bs_update_product")
+        fragmentManager?.let {
+            confirmationUpdateProductBottomSheet.show(it, "bs_update_product")
+        }
     }
 
     override fun updateProduct() {
@@ -938,6 +953,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             activity?.unregisterReceiver(addProductReceiver)
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -971,7 +987,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = it.getParcelableExtra(EXTRA_FILTER_SELECTED)
                     loadInitialData()
-                    ProductManageTracking.trackingFilter(productManageFilterModel, context)
+                    ProductManageTracking.trackingFilter(productManageFilterModel)
                 }
                 ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                     val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
@@ -989,7 +1005,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 }
                 REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                     val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
-                    sortProductOption = productManageSortModel.id
+                    sortProductOption = productManageSortModel.sortId
                     loadInitialData()
                     ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
                 }

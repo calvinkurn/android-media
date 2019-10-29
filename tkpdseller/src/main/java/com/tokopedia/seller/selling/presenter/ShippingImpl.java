@@ -17,13 +17,9 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
@@ -361,9 +357,11 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void onOpenDetail(int pos, Context context) {
-        Intent intent = ((TransactionRouter)MainApplication
-                .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
-        context.startActivity(intent);
+        if (pos >= 0) {
+            Intent intent = ((TransactionRouter) MainApplication
+                    .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
+            context.startActivity(intent);
+        }
     }
 
     private void finishTimeout() {

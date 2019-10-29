@@ -11,8 +11,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.common.data.util.ApplinkUtil
-import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -29,9 +29,8 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     override fun getScreenName(): String? = null
 
     override fun onBackPressed() {
-        if ((intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true)
-                && application is TopAdsDashboardRouter) {
-            val homeIntent: Intent = (application as TopAdsDashboardRouter).getHomeIntent(this)
+        if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
+            val homeIntent = RouteManager.getIntent(this, ApplinkConst.SellerApp.SELLER_APP_HOME)
             startActivity(homeIntent)
             finish()
         } else {

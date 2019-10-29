@@ -50,7 +50,7 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                     String saldoQuery = requestParam.getString(SALDO_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) requestParam.getObject(VARIABLES);
                     int[] shopIds = (int[])variables.get("shop_ids");
-                    String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0]+"" : "";
+                    String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0]+"" : "0";
 
                     if(!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables, false);

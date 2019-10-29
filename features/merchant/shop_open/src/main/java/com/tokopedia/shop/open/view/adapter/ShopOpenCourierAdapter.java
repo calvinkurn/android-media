@@ -50,7 +50,7 @@ public class ShopOpenCourierAdapter extends RecyclerView.Adapter<ShopOpenCourier
 
     @Override
     public ShopServiceCourierViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_shop_courier_service, parent, false);
+        View view = LayoutInflater.from(context).inflate(com.tokopedia.seller.R.layout.item_shop_courier_service, parent, false);
         return new ShopServiceCourierViewHolder(view);
     }
 
@@ -72,10 +72,10 @@ public class ShopOpenCourierAdapter extends RecyclerView.Adapter<ShopOpenCourier
 
         public ShopServiceCourierViewHolder(View itemView) {
             super(itemView);
-            checkBox = itemView.findViewById(R.id.check_box);
+            checkBox = itemView.findViewById(com.tokopedia.seller.R.id.check_box);
             checkBox.setOnCheckedChangeListener(this);
 
-            vIconInfo = itemView.findViewById(R.id.iv_info);
+            vIconInfo = itemView.findViewById(com.tokopedia.seller.R.id.iv_info);
             vIconInfo.setOnClickListener(this);
         }
 

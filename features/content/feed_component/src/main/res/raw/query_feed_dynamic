@@ -1,4 +1,4 @@
-query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
+query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
   feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
     data {
       id
@@ -173,7 +173,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 url
               }
             }
-						postTag {
+            postTag {
               id
               type
               appLink
@@ -212,6 +212,14 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                     hex
                     opacity
                   }
+                }
+                buttonCTA {
+                  text
+                  textDisabled
+                  isDisabled
+                }
+                shop {
+                    shopID
                 }
               }
               isVoted
@@ -262,6 +270,72 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             viewURL
             type
             source
+          }
+        }
+        cardhighlight {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+          }
+          items {
+            header {
+              avatar
+              avatarTitle
+              avatarWeblink
+              avatarApplink
+              avatarBadgeImage
+            }
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              videos {
+                url
+                durationFmt
+                durationVal
+              }
+            }
+            footer {
+              like {
+                fmt
+                value
+                checked
+              }
+              comment {
+                fmt
+                value
+              }
+              buttonCta {
+                text
+                textDisabled
+                isDisabled
+                badge
+                appLink
+                webLink
+              }
+              share {
+                text
+                url
+                title
+                imageURL
+                description
+              }
+            }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+            }
           }
         }
       }
@@ -448,6 +522,24 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               share
               ctaLink
             }
+          }
+          cardhighlight {
+              title {
+                  text
+                  ctaLink
+              }
+              header {
+                  avatar
+                  avatarTitle
+                  avatarBadge
+              }
+              body {
+                  media
+              }
+              footer {
+                  like
+                  comment
+              }
           }
         }
       }

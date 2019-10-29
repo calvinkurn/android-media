@@ -38,11 +38,21 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvEmasPrice;
     private TextView mTvTradeInLabel;
     private TextView mTvTradeInPrice;
-    private RelativeLayout mRlTotalPromo;
-    private TextView mTvTotalPromoStackAmount;
-    private TextView mTvTotalPromoStackLabel;
     private TextView mTvOrderPrioritasLabel;
     private TextView mTvOrderPrioritasFee;
+    private TextView mTvBookingFeeLabel;
+    private TextView mTvBookingFee;
+    private TextView mTvMacroInsuranceLabel;
+    private TextView mTvMacroInsurancePrice;
+    private TextView mTvDiscountLabel;
+    private TextView mTvDiscountPrice;
+    private TextView mTvShippingDiscountLabel;
+    private TextView mTvShippingDiscountPrice;
+    private TextView mTvProductDiscountLabel;
+    private TextView mTvProductDiscountPrice;
+    private RelativeLayout mRlTotalCashback;
+    private TextView mTvTotalCashbackLabel;
+    private TextView mTvTotalCashbackAmount;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -69,11 +79,21 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvEmasPrice = itemView.findViewById(R.id.tv_emas_price);
         mTvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
         mTvTradeInPrice = itemView.findViewById(R.id.tv_trade_in);
-        mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
-        mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
-        mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
         mTvOrderPrioritasLabel = itemView.findViewById(R.id.tv_order_prioritas_label);
         mTvOrderPrioritasFee = itemView.findViewById(R.id.tv_order_prioritas_price);
+        mTvBookingFeeLabel = itemView.findViewById(R.id.tv_booking_fee_label);
+        mTvBookingFee = itemView.findViewById(R.id.tv_booking_fee_price);
+        mTvMacroInsuranceLabel = itemView.findViewById(R.id.tv_macro_insurance_label);
+        mTvMacroInsurancePrice = itemView.findViewById(R.id.tv_macro_insurance_price);
+        mTvDiscountLabel = itemView.findViewById(R.id.tv_discount_label);
+        mTvDiscountPrice = itemView.findViewById(R.id.tv_discount_price);
+        mTvShippingDiscountLabel = itemView.findViewById(R.id.tv_shipping_discount_label);
+        mTvShippingDiscountPrice = itemView.findViewById(R.id.tv_shipping_discount_price);
+        mTvProductDiscountLabel = itemView.findViewById(R.id.tv_product_discount_label);
+        mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
+        mRlTotalCashback = itemView.findViewById(R.id.rl_total_cashback);
+        mTvTotalCashbackLabel = itemView.findViewById(R.id.tv_total_cashback_label);
+        mTvTotalCashbackAmount = itemView.findViewById(R.id.tv_total_cashback_amount);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -87,7 +107,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel,mTvOrderPrioritasFee,shipmentCost.getPriorityFee()));
+        mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel, mTvOrderPrioritasFee, shipmentCost.getPriorityFee()));
         mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
         mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
         mTvPromoDiscount.setText(String.format(mTvPromoDiscount.getContext().getString(R.string.promo_format),
@@ -95,20 +115,70 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
         mTvEmasPrice.setText(getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.getEmasPrice()));
+        mTvMacroInsurancePrice.setText(getPriceFormat(mTvMacroInsuranceLabel, mTvMacroInsurancePrice, shipmentCost.getMacroInsurancePrice()));
+        if (mTvMacroInsuranceLabel.getVisibility() == View.VISIBLE) {
+            mTvMacroInsuranceLabel.setText(shipmentCost.getMacroInsurancePriceLabel());
+        }
         mTvTradeInPrice.setText(String.format(mTvTradeInPrice.getContext().getString(R.string.promo_format),
                 getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.getTradeInPrice())));
 
-        if (shipmentCost.getTotalPromoStackAmount() > 0) {
-            mRlTotalPromo.setVisibility(View.VISIBLE);
-            mTvTotalPromoStackAmount.setText(shipmentCost.getTotalPromoStackAmountStr());
-            mRlTotalPromo.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
+        if (shipmentCost.getBookingFee() > 0) {
+            mTvBookingFeeLabel.setVisibility(View.VISIBLE);
+            mTvBookingFee.setVisibility(View.VISIBLE);
+            mTvBookingFee.setText(shipmentCost.getBookingFee() + "");
         } else {
-            mRlTotalPromo.setVisibility(View.GONE);
+            mTvBookingFeeLabel.setVisibility(View.GONE);
+            mTvBookingFee.setVisibility(View.GONE);
+        }
+        mTvBookingFee.setText(getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.getBookingFee()));
+
+        renderDiscount(shipmentCost);
+        renderCashback(shipmentCost);
+    }
+
+    private void renderDiscount(ShipmentCostModel shipmentCost) {
+        if (shipmentCost.isHasDiscountDetails()) {
+            renderShippingDiscount(shipmentCost);
+            renderProductDiscount(shipmentCost);
+        } else {
+            renderGeneralDiscount(shipmentCost);
+            mTvShippingDiscountLabel.setVisibility(View.GONE);
+            mTvShippingDiscountPrice.setVisibility(View.GONE);
+            mTvProductDiscountLabel.setVisibility(View.GONE);
+            mTvProductDiscountPrice.setVisibility(View.GONE);
         }
     }
 
-    public void hideTotalNilaiPromo() {
-        mRlTotalPromo.setVisibility(View.GONE);
+    private void renderProductDiscount(ShipmentCostModel shipmentCost) {
+        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(R.string.label_product_discount));
+        mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
+    }
+
+    private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
+        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount));
+        if (shipmentCost.getShippingDiscountAmount() > 0) {
+            if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
+                mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
+            } else {
+                mTvShippingDiscountPrice.setText(getPriceFormat(mTvShippingDiscountLabel, mTvShippingDiscountPrice, shipmentCost.getShippingDiscountAmount() * -1));
+            }
+        }
+    }
+
+    private void renderGeneralDiscount(ShipmentCostModel shipmentCost) {
+        mTvDiscountLabel.setText(mTvDiscountLabel.getContext().getString(R.string.label_total_discount));
+        mTvDiscountPrice.setText(getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, shipmentCost.getDiscountAmount() * -1));
+    }
+
+    private void renderCashback(ShipmentCostModel shipmentCost) {
+        mTvTotalCashbackLabel.setText(mTvTotalCashbackLabel.getContext().getString(R.string.label_total_cashback));
+        mTvTotalCashbackAmount.setText(getPriceFormat(mTvTotalCashbackLabel, mTvTotalCashbackAmount, shipmentCost.getCashbackAmount()));
+        if (shipmentCost.getCashbackAmount() > 0) {
+            mRlTotalCashback.setVisibility(View.VISIBLE);
+            mRlTotalCashback.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
+        } else {
+            mRlTotalCashback.setVisibility(View.GONE);
+        }
     }
 
     private String getTotalItemLabel(Context context, int totalItem) {

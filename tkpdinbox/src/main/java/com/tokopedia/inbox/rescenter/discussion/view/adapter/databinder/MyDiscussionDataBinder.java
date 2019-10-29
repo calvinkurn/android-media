@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
@@ -28,8 +27,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 3/29/17.
@@ -39,26 +36,20 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.message)
         TextView message;
-
-        @BindView(R2.id.hour)
         TextView hour;
-
-        @BindView(R2.id.date)
         TextView date;
-
         TextView titleAttachment;
-
-        @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
-
         AttachmentAdapter adapter;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            message = itemView.findViewById(R.id.message);
+            hour = itemView.findViewById(R.id.hour);
+            date = itemView.findViewById(R.id.date);
             titleAttachment = (TextView) itemView.findViewById(R.id.title_attachment);
+            imageHolder = itemView.findViewById(R.id.image_holder);
         }
     }
 

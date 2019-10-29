@@ -14,5 +14,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity
+            android:name=".view.activity.ChatBotProvideRatingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatBotProvideRatingActivityTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 </manifest>

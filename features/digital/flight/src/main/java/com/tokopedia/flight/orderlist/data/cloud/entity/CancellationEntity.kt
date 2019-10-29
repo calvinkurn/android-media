@@ -25,4 +25,16 @@ class CancellationEntity(
         val realRefund: String = "",
         @SerializedName("status")
         @Expose
-        val status: Int = 0)
+        val status: Int = 0,
+        @SerializedName("status_str")
+        @Expose
+        val statusStr: String = "",
+        @SerializedName("status_type")
+        @Expose
+        val statusType: String = "",
+        @SerializedName("refund_info")
+        @Expose
+        val refundInfo: String = "",
+        @SerializedName("refund_detail")
+        @Expose
+        val refundDetail: RefundDetailEntity = RefundDetailEntity())

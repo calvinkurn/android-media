@@ -32,6 +32,10 @@ public class CartItemTickerErrorHolderData implements Parcelable {
         }
     }
 
+    public void setCartTickerErrorData(CartTickerErrorData cartTickerErrorData) {
+        this.cartTickerErrorData = cartTickerErrorData;
+    }
+
     public CartTickerErrorData getCartTickerErrorData() {
         return cartTickerErrorData;
     }

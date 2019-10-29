@@ -17,6 +17,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageVie
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel;
 
+    @Nullable
+    private VideoStreamViewModel videoStreamViewModel;
+
     public ChannelInfoViewModel(String channelId) {
         this.channelId = channelId;
         this.title = "";
@@ -107,6 +111,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = null;
         this.backgroundViewModel = null;
         this.freezeViewModel = null;
+        this.videoStreamViewModel = null;
     }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
@@ -419,6 +424,9 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
+    }
+    public void setVideoLive(Boolean videoLive) {
+        this.videoLive = videoLive;
     }
 
     public SettingGroupChat getSettingGroupChat() {

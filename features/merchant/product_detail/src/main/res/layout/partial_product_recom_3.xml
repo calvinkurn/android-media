@@ -3,47 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_recom_3"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
     android:visibility="gone"
-    tools:visibility="visible"
-    tools:ignore="RtlSymmetry">
+    tools:ignore="RtlSymmetry"
+    tools:visibility="visible">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/title_recom_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
         android:text="@string/title_other_product"
         app:fontSize="title"
-        app:weight="medium"
-        app:textViewTheme="lightPrimary"/>
+        app:textViewTheme="lightPrimary"
+        app:weight="medium" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <ProgressBar android:id="@+id/loading_recom_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/dp_16"
-            android:visibility="gone"
-            tools:visibility="visible"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/product_recom_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
+            android:clipToPadding="false"
             android:descendantFocusability="blocksDescendants"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
             android:scrollbars="none"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_product_recommendation"
+            tools:orientation="horizontal"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/loading_recom_3"
+            layout="@layout/partial_shimmering_grid_list_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </FrameLayout>
 

@@ -2,17 +2,22 @@ package com.tokopedia.core.gcm;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiActivity;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
 
@@ -81,19 +86,28 @@ public class GCMHandler {
         return FCMCacheManager.getRegistrationId(context);
     }
 
-    private boolean isPlayServicesAvailable() {
+
+    // this code should be on main thread.
+    public static boolean isPlayServicesAvailable(Activity activity) {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(context);
+        int result = googleAPI.isGooglePlayServicesAvailable(activity);
         if (result != ConnectionResult.SUCCESS) {
-            Activity activity = (Activity) context;
-            if (!activity.isFinishing() && googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog((Activity) context, result,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(activity, result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
+                            Timber.w("P2User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                                    + " | "+Build.TAGS);
+                        }).show();
             }
 
             return false;
+        }else {
+            return true;
         }
+    }
 
-        return true;
+    private boolean isPlayServicesAvailable() {
+        return isPlayServicesAvailable((Activity) context);
     }
 }

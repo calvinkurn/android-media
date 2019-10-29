@@ -3,11 +3,15 @@ package com.tokopedia.shop.open.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.data.model.PostalCodeTypeFactory
 import com.tokopedia.shop.open.data.model.PostalCodeViewModel
@@ -24,15 +28,27 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
         PostalCodeTypeFactory>(), PostalCodeChooserContract.View {
 
     companion object {
-        val DEBOUNCE_DELAY_IN_MILIS: Long = 700
-        val INTENT_DATA_POSTAL_CODE = "postal_code"
+        const val DEBOUNCE_DELAY_IN_MILIS: Long = 700
+        const val INTENT_DATA_POSTAL_CODE = "postal_code"
         // Need postal code list
-        fun newInstance(postalCode: ArrayList<String>) =
+        fun newInstance(postalCode: ArrayList<String>?) =
                 ShopOpenPostalCodeChooserFragment().also {
                     it.arguments = Bundle().apply {
                         putStringArrayList(ARGUMENT_DATA_POSTAL_CODE, postalCode)
                     }
                 }
+    }
+
+    override fun getSearchInputView(view: View): SearchInputView {
+        return view.findViewById<View>(R.id.search_input_view) as SearchInputView
+    }
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return view.findViewById<View>(R.id.swipe_refresh_layout) as SwipeToRefresh
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,11 +72,11 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
     }
 
     override fun onItemClicked(postalCode: PostalCodeViewModel) {
-        if (activity != null){
+        activity?.also {
             val resultIntent = Intent()
             resultIntent.putExtra(INTENT_DATA_POSTAL_CODE, postalCode.postalCode)
-            activity?.setResult(Activity.RESULT_OK, resultIntent)
-            activity?.finish()
+            it.setResult(Activity.RESULT_OK, resultIntent)
+            it.finish()
         }
     }
 
@@ -102,9 +118,9 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
 
     private fun filterList(postalCode: List<String>, query: String): MutableList<String> {
         val result: MutableList<String> = mutableListOf()
-        for (index in postalCode) {
-            if (index.contains(query)) {
-                result.add(index)
+        postalCode.forEach {
+            if (it.contains(query)) {
+                result.add(it)
             }
         }
         return result

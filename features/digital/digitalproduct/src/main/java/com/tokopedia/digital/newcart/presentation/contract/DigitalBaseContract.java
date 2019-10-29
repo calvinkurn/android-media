@@ -23,19 +23,20 @@ public interface DigitalBaseContract {
 
         CartDigitalInfoData getCartInfoData();
 
-        void renderHachikoCart();
+        void renderPromoTicker();
 
-        void renderHachikoPromoAndCouponLabel();
+        void hidePromoTicker();
 
-        void renderHachikoPromoLabelOnly();
+        void resetPromoTicker();
 
-        void hideHachikoCart();
+        void renderPromo();
 
-        void renderHachikoCoupon(String title, String message, String voucherCode);
+        void onAutoApplyPromo(String couponTitle,
+                              String couponMessage,
+                              String couponCode,
+                              int isCoupon);
 
         void enableVoucherDiscount(long discountAmountPlain);
-
-        void renderHachikoVoucher(String voucherCode, String message);
 
         void renderDetailMainInfo(List<CartItemDigital> mainInfo);
 
@@ -65,12 +66,6 @@ public interface DigitalBaseContract {
 
         void hideFullPageLoading();
 
-        void navigateToCouponActiveAndSelected(String categoryId);
-
-        void navigateToCouponActive(String categoryId);
-
-        void navigateToCouponNotActive(String categoryId);
-
         RequestBodyIdentifier getDigitalIdentifierParam();
 
         void disableVoucherCheckoutDiscount();
@@ -82,6 +77,8 @@ public interface DigitalBaseContract {
         String getIdemPotencyKey();
 
         String getClientNumber();
+
+        String getZoneId();
 
         boolean isInstantCheckout();
 
@@ -105,12 +102,9 @@ public interface DigitalBaseContract {
 
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
 
-        boolean isAlreadyShowPostPaid();
-
         void showPostPaidDialog(String title,
                                 String content,
-                                String confirmButtonTitle,
-                                String userId);
+                                String confirmButtonTitle);
 
         void startPerfomanceMonitoringTrace();
 
@@ -121,17 +115,10 @@ public interface DigitalBaseContract {
 
         void onViewCreated();
 
-        void onUseVoucherButtonClicked();
-
-        void onReceiveVoucherCode(String code, String message, long discount, int isCoupon);
-
-        void onReceiveCoupon(String couponTitle,
+        void onReceivePromoCode(String couponTitle,
                              String couponMessage,
                              String couponCode,
-                             long couponDiscountAmount,
                              int isCoupon);
-
-        void onClearVoucher();
 
         void processToCheckout();
 

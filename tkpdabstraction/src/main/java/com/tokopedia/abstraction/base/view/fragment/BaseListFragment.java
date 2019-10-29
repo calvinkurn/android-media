@@ -87,6 +87,8 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         ErrorNetworkModel.OnRetryListener{
 
     private static final int DEFAULT_INITIAL_PAGE = 1;
+    private static final int DEFAULT_MAX_ROW_FULL_PAGE = 10;
+
     private BaseListAdapter<T, F> adapter;
     protected SwipeRefreshLayout swipeToRefresh;
     private Snackbar snackBarRetry;
@@ -123,15 +125,23 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     public RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
+        return (RecyclerView) view.findViewById(getRecyclerViewResourceId());
     }
 
     @Nullable
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
         if (hasInitialSwipeRefresh()) {
-            return view.findViewById(R.id.swipe_refresh_layout);
+            return view.findViewById(getSwipeRefreshLayoutResourceId());
         }
         return null;
+    }
+
+    public int getSwipeRefreshLayoutResourceId(){
+        return R.id.swipe_refresh_layout;
+    }
+
+    public int getRecyclerViewResourceId(){
+        return R.id.recycler_view;
     }
 
     @Override
@@ -289,6 +299,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             //set flag to false, indicate that the initial data has been set.
             isLoadingInitialData = false;
         }
+
+        // load next page data if adapter data less than minimum scrollable data
+        // when the list has next page and auto load next page is enabled
+        if (adapter.getDataSize() < getMinimumScrollableNumOfItems() && isAutoLoadEnabled()
+                && hasNextPage && endlessRecyclerViewScrollListener !=  null) {
+            endlessRecyclerViewScrollListener.loadMoreNextPage();
+        }
     }
 
     public boolean isListEmpty(){
@@ -385,6 +402,28 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
         adapter.hideLoading();
         hideSnackBarRetry();
+    }
+
+    /**
+     * return the minimum items to make page scrollable
+     * this number will be used as threshold to automatically load
+     * next page data if it have next page and have auto load enabled
+     *
+     * @return int
+     */
+    protected int getMinimumScrollableNumOfItems() {
+        return DEFAULT_MAX_ROW_FULL_PAGE;
+    }
+
+    /**
+     * auto load enabled is used to call load next page
+     * automatically if list data less than minimum num of rows for full page
+     * and the list still has next page
+     *
+     * @return boolean
+     */
+    protected boolean isAutoLoadEnabled() {
+        return false;
     }
 
     private void showSnackBarRetry(Throwable throwable, View.OnClickListener listener) {

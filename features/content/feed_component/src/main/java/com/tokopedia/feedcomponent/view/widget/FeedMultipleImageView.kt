@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_multiple_media.view.*
 import kotlinx.android.synthetic.main.layout_image_grid.view.*
@@ -37,14 +38,14 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private fun init() {
         View.inflate(context, R.layout.layout_image_grid, this)
         val gridLayoutManager = GridLayoutManager(context, 6)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when(adapter.itemCount) {
+                return when (adapter.itemCount) {
                     1 -> 6
                     2 -> 3
                     3 -> 2
                     4 -> 3
-                    5 -> if (position <2) 3 else 2
+                    5 -> if (position < 2) 3 else 2
                     else -> 2
                 }
             }
@@ -63,7 +64,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
         rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), adapter.itemCount))
     }
 
-    fun setOnFileClickListener(listener: OnFileClickListener){
+    fun setOnFileClickListener(listener: OnFileClickListener) {
         adapter.fileListener = listener
     }
 
@@ -77,11 +78,12 @@ class FeedMultipleImageView @JvmOverloads constructor(
         : RecyclerView.Adapter<ImageAdapter.Holder>() {
 
         private var feedType = ""
+
         init {
             setHasStableIds(true)
         }
 
-        fun updateItem(itemList: List<MediaItem>, feedType: String){
+        fun updateItem(itemList: List<MediaItem>, feedType: String) {
             this.itemList.clear()
             this.itemList.addAll(itemList)
             this.feedType = feedType
@@ -101,17 +103,18 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
 
         override fun getItemId(position: Int): Long {
-            return with(itemList[position]){
-                (thumbnail+type).hashCode().toLong()
+            return with(itemList[position]) {
+                (thumbnail + type).hashCode().toLong()
             }
         }
 
-        inner class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             init {
                 itemView.setOnClickListener {
                     val media = itemList[adapterPosition]
                     fileListener?.onClickItem(media, adapterPosition)
-                    feedMultipleImageViewListener?.onImageClick(media.positionInFeed, adapterPosition, media.applink)
+                    feedMultipleImageViewListener?.onMediaGridClick(media.positionInFeed, adapterPosition,
+                            media.applink, itemCount == 1)
                     if (media.tracking.isNotEmpty()) {
                         feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
                     }
@@ -119,23 +122,26 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
 
             fun bind(item: MediaItem, feedType: String) {
-                with(itemView){
+                with(itemView) {
                     val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
                     val layoutParams = delete.layoutParams as LayoutParams
                     layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                     delete.layoutParams = layoutParams
 
-                     ImageHandler.loadImageFit2(context, itemImageView, item.thumbnail)
-                     delete.setOnClickListener { removeItem(item, adapterPosition) }
-                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
-                     ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO){
-                         val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
-                         ic_play_vid.layoutParams.width = modLength
-                         ic_play_vid.layoutParams.height = modLength
-                     }
-                 }
+                    ImageHandler.loadImageFit2(context, itemImageView, item.thumbnail)
+                    delete.setOnClickListener { removeItem(item, adapterPosition) }
+                    delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
+                    if (item.videos.isNotEmpty()) {
+                        ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO) {
+                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                            ic_play_vid.layoutParams.width = modLength
+                            ic_play_vid.layoutParams.height = modLength
+                        }
+                    }
+                    else ic_play_vid.gone()
+                }
 
-             }
+            }
 
 
             private fun mapTrackingData(trackList: List<Tracking>): MutableList<TrackingViewModel> {
@@ -152,7 +158,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 return trackingList
             }
 
-            fun isSingleItemFromFeed(feedType: String):Boolean {
+            fun isSingleItemFromFeed(feedType: String): Boolean {
                 return feedType.isNotEmpty() && itemList.size == 1
             }
         }
@@ -163,19 +169,20 @@ class FeedMultipleImageView @JvmOverloads constructor(
             fileListener?.onDeleteItem(media, position)
         }
 
-        companion object{
+        companion object {
             private const val TYPE_VIDEO = "video"
         }
     }
 
 
-    interface OnFileClickListener{
+    interface OnFileClickListener {
         fun onDeleteItem(item: MediaItem, position: Int)
         fun onClickItem(item: MediaItem, position: Int)
     }
 
-    interface FeedMultipleImageViewListener{
-        fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+    interface FeedMultipleImageViewListener {
+        fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
+                             redirectLink: String, isSingleItem: Boolean)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }

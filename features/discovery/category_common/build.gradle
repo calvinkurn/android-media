@@ -23,14 +23,28 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.category'
+    versionName = "1.0.0"
+    artifactName = "category_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

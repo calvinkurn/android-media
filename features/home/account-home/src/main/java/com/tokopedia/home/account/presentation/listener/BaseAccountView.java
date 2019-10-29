@@ -15,6 +15,6 @@ public interface BaseAccountView extends CustomerView {
 
     void showError(Throwable e);
 
-    void showErroNoConnection();
+    void showErrorNoConnection();
 
 }

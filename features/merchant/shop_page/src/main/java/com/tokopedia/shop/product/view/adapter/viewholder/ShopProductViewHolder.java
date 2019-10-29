@@ -42,6 +42,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
     private ImageView freeReturnImageView;
+    private ImageView freeOngkirBanner;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
     private View soldOutView;
@@ -78,6 +79,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         badgeContainer = view.findViewById(R.id.badges_container);
 
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
+        freeOngkirBanner = view.findViewById(R.id.image_view_free_ongkir);
         productImageView = view.findViewById(R.id.product_image);
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
@@ -99,6 +101,20 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         updateDisplayRating(shopProductViewModel);
         updateDisplayBadges(shopProductViewModel);
         updateDisplayWishList(shopProductViewModel);
+        updateDisplayFreeDeliveryBanner(shopProductViewModel);
+    }
+
+    private void updateDisplayFreeDeliveryBanner(ShopProductViewModel shopProductViewModel) {
+        if (shopProductViewModel.isShowFreeOngkir()) {
+            ImageHandler.loadImage(
+                    freeOngkirBanner.getContext(),
+                    freeOngkirBanner,
+                    shopProductViewModel.getFreeOngkirPromoIcon(),
+                    R.drawable.ic_loading_image
+            );
+            freeOngkirBanner.setVisibility(View.VISIBLE);
+        } else
+            freeOngkirBanner.setVisibility(View.GONE);
     }
 
     private void updateDisplayGeneralView(final ShopProductViewModel shopProductViewModel) {

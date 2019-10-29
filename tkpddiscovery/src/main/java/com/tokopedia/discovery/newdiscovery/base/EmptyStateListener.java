@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.Option;
 
 import java.util.List;
 

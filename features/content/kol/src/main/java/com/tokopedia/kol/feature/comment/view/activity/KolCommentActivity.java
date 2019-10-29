@@ -25,6 +25,7 @@ public class KolCommentActivity extends BaseSimpleActivity {
     public static final String ARGS_FOOTER = "ARGS_FOOTER";
     public static final String ARGS_ID = "ARGS_ID";
     public static final String ARGS_POSITION = "ARGS_POSITION";
+    public static final String ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN";
     public static final String ARGS_FROM_FEED = "ARGS_FROM_FEED";
     public static final String ARGS_KOL_ID = "id";
     public static final String ARGS_FROM_APPLINK = "isFromApplink";
@@ -34,6 +35,16 @@ public class KolCommentActivity extends BaseSimpleActivity {
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_ID, id);
         bundle.putInt(ARGS_POSITION, rowNumber);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context, int id, int rowNumber, int columnNumber) {
+        Intent intent = new Intent(context, KolCommentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARGS_ID, id);
+        bundle.putInt(ARGS_POSITION, rowNumber);
+        bundle.putInt(ARGS_POSITION_COLUMN, columnNumber);
         intent.putExtras(bundle);
         return intent;
     }

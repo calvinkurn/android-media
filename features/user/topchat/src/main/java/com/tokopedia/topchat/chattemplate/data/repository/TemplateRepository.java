@@ -15,5 +15,5 @@ public interface TemplateRepository {
 
     Observable<GetTemplateViewModel> getTemplate(HashMap<String, Object> parameters);
 
-    Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters);
+    Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters, boolean isSeller);
 }

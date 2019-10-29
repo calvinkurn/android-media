@@ -79,7 +79,7 @@ abstract class TopAdsDashboardStatisticFragment : TkpdBaseV4Fragment() {
                         } else indexToDisplay.contains(i)
 
                     })
-                    .setDotDrawable(ContextCompat.getDrawable(activity!!, R.drawable.oval_2_copy_6))
+                    .setDotDrawable(ContextCompat.getDrawable(activity!!, com.db.williamchart.R.drawable.oval_2_copy_6))
                     .buildChart(content_graph)
         } catch (e: Exception) {
         }

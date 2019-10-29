@@ -24,34 +24,6 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                android:minHeight="?attr/actionBarSize"
-                android:visibility="gone"
-                app:contentScrim="@color/white"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
-
-                <com.tokopedia.product.detail.view.widget.PictureScrollingView
-                    android:id="@+id/view_picture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="none"
-                    app:scrimAnimationDuration="50" />
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:gravity="top"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_pdp_toolbar"
                 android:layout_width="match_parent"
@@ -66,7 +38,8 @@
                     android:id="@+id/layout_search"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
                     android:background="@drawable/pdp_bg_search"
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
@@ -289,12 +262,28 @@
             </FrameLayout>
 
         </RelativeLayout>
-
-        <include layout="@layout/partial_layout_button_action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:layout_anchorGravity="bottom" />
+        
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_gravity="bottom">
+    
+            <com.tokopedia.stickylogin.view.StickyLoginView
+              android:id="@+id/sticky_login_text"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/sticky_bg_color"
+              android:visibility="gone"
+              app:layout_constraintTop_toTopOf="parent"
+              app:sticky_highlight_color="@color/g_500"
+              app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
+            
+            <include layout="@layout/partial_layout_button_action"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" />
+            
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_detail"

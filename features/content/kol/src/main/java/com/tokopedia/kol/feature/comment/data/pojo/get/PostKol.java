@@ -53,6 +53,9 @@ public class PostKol {
     @SerializedName("content")
     @Expose
     private List<Content> content = null;
+    @SerializedName("userBadges")
+    @Expose
+    private List<String> userBadges;
 
     public PostKol() {
     }
@@ -60,7 +63,7 @@ public class PostKol {
     public PostKol(int id, Object headerTitle, String description, int commentCount,
                    int likeCount, boolean isLiked, boolean isFollowed, String userName,
                    String userPhoto, int userId, String userInfo, String userUrl, String createTime,
-                   boolean showComment, List<Content> content) {
+                   boolean showComment, List<Content> content, List<String> userBadges) {
         this.id = id;
         this.headerTitle = headerTitle;
         this.description = description;
@@ -76,6 +79,8 @@ public class PostKol {
         this.createTime = createTime;
         this.showComment = showComment;
         this.content = content;
+        this.userBadges = userBadges;
+
     }
 
     public int getId() {
@@ -136,5 +141,9 @@ public class PostKol {
 
     public List<Content> getContent() {
         return content;
+    }
+
+    public List<String> getUserBadges() {
+        return userBadges;
     }
 }
