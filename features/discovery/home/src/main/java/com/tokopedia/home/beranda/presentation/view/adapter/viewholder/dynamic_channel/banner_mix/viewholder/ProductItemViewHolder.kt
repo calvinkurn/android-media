@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -33,7 +33,7 @@ class ProductItemViewHolder(view: View,
             initProductName(gridItem.name)
             initLabelDiscount(gridItem.discount)
             setOnClickListener {
-                HomePageTracking.eventClickProductChannelMix(context, productBannerMixDataModel.channel, adapterPosition)
+                HomePageTracking.eventClickProductChannelMix(context, productBannerMixDataModel.channel,  gridItem.freeOngkir.isActive ?: false, adapterPosition)
                 homeCategoryListener.onSectionItemClicked(gridItem.applink)
             }
         }

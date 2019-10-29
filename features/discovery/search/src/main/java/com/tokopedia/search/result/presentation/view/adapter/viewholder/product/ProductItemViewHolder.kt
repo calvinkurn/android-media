@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import android.support.annotation.Nullable
 import android.text.TextUtils
 import android.view.View
+import androidx.annotation.Nullable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -17,8 +17,8 @@ const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
 const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
 abstract class ProductItemViewHolder(
-    itemView: View,
-    protected val productListener: ProductListener
+        itemView: View,
+        protected val productListener: ProductListener
 ) : AbstractViewHolder<ProductItemViewModel>(itemView) {
 
     protected val context = itemView.context!!

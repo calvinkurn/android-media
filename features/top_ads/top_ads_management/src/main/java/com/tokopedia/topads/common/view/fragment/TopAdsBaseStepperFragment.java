@@ -2,7 +2,7 @@ package com.tokopedia.topads.common.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;

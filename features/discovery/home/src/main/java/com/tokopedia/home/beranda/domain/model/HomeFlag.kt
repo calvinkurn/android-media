@@ -7,4 +7,8 @@ class HomeFlag {
     @SerializedName("hasTokopoints")
     @Expose
     var hasTokopoints: Boolean = true
+
+    @SerializedName("hasRecomNavButton")
+    @Expose
+    var hasRecomNavButton: Boolean = true
 }

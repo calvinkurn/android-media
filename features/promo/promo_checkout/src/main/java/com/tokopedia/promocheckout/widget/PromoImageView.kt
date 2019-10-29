@@ -7,7 +7,7 @@ import android.util.AttributeSet
  * @author anggaprasetiyo on 08/01/18.
  */
 
-class PromoImageView : android.support.v7.widget.AppCompatImageView {
+class PromoImageView : androidx.appcompat.widget.AppCompatImageView {
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}

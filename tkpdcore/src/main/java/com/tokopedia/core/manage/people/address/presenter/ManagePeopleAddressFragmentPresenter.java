@@ -2,7 +2,7 @@ package com.tokopedia.core.manage.people.address.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;

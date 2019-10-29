@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.helper;
 
-import android.support.design.widget.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import android.view.View;
 
 /**

@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 

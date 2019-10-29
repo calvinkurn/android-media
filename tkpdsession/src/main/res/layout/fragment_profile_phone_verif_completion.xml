@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="0dp"
         android:layout_height="@dimen/space_large" />
 
@@ -22,7 +22,7 @@
         android:textSize="@dimen/text_size_16"
         android:textStyle="normal" />
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="0dp"
         android:layout_height="@dimen/space_large" />
 
@@ -72,7 +72,7 @@
 
             </RelativeLayout>
 
-            <android.support.v4.widget.Space
+            <androidx.legacy.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="@dimen/space_large" />
 
@@ -95,7 +95,7 @@
                     android:gravity="center"
                     android:minWidth="190dp"
                     android:padding="@dimen/dp_10"
-                    android:text="@string/send_otp_sms"
+                    android:text="@string/change_phone_number_next"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_13"
                     android:textStyle="normal" />
@@ -125,7 +125,7 @@
                     android:textSize="@dimen/text_size_13"
                     android:textStyle="normal" />
 
-                <android.support.v4.widget.Space
+                <androidx.legacy.widget.Space
                     android:layout_width="0dp"
                     android:layout_height="@dimen/space_vs" />
 
@@ -141,7 +141,7 @@
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
-                <android.support.v4.widget.Space
+                <androidx.legacy.widget.Space
                     android:layout_width="0dp"
                     android:layout_height="@dimen/space_very_large" />
 
@@ -155,7 +155,7 @@
                     android:textSize="@dimen/text_size_14"
                     android:textStyle="normal" />
 
-                <android.support.v4.widget.Space
+                <androidx.legacy.widget.Space
                     android:layout_width="0dp"
                     android:layout_height="@dimen/space_small" />
 

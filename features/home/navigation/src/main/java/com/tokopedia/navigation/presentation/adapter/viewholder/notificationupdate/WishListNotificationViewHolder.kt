@@ -1,8 +1,8 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
