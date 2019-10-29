@@ -192,7 +192,7 @@ public class GTMAnalytics extends ContextAnalytics {
             for (int j = 0; j < viewProduct.size(); j++) {
                 Object promotionObj = viewProduct.get(j);
                 if (promotionObj != null) {
-                    if (promotionObj instanceof Map) {
+                    if (promotionObj instanceof Object[]) {
                         Object[] promotions = (Object[]) promotionObj;
 
                         for (int i = 0; i < promotions.length; i++) {
@@ -207,13 +207,8 @@ public class GTMAnalytics extends ContextAnalytics {
                             promotionBundles.add(viewProductMap(promotion, i + 1));
                         }
                     } else if (promotionObj instanceof Map) {
-                        Map promotions = (Map) promotionObj;
-                        int i=0;
-                        for (Iterator iterator = promotions.keySet().iterator(); iterator.hasNext(); i++) {
-                            String key = (String)iterator.next();
-                            Map<String, Object> promotion = (Map<String, Object>) promotions.get(key);
-                            promotionBundles.add(viewProductMap(promotion, i + 1));
-                        }
+                        Map<String, Object> promotions = (Map<String, Object>) promotionObj;
+                        promotionBundles.add(viewProductMap(promotions, j + 1));
                     }
                 }
             }
@@ -385,7 +380,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void checkoutBundle(Bundle bundle, Map<String, Object> ecommerce) {
-        Object promotionObj;
+        Object checkoutProducts;
         Map<String, Object> checkout = (Map<String, Object>) ecommerce.remove("checkout");
 
         // get step and option
@@ -400,17 +395,17 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         // get products
-        promotionObj = checkout.get("products");
-        if (promotionObj != null) {
+        checkoutProducts = checkout.remove("products");
+        if (checkoutProducts != null) {
             ArrayList<Bundle> promotionBundles = new ArrayList<>();
-            if (promotionObj instanceof Object[]) {
-                Object[] promotions = (Object[]) checkout.get("products");
+            if (checkoutProducts instanceof Object[]) {
+                Object[] promotions = (Object[]) checkoutProducts;
                 for (int i = 0; i < promotions.length; i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions[i];
                     promotionBundles.add(checkoutProductMap(promotion));
                 }
-            } else if (promotionObj instanceof List) {
-                List promotions = (List) checkout.get("products");
+            } else if (checkoutProducts instanceof List) {
+                List promotions = (List) checkoutProducts;
 
                 for (int i = 0; i < promotions.size(); i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
