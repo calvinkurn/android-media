@@ -12,13 +12,6 @@ import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val cartApi: CartApi) : ICartRepository {
 
-//    override fun getShopGroupList(param: Map<String, String>): Observable<CartDataListResponse> {
-//        return Observable.just(Gson().fromJson(mockCartResponse, CartDataListResponse::class.java))
-//        return cartApi.getShopGroupList(param).map { cartResponseResponse ->
-//            cartResponseResponse.body()?.convertDataObj(CartDataListResponse::class.java)
-//        }
-//    }
-
     override fun deleteCartData(param: Map<String, String>): Observable<DeleteCartDataResponse> {
         return cartApi.postDeleteCart(param).map { cartResponseResponse ->
             cartResponseResponse.body()?.convertDataObj(DeleteCartDataResponse::class.java)

@@ -57,4 +57,6 @@ interface ActionListener {
     fun onDeleteDisabledItem(data: CartItemData)
 
     fun onSeeErrorProductsClicked()
+
+    fun onTickerDescriptionUrlClicked(url: String)
 }

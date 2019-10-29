@@ -895,15 +895,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 protected int getVerticalSnapPreference() {
                     return SNAP_TO_START;
                 }
-
-                @Override
-                public int calculateDyToMakeVisible(View view, int snapPreference) {
-                    return super.calculateDyToMakeVisible(view, snapPreference);
-                }
             };
             linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
             cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
         }
+    }
+
+    @Override
+    public void onTickerDescriptionUrlClicked(@NotNull String url) {
+        RouteManager.route(getContext(), url);
     }
 
     @Override
